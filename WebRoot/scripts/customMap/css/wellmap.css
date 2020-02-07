@@ -1,0 +1,209 @@
+.global-wellMap-flexbox-container * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+
+.global-wellMap-flexbox-container {
+    /*        display:-ms-flex;*/
+    /*   //     display:-moz-box;*/
+    /*   //     display:-webkit-flex;*/
+    
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    display: -moz-flex;
+    -moz-flex-direction: column;
+    -moz-flex-wrap: nowrap;
+    display: -ms-flex;
+    -ms-flex-direction: column;
+    -ms-flex-wrap: nowrap;
+    display: -o-flex;
+    -o-flex-direction: column;
+    -o-flex-wrap: nowrap;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    -webkt-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    -o-flex: 1;
+    flex: 1;
+    margin: 0px;
+    padding: 0px;
+    /*      -ms-flex-pack:distribute;*/
+    /*      justify-content: space-around;*/
+    /*        flex-direction: row;*/
+    /*       -moz-box-orient:horizontal;*/
+    /*       -webkit-box-orient:horizontal;*/
+    /*       box-orient:horizontal;*/
+}
+
+
+
+.global-wellMap-flexbox-container > div:nth-child(1) {
+    background-color: rgb(178,158,158);
+    /*    width: 200px;*/
+    
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -moz-flex: 1;
+    display: -moz-flex;
+    -moz-flex-direction: column;
+    -moz-flex-wrap: nowrap;
+    -ms-flex: 1;
+    display: -ms-flex;
+    -ms-flex-direction: column;
+    -ms-flex-wrap: nowrap;
+    -o-flex: 1;
+    display: -o-flex;
+    -o-flex-direction: column;
+    -o-flex-wrap: nowrap;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.global-wellMap-flexbox-container > div:nth-child(1) > div:nth-child(1) {
+    /*    background-color: rgb(198, 198, 198);*/
+    /*
+    border-width: 2px 2px 2px 2px;
+    border-style: solid;
+    border-color: black;
+*/
+    /*    width: 200px;*/
+    
+    width: 100%;
+    overflow: auto;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -webkit-flex: 4;
+    display: -moz-flex;
+    -moz-flex-direction: row;
+    -moz-flex-wrap: wrap;
+    -moz-flex: 4;
+    display: -ms-flex;
+    -ms-flex-direction: row;
+    -ms-flex-wrap: wrap;
+    -ms-flex: 4;
+    display: -o-flex;
+    -o-flex-direction: row;
+    -o-flex-wrap: wrap;
+    -o-flex: 4;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 4;
+    /*    margin: 0px 10px 0px 0px;*/
+}
+
+.global-wellMap-flexbox-container > div:nth-child(1) > canvas:nth-child(1) {
+    /*    background-color: rgb(198, 198, 198);*/
+    /*
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: black;
+    padding: 8px;
+*/
+    /*    width: 200px;*/
+    
+    width: 100%;
+    -webkit-flex: 6;
+    -moz-flex: 6;
+    -ms-flex: 6;
+    -o-flex: 6;
+    flex: 6;
+}
+
+.global-wellMap-flexbox-container > div:nth-child(1) > div:nth-child(1)>div {
+    min-width: 10px;
+    width: 100px;
+    height: 100px;
+    min-height: 10px;
+    /*
+    border: 1px solid hsla(120, 30%, 50%, 0.8);
+    margin: 5px;
+*/
+    
+    font-size: 20px;
+    text-align: center;
+    line-height: 50px;
+    background-color: #fff;
+    font-weight: bold;
+    /*        flex:1;*/
+}
+
+.global-wellMap-tip {
+    visibility: hidden;
+    padding: 0px;
+    border-radius: 10px 5px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    margin: 0px;
+    background-color: rgba(15, 144, 45, 0.88);
+    min-width: 160px;
+    min-height: 200px;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    display: -moz-flex;
+    -moz-flex-direction: row;
+    -moz-flex-wrap: wrap;
+    display: -ms-flex;
+    -ms-flex-direction: row;
+    -ms-flex-wrap: wrap;
+    display: -o-flex;
+    -o-flex-direction: row;
+    -o-flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.global-wellMap-subTip {
+    padding: 10px;
+    border-radius: 10px 5px;
+    /*    border:1px solid hsl(215, 53%, 30%);*/
+    
+    margin: 1px;
+    color: rgb(20, 20, 20);
+    background-color: rgb(245, 245, 245);
+    /*     background-color: hsla(198, 80%, 50%, 0.8);*/
+    
+    min-width: 150px;
+    min-height: 190px;   
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -webkit-flex: 1;
+    display: -moz-flex;
+    -moz-flex-direction: row;
+    -moz-flex-wrap: wrap;
+    -moz-flex: 1;
+    display: -ms-flex;
+    -ms-flex-direction: row;
+    -ms-flex-wrap: wrap;
+    -ms-flex: 1;
+    display: -o-flex;
+    -o-flex-direction: row;
+    -o-flex-wrap: wrap;
+    -o-flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.global-wellMap-subTip li {
+    display: block;
+    line-height: 100%;
+    font:  12px/20px arial, sans-serif;
+    /*font: bold 12px/20px arial,sans-serif;*/
+}

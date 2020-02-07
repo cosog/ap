@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    display: -webkit-flex;
+    -webkit-flex-flow: row nowrap;
+}
+
+#bodyLeft {
+    flex: 1;
+    -webkit-flex: 1;
+}
+
+#bodyCenter {
+    flex: 7;
+    -webkit-flex: 7;
+    display: flex;
+    flex-flow: column nowrap;
+    display: -webkit-flex;
+    -webkit-flex-flow: column nowrap;
+}
+
+#bodyRight {
+    flex: 2;
+    -webkit-flex: 2;
+}
+
+#homeTop {
+    flex: 1;
+    -webkit-flex: 1;
+    font-size: 16px;
+    font-weight: bold;
+    color: #04408C;
+    word-break: keep-all;
+    white-space: nowrap;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    display: -webkit-flex;
+    -webkit-flex-flow: row nowrap;
+    -webkit-align-items: center;
+}
+
+#projectEn {
+    color: #FF0000;
+}
+
+#homeCenter {
+    font-size: 13px;
+    color: #000000;
+    text-indent: 2em;
+    line-height: 200%;
+    text-align: justify;
+    text-justify: inter-ideograph;
+}
+
+#homeBottom {
+    flex: 2;
+    -webkit-flex: 2;
+    display: flex;
+    flex-flow: column nowrap;
+    display: -webkit-flex;
+    -webkit-flex-flow: column nowrap;
+}
+
+.imgTop {
+	flex: 1;
+    -webkit-flex: 1;
+}
+
+.imgBottom {
+	flex: 2;
+    -webkit-flex: 2;
+}

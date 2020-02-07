@@ -1,0 +1,159 @@
+Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
+    extend: 'Ext.data.Store',
+    fields: ['wellName','wellId', 'acquisitionTime','workingConditionName','yhjy','gkjgly','bjbz','rcylbd', 'jsdjrcyl', 'jsdjrcyl1',
+		'hsl', 'yy', 'ty', 'jklw', 'dym', 'bg', 'cmd', 'bj', 'yymd',
+		'jmb', 'byxccjscl', 'bjxlsl',
+         'yytjxs', 'ydfelsl', 'gdfelsl', 'qyx', 
+         'yjzdzh', 'yjzxzh', 'yjzdyl', 'yjzxyl', 'yjxyyl', 'yjylbfb',
+         'ejzdzh', 'ejzxzh', 'ejzdyl', 'ejzxyl', 'ejxyyl', 'ejylbfb', 
+         'sjzdzh', 'sjzxzh', 'sjzdyl', 'sjzxyl','sjxyyl', 'sjylbfb', 
+         'sijzdzh', 'sijzxzh', 'sijzdyl', 'sijzxyl','sijxyyl', 'sijylbfb', 
+         'gtcc', 'gtcc1','yggl', 'gggl', 'sgl', 'dmxtxl', 'jxxtxl', 'xtxl','dybmhdl', 'ccssxs', 'cygssl',
+         'ygssl', 'gxzl', 'ytssxs', 'lsxs', 'cmxs', 'zbx', 'bpckyl', 'bxrkyl', 'brkjdqyb', 'bckjdqyb', 'zsszh',
+         'zsxzhscc', 'zsxzhxcc', 'bpckwd', 'bpckytnd', 'bpckyytjxs',
+         'tubingpressure','casingpressure','backpressure','wellheadfluidtemperature',
+         'currenta','currentb','currentc','voltagea','voltageb','voltagec',
+         'activepowerconsumption','reactivepowerconsumption','activepower','reactivepower','reversepower','powerfactor'],
+    autoLoad: true,
+    pageSize: 50,
+    proxy: {
+    	type: 'ajax',
+        url: context + '/diagnosisAnalysisOnlyController/getProductionWellRTAnalysisWellList',
+        actionMethods: {
+            read: 'POST'
+        },
+        reader: {
+            type: 'json',
+            rootProperty: 'totalRoot',
+            totalProperty: 'totalCount',
+            keepRawData: true
+        }
+    },
+    listeners: {
+        load: function (store, sEops) {
+        	var get_rawData = store.proxy.reader.rawData;
+            var arrColumns = get_rawData.columns;
+            var column = createDiagnosisColumn(arrColumns);
+            Ext.getCmp("DiagnosisAnalysisColumnStr_Id").setValue(column);
+            Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
+            var newColumns = Ext.JSON.decode(column);
+            var bbar = new Ext.PagingToolbar({
+            	store: store,
+            	displayInfo: true,
+            	displayMsg: '当前 {0}~{1}条  共 {2} 条'
+	        });
+            var gridPanel = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id");
+            if (!isNotVal(gridPanel)) {
+            	gridPanel= Ext.create('Ext.grid.Panel', {
+                    id: 'FSDiagramAnalysisSingleDetails_Id',
+                    border: false,
+                    forceFit: false,
+                    bbar: bbar,
+                    store:store,
+                    viewConfig: {
+                        emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
+                    },
+                    columnLines: true,
+                    columns:newColumns,
+                    listeners: {
+                        selectionchange: function (view, selected, o) {
+                            if (selected.length > 0) {
+                        		//请求图形数据
+                        		Ext.create("AP.store.diagnosis.SinglePumpCardStore");
+                        		Ext.create("AP.store.diagnosis.DiagnosisAnalysisTableStore");
+                            }
+                            
+                        },
+                        itemdblclick: function (view,record,item,index,e,eOpts) {
+                        	var wellName=Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
+                    		if(wellName==null||wellName==""){
+//                    			Ext.getCmp("SingleWellList_Id").setTitle("历史数据");
+                    			Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
+                            	Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").show();
+                            	
+                            	Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
+                                Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
+                                
+                                var statPanelId=getFSDiagramAnalysisSingleStatType().piePanelId;
+                            	Ext.getCmp(statPanelId).collapse();
+                            	
+                    			Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue(record.data.wellName);
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setRawValue(record.data.wellName);
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetails_Id').getStore().loadPage(1);
+                            	
+                    		}
+                        }
+                    }
+                });
+            	var panelId=getFSDiagramAnalysisSingleStatType().panelId;
+            	Ext.getCmp(panelId).add(gridPanel);
+            	
+            	var length = gridPanel.dockedItems.keys.length;
+                var refreshStr= "";
+                for (var i = 0; i < length; i++) {
+                   if (gridPanel.dockedItems.keys[i].indexOf("pagingtoolbar") !== -1) {
+                      refreshStr= gridPanel.dockedItems.keys[i];
+                   }
+                }
+            	gridPanel.dockedItems.get(refreshStr).child('#refresh').setHandler(   
+            	        function() {
+            	        	Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
+            	         }
+            	)
+            	
+            }else{
+            	gridPanel.reconfigure(newColumns);
+            }
+            var startDate=Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').rawValue;
+            if(startDate==''||null==startDate){
+            	Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").setValue(get_rawData.start_date==undefined?get_rawData.startDate:get_rawData.start_date);
+            }
+            if(get_rawData.totalCount>0){
+            	var SingleAnalysisGridPanel = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id");
+                if (isNotVal(SingleAnalysisGridPanel)) {
+                	SingleAnalysisGridPanel.getSelectionModel().deselectAll(true);
+                	SingleAnalysisGridPanel.getSelectionModel().select(0, true);
+                }
+            }else{
+            	$("#FSDiagramAnalysisSingleDetailsDiv1_id").html('');
+            	$("#FSDiagramAnalysisSingleDetailsDiv2_id").html('');
+            	$("#FSDiagramAnalysisSingleDetailsDiv3_id").html('');
+            	$("#FSDiagramAnalysisSingleDetailsDiv4_id").html('');
+            	$("#FSDiagramAnalysisSingleDetailsDiv5_id").html('');
+            	$("#FSDiagramAnalysisSingleDetailsDiv6_id").html('');
+        		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightRunRangeTextArea_Id").setValue("");
+        		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightResultCodeTextArea_Id").setValue("");
+            	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAnalysisPanel_Id").removeAll();
+            	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAcqPanel_Id").removeAll();
+            	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").removeAll();
+            	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlPanel_Id").removeAll();
+            	if($("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer")!=null){
+            		$("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer").html('');
+            	}
+            }
+            
+            
+        },
+        beforeload: function (store, options) {
+            var orgId = Ext.getCmp('leftOrg_Id').getValue();
+            var wellName = Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
+            var startDate=Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').rawValue;
+            var endDate=Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').rawValue;
+            var statValue = Ext.getCmp('FSDiagramAnalysisSingleDetailsSelectedStatValue_Id').getValue();
+            var type=getFSDiagramAnalysisSingleStatType().type;
+            var new_params = {
+                orgId: orgId,
+                wellName: wellName,
+                startDate:startDate,
+                endDate:endDate,
+                statValue:statValue,
+                type:type,
+                wellType:200
+            };
+            Ext.apply(store.proxy.extraParams, new_params);
+        },
+        datachanged: function (v, o) {
+        	onStoreSizeChange(v, o, "DiagnosisPumpingUnit_SingleDinagnosisAnalysisTotalCount_Id");
+        }
+    }
+});

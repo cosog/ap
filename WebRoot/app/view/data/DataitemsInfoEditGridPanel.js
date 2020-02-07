@@ -1,0 +1,201 @@
+Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.dataitemsInfoEditGridPanel',
+    id: "DataitemsInfoEditGridPanelId",
+    viewConfig: {
+        emptyText: "<div class='con_div_' id='div_ditmaeditsId'><" + cosog.string.nodata + "></div>",
+        forceFit: true
+    },
+    columnLines: true,
+    border:false,
+    selType: 'checkboxmodel',
+    multiSelect: true,
+    initComponent: function () {
+        var appEditDataItesmStore = Ext.create("AP.store.data.DataitemsInfoStore");
+        var findtatimsstore = new Ext.data.SimpleStore({
+            fields: ['findtatId', 'findtatName'],
+            data: [[0, cosog.string.dataColumnCode], [1, cosog.string.dataColumnName]]
+        });
+        var findtatsimp = new Ext.form.ComboBox({
+            id: 'findtattxtcobmoxfield_Id',
+            value: 0,
+            fieldLabel: cosog.string.type,
+            allowBlank: false,
+            emptyText: cosog.string.dataCheckType,
+            triggerAction: 'all',
+            store: findtatimsstore,
+            labelWidth: 35,
+            width: 155,
+            displayField: 'findtatName',
+            valueField: 'findtatId'
+        });
+        var bbar = new Ext.PageNumberToolbar({
+            store: appEditDataItesmStore,
+            pageSize: defaultPageSize,
+            displayInfo: true,
+            displayMsg: cosog.string.currentRecord,
+            emptyMsg: cosog.string.nodataDisplay,
+            prevText: cosog.string.lastPage,
+            nextText: cosog.string.nextPage,
+            refreshText: cosog.string.refresh,
+            lastText: cosog.string.finalPage,
+            firstText: cosog.string.firstPage,
+            beforePageText: cosog.string.currentPage,
+            afterPageText: cosog.string.gong
+        });
+        var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
+            clicksToEdit: 1
+        });
+        Ext.apply(this, {
+            plugins: [cellEditing],
+            store: appEditDataItesmStore,
+            tbar: [
+                   findtatsimp,
+                {
+                    xtype: 'textfield',
+                    id: 'findtattxtnames_Id',
+                    fieldLabel: '&nbsp' + cosog.string.name,
+                    labelWidth: 35,
+                    width: 155,
+                    listeners: {
+                        specialkey: function (field, e) {
+                            RefreachEnter(e, "DataitemsInfoEditGridPanelId");
+                        }
+                    }
+
+                 }, '&nbsp',
+                {
+                    xtype: 'button',
+                    id: "findtattxtInfoBtnId",
+                    text: cosog.string.search,
+//                    hidden: true,
+                    action: 'findtattxtInfoBtnAction',
+                    pressed: true,
+                    iconCls: 'search',
+                    handler: function () {
+                        reFreshg("DataitemsInfoEditGridPanelId");
+                    }
+                 },
+                 '->',
+                {
+                    xtype: 'button',
+                    itemId: 'addfindtattxtBtnId',
+                    id: 'addfindtattxtBtn_Id',
+                    action: 'addfindtattxtInfoAction',
+                    text: cosog.string.add,
+                    iconCls: 'add',
+                    tooltip: cosog.string.addDataValue
+                }, '-',
+                {
+                    xtype: 'button',
+                    itemId: 'editfindtattxtBtnId',
+                    id: 'editfindtattxtBtn_Id',
+                    text: cosog.string.update,
+                    action: 'editfindtattxtInfoBtnAction',
+                    disabled: false,
+                    iconCls: 'edit',
+                    tooltip: cosog.string.editDataValue
+                }, '-',
+                {
+                    xtype: 'button',
+                    itemId: 'delfindtattxtBtnId',
+                    id: 'delfindtattxtBtn_Id',
+                    disabled: false,
+                    action: 'delfindtattxtInfoBtnAction',
+                    text: cosog.string.del,
+                    iconCls: 'delete'
+                }],
+            bbar: bbar,
+            columns: [
+                {
+                    header: cosog.string.dataColumnName,
+                    flex: 1,
+                    dataIndex: 'cname'
+                },
+                {
+                    header: cosog.string.dataColumnCode,
+                    flex: 1,
+                    dataIndex: 'ename'
+                },
+                {
+                    header: cosog.string.dataColumnParams,
+                    flex: 1,
+                    dataIndex: 'datavalue'
+                },
+                {
+                    header: cosog.string.sorts,
+                    width: 40,
+                    dataIndex: 'sorts'
+                },
+                {
+                    xtype: 'checkcolumn',
+                    header: cosog.string.dataColumnEnabled,
+                    dataIndex: 'status',
+                    width: 65,
+                    editor: {
+                        xtype: 'checkbox',
+                        cls: 'x-grid-checkheader-editor'
+                    },
+                    listeners: {
+                        checkchange: function (sm, e, ival, o, n) {
+                            var items_ = appEditDataItesmStore.data.items;
+                            if (items_.length > 0) {
+                                if (ival) {
+                                    ival = 1;
+                                } else {
+                                    ival = 0;
+                                }
+                                Ext.Array.each(items_, function (items_n, index, fog) {
+                                    if (e == index) {
+                                        var hide_obj_ = Ext.getCmp("hideSysDataValName_Id");
+                                        var hide_val_ = hide_obj_.getValue();
+                                        var status_ = items_[index].data.status;
+                                        var obj_id = items_[index].data.dataitemid;
+                                        var resultstring = obj_id + ":" + ival + ",";
+//                                        if (ival != status_) {
+                                            if (null != hide_val_ && hide_val_ != "") {
+                                                hide_obj_.setValue(hide_val_ + resultstring);
+                                            } else {
+                                                hide_obj_.setValue(resultstring);
+                                            }
+//                                        } else {
+//                                            if (status_ == 1) {
+//                                                status_ = 0;
+//                                            } else {
+//                                                status_ = 1;
+//                                            }
+//                                            var resultstring_old = obj_id + ":" + status_ + ",";
+//                                            var xxstval = hide_val_.indexOf(resultstring_old);
+//                                            if (xxstval > -1) {
+//                                                resultstring_old = hide_val_.replace(resultstring_old, "");
+//                                            }
+//                                            hide_obj_.setValue(resultstring_old);
+//
+//                                        }
+
+                                    }
+                                });
+                            }
+                            //hideSysDataValName_Id 
+                        }
+                    }
+           }
+        ]
+        });
+
+        this.callParent(arguments);
+    },
+    listeners: {
+        selectionchange: function (sm, selections) {
+//            var n = selections.length || 0;
+//            this.down('#editfindtattxtBtnId').setDisabled(n != 1);
+//            if (n > 0) {
+//                this.down('#addfindtattxtBtnId').setDisabled(true);
+//                this.down('#delfindtattxtBtnId').setDisabled(false);
+//            } else {
+//                this.down('#addfindtattxtBtnId').setDisabled(false);
+//                this.down('#delfindtattxtBtnId').setDisabled(true);
+//            }
+        }
+    }
+});

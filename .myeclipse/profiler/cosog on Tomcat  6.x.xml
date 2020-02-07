@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="profiler.settings.instrument.empty.methods">true</entry>
+<entry key="ProfilerCPUSettings_profile_runnables">true</entry>
+<entry key="profiler.settings.n.profiled.threads.limit">32</entry>
+<entry key="ProfilerCPUSettings_filter_type">2</entry>
+<entry key="profiler.settings.obj.alloc.stack.sampling.depth">-1</entry>
+<entry key="profiler.settings.instrument.method.invoke">true</entry>
+<entry key="profiler.settings.instr.scheme">1</entry>
+<entry key="ProfilerMemorySettings_track_every">10</entry>
+<entry key="ProfilerMemorySettings_mode">4</entry>
+<entry key="ProfilerCPUSettings_root_classes">com.gao.action.alarm.**
+com.gao.action.analysis.**
+com.gao.action.back.**
+com.gao.action.base.**
+com.gao.action.cbm.**
+com.gao.action.compute.**
+com.gao.action.curve.**
+com.gao.action.data.**
+com.gao.action.dyn.**
+com.gao.action.measure.**
+com.gao.action.monitor.**
+com.gao.action.report.**
+com.gao.action.right.**
+com.gao.action.video.**
+com.gao.common.exception.**
+com.gao.common.filter.**
+com.gao.common.interceptor.**
+com.gao.common.listener.**
+com.gao.dao.**
+com.gao.model.**
+com.gao.service.alarm.**
+com.gao.service.analysis.**
+com.gao.service.back.**
+com.gao.service.base.**
+com.gao.service.cbm.**
+com.gao.service.compute.**
+com.gao.service.curve.**
+com.gao.service.data.**
+com.gao.service.dyn.**
+com.gao.service.measure.**
+com.gao.service.monitor.**
+com.gao.service.report.**
+com.gao.service.right.**
+com.gao.service.video.**
+com.gao.utils.**
+</entry>
+<entry key="ProfilerCPUSettings_filter_value">com.gao.action.alarm.*,&#13;
+com.gao.action.analysis.*,&#13;
+com.gao.action.back.*,&#13;
+com.gao.action.base.*,&#13;
+com.gao.action.cbm.*,&#13;
+com.gao.action.compute.*,&#13;
+com.gao.action.curve.*,&#13;
+com.gao.action.data.*,&#13;
+com.gao.action.dyn.*,&#13;
+com.gao.action.measure.*,&#13;
+com.gao.action.monitor.*,&#13;
+com.gao.action.report.*,&#13;
+com.gao.action.right.*,&#13;
+com.gao.action.video.*,&#13;
+com.gao.common.exception.*,&#13;
+com.gao.common.filter.*,&#13;
+com.gao.common.interceptor.*,&#13;
+com.gao.common.listener.*,&#13;
+com.gao.dao.*,&#13;
+com.gao.model.*,&#13;
+com.gao.service.alarm.*,&#13;
+com.gao.service.analysis.*,&#13;
+com.gao.service.back.*,&#13;
+com.gao.service.base.*,&#13;
+com.gao.service.cbm.*,&#13;
+com.gao.service.compute.*,&#13;
+com.gao.service.curve.*,&#13;
+com.gao.service.data.*,&#13;
+com.gao.service.dyn.*,&#13;
+com.gao.service.measure.*,&#13;
+com.gao.service.monitor.*,&#13;
+com.gao.service.report.*,&#13;
+com.gao.service.right.*,&#13;
+com.gao.service.video.*,&#13;
+com.gao.utils.*</entry>
+<entry key="profiler.settings.istrument.getter.setter.methods">true</entry>
+<entry key="myeclipse.profiling.mode">0</entry>
+<entry key="ProfilerMemorySettings_stacktraces">-1</entry>
+<entry key="profiler.settings.sampling.interval">10</entry>
+<entry key="profiler.settings.cpu.profiling.type">0</entry>
+</properties>

@@ -1,0 +1,212 @@
+{
+    "DriverName": "自有协议一",
+    "DriverCode": "BeeTech",
+    "Port": 19100,
+    "Protocol": 1,
+    "DataConfig": {
+        "RunStatus": {
+            "Address": 40318,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "RunControl": {
+            "Address": 40320,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "CurrentA": {
+            "Address": 40351,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "CurrentB": {
+            "Address": 40353,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "CurrentC": {
+            "Address": 40355,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "VoltageA": {
+            "Address": 40357,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "VoltageB": {
+            "Address": 40359,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "VoltageC": {
+            "Address": 40361,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "ActivePowerConsumption": {
+            "Address": 40363,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "ReactivePowerConsumption": {
+            "Address": 40365,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "ActivePower": {
+            "Address": 40367,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "ReactivePower": {
+            "Address": 40369,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "ReversePower": {
+            "Address": 40371,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "PowerFactor": {
+            "Address": 40373,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "TubingPressure": {
+            "Address": 40300,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "CasingPressure": {
+            "Address": 40302,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "BackPressure": {
+            "Address": 40304,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "WellHeadFluidTemperature": {
+            "Address": 40306,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "ProducingfluidLevel": {
+            "Address": 0,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "WaterCut": {
+            "Address": 0,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "SetFrequency": {
+            "Address": 40402,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "RunFrequency": {
+            "Address": 40404,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "RPM": {
+            "Address": 40430,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "Torque": {
+            "Address": 40432,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "FSDiagramAcquisitionInterval": {
+            "Address": 40981,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "FSDiagramSetPointCount": {
+            "Address": 40983,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "FSDiagramPointCount": {
+            "Address": 40984,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "AcquisitionTime": {
+            "Address": 40985,
+            "DataType": 3,
+            "Length": 6,
+            "Zoom": 1
+        },
+        "SPM": {
+            "Address": 40991,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "Stroke": {
+            "Address": 40993,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "SDiagram": {
+            "Address": 41001,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        },
+        "FDiagram": {
+            "Address": 41251,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        },
+        "ADiagram": {
+            "Address": 41501,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        },
+        "PDiagram": {
+            "Address": 41751,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        }
+    }
+}

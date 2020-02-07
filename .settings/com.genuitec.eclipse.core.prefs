@@ -1,0 +1,4 @@
+#Fri Mar 28 09:04:07 CST 2014
+eclipse.preferences.version=1
+validator.Checked=WebRoot/scripts,WebRoot/WEB-INF/web.xml,src/code/curve/CurvePumpingUnit_CN.xml
+validator.Unchecked=

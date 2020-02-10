@@ -21,7 +21,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                 type: 'string'
                 }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: 'ajax',
                 actionMethods: {
                     read: 'POST'
@@ -38,9 +38,8 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                     var org_Id = Ext.getCmp('leftOrg_Id').getValue();
                     var wellName = Ext.getCmp('FSDiagramAnalysisGraphicalQueryWellName_Id').getValue();
                     var new_params = {
-                        type: 'jh',
                         orgId: org_Id,
-                        jh: wellName,
+                        wellName: wellName,
                         wellType:200
                     };
                     Ext.apply(store.proxy.extraParams, new_params);

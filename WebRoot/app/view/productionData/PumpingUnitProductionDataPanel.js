@@ -17,7 +17,7 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+            	url: context + '/wellInformationManagerController/loadWellComboxList',
             	type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -32,10 +32,9 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
             listeners: {
                 beforeload: function (store, options) {
                 	var org_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh_val = Ext.getCmp('ProductionOutName_Id').getValue();
+                    var wellName = Ext.getCmp('ProductionOutName_Id').getValue();
                     var new_params = {
-                        type: 'jh',
-                        jh:jh_val,
+                        wellName:wellName,
                         orgId: org_Id,
                         wellType:200
                     };

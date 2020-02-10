@@ -16,7 +16,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveCheckInfoView', {
                 type: "string"
             }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -34,8 +34,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveCheckInfoView', {
                     var wellName = Ext.getCmp('electricAnalysisRealtimeCurveCheckWellCom_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        jh: wellName,
-                        type: 'jh',
+                        wellName: wellName,
                         wellType:200
                     };
                     Ext.apply(store.proxy.extraParams, new_params);

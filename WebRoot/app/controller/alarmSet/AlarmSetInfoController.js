@@ -149,16 +149,16 @@ SelectAlarmSet = function () {
     var bjbz = dataattr_row[0].data.alarmsign;
     var bz = dataattr_row[0].data.remark;
     Ext.getCmp('jlbh_Id').setValue(jlbh);
-    Ext.getCmp('gklx_Id').setValue(gklx);
-    Ext.getCmp('gklx_Id').setRawValue(gkmc);
-    Ext.getCmp('bjlx_Id').setValue(bjlx);
-    Ext.getCmp('bjlx_Id').setRawValue(bjlxmc);
+    Ext.getCmp('alarmSetWorkingConditionComb_Id').setValue(gklx);
+    Ext.getCmp('alarmSetWorkingConditionComb_Id').setRawValue(gkmc);
+    Ext.getCmp('alarmSetAlarmType_Id').setValue(bjlx);
+    Ext.getCmp('alarmSetAlarmType_Id').setRawValue(bjlxmc);
     Ext.getCmp('bjjb_Id').setValue(bjjb);
     Ext.getCmp('bjjb_Id').setRawValue(bjjbmc);
     Ext.getCmp('bjbz_Id1').setValue(bjbz);
     Ext.getCmp('bjbz_Id').setValue(bjbz);
-    Ext.getCmp("gklx_Id").readOnly = true;
-    Ext.getCmp("bjlx_Id").readOnly = true;
+    Ext.getCmp("alarmSetWorkingConditionComb_Id").readOnly = true;
+    Ext.getCmp("alarmSetAlarmType_Id").readOnly = true;
     if (bjbz == 0) {
         Ext.getCmp('bjbz_Id1').setRawValue('关');
     } else {

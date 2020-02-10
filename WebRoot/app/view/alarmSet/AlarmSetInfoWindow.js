@@ -15,7 +15,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 			border : false,
 			initComponent : function() {
 				var me = this;
-				var gklxStore_A = new Ext.data.SimpleStore({
+				var workingConditionStore = new Ext.data.SimpleStore({
 									fields : [ {
 										name : "boxkey",
 										type : "string"
@@ -45,13 +45,13 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 								});
 
 						// Simple ComboBox using the data store
-						var gklxCombo_A = Ext.create(
+						var workingConditionComb = Ext.create(
 								'Ext.form.field.ComboBox', {
 									fieldLabel :  '报警项',
-									id : 'gklx_Id',
+									id : 'alarmSetWorkingConditionComb_Id',
 									name : "workingconditioncode",
 									anchor : '95%',
-									store: gklxStore_A,
+									store: workingConditionStore,
 									queryMode : 'local',
 									emptyText :  cosog.string.all,
 									blankText :  cosog.string.all,
@@ -67,7 +67,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 					                    }
 									}
 								});
-						var bjlxStore_B = new Ext.data.SimpleStore(
+						var alarmTypeStore = new Ext.data.SimpleStore(
 								{
 									fields : [ {
 										name : "boxkey",
@@ -98,13 +98,13 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 								});
 
 						// Simple ComboBox using the data store
-						var bjlxCombo_B = Ext.create(
+						var alarmTypeComb = Ext.create(
 								'Ext.form.field.ComboBox', {
 									fieldLabel :  cosog.string.bjlx,
-									id : 'bjlx_Id',
+									id : 'alarmSetAlarmType_Id',
 									name : "alarmtype",
 									anchor : '95%',
-									store: bjlxStore_B,
+									store: alarmTypeStore,
 									queryMode : 'local',
 									emptyText :  cosog.string.all,
 									blankText :  cosog.string.all,
@@ -186,7 +186,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 										id : 'bjbz_Id',
 										value:'0',
 										name : "alarmsign"
-									},bjlxCombo_B,gklxCombo_A,bjjbCombo_C ,{
+									},alarmTypeComb,workingConditionComb,bjjbCombo_C ,{
 										xtype : "combobox",
 										fieldLabel : cosog.string.bjzt,
 										id : 'bjbz_Id1',

@@ -21,7 +21,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+            	url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -35,19 +35,11 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
             autoLoad: false,
             listeners: {
                 beforeload: function (store, options) {
-                    var leftOrg_Id = Ext.getCmp('leftOrg_Id');
-                    if (!Ext.isEmpty(leftOrg_Id)) {
-                        leftOrg_Id = leftOrg_Id.getValue();
-                    }
-                    var jh_tobj = Ext.getCmp('ScrewPumpDailyReportPaneljh_Id');
-					var jh_val = "";
-					if (!Ext.isEmpty(jh_tobj)) {
-						jh_val = jh_tobj.getValue();
-					}
+                    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                    var wellName = Ext.getCmp('ScrewPumpDailyReportPaneljh_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        jh:jh_val,
-                        type:'jh',
+                        wellName:wellName,
                         wellType:400
                     };
                     Ext.apply(store.proxy.extraParams, new_params);

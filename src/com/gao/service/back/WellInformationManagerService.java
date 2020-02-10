@@ -23,6 +23,55 @@ import com.gao.utils.StringManagerUtils;
 public class WellInformationManagerService<T> extends BaseService<T> {
 	@Autowired
 	private CommonDataService service;
+	
+	public String loadWellComboxList(Page pager,String orgId,String wellName,String wellType) throws Exception {
+		//String orgIds = this.getUserOrgIds(orgId);
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer sqlCuswhere = new StringBuffer();
+		String sql = " select  t.wellName as wellName,t.wellName as dm from  t_wellinformation t  ,sc_org  g where 1=1 and  t.orgId=g.org_id  and g.org_id in ("
+				+ orgId + ")";
+		if (wellType.trim().equalsIgnoreCase("200")) {
+			sql += " and t.liftingtype like '2%'";
+		}else if (wellType.trim().equalsIgnoreCase("400")) {
+			sql += " and t.liftingtype like '4%'";
+		}
+		
+		if (StringManagerUtils.isNotNull(wellName)) {
+			sql += " and t.wellName like '%" + wellName + "%'";
+		}
+		sql += " order by t.sortNum, t.wellName";
+		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
+		sqlCuswhere.append(""+sql);
+		int maxvalue=pager.getLimit()+pager.getStart();
+		sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
+		sqlCuswhere.append(" where rn >"+pager.getStart());
+		String finalsql=sqlCuswhere.toString();
+		try {
+			int totals=this.getTotalCountRows(sql);
+			List<?> list = this.findCallSql(finalsql);
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			String get_key = "";
+			String get_val = "";
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					get_key = obj[0] + "";
+					get_val = (String) obj[1];
+					result_json.append("{boxkey:\"" + get_key + "\",");
+					result_json.append("boxval:\"" + get_val + "\"},");
+				}
+				if (result_json.toString().length() > 1) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]}");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result_json.toString();
+	}
+	
 	public void saveOrUpdateorDeleteProWellInformation(WellInformation w,
 			String ids, String comandType) throws Exception {
 		getBaseDao().saveOrUpdateorDeleteProWellInformation(w, ids, comandType);

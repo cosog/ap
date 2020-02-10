@@ -17,7 +17,7 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+            	url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -35,8 +35,8 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
                     var jh_val = Ext.getCmp('inverOptimizeInfoPanel_Well_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        jh: jh_val,
-                        type: 'jh'
+                        wellType:200,
+                        wellName: wellName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }

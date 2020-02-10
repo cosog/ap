@@ -22,7 +22,7 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
                 type: "string"
             }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -37,10 +37,9 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                     var org_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh_tobj = Ext.getCmp('electricAnalysisDailyDetailsWellCom_Id').getValue();
+                    var wellName = Ext.getCmp('electricAnalysisDailyDetailsWellCom_Id').getValue();
                     var new_params = {
-                        jh: jh_tobj,
-                        type: 'jh',
+                    	wellName: wellName,
                         orgId: org_Id,
                         wellType:200
                     };

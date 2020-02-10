@@ -47,7 +47,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 type: "string"
             }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -62,7 +62,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh_val = Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
+                    var wellName = Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
                     var wellType=200;
                     var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
                     if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
@@ -72,8 +72,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
 					}
                     var new_params = {
                         orgId: leftOrg_Id,
-                        jh: jh_val,
-                        type: 'jh',
+                        wellName: wellName,
                         wellType:wellType
                     };
                     Ext.apply(store.proxy.extraParams, new_params);

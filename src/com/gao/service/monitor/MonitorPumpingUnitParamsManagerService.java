@@ -17,6 +17,7 @@ import com.gao.dao.BaseDao;
 import com.gao.model.MonitorPumpingUnitParams;
 import com.gao.service.base.BaseService;
 import com.gao.utils.Page;
+import com.gao.utils.StringManagerUtils;
 
 /**<p>描述：采出井实时监测下拉菜单数据信息</p>
  * @author gao 2014-06-06
@@ -32,61 +33,6 @@ public class MonitorPumpingUnitParamsManagerService<T> extends BaseService<T> {
 		Set hashSetMenu = new HashSet();
 		hashSetMenu.addAll(menuslist);
 		menuslist = new ArrayList<MonitorPumpingUnitParams>(hashSetMenu);
-
-	}
-	public String loadMonitorPUJhhParamsb(Page pager,String orgId, String jhh, String jh,String bjlx, String type,String jtype,String wellType) throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
-		StringBuffer result_json = new StringBuffer();
-		StringBuffer sqlCuswhere = new StringBuffer();
-		String sql = "";
-		if (type.equalsIgnoreCase("jh")) {
-			sql = " select  t.wellName as wellName,t.wellName as dm from  t_wellinformation t  ,sc_org  g where 1=1 and  t.orgId=g.org_id  and g.org_id in ("
-					+ orgId + ")";
-		}
-		if (wellType.trim().equalsIgnoreCase("200")) {
-			sql += " and t.liftingtype like '2%'";
-		}else if (wellType.trim().equalsIgnoreCase("400")) {
-			sql += " and t.liftingtype like '4%'";
-		}
-		
-		if (StringUtils.isNotBlank(jh)) {
-			//jh=new String(jh.getBytes("iso-8859-1"),"utf-8");
-			sql += " and t.wellName like '%" + jh + "%'";
-		}
-		if (type.equalsIgnoreCase("jh")) {
-			sql += " order by t.sortNum, t.wellName";
-		}
-		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
-		sqlCuswhere.append(""+sql);
-		int maxvalue=pager.getLimit()+pager.getStart();
-		sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
-		sqlCuswhere.append(" where rn >"+pager.getStart());
-		String finalsql=sqlCuswhere.toString();
-		try {
-			int totals=this.getTotalCountRows(sql);
-			List<?> list = this.findCallSql(finalsql);
-			removeDuplicateWithOrder(list);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().length() > 1) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]}");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
 	}
 	
 	/**<p>描述：实现采出井下拉菜单多级联动方法</p>

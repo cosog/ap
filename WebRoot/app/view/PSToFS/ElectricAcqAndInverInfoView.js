@@ -16,7 +16,7 @@ Ext.define("AP.view.PSToFS.ElectricAcqAndInverInfoView", {
                 type: "string"
             }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -31,10 +31,9 @@ Ext.define("AP.view.PSToFS.ElectricAcqAndInverInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh_val = Ext.getCmp('PSToFSAcqAndInversionJHCombo_Id').getValue();
+                    var wellName = Ext.getCmp('PSToFSAcqAndInversionJHCombo_Id').getValue();
                     var new_params = {
-                        orgId: leftOrg_Id,
-                        jh: jh_val,
+                        wellName: wellName,
                         type: 'jh',
                         wellType:200
                     };

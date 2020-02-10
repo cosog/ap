@@ -60,6 +60,38 @@ public class WellInformationManagerController extends BaseController {
 	private String page;
 	private String orgId;
 	private int totals;
+	
+	/**
+	 * <p>
+	 * 描述：实现采出井下拉菜单多级联动方法
+	 * </p>
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/loadWellComboxList")
+	public String loadWellComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String wellType = ParamUtils.getParameter(request, "wellType");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		String json = this.wellInformationManagerService.loadWellComboxList(pager,orgId, wellName,wellType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	/**
 	 * @return null

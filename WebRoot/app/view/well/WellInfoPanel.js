@@ -17,7 +17,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+            	url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -32,11 +32,10 @@ Ext.define('AP.view.well.WellInfoPanel', {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh_val = Ext.getCmp('wellInfoPanel_jh_Id').getValue();
+                    var wellName = Ext.getCmp('wellInfoPanel_jh_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        jh: jh_val,
-                        type: 'jh'
+                        wellName: wellName
                     };
                     Ext.apply(store.proxy.extraParams,new_params);
                 }

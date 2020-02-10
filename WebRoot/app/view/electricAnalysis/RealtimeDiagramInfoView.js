@@ -17,7 +17,7 @@ Ext.define("AP.view.electricAnalysis.RealtimeDiagramInfoView", { // 定义反演
                 type: "string"
             }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -35,8 +35,7 @@ Ext.define("AP.view.electricAnalysis.RealtimeDiagramInfoView", { // 定义反演
                     var wellName = Ext.getCmp('electricAnalysisRealtimeDiagramWellCombo_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        jh: wellName,
-                        type: 'jh',
+                        wellName: wellName,
                         wellType:200
                     };
                     Ext.apply(store.proxy.extraParams, new_params);

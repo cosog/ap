@@ -21,7 +21,7 @@ Ext.define("AP.view.diagnosis.ScrewPumpRealtimeAnalysisView", {
                 type: "string"
             }],
             proxy: {
-                url: context + '/monitorPumpingUnitParamsManagerController/queryMonitorPUJhh',
+                url: context + '/wellInformationManagerController/loadWellComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'
@@ -36,10 +36,9 @@ Ext.define("AP.view.diagnosis.ScrewPumpRealtimeAnalysisView", {
             listeners: {
                 beforeload: function (store, options) {
                     var org_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh_tobj = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
+                    var wellName = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
                     var new_params = {
-                        jh: jh_tobj,
-                        type: 'jh',
+                    	wellName: wellName,
                         orgId: org_Id,
                         wellType: 400
                     };

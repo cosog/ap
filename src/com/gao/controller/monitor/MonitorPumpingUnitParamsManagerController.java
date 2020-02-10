@@ -78,45 +78,6 @@ public class MonitorPumpingUnitParamsManagerController extends BaseController {
 
 	/**
 	 * <p>
-	 * 描述：实现采出井下拉菜单多级联动方法
-	 * </p>
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/queryMonitorPUJhh")
-	public String queryMonitorPUJhh() throws Exception {
-		this.pager=new Page("pageForm",request);
-		String jhh = ParamUtils.getParameter(request, "jhh");
-		String jh = ParamUtils.getParameter(request, "jh");
-		String bjlx = ParamUtils.getParameter(request, "bjlx");
-		String type = ParamUtils.getParameter(request, "type");
-		String jtype = ParamUtils.getParameter(request, "jtype");
-		String wellType = ParamUtils.getParameter(request, "wellType");
-		orgId=ParamUtils.getParameter(request, "orgId");
-		//String orgId = ParamUtils.getParameter(request, "orgId");
-		User user = null;
-		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		String json = this.service.loadMonitorPUJhhParamsb(pager,orgId, jhh, jh, bjlx, type,jtype,wellType);
-//		HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-//		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-
-	/**
-	 * <p>
 	 * 描述：实现采出井历史查询下拉菜单多级联动方法
 	 * </p>
 	 * 

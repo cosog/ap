@@ -33,10 +33,10 @@ Ext.define('AP.store.calculateManager.CalculateManagerDataStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-            var jh=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
+            var wellName=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
             var startDate=Ext.getCmp('CalculateManagerStartDate_Id').rawValue;
             var endDate=Ext.getCmp('CalculateManagerEndDate_Id').rawValue;
-            var jsbz=Ext.getCmp('CalculateManagerJsbzListComBox_Id').getValue();
+            var calculateSign=Ext.getCmp('CalculateManagerCalculateSignComBox_Id').getValue();
             var wellType=200;
             var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
             if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
@@ -46,10 +46,10 @@ Ext.define('AP.store.calculateManager.CalculateManagerDataStore', {
 			}
             var new_params = {
             		orgId: orgId,
-                    jh: jh,
+            		wellName: wellName,
                     startDate:startDate,
                     endDate:endDate,
-                    jsbz:jsbz,
+                    calculateSign:calculateSign,
                     wellType:wellType
             };
             Ext.apply(store.proxy.extraParams, new_params);

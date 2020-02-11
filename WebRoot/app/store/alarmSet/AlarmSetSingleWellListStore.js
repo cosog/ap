@@ -65,17 +65,11 @@ Ext.define('AP.store.alarmSet.AlarmSetSingleWellListStore', {
 
         },
         beforeload: function (store, options) {
-            var leftOrg_Id = Ext.getCmp('leftOrg_Id');
-            var alarmWellPanel_jh = Ext.getCmp('alarmWellPanel_jh_Id');
-            if (!Ext.isEmpty(leftOrg_Id)) {
-                leftOrg_Id = leftOrg_Id.getValue();
-            }
-            if (!Ext.isEmpty(alarmWellPanel_jh)) {
-            	alarmWellPanel_jh = alarmWellPanel_jh.getValue();
-            }
+            var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+            var wellName = Ext.getCmp('alarmWellPanel_jh_Id').getValue();
             var new_params = {
                 orgId: leftOrg_Id,
-                jh: alarmWellPanel_jh
+                wellName: wellName
             };
             Ext.apply(store.proxy.extraParams, new_params);
         }

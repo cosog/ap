@@ -43,7 +43,7 @@ Ext.define('AP.view.diagnosis.SinglePanel', {
         });
         var simpleCombo_A = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: 'singleJh_Id',
                 store: jhStore_A,
                 labelWidth: 35,

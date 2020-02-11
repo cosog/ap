@@ -90,30 +90,16 @@ Ext.define('AP.store.alarmSet.MoveAlarmSetGridInfoStore', {
 
         },
         beforeload: function (store, options) {
-            var leftOrg_Id = Ext.getCmp('leftOrg_Id');
-            var CurvePumpingUnitjh_Id = Ext.getCmp('CurvePumpingUnitjh_Id');
-            var CurvePumpingUnit_from_date_Id = Ext.getCmp('CurvePumpingUnit_from_date_Id');
-            var CurvePumpingUnit_to_date_Id = Ext.getCmp('CurvePumpingUnit_to_date_Id');
-            if (!Ext.isEmpty(leftOrg_Id)) {
-                leftOrg_Id = leftOrg_Id.getValue();
-            }
-            if (!Ext.isEmpty(CurvePumpingUnitjh_Id)) {
-                CurvePumpingUnitjh_Id = CurvePumpingUnitjh_Id.getValue();
-            }
-            if (!Ext.isEmpty(CurvePumpingUnit_from_date_Id)) {
-                CurvePumpingUnit_from_date_Id = CurvePumpingUnit_from_date_Id
-                    .getValue();
-            }
-            if (!Ext.isEmpty(CurvePumpingUnit_to_date_Id)) {
-                CurvePumpingUnit_to_date_Id = CurvePumpingUnit_to_date_Id
-                    .getValue();
-            }
+            var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+            var wellName = Ext.getCmp('CurvePumpingUnitjh_Id').getValue();
+            var startDate = Ext.getCmp('CurvePumpingUnit_from_date_Id').getValue();
+            var endDate = Ext.getCmp('CurvePumpingUnit_to_date_Id').getValue();
 
             var new_params = {
                 orgId: leftOrg_Id,
-                jh: CurvePumpingUnitjh_Id,
-                startDate: CurvePumpingUnit_from_date_Id,
-                endDate: CurvePumpingUnit_to_date_Id
+                wellName: wellName,
+                startDate: startDate,
+                endDate: endDate
             };
             Ext.apply(store.proxy.extraParams, new_params);
         }

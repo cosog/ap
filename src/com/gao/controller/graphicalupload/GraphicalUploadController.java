@@ -185,8 +185,8 @@ public class GraphicalUploadController extends BaseController {
 					String fileNameArr[]=key.split("@");
 					String wellname=fileNameArr[0];
 					String cjsjstr=fileNameArr[1];
-					String cch=StringManagerUtils.StringToFloat(gtsj.split(",")[4], 2)+"";
-					String cci=StringManagerUtils.StringToFloat(gtsj.split(",")[3], 2)+"";
+					String cch=StringManagerUtils.stringToFloat(gtsj.split(",")[4], 2)+"";
+					String cci=StringManagerUtils.stringToFloat(gtsj.split(",")[3], 2)+"";
 					result_json.append("{");
 					result_json.append("\"jh\":\""+wellname+"\",");
 					result_json.append("\"cjsj\":\""+cjsjstr+"\",");
@@ -315,7 +315,7 @@ public class GraphicalUploadController extends BaseController {
 			        newGtsjBuffer.append(gtstrArr[2]).append("\r\n");
 			        newGtsjBuffer.append(gtstrArr[3]).append("\r\n");
 			        newGtsjBuffer.append(gtstrArr[4]).append("\r\n");
-			        int pointCount=StringManagerUtils.StringToInteger(gtstrArr[2]);
+			        int pointCount=StringManagerUtils.stringToInteger(gtstrArr[2]);
 			        for(int j=0;j<pointCount;j++){
 			        	newGtsjBuffer.append(gtstrArr[j*2+5]).append("\r\n");
 			        	newGtsjBuffer.append(gtstrArr[j*2+6]).append("\r\n");
@@ -643,7 +643,7 @@ public class GraphicalUploadController extends BaseController {
 					data+="\"activePowerC\":\""+activePowerCList.get(i)+"\",";
 					activePowerSum+=activePowerCList.get(i);
 				}
-				data+="\"activePowerSum\":\""+StringManagerUtils.StringToFloat(activePowerSum+"", 3)+"\"},";
+				data+="\"activePowerSum\":\""+StringManagerUtils.stringToFloat(activePowerSum+"", 3)+"\"},";
 				result_json.append(data);
 			}
 			if(result_json.toString().endsWith(",")){

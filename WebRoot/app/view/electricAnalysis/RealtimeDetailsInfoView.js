@@ -41,7 +41,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeDetailsInfoView', {
         });
         var wellComboBox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: 'electricAnalysisRealtimeDetailsWellCom_Id',
                 store: wellComboBoxStore,
                 labelWidth: 35,
@@ -553,7 +553,7 @@ function createElecAnalysisRealtimeDetailsTableColumn(columnInfo) {
         }
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' ";
         if (attr.dataIndex.toUpperCase()=='workingConditionName_Elec'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceEGklxColor(value,o,p,e);}";
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
             myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
@@ -1002,7 +1002,7 @@ function showInverASDiagram(bgtdata, divid) {
 	var positionCurveData=bgtdata.positionCurveData.split(",");
 	var currentCurveData=bgtdata.currentCurveData.split(",");
 	
-	var xtext='<span style="text-align:center;">'+cosog.string.wy+'<br />';
+	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
     
 	if(bgtdata.upstrokepmax!=undefined && bgtdata.downstrokepmax!=undefined){
 		xtext+='上冲程最大值:' + bgtdata.upstrokeamax + 'A 下冲程最大值:'  + bgtdata.downstrokeamax + 'A<br />';

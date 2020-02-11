@@ -368,25 +368,25 @@ public class ReportPumpingUnitDataController extends BaseController {
         	   Label content27=null;
         	   if(i<jsonArray.size()){
         		   JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-        		   sumCommTime+=StringManagerUtils.StringToFloat(everydata.getString("commTime"));
-        		   sumRunTime+=StringManagerUtils.StringToFloat(everydata.getString("runTime"));
-        		   sumLiquidWeightProduction+=StringManagerUtils.StringToFloat(everydata.getString("liquidWeightProduction"));
-        		   sumOilWeightProduction+=StringManagerUtils.StringToFloat(everydata.getString("oilWeightProduction"));
-        		   sumWaterWeightProduction+=StringManagerUtils.StringToFloat(everydata.getString("waterWeightProduction"));
+        		   sumCommTime+=StringManagerUtils.stringToFloat(everydata.getString("commTime"));
+        		   sumRunTime+=StringManagerUtils.stringToFloat(everydata.getString("runTime"));
+        		   sumLiquidWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("liquidWeightProduction"));
+        		   sumOilWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("oilWeightProduction"));
+        		   sumWaterWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("waterWeightProduction"));
             	   
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("commTime"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("commTime"))>0){
             		   commTimeRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("runTime"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("runTime"))>0){
             		   runTimeRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("liquidWeightProduction"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("liquidWeightProduction"))>0){
             		   liquidWeightProductionRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("oilWeightProduction"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("oilWeightProduction"))>0){
             		   oilWeightProductionRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("waterWeightProduction"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("waterWeightProduction"))>0){
             		   waterWeightProductionRecords+=1;
             	   }
             	   
@@ -427,11 +427,11 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content26=new Label(25,i+3,everydata.getString("todayWattEnergy"),wcf_table);
             	   content27=new Label(26,i+3,everydata.getString("remark"),wcf_table);
         	   }else if(i==jsonArray.size()){
-        		   sumCommTime=StringManagerUtils.StringToFloat(sumCommTime+"",2);
-        		   sumRunTime=StringManagerUtils.StringToFloat(sumRunTime+"",2);
-        		   sumLiquidWeightProduction=StringManagerUtils.StringToFloat(sumLiquidWeightProduction+"",2);
-        		   sumOilWeightProduction=StringManagerUtils.StringToFloat(sumOilWeightProduction+"",2);
-        		   sumWaterWeightProduction=StringManagerUtils.StringToFloat(sumWaterWeightProduction+"",2);
+        		   sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
+        		   sumRunTime=StringManagerUtils.stringToFloat(sumRunTime+"",2);
+        		   sumLiquidWeightProduction=StringManagerUtils.stringToFloat(sumLiquidWeightProduction+"",2);
+        		   sumOilWeightProduction=StringManagerUtils.stringToFloat(sumOilWeightProduction+"",2);
+        		   sumWaterWeightProduction=StringManagerUtils.stringToFloat(sumWaterWeightProduction+"",2);
             	   content1=new Label(0,i+3,"合计",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
             	   content3=new Label(2,i+3,"",wcf_table);
@@ -474,19 +474,19 @@ public class ReportPumpingUnitDataController extends BaseController {
                    float averageOilWeightProduction=0;
                    float averageWaterWeightProduction=0;
         		   if(commTimeRecords>0){
-        			   averageCommTime=StringManagerUtils.StringToFloat(sumCommTime/commTimeRecords+"",2);
+        			   averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
         		   }
         		   if(runTimeRecords>0){
-        			   averageRunTime=StringManagerUtils.StringToFloat(sumRunTime/runTimeRecords+"",2);
+        			   averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
         		   }
         		   if(liquidWeightProductionRecords>0){
-        			   averageLiquidWeightProduction=StringManagerUtils.StringToFloat(sumLiquidWeightProduction/liquidWeightProductionRecords+"",2);
+        			   averageLiquidWeightProduction=StringManagerUtils.stringToFloat(sumLiquidWeightProduction/liquidWeightProductionRecords+"",2);
         		   }
         		   if(oilWeightProductionRecords>0){
-        			   averageOilWeightProduction=StringManagerUtils.StringToFloat(sumOilWeightProduction/oilWeightProductionRecords+"",2);
+        			   averageOilWeightProduction=StringManagerUtils.stringToFloat(sumOilWeightProduction/oilWeightProductionRecords+"",2);
         		   }
         		   if(waterWeightProductionRecords>0){
-        			   averageWaterWeightProduction=StringManagerUtils.StringToFloat(sumWaterWeightProduction/waterWeightProductionRecords+"",2);
+        			   averageWaterWeightProduction=StringManagerUtils.stringToFloat(sumWaterWeightProduction/waterWeightProductionRecords+"",2);
         		   }
             	   content1=new Label(0,i+3,"平均",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
@@ -796,25 +796,25 @@ public class ReportPumpingUnitDataController extends BaseController {
         	   Label content24=null;
         	   if(i<jsonArray.size()){
         		   JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-            	   sumTxsj+=StringManagerUtils.StringToFloat(everydata.getString("tzsj"));
-            	   sumYxsj+=StringManagerUtils.StringToFloat(everydata.getString("rgzsj"));
-            	   sumCyl+=StringManagerUtils.StringToFloat(everydata.getString("jsdjrcyl"));
-            	   sumCyl1+=StringManagerUtils.StringToFloat(everydata.getString("jsdjrcyl1"));
-            	   sumCsl+=StringManagerUtils.StringToFloat(everydata.getString("jsdjrcsl"));
+            	   sumTxsj+=StringManagerUtils.stringToFloat(everydata.getString("tzsj"));
+            	   sumYxsj+=StringManagerUtils.stringToFloat(everydata.getString("rgzsj"));
+            	   sumCyl+=StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl"));
+            	   sumCyl1+=StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl1"));
+            	   sumCsl+=StringManagerUtils.stringToFloat(everydata.getString("jsdjrcsl"));
             	   
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("tzsj"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("tzsj"))>0){
             		   txsjRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("rgzsj"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("rgzsj"))>0){
             		   yxsjRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("jsdjrcyl"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl"))>0){
             		   cylRecords+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("jsdjrcyl1"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl1"))>0){
             		   cyl1Records+=1;
             	   }
-            	   if(StringManagerUtils.StringToFloat(everydata.getString("jsdjrcsl"))>0){
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("jsdjrcsl"))>0){
             		   cslRecords+=1;
             	   }
             	   
@@ -851,11 +851,11 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content23=new Label(22,i+3,everydata.getString("rydl"),wcf_table);
             	   content24=new Label(23,i+3,everydata.getString("bz"),wcf_table);
         	   }else if(i==jsonArray.size()){
-        		   sumTxsj=StringManagerUtils.StringToFloat(sumTxsj+"",2);
-            	   sumYxsj=StringManagerUtils.StringToFloat(sumYxsj+"",2);
-            	   sumCyl=StringManagerUtils.StringToFloat(sumCyl+"",2);
-            	   sumCyl1=StringManagerUtils.StringToFloat(sumCyl1+"",2);
-            	   sumCsl=StringManagerUtils.StringToFloat(sumCsl+"",2);
+        		   sumTxsj=StringManagerUtils.stringToFloat(sumTxsj+"",2);
+            	   sumYxsj=StringManagerUtils.stringToFloat(sumYxsj+"",2);
+            	   sumCyl=StringManagerUtils.stringToFloat(sumCyl+"",2);
+            	   sumCyl1=StringManagerUtils.stringToFloat(sumCyl1+"",2);
+            	   sumCsl=StringManagerUtils.stringToFloat(sumCsl+"",2);
             	   content1=new Label(0,i+3,"合计",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
             	   content3=new Label(2,i+3,"",wcf_table);
@@ -895,19 +895,19 @@ public class ReportPumpingUnitDataController extends BaseController {
                    float averageCyl1=0;
                    float averageCsl=0;
         		   if(txsjRecords>0){
-        			   averageTxsj=StringManagerUtils.StringToFloat(sumTxsj/txsjRecords+"",2);
+        			   averageTxsj=StringManagerUtils.stringToFloat(sumTxsj/txsjRecords+"",2);
         		   }
         		   if(yxsjRecords>0){
-        			   averageYxsj=StringManagerUtils.StringToFloat(sumYxsj/yxsjRecords+"",2);
+        			   averageYxsj=StringManagerUtils.stringToFloat(sumYxsj/yxsjRecords+"",2);
         		   }
         		   if(cylRecords>0){
-        			   averageCyl=StringManagerUtils.StringToFloat(sumCyl/cylRecords+"",2);
+        			   averageCyl=StringManagerUtils.stringToFloat(sumCyl/cylRecords+"",2);
         		   }
         		   if(cyl1Records>0){
-        			   averageCyl1=StringManagerUtils.StringToFloat(sumCyl1/cyl1Records+"",2);
+        			   averageCyl1=StringManagerUtils.stringToFloat(sumCyl1/cyl1Records+"",2);
         		   }
         		   if(cslRecords>0){
-        			   averageCsl=StringManagerUtils.StringToFloat(sumCsl/cslRecords+"",2);
+        			   averageCsl=StringManagerUtils.stringToFloat(sumCsl/cslRecords+"",2);
         		   }
         		   content1=new Label(0,i+3,"合计",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);

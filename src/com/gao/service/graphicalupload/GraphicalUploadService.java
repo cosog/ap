@@ -92,23 +92,23 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 			if(prodDataList.size()>0){
 				calculateRequestData=new CalculateRequestData();
 				Object[] object=(Object[])prodDataList.get(0);
-				wellAcquisitionData.setProdDataId(StringManagerUtils.StringToInteger(object[0]+""));
-				wellAcquisitionData.setWellId(StringManagerUtils.StringToInteger(object[object.length-1]+""));
+				wellAcquisitionData.setProdDataId(StringManagerUtils.stringToInteger(object[0]+""));
+				wellAcquisitionData.setWellId(StringManagerUtils.stringToInteger(object[object.length-1]+""));
 				calculateRequestData.setAKString("");
 				calculateRequestData.setWellName(wellAcquisitionData.getWellName());
 				calculateRequestData.setAcquisitionTime(wellAcquisitionData.getAcquisitionTime());
 				
 				//流体PVT物性
 				calculateRequestData.setFluidPVT(new CalculateRequestData.FluidPVT());
-				calculateRequestData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.StringToFloat(object[1]+""));
-				calculateRequestData.getFluidPVT().setWaterDensity(StringManagerUtils.StringToFloat(object[2]+""));
-				calculateRequestData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.StringToFloat(object[3]+""));
-				calculateRequestData.getFluidPVT().setSaturationPressure(StringManagerUtils.StringToFloat(object[4]+""));
+				calculateRequestData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(object[1]+""));
+				calculateRequestData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(object[2]+""));
+				calculateRequestData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(object[3]+""));
+				calculateRequestData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(object[4]+""));
 				
 				//油藏物性
 				calculateRequestData.setReservoir(new CalculateRequestData.Reservoir());
-				calculateRequestData.getReservoir().setDepth(StringManagerUtils.StringToFloat(object[5]+""));
-				calculateRequestData.getReservoir().setTemperature(StringManagerUtils.StringToFloat(object[6]+""));
+				calculateRequestData.getReservoir().setDepth(StringManagerUtils.stringToFloat(object[5]+""));
+				calculateRequestData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(object[6]+""));
 				
 				//井深轨迹
 				calculateRequestData.setWellboreTrajectory(new CalculateRequestData.WellboreTrajectory());
@@ -120,7 +120,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				for(int i=0;i<rodStringArr.length;i++){
 					if(StringManagerUtils.isNotNull(rodStringArr[i])){
 						String everyRodStringArr[]=rodStringArr[i].split(",");
-						if(StringManagerUtils.StringToFloat(everyRodStringArr[3]+"")>0){
+						if(StringManagerUtils.stringToFloat(everyRodStringArr[3]+"")>0){
 							String rodGrade=everyRodStringArr[0];
 							String rodOutsideDiameter=everyRodStringArr[1];
 							String rodInsideDiameter=everyRodStringArr[2];
@@ -128,9 +128,9 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 							CalculateRequestData.EveryRod everyRod=new CalculateRequestData.EveryRod();
 							everyRod.setType(1);
 							everyRod.setGrade(rodGrade);
-							everyRod.setLength(StringManagerUtils.StringToFloat(rodLength));
-							everyRod.setOutsideDiameter(StringManagerUtils.StringToFloat(rodOutsideDiameter)/1000);
-							everyRod.setInsideDiameter(StringManagerUtils.StringToFloat(rodInsideDiameter)/1000);
+							everyRod.setLength(StringManagerUtils.stringToFloat(rodLength));
+							everyRod.setOutsideDiameter(StringManagerUtils.stringToFloat(rodOutsideDiameter)/1000);
+							everyRod.setInsideDiameter(StringManagerUtils.stringToFloat(rodInsideDiameter)/1000);
 							calculateRequestData.getRodString().getEveryRod().add(everyRod);
 						}
 					}
@@ -138,7 +138,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				
 				//油管参数
 				CalculateRequestData.EveryTubing everyTubing=new CalculateRequestData.EveryTubing();
-				everyTubing.setInsideDiameter(StringManagerUtils.StringToFloat(object[8]+"")/1000);
+				everyTubing.setInsideDiameter(StringManagerUtils.stringToFloat(object[8]+"")/1000);
 				calculateRequestData.setTubingString(new CalculateRequestData.TubingString());
 				calculateRequestData.getTubingString().setEveryTubing(new ArrayList<CalculateRequestData.EveryTubing>());
 				calculateRequestData.getTubingString().getEveryTubing().add(everyTubing);
@@ -147,28 +147,28 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				calculateRequestData.setPump(new CalculateRequestData.Pump());
 				calculateRequestData.getPump().setPumpType(object[9]+"");
 				calculateRequestData.getPump().setBarrelType("L");
-				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.StringToInteger(object[10]+""));
-				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.StringToFloat(object[11]+""));
-				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.StringToFloat(object[12]+"")/1000);
+				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[10]+""));
+				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[11]+""));
+				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[12]+"")/1000);
 				
 				
 				//套管数据
 				CalculateRequestData.EveryCasing  everyCasing=new CalculateRequestData.EveryCasing();
-				everyCasing.setInsideDiameter(StringManagerUtils.StringToFloat(object[13]+"")/1000);
+				everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[13]+"")/1000);
 				calculateRequestData.setCasingString(new CalculateRequestData.CasingString());
 				calculateRequestData.getCasingString().setEveryCasing(new ArrayList<CalculateRequestData.EveryCasing>());
 				calculateRequestData.getCasingString().getEveryCasing().add(everyCasing);
 				
 				//生产数据
 				calculateRequestData.setProductionParameter(new CalculateRequestData.ProductionParameter());
-				calculateRequestData.getProductionParameter().setWaterCut(StringManagerUtils.StringToFloat(object[14]+""));
-				calculateRequestData.getProductionParameter().setProductionGasOilRatio(StringManagerUtils.StringToFloat(object[15]+""));
-				calculateRequestData.getProductionParameter().setTubingPressure(StringManagerUtils.StringToFloat(object[16]+""));
-				calculateRequestData.getProductionParameter().setCasingPressure(StringManagerUtils.StringToFloat(object[17]+""));
-				calculateRequestData.getProductionParameter().setWellHeadFluidTemperature(StringManagerUtils.StringToFloat(object[18]+""));
-				calculateRequestData.getProductionParameter().setProducingfluidLevel(StringManagerUtils.StringToFloat(object[19]+""));
-				calculateRequestData.getProductionParameter().setPumpSettingDepth(StringManagerUtils.StringToFloat(object[20]+""));
-				calculateRequestData.getProductionParameter().setSubmergence(StringManagerUtils.StringToFloat(object[20]+"")-StringManagerUtils.StringToFloat(object[19]+""));
+				calculateRequestData.getProductionParameter().setWaterCut(StringManagerUtils.stringToFloat(object[14]+""));
+				calculateRequestData.getProductionParameter().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[15]+""));
+				calculateRequestData.getProductionParameter().setTubingPressure(StringManagerUtils.stringToFloat(object[16]+""));
+				calculateRequestData.getProductionParameter().setCasingPressure(StringManagerUtils.stringToFloat(object[17]+""));
+				calculateRequestData.getProductionParameter().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[18]+""));
+				calculateRequestData.getProductionParameter().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[19]+""));
+				calculateRequestData.getProductionParameter().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[20]+""));
+				calculateRequestData.getProductionParameter().setSubmergence(StringManagerUtils.stringToFloat(object[20]+"")-StringManagerUtils.stringToFloat(object[19]+""));
 				
 				//功图数据
 				if(wellAcquisitionData.getDiagram()!=null){
@@ -206,7 +206,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 		        
 		      //人工干预
 		        calculateRequestData.setManualIntervention(new CalculateRequestData.ManualIntervention());
-		        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.StringToFloat(object[21]+""));
+		        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[21]+""));
 			}
 			
 			

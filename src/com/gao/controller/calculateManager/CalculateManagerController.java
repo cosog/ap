@@ -2,36 +2,23 @@ package com.gao.controller.calculateManager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gao.controller.base.BaseController;
-import com.gao.model.DiagnosisAnalysisOnly;
-import com.gao.model.DiagnosisAnalysisStatistics;
 import com.gao.model.User;
 import com.gao.model.gridmodel.CalculateManagerHandsontableChangedData;
-import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.calculateManager.CalculateManagerService;
-import com.gao.utils.I18NConfig;
-import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
-import com.gao.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -190,11 +177,11 @@ public class CalculateManagerController extends BaseController {
 	@RequestMapping("/recalculateByProductionData")
 	public String recalculateByProductionData() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
-		jh = ParamUtils.getParameter(request, "jh");
+		String wellName = ParamUtils.getParameter(request, "wellName");
 		String wellType = ParamUtils.getParameter(request, "wellType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
-		String jsbz = ParamUtils.getParameter(request, "jsbz");
+		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			User user = null;
 			HttpSession session=request.getSession();
@@ -203,7 +190,7 @@ public class CalculateManagerController extends BaseController {
 				orgId = "" + user.getUserOrgid();
 			}
 		}
-		this.calculateManagerService.recalculateByProductionData(orgId,jh,wellType,startDate,endDate,jsbz);
+		this.calculateManagerService.recalculateByProductionData(orgId,wellName,wellType,startDate,endDate,calculateSign);
 		String json ="{success:true}";
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

@@ -37,7 +37,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									listeners : {
 										beforeload : function(store, options) {
 											var new_params = {
-												type : 'gklx'
+												type : 'workingCondition'
 											};
 											Ext.apply(store.proxy.extraParams,new_params);
 										}
@@ -90,7 +90,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									listeners : {
 										beforeload : function(store, options) {
 											var new_params = {
-												type : 'bjlx'
+												type : 'alarmType'
 											};
 											Ext.apply(store.proxy.extraParams,new_params);
 										}
@@ -100,7 +100,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 						// Simple ComboBox using the data store
 						var alarmTypeComb = Ext.create(
 								'Ext.form.field.ComboBox', {
-									fieldLabel :  cosog.string.bjlx,
+									fieldLabel :  cosog.string.alarmType,
 									id : 'alarmSetAlarmType_Id',
 									name : "alarmtype",
 									anchor : '95%',
@@ -120,7 +120,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 										}
 									}
 								});
-								var bjjbStore_C = new Ext.data.SimpleStore(
+								var alarmLevelStore = new Ext.data.SimpleStore(
 								{
 									fields : [ {
 										name : "boxkey",
@@ -143,7 +143,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									listeners : {
 										beforeload : function(store, options) {
 											var new_params = {
-												type : 'bjjb'
+												type : 'alarmLevel'
 											};
 											Ext.apply(store.proxy.extraParams,new_params);
 										}
@@ -151,13 +151,13 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 								});
 
 						// Simple ComboBox using the data store
-						var bjjbCombo_C = Ext.create(
+						var alarmLevelComb = Ext.create(
 								'Ext.form.field.ComboBox', {
-									fieldLabel :  cosog.string.bjjb,
-									id : 'bjjb_Id',
+									fieldLabel :  cosog.string.alarmLevel,
+									id : 'alarmSetAlarmLevel_Id',
 									name : "alarmlevel",
 									anchor : '95%',
-									store: bjjbStore_C,
+									store: alarmLevelStore,
 									queryMode : 'local',
 									emptyText :  cosog.string.all,
 									blankText :  cosog.string.all,
@@ -179,17 +179,17 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 							defaultType : 'textfield',
 							items : [{
 										xtype : "hidden",
-										id : 'jlbh_Id',
+										id : 'alarmSetRecord_Id',
 										name : "id"
 									},{
 										xtype : "hidden",
-										id : 'bjbz_Id',
+										id : 'alarmSetAlarmSign_Id',
 										value:'0',
 										name : "alarmsign"
-									},alarmTypeComb,workingConditionComb,bjjbCombo_C ,{
+									},alarmTypeComb,workingConditionComb,alarmLevelComb ,{
 										xtype : "combobox",
-										fieldLabel : cosog.string.bjzt,
-										id : 'bjbz_Id1',
+										fieldLabel : cosog.string.alarmSign,
+										id : 'alarmSetAlarmSignComb_Id',
 										anchor : '95%',
 										triggerAction : 'all',
 										selectOnFocus : true,
@@ -207,12 +207,12 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 										blankText : cosog.string.chooseType,
 										listeners : {
 											select:function(v,o){
-											  Ext.getCmp("bjbz_Id").setValue(this.value);
+											  Ext.getCmp("alarmSetAlarmSign_Id").setValue(this.value);
 											}
 										}
 									}, {
-										fieldLabel : cosog.string.bz,
-										id : 'bz_Id',
+										fieldLabel : cosog.string.remark,
+										id : 'alarmSetRemark_Id',
 										anchor : '95%',
 										//vtype : 'email',
 										name : "remark"

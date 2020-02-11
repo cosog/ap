@@ -278,7 +278,7 @@ public class ProductionDataController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		int recordCount =StringManagerUtils.StringToInteger(ParamUtils.getParameter(request, "recordCount")) ;
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount")) ;
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
@@ -382,62 +382,6 @@ public class ProductionDataController extends BaseController {
 		pw.close();
 		return null;
 	}
-		
-	/**
-	 * <p>
-	 * 描述：显示采出井生产数据中的标准功图
-	 * </p>
-	 * @return
-	 */
-	@RequestMapping("/showBzgtData")
-	public String showBzgtData()throws Exception{
-		jbh = ParamUtils.getParameter(request, "jbh");
-		String json = this.services.queryBzgtData(jbh);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	/**
-	 * <p>
-	 * 描述：显示采出井生产数据中的功图列表
-	 * </p>
-	 * @return
-	 */
-	@RequestMapping("/showSurfaceCardListData")
-	public String showSurfaceCardListData() throws IOException {
-	jbh = ParamUtils.getParameter(request, "jbh");
-	startDate = ParamUtils.getParameter(request, "startDate");
-	endDate = ParamUtils.getParameter(request, "endDate");
-	if(jbh==""){
-		jbh="0";
-	}
-	response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-	response.setHeader("Cache-Control", "no-cache");
-	PrintWriter pw = response.getWriter();
-	this.pager = new Page("pagerForm", request);
-	String json = "";
-	try {
-		if (endDate != null && !endDate.equals("new") && !"".equals(endDate)) {
-			endDate = StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate));
-		}
-		json = this.services.querySurfaceCardlistData(pager, jbh, startDate, endDate);
-		pw.print(json);
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	pw.flush();
-	pw.close();
-	return null;
-}
-	
-	
 	
 	public String getEndDate() {
 		return endDate;

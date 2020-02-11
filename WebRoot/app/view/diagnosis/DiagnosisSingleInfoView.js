@@ -105,7 +105,7 @@ function createDiagnosisColumn(columnInfo) {
         if (attr.dataIndex == 'gkmc') {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceColor(value,o,p,e);}";
         } else if (attr.dataIndex == 'egkmc') {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceEGklxColor(value,o,p,e);}";
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
         } else if (attr.dataIndex == 'txzt') {
             myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTxztColor(value,o,p,e);}";
         } else if (attr.dataIndex == 'yxzt') {

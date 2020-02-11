@@ -47,89 +47,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	private CommonDataService service;
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
-	/**
-	 * <p>描述：查询单张功图的诊断信息</p>
-	 * @param orgId
-	 * @param jh
-	 * @param pager
-	 * @return
-	 * @throws Exception
-	 */
-	public List<T> getPage(String orgId, String jh, Page pager,String bjbz,String gklx,String gkmc,String egkmc,
-			String xtxlLevel,String dmxlLevel,String jxxlLevel,
-			String phzt,String glphzt,
-			String cylLevel,String cylBdLevel,
-			String yxzt,String yxsl,String txzt,String txsl,
-			String rhdlLevel,
-			String startDate,String endDate)
-			throws Exception {
-		StringBuffer sbufBuffer=new StringBuffer();
-		StringBuffer sbufHisBuffer=new StringBuffer();
-		String allHql = " ";
-		String hql =   "";
-		sbufBuffer.append("select v From DiagnosisAnalysisOnly v where v.orgId in ("+orgId+") ");
-		if("1".equals(bjbz)){
-			sbufBuffer.append(" and bjbz<>0 ");
-		}
-		if(!"0".equals(gklx)){
-			sbufBuffer.append(" and gklx="+gklx+" ");
-		}
-		if(StringManagerUtils.isNotNull(gkmc)){
-			sbufBuffer.append(" and gkmc='"+gkmc+"' ");
-		}
-		if(StringManagerUtils.isNotNull(egkmc)){
-			sbufBuffer.append(" and egkmc='"+egkmc+"' ");
-		}
-		if(StringManagerUtils.isNotNull(cylLevel)){
-			sbufBuffer.append(" and cyl_level='"+cylLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(cylBdLevel)){
-			sbufBuffer.append(" and rcylbd_level='"+cylBdLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(xtxlLevel)){
-			sbufBuffer.append(" and xtxl_level='"+xtxlLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(dmxlLevel)){
-			sbufBuffer.append(" and dmxl_level='"+dmxlLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(jxxlLevel)){
-			sbufBuffer.append(" and jxxl_level='"+jxxlLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(phzt)){
-			sbufBuffer.append(" and phzt='"+phzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(glphzt)){
-			sbufBuffer.append(" and glphzt='"+glphzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(yxzt)){
-			sbufBuffer.append(" and yxztname='"+yxzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(yxsl)){
-			sbufBuffer.append(" and yxsl_level='"+yxsl+"' ");
-		}
-		if(StringManagerUtils.isNotNull(txzt)){
-			sbufBuffer.append(" and txztname='"+txzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(txsl)){
-			sbufBuffer.append(" and txsl_level='"+txsl+"' ");
-		}
-		if(StringManagerUtils.isNotNull(rhdlLevel)){
-			sbufBuffer.append(" and rydl_level='"+rhdlLevel+"' ");
-		}
-		sbufBuffer.append(" order by v.pxbh, v.jh");
-		sbufHisBuffer.append("select v From  DiagnosisAnalysisHistoryOnly v  where v.orgId in ("+orgId+") ");
-		if (StringManagerUtils.isNotNull(jh.trim())) {
-			sbufHisBuffer.append(" and to_date(to_char(v.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-					+ "and  v.jh = '" + jh.trim() + "' order by v.gtcjsj desc");
-		}
-		if(StringManagerUtils.isNotNull(jh.trim())){
-			hql=sbufHisBuffer.toString();
-		}else{
-			hql=sbufBuffer.toString();
-		}
-		allHql="select count (*) from ("+hql+")";
-		return this.getBaseDao().getListAndTotalCountForPage(pager, hql,allHql);
-	}
+	
 	/**
 	 * <p>描述：采出井实时评价井列表</p>
 	 * @param orgId
@@ -245,9 +163,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
 		columns = ddic.getTableHeader();
-//		sql=ddic.getSql()+",egklxstr,videourl,bjbz,ebjbz from v_analysisrealtime t where exists("+StringManagerUtils.inChangeToExists(orgId, "org_id")+")";
-//		sqlHis=ddic.getSql()+",egklxstr,videourl,bjbz,ebjbz from v_analysishistory t where exists("+StringManagerUtils.inChangeToExists(orgId, "org_id")+")";
-		
 		sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
 				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from v_comprehensiverealtimedata t where t.org_id in("+orgId+")";
 		sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
@@ -384,9 +299,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
 		columns = ddic.getTableHeader();
-//		sql=ddic.getSql()+",egklxstr,videourl,bjbz,ebjbz from v_analysisrealtime t where exists("+StringManagerUtils.inChangeToExists(orgId, "org_id")+")";
-//		sqlHis=ddic.getSql()+",egklxstr,videourl,bjbz,ebjbz from v_analysishistory t where exists("+StringManagerUtils.inChangeToExists(orgId, "org_id")+")";
-		
 		sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
 				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from v_comprehensiverealtimedata t where t.org_id in("+orgId+")";
 		sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
@@ -412,200 +324,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String getResult = this.findExportDataBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
 		
 		return getResult;
-	}
-	
-	
-	public String exportSingleFSDiagramAnalysisDataExcel(String orgId, String jh, Page pager,String bjbz,String gklx,String gkmc,String egkmc,
-			String xtxlLevel,String dmxlLevel,String jxxlLevel,
-			String phzt,String glphzt,
-			String cylLevel,String cylBdLevel,
-			String yxzt,String yxsl,String txzt,String txsl,
-			String rhdlLevel,
-			String type,String wellType,
-			String startDate,String endDate)
-			throws Exception {
-		DataDictionary ddic = null;
-		String columns= "";
-		String sql="";
-		String sqlHis="";
-		String finalSql="";
-		String sqlAll="";
-		if("XTXL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeSystemEff");
-		}else if("DMXL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeSurfaceEff");
-		}else if("JXXL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeDownholeEff");
-		}else if("GLPHZT".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimePowerBalance");
-		}else if("PHZT".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeCurrentBalance");
-		}else if("CYL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeProdDist");
-		}else if("CYLBD".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeProdFluc");
-		}else if("YXZT".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeRunStatus");
-		}else if("SCSL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeTimeDist");
-		}else if("TXZT".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeCommStatus");
-		}else if("TXSL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeCommDist");
-		}else if("RHDL".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimePowerDist");
-		}else if("DCGKLX".equalsIgnoreCase(type)){
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeETValue");
-		}else{
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeFSDiagram");
-		}
-		
-		columns = ddic.getTableHeader();
-		sql=ddic.getSql()+",egklxstr,videourl,bjbz,ebjbz from v_analysisrealtime t where t.org_id in("+orgId+")";
-		sqlHis=ddic.getSql()+",egklxstr,videourl,bjbz,ebjbz from v_analysishistory t where t.org_id in("+orgId+")";
-		if("1".equals(bjbz)){
-			sql+=" and bjbz<>0 ";
-		}
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and jslxcode>="+wellType+" and jslxcode<("+wellType+"+100) ";
-		}
-		if(!"0".equals(gklx)){
-			sql+=" and gklx="+gklx+" ";
-		}
-		if(StringManagerUtils.isNotNull(gkmc)){
-			sql+=" and gkmc='"+gkmc+"' ";
-		}
-		if(StringManagerUtils.isNotNull(egkmc)){
-			sql+=" and egkmc='"+egkmc+"' ";
-		}
-		if(StringManagerUtils.isNotNull(cylLevel)){
-			sql+=" and cyl_level='"+cylLevel+"' ";
-		}
-		if(StringManagerUtils.isNotNull(cylBdLevel)){
-			sql+=" and rcylbd_level='"+cylBdLevel+"' ";
-		}
-		if(StringManagerUtils.isNotNull(xtxlLevel)){
-			sql+=" and xtxl_level='"+xtxlLevel+"' ";
-		}
-		if(StringManagerUtils.isNotNull(dmxlLevel)){
-			sql+=" and dmxl_level='"+dmxlLevel+"' ";
-		}
-		if(StringManagerUtils.isNotNull(jxxlLevel)){
-			sql+=" and jxxl_level='"+jxxlLevel+"' ";
-		}
-		if(StringManagerUtils.isNotNull(phzt)){
-			sql+=" and phzt='"+phzt+"' ";
-		}
-		if(StringManagerUtils.isNotNull(glphzt)){
-			sql+=" and glphzt='"+glphzt+"' ";
-		}
-		if(StringManagerUtils.isNotNull(yxzt)){
-			sql+=" and yxztname='"+yxzt+"' ";
-		}
-		if(StringManagerUtils.isNotNull(yxsl)){
-			sql+=" and yxsl_level='"+yxsl+"' ";
-		}
-		if(StringManagerUtils.isNotNull(txzt)){
-			sql+=" and txztname='"+txzt+"' ";
-		}
-		if(StringManagerUtils.isNotNull(txsl)){
-			sql+=" and txsl_level='"+txsl+"' ";
-		}
-		if(StringManagerUtils.isNotNull(rhdlLevel)){
-			sql+=" and rydl_level='"+rhdlLevel+"' ";
-		}
-		sql+=" order by t.pxbh, t.jh";
-		sqlHis+=" and to_date(to_char(t.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-				+ "and  t.jh = '" + jh.trim() + "' order by t.gtcjsj desc";
-		
-		if(StringManagerUtils.isNotNull(jh.trim())){
-			sqlAll=sqlHis;
-		}else{
-			sqlAll=sql;
-		}
-		
-		int maxvalue=pager.getLimit()+pager.getStart();
-		finalSql=sqlAll;
-		String getResult = this.findExportDataBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
-		
-		return getResult;
-	}
-	
-	
-	public List<T> getNoPage(String orgId, String jh, Page pager,String bjbz,String gklx,String gkmc,String egkmc,
-			String xtxlLevel,String dmxlLevel,String jxxlLevel,
-			String phzt,String glphzt,
-			String cylLevel,String cylBdLevel,
-			String yxzt,String yxsl,String txzt,String txsl,
-			String rhdlLevel,
-			String startDate,String endDate)
-			throws Exception {
-		StringBuffer sbufBuffer=new StringBuffer();
-		StringBuffer sbufHisBuffer=new StringBuffer();
-		String allHql = "";
-		String hql =   "";
-		sbufBuffer.append("select v From DiagnosisAnalysisOnly v where v.orgId in ("+orgId+") ");
-		if("1".equals(bjbz)){
-			sbufBuffer.append(" and bjbz<>0 ");
-		}
-		if(!"0".equals(gklx)){
-			sbufBuffer.append(" and gklx="+gklx+" ");
-		}
-		if(StringManagerUtils.isNotNull(gkmc)){
-			sbufBuffer.append(" and gkmc='"+gkmc+"' ");
-		}
-		if(StringManagerUtils.isNotNull(egkmc)){
-			sbufBuffer.append(" and egkmc='"+egkmc+"' ");
-		}
-		if(StringManagerUtils.isNotNull(cylLevel)){
-			sbufBuffer.append(" and cyl_level='"+cylLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(cylBdLevel)){
-			sbufBuffer.append(" and rcylbd_level='"+cylBdLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(xtxlLevel)){
-			sbufBuffer.append(" and xtxl_level='"+xtxlLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(dmxlLevel)){
-			sbufBuffer.append(" and dmxl_level='"+dmxlLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(jxxlLevel)){
-			sbufBuffer.append(" and jxxl_level='"+jxxlLevel+"' ");
-		}
-		if(StringManagerUtils.isNotNull(phzt)){
-			sbufBuffer.append(" and phzt='"+phzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(glphzt)){
-			sbufBuffer.append(" and glphzt='"+glphzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(yxzt)){
-			sbufBuffer.append(" and yxztname='"+yxzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(yxsl)){
-			sbufBuffer.append(" and yxsl_level='"+yxsl+"' ");
-		}
-		if(StringManagerUtils.isNotNull(txzt)){
-			sbufBuffer.append(" and txztname='"+txzt+"' ");
-		}
-		if(StringManagerUtils.isNotNull(txsl)){
-			sbufBuffer.append(" and txsl_level='"+txsl+"' ");
-		}
-		if(StringManagerUtils.isNotNull(rhdlLevel)){
-			sbufBuffer.append(" and rydl_level='"+rhdlLevel+"' ");
-		}
-		sbufBuffer.append(" order by v.pxbh, v.jh");
-		sbufHisBuffer.append("select v From  DiagnosisAnalysisHistoryOnly v  where v.orgId in ("+orgId+") ");
-		if (StringManagerUtils.isNotNull(jh.trim())) {
-			sbufHisBuffer.append(" and to_date(to_char(v.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-					+ "and  v.jh = '" + jh.trim() + "' order by v.gtcjsj desc");
-		}
-		if(StringManagerUtils.isNotNull(jh.trim())){
-			hql=sbufHisBuffer.toString();
-		}else{
-			hql=sbufBuffer.toString();
-		}
-		allHql="select count (*) from ("+hql+")";
-		return this.getBaseDao().getfindByIdList( hql);
 	}
 
 	public String queryStatisticsAmountJh(Page pager,String orgId,String jh) throws Exception {
@@ -662,23 +380,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}
 		String hql = tempHql;
 		return this.getBaseDao().getRecordCountRows(hql);
-	}
-
-	public List<T> findSingleWellData(String jh, String gtcjsj, String orgId) {
-		StringBuffer sBuffer=new StringBuffer();
-		StringBuffer sHisBuffer=new StringBuffer();
-		String hql ="";
-		sBuffer.append("Select v from DiagnosisAnalysisOnly v ,Org as o where 1=1 and v.dwbh=o.orgCode and o.orgId in("+orgId+" )");
-		sBuffer.append("and gtcjsj=to_date('"+ gtcjsj+ "','yyyy-mm-dd hh24:mi:ss') ");
-		sHisBuffer.append("Select v from DiagnosisAnalysisHistoryOnly v ,Org as o where 1=1 and v.dwbh=o.orgCode and o.orgId in("+orgId+" )");
-		sHisBuffer.append("and gtcjsj=to_date('"+ gtcjsj+ "','yyyy-mm-dd hh24:mi:ss') ");
-		if (null != jh && !("".equals(jh))) {
-			sHisBuffer.append( " and  v.jh  ='" + jh + "' ");
-			 hql = sHisBuffer.toString();
-		}else{
-			 hql = sBuffer.toString();
-		}
-		return this.getBaseDao().getObjects(hql);
 	}
 
 	/*
@@ -806,10 +507,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
 	        dataSbf.append("rodStressRatio4:"+rodStressRatio4+",");           // 四级应力百分比
 	        
-	        dataSbf.append("pumpEff1:"+StringManagerUtils.StringToFloat(obj[13].toString(),1)+",");       // 冲程损失系数
-	        dataSbf.append("pumpEff2:"+StringManagerUtils.StringToFloat(obj[14].toString(),1)+",");       // 充满系数
-	        dataSbf.append("pumpEff3:"+StringManagerUtils.StringToFloat(obj[15].toString(),1)+",");           // 漏失系数
-	        dataSbf.append("pumpEff4:"+StringManagerUtils.StringToFloat(obj[16].toString(),1)+",");           // 液体收缩系数
+	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13].toString(),1)+",");       // 冲程损失系数
+	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14].toString(),1)+",");       // 充满系数
+	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15].toString(),1)+",");           // 漏失系数
+	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16].toString(),1)+",");           // 液体收缩系数
 	        dataSbf.append("upStrokeWattMax:\""+obj[17]+"\",");         // 工况代码
 	        dataSbf.append("downStrokeWattMax:\""+obj[18]+"\",");         // 工况代码
 	        dataSbf.append("wattDegreeBalance:\""+obj[19]+"\",");         // 工况代码
@@ -875,10 +576,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(0);
 			jh=obj[0].toString();
 			cjsj=obj[1].toString();
-			yjylbfb=StringManagerUtils.StringToFloat(obj[2].toString(),1);
-			ejylbfb=StringManagerUtils.StringToFloat(obj[3].toString(),1);
-			sjylbfb=StringManagerUtils.StringToFloat(obj[4].toString(),1);
-			sijylbfb=StringManagerUtils.StringToFloat(obj[5].toString(),1);
+			yjylbfb=StringManagerUtils.stringToFloat(obj[2].toString(),1);
+			ejylbfb=StringManagerUtils.stringToFloat(obj[3].toString(),1);
+			sjylbfb=StringManagerUtils.stringToFloat(obj[4].toString(),1);
+			sijylbfb=StringManagerUtils.stringToFloat(obj[5].toString(),1);
 	    }
 		dataSbf.append("{success:true,columns:[{\"header\":\"X轴\",\"dataIndex\":\"XData\",children:[]},{\"header\":\"Y轴\",\"dataIndex\":\"YData\",children:[]}],");
         dataSbf.append("jh:\""+jh+"\",");             // 井名
@@ -907,10 +608,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(0);
 			jh=obj[0].toString();
 			cjsj=obj[1].toString();
-			ccssxs=StringManagerUtils.StringToFloat(obj[2].toString() ,1);
-			cmxs=StringManagerUtils.StringToFloat(obj[3].toString() ,1);
-			lsxs=StringManagerUtils.StringToFloat(obj[4].toString() ,1);
-			ytssxs=StringManagerUtils.StringToFloat(obj[5].toString() ,1);
+			ccssxs=StringManagerUtils.stringToFloat(obj[2].toString() ,1);
+			cmxs=StringManagerUtils.stringToFloat(obj[3].toString() ,1);
+			lsxs=StringManagerUtils.stringToFloat(obj[4].toString() ,1);
+			ytssxs=StringManagerUtils.stringToFloat(obj[5].toString() ,1);
 	    }
 		dataSbf.append("{success:true,");
         dataSbf.append("jh:\""+jh+"\",");             // 井名
@@ -1194,18 +895,18 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				dynSbf.append("\"voltageb\":"+obj[6]+",");
 				dynSbf.append("\"voltagec\":"+obj[7]+"},");
 				if(i==list.size()-1){
-					currentauplimit=StringManagerUtils.StringToFloat(obj[8]+"");
-					currentadownlimit=StringManagerUtils.StringToFloat(obj[9]+"");
-					currentbuplimit=StringManagerUtils.StringToFloat(obj[10]+"");
-					currentbdownlimit=StringManagerUtils.StringToFloat(obj[11]+"");
-					currentcuplimit=StringManagerUtils.StringToFloat(obj[12]+"");
-					currentcdownlimit=StringManagerUtils.StringToFloat(obj[13]+"");
-					voltageauplimit=StringManagerUtils.StringToFloat(obj[14]+"");
-					voltageadownlimit=StringManagerUtils.StringToFloat(obj[15]+"");
-					voltagebuplimit=StringManagerUtils.StringToFloat(obj[16]+"");
-					voltagebdownlimit=StringManagerUtils.StringToFloat(obj[17]+"");
-					voltagecuplimit=StringManagerUtils.StringToFloat(obj[18]+"");
-					voltagecdownlimit=StringManagerUtils.StringToFloat(obj[19]+"");
+					currentauplimit=StringManagerUtils.stringToFloat(obj[8]+"");
+					currentadownlimit=StringManagerUtils.stringToFloat(obj[9]+"");
+					currentbuplimit=StringManagerUtils.stringToFloat(obj[10]+"");
+					currentbdownlimit=StringManagerUtils.stringToFloat(obj[11]+"");
+					currentcuplimit=StringManagerUtils.stringToFloat(obj[12]+"");
+					currentcdownlimit=StringManagerUtils.stringToFloat(obj[13]+"");
+					voltageauplimit=StringManagerUtils.stringToFloat(obj[14]+"");
+					voltageadownlimit=StringManagerUtils.stringToFloat(obj[15]+"");
+					voltagebuplimit=StringManagerUtils.stringToFloat(obj[16]+"");
+					voltagebdownlimit=StringManagerUtils.stringToFloat(obj[17]+"");
+					voltagecuplimit=StringManagerUtils.stringToFloat(obj[18]+"");
+					voltagecdownlimit=StringManagerUtils.stringToFloat(obj[19]+"");
 				}
 			}
 			dynSbf.deleteCharAt(dynSbf.length() - 1);

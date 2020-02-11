@@ -137,8 +137,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void recalculateByProductionData(String orgId, String jh, String wellType,String startDate,String endDate,String jsbz)throws Exception {
-		getBaseDao().recalculateByProductionData(orgId,jh,wellType,startDate,endDate,jsbz);
+	public void recalculateByProductionData(String orgId, String wellName, String wellType,String startDate,String endDate,String calculateSign)throws Exception {
+		getBaseDao().recalculateByProductionData(orgId,wellName,wellType,startDate,endDate,calculateSign);
 	}
 	
 	public BaseDao getDao() {

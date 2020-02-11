@@ -156,59 +156,6 @@ function modifywellInfo() {
 	    }
         
     }
-    // 赋值
-SelectwellInfoPanel = function () {
-    var dataattr_row = Ext.getCmp("wellPanel_Id").getSelectionModel().getSelection();
-    var jlbh = dataattr_row[0].data.jlbh;
-    var dwbh = dataattr_row[0].data.dwbh;
-    var yqcbh = dataattr_row[0].data.yqcbh;
-    var orgName = dataattr_row[0].data.orgName;
-    var resName = dataattr_row[0].data.resName;
-    var jc = dataattr_row[0].data.jc;
-    var jhh = dataattr_row[0].data.jhh;
-    var jh = dataattr_row[0].data.jh;
-    var value = dataattr_row[0].data.jlx;
-    var jlxName = dataattr_row[0].data.jlxName;
-    var jslx = dataattr_row[0].data.jslx;
-    var jslxName = dataattr_row[0].data.jslxName;
-    var ssjwName = dataattr_row[0].data.ssjwName;
-    var sszcdyName = dataattr_row[0].data.sszcdyName;
-    var ssjw = dataattr_row[0].data.ssjw;
-    var sszcdy = dataattr_row[0].data.sszcdy;
-    var rgzsjd = dataattr_row[0].data.rgzsjd;
-    var rgzsj = dataattr_row[0].data.rgzsj;
-    var dmx = dataattr_row[0].data.dmx;
-    var dmy = dataattr_row[0].data.dmy;
-    var showLevel = dataattr_row[0].data.showLevel;
-    Ext.getCmp('jlbh_Id').setValue(jlbh);
-    Ext.getCmp('dwbh_Id').setValue(dwbh);
-    Ext.getCmp('dwbh_Id1').setValue(dwbh);
-    Ext.getCmp('dwbh_Id1').setRawValue(orgName);
-    Ext.getCmp('yqcbh_Id').setValue(yqcbh);
-    Ext.getCmp('yqcbh_Id1').setValue(yqcbh);
-    Ext.getCmp('yqcbh_Id1').setRawValue(resName);
-    Ext.getCmp('jc_Id').setValue(jc);
-    Ext.getCmp('jc_Id').setRawValue(jc);
-    Ext.getCmp('jhh_Id').setValue(jhh);
-    Ext.getCmp('jh_Id').setValue(jh);
-    Ext.getCmp('jlx_Id1').setValue(value);
-    Ext.getCmp('jlx_Id1').setRawValue(jlxName);
-    Ext.getCmp('jlx_Id').setValue(value);
-    Ext.getCmp('jslx_Id1').setValue(jslx);
-    Ext.getCmp('jslx_Id1').setRawValue(jslxName);
-    Ext.getCmp('jslx_Id').setValue(jslx);
-    Ext.getCmp('ssjw_Id1').setValue(ssjw);
-    Ext.getCmp('ssjw_Id').setValue(ssjw);
-    Ext.getCmp('ssjw_Id1').setRawValue(ssjwName);
-    Ext.getCmp('sszcdy_Id1').setValue(sszcdy);
-    Ext.getCmp('sszcdy_Id1').setRawValue(sszcdyName);
-    Ext.getCmp('sszcdy_Id').setValue(sszcdy);
-    Ext.getCmp('rgzsjd_Id').setValue(rgzsjd);
-    Ext.getCmp('rgzsj_Id').setValue(rgzsj);
-    Ext.getCmp('coordX_Id').setValue(dmx);
-    Ext.getCmp('coordY_Id').setValue(dmy);
-    Ext.getCmp('wellShowLevel_Id').setValue(showLevel);
-};
 
 //创建设置井坐标窗口
 function openSetWellCoordWin() {
@@ -276,17 +223,3 @@ function saveWellEditerGridDataInfo() {
     return false;
 };
 
-
-
-function updateWellCoordCellValue(wellname,arcX,arcY){
-	var store=Ext.getCmp("wellPanel_Id").getStore();
-	var total=store.getCount();
-	for(var i=0;i<total;i++){
-		if(store.getAt(i).data.jh==wellname){
-			store.getAt(i).set("dmx",arcX);
-			store.getAt(i).set("dmy",arcY);
-			break;
-		}
-	}
-	return false;
-}

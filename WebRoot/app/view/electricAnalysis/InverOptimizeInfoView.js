@@ -7,7 +7,7 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
     border: false,
     initComponent: function () {
 //        var wellStore = Ext.create('AP.store.well.WellInfoStore');
-        var jhStore = new Ext.data.JsonStore({
+        var wellComboBoxStore = new Ext.data.JsonStore({
         	pageSize:defaultJhComboxSize,
             fields: [{
                 name: "boxkey",
@@ -44,16 +44,16 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
         });
         
         
-        var wellSimpleCombo = Ext.create(
+        var wellComboBox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: "inverOptimizeInfoPanel_Well_Id",
                 labelWidth: 35,
                 width: 145,
                 labelAlign: 'left',
                 queryMode: 'remote',
                 typeAhead: true,
-                store: jhStore,
+                store: wellComboBoxStore,
                 autoSelect: false,
                 editable: true,
                 triggerAction: 'all',
@@ -65,13 +65,13 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
                 blankText: cosog.string.all,
                 listeners: {
                     expand: function (sm, selections) {
-//                        wellSimpleCombo.clearValue();
-//                        wellSimpleCombo.getStore().loadPage(1); // 加载井下拉框的store
+//                        wellComboBox.clearValue();
+//                        wellComboBox.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     afterRender: function (combo, o) {
-                        if (jhStore.getTotalCount() > 0) {
-                            var orgId = jhStore.data.items[0].data.boxkey;
-                            var orgName = jhStore.data.items[0].data.boxval;
+                        if (wellComboBoxStore.getTotalCount() > 0) {
+                            var orgId = wellComboBoxStore.data.items[0].data.boxkey;
+                            var orgName = wellComboBoxStore.data.items[0].data.boxval;
                             combo.setValue(orgId);
                             combo.setRawValue(orgName);
                         }
@@ -91,7 +91,7 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
         
         
         Ext.apply(this, {
-            tbar: [wellSimpleCombo,'-', {
+            tbar: [wellComboBox,'-', {
                 		id: 'InverOptimizeWellTotalCount_Id',
                 		xtype: 'component',
                 		hidden: false,

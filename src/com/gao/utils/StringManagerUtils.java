@@ -315,7 +315,7 @@ public class StringManagerUtils {
 		String result = null;
 		if (value == null || value.equals("") || value.equals("null") || value == "null") {
 			result = "0";
-		} else if (isNum(value) || (value.indexOf("E") > 0 && StringToDouble(value)>0)) {
+		} else if (isNum(value) || (value.indexOf("E") > 0 && stringToDouble(value)>0)) {
 			double d = Double.parseDouble(value);
 			result = "" + df.format(d);
 		} else {
@@ -860,7 +860,7 @@ public class StringManagerUtils {
 		return s_date;
 	}
 
-	public static Timestamp StringToTimeStamp(String time) {
+	public static Timestamp stringToTimeStamp(String time) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		format.setLenient(false);
 		Timestamp ts1 = null;
@@ -915,7 +915,7 @@ public class StringManagerUtils {
 	  return result;
 	 }
 
-	 public static String ConvertBLOBtoString(Blob BlobContent) {
+	 public static String convertBLOBtoString(Blob BlobContent) {
 			byte[] msgContent = null;
 			try {
 				msgContent = BlobContent.getBytes(1, (int) BlobContent.length());
@@ -942,7 +942,7 @@ public class StringManagerUtils {
 	 }
 	 
 	 //将字符串转为指定小数点位数的浮点型
-	 public static float StringToFloat(String value,int bit){
+	 public static float stringToFloat(String value,int bit){
 		 StringBuffer buf=new StringBuffer();
 		 buf.append("0.");
 		 for(int i=1;i<=bit;i++){
@@ -977,7 +977,7 @@ public class StringManagerUtils {
 		 return sumstr;
 	 }
 	 
-	 public static float StringToFloat(String value){
+	 public static float stringToFloat(String value){
 		 float sum=0;
 		 if(StringManagerUtils.isNotNull(value)){
 			 try{
@@ -989,7 +989,7 @@ public class StringManagerUtils {
 		 return sum;
 	 }
 	 
-	 public static double StringToDouble(String value){
+	 public static double stringToDouble(String value){
 		 double sum=0;
 		 if(StringManagerUtils.isNotNull(value)){
 			 try{
@@ -1001,7 +1001,7 @@ public class StringManagerUtils {
 		 return sum;
 	 }
 	 
-	 public static int StringToInteger(String value){
+	 public static int stringToInteger(String value){
 		 int sum=0;
 		 if(StringManagerUtils.isNotNull(value)){
 			 try{
@@ -1040,7 +1040,7 @@ public class StringManagerUtils {
 	 }
 	 
 	//CLOB转字符串
-	 public static String CLOBObjecttoString(Object obj) throws SQLException, IOException  {
+	 public static String CLOBObjectToString(Object obj) throws SQLException, IOException  {
 		SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj);
 		CLOB clob = (CLOB) proxy.getWrappedClob(); 
 		char[] buffer = null;
@@ -1110,65 +1110,6 @@ public class StringManagerUtils {
 		 String dateString = formatter.format(date);
 		 return dateString;
 	 }
-	 
-	 /**
-	     * 向指定 URL 发送POST方法的请求
-	     * 
-	     * @param url
-	     *            发送请求的 URL
-	     * @param param
-	     *            请求参数，json格式的字符串。
-	     * @return 所代表远程资源的响应结果
-	     */
-//	    public static String sendPost(String url, String param) {
-//	        PrintWriter out = null;
-//	        BufferedReader in = null;
-//	        String result = "";
-//	        try {
-//	            URL realUrl = new URL(url);
-//	            // 打开和URL之间的连接
-//	            URLConnection conn = realUrl.openConnection();
-//	            // 设置通用的请求属性
-//	            conn.setRequestProperty("accept", "*/*");
-//	            conn.setRequestProperty("connection", "Keep-Alive");
-//	            conn.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-//	            // 发送POST请求必须设置如下两行
-//	            conn.setDoOutput(true);
-//	            conn.setDoInput(true);
-//	            // 获取URLConnection对象对应的输出流
-//	            out = new PrintWriter(conn.getOutputStream());
-//	            // 发送请求参数
-//	            out.print(param);
-//	            // flush输出流的缓冲
-//	            out.flush();
-//	            // 定义BufferedReader输入流来读取URL的响应
-//	            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//	            String line;
-//	            while ((line = in.readLine()) != null) {
-//	                result += line;
-//	            }
-//	            return result;
-//	        } catch (Exception e) {
-//	            System.out.println("发送 POST 请求出现异常！"+e);
-//	            System.out.println(param);
-//	            e.printStackTrace();
-//	        }
-//	        //使用finally块来关闭输出流、输入流
-//	        finally{
-//	            try{
-//	                if(out!=null){
-//	                    out.close();
-//	                }
-//	                if(in!=null){
-//	                    in.close();
-//	                }
-//	            }
-//	            catch(IOException ex){
-//	                ex.printStackTrace();
-//	            }
-//	        }
-//	        return "";
-//	    }
 	    
 	    /**
 	     * 通过URLConnect的方式发送post请求，并返回响应结果
@@ -1216,19 +1157,6 @@ public class StringManagerUtils {
 	            	throw new Exception();
 	            }
 	            
-	            
-	            
-//	            InputStream is = conn.getInputStream();
-//	            int len = 0;
-//	            byte[] temp = new byte[102400]; 
-//	            int llen = -1;
-//	            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-//	            while ((llen = is.read(temp, 0, 102400)) != -1) {
-//	                outStream.write(temp, 0, llen);
-//	            }
-//	            is.close();
-//	            result = new String(outStream.toByteArray(),encoding);
-	            
 	        } catch (Exception e) {
 	            System.out.println("发送 POST 请求出现异常！"+e);
 	            System.out.println(param);
@@ -1266,14 +1194,9 @@ public class StringManagerUtils {
 	    		httpConn.setDoInput(true);
 	    		httpConn.setDoOutput(true);
 	    		System.out.print("params="+params);
-	    		//utf-8
 	    		PrintWriter ot = new PrintWriter(new OutputStreamWriter(httpConn.getOutputStream(),"utf-8"));
 	    		ot.println(params);
 	    		ot.flush();
-	    		//out=new PrintWriter(httpConn.getOutputStream());
-	    		//out.println(params);
-	    	   
-	    		//out.flush();
 	    	 
 	    		//读取响应
 	    		if(httpConn.getResponseCode()==HttpURLConnection.HTTP_OK){
@@ -1301,7 +1224,7 @@ public class StringManagerUtils {
 	    }
 	    
 	  //读文件，返回字符串
-		public static String ReadFile(String path) {
+		public static String readFile(String path) {
 		    File file = new File(path);
 		    BufferedReader reader = null;
 		    String laststr = "";
@@ -1514,7 +1437,7 @@ public class StringManagerUtils {
 	     *@param sPath  要删除的目录或文件 
 	     *@return 删除成功返回 true，否则返回 false。 
 	     */  
-	    public static boolean DeleteFolder(String sPath) {  
+	    public static boolean deleteFolder(String sPath) {  
 	        boolean flag = false;  
 	        File file = new File(sPath);  
 	        // 判断目录或文件是否存在  
@@ -1529,22 +1452,6 @@ public class StringManagerUtils {
 	            }  
 	        }  
 	    } 
-	    
-	    //设置字符串utf-8编码
-	    public static String StringToUTF8(String xml){
-//	    	StringBuffer sb = new StringBuffer();
-//	    	sb.append(xml);
-//	    	String xmString = "";
-//	    	String xmlUTF8="";
-//	    	try {
-//	    		xmString = new String(sb.toString().getBytes());
-//	    		xmlUTF8 = URLEncoder.encode(xmString, "UTF-8");
-//	    	} catch (UnsupportedEncodingException e) {
-//	    		e.printStackTrace();
-//	        }
-//	        return xmlUTF8;
-	    	return xml;
-	   } 
 	   
 	    /** 
 	     *  按长度截取字符串

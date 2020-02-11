@@ -47,7 +47,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
             }
         });
         var jhComboBox = Ext.create('Ext.form.field.ComboBox', {
-            fieldLabel: cosog.string.jh,
+            fieldLabel: cosog.string.wellName,
             id: "ScrewPumpDailyAnalysisWellCom_Id",
             store: jhStore_B,
             labelWidth: 35,

@@ -43,7 +43,7 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
             }
         });
         var simpleCombo = Ext.create( 'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: "ProductionOutName_Id",
                 labelWidth: 35,
                 width: 145,

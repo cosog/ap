@@ -42,7 +42,7 @@ Ext.define("AP.view.productionData.ScrewPumpProductionDataPanel", {
             }
         });
         var screwPumpCombo = Ext.create( 'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: "screwPumpProductionDataJhCombo_Id",
                 labelWidth: 35,
                 width: 145,

@@ -2406,7 +2406,7 @@ public class CommonDataService extends BaseService {
 						if (null == value || value.equals("null") || !StringManagerUtils.isNotNull(value)) {
 							value = "";
 						} else if (sql.contains("v_012_") && temp.contains("lsxs")) {
-							float value2 = StringManagerUtils.StringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
+							float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 							value = value2 + "";
 						} else if (!StringManagerUtils.stringDataFiter(temp)) {
 							value = StringManagerUtils.formatReportPrecisionValue(value);
@@ -2589,7 +2589,7 @@ public class CommonDataService extends BaseService {
 						if (null == value || value.equals("null") || !StringManagerUtils.isNotNull(value)) {
 							value = "";
 						} else if (sql.contains("v_012_") && temp.contains("lsxs")) {
-							float value2 = StringManagerUtils.StringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
+							float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 							value = value2 + "";
 						} else if (!StringManagerUtils.stringDataFiter(temp)) {
 							value = StringManagerUtils.formatReportPrecisionValue(value);

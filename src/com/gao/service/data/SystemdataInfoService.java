@@ -114,7 +114,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 						String i = param[3];
 						Integer sorts = 0;
 						if (StringUtils.isNotBlank(i)) {
-							sorts = StringManagerUtils.StringToInteger(i);
+							sorts = StringManagerUtils.stringToInteger(i);
 						}
 						String ij = param[4];
 						Integer status = 0;
@@ -124,7 +124,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 							}else if("true".equalsIgnoreCase(ij)){
 								ij="1";
 							}
-							status = StringManagerUtils.StringToInteger(ij);
+							status = StringManagerUtils.stringToInteger(ij);
 						}
 						dinfo.setSysdataid(uuIDD);
 						dinfo.setCname("" + param[0]);

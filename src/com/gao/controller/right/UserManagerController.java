@@ -176,7 +176,7 @@ public class UserManagerController extends BaseController {
 			user.setUserInEmail(ParamUtils.getParameter(request, "userInEmail"));
 			user.setUserTitle(ParamUtils.getParameter(request, "userTitle"));
 			user.setUserOrgid(303);
-			user.setUserRegtime(StringManagerUtils.StringToTimeStamp(ParamUtils.getParameter(request, "userRegtime")));
+			user.setUserRegtime(StringManagerUtils.stringToTimeStamp(ParamUtils.getParameter(request, "userRegtime")));
 			this.userService.deleteUser(myUserNo, User.class);
 			String result = "ok";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);

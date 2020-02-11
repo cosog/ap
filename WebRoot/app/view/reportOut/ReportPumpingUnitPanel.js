@@ -49,7 +49,7 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
         });
         var wellListCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: 'ReportPumpingUnitPanelEellListCombo_Id',
                 store: wellListStore,
                 labelWidth: 35,

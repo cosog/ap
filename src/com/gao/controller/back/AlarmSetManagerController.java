@@ -145,7 +145,7 @@ public class AlarmSetManagerController extends BaseController {
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		String type = ParamUtils.getParameter(request, "type");
-		int recordCount =StringManagerUtils.StringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		json = this.alarmSetManagerService.doStatItemsSetShow(pager,type,recordCount);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="

@@ -7,10 +7,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
     maskElement: 'body',
     initComponent: function () {
         var me = this;
-        var org_Id = Ext.getCmp('leftOrg_Id');
-        if (isNotVal(org_Id)) {
-            org_Id = org_Id.getValue();
-        }
+        var org_Id = Ext.getCmp('leftOrg_Id').getValue();
         var wellListStore = new Ext.data.JsonStore({
             pageSize: defaultJhComboxSize,
             fields: [{
@@ -47,7 +44,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
             }
         });
         var wellListCombo = Ext.create('Ext.form.field.ComboBox', { // Simple ComboBox调用store
-            fieldLabel: cosog.string.jh,
+            fieldLabel: cosog.string.wellName,
             id: 'FSDiagramAnalysisGraphicalQueryWellName_Id',
             store: wellListStore,
             labelWidth: 35,
@@ -66,12 +63,9 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
             minChars: 0,
             listeners: {
                 expand: function (sm, selections) {
-//                    wellListCombo.clearValue();
                     wellListCombo.getStore().loadPage(1); // 加载井下拉框的store
                 },
                 select: function (combo, record, index) {
-//                    page = 1;
-//                    Ext.create("AP.store.graphicalQuery.SurfaceCardStore");
                 	if(combo.value==""){
                 		Ext.getCmp("SurfaceCard_from_date_Id").hide();
                 		Ext.getCmp("SurfaceCard_to_date_Id").hide();
@@ -97,8 +91,6 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                     listeners: {
                         select: function (combo, record, index) {
                             try {
-//                                page = 1;
-//                                Ext.create("AP.store.graphicalQuery.SurfaceCardStore");
                             	loadSurfaceCardList(1);
                             } catch (ex) {
                                 Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
@@ -118,8 +110,6 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                     listeners: {
                         select: function (combo, record, index) {
                             try {
-//                                page = 1;
-//                                Ext.create("AP.store.graphicalQuery.SurfaceCardStore");
                             	loadSurfaceCardList(1);
                             } catch (ex) {
                                 Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
@@ -150,10 +140,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                             if (page < totalPages) {
                                 var surfaceCardContent = Ext.getCmp("surfaceCardContent");
                                 var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                                //控制台打印
-//                                console.warn(hRatio);
                                 if (hRatio > 0.75) {
-//                                	alert("请求下一页");
                                     if (page < 2) {
                                         page++;
                                         loadSurfaceCardList(page);
@@ -173,8 +160,6 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
             }],
             listeners: {
                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-//                    page = 1;
-//                    Ext.create("AP.store.graphicalQuery.SurfaceCardStore");
                     loadSurfaceCardList(1);
                 }
             }

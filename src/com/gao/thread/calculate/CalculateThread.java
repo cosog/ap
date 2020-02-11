@@ -101,7 +101,7 @@ public class CalculateThread extends Thread{
 						int runStatus=1;
 						if(!"0".equals(obj[61]+"")){//时率来源为人工录入时，不进行时率计算
 							if("1".equals(obj[61]+"")){//时率来源为DI信号时
-								runStatus=StringManagerUtils.StringToInteger(obj[62]+"");
+								runStatus=StringManagerUtils.stringToInteger(obj[62]+"");
 							}else if("2".equals(obj[61]+"")&&electricCalculateResponseData!=null&&electricCalculateResponseData.getResultStatus()==1){//时率来源为电参计算时
 								runStatus=electricCalculateResponseData.getRunStatus();
 							}else if("3".equals(obj[61]+"")&&calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1){//时率来源为转速计算时

@@ -110,27 +110,7 @@ Ext.define('AP.view.frame.IframeView', {
                     xtype: 'textfield',
                     value: '0',
                     hidden: true
-      }, {
-                    id: 'gklxStatistics_Id', // 存放工况类型的编码
-                    xtype: 'textfield',
-                    value: '0',
-                    hidden: true
-      }, {
-                    id: 'SingleDynShowDatajh_Id', // 存放工况类型井名信息列表
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-      }, {
-                    id: 'ContrastDynImageDetailjh_Id', // 存放功图对比井名信息列表
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-      }, {
-                    id: 'ContrastDjdbjh_Id', // 功图叠加对比jh
-                    xtype: 'textfield',
-                    value: '',
-                    hidden: true
-      }, {
+      },{
                     id: 'ContrastTimeOne_Id', // 功图对比一的时间
                     xtype: 'textfield',
                     value: '',

@@ -170,7 +170,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/doWellInformationShow")
 	public String doWellInformationShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int recordCount =StringManagerUtils.StringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
@@ -213,7 +213,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/exportWellInformationData")
 	public String exportWellInformationData() throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int recordCount =StringManagerUtils.StringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;

@@ -42,118 +42,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	private CommonDataService service;
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
-	public String GetDiagnosisTotalData(String orgId, String jh, Page pager,String fluLevel,String proLevel,String scslLevel,
-			String balanceLevel,String glphztLevel,
-			String xtxlLevel,String dmxlLevel,String jxxlLevel,String rydlLevel,
-			String gkmc,String dcgkmc,String type)throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String columns= "";
-		if("XTXL".equalsIgnoreCase(type)||"DMXL".equalsIgnoreCase(type)||"JXXL".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_SysEff");
-		}else if("PHD".equalsIgnoreCase(type)||"GLPHD".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_Balance");
-		}else if("CYL".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_WorkStatus");
-		}else if("CYLBD".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_ProFlu");
-		}else if("SCSl".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_TimeEff");
-		}else if("RYDL".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_Energy");
-		}else if("DCGKLX".equalsIgnoreCase(type)){
-			columns = service.showTableHeadersColumns("TotalWellList_WorkStatus");
-		}else{
-			columns = service.showTableHeadersColumns("TotalWellList_WorkStatus");
-		}
-		String sql="select t.id, t.jh,to_char(t.jssj,'yyyy-mm-dd') as jssj,t.rgzsj,t.scsl,t.yxqj,"
-				+ " t.gkmc,t.gklx,t.gklxstr,t.yhjy,t.bjbz,"
-				+ " t.egkmc,t.egklx,t.egklxstr,t.egkxq,t.ebjbz,"
-				+ "t.jsdjrcylbd,t.flu_level,t.jsdjrcyl,t.jsdjrcyl1,t.hsld,t.gtcmxs,t.xtxl,t.dmxtxl,t.jxxtxl,t.rydl,t.dlphd,t.phzt,t.glphd,t.glphzt "
-				+ "from ";
-		if(StringManagerUtils.isNotNull(jh)){
-			sql+=" v_analysisaggregation t where t.org_id in ("+orgId+") and  t.jh='"+jh+"'";
-		}else{
-			sql+=" v_004_21_03_total_real t  where t.org_id in ("+orgId+")";
-		}
-			
-		if(StringManagerUtils.isNotNull(gkmc))
-			sql+=" and t.gkmc='"+gkmc+"'";
-		if(StringManagerUtils.isNotNull(dcgkmc))
-			sql+=" and t.egkmc='"+dcgkmc+"'";
-		if(StringManagerUtils.isNotNull(proLevel))
-			sql+=" and t.pro_level='"+proLevel+"'";
-		if(StringManagerUtils.isNotNull(fluLevel))
-			sql+=" and t.flu_level='"+fluLevel+"'";
-		if(StringManagerUtils.isNotNull(scslLevel))
-			sql+=" and t.scsl_level='"+scslLevel+"'";
-		if(StringManagerUtils.isNotNull(balanceLevel))
-			sql+=" and t.phzt='"+balanceLevel+"'";
-		if(StringManagerUtils.isNotNull(glphztLevel))
-			sql+=" and t.glphzt='"+glphztLevel+"'";
-		if(StringManagerUtils.isNotNull(xtxlLevel))
-			sql+=" and t.xtxl_level='"+xtxlLevel+"'";
-		if(StringManagerUtils.isNotNull(dmxlLevel))
-			sql+=" and t.dmxl_level='"+dmxlLevel+"'";
-		if(StringManagerUtils.isNotNull(jxxlLevel))
-			sql+=" and t.jxxl_level='"+jxxlLevel+"'";
-		if(StringManagerUtils.isNotNull(rydlLevel))
-			sql+=" and t.rydl_level='"+rydlLevel+"'";
-		
-		if(StringManagerUtils.isNotNull(jh)){
-			sql+=" order by t.jssj desc";
-		}else{
-			sql+=" order by t.pxbh, t.jh";
-		}
-		int totals=this.getTotalCountRows(sql);
-		int maxvalue=pager.getLimit()+pager.getStart();
-		sql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		List<?> list = this.findCallSql(sql);
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalCount\":"+totals+",");
-		result_json.append("\"totalRoot\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"jh\":\""+obj[1]+"\",");
-			result_json.append("\"jssj\":\""+obj[2]+"\",");
-			result_json.append("\"rgzsj\":\""+obj[3]+"\",");
-			result_json.append("\"scsl\":\""+obj[4]+"\",");
-			result_json.append("\"yxqj\":\""+obj[5]+"\",");
-			
-			result_json.append("\"gkmc\":\""+obj[6]+"\",");
-			result_json.append("\"gklx\":\""+obj[7]+"\",");
-			result_json.append("\"gklxstr\":\""+obj[8]+"\",");
-			result_json.append("\"yhjy\":\""+obj[9]+"\",");
-			result_json.append("\"bjbz\":\""+obj[10]+"\",");
-			
-			result_json.append("\"egkmc\":\""+obj[11]+"\",");
-			result_json.append("\"egklx\":\""+obj[12]+"\",");
-			result_json.append("\"egklxstr\":\""+obj[13]+"\",");
-			result_json.append("\"egkxq\":\""+obj[14]+"\",");
-			result_json.append("\"ebjbz\":\""+obj[15]+"\",");
-			
-			result_json.append("\"jsdjrcylbd\":\""+obj[16]+"\",");
-			result_json.append("\"flu_level\":\""+obj[17]+"\",");
-			result_json.append("\"jsdjrcyl\":\""+obj[18]+"\",");
-			result_json.append("\"jsdjrcyl1\":\""+obj[19]+"\",");
-			
-			result_json.append("\"hsld\":\""+obj[20]+"\",");
-			result_json.append("\"gtcmxs\":\""+obj[21]+"\",");
-			result_json.append("\"xtxl\":\""+obj[22]+"\",");
-			result_json.append("\"dmxtxl\":\""+obj[23]+"\",");
-			result_json.append("\"jxxtxl\":\""+obj[24]+"\",");
-			result_json.append("\"rhdl\":\""+obj[25]+"\",");
-			result_json.append("\"dlphd\":\""+obj[26]+"\",");
-			result_json.append("\"phzt\":\""+obj[27]+"\",");
-			result_json.append("\"glphd\":\""+obj[28]+"\",");
-			result_json.append("\"glphzt\":\""+obj[29]+"\"},");
-		}
-		if(list.size()>0){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
-	}
 	
 	public String GetDiagnosisTotalData(String orgId, String wellName,String totalDate, Page pager,String wellType,String statValue,
 			String startDate,String endDate,String type)throws Exception {
@@ -435,7 +323,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			if(StringManagerUtils.isNotNull(obj[0]+"")){
 				result_json.append("{\"item\":\""+obj[0]+"\",");
 				result_json.append("\"count\":"+obj[1]+"},");
-				totalCount+=StringManagerUtils.StringToInteger(obj[1]+"");
+				totalCount+=StringManagerUtils.stringToInteger(obj[1]+"");
 			}
 		}
 		if(result_json.toString().endsWith(",")){

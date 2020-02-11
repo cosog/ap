@@ -48,7 +48,7 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
             }
         });
         var wellComboBox = Ext.create('Ext.form.field.ComboBox', {
-            fieldLabel: cosog.string.jh,
+            fieldLabel: cosog.string.wellName,
             id: "electricAnalysisDailyDetailsWellCom_Id",
             store: wellComboBoxStore,
             labelWidth: 35,
@@ -422,7 +422,7 @@ function createElecAnalysisDailyDetailsTableColumn(columnInfo) {
         }
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' ";
         if (attr.dataIndex.toUpperCase()=='workingConditionName_Elec'.toUpperCase()||attr.dataIndex.toUpperCase()=='workingConditionName_E'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceEGklxColor(value,o,p,e);}";
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
             myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {

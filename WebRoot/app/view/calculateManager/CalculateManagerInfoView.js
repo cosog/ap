@@ -37,7 +37,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             beforePageText: "当前页",
             afterPageText: "共{0}页"
         });
-        var jhStore_A = new Ext.data.JsonStore({
+        var wellListStore = new Ext.data.JsonStore({
             pageSize: defaultJhComboxSize,
             fields: [{
                 name: "boxkey",
@@ -79,11 +79,11 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 }
             }
         });
-        var jhCombo_A = Ext.create(
+        var wellListComb = Ext.create(
                 'Ext.form.field.ComboBox', {
-                    fieldLabel: cosog.string.jh,
+                    fieldLabel: cosog.string.wellName,
                     id: 'CalculateManagerWellListComBox_Id',
-                    store: jhStore_A,
+                    store: wellListStore,
                     labelWidth: 35,
                     width: 125,
                     queryMode: 'remote',
@@ -100,13 +100,13 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     minChars: 0,
                     listeners: {
                         select: function (combo, record, index) {
-                        	jsbzCombo.clearValue();
+                        	calculateSignComb.clearValue();
                         	calculateResultStore.loadPage(1);
                         }
                     }
                 });
         
-        var jsbzStore_A = new Ext.data.JsonStore({
+        var calculateSignStore = new Ext.data.JsonStore({
             fields: [{
                 name: "boxkey",
                 type: "string"
@@ -151,11 +151,11 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 }
             }
         });
-        var jsbzCombo = Ext.create(
+        var calculateSignComb = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '计算状态',
-                    id: 'CalculateManagerJsbzListComBox_Id',
-                    store: jsbzStore_A,
+                    id: 'CalculateManagerCalculateSignComBox_Id',
+                    store: calculateSignStore,
                     labelWidth: 60,
                     width: 200,
                     queryMode: 'remote',
@@ -171,8 +171,8 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     minChars: 0,
                     listeners: {
                     	expand: function (sm, selections) {
-                    		jsbzCombo.clearValue();
-                    		jsbzCombo.getStore().load(); // 加载井下拉框的store
+                    		calculateSignComb.clearValue();
+                    		calculateSignComb.getStore().load(); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
                         	calculateResultStore.loadPage(1);
@@ -186,7 +186,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         		activeTab: 0,
         		border: false,
         		tabPosition: 'bottom',
-        		tbar:[jhCombo_A
+        		tbar:[wellListComb
         			,"-",{
                     xtype: 'datefield',
                     anchor: '100%',
@@ -198,7 +198,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     value: new Date(),
                     listeners: {
                     	select: function (combo, record, index) {
-                    		jsbzCombo.clearValue();
+                    		calculateSignComb.clearValue();
                     		calculateResultStore.loadPage(1);
                         }
                     }
@@ -213,11 +213,11 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     value: new Date(),
                     listeners: {
                     	select: function (combo, record, index) {
-                    		jsbzCombo.clearValue();
+                    		calculateSignComb.clearValue();
                     		calculateResultStore.loadPage(1);
                         }
                     }
-                },"-",jsbzCombo,'->',{
+                },"-",calculateSignComb,'->',{
                     xtype: 'button',
                     text: '修改数据计算',
                     pressed: true,
@@ -235,7 +235,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                         var wellName=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
                         var startDate=Ext.getCmp('CalculateManagerStartDate_Id').rawValue;
                         var endDate=Ext.getCmp('CalculateManagerEndDate_Id').rawValue;
-                        var jsbz=Ext.getCmp('CalculateManagerJsbzListComBox_Id').getValue();
+                        var calculateSign=Ext.getCmp('CalculateManagerCalculateSignComBox_Id').getValue();
                         var wellType=200;
                         var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
                         if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
@@ -284,10 +284,10 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             	            		},
             	            		params: {
             	            			orgId: orgId,
-            	                        jh: wellName,
+            	            			wellName: wellName,
             	                        startDate:startDate,
             	                        endDate:endDate,
-            	                        jsbz:jsbz,
+            	                        calculateSign:calculateSign,
             	                        wellType:wellType
             	                    }
             	            	}); 

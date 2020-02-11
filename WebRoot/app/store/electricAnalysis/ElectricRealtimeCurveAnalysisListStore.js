@@ -52,7 +52,7 @@ Ext.define('AP.store.electricAnalysis.ElectricRealtimeCurveAnalysisListStore', {
                         selectionchange: function (view, selected, o) {
                             if (selected.length == 1) {
                             	var id=selected[0].data.id;
-                            	var wellName = Ext.getCmp("electricAnalysisRealtimeCurveJh_Id").getValue();
+                            	var wellName = Ext.getCmp("electricAnalysisRealtimeCurveWellName_Id").getValue();
                             	getAndInitInverDiagram(id,wellName);
                             }
                         },
@@ -61,8 +61,8 @@ Ext.define('AP.store.electricAnalysis.ElectricRealtimeCurveAnalysisListStore', {
                         	Ext.getCmp("electricAnalysisRealtimeCurveHisBtn_Id").hide();
                             Ext.getCmp("electricAnalysisRealtimeCurveStartDate_Id").show();
                     		Ext.getCmp("electricAnalysisRealtimeCurveEndDate_Id").show();
-                			Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').setValue(record.data.wellName);
-                        	Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').setRawValue(record.data.wellName);
+                			Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').setValue(record.data.wellName);
+                        	Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').setRawValue(record.data.wellName);
                         	Ext.getCmp('ElectricAnalysisRealtimeCurve_Id').getStore().loadPage(1);
                         }
                     }
@@ -88,7 +88,7 @@ Ext.define('AP.store.electricAnalysis.ElectricRealtimeCurveAnalysisListStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-            var wellName = Ext.getCmp("electricAnalysisRealtimeCurveJh_Id").getValue();
+            var wellName = Ext.getCmp("electricAnalysisRealtimeCurveWellName_Id").getValue();
             var startDate=Ext.getCmp('electricAnalysisRealtimeCurveStartDate_Id').rawValue;
             var endDate=Ext.getCmp('electricAnalysisRealtimeCurveEndDate_Id').rawValue;
             var new_params = {

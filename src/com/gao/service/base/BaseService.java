@@ -866,7 +866,7 @@ public class BaseService<T> {
 								if (value.equals("null")) {
 									value = "";
 								} else if (sql.contains("v_012_") && key.contains("lsxs")) {
-									float value2 = StringManagerUtils.StringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
+									float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 									value = value2 + "";
 								} else if (!StringManagerUtils.stringDataFiter(key)) {
 									value = StringManagerUtils.formatReportPrecisionValue(value);
@@ -904,7 +904,7 @@ public class BaseService<T> {
 									value = StringManagerUtils.formatReportPrecisionValue(value);
 								}
 							} else if (sql.contains("v_012_") && attr_left.contains("lsxs")) {
-								float value2 = StringManagerUtils.StringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
+								float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 								value = value2 + "";
 							}else if (!StringManagerUtils.stringDataFiter(attr_left)) {
 								value = StringManagerUtils.formatReportPrecisionValue(value);
@@ -952,7 +952,7 @@ public class BaseService<T> {
 								if (value.equals("null")) {
 									value = "";
 								} else if (sql.contains("v_012_") && key.contains("lsxs")) {
-									float value2 = StringManagerUtils.StringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
+									float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 									value = value2 + "";
 								} else if (!StringManagerUtils.stringDataFiter(key)) {
 									value = StringManagerUtils.formatReportPrecisionValue(value);
@@ -992,7 +992,7 @@ public class BaseService<T> {
 									value = StringManagerUtils.formatReportPrecisionValue(value);
 								}
 							} else if (sql.contains("v_012_") && attr_left.contains("lsxs")) {
-								float value2 = StringManagerUtils.StringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
+								float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 								value = value2 + "";
 							}else if (!StringManagerUtils.stringDataFiter(attr_left)) {
 								value = StringManagerUtils.formatReportPrecisionValue(value);

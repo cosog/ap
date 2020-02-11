@@ -64,7 +64,7 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 		jsonbuff.append("]}},");
 		jsonbuff.append("\"FSDiagram\": {");
 		jsonbuff.append("\"AcquisitionTime\":\""+object[13]+"\",");
-		String gtsj=StringManagerUtils.CLOBObjecttoString(object[14]);
+		String gtsj=StringManagerUtils.CLOBObjectToString(object[14]);
 		String[] gtsjArr=gtsj.replaceAll("\r\n", "\n").split("\n");
 		jsonbuff.append("\"SPM\":"+gtsjArr[3]+",");
 		jsonbuff.append("\"Stroke\":"+gtsjArr[4]+",");
@@ -139,7 +139,7 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 		jsonbuff.append("},");
 		jsonbuff.append("\"FSDiagram\": {");
 		jsonbuff.append("\"AcquisitionTime\":\""+object[13]+"\",");
-		String gtsj=StringManagerUtils.CLOBObjecttoString(object[14]);
+		String gtsj=StringManagerUtils.CLOBObjectToString(object[14]);
 		String[] gtsjArr=gtsj.replaceAll("\r\n", "\n").split("\n");
 		jsonbuff.append("\"SPM\":"+gtsjArr[3]+",");
 		jsonbuff.append("\"Stroke\":"+gtsjArr[4]+",");

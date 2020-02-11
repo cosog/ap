@@ -388,21 +388,8 @@ Ext.define('AP.view.well.WellInfoWindow', {
                 name: "wellInformation.sszcdy",
                 id: 'sszcdy_Id'
 
-         }, xlorgtree, xlrestree,jcCombox,
-//         {
-//                fieldLabel: cosog.string.jc,
-//                anchor: '95%',
-//                id: 'jc_Id',
-//                name: "wellInformation.jc"
-//         }, 
-         {
-                fieldLabel: cosog.string.jhh,
-                id: 'jhh_Id',
-                hidden: sfycjhh,
-                anchor: '95%',
-                name: "wellInformation.jhh"
-         }, {
-                fieldLabel: cosog.string.jh,
+         }, xlorgtree, xlrestree,jcCombox,{
+                fieldLabel: cosog.string.wellName,
                 id: 'jh_Id',
                 anchor: '95%',
                 allowBlank: false,

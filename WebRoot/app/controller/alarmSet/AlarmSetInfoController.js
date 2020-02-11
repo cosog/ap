@@ -139,32 +139,32 @@ function modifyAlarmSet() {
     // 复值
 SelectAlarmSet = function () {
     var dataattr_row = Ext.getCmp("AlarmSetInfoGridPanel_Id").getSelectionModel().getSelection();
-    var jlbh = dataattr_row[0].data.id;
-    var gklx = dataattr_row[0].data.workingconditioncode;
-    var gkmc = dataattr_row[0].data.workingconditionname;
-    var bjlx = dataattr_row[0].data.alarmtype;
-    var bjlxmc = dataattr_row[0].data.alarmtypename;
-    var bjjb = dataattr_row[0].data.alarmlevel;
-    var bjjbmc = dataattr_row[0].data.alarmlevelname;
-    var bjbz = dataattr_row[0].data.alarmsign;
-    var bz = dataattr_row[0].data.remark;
-    Ext.getCmp('jlbh_Id').setValue(jlbh);
-    Ext.getCmp('alarmSetWorkingConditionComb_Id').setValue(gklx);
-    Ext.getCmp('alarmSetWorkingConditionComb_Id').setRawValue(gkmc);
-    Ext.getCmp('alarmSetAlarmType_Id').setValue(bjlx);
-    Ext.getCmp('alarmSetAlarmType_Id').setRawValue(bjlxmc);
-    Ext.getCmp('bjjb_Id').setValue(bjjb);
-    Ext.getCmp('bjjb_Id').setRawValue(bjjbmc);
-    Ext.getCmp('bjbz_Id1').setValue(bjbz);
-    Ext.getCmp('bjbz_Id').setValue(bjbz);
+    var recordId = dataattr_row[0].data.id;
+    var workingConditionCode = dataattr_row[0].data.workingconditioncode;
+    var workingConditionName = dataattr_row[0].data.workingconditionname;
+    var alarmType = dataattr_row[0].data.alarmtype;
+    var alarmTypeName = dataattr_row[0].data.alarmtypename;
+    var alarmLevel = dataattr_row[0].data.alarmlevel;
+    var alarmLevelName = dataattr_row[0].data.alarmlevelname;
+    var alarmSign = dataattr_row[0].data.alarmsign;
+    var remark = dataattr_row[0].data.remark;
+    Ext.getCmp('alarmSetRecord_Id').setValue(recordId);
+    Ext.getCmp('alarmSetWorkingConditionComb_Id').setValue(workingConditionCode);
+    Ext.getCmp('alarmSetWorkingConditionComb_Id').setRawValue(workingConditionName);
+    Ext.getCmp('alarmSetAlarmType_Id').setValue(alarmType);
+    Ext.getCmp('alarmSetAlarmType_Id').setRawValue(alarmTypeName);
+    Ext.getCmp('alarmSetAlarmLevel_Id').setValue(alarmLevel);
+    Ext.getCmp('alarmSetAlarmLevel_Id').setRawValue(alarmLevelName);
+    Ext.getCmp('alarmSetAlarmSignComb_Id').setValue(alarmSign);
+    Ext.getCmp('alarmSetAlarmSign_Id').setValue(alarmSign);
     Ext.getCmp("alarmSetWorkingConditionComb_Id").readOnly = true;
     Ext.getCmp("alarmSetAlarmType_Id").readOnly = true;
     if (bjbz == 0) {
-        Ext.getCmp('bjbz_Id1').setRawValue('关');
+        Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('关');
     } else {
-        Ext.getCmp('bjbz_Id1').setRawValue('开');
+        Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('开');
     }
-    Ext.getCmp('bz_Id').setValue(bz);
+    Ext.getCmp('alarmSetRemark_Id').setValue(remark);
 };
 
 //设置报警级别颜色

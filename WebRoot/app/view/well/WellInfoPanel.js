@@ -53,7 +53,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
         
         var simpleCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: "wellInfoPanel_jh_Id",
                 labelWidth: 35,
                 width: 145,

@@ -43,7 +43,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveCheckInfoView', {
         });
         var wellComboBox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: 'electricAnalysisRealtimeCurveCheckWellCom_Id',
                 store: wellListStore,
                 labelWidth: 35,

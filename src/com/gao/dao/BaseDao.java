@@ -1696,32 +1696,6 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		return result;
 	}
-	
-	public Boolean updateorDeleteWorkstatusInformation(int jlbh,int gklx,int sxfw,int gkjgly,String s_kssj ,String s_jssj,String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{call PRO_UPDATEOrDELETEcaldata(?,?,?,?,?,?,?)}");
-			cs.setInt(1, gklx);
-			cs.setInt(2, jlbh);
-			cs.setInt(3, sxfw);
-			cs.setInt(4, gkjgly);
-			cs.setString(5, s_kssj);
-			cs.setString(6, s_jssj);
-			if (comandType.equalsIgnoreCase("modify")) {
-				ids = "no";
-				cs.setString(7, ids);
-			} else if (comandType.equalsIgnoreCase("delete")) {
-				cs.setString(7, ids);
-			}
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			conn.close();
-		}
-		return true;
-	}
 
 	public Boolean saveOrUpdateorDeleteProWellInformation(WellInformation w, String ids, String comandType) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
@@ -1993,19 +1967,19 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean recalculateByProductionData(String orgId, String jh, String wellType,String startDate,String endDate,String jsbz) throws SQLException {
+	public Boolean recalculateByProductionData(String orgId, String wellName, String wellType,String startDate,String endDate,String calculateSign) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
 			cs = conn.prepareCall("{call PRO_reCalculateByProd(?,?,?,?,?,?)}");
-			cs.setString(1,StringManagerUtils.isNotNull(jh)?jh:null);
+			cs.setString(1,StringManagerUtils.isNotNull(wellName)?wellName:null);
 			cs.setString(2, wellType);
 			cs.setString(3, startDate);
 			cs.setString(4, endDate);
-			if("0".equals(jsbz)){
-				jsbz="0,2";
+			if("0".equals(calculateSign)){
+				calculateSign="0,2";
 			}
-			cs.setString(5, StringManagerUtils.isNotNull(jsbz)?jsbz:null);
+			cs.setString(5, StringManagerUtils.isNotNull(calculateSign)?calculateSign:null);
 			cs.setString(6, orgId);
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -2605,7 +2579,7 @@ public class BaseDao extends HibernateDaoSupport {
 		String gtstrArr[]=gtstr.split("\r\n");
 		StringBuffer sData = new StringBuffer();
 		StringBuffer fData = new StringBuffer();
-		int pointCount=StringManagerUtils.StringToInteger(gtstrArr[2]);
+		int pointCount=StringManagerUtils.stringToInteger(gtstrArr[2]);
 		for(int j=0;j<pointCount;j++){
 			sData.append(gtstrArr[j*2+5]);
 			fData.append(gtstrArr[j*2+6]);
@@ -3684,13 +3658,13 @@ public class BaseDao extends HibernateDaoSupport {
 			String rodInsideDiameterArr[]=calculateResponseData.getRodString().getInsideDiameterString().split("/");
 			String rodOutsideDiameterArr[]=calculateResponseData.getRodString().getOutsideDiameterString().split("/");
 			for(int i=0;i<rodInsideDiameterArr.length;i++){
-				rodInsideDiameterString+=((int)(StringManagerUtils.StringToFloat(rodInsideDiameterArr[i], 3)*1000)+"").split("\\.")[0];
+				rodInsideDiameterString+=((int)(StringManagerUtils.stringToFloat(rodInsideDiameterArr[i], 3)*1000)+"").split("\\.")[0];
 				if(i<rodInsideDiameterArr.length-1){
 					rodInsideDiameterString+="/";
 				}
 			}
 			for(int i=0;i<rodOutsideDiameterArr.length;i++){
-				rodOutsideDiameterString+=((int)(StringManagerUtils.StringToFloat(rodOutsideDiameterArr[i], 3)*1000)+"").split("\\.")[0];
+				rodOutsideDiameterString+=((int)(StringManagerUtils.stringToFloat(rodOutsideDiameterArr[i], 3)*1000)+"").split("\\.")[0];
 				if(i<rodOutsideDiameterArr.length-1){
 					rodOutsideDiameterString+="/";
 				}

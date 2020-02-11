@@ -6,7 +6,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
     border: false,
     initComponent: function () {
     	var store =Ext.create('AP.store.electricAnalysis.ElectricRealtimeCurveAnalysisListStore');
-        var jhStore_A = new Ext.data.JsonStore({
+        var wellComboBoxStore = new Ext.data.JsonStore({
             pageSize: defaultJhComboxSize,
             fields: [{
                 name: "boxkey",
@@ -31,7 +31,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').getValue();
+                    var wellName = Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         wellName: wellName,
@@ -41,11 +41,11 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                 }
             }
         });
-        var simpleCombo_A = Ext.create(
+        var wellComboBox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
-                id: 'electricAnalysisRealtimeCurveJh_Id',
-                store: jhStore_A,
+                fieldLabel: cosog.string.wellName,
+                id: 'electricAnalysisRealtimeCurveWellName_Id',
+                store: wellComboBoxStore,
                 labelWidth: 35,
                 width: 135,
                 queryMode: 'remote',
@@ -88,7 +88,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
         
         Ext.apply(this, {
         	tbar: [ // 定义topbar
-                simpleCombo_A,"-",
+                wellComboBox,"-",
                 {
                     xtype: 'datefield',
                     anchor: '100%',
@@ -101,8 +101,8 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                     value: '',
                     listeners: {
                     	select: function (combo, record, index) {
-                    		var jh = Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').getValue();
-                    		if(jh!=null&&jh!=''){
+                    		var wellName = Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').getValue();
+                    		if(wellName!=null&&wellName!=''){
                     			var ElectricAnalysisRealtimeCurve=Ext.getCmp("ElectricAnalysisRealtimeCurve_Id");
                         		if(isNotVal(ElectricAnalysisRealtimeCurve)){
                         			ElectricAnalysisRealtimeCurve.getStore().loadPage(1);
@@ -124,8 +124,8 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                     value: new Date(),
                     listeners: {
                     	select: function (combo, record, index) {
-                    		var jh = Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').getValue();
-                    		if(jh!=null&&jh!=''){
+                    		var wellName = Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').getValue();
+                    		if(wellName!=null&&wellName!=''){
                     			var ElectricAnalysisRealtimeCurve=Ext.getCmp("ElectricAnalysisRealtimeCurve_Id");
                         		if(isNotVal(ElectricAnalysisRealtimeCurve)){
                         			ElectricAnalysisRealtimeCurve.getStore().loadPage(1);
@@ -149,8 +149,8 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                             Ext.getCmp("electricAnalysisRealtimeCurveStartDate_Id").show();
                     		Ext.getCmp("electricAnalysisRealtimeCurveEndDate_Id").show();
                     		var record  = Ext.getCmp("ElectricAnalysisRealtimeCurve_Id").getSelectionModel().getSelection()[0];
-                    		Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').setValue(record.data.jh);
-                        	Ext.getCmp('electricAnalysisRealtimeCurveJh_Id').setRawValue(record.data.jh);
+                    		Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').setValue(record.data.jh);
+                        	Ext.getCmp('electricAnalysisRealtimeCurveWellName_Id').setRawValue(record.data.jh);
                         	Ext.getCmp('ElectricAnalysisRealtimeCurve_Id').getStore().loadPage(1);
                 		}
                     }
@@ -161,8 +161,8 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                   pressed: true,
                   hidden: true,
                   handler: function (v, o) {
-                	  Ext.getCmp("electricAnalysisRealtimeCurveJh_Id").setValue('');
-                      Ext.getCmp("electricAnalysisRealtimeCurveJh_Id").setRawValue('');
+                	  Ext.getCmp("electricAnalysisRealtimeCurveWellName_Id").setValue('');
+                      Ext.getCmp("electricAnalysisRealtimeCurveWellName_Id").setRawValue('');
                       Ext.getCmp("electricAnalysisRealtimeCurveRTBtn_Id").hide();
                       Ext.getCmp("electricAnalysisRealtimeCurveHisBtn_Id").show();
                       Ext.getCmp("electricAnalysisRealtimeCurveStartDate_Id").hide();
@@ -187,7 +187,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                     		diagramIdArr.push(record[index].get("id"));
                     	});
                     	var diagramIds = "" + diagramIdArr.join(",");
-                    	var wellName = Ext.getCmp("electricAnalysisRealtimeCurveJh_Id").getValue();
+                    	var wellName = Ext.getCmp("electricAnalysisRealtimeCurveWellName_Id").getValue();
                     	Ext.Ajax.request({
                     		url : context + '/PSToFSController/reInverDiagram',
                     		method : "POST",

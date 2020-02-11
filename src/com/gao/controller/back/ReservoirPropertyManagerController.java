@@ -262,7 +262,7 @@ public class ReservoirPropertyManagerController extends BaseController {
 		reservoirPropertyName=ParamUtils.getParameter(request, "reservoirPropertyName");
 		page=ParamUtils.getParameter(request, "page");
 		limit=ParamUtils.getParameter(request, "limit");
-		int recordCount =StringManagerUtils.StringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10" : limit);
 		int offset = (intPage - 1) * pageSize + 1;

@@ -517,34 +517,6 @@ public class PSToFSService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDiscreteData(String wellName,String startDate,String endDate, Page pager)throws Exception {
-		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"jlbh\",width:50},"
-				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"cjsj\",width:130 },{ \"header\":\"运行\",\"dataIndex\":\"yxzt\" ,width:50},{ \"header\":\"电参工况\",\"dataIndex\":\"egkmc\" },"
-				+ "{ \"header\":\"运行时间(h)\",\"dataIndex\":\"yxsj\" },{ \"header\":\"运行时率(%)\",\"dataIndex\":\"yxsl\" },{ \"header\":\"运行时间段\",\"dataIndex\":\"yxsjd\" },"
-				+ "{ \"header\":\"A相电流(A)\",\"dataIndex\":\"currenta\" },{ \"header\":\"B相电流(A)\",\"dataIndex\":\"currentb\" },{ \"header\":\"C相电流(A)\",\"dataIndex\":\"currentc\" },"
-				+ "{ \"header\":\"A相电压(A)\",\"dataIndex\":\"voltagea\" },{ \"header\":\"B相电压(V)\",\"dataIndex\":\"voltageb\" },{ \"header\":\"C相电压(V)\",\"dataIndex\":\"voltagec\" },"
-				+ "{ \"header\":\"有功功耗(kW·h)\",\"dataIndex\":\"activepowerconsumption\" },{ \"header\":\"无功功耗(kVar·h)\",\"dataIndex\":\"reactivepowerconsumption\" },"
-				+ "{ \"header\":\"有功功率(kW)\",\"dataIndex\":\"activepower\" },{ \"header\":\"无功功率(kVar)\",\"dataIndex\":\"reactivepower\" },{ \"header\":\"功率因数\",\"dataIndex\":\"powerfactor\" },"
-				+ "{ \"header\":\"频率(Hz)\",\"dataIndex\":\"bpyxpl\" },"
-				+ "{ \"header\":\"日用电量(kW·h)\",\"dataIndex\":\"rydl\" }"
-				+ "]";
-		String sql="select "
-				+ " jlbh,to_char(t.cjsj@'yyyy-mm-dd hh24:mi:ss') as cjsj,yxzt,"
-				+ " egklx,egkmc,egklxstr,yxsj,yxsl,t.yxsjd,"
-				+ " currenta,currentb,currentc,voltagea,voltageb,voltagec,activepowerconsumption,reactivepowerconsumption,activepower,reactivepower,powerfactor,bpyxpl,rydl "
-				+ " from v_distretedata t "
-				+ " where t.jh='"+wellName+"' and t.cjsj between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),1)+"','yyyy-mm-dd') "
-				+ " order by t.cjsj desc";
-		String finalSql="";
-		
-		
-		int maxvalue=pager.getLimit()+pager.getStart();
-		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
-		return getResult.replaceAll("null", "");
-	}
-	
 	public String getDiagramDataList(String orgId,String wellName,String startDate,String endDate, Page pager)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String columns=service.showTableHeadersColumns("elecInverDiagram_Realtime");
@@ -938,13 +910,13 @@ public class PSToFSService<T> extends BaseService<T> {
 				load360CurveData=StringManagerUtils.CLOBtoString(realClob).split(",");
 			}
 	        dataSbf.append("[");
-	        if(StringManagerUtils.StringToFloat(angle360CurveData[0])>0){ //如果是逆时针 将最后0°的数据补充到最前端360°数据
+	        if(StringManagerUtils.stringToFloat(angle360CurveData[0])>0){ //如果是逆时针 将最后0°的数据补充到最前端360°数据
 	        	dataSbf.append("{\"angle\":360,");
 		        dataSbf.append("\"position\":"+position360CurveData[position360CurveData.length-1]+",");
 		        dataSbf.append("\"load\":"+load360CurveData[load360CurveData.length-1]+"},");
 	        }
 	        for(int i=0;i<angle360CurveData.length;i++){
-	        	dataSbf.append("{\"angle\":"+(int)StringManagerUtils.StringToFloat(angle360CurveData[i])+",");
+	        	dataSbf.append("{\"angle\":"+(int)StringManagerUtils.stringToFloat(angle360CurveData[i])+",");
 		        dataSbf.append("\"position\":"+position360CurveData[i]+",");
 		        dataSbf.append("\"load\":"+load360CurveData[i]+"},");
 	        }
@@ -952,7 +924,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	        	dataSbf.deleteCharAt(dataSbf.length() - 1);
 	        }
 	        
-	        if(StringManagerUtils.StringToFloat(angle360CurveData[0])==0){ //如果是顺时针 将最前0°数据补充到最后段360°数据
+	        if(StringManagerUtils.stringToFloat(angle360CurveData[0])==0){ //如果是顺时针 将最前0°数据补充到最后段360°数据
 	        	dataSbf.append(",{\"angle\":360,");
 		        dataSbf.append("\"position\":"+position360CurveData[0]+",");
 		        dataSbf.append("\"load\":"+load360CurveData[0]+"}");
@@ -1288,47 +1260,6 @@ public class PSToFSService<T> extends BaseService<T> {
         result_json.append("}");
         
 		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getRealtimeDetailsComboxItems(String type) throws Exception {
-		//String orgIds = this.getUserOrgIds(orgId);
-		StringBuffer result_json = new StringBuffer();
-		String sql = "";
-		if (type.equalsIgnoreCase("egklx")) {
-			sql = " select workingconditionname as boxkey,workingconditionname as boxval from t_workstatus t where (workingconditioncode between 1300 and 1399) or workingconditioncode in(1103,1202) order by workingconditioncode";
-		}else if (type.equalsIgnoreCase("yxsl")) {
-			sql = " select t.s_level as boxkey,t.s_level as boxval from t_outputstatistics t where t.s_type='SCSL' order by t.s_code";
-		}else if (type.equalsIgnoreCase("glph")) {
-			sql = " select t.s_level as boxkey,t.s_level as boxval from t_outputstatistics t where t.s_type='GLPHD' order by t.s_code";
-		}else if (type.equalsIgnoreCase("dlph")) {
-			sql = " select t.s_level as boxkey,t.s_level as boxval from t_outputstatistics t where t.s_type='PHD' order by t.s_code";
-		}else if (type.equalsIgnoreCase("rydl")) {
-			sql = " select t.s_level as boxkey,t.s_level as boxval from t_outputstatistics t where t.s_type='RYDL' order by t.s_code";
-		}
-		try {
-			int totals=this.getTotalCountRows(sql);
-			List<?> list = this.findCallSql(sql);
-			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().length() > 1) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]}");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
 	}
 	
 	

@@ -291,7 +291,7 @@ public class MQTTServerTast {
 									String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 									if(format.parse(currentTime).getTime()>format.parse(timerCorrectionStart).getTime()
 											&&format.parse(currentTime).getTime()<format.parse(timerCorrectionEnd).getTime()
-											&&Math.abs(format.parse(currentTime).getTime()/1000-format.parse(transferDiscrete.getAcquisitionTime()).getTime()/1000)>StringManagerUtils.StringToInteger(Config.getTimerCorrectionLimit())){
+											&&Math.abs(format.parse(currentTime).getTime()/1000-format.parse(transferDiscrete.getAcquisitionTime()).getTime()/1000)>StringManagerUtils.stringToInteger(Config.getTimerCorrectionLimit())){
 										//设置该设备时间校正标准，接收完当天日报后，进行校正
 										map.put(pubTimerCorrectionTopic, true);
 //										sendMessage(pubTimerCorrectionTopic,currentTime,false);

@@ -162,69 +162,6 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		return null;
 	}
 	
-	
-	@RequestMapping("/exportSingleFSDiagramAnalysisDataExcel")
-	public String exportSingleFSDiagramAnalysisDataExcel() throws Exception {
-		orgId = ParamUtils.getParameter(request, "orgId");
-		orgId = findCurrentUserOrgIdInfo(orgId);
-		Gson g = new Gson();
-		StringBuffer strBuf = new StringBuffer();
-		wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
-		String bjbz = ParamUtils.getParameter(request, "bjbz");
-		String gklx = ParamUtils.getParameter(request, "gklx");
-		String gkmc = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "gkmc"),"utf-8");
-		String egkmc = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "egkmc"),"utf-8");
-		String cylLevel = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "cylLevel"),"utf-8");
-		String cylBdLevel = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "cylBdLevel"),"utf-8");
-		String xtxlLevel = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "xtxlLevel"),"utf-8");
-		String dmxlLevel = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "dmxlLevel"),"utf-8");
-		String jxxlLevel = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "jxxlLevel"),"utf-8");
-		String phzt = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "phzt"),"utf-8");
-		String glphzt = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "glphzt"),"utf-8");
-		String yxzt = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "yxzt"),"utf-8");
-		String yxsl = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "yxsl"),"utf-8");
-		String txzt = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "txzt"),"utf-8");
-		String txsl = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "txsl"),"utf-8");
-		String rhdlLevel = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "rhdlLevel"),"utf-8");
-		String type = ParamUtils.getParameter(request, "type");
-		String wellType = ParamUtils.getParameter(request, "wellType");
-		String startDate = ParamUtils.getParameter(request, "startDate");
-		String endDate = ParamUtils.getParameter(request, "endDate");
-		this.pager = new Page("pagerForm", request);
-		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
-		String fields = ParamUtils.getParameter(request, "fields");
-		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
-		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.jssj),'yyyy-mm-dd') from t_outputwellhistory t where t.jbh=( select t2.jlbh from t_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
-			List list = this.service.reportDateJssj(sql);
-			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
-				endDate = list.get(0).toString();
-			} else {
-				endDate = StringManagerUtils.getCurrentTime();
-			}
-		}
-		
-		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
-		}
-		
-		String data = diagnosisAnalysisOnlyService.exportSingleFSDiagramAnalysisDataExcel(orgId, wellName, pager,bjbz,gklx,gkmc,egkmc,xtxlLevel,dmxlLevel,jxxlLevel,phzt,glphzt,cylLevel,cylBdLevel,yxzt,yxsl,txzt,txsl,rhdlLevel,
-				type,wellType,
-				startDate,endDate);
-		
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,data);
-		return null;
-	}
-	
 	/**
 	 * <p>
 	 * 描述：工况统计饼图、柱状图json数据
@@ -436,48 +373,48 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		if (null != userInfo) {
 			String getUpwd = userInfo.getUserPwd();
 			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
-			if (getOld.equals(getUpwd)&&(int)StringManagerUtils.StringToFloat(controlValue)>0) {
+			if (getOld.equals(getUpwd)&&(int)StringManagerUtils.stringToFloat(controlValue)>0) {
 				for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
 					if(wellName.equals(EquipmentDriverServerTast.units.get(i).getWellName())){
 						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
-							EquipmentDriverServerTast.units.get(i).setRunStatusControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setRunStatusControl(StringManagerUtils.stringToInteger(controlValue));
 						}else if("frequencySetValue".equalsIgnoreCase(controlType)){//设置变频频率
-							EquipmentDriverServerTast.units.get(i).setFrequencyControl(StringManagerUtils.StringToFloat(controlValue));
+							EquipmentDriverServerTast.units.get(i).setFrequencyControl(StringManagerUtils.stringToFloat(controlValue));
 						}else if("setGTCycle".equalsIgnoreCase(controlType)){//设置功图采集周期
-							EquipmentDriverServerTast.units.get(i).setFSDiagramIntervalControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setFSDiagramIntervalControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceControlMode".equalsIgnoreCase(controlType)){//设置平衡调节远程触发控制
-							EquipmentDriverServerTast.units.get(i).setBalanceControlModeControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceControlModeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceCalculateMode".equalsIgnoreCase(controlType)){//设置平衡计算模式
-							EquipmentDriverServerTast.units.get(i).setBalanceCalculateModeControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceCalculateModeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceAwayTime".equalsIgnoreCase(controlType)){//设置平衡远离支点调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimeControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceCloseTime".equalsIgnoreCase(controlType)){//设置平衡接近支点调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimeControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceAwayTimePerBeat".equalsIgnoreCase(controlType)){//设置平衡远离支点每拍调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimePerBeatControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceCloseTimePerBeat".equalsIgnoreCase(controlType)){//设置平衡接近支点每拍调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimePerBeatControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceStrokeCount".equalsIgnoreCase(controlType)){//设置参与平衡计算冲程次数
-							EquipmentDriverServerTast.units.get(i).setBalanceStrokeCountControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceStrokeCountControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceOperationUpLimit".equalsIgnoreCase(controlType)){//设置平衡调节上限
-							EquipmentDriverServerTast.units.get(i).setBalanceOperationUpLimitControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceOperationUpLimitControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceOperationDownLimit".equalsIgnoreCase(controlType)){//设置平衡调节下限
-							EquipmentDriverServerTast.units.get(i).setBalanceOperationDownLimitControl(StringManagerUtils.StringToInteger(controlValue));
+							EquipmentDriverServerTast.units.get(i).setBalanceOperationDownLimitControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						break;
 					}
 				}
 				jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
-			}else if(!((int)StringManagerUtils.StringToFloat(controlValue)>0)){
+			}else if(!((int)StringManagerUtils.stringToFloat(controlValue)>0)){
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>数据有误，请检查输入数据！</font>'}";
 			} else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>您输入的密码有误！</font>'}";

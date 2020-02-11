@@ -86,28 +86,6 @@ function UpdateProductionInDataInfoSubmitBtnForm() {
     return false;
 };
 
-// 复值
-SelectProductionInDataAttrInfoGridPanel = function () {
-    var dataattr_row = Ext.getCmp("ProductionInInfoGridPanel_Id")
-        .getSelectionModel().getSelection();
-    var jlbh = dataattr_row[0].data.jlbh;
-    var jbh = dataattr_row[0].data.jbh;
-    var jh = dataattr_row[0].data.jh;
-    var rpzrl = dataattr_row[0].data.rpzrl;
-    var sjrzrl = dataattr_row[0].data.sjrzrl;
-    var jkzryl = dataattr_row[0].data.jkzryl;
-    var ty = dataattr_row[0].data.ty;
-    var jklw = dataattr_row[0].data.jklw;
-    Ext.getCmp('jlbh_Id').setValue(jlbh);
-    Ext.getCmp('jh_Id').setValue(jbh);
-    Ext.getCmp('jh_Id').setRawValue(jh);
-    Ext.getCmp('rpzrl_Id').setValue(rpzrl);
-    Ext.getCmp('sjrzrl_Id').setValue(sjrzrl);
-    Ext.getCmp('jkzryl_Id').setValue(jkzryl);
-    Ext.getCmp('ty_Id').setValue(ty);
-    Ext.getCmp('jklw_Id').setValue(jklw);
-};
-
 // open win
 function addProductionInInfo() {
         var win_Obj = Ext.getCmp("ProductionIn_addwin_Id")
@@ -144,20 +122,4 @@ function delProductionInInfo() {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
     // Ext.Msg.alert("title", "delete ProductionIn Info!");
-}
-
-modifyProductionInInfo = function () {
-    var win_Obj = Ext.getCmp("ProductionIn_addwin_Id")
-    if (win_Obj != undefined) {
-        win_Obj.destroy();
-    }
-    var ProductionInUpdateInfoWindow = Ext.create(
-        "AP.view.productionData.ProductionInInfoWindow", {
-            title: cosog.string.editproductionIn
-        }).show();
-    Ext.getCmp('jh_Id').readOnly = true;
-    SelectProductionInDataAttrInfoGridPanel();
-    Ext.getCmp("addFormProductionIn_Id").hide();
-    Ext.getCmp("updateFormProductionIn_Id").show();
-
 }

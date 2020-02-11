@@ -13,9 +13,7 @@ Ext.application({
 	appFolder : context + '/app',
 	// 应用初始化时，调用的controller
 	controllers : [ 'frame.IframeControl', 'frame.MainIframeControl', 'right.RightOrgInfoControl', 'right.RightInfoControl',
-        'device.PumpController', 'device.PumpingunitController',
-        'device.StrokeController', 'device.StrokefrequencyController', 'productionData.ProductionInInfoControl',
-        'productionData.ProductionOutInfoControl', 'alarmSet.MoveAlarmSetInfoController' ],
+        'alarmSet.MoveAlarmSetInfoController' ],
 	launch : function() {
 		Ext.tip.QuickTipManager.init();
 	},

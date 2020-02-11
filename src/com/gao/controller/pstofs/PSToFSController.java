@@ -119,7 +119,7 @@ public class PSToFSController extends BaseController {
 	
 	@RequestMapping("/getInverOptimizeData")
 	public String getInverOptimizeData() throws Exception {
-		int recordCount =StringManagerUtils.StringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		String wellInformationName = ParamUtils.getParameter(request, "wellInformationName");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		User user=null;
@@ -453,7 +453,7 @@ public class PSToFSController extends BaseController {
 					data+="\"activePowerC\":"+activePowerCList.get(i)+"},";
 					activePowerSum+=activePowerCList.get(i);
 				}
-//				data+="\"activePowerSum\":"+StringManagerUtils.StringToFloat(activePowerSum+"", 3)+"},";
+//				data+="\"activePowerSum\":"+StringManagerUtils.stringToFloat(activePowerSum+"", 3)+"},";
 				result_json.append(data);
 			}
 			if(result_json.toString().endsWith(",")){
@@ -522,44 +522,6 @@ public class PSToFSController extends BaseController {
 		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getDiscreteData")
-	public String getDiscreteData() throws Exception {
-		String wellName=ParamUtils.getParameter(request, "wellName");
-		String startDate = ParamUtils.getParameter(request, "startDate");
-		String endDate = ParamUtils.getParameter(request, "endDate");
-		this.pager = new Page("pagerForm", request);
-		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from t_discretedata t where t.wellid=( select t2.id from t_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
-			List list = this.commonDataService.reportDateJssj(sql);
-			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
-				endDate = list.get(0).toString();
-			} else {
-				endDate = StringManagerUtils.getCurrentTime();
-			}
-		}
-		
-		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
-		}
-		pager.setStart_date(startDate);
-		pager.setEnd_date(endDate);
-		
-		String json = PSToFSService.getDiscreteData(wellName,startDate,endDate, pager);
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.print(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return null;
 	}
 	
@@ -779,7 +741,7 @@ public class PSToFSController extends BaseController {
     				transferDiagram.setRPM(new ArrayList<Float>());
     				if(transferDiagram.getInterval()!=null&&transferDiagram.getInterval().size()>0){
     					for(int i=0;i<transferDiagram.getInterval().size();i++){
-        					float rpm=StringManagerUtils.StringToFloat(((float)1*60*1000*1000*1000)/transferDiagram.getInterval().get(i)+"", 2);
+        					float rpm=StringManagerUtils.stringToFloat(((float)1*60*1000*1000*1000)/transferDiagram.getInterval().get(i)+"", 2);
         					transferDiagram.getRPM().add(rpm);
         				}
     				}
@@ -1223,24 +1185,6 @@ public class PSToFSController extends BaseController {
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	
-	@RequestMapping("/getRealtimeDetailsComboxItems")
-	public String getRealtimeDetailsComboxItems() throws Exception {
-		this.pager=new Page("pageForm",request);
-		String type = ParamUtils.getParameter(request, "type");
-		
-		String json = PSToFSService.getRealtimeDetailsComboxItems(type);
-//		HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-//		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
 		return null;

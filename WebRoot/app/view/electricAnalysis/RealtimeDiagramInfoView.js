@@ -44,7 +44,7 @@ Ext.define("AP.view.electricAnalysis.RealtimeDiagramInfoView", { // 定义反演
         });
         var wellCombo = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: 'electricAnalysisRealtimeDiagramWellCombo_Id',
                 store: wellListStore,
                 labelWidth: 35,

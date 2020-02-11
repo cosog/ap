@@ -48,7 +48,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
         });
         var simpleCombo_A = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.jh,
+                fieldLabel: cosog.string.wellName,
                 id: 'ScrewPumpDailyReportPaneljh_Id',
                 store: jhStore_A,
                 labelWidth: 35,

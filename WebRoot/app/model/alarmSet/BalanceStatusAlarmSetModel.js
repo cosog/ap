@@ -4,16 +4,16 @@ Ext.define('AP.model.alarmSet.BalanceStatusAlarmSetModel', {
     	name: 'id',
     	type: 'int'
      },{
-    	 name: 'gkmc',
+    	 name: 'workingConditionName',
     	 type: 'string'
      },{
-    	 name: 'gklx',
+    	 name: 'workingConditionCode',
     	 type: 'int'
      },{
-    	 name: 'minvalue',
+    	 name: 'minValue',
     	 type: 'number'
      },{
-    	 name: 'maxvalue',
+    	 name: 'maxValue',
     	 type: 'number'
      }],
     idProperty: 'threadid'

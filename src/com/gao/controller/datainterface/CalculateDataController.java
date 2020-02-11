@@ -67,34 +67,6 @@ public class CalculateDataController extends BaseController{
 	@Autowired
 	private CommonDataService commonDataService;
 	
-	@RequestMapping("/getRealtimeCalculationData")
-	public String getRealtimeCalculationData() throws SQLException, IOException, ParseException{
-		Gson gson = new Gson();
-		String url=Config.getCalculateHttpServerURL();
-		String urlArr[]=url.split(",");
-		String wellId=ParamUtils.getParameter(request, "wellId");
-		String FSDiagramId=ParamUtils.getParameter(request, "FSDiagramId");
-		String responseData="";
-		String requestData=calculateDataService.getCalculateRequestData(wellId, FSDiagramId);
-		responseData=StringManagerUtils.sendPostMethod(urlArr[0], requestData,"utf-8");
-		java.lang.reflect.Type type = new TypeToken<CalculateResponseData>() {}.getType();
-		CalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
-		String json = "success";
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.write(requestData+","+responseData);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
 		
 	
 	@RequestMapping("/getBatchCalculateTime")
@@ -193,7 +165,7 @@ public class CalculateDataController extends BaseController{
 								int runStatus=1;
 								if(!"0".equals(obj[61]+"")){//时率来源为人工录入时，不进行时率计算
 									if("1".equals(obj[61]+"")){//时率来源为DI信号时
-										runStatus=StringManagerUtils.StringToInteger(obj[62]+"");
+										runStatus=StringManagerUtils.stringToInteger(obj[62]+"");
 									}else if("2".equals(obj[61]+"")&&electricCalculateResponseData!=null&&electricCalculateResponseData.getResultStatus()==1){//时率来源为电参计算时
 										runStatus=electricCalculateResponseData.getRunStatus();
 									}else if("3".equals(obj[61]+"")&&calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1){//时率来源为转速计算时
@@ -252,57 +224,6 @@ public class CalculateDataController extends BaseController{
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.write(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-	@RequestMapping("/totalCalculation")
-	public String totalCalculation() throws ParseException{
-		String tatalDate=ParamUtils.getParameter(request, "date");
-		String wellName=ParamUtils.getParameter(request, "wellName");
-		if(StringManagerUtils.isNotNull(tatalDate)){
-			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
-		}else{
-			tatalDate=StringManagerUtils.getCurrentTime();
-		}
-		List<String> requestDataList=calculateDataService.getTotalCalculationDataList(tatalDate,wellName);
-		String url=Config.getTotalCalculateHttpServerURL();
-		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
-			try {
-//				System.out.println(requestDataList.get(i));
-				Gson gson = new Gson();
-				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
-				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
-				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
-				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
-				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
-				
-				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-					calculateDataService.saveTotalCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
-				}else{
-					System.out.println(requestDataList.get(i));
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				continue;
-			}
-		}
-		
-		System.out.println("汇总完成");
-		
-		String json ="";
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
 		PrintWriter pw;
 		try {
 			pw = response.getWriter();

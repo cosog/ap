@@ -892,7 +892,7 @@ function initLoadCurveChart(years, values, tickInterval, divId) {
 				yAxis : {
 					lineWidth : 1,
 					title : {
-						text : cosog.string.zh,
+						text : cosog.string.load,
 						style : {
 							color : '#000000',
 							fontWeight : 'bold'
@@ -4764,7 +4764,7 @@ function initBalanceSurfaceCardChart(wellName,pointdata, acquisitionTime,stroke,
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.zh,   // 载荷（kN） 
+		                text: cosog.string.load,   // 载荷（kN） 
                         style: {
                             color: '#000',
                             fontWeight: 'normal'
@@ -4896,7 +4896,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.zh   // 载荷（kN） 
+		                text: cosog.string.load   // 载荷（kN） 
 //                        style: {
 //                            color: '#000',
 //                            fontWeight: 'normal'
@@ -5038,7 +5038,7 @@ function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtd
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.zh   // 载荷（kN） 
+		                text: cosog.string.load   // 载荷（kN） 
 //                        style: {
 //                            color: '#000',
 //                            fontWeight: 'normal'
@@ -5630,7 +5630,7 @@ function initMultiSurfaceCardChart(series, title, jh, cjsj, divid,upperLoadLine,
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.zh    // 载荷（kN）                                                          
+		                text: cosog.string.load    // 载荷（kN）                                                          
 		            },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            //endOnTick: false,        //是否强制轴线在标线处结束   
@@ -9155,7 +9155,7 @@ function initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,s
 		        }, 
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.zh   // 载荷（kN） 
+		                text: cosog.string.load   // 载荷（kN） 
                     },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            minorTickInterval: '',   // 不显示次刻度线
@@ -9412,7 +9412,7 @@ showPSDiagramOverlayChart = function(get_rawData,divid,curveType,visible) {
 	return false;
 }
 
-function initFSDiagramOverlayChart(series, title, jh, cjsj, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
+function initFSDiagramOverlayChart(series, title, wellName, acquisitionTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -9423,7 +9423,7 @@ function initFSDiagramOverlayChart(series, title, jh, cjsj, divid,upperLoadLine,
 		        	text: title
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: jh+' ['+cjsj+']'                                                      
+		            text: wellName+' ['+acquisitionTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -9448,7 +9448,7 @@ function initFSDiagramOverlayChart(series, title, jh, cjsj, divid,upperLoadLine,
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.zh    // 载荷（kN）                                                          
+		                text: cosog.string.load    // 载荷（kN）                                                          
 		            },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            //endOnTick: false,        //是否强制轴线在标线处结束   

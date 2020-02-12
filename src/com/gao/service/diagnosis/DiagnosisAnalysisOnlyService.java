@@ -680,16 +680,18 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getAnalysisAndAcqAndControlData(String recordId,String wellName,int userId)throws Exception {
+	public String getAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String tableName="v_comprehensiverealtimedata";
 		if(StringManagerUtils.isNotNull(wellName)){
 			tableName="v_comprehensivehistorydata";
 		}
 		String isControlSql="select t2.role_flag from sc_user t,sc_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
-		List<?> isControlList = this.findCallSql(isControlSql);
-		String isControl=isControlList.size()>0?isControlList.get(0).toString():"0";
-		
+		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
+				+ " from T_WELLINFORMATION t,t_acquisitionunit t2,t_acquisitionitems t3,t_acq_unit_item t4 "
+				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
+				+ " and t.wellname='朝68-定112' and t3.operationtype=2 "
+				+ " order by t3.seq";
 		String sql="select wattDegreeBalance,iDegreeBalance,"
 				+ " liquidWeightProduction,oilWeightProduction,waterCut,"
 				+ " theoreticalProduction,availablePlungerstrokeProd,pumpClearanceLeakProd,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd,"
@@ -701,11 +703,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo,"
 				+ " rodString,"
 				+ " upperLoadLineOfExact,"
-				
-//				+ " yjzdzh,yjzxzh,yjzdyl,yjzxyl,yjxyyl,yjylbfb,"
-//				+ " ejzdzh,ejzxzh,ejzdyl,ejzxyl,ejxyyl,ejylbfb,"
-//				+ " sjzdzh,sjzxzh,sjzdyl,sjzxyl,sjxyyl,sjylbfb,"
-//				+ " sijzdzh,sijzxzh,sijzdyl,sijzxyl,sijxyyl,sijylbfb,"
 				+ " tubingPressure,casingPressure,wellheadFluidTemperature,"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
@@ -720,8 +717,20 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " videourl,"
 				+ " runRange"
 				+ " from "+tableName+" t where id="+recordId;
+		List<?> isControlList = this.findCallSql(isControlSql);
+		List<?> controlItemsList = this.findCallSql(controlItemSql);
 		List<?> list = this.findCallSql(sql);
+		String isControl=isControlList.size()>0?isControlList.get(0).toString():"0";
 		result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
+		result_json.append("\"controlItems\":[");
+		for(int i=0;i<controlItemsList.size();i++){
+			Object[] obj=(Object[]) controlItemsList.get(i);
+			result_json.append("{\"tiem\":\""+obj[2]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],");
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			result_json.append("\"wattDegreeBalance\":\""+obj[0]+"\",");

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<xml-body>-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="  
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+	<!-- 启用spring注解支持 -->
+	<context:annotation-config />
+	<!-- 只解析除controller之外的注解(即解析service、dao), 避免重复加载导致事务失效  -->
+	<context:component-scan base-package="com.gao.*">
+		<!-- annotation为spting-mvc中解析的内容 -->
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+    
+	<!--<context:component-scan base-package="com.gao.test" />
+	<context:component-scan base-package="com.gao.websocket.config" />  
+                 
+   	<context:component-scan base-package="com.gao.websocket.handler">  
+   	</context:component-scan>  
+                 
+   	<context:component-scan base-package="com.gao.websocket.interceptor">  
+   	</context:component-scan> -->
+   	<!-- 开启这个配置，spring才能识别@Scheduled注解   -->  
+    <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>  
+    <task:scheduler id="qbScheduler" pool-size="10"/>  
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<value>classpath:config/config.properties</value>
+		</property>
+	</bean>
+	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
+		<property name="driver" value="${driver}" />
+		<property name="driverUrl" value="${driverUrl}" />
+		<property name="user" value="${user}" />
+		<property name="password" value="${password}" />
+		<property name="maximumConnectionCount">
+			<value>100</value>
+		</property>
+		<property name="minimumConnectionCount">
+			<value>10</value>
+		</property>
+		<property name="statistics">
+			<value>1m,15m,1d</value>
+		</property>
+		<property name="simultaneousBuildThrottle">
+			<value>30</value>
+		</property>
+	</bean>
+	<!-- 配置sessionFactory，把数据源注入给session工厂-->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 扫描实体位置，注入实体-->
+		<property name="packagesToScan">
+			<list>
+				<value>com.gao.model</value>
+				<value>com.gao.model.cbm</value>
+				<value>com.gao.model.data</value>
+				<value>com.gao.model.alarm</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<!-- 数据库方言 -->
+				<prop key="hibernate.dialect">${dialect}</prop>
+				<!-- 控制台是否打印SQL -->
+				<prop key="hibernate.show_sql">false</prop>
+				<!-- 控制台是否格式化SQL语句显示样式 -->
+				<prop key="hibernate.format_sql">false</prop>
+				<!-- 启用服务器时，检查hbm文件是否与数据库对应，不对应则抛出异常 -->
+				<!--<prop key="hibernate.hbm2ddl.auto">true</prop>-->
+				<prop key="houseKeepingSleepTime">90000</prop><!-- proxool自动侦查各个链接状态的毫秒数，侦查到空闲的链接就马上回收，超时的销毁 -->
+				<!-- 指定缓存提供商 -->
+<!-- 				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop> -->
+				<prop key="hibernate.generate_statistics">true</prop>
+				<!-- <prop key="hibernate.connection.release_mode">auto</prop> -->
+				<prop key="hibernate.connection.release_mode">after_transaction</prop>
+				<prop key="hibernate.autoReconnect">true</prop>
+				<prop key="hibernate.jdbc.use_scrollable_resultset">true</prop>
+				<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 配置事务 -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 配置切面 -->
+	<aop:config>
+		<!-- 只对业务逻辑层（service层）实施事务 -->
+		<aop:pointcut id="bussinessService"
+			expression="execution(* com.gao.service..*.*(..))" />
+		<aop:advisor pointcut-ref="bussinessService" advice-ref="txAdvice" />
+	</aop:config>
+	<!-- 配置事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="bulk*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到-->
+			<tx:method name="load*" propagation="REQUIRED"  read-only="true" />
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="count*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" />
+            <tx:method name="list*" propagation="REQUIRED" read-only="true" />
+            <!-- <tx:method name="*" read-only="true" /> -->
+            <tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+</beans>
+<!--</xml-body>-->

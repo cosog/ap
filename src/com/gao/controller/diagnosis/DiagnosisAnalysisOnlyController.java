@@ -205,9 +205,10 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String recordId = ParamUtils.getParameter(request, "id");
 		wellName = ParamUtils.getParameter(request, "wellName");
+		String selectedWellName = ParamUtils.getParameter(request, "selectedWellName");
 		this.pager = new Page("pagerForm", request);
 		
-		String json =diagnosisAnalysisOnlyService.getAnalysisAndAcqAndControlData(recordId,wellName,user.getUserNo());
+		String json =diagnosisAnalysisOnlyService.getAnalysisAndAcqAndControlData(recordId,wellName,selectedWellName,user.getUserNo());
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

@@ -170,7 +170,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if (acquisitionItem.getParentid() == 0) {
 				flag = true;
 				json = r.recursionAcquisitionItemTreeFn(acquisitionItemlist, acquisitionItem);
-				break;
+//				break;
 			}
 
 		}

@@ -237,6 +237,7 @@ cosog.string.imageInstantquery='实时查询';
 cosog.string.history='历史查询';
 cosog.string.imageInstantqueryAllday='全天查询';
 cosog.string.position='位移(m)';
+cosog.string.load='载荷(kN)';
 cosog.string.fmax='最大载荷kN:';
 cosog.string.fmin='最小载荷kN:';
 cosog.string.stroke='冲程m:';

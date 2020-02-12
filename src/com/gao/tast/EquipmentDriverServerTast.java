@@ -409,40 +409,6 @@ public class EquipmentDriverServerTast {
 		return 1;
 	}
 	
-//	public static void closeDBConnection(){  
-//        if(conn != null){  
-//            try{
-//            	if(stmt!=null){
-//            		stmt.close();
-//            	}
-//            	if(pstmt!=null){
-//            		pstmt.close();
-//            	}
-//            	if(rs!=null){
-//            		rs.close();
-//            	}
-//                conn.close();  
-//            }catch(SQLException e){
-//                e.printStackTrace();  
-//            }finally{  
-//                try{  
-//                	if(stmt!=null){
-//                		stmt.close();
-//                	}
-//                	if(pstmt!=null){
-//                		pstmt.close();
-//                	}
-//                	if(rs!=null){
-//                		rs.close();
-//                	}
-//                }catch(SQLException e){  
-//                    e.printStackTrace();  
-//                }  
-//                conn = null;  
-//            }  
-//        }  
-//    }
-	
 	@SuppressWarnings("static-access")
 	public static void initDriverConfig(){
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();

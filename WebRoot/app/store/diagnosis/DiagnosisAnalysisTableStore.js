@@ -415,15 +415,16 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
             }
         	
     		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightRunRangeTextArea_Id").setValue(get_rawData.runRange);
-//    		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightResultCodeTextArea_Id").setValue(get_rawData.workingConditionString_Elec);
     		
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.id;
         	var wellName=Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
+        	var selectedWellName  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.wellName;
         	var new_params = {
         			id: id,
-        			wellName:wellName
+        			wellName:wellName,
+        			selectedWellName:selectedWellName
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

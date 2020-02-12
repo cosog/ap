@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+	<diskStore path="java.io.tmpdir/acb" />
+
+	<!-- 二级缓存（不包括查询缓存）默认这个配置，即：没有为某个实体专门配置Cache时默认使用该配置 -->
+	<defaultCache maxElementsInMemory="10000" eternal="true"
+		timeToIdleSeconds="10" timeToLiveSeconds="10" overflowToDisk="true"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<!-- 自定义二级缓存, 需要在代码中使用Query.setCacheRegion("zsjQueryCache"); 或 HibernateTemplate.setQueryCacheRegion("zsjQueryCache"); -->
+	<Cache name="zsjTowCache" maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="true"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU" />
+
+	<!-- 直接指定name为实体 包名称.类名称，这样实体就会直接使用这个策略，不用再实体中具体指定或 代码设置了 -->
+	<Cache name="com.gao.model"
+		maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" overflowToDisk="true" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />
+
+	<!-- 以下配置的都是查询缓冲 ，查询缓存（不包括二级缓存）默认这个配置，即：没有为某个实体专门配置Cache时默认使用该配置 -->
+	<cache name="org.hibernate.cache.StandardQueryCache"
+		maxElementsInMemory="50" eternal="false" timeToIdleSeconds="10"
+		timeToLiveSeconds="10" overflowToDisk="false" />
+
+	<!-- 用于保存查询最近查询的一系列表的时间戳 -->
+	<cache name="org.hibernate.cache.UpdateTimestampsCache"
+		maxElementsInMemory="5000" eternal="true" overflowToDisk="false" />
+
+	<!-- 自定义查询缓存策略，需要在代码中使用Query.setCacheRegion("zsjQueryCache"); 或 HibernateTemplate.setQueryCacheRegion("zsjQueryCache"); -->
+	<cache name="zsjQueryCache" maxElementsInMemory="50" eternal="false"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" overflowToDisk="false" />
+</ehcache>

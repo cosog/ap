@@ -12,7 +12,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
          * 定义降序的groupingStore 
          */
         var jhStore_A = new Ext.data.JsonStore({
-        	pageSize:defaultJhComboxSize,
+        	pageSize:defaultWellComboxSize,
         	fields: [{
                 name: "boxkey",
                 type: "string"

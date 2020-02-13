@@ -7,7 +7,7 @@ Ext.define("AP.view.productionData.ScrewPumpProductionDataPanel", {
     initComponent: function () {
         var me = this;
         var screwPumpStore = new Ext.data.JsonStore({
-        	pageSize:defaultJhComboxSize,
+        	pageSize:defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

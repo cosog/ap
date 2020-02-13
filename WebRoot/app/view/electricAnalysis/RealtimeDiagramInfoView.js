@@ -8,7 +8,7 @@ Ext.define("AP.view.electricAnalysis.RealtimeDiagramInfoView", { // 定义反演
     initComponent: function () {
         var me = this;
         var wellListStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

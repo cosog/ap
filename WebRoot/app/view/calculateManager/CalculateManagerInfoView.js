@@ -38,7 +38,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             afterPageText: "共{0}页"
         });
         var wellListStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

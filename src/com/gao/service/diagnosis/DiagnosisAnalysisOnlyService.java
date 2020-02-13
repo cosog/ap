@@ -690,7 +690,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
 				+ " from T_WELLINFORMATION t,t_acquisitionunit t2,t_acquisitionitems t3,t_acq_unit_item t4 "
 				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
-				+ " and t.wellname='朝68-定112' and t3.operationtype=2 "
+				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
 				+ " order by t3.seq";
 		String sql="select wattDegreeBalance,iDegreeBalance,"
 				+ " liquidWeightProduction,oilWeightProduction,waterCut,"

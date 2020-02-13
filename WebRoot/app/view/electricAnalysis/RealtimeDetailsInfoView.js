@@ -5,7 +5,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeDetailsInfoView', {
     border: false,
     initComponent: function () {
         var wellComboBoxStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

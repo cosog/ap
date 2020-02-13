@@ -7,7 +7,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
         var me = this;
 //    	var store =Ext.create('AP.store.diagnosis.SingleAnalysisiListStore');
         var wellComboBoxStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

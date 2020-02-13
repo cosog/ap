@@ -9,7 +9,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
         var me = this;
         var org_Id = Ext.getCmp('leftOrg_Id').getValue();
         var wellListStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: 'boxkey',
                 type: 'string'

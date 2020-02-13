@@ -8,7 +8,7 @@ Ext.define('AP.view.reservoirProperty.ReservoirPropertyInfoGridPanel', {
     initComponent: function () {
     	
     	var resStore = new Ext.data.JsonStore({
-            pageSize:defaultJhComboxSize,
+            pageSize:defaultWellComboxSize,
             fields: [{
                 name: 'boxkey',
                 type: 'string'

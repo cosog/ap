@@ -13,7 +13,7 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
          * 定义降序的groupingStore 
          */
         var wellListStore = new Ext.data.JsonStore({
-        	pageSize:defaultJhComboxSize,
+        	pageSize:defaultWellComboxSize,
         	fields: [{
                 name: "boxkey",
                 type: "string"

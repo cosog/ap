@@ -8,7 +8,7 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
         var me = this;
        
         var jhStore = new Ext.data.JsonStore({
-        	pageSize:defaultJhComboxSize,
+        	pageSize:defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

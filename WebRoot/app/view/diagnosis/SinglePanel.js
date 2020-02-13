@@ -7,7 +7,7 @@ Ext.define('AP.view.diagnosis.SinglePanel', {
     initComponent: function () {
 //    	Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
         var jhStore_A = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

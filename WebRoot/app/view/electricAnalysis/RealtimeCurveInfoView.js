@@ -7,7 +7,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
     initComponent: function () {
     	var store =Ext.create('AP.store.electricAnalysis.ElectricRealtimeCurveAnalysisListStore');
         var wellComboBoxStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

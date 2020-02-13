@@ -8,7 +8,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
     initComponent: function () {
 //        var wellStore = Ext.create('AP.store.well.WellInfoStore');
         var jhStore = new Ext.data.JsonStore({
-        	pageSize:defaultJhComboxSize,
+        	pageSize:defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

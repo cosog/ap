@@ -15,7 +15,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
     initComponent: function () {
         var me = this;
         var wellComboBoxStore = new Ext.data.JsonStore({
-            pageSize: defaultJhhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

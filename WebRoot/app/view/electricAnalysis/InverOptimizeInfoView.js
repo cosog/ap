@@ -8,7 +8,7 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
     initComponent: function () {
 //        var wellStore = Ext.create('AP.store.well.WellInfoStore');
         var wellComboBoxStore = new Ext.data.JsonStore({
-        	pageSize:defaultJhComboxSize,
+        	pageSize:defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

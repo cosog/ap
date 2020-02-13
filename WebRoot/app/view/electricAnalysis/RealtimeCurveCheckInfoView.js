@@ -7,7 +7,7 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveCheckInfoView', {
     initComponent: function () {
     	var store =Ext.create('AP.store.electricAnalysis.ElectricRealtimeCurveCheckListStore');
         var wellListStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

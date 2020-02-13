@@ -13,7 +13,7 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
         var me = this;
     	var store =Ext.create('AP.store.electricDailyAnalysis.ElectricAnalysisDailyDetailsListStore');
         var wellComboBoxStore = new Ext.data.JsonStore({
-            pageSize: defaultJhComboxSize,
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"

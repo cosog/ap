@@ -11,8 +11,8 @@ Ext.define("AP.view.diagnosis.ScrewPumpRealtimeAnalysisView", {
     border: false,
     initComponent: function () {
         var me = this;
-        var jhStore_B = new Ext.data.JsonStore({
-            pageSize: defaultJhhComboxSize,
+        var wellCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
             fields: [{
                 name: "boxkey",
                 type: "string"
@@ -46,10 +46,10 @@ Ext.define("AP.view.diagnosis.ScrewPumpRealtimeAnalysisView", {
                 }
             }
         });
-        var jhComboBox = Ext.create('Ext.form.field.ComboBox', {
+        var wellComb = Ext.create('Ext.form.field.ComboBox', {
             fieldLabel: cosog.string.wellName,
             id: "ScrewPumpRealtimeAnalysisWellCom_Id",
-            store: jhStore_B,
+            store: wellCombStore,
             labelWidth: 35,
             width: 125,
             queryMode: 'remote',
@@ -98,7 +98,7 @@ Ext.define("AP.view.diagnosis.ScrewPumpRealtimeAnalysisView", {
                         id: 'ScrewPumpRealtimeAnalysisWellListPanel_Id',
                         title: '统计数据',
                         border: false,
-                        tbar: [jhComboBox, '-',{
+                        tbar: [wellComb, '-',{
                             id: 'ScrewPumpSelectedStatValue_Id',//选择的统计项的值
                             xtype: 'textfield',
                             value: '',

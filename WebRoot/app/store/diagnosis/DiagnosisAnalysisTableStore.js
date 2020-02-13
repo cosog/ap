@@ -128,42 +128,64 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		acqSataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"无功功率(kVar)\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"反向功率(kW)\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"}";
+    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"变频运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"}";
     		acqSataStr+="]}";
     		
     		var controlSataStr="{\"items\":[";
-    		var runStatus="停抽";
-    		if(get_rawData.commStatus==1){
-    			if(get_rawData.runStatus==1){
-        			runStatus="运行";
-        		}
-    		}else{
-    			runStatus="";
+    		
+    		for(var i=0;i<get_rawData.controlItems.length;i++){
+    			switch(get_rawData.controlItems[i].tiem) {
+    		     case "RunControl":
+    		    	 var runStatus="停抽";
+    		    	 if(get_rawData.commStatus==1){
+    		    		 if(get_rawData.runStatus==1){
+    		    			 runStatus="运行";
+    		    		}
+    		    	 }else{
+    		    	 	runStatus="";
+    		    	 }
+    		    	 controlSataStr+="{\"item\":\"启/停抽\",\"itemcode\":\"startOrStopWell\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+"},";
+    		         break;
+    		     case "SetFrequency":
+    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceControlMode":
+    		    	 controlSataStr+="{\"item\":\"平衡远程触发控制\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceCalculateMode":
+    		    	 controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceAwayTime":
+    		    	 controlSataStr+="{\"item\":\"重心远离支点调节时间(ms)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceCloseTime":
+    		    	 controlSataStr+="{\"item\":\"重心接近支点调节时间(ms)\",\"itemcode\":\"balanceCloseTime\",\"value\":\""+(get_rawData.balanceCloseTime==undefined?"":get_rawData.balanceCloseTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceStrokeCount":
+    		    	 controlSataStr+="{\"item\":\"平衡计算冲程次数\",\"itemcode\":\"balanceStrokeCount\",\"value\":\""+(get_rawData.balanceStrokeCount==undefined?"":get_rawData.balanceStrokeCount)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceOperationUpLimit":
+    		    	 controlSataStr+="{\"item\":\"平衡调节上限(%)\",\"itemcode\":\"balanceOperationUpLimit\",\"value\":\""+(get_rawData.balanceOperationUpLimit==undefined?"":get_rawData.balanceOperationUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceOperationDownLimit":
+    		    	 controlSataStr+="{\"item\":\"平衡调节下限(%)\",\"itemcode\":\"balanceOperationDownLimit\",\"value\":\""+(get_rawData.balanceOperationDownLimit==undefined?"":get_rawData.balanceOperationDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceAwayTimePerBeat":
+    		    	 controlSataStr+="{\"item\":\"重心远离支点每拍调节时间(ms)\",\"itemcode\":\"balanceAwayTimePerBeat\",\"value\":\""+(get_rawData.balanceAwayTimePerBeat==undefined?"":get_rawData.balanceAwayTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    		     case "BalanceCloseTimePerBeat":
+    		    	 controlSataStr+="{\"item\":\"重心接近支点每拍调节时间(ms)\",\"itemcode\":\"balanceCloseTimePerBeat\",\"value\":\""+(get_rawData.balanceCloseTimePerBeat==undefined?"":get_rawData.balanceCloseTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 break;
+    			} 
     		}
-    		
-    		controlSataStr+="{\"item\":\"启/停抽\",\"itemcode\":\"startOrStopWell\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"变频运行频率(Hz)\",\"itemcode\":\"frequencyRunValue\",\"value\":\""+(get_rawData.frequencyRunValue==undefined?"":get_rawData.frequencyRunValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
-//    		controlSataStr+="{\"item\":\"功图测量间隔设置(min)\",\"itemcode\":\"setGTCycle\",\"value\":\""+(get_rawData.gtszzq==undefined?"":get_rawData.gtszzq)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-//    		controlSataStr+="{\"item\":\"功图自动测量间隔(min)\",\"itemcode\":\"\",\"value\":\""+(get_rawData.gtcjzq==undefined?"":get_rawData.gtcjzq)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"}";
-    		
-    		controlSataStr+="{\"item\":\"平衡远程自动调节\",\"itemcode\":\"balanceAutoControl\",\"value\":\""+(get_rawData.balanceAutoControl==undefined?"":get_rawData.balanceAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"冲次远程自动调节\",\"itemcode\":\"spmAutoControl\",\"value\":\""+(get_rawData.spmAutoControl==undefined?"":get_rawData.spmAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"平衡前限位\",\"itemcode\":\"balanceFrontLimit\",\"value\":\""+(get_rawData.balanceFrontLimit==undefined?"":get_rawData.balanceFrontLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"平衡后限位\",\"itemcode\":\"balanceAfterLimit\",\"value\":\""+(get_rawData.balanceAfterLimit==undefined?"":get_rawData.balanceAfterLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
-    		
-    		controlSataStr+="{\"item\":\"平衡远程触发控制\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"重心远离支点调节时间(ms)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"重心接近支点调节时间(ms)\",\"itemcode\":\"balanceCloseTime\",\"value\":\""+(get_rawData.balanceCloseTime==undefined?"":get_rawData.balanceCloseTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		
-    		controlSataStr+="{\"item\":\"重心远离支点每拍调节时间(ms)\",\"itemcode\":\"balanceAwayTimePerBeat\",\"value\":\""+(get_rawData.balanceAwayTimePerBeat==undefined?"":get_rawData.balanceAwayTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"重心接近支点每拍调节时间(ms)\",\"itemcode\":\"balanceCloseTimePerBeat\",\"value\":\""+(get_rawData.balanceCloseTimePerBeat==undefined?"":get_rawData.balanceCloseTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		
-    		controlSataStr+="{\"item\":\"平衡计算冲程次数\",\"itemcode\":\"balanceStrokeCount\",\"value\":\""+(get_rawData.balanceStrokeCount==undefined?"":get_rawData.balanceStrokeCount)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"平衡调节上限(%)\",\"itemcode\":\"balanceOperationUpLimit\",\"value\":\""+(get_rawData.balanceOperationUpLimit==undefined?"":get_rawData.balanceOperationUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		controlSataStr+="{\"item\":\"平衡调节下限(%)\",\"itemcode\":\"balanceOperationDownLimit\",\"value\":\""+(get_rawData.balanceOperationDownLimit==undefined?"":get_rawData.balanceOperationDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"}";
-    		
+//    		controlSataStr+="{\"item\":\"平衡远程自动调节\",\"itemcode\":\"balanceAutoControl\",\"value\":\""+(get_rawData.balanceAutoControl==undefined?"":get_rawData.balanceAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
+//    		controlSataStr+="{\"item\":\"冲次远程自动调节\",\"itemcode\":\"spmAutoControl\",\"value\":\""+(get_rawData.spmAutoControl==undefined?"":get_rawData.spmAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
+//    		controlSataStr+="{\"item\":\"平衡前限位\",\"itemcode\":\"balanceFrontLimit\",\"value\":\""+(get_rawData.balanceFrontLimit==undefined?"":get_rawData.balanceFrontLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
+//    		controlSataStr+="{\"item\":\"平衡后限位\",\"itemcode\":\"balanceAfterLimit\",\"value\":\""+(get_rawData.balanceAfterLimit==undefined?"":get_rawData.balanceAfterLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
+    		if(stringEndWith(controlSataStr,",")){
+    			controlSataStr = controlSataStr.substring(0, controlSataStr.length - 1);
+    		}
     		controlSataStr+="]}";
     		
     		var storeData=Ext.JSON.decode(dataStr);

@@ -41,18 +41,18 @@ public class CalculateManagerController extends BaseController {
 	private int page;
 	private int limit;
 	private int totals;
-	private String jh;
+	private String wellName;
 	private String orgId;
 	
 	@RequestMapping("/getCalculateResultData")
 	public String getCalculateResultData() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
-		jh = ParamUtils.getParameter(request, "jh");
+		wellName = ParamUtils.getParameter(request, "wellName");
 		
 		String wellType = ParamUtils.getParameter(request, "wellType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
-		String jsbz = ParamUtils.getParameter(request, "jsbz");
+		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
 		this.pager = new Page("pagerForm", request);
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
@@ -63,7 +63,7 @@ public class CalculateManagerController extends BaseController {
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.gtcjsj),'yyyy-mm-dd') from t_outputwellhistory t";
+			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from t_indicatordiagram t";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -75,11 +75,11 @@ public class CalculateManagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
-//		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
+		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getCalculateResultData(orgId, jh, pager,wellType,startDate,endDate,jsbz);
+		String json = calculateManagerService.getCalculateResultData(orgId, wellName, pager,wellType,startDate,endDate,calculateSign);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -129,7 +129,7 @@ public class CalculateManagerController extends BaseController {
 	@RequestMapping("/getCalculateStatusList")
 	public String getCalculateStatusList() throws Exception {
 		orgId = ParamUtils.getParameter(request, "orgId");
-		jh = ParamUtils.getParameter(request, "jh");
+		String welName = ParamUtils.getParameter(request, "welName");
 		String wellType = ParamUtils.getParameter(request, "wellType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
@@ -154,7 +154,7 @@ public class CalculateManagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
-		String json = this.calculateManagerService.getCalculateStatusList(orgId,jh,wellType,startDate,endDate);
+		String json = this.calculateManagerService.getCalculateStatusList(orgId,welName,wellType,startDate,endDate);
 //		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -227,13 +227,15 @@ public class CalculateManagerController extends BaseController {
 	public void setTotals(int totals) {
 		this.totals = totals;
 	}
+	
+	
 
-	public String getJh() {
-		return jh;
+	public String getWellName() {
+		return wellName;
 	}
 
-	public void setJh(String jh) {
-		this.jh = jh;
+	public void setWellName(String wellName) {
+		this.wellName = wellName;
 	}
 
 	public String getOrgId() {

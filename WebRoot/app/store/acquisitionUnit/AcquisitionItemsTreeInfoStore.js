@@ -42,15 +42,15 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore', {
                     columns: [
                         {
                             xtype: 'treecolumn',
-                            text: '采集项列表',
+                            text: '采控项列表',
                             flex: 8,
                             align: 'left',
                             dataIndex: 'text'
                         },
                         {
-                            header: 'jlbh',
+                            header: 'id',
                             hidden: true,
-                            dataIndex: 'jlbh'
+                            dataIndex: 'id'
                         }],
                     listeners: {
                     	checkchange: function (node, checked) {

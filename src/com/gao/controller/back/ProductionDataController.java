@@ -51,7 +51,7 @@ public class ProductionDataController extends BaseController {
 	private String startDate;
 	private String endDate;
 	private String jbh;
-	private String jh;
+	private String wellName;
 	private String limit;
 	private List<ProductionOutWellInfo> list;
 	private String msg = "";
@@ -267,7 +267,7 @@ public class ProductionDataController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		jh = ParamUtils.getParameter(request, "jh");
+		wellName = ParamUtils.getParameter(request, "wellName");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		String wellType=ParamUtils.getParameter(request, "wellType");
 		User user=null;
@@ -282,12 +282,12 @@ public class ProductionDataController extends BaseController {
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
-		map.put("jh", jh);
+		map.put("wellName", wellName);
 		map.put("orgCode", orgCode);
 		map.put("resCode", resCode);
 		map.put("orgId", orgId);
 		this.pager = new Page("pagerForm", request);// 分页Page 工具类
-		String json = this.services.getProductionWellProductionData(jh,orgId,pager,recordCount,wellType);
+		String json = this.services.getProductionWellProductionData(wellName,orgId,pager,recordCount,wellType);
 //		log.warn("showProductionOutData=-= " + json);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
@@ -312,7 +312,7 @@ public class ProductionDataController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		//wellInformationName = new String(wellInformationName.getBytes("iso-8859-1"), "utf-8");
 //		String orgId=this.findCurrentUserOrgIdInfo("");
-		jh = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "jh"),"utf-8");
+		wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
 		orgId=ParamUtils.getParameter(request, "orgId");
 		String wellType=ParamUtils.getParameter(request, "wellType");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
@@ -330,7 +330,7 @@ public class ProductionDataController extends BaseController {
 		}
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
-		String json = this.services.exportWellProdInformationData(jh,orgId,pager,wellType);
+		String json = this.services.exportWellProdInformationData(wellName,orgId,pager,wellType);
 		
 		
 		this.commonDataService.exportGridPanelData(response,fileName,title, heads, fields,json);
@@ -391,8 +391,8 @@ public class ProductionDataController extends BaseController {
 		return jbh;
 	}
 
-	public String getJh() {
-		return jh;
+	public String getWellName() {
+		return wellName;
 	}
 
 	public String getLimit() {
@@ -436,8 +436,8 @@ public class ProductionDataController extends BaseController {
 		this.jbh = jbh;
 	}
 
-	public void setJh(String jh) {
-		this.jh = jh;
+	public void setWellName(String wellName) {
+		this.wellName = wellName;
 	}
 
 	public void setLimit(String limit) {

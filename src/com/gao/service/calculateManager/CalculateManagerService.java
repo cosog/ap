@@ -57,7 +57,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	 * @return
 	 * @throws Exception
 	 */
-	public String getCalculateResultData(String orgId, String jh, Page pager,String wellType,String startDate,String endDate,String jsbz)
+	public String getCalculateResultData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign)
 			throws Exception {
 		DataDictionary ddic = null;
 		String columns= "";
@@ -65,6 +65,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String finalSql="";
 		String sqlAll="";
 		String ddicName="calculateManager";
+		StringBuffer result_json = new StringBuffer();
 		if("200".equals(wellType)){
 			ddicName="calculateManager";
 		}else if("400".equals(wellType)){
@@ -73,23 +74,87 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
 		columns = ddic.getTableHeader();
-		sql=ddic.getSql()+" from v_calculateresult t where t.org_id in("+orgId+") "
-				+ " and to_date(to_char(t.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+		sql="select t.id,t.wellName,t.acquisitionTime,t.workingConditionName,t.liquidProduction,t.oilProduction,"
+			+ "t.crudeoilDensity,t.waterDensity,t.naturalGasRelativeDensity,"
+			+ "t.saturationPressure,t.reservoirDepth,t.reservoirTemperature,"
+			+ "t.tubingPressure,t.casingPressure,t.wellHeadFluidTemperature,t.waterCut,t.productionGasOilRatio,t.producingFluidLevel,"
+			+ "t.pumpSettingDepth,t.pumpGrade,t.pumpboreDiameter,t.plungerLength,"
+			+ "t.tubingStringInsideDiameter,t.casingStringInsideDiameter,"
+			+ "t.anchoringStateName,t.netGrossRatio,t.resultStatus,"
+			+ "t.rodstring"
+			+ " from v_calculateresult t where t.orgid in("+orgId+") "
+			+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and t.jslx>="+wellType+" and t.jslx<("+wellType+"+100) ";
+			sql+=" and t.liftingType>="+wellType+" and t.liftingType<("+wellType+"+100) ";
 		}
-		if(StringManagerUtils.isNotNull(jh)){
-			sql+=" and  t.jh = '" + jh.trim() + "' ";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
-		if(StringManagerUtils.isNotNull(jsbz)){
-			sql+=" and  t.jsbz = " + jsbz + " ";
+		if(StringManagerUtils.isNotNull(calculateSign)){
+			sql+=" and  t.resultstatus = " + calculateSign + " ";
 		}
-		sql+=" order by t.gtcjsj desc, t.jh";
+		sql+=" order by t.acquisitionTime desc, t.wellName";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
-		return getResult;
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(finalSql);
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String rodString=obj[27]+"";
+			String[] rodStringArr={};
+			if(StringManagerUtils.isNotNull(rodString)){
+				rodStringArr=rodString.split(";");
+			}
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"acquisitionTime\":\""+obj[2]+"\",");
+			result_json.append("\"workingConditionName\":\""+obj[3]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[4]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[5]+"\",");
+			result_json.append("\"crudeoilDensity\":\""+obj[6]+"\",");
+			result_json.append("\"waterDensity\":\""+obj[7]+"\",");
+			result_json.append("\"naturalGasRelativeDensity\":\""+obj[8]+"\",");
+			result_json.append("\"saturationPressure\":\""+obj[9]+"\",");
+			result_json.append("\"reservoirDepth\":\""+obj[10]+"\",");
+			result_json.append("\"reservoirTemperature\":\""+obj[11]+"\",");
+			result_json.append("\"tubingPressure\":\""+obj[12]+"\",");
+			result_json.append("\"casingPressure\":\""+obj[13]+"\",");
+			result_json.append("\"wellHeadFluidTemperature\":\""+obj[14]+"\",");
+			result_json.append("\"waterCut\":\""+obj[15]+"\",");
+			result_json.append("\"productionGasOilRatio\":\""+obj[16]+"\",");
+			result_json.append("\"producingFluidLevel\":\""+obj[17]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[18]+"\",");
+			result_json.append("\"pumpGrade\":\""+obj[19]+"\",");
+			result_json.append("\"pumpboreDiameter\":\""+obj[20]+"\",");
+			result_json.append("\"plungerLength\":\""+obj[21]+"\",");
+			result_json.append("\"tubingStringInsideDiameter\":\""+obj[22]+"\",");
+			result_json.append("\"casingStringInsideDiameter\":\""+obj[23]+"\",");
+			
+			for(int j=0;j<rodStringArr.length;j++){
+				String[] everyRod=rodStringArr[j].split(",");
+				int arrLength=everyRod.length;
+				result_json.append("\"rodGrade"+(j+1)+"\":\""+(arrLength>=1?everyRod[0]:"")+"\",");
+				result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+(arrLength>=2?everyRod[1]:"")+"\",");
+				result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+(arrLength>=3?everyRod[2]:"")+"\",");
+				result_json.append("\"rodLength"+(j+1)+"\":\""+(arrLength>=4?everyRod[3]:"")+"\",");
+			}
+			
+			result_json.append("\"anchoringStateName\":\""+obj[24]+"\",");
+			result_json.append("\"netGrossRatio\":\""+obj[25]+"\",");
+			result_json.append("\"resultStatus\":\""+obj[26]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json = result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+//		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
+		String json=result_json.toString().replaceAll("null", "");
+		return json;
 	}
 	
 	public void saveRecalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData) throws Exception {
@@ -97,23 +162,27 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	}
 	
 	
-	public String getCalculateStatusList(String orgId, String jh, String wellType,String startDate,String endDate)throws Exception {
+	public String getCalculateStatusList(String orgId, String wellName, String wellType,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql="";
-		sql="select distinct(decode(t.jsbz,2,0,t.jsbz)),t2.itemname "
-				+ " from t_outputwellhistory t,t_code t2,t_wellinformation t3,sc_org org "
-				+ " where t.jbh=t3.jlbh and t3.dwbh=org.org_code and t.jsbz=t2.itemvalue and t2.itemcode='JSBZ'"
-				+ " and org.org_id in("+orgId+") "
-				+ " and to_date(to_char(t.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+		String tableName="";
+		if("200".equals(wellType)){
+			tableName="t_indicatordiagram";
+		}
+		sql="select distinct(decode(t.resultstatus,2,0,t.resultstatus)),t2.itemname "
+				+ " from "+tableName+" t,t_code t2,t_wellinformation t3 "
+				+ " where t.wellid=t3.id and t.resultstatus=t2.itemvalue and t2.itemcode='JSBZ'"
+				+ " and t3.orgid in("+orgId+") "
+				+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and t3.jslx>="+wellType+" and t3.jslx<("+wellType+"+100) ";
+			sql+=" and t3.liftingtype>="+wellType+" and t3.liftingtype<("+wellType+"+100) ";
 		}
-		if(StringManagerUtils.isNotNull(jh)){
-			sql+=" and  t3.jh = '" + jh.trim() + "' ";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and  t3.wellName = '" + wellName.trim() + "' ";
 		}
 		
-		sql+=" order by decode(t.jsbz,2,0,t.jsbz)";
+		sql+=" order by decode(t.resultstatus,2,0,t.resultstatus)";
 		try {
 			int totals=this.getTotalCountRows(sql);
 			List<?> list = this.findCallSql(sql);

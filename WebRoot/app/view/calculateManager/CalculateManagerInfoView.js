@@ -130,7 +130,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                    var jh=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
+                    var welName=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
                     var startDate=Ext.getCmp('CalculateManagerStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('CalculateManagerEndDate_Id').rawValue;
                     var wellType=200;
@@ -142,7 +142,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         			}
                     var new_params = {
                     		orgId: orgId,
-                            jh: jh,
+                    		welName: welName,
                             startDate:startDate,
                             endDate:endDate,
                             wellType:wellType
@@ -307,6 +307,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         				title: cosog.string.screwPump,
         				id:'ScrewPumpCalculateManagerPanel',
         				layout: "fit",
+        				hidden:true,
         				border: false,
         				bbar: screwPumpBbar,
         				html:'<div class=ScrewPumpCalculateManagerContainer" style="width:100%;height:100%;"><div class="con" id="ScrewPumpCalculateManagerDiv_id"></div></div>',

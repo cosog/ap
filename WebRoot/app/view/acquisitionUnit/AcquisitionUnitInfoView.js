@@ -66,7 +66,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
         	},{
         		region:'center',
         		id:'acquisitionItemsTreePanel_Id',
-        		title:'采集数据安排',
+        		title:'采控数据配置',
         		layout: "fit",
         		bbar: ['->', {
                     xtype: 'button',

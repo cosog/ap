@@ -99,7 +99,7 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
     				var fields = "";
     			    var heads = "";
     			    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-    				var jh = Ext.getCmp('ProductionOutName_Id').getValue();
+    				var wellName = Ext.getCmp('ProductionOutName_Id').getValue();
     				var wellType=200;
     				var url=context + '/productionDataController/exportWellProdInformationData';
     				for(var i=0;i<wellProHandsontableHelper.colHeaders.length;i++){
@@ -111,7 +111,7 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
     			        heads = heads.substring(0, heads.length - 1);
     			    }
     				
-    			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id+"&wellType="+wellType  + "&jh=" + URLencode(URLencode(jh)) + "&fileName="+URLencode(URLencode("抽油机生产数据"))+ "&title="+URLencode(URLencode("抽油机生产数据"));
+    			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id+"&wellType="+wellType  + "&wellName=" + URLencode(URLencode(wellName)) + "&fileName="+URLencode(URLencode("抽油机生产数据"))+ "&title="+URLencode(URLencode("抽油机生产数据"));
     			    openExcelWindow(url + '?flag=true' + param);
     			}
     		},'-', {
@@ -145,7 +145,7 @@ function CreateAndLoadWellProTable(isNew){
 		wellProHandsontableHelper=null;
 	}
 	var org_Id = Ext.getCmp('leftOrg_Id').getValue();
-    var jh_val = Ext.getCmp('ProductionOutName_Id').getValue();
+    var wellName = Ext.getCmp('ProductionOutName_Id').getValue();
     var wellType=200;
     var tabPanel = Ext.getCmp("ProductionWellProductionPanel");
 	var activeId = tabPanel.getActiveTab().id;
@@ -185,7 +185,7 @@ function CreateAndLoadWellProTable(isNew){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-            jh: jh_val,
+			wellName: wellName,
             recordCount:50,
             orgId:org_Id,
             page:1,

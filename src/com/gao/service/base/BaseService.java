@@ -1099,7 +1099,7 @@ public class BaseService<T> {
 	 */
 	public String getCurrentUserOrgIds(int orgId) {
 		StringBuffer orgIdSbuf = new StringBuffer();
-		String sql = "select org_id,org_name  from sc_org t  start with org_id = " + orgId + "  connect by prior org_id =org_parent";
+		String sql = "select org_id,org_name  from tbl_org t  start with org_id = " + orgId + "  connect by prior org_id =org_parent";
 		List<?> orgList = this.findCallSql(sql);
 		for (Object o : orgList) {
 			Object[] obj = (Object[]) o;

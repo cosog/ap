@@ -7,13 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *  <p>描述：组织信息 实体类  sc_org</p>
+ *  <p>描述：组织信息 实体类  tbl_org</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "sc_org")
+@Table(name = "tbl_org")
 public class Org {
 	private Integer orgId;
 	private String orgCode;

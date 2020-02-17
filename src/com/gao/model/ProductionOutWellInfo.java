@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "t_outputwellproduction")
+@Table(name = "tbl_rpc_productiondata_hist")
 public class ProductionOutWellInfo implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer jlbh;

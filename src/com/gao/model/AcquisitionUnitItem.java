@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "t_acq_unit_item")
+@Table(name = "tbl_acq_item2group_conf")
 public class AcquisitionUnitItem implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;

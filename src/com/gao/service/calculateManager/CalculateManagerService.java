@@ -167,10 +167,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String tableName="";
 		if("200".equals(wellType)){
-			tableName="t_indicatordiagram";
+			tableName="tbl_rpc_diagram_hist";
 		}
 		sql="select distinct(decode(t.resultstatus,2,0,t.resultstatus)),t2.itemname "
-				+ " from "+tableName+" t,t_code t2,t_wellinformation t3 "
+				+ " from "+tableName+" t,tbl_code t2,tbl_wellinformation t3 "
 				+ " where t.wellid=t3.id and t.resultstatus=t2.itemvalue and t2.itemcode='JSBZ'"
 				+ " and t3.orgid in("+orgId+") "
 				+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";

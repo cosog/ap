@@ -9,13 +9,13 @@ import javax.persistence.Transient;
 import oracle.sql.BLOB;
 
 /**
- *  <p>描述：工况类型 实体类  T_WORKSTATUS</p>
+ *  <p>描述：工况类型 实体类  tbl_rpc_worktype</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "T_WORKSTATUS")
+@Table(name = "tbl_rpc_worktype")
 public class Workstatus implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer jlbh;

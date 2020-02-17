@@ -28,7 +28,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 	}
 
 	public Serializable deleteObject(String obj) {
-		String hql = " delete from t_outputwellproduction where jlbh in (" + obj + ")";
+		String hql = " delete from tbl_rpc_productiondata_hist where jlbh in (" + obj + ")";
 		return this.getBaseDao().deleteObject(hql);
 	}
 
@@ -58,10 +58,10 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 		if (jh != null || !(jh.equals(""))) {
 			str_jh = " and w.jh  like  '%" + jh + "%' ";
 		}
-		String outsql = " SELECT  o.jlbh ,w.jh,o.rcyl,o.cjsj  FROM t_outputwellproduction o, t_wellinformation w where 1 = 1 " + " AND o.jbh = w.jlbh " + str_jc + " " + str_jhh + " " + str_jh
+		String outsql = " SELECT  o.jlbh ,w.jh,o.rcyl,o.cjsj  FROM tbl_rpc_productiondata_hist o, tbl_wellinformation w where 1 = 1 " + " AND o.jbh = w.jlbh " + str_jc + " " + str_jhh + " " + str_jh
 				+ " order by o.jlbh ASC ";
 
-		String inhql = " SELECT w.jh  FROM t_outputwellproduction o , t_wellinformation w where 1 = 1 " + " AND o.jbh = w.jlbh  " + str_jc + " " + str_jhh + " " + str_jh
+		String inhql = " SELECT w.jh  FROM tbl_rpc_productiondata_hist o , tbl_wellinformation w where 1 = 1 " + " AND o.jbh = w.jlbh  " + str_jc + " " + str_jhh + " " + str_jh
 				+ "  order by o.jlbh ASC ";
 		List<Outputwellproduction> output = null;
 		List<WellInformation> infor = null;
@@ -98,10 +98,10 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 		if (outputwellproductionName != null) {
 			outputwellproduction_Str = " and jh like '%" + outputwellproductionName + "%'";
 		}
-		String sql = "select * from (select t.jlbh,t.jbh,t.rcyl ,cjsj ,w.jh  ," + " row_number() over(order by t.jlbh desc) rk from t_outputwellproduction t ,"
-				+ "t_wellinformation w where 1=1 and t.jbh=w.jlbh) where 1=1   and  rk<=" + ((Integer) map.get(PagingConstants.PAGE_SIZE) * (Integer) map.get(PagingConstants.PAGE_NO))
+		String sql = "select * from (select t.jlbh,t.jbh,t.rcyl ,cjsj ,w.jh  ," + " row_number() over(order by t.jlbh desc) rk from tbl_rpc_productiondata_hist t ,"
+				+ "tbl_wellinformation w where 1=1 and t.jbh=w.jlbh) where 1=1   and  rk<=" + ((Integer) map.get(PagingConstants.PAGE_SIZE) * (Integer) map.get(PagingConstants.PAGE_NO))
 				+ " and rk >= " + (Integer) map.get(PagingConstants.OFFSET) + outputwellproduction_Str + "  order by jlbh asc";
-		String all = "SELECT t.jlbh,jbh ,rcyl ,cjsj FROM t_outputwellproduction t ,t_wellinformation w where 1=1 and t.jbh=w.jlbh " + outputwellproduction_Str + "  order by jlbh asc";
+		String all = "SELECT t.jlbh,jbh ,rcyl ,cjsj FROM tbl_rpc_productiondata_hist t ,tbl_wellinformation w where 1=1 and t.jbh=w.jlbh " + outputwellproduction_Str + "  order by jlbh asc";
 		Gson g = new Gson();
 		List<Outputwellproduction> list = null;
 		Map<String, Object> jsonMap = new HashMap<String, Object>();
@@ -123,11 +123,11 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 
 		String sql = "";
 		if (type.equalsIgnoreCase("jc")) {
-			sql = "  select  distinct (w.jc) as jc,w.jc as dm from t_wellinformation w,t_outputwellproduction o where o.jbh=w.jlbh ";
+			sql = "  select  distinct (w.jc) as jc,w.jc as dm from tbl_wellinformation w,tbl_rpc_productiondata_hist o where o.jbh=w.jlbh ";
 		} else if (type.equalsIgnoreCase("jhh")) {
-			sql = " select distinct (w.jhh) as jhh, w.jhh as dm from t_wellinformation w ,t_outputwellproduction o where 1=1 and o.jbh=w.jlbh";
+			sql = " select distinct (w.jhh) as jhh, w.jhh as dm from tbl_wellinformation w ,tbl_rpc_productiondata_hist o where 1=1 and o.jbh=w.jlbh";
 		} else if (type.equalsIgnoreCase("jh")) {
-			sql = " select distinct w.jh as jh ,w.jh as dm from t_wellinformation w,t_outputwellproduction o where 1=1 and o.jbh=w.jlbh";
+			sql = " select distinct w.jh as jh ,w.jh as dm from tbl_wellinformation w,tbl_rpc_productiondata_hist o where 1=1 and o.jbh=w.jlbh";
 		}
 		if (StringUtils.isNotBlank(jc)) {
 			sql += " and w.jc like '%" + jc + "%'";
@@ -172,12 +172,12 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 	}
 
 	public List<T> fingWellByJCList() throws Exception {
-		String sql = " select  distinct (w.jc) from t_wellinformation w,t_outputwellproduction o where o.jbh=w.jlbh order by w.jc ";
+		String sql = " select  distinct (w.jc) from tbl_wellinformation w,tbl_rpc_productiondata_hist o where o.jbh=w.jlbh order by w.jc ";
 		return this.getBaseDao().getfindByIdList(sql);
 	}
 
 	public List<T> fingWellByJhhList(String jc) throws Exception {
-		String sql = " select distinct (w.jhh) from t_wellinformation w ,t_outputwellproduction o where 1=1 and o.jbh=w.jlbh ";
+		String sql = " select distinct (w.jhh) from tbl_wellinformation w ,tbl_rpc_productiondata_hist o where 1=1 and o.jbh=w.jlbh ";
 		if (jc != null && !jc.equals("")) {
 			sql += "  and w.jc like '%" + jc + "%' ";
 		}
@@ -186,7 +186,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 	}
 
 	public List<T> fingWellByJhList(String jc, String jhh) throws Exception {
-		String sql = " select o.jlbh,w.jh from t_wellinformation w,t_outputwellproduction o where 1=1 and o.jbh=w.jlbh ";
+		String sql = " select o.jlbh,w.jh from tbl_wellinformation w,tbl_rpc_productiondata_hist o where 1=1 and o.jbh=w.jlbh ";
 		if (jc != null && !jc.equals("")) {
 			sql += "  and w.jc like '%" + jc + "%' ";
 		}
@@ -198,7 +198,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 	}
 
 	public List<T> findAllList(int offset, int pageSize, String jc, String jhh, String jh) throws Exception {
-		String tempsql = " select o.jlbh,o.jbh,w.jc,w.jhh,w.jh,o.rcyl,to_char(o.cjsj,'YYYY-MM-DD hh24:mi:ss') as cjsj  from t_wellinformation w,t_outputwellproduction o where 1=1 and o.jbh=w.jlbh ";
+		String tempsql = " select o.jlbh,o.jbh,w.jc,w.jhh,w.jh,o.rcyl,to_char(o.cjsj,'YYYY-MM-DD hh24:mi:ss') as cjsj  from tbl_wellinformation w,tbl_rpc_productiondata_hist o where 1=1 and o.jbh=w.jlbh ";
 		if (jc != null && !jc.equals("") && jc.trim().length() > 0) {
 			tempsql += " and w.jc like '%" + jc + "%' ";
 		}
@@ -214,7 +214,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 
 	public int rowCount(String jc, String jhh, String jh) {
 		String tempsql = " select * from ( ";
-		tempsql += " select o.jlbh,o.jbh,w.jc,w.jhh,w.jh,o.rcyl,o.cjsj from t_wellinformation w,t_outputwellproduction o where 1=1 and o.jbh=w.jlbh ";
+		tempsql += " select o.jlbh,o.jbh,w.jc,w.jhh,w.jh,o.rcyl,o.cjsj from tbl_wellinformation w,tbl_rpc_productiondata_hist o where 1=1 and o.jbh=w.jlbh ";
 		if (jc != null && !jc.equals("") && jc.trim().length() > 0) {
 			tempsql += " and w.jc like '%" + jc + "%' ";
 		}

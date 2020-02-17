@@ -6,13 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：角色信息 实体类  sc_user</p>
+ *  <p>描述：角色信息 实体类  tbl_role</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "SC_ROLE")
+@Table(name = "tbl_role")
 public class Role implements java.io.Serializable {
 
 	/**

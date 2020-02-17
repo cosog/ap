@@ -541,7 +541,7 @@ public class PSToFSController extends BaseController {
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from t_indicatordiagram t,t_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -647,7 +647,7 @@ public class PSToFSController extends BaseController {
 		}
 		
 		if(StringManagerUtils.isNotNull(wellName)&&(!StringManagerUtils.isNotNull(endDate))){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from t_indicatordiagram t,t_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -687,7 +687,7 @@ public class PSToFSController extends BaseController {
 		if(transferDiscrete!=null){
 //			transferDiscrete.setAcquisitionTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 			String wellName="";
-			String sql="select t.wellName from t_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiscrete.getID()+")', 'i')";//不区分ID大小写
+			String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiscrete.getID()+")', 'i')";//不区分ID大小写
 			List list = this.commonDataService.reportDateJssj(sql);
 			
 			if(list.size()>0){
@@ -724,7 +724,7 @@ public class PSToFSController extends BaseController {
     	if(transferDiagram!=null){
 //    		transferDiagram.setAcquisitionTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
     		String wellName="";
-    		String wellSql="select t.wellName from t_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiagram.getID()+")', 'i')";//不区分ID大小写
+    		String wellSql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiagram.getID()+")', 'i')";//不区分ID大小写
     		List list = this.commonDataService.reportDateJssj(wellSql);
     		
     		if(list.size()>0){
@@ -759,7 +759,7 @@ public class PSToFSController extends BaseController {
         					+ " t4.fs_leftpercent,t4.fs_rightpercent,"
         					+ " t4.wattangle,t4.filtertime_watt,t4.filtertime_i,t4.filtertime_rpm,"
         					+ " t4.filtertime_fsdiagram,t4.filtertime_fsdiagram_l,t4.filtertime_fsdiagram_r"
-        					+ " from  t_wellinformation t,t_inver_pumpingunit t2,t_inver_optimize t4"
+        					+ " from  tbl_wellinformation t,tbl_rpcinformation t2,tbl_rpc_inver_opt t4"
         					+ " where t.id=t2.wellid and t.id=t4.wellid"
         					+ " and t.wellname='"+transferDiagram.getWellName()+"'";
         			
@@ -951,7 +951,7 @@ public class PSToFSController extends BaseController {
 		TransferDaily transferDaily=gson.fromJson(data, type);
     	
 		String wellName="";
-		String sql="select t.wellName from t_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDaily.getID()+")', 'i')";//不区分ID大小写
+		String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDaily.getID()+")', 'i')";//不区分ID大小写
 		List list = this.commonDataService.reportDateJssj(sql);
 		
 		if(list.size()>0){
@@ -995,9 +995,9 @@ public class PSToFSController extends BaseController {
     				+ " t5.surfacesystemefficiency,t5.fs_leftpercent,t5.fs_rightpercent,"
     				+ " t5.wattangle,t5.filtertime_watt,t5.filtertime_i,t5.filtertime_rpm,t5.filtertime_fsdiagram,t5.filtertime_fsdiagram_l,t5.filtertime_fsdiagram_r,"
     				+ " t4.prtf "
-    				+ " from t_wellinformation t,t_indicatordiagram t2,t_inver_motor t3,t_inver_pumpingunit t4,t_inver_optimize t5 ";
+    				+ " from tbl_wellinformation t,tbl_rpc_diagram_hist t2,tbl_rpc_motor t3,tbl_rpcinformation t4,tbl_rpc_inver_opt t5 ";
     		if(!StringManagerUtils.isNotNull(wellName)){//如果是实时
-    			sql+= " ,t_indicatordiagram_rt t6";
+    			sql+= " ,tbl_rpc_diagram_latest t6";
     		}
     		
     		sql+= " where t.id=t2.wellid and t.id=t3.wellid and t.id=t4.wellid and t.id=t5.wellid ";

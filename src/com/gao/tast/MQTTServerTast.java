@@ -127,7 +127,7 @@ public class MQTTServerTast {
 	public static boolean initWellConfig() throws InstantiationException, IllegalAccessException, SQLException{
 		String sql="select wellname,driveraddr,"
 				+ "acqcycle_diagram,acqCycleSetStatus_diagram,"
-				+ "acqcycle_discrete,acqCycleSetStatus_discrete  from t_wellinformation t ";
+				+ "acqcycle_discrete,acqCycleSetStatus_discrete  from tbl_wellinformation t ";
 		List<WellConfigInfo> list=JDBCUtil.getListCommBean(sql, WellConfigInfo.class, null);
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();
 		map.put("wellConfigData", list);
@@ -138,7 +138,7 @@ public class MQTTServerTast {
 		String sql="select wellname,driveraddr,"
 				+ " acqcycle_diagram,acqCycleSetStatus_diagram,"
 				+ " acqcycle_discrete,acqCycleSetStatus_discrete  "
-				+ " from t_wellinformation t "
+				+ " from tbl_wellinformation t "
 				+ " where t.driveraddr='"+driverAddr+"'";
 		WellConfigInfo wellConfigInfo=null;
 		try {
@@ -300,7 +300,7 @@ public class MQTTServerTast {
 									if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Discrete()!=0&&wellConfigInfo.getAcqCycle_Discrete()!=transferDiscrete.getInterval2()){//如果采集间隔不一致
 										map.put(pubTransferDiscreteIntervalTopic, wellConfigInfo.getAcqCycle_Discrete());
 									}else if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Discrete()!=0&&wellConfigInfo.getAcqCycle_Discrete()==transferDiscrete.getInterval2()&&wellConfigInfo.getAcqCycleSetStatus_discrete()!=2){//如果一致，更新状态
-										String updateSql="update t_wellinformation set acqCycleSetStatus_discrete=2 where driveraddr='"+ID+"'";
+										String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=2 where driveraddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}
 //									
@@ -322,10 +322,10 @@ public class MQTTServerTast {
 									WellConfigInfo wellConfigInfo= getWellConfigData(ID);
 									if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Diagram()!=0&&wellConfigInfo.getAcqCycle_Diagram()!=transferDiagram.getInterval2()&&wellConfigInfo.getAcqCycleSetStatus_diagram()!=1){//如果采集间隔不一致
 										sendMessage(pubTransferDiagramIntervalTopic,wellConfigInfo.getAcqCycle_Diagram()+"",false);
-										String updateSql="update t_wellinformation set acqCycleSetStatus_diagram=1 where driveraddr='"+ID+"'";
+										String updateSql="update tbl_wellinformation set acqCycleSetStatus_diagram=1 where driveraddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}else if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Diagram()!=0&&wellConfigInfo.getAcqCycle_Diagram()==transferDiagram.getInterval2()&&wellConfigInfo.getAcqCycleSetStatus_diagram()!=2){//如果一致，更新状态
-										String updateSql="update t_wellinformation set acqCycleSetStatus_diagram=2 where driveraddr='"+ID+"'";
+										String updateSql="update tbl_wellinformation set acqCycleSetStatus_diagram=2 where driveraddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}
 					        	}
@@ -347,7 +347,7 @@ public class MQTTServerTast {
 				        				sendMessage(pubTransferDiscreteIntervalTopic,TransferDiscreteIntervalSetSign+"",false);
 				        				map.remove(pubTransferDiscreteIntervalTopic);
 				        				//更新状态 已下发
-				        				String updateSql="update t_wellinformation set acqCycleSetStatus_discrete=1 where driveraddr='"+ID+"'";
+				        				String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=1 where driveraddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 				        			}
 					        	}

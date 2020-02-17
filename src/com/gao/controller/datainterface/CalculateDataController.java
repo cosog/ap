@@ -114,7 +114,7 @@ public class CalculateDataController extends BaseController{
 					+ " t007.slly,t033.yxzt,"
 					+ " to_char(t033.cjsj,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t033.jsbz,t033.jlbh"
-					+ " from t_wellinformation t007, t_indicatordiagram t010,"
+					+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
 					+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
 					+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 					+ " and t033.dymbh=t011.jlbh  "

@@ -52,10 +52,10 @@ public class MonitorPumpingUnitParamsManagerService<T> extends BaseService<T> {
 
 		String sql = "";
 		if (type.equalsIgnoreCase("jhh")) {
-			sql = " select  v.jhh as jhh,v.jhh as dm from  t_wellinformation v  ,sc_org  g,t_018_wellringorder t where 1=1 and v.jhh=t.jhh and v.jlx=101 and  v.dwbh=g.org_code  and g.org_id in ("
+			sql = " select  v.jhh as jhh,v.jhh as dm from  tbl_wellinformation v  ,tbl_org  g,t_018_wellringorder t where 1=1 and v.jhh=t.jhh and v.jlx=101 and  v.dwbh=g.org_code  and g.org_id in ("
 					+ orgId + ")";
 		} else if (type.equalsIgnoreCase("jh")) {
-			sql = " select  v.jh as jh,v.jh as dm from  t_wellinformation v  ,sc_org  g,t_wellorder t where 1=1 and v.jh=t.jh and v.jlx=101 and  v.dwbh=g.org_code  and g.org_id in ("
+			sql = " select  v.jh as jh,v.jh as dm from  tbl_wellinformation v  ,tbl_org  g,t_wellorder t where 1=1 and v.jh=t.jh and v.jlx=101 and  v.dwbh=g.org_code  and g.org_id in ("
 					+ orgId + ")";
 		} else if (type.equalsIgnoreCase("bjlx")) {
 			sql = " select distinct v.bjbz as dm,v.bjztmc as mc from v_002_12_dynamicmonitorhis_cn v  where 1=1 and v.bjbz is not null  and v.org_id in("

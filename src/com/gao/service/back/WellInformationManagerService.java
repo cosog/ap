@@ -28,7 +28,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
-		String sql = " select  t.wellName as wellName,t.wellName as dm from  t_wellinformation t  ,sc_org  g where 1=1 and  t.orgId=g.org_id  and g.org_id in ("
+		String sql = " select  t.wellName as wellName,t.wellName as dm from  tbl_wellinformation t  ,tbl_org  g where 1=1 and  t.orgId=g.org_id  and g.org_id in ("
 				+ orgId + ")";
 		if (wellType.trim().equalsIgnoreCase("200")) {
 			sql += " and t.liftingtype like '2%'";
@@ -113,7 +113,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 
 	public String showWellTypeTree() throws Exception {
-		String sql = "select t.dm as id,t.itemname as text from t_code t where t.itemcode='JLX'";
+		String sql = "select t.dm as id,t.itemname as text from tbl_code t where t.itemcode='JLX'";
 		List<?> list = this.findCallSql(sql);
 		StringBuffer result_json = new StringBuffer();
 		String get_key = "";
@@ -181,14 +181,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer sqlCuswhere = new StringBuffer();
 		String sql = "";
 		if (type.equalsIgnoreCase("res")) {
-			sql = " select  distinct p.yqcbh,r.res_name  from t_wellinformation p,sc_res r where p.yqcbh=r.res_code ";
+			sql = " select  distinct p.yqcbh,r.res_name  from tbl_wellinformation p,sc_res r where p.yqcbh=r.res_code ";
 		} else if (type.equalsIgnoreCase("jh")) {
-			sql = " select  p.jh as jh ,p.jh as dm from t_wellinformation p,sc_org org,t_wellorder t where 1=1 and p.jh=t.jh and p.dwbh=org.org_code and org.org_id in ("+orgid+") ";
+			sql = " select  p.jh as jh ,p.jh as dm from tbl_wellinformation p,tbl_org org,t_wellorder t where 1=1 and p.jh=t.jh and p.dwbh=org.org_code and org.org_id in ("+orgid+") ";
 		}else if (type.equalsIgnoreCase("jhh")) {
-			sql = " select distinct p.jhh as jhh,p.jhh as dm,t.pxbh from  t_wellinformation p  ,sc_org  g,t_018_wellringorder t where 1=1 and p.jhh=t.jhh and p.dwbh=g.org_code  and g.org_id in ("
+			sql = " select distinct p.jhh as jhh,p.jhh as dm,t.pxbh from  tbl_wellinformation p  ,tbl_org  g,t_018_wellringorder t where 1=1 and p.jhh=t.jhh and p.dwbh=g.org_code  and g.org_id in ("
 					+ orgid + ")";
 		}else if (type.equalsIgnoreCase("jc")) {
-			sql = " select distinct p.jc as jc,p.jc as dm,t.pxbh from  t_wellinformation p  ,sc_org  g,t_017_wellsiteorder t where 1=1 and p.jc=t.jc and p.dwbh=g.org_code  and g.org_id in ("
+			sql = " select distinct p.jc as jc,p.jc as dm,t.pxbh from  tbl_wellinformation p  ,tbl_org  g,t_017_wellsiteorder t where 1=1 and p.jc=t.jc and p.dwbh=g.org_code  and g.org_id in ("
 					+ orgid + ")";
 		}
 		if (jtype.equalsIgnoreCase("in")) {
@@ -262,7 +262,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String loadSsjwType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='SSJW'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='SSJW'";
 		try {
 			List<?> list = this.getfindByIdList(sql);
 			result_json.append("[");
@@ -299,7 +299,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String loadSszcdyType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='SSZCDY'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='SSZCDY'";
 		try {
 			List<?> list = this.getfindByIdList(sql);
 			result_json.append("[");
@@ -326,7 +326,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 
 	public List<T> fingWellByJhList() throws Exception {
-		String sql = " select  distinct (jh) from t_wellinformation w  order by jh ";
+		String sql = " select  distinct (wellName) from tbl_wellinformation w  order by sortNum ";
 		return this.getBaseDao().getfindByIdList(sql);
 	}
 
@@ -360,7 +360,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ liftingType_Str
 				+ "  and t.orgid in ("+orgId+" )  "
 			    + " order by t.sortnum,t.wellname ";
-		String unitSql="select t.unit_name from t_acquisitionunit t order by t.id";
+		String unitSql="select t.unit_name from tbl_acq_group_conf t order by t.id";
 		List<?> unitList = this.findCallSql(unitSql);
 		unitDropdownData.append("[");
 		for(int i=0;i<unitList.size();i++){
@@ -462,7 +462,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ liftingType_Str
 				+ "  and t.orgid in ("+orgId+" )  "
 			    + " order by t.sortnum,t.wellname ";
-		String unitSql="select t.unit_name from t_acquisitionunit t order by t.id";
+		String unitSql="select t.unit_name from tbl_acq_group_conf t order by t.id";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("[");
 		for(int i=0;i<list.size();i++){

@@ -6,13 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：模块信息 实体类  SC_MODULE</p>
+ *  <p>描述：模块信息 实体类  tbl_acq_item_conf</p>
  *  
- * @author gao  2014-06-10
+ * @author zhao  2020-02-17
  *
  */
 @Entity
-@Table(name = "t_acquisitionitems")
+@Table(name = "tbl_acq_item_conf")
 public  class AcquisitionItem implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;

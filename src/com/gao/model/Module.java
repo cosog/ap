@@ -6,13 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：模块信息 实体类  SC_MODULE</p>
+ *  <p>描述：模块信息 实体类  tbl_module</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "SC_MODULE")
+@Table(name = "tbl_module")
 public  class Module implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer mdId;

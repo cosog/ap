@@ -141,8 +141,8 @@ public class ProtocolModbusTCPThread extends Thread{
             				break;
     					}else{
     						String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-							String updateDiscreteComm="update t_discretedata_rt t set t.commstatus=1,t.acquisitiontime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')  "
-									+ " where t.wellId in (select well.id from t_wellinformation well where well.driveraddr='"+revMacStr+"') ";
+							String updateDiscreteComm="update tbl_rpc_discrete_latest t set t.commstatus=1,t.acquisitiontime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')  "
+									+ " where t.wellId in (select well.id from tbl_wellinformation well where well.driveraddr='"+revMacStr+"') ";
 							Connection conn=OracleJdbcUtis.getConnection();
 							Statement stmt=null;
 							try {
@@ -1574,7 +1574,7 @@ public class ProtocolModbusTCPThread extends Thread{
         						Connection conn=OracleJdbcUtis.getConnection();
         						Statement stmt=null;
         						
-        						String updateProdData="update t_outputwellproduction_rt t set t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+        						String updateProdData="update tbl_rpc_productiondata_latest t set t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
         						boolean hasProData=false;
             					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getTubingPressure()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getTubingPressure().getAddress()>40000){
             						hasProData=true;
@@ -1600,10 +1600,10 @@ public class ProtocolModbusTCPThread extends Thread{
             						hasProData=true;
             						updateProdData+=",t.producingfluidLevel="+ProducingfluidLevel;
             					}
-            					updateProdData+=" where t.wellId= (select t2.id from t_wellinformation t2 where t007.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+            					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t007.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
             					
             					String updateDailyData="";
-        						String updateDiscreteData="update t_discretedata_rt t set t.commStatus=1,t.acqCycle_Diagram="+acquisitionCycle+",t.frequencySetValue="+SetFrequency+",t.frequencyRunValue="+RunFrequency+","
+        						String updateDiscreteData="update tbl_rpc_discrete_latest t set t.commStatus=1,t.acqCycle_Diagram="+acquisitionCycle+",t.frequencySetValue="+SetFrequency+",t.frequencyRunValue="+RunFrequency+","
         								+ "t.TubingPressure="+TubingPressure+",t.CasingPressure="+CasingPressure+",t.BackPressure="+BackPressure+",t.WellHeadFluidTemperature="+WellHeadFluidTemperature+","
         								+ "t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')"
         								+ " ,t.Ia= "+CurrentA+""
@@ -1664,7 +1664,7 @@ public class ProtocolModbusTCPThread extends Thread{
             								+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNVar()
             								+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getCurrent().getToday().getVA();
         							if(energyCalculateResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate())){
-        								updateDailyData="update t_outputwellaggregation t set t.todaywattenergy="+energyCalculateResponseData.getDaily().getWatt()
+        								updateDailyData="update tbl_rpc_total_day t set t.todaywattenergy="+energyCalculateResponseData.getDaily().getWatt()
         										+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getDaily().getPWatt()
                 								+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getDaily().getNWatt()
                 								+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getDaily().getVar()
@@ -1672,7 +1672,7 @@ public class ProtocolModbusTCPThread extends Thread{
                 								+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getDaily().getNVar()
                 								+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getDaily().getVA()
         										+ " where t.calculatedate=to_date('"+energyCalculateResponseData.getDaily().getDate()+"','yyyy-mm-dd') "
-        								         +" and t.wellId= (select t2.id from t_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+        								         +" and t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
         							}
         						}else{
         							updateDiscreteData+= " ,t.totalWattEnergy= "+ActivePowerConsumption
@@ -1684,7 +1684,7 @@ public class ProtocolModbusTCPThread extends Thread{
         							updateDiscreteData+=",t.runStatus="+RunStatus;
         						}
         						
-        						updateDiscreteData+=" where t.wellId= (select t2.id from t_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+        						updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
         						
         						try {
     								stmt = conn.createStatement();
@@ -2052,7 +2052,7 @@ public class ProtocolModbusTCPThread extends Thread{
 				String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
 				java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
 				CommResponseData commResponseData=gson.fromJson(commResponse, type);
-				String updateCommStatus="update t_discretedata_rt t set t.commStatus=0,t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss') ";
+				String updateCommStatus="update tbl_rpc_discrete_latest t set t.commStatus=0,t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss') ";
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateCommStatus+=" ,t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
@@ -2064,7 +2064,7 @@ public class ProtocolModbusTCPThread extends Thread{
 					clientUnit.unitDataList.get(i).lastCommTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
 					clientUnit.unitDataList.get(i).lastCommRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
 				}
-				updateCommStatus+=" where t.wellId= (select t2.id from t_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+				updateCommStatus+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 				int result=stmt.executeUpdate(updateCommStatus);
 			}
 			conn.close();

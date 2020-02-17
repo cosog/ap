@@ -107,7 +107,7 @@ public class ProtocolRDSSThread extends Thread{
 						}
 						
 						if(revData[5]==0x01){//数据传输完成
-							String querySql="select jh,jslx,slly from t_wellinformation t where t.driveraddr='"+terminalNo+"'";
+							String querySql="select jh,jslx,slly from tbl_wellinformation t where t.driveraddr='"+terminalNo+"'";
 							conn=OracleJdbcUtis.getConnection();
 							if(conn!=null){
 								pstmt = conn.prepareStatement(querySql);
@@ -204,9 +204,9 @@ public class ProtocolRDSSThread extends Thread{
 			            					timeEffResponseData=gson.fromJson(timeEffResponse, type);
 			        					}
 			        					
-			        					String updateTXZT="update t_wellinformation t set t.txzt=1 where t.jh='"+wellName+"'";
+			        					String updateTXZT="update tbl_wellinformation t set t.txzt=1 where t.jh='"+wellName+"'";
 		        						
-		        						String updateProdData="update t_outputwellproduction t set t.cjsj=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		        						String updateProdData="update tbl_rpc_productiondata_hist t set t.cjsj=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
 		        						boolean hasProData=false;
 		            					if(TubingPressure>0){
 		            						hasProData=true;
@@ -224,7 +224,7 @@ public class ProtocolRDSSThread extends Thread{
 		            						hasProData=true;
 		            						updateProdData+=",t.jklw="+WellHeadFluidTemperature;
 		            					}
-		            					updateProdData+=" where t.jbh= (select t007.jlbh from t_wellinformation t007 where t007.jh='"+wellName+"') ";
+		            					updateProdData+=" where t.jbh= (select t007.jlbh from tbl_wellinformation t007 where t007.jh='"+wellName+"') ";
 		            					
 		        						
 		        						String updateTXZT033="update t_outputwellhistory t set t.txzt=1,t.gtcjzq=0,t.bpszpl="+SetFrequency+",t.bpyxpl="+RunFrequency+","
@@ -320,7 +320,7 @@ public class ProtocolRDSSThread extends Thread{
 		                        				+ " ,t.voltagecuplimit= "+electricCalculateResponseData.getElectricLimit().getVoltageC().getMax()+""
 		                                		+ " ,t.voltagecdownlimit= "+electricCalculateResponseData.getElectricLimit().getVoltageC().getMin()+"";
 		            					}
-		        						updateTXZT033+=" where t.jbh= (select t007.jlbh from t_wellinformation t007 where t007.jh='"+wellName+"') ";
+		        						updateTXZT033+=" where t.jbh= (select t007.jlbh from tbl_wellinformation t007 where t007.jh='"+wellName+"') ";
 		        						updateTXZT033RT=updateTXZT033.replaceAll("t_outputwellhistory", "t_outputwellrealtime");
 		        						updateTXZT033+= " and t.gtcjsj=( select max(t2.gtcjsj) from t_outputwellhistory t2 where t2.jbh=t.jbh  )";
 		        						

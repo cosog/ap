@@ -38,7 +38,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	public List<?> getReportProductionWellJhPage(int intPage, int pageSize,
 			String orgId, String jh) throws Exception {
 		//String orgIds = this.getBaseDao().getUserOrgIds(orgId);
-		String tempHql = " select  v.jh as jh from  t_wellinformation v  ,sc_org  g,t_wellorder t where 1=1 and v.jlbh=t.jlbh and  v.jlx=101 and v.dwbh=g.org_code  and g.org_id in ("
+		String tempHql = " select  v.jh as jh from  tbl_wellinformation v  ,tbl_org  g,t_wellorder t where 1=1 and v.jlbh=t.jlbh and  v.jlx=101 and v.dwbh=g.org_code  and g.org_id in ("
 					+ orgId + ") order by t.pxbh,v.jh";
 
 		if (jh.trim().length() > 0) {

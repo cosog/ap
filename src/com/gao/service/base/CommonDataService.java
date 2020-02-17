@@ -1489,11 +1489,11 @@ public class CommonDataService extends BaseService {
 		StringBuffer sqlwhere = new StringBuffer();
 		StringBuffer nsqlwhere = new StringBuffer();
 		sqlwhere.append("select  jh, yf, ypjyl, ypjyl1, yzhhs, cc, cc1, bj, bs," + " dym, cmd, phd, xtxl,zbx, cjwd, ylyl, ylyl1, zlyl, zlyl1,bz from ");
-		sqlwhere.append(" v_005_13_reportrivermonth_cn u,sc_org o where 1=1 and u.dwbh=o.org_code ");
+		sqlwhere.append(" v_005_13_reportrivermonth_cn u,tbl_org o where 1=1 and u.dwbh=o.org_code ");
 		sqlwhere.append(" and o.org_id in (" + orgId + ")");
 
 		nsqlwhere.append("select  jh, yf, ypjyl, ypjyl1, yzhhs,cc,cc1,  bj, bs," + " dym, cmd,zbx,cjwd,  ylyl, ylyl1, zlyl, zlyl1,bz from (select t.jh,substr(t.rq,0,7) as yf,avg(t.yl) ypjyl,avg(yl1) as ypjyl1," + "avg(t.hs) as yzhhs,avg(cc) as cc,avg(cc1) as cc1," + "avg(t.bj) as bj,avg(t.bs) as bs ,avg(t.dym) as dym ,avg(t.cmd) as cmd,avg(zbx) as zbx,avg(cjwd) as cjwd ,sum(t.yl) ylyl ,sum(yl1) as ylyl1," + " avg(l.ljyl) as zlyl,avg(l.ljyl1) as zlyl1,t.bz  ");
-		nsqlwhere.append(" from   VIEW_DAYREPORT t,T_100_LHJM l ,sc_org o  where l.jbh=t.jbh  and t.dwbh=o.org_code ");
+		nsqlwhere.append(" from   VIEW_DAYREPORT t,T_100_LHJM l ,tbl_org o  where l.jbh=t.jbh  and t.dwbh=o.org_code ");
 		nsqlwhere.append(" and o.org_id in (" + orgId + ") ");
 		StringBuffer valueWhere = new StringBuffer();
 		StringBuffer nvalueWhere = new StringBuffer();
@@ -1666,12 +1666,12 @@ public class CommonDataService extends BaseService {
 			StringBuffer sqlwhere = new StringBuffer();
 			StringBuffer nsqlwhere = new StringBuffer();
 			sqlwhere.append("select jh as id, jh, yf, ypjyl, ypjyl1, yzhhs, cc, cc1, bj, bs," + " dym, cmd, phd, xtxl,zbx, cjwd, ylyl, ylyl1, zlyl, zlyl1,bz from ");
-			sqlwhere.append(" v_005_13_reportrivermonth_cn u,sc_org o where 1=1 and u.dwbh=o.org_code ");
+			sqlwhere.append(" v_005_13_reportrivermonth_cn u,tbl_org o where 1=1 and u.dwbh=o.org_code ");
 			sqlwhere.append(" and o.org_id in (" + orgId + ")");
 
 			nsqlwhere.append("select   jh as id, jh, yf, ypjyl, ypjyl1, yzhhs,cc,cc1,  bj, bs," + " dym, cmd,phd,xtxl,zbx,cjwd,  ylyl, ylyl1, zlyl, zlyl1,bz from (select t.jh,substr(t.rq,0,7) as yf,avg(t.yl) ypjyl,avg(yl1) as ypjyl1," + "avg(t.hs) as yzhhs,avg(cc) as cc,avg(cc1) as cc1," + "avg(t.bj) as bj,avg(t.bs) as bs ,avg(t.dym) as dym ,avg(t.cmd) as cmd,avg(zbx) as phd,avg(zbx) as xtxl,avg(zbx) as zbx,avg(cjwd) as cjwd ,sum(t.yl) ylyl ,sum(yl1) as ylyl1,"
 					+ " avg(l.ljyl) as zlyl,avg(l.ljyl1) as zlyl1,t.bz  ");
-			nsqlwhere.append(" from   VIEW_DAYREPORT t,T_100_LHJM l ,sc_org o  where l.jbh=t.jbh  and t.dwbh=o.org_code ");
+			nsqlwhere.append(" from   VIEW_DAYREPORT t,T_100_LHJM l ,tbl_org o  where l.jbh=t.jbh  and t.dwbh=o.org_code ");
 			nsqlwhere.append(" and o.org_id in (" + orgId + ") ");
 			StringBuffer valueWhere = new StringBuffer();
 			StringBuffer nvalueWhere = new StringBuffer();
@@ -1858,7 +1858,7 @@ public class CommonDataService extends BaseService {
 
 		String sql = "";
 
-		sql = " select distinct w.jh as jh, w.jh as dm from t_wellinformation w,t_outputwellaggregation t ,sc_org o where 1=1 and w.dwbh=o.org_code and o.org_id in(" + orgId + ")";
+		sql = " select distinct w.jh as jh, w.jh as dm from tbl_wellinformation w,tbl_rpc_total_day t ,tbl_org o where 1=1 and w.dwbh=o.org_code and o.org_id in(" + orgId + ")";
 		if (StringManagerUtils.isNotNull(jh)) {
 			sql += " and w.jh like '%" + jh + "%'";
 		}
@@ -1896,7 +1896,7 @@ public class CommonDataService extends BaseService {
 
 		String sql = "";
 
-		sql = " select distinct w.jh as jh, w.jh as dm from t_wellinformation w,t_outputwellaggregation t ,sc_org o where 1=1 and w.dwbh=o.org_code and o.org_id in(" + orgId + ")";
+		sql = " select distinct w.jh as jh, w.jh as dm from tbl_wellinformation w,tbl_rpc_total_day t ,tbl_org o where 1=1 and w.dwbh=o.org_code and o.org_id in(" + orgId + ")";
 		if (StringManagerUtils.isNotNull(jh)) {
 			sql += " and w.jh like '%" + jh + "%'";
 		}
@@ -1932,10 +1932,10 @@ public class CommonDataService extends BaseService {
 		String sql = "";
 		StringBuffer sqlwhere = new StringBuffer();
 		sqlwhere.append("select t.id, w.workingconditioncode,w.workingconditionname, t.alarmtype,code1.itemname as alarmtypename, t.alarmlevel,code2.itemname as alarmlevelname,t.alarmsign,t.remark");
-		sqlwhere.append(" from t_workstatus w   ");
-		sqlwhere.append(" left outer join t_workstatusalarm  t  on t.workingconditioncode = w.workingconditioncode  ");
-		sqlwhere.append(" left outer join t_code   code1  on t.alarmtype=code1.itemvalue  and code1.itemcode='BJLX'");
-		sqlwhere.append(" left outer join t_code  code2   on t.alarmlevel=code2.itemvalue and code2.itemcode='BJJB'");
+		sqlwhere.append(" from tbl_rpc_worktype w   ");
+		sqlwhere.append(" left outer join tbl_rpc_alarmtype_conf  t  on t.workingconditioncode = w.workingconditioncode  ");
+		sqlwhere.append(" left outer join tbl_code   code1  on t.alarmtype=code1.itemvalue  and code1.itemcode='BJLX'");
+		sqlwhere.append(" left outer join tbl_code  code2   on t.alarmlevel=code2.itemvalue and code2.itemcode='BJJB'");
 		sqlwhere.append(" where w.workingconditioncode>=1100");
 		sqlwhere.append(" order by w.workingconditioncode");
 		String getResult = "";
@@ -1966,7 +1966,7 @@ public class CommonDataService extends BaseService {
 	 */
 	public String alarmSelectinfo(Page pager, String JH, String BJJB, String BJLX, String orgId) {
 		String Sql = "";
-		Sql = "Select jh,bjsj,bjsm,bjz,bjlx,bjjb from (select jh,to_char(bjsj,'YYYY-MM-DD hh24:mi:ss') as bjsj ,bjsm,bjz,t2.itemname as bjlx,t3.itemname as bjjb " + "from T_040_ALARMINFORMATION t,t_wellinformation t1," + "t_code t2 ,t_code t3,sc_org o " + "where  o.ORG_CODE=t1.dwbh  and o.ORG_ID  in (" + orgId + ") and  t1.jlbh=t.jbh and t2.itemcode='BJLX' and t3.itemcode='BJJB' and t.bjjb=t3.itemvalue and t.bjlx=t2.itemvalue ";
+		Sql = "Select jh,bjsj,bjsm,bjz,bjlx,bjjb from (select jh,to_char(bjsj,'YYYY-MM-DD hh24:mi:ss') as bjsj ,bjsm,bjz,t2.itemname as bjlx,t3.itemname as bjjb " + "from T_040_ALARMINFORMATION t,tbl_wellinformation t1," + "tbl_code t2 ,tbl_code t3,tbl_org o " + "where  o.ORG_CODE=t1.dwbh  and o.ORG_ID  in (" + orgId + ") and  t1.jlbh=t.jbh and t2.itemcode='BJLX' and t3.itemcode='BJJB' and t.bjjb=t3.itemvalue and t.bjlx=t2.itemvalue ";
 		if (StringManagerUtils.isNotNull(JH)) {
 			Sql += " and t1.jlbh =" + JH + "";
 		}
@@ -2004,7 +2004,7 @@ public class CommonDataService extends BaseService {
 	 */
 	public String rfidFrontObtaininfo(Page pager, String jc, String xm, String hfbz, String orgId) {
 		String Sql = "";
-		Sql = "Select jlbh,rfidkh,ygbh,ygxm,xb,dwbh,dwmc,ddjc,rcsj,lcsj,hfbz " + "from (select distinct to_char(r.rcsj,'YYYY-MM-DD hh24:mi:ss') as rcsj,t.jlbh,t.rfidkh,t.ygbh,t.ygxm,t.xb,t.bmbh as dwbh,t.bmmc as dwmc,t1.jc as ddjc," + "to_char(r.lcsj,'YYYY-MM-DD hh24:mi:ss') as lcsj," + "r.hfbz from t_042_rfidinformation t,t_043_rfidrecord r,sc_org o ,t_wellinformation t1 " + "where  o.ORG_CODE=t1.dwbh  and o.ORG_ID  in (" + orgId + ")  and t.rfidkh=r.rfidkh and r.ddjc=t1.jc ";
+		Sql = "Select jlbh,rfidkh,ygbh,ygxm,xb,dwbh,dwmc,ddjc,rcsj,lcsj,hfbz " + "from (select distinct to_char(r.rcsj,'YYYY-MM-DD hh24:mi:ss') as rcsj,t.jlbh,t.rfidkh,t.ygbh,t.ygxm,t.xb,t.bmbh as dwbh,t.bmmc as dwmc,t1.jc as ddjc," + "to_char(r.lcsj,'YYYY-MM-DD hh24:mi:ss') as lcsj," + "r.hfbz from t_042_rfidinformation t,t_043_rfidrecord r,tbl_org o ,tbl_wellinformation t1 " + "where  o.ORG_CODE=t1.dwbh  and o.ORG_ID  in (" + orgId + ")  and t.rfidkh=r.rfidkh and r.ddjc=t1.jc ";
 		if (StringManagerUtils.isNotNull(jc)) {
 			Sql += " and r.ddjc = '" + jc + "'";
 		}
@@ -2092,7 +2092,7 @@ public class CommonDataService extends BaseService {
 	public String loadMenuTypeData(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='" + type + "'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='" + type + "'";
 		try {
 			List<?> list = this.getfindByIdList(sql);
 			result_json.append("[");

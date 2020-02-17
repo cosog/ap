@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：单井诊断信息 实体类  sc_org</p>
+ *  <p>描述：单井诊断信息 实体类  v_analysisrealtime</p>
  *  
  * @author gao  2014-06-10
  *

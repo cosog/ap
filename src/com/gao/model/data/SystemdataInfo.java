@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @data 2014-4-10
  */  
 @Entity
-@Table(name = "tbl_systemdatainfo")
+@Table(name = "tbl_dist_name")
 public class SystemdataInfo implements Serializable{
 	/**
      *  缺省VersionUID

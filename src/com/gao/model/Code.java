@@ -11,13 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *  <p>描述：码表信息 实体类  T_CODE</p>
+ *  <p>描述：码表信息 实体类  tbl_code</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "T_CODE")
+@Table(name = "tbl_code")
 public class Code implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private BigDecimal id;

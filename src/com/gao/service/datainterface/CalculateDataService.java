@@ -460,7 +460,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	public String getDefaultWellname(String orgId){
 		String sql="select v.* from "
-				+ " (select t007.jh from t_wellinformation t007,sc_org org where t007.dwbh=org.org_code and org.org_id in ("+orgId+") order by t007.jh) v "
+				+ " (select t007.jh from tbl_wellinformation t007,tbl_org org where t007.dwbh=org.org_code and org.org_id in ("+orgId+") order by t007.jh) v "
 				+ " where rownum<=1";
 		List<?> list = this.findCallSql(sql);
 		
@@ -521,7 +521,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public int deleteInvalidData() throws SQLException{
 		String sql="delete from t_outputwellhistory where jsbz=0 and jlbh not in"
 				+ " (select t033.jlbh"
-				+ " from t_wellinformation t007, t_indicatordiagram t010,"
+				+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
 				+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
 				+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 				+ " and t033.dymbh=t011.jlbh  "
@@ -532,7 +532,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public int deleteInvalidData(int jbh) throws SQLException{
 		String sql="delete from t_outputwellhistory where jsbz=0 and jlbh not in"
 				+ " (select t033.jlbh"
-				+ " from t_wellinformation t007, t_indicatordiagram t010,"
+				+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
 				+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
 				+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 				+ " and t033.dymbh=t011.jlbh  "
@@ -581,9 +581,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t.runtimeefficiencysource,t.driveraddr,t.driverid,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "
-				+ " from t_wellinformation t "
-				+ " left outer join t_outputwellproduction_rt t2 on t.id=t2.wellid  "
-				+ " left outer join t_discretedata_rt  t3 on t3.wellId=t.id"
+				+ " from tbl_wellinformation t "
+				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
+				+ " left outer join tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where 1=1";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
 											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
@@ -593,18 +593,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" prod.productiongasoilratio,prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,t.pumpeff,prod.pumpborediameter/1000 as pumpborediameter,"
 											+" t.idegreebalance,t.wattdegreebalance,"
 											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature"
-											+" from t_indicatordiagram t ,t_wellinformation t007 ,t_outputwellproduction prod"
+											+" from tbl_rpc_diagram_hist t ,tbl_wellinformation t007 ,tbl_rpc_productiondata_hist prod"
 											+" where t.wellid=t007.id and t.productiondataid=prod.id "
 											+" and  t.acquisitiontime > "
 											+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
-											+" from t_indicatordiagram t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
+											+" from tbl_rpc_diagram_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
 											+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
 											+" and t.resultstatus=1 and t.workingconditioncode<>1232 and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
 		String statusSql="select well.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
-				+ " from t_discretedata t,t_wellinformation well "
-				+ " where t.wellid=well.id and t.acquisitiontime=( select max(t2.acquisitiontime) from t_discretedata t2 where t2.wellid=t.wellid and t2.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
+				+ " from tbl_rpc_discrete_hist t,tbl_wellinformation well "
+				+ " where t.wellid=well.id and t.acquisitiontime=( select max(t2.acquisitiontime) from tbl_rpc_discrete_hist t2 where t2.wellid=t.wellid and t2.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
@@ -773,19 +773,17 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public List<String> getDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid from t_wellinformation t left outer join t_outputwellproduction_rt t2 on t.id=t2.wellid  where 1=1";
+		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid from tbl_wellinformation t left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  where 1=1";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue"
-				+" from t_discretedata t ,t_wellinformation t007"
+				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+" and t.acquisitiontime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
 		}
-//		wellinformationSql+=" and t.jh='龙1-斜09'";
-//		singleCalculateResuleSql+=" and t007.jh='龙1-斜09'";
 		
 		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
 		wellinformationSql+=" order by t.sortnum";

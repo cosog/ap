@@ -41,7 +41,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 	public String loadOrgType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='ORG_TYPE'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='ORG_TYPE'";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");
@@ -167,9 +167,9 @@ public class OrgManagerService<T> extends BaseService<T> {
 		StringBuffer orgIdString = new StringBuffer();
 		List<?> list;
 		//递归查询子节点所有父节点sql语句
-		String queryString="select org_parent from sc_org t start with org_id="+orgid+"  connect by prior  org_parent=org_id";
+		String queryString="select org_parent from tbl_org t start with org_id="+orgid+"  connect by prior  org_parent=org_id";
 		if(orgid==0){
-			queryString="select org_parent from sc_org t ";
+			queryString="select org_parent from tbl_org t ";
 		}
 		list=getBaseDao().findSql(queryString);
 		if(list.size()>0){
@@ -188,9 +188,9 @@ public class OrgManagerService<T> extends BaseService<T> {
 			StringBuffer orgIdString = new StringBuffer();
 			List<?> list;
 			//递归查询子节点所有父节点sql语句
-			String queryString="select org_id from sc_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
+			String queryString="select org_id from tbl_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
 			if(orgid==0){
-				queryString="select org_id from sc_org t ";
+				queryString="select org_id from tbl_org t ";
 			}
 			list=getBaseDao().findSql(queryString);
 			if(list.size()>0){
@@ -208,9 +208,9 @@ public class OrgManagerService<T> extends BaseService<T> {
 			StringBuffer orgNameString = new StringBuffer();
 			List<?> list;
 			//递归查询子节点所有父节点sql语句
-			String queryString="select org_name from sc_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
+			String queryString="select org_name from tbl_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
 			if(orgid==0){
-				queryString="select org_name from sc_org t ";
+				queryString="select org_name from tbl_org t ";
 			}
 			list=getBaseDao().findSql(queryString);
 			if(list.size()>0){
@@ -228,7 +228,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		String result="";
 		StringBuffer orgIdString = new StringBuffer();
 		List<?> list;
-		String queryString="select org_id from sc_org where org_id in(select distinct org_parent from sc_org)";
+		String queryString="select org_id from tbl_org where org_id in(select distinct org_parent from tbl_org)";
 		list=getBaseDao().findSql(queryString);
 		if(list.size()>0){
 			for(int i=0;i<list.size();i++){
@@ -247,7 +247,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 
 	public List<?> queryOrgs(Class<T> clazz, String orgName,String orgId) {
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("SELECT org_id,org_code,org_name,org_memo,org_parent,org_level,org_type,c.itemname as orgTypeName ,org_coordx,org_coordy,show_level as showLevel FROM sc_org u,t_code c WHERE c.itemcode='ORG_TYPE' and c.itemvalue=u.org_type ");
+		sqlBuffer.append("SELECT org_id,org_code,org_name,org_memo,org_parent,org_level,org_type,c.itemname as orgTypeName ,org_coordx,org_coordy,show_level as showLevel FROM tbl_org u,tbl_code c WHERE c.itemcode='ORG_TYPE' and c.itemvalue=u.org_type ");
 		if(StringManagerUtils.isNotNull(orgId)){
 			sqlBuffer.append(" and u.org_id in ("+orgId+")");
 		}
@@ -261,13 +261,13 @@ public class OrgManagerService<T> extends BaseService<T> {
 	public List<?> queryOrgsSyn(Class<T> clazz, String orgName,String tid,int orgid,String parentNodeIds,String childNodeIds,String orgIds,String treeSelectedOrgId) {
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("SELECT org_id,org_code,org_name,org_memo,org_parent,org_level,org_type,c.itemname as orgTypeName ,org_coordx,org_coordy,show_level as showLevel "
-				+ "FROM sc_org u,t_code c "
+				+ "FROM tbl_org u,tbl_code c "
 				+ "WHERE c.itemcode='ORG_TYPE' and c.itemvalue=u.org_type  and u.org_id in("+orgIds+")");
 		
 		if(!"0".equals(tid)){
 			sqlBuffer.append(" and u.org_parent = "+ tid);
 		}else{
-			sqlBuffer.append(" and u.org_parent = ( select t.org_parent from sc_org t where t.org_id="+treeSelectedOrgId+" ) ");
+			sqlBuffer.append(" and u.org_parent = ( select t.org_parent from tbl_org t where t.org_id="+treeSelectedOrgId+" ) ");
 		}
 //		if (StringManagerUtils.isNotNull(parentNodeIds)) {
 //			sqlBuffer.append(","+parentNodeIds);

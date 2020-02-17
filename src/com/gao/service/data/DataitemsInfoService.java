@@ -71,7 +71,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	}
 
 	public void updateDataitemsInfoById(String dataId, String valStr) {
-		String upSql = "update tbl_dataitemsinfo dup set dup.status=" + valStr + " where dup.dataitemid='" + dataId + "'";
+		String upSql = "update tbl_dist_item dup set dup.status=" + valStr + " where dup.dataitemid='" + dataId + "'";
 		try {
 			this.updateSql(upSql);
 		} catch (Exception e) {

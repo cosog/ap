@@ -846,7 +846,7 @@ public class GraphicalUploadController extends BaseController {
 	@RequestMapping("/exportSurfaceCardData")
 	public String exportSurfaceCardData() throws IOException, SQLException {
 		String sql="select t2.jh,to_char(t.cjsj,'yyyymmdd_hh24miss'),t.gtsj "
-				+ " from t_indicatordiagram t,t_wellinformation t2 "
+				+ " from tbl_rpc_diagram_hist t,tbl_wellinformation t2 "
 				+ " where t.jbh=t2.jlbh order by jh,t.cjsj";
 		String filecontent="";
 		String fileName="";
@@ -959,9 +959,9 @@ public class GraphicalUploadController extends BaseController {
 	@RequestMapping("/getOuterSurfaceCardData")
 	public String getOuterSurfaceCardData(){
 		String localSql="select t.jh,t008.bg,to_char(t010.cjsj,'yyyy-mm-dd hh24:mi:ss') "
-				+ " from t_wellinformation t  "
-				+ " left outer join t_outputwellproduction t008 on t008.jbh=t.jlbh "
-				+ " left outer join  ( select jbh,max(cjsj) as cjsj from t_indicatordiagram t group by jbh ) t010 on t010.jbh=t.jlbh  "
+				+ " from tbl_wellinformation t  "
+				+ " left outer join tbl_rpc_productiondata_hist t008 on t008.jbh=t.jlbh "
+				+ " left outer join  ( select jbh,max(cjsj) as cjsj from tbl_rpc_diagram_hist t group by jbh ) t010 on t010.jbh=t.jlbh  "
 				+ " where 1=1 "
 				+ " and t.jslx >=200 and t.jslx<300 "
 				+ " order by t.jh";

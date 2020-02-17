@@ -37,7 +37,7 @@ import oracle.sql.CLOB;
 public class GraphicalUploadService<T> extends BaseService<T> {
 	public String getSurfaceCardTrpeList(){
 		StringBuffer result_json = new StringBuffer();
-		String sql="select id,itemname,itemvalue,remark from t_code t where t.itemcode='GTLX' order by t.itemvalue ";
+		String sql="select id,itemname,itemvalue,remark from tbl_code t where t.itemcode='GTLX' order by t.itemvalue ";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },{ \"header\":\"功图类型\",\"dataIndex\":\"gtlxName\" ,children:[] }]";
@@ -85,7 +85,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t.watercut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,t.producingfluidlevel,t.pumpsettingdepth,"
 					+ " t.netgrossratio,"
 					+ " t.wellid "
-					+ " from t_outputwellproduction t,t_outputwellproduction_rt t2,  t_wellinformation t3 "
+					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
 					+ " where t.wellid=t2.wellid and t.acquisitiontime=t2.acquisitiontime and t.wellid=t3.id"
 					+ " and t3.wellName='"+wellAcquisitionData.getWellName()+"'";
 			List<?> prodDataList = this.findCallSql(prodDataSql);

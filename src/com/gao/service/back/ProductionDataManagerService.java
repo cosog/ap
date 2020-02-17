@@ -72,16 +72,16 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		strBuf.append(" p.cybxh,op.ygnj,op.yctgnj,op.yjgj,op.yjgjb,op.yjgcd,op.ejgj,op.ejgjb,op.ejgcd,");
 		strBuf.append("  op.sjgj,op.sjgjb,op.sjgcd,op.rcql,op.mdzt,c1.itemname as mdztName,op.jmb,op.bzgtbh,op.bzdntbh ");
 		strBuf.append(" from ");
-		strBuf.append("  t_code c1 ,");
-		strBuf.append("  t_code c5,t_code c6,t_code c7,t_code c8,t_code c9    ");
-		strBuf.append(",t_outputwellproduction op left outer join  t_wellinformation  w  on w.jlbh = op.jbh  ");
+		strBuf.append("  tbl_code c1 ,");
+		strBuf.append("  tbl_code c5,tbl_code c6,tbl_code c7,tbl_code c8,tbl_code c9    ");
+		strBuf.append(",tbl_rpc_productiondata_hist op left outer join  tbl_wellinformation  w  on w.jlbh = op.jbh  ");
 		strBuf.append(" left outer join t_dynamicliquidlevel   dy  on op.dymbh = dy.jlbh ");
 		strBuf.append(" left outer join  t_pump p    on  p.jlbh = op.bbh ");
-		strBuf.append(" left outer join  sc_org o    on  o.org_code=w.dwbh ");
+		strBuf.append(" left outer join  tbl_org o    on  o.org_code=w.dwbh ");
 		strBuf.append("  where   ");
 		strBuf.append("   c1.itemcode='MDZT' and c1.itemvalue=op.mdzt  ");
 		strBuf.append("   and c5.itemcode='BJB' and c5.itemvalue=p.bjb  and c6.itemcode='CCJZT' and c6.itemvalue=op.ccjzt   ");
-		strBuf.append("  and c7.itemcode='SFPFCL' and c7.itemvalue=op.sfpfcl and c8.sjbdm='t_outputwellproduction' and c8.itemcode='QTLX' and c8.itemvalue=op.qtlx ");
+		strBuf.append("  and c7.itemcode='SFPFCL' and c7.itemvalue=op.sfpfcl and c8.sjbdm='tbl_rpc_productiondata_hist' and c8.itemcode='QTLX' and c8.itemvalue=op.qtlx ");
 		strBuf.append("  and c9.itemcode='LiftingType' and c9.itemvalue=op.jslx ");
 		strBuf.append(orgCode_Str + resCode_Str + jh_Str);
 		strBuf.append("and  o.org_id in("+orgId+")");
@@ -122,21 +122,21 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		strBuf.append(" op.ygnj,op.yctgnj,op.yjgj,op.yjgnj,op.yjgjb,op.yjgcd,op.ejgj,op.ejgnj,op.ejgjb,op.ejgcd,");
 		strBuf.append(" op.sjgj,op.sjgnj,op.sjgjb,op.sjgcd,op.sijgj,op.sijgnj,op.sijgjb,op.sijgcd,c1.itemname as mdztName,op.jmb,op.bzgtbh,op.bzdntbh,to_char(op.cjsj@'yyyy-mm-dd hh24:mi:ss') as cjsj ");
 		strBuf.append(" from ");
-		strBuf.append("  t_code c1 ,");
-		strBuf.append("  t_code c2 ,");
-		strBuf.append("  t_code c3 ,");
-		strBuf.append("  t_code c5,t_code c6,t_code c7,t_code c8,t_code c9    ");
-		strBuf.append(",t_outputwellproduction op left outer join  t_wellinformation  w  on w.jlbh = op.jbh  ");
+		strBuf.append("  tbl_code c1 ,");
+		strBuf.append("  tbl_code c2 ,");
+		strBuf.append("  tbl_code c3 ,");
+		strBuf.append("  tbl_code c5,tbl_code c6,tbl_code c7,tbl_code c8,tbl_code c9    ");
+		strBuf.append(",tbl_rpc_productiondata_hist op left outer join  tbl_wellinformation  w  on w.jlbh = op.jbh  ");
 		strBuf.append(" left outer join t_wellorder t019     on w.jh=t019.jh ");
 		strBuf.append(" left outer join t_dynamicliquidlevel   dy  on op.dymbh = dy.jlbh ");
 		//strBuf.append(" left outer join  t_pump p    on  p.jlbh = op.bbh ");
-		strBuf.append(" left outer join  sc_org o    on  o.org_code=w.dwbh ");
+		strBuf.append(" left outer join  tbl_org o    on  o.org_code=w.dwbh ");
 		strBuf.append("  where   ");
 		strBuf.append("   c1.itemcode='MDZT' and c1.itemvalue=op.mdzt  ");
 		strBuf.append("   and c2.itemcode='BTLX' and c2.itemvalue=op.btlx");
 		strBuf.append("   and c3.itemcode='BLX' and c3.itemvalue=op.blx");
 		strBuf.append("   and c5.itemcode='BJB' and c5.itemvalue=op.bjb  and c6.itemcode='CCJZT' and c6.itemvalue=op.ccjzt   ");
-		strBuf.append("  and c7.itemcode='SFPFCL' and c7.itemvalue=op.sfpfcl and c8.sjbdm='t_outputwellproduction' and c8.itemcode='QTLX' and c8.itemvalue=op.qtlx ");
+		strBuf.append("  and c7.itemcode='SFPFCL' and c7.itemvalue=op.sfpfcl and c8.sjbdm='tbl_rpc_productiondata_hist' and c8.itemcode='QTLX' and c8.itemvalue=op.qtlx ");
 		strBuf.append("  and c9.itemcode='LiftingType' and c9.itemvalue=w.jslx ");
 		strBuf.append("  and w.jslx>="+wellType+" and w.jslx<("+wellType+"+99) ");
 		strBuf.append(orgCode_Str + resCode_Str + jh_Str);
@@ -302,7 +302,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 	public String loadMenuTypeData(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='" + type + "'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='" + type + "'";
 		try {
 			List<?> list = this.getfindByIdList(sql);
 			result_json.append("[");
@@ -340,7 +340,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 	public String loadQtlxTypeData(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where   sjbdm='t_outputwellproduction' and itemcode='QTLX'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where   sjbdm='tbl_rpc_productiondata_hist' and itemcode='QTLX'";
 		try {
 			List<?> list = this.getfindByIdList(sql);
 			result_json.append("[");
@@ -370,9 +370,9 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
 		if (type.equalsIgnoreCase("res")) {
-			sql = " select  distinct p.yqcbh,r.res_name  from t_wellinformation p,t_outputwellproduction w ,sc_res r where p.jlbh=w.jbh  and p.yqcbh=r.res_code ";
+			sql = " select  distinct p.yqcbh,r.res_name  from tbl_wellinformation p,tbl_rpc_productiondata_hist w ,sc_res r where p.jlbh=w.jbh  and p.yqcbh=r.res_code ";
 		} else if (type.equalsIgnoreCase("jh")) {
-			sql = " select  p.jh as jh ,p.jh as dm from t_wellinformation p,t_outputwellproduction w ,t_wellorder t where 1=1 and p.jh=t.jh and p.jlbh=w.jbh ";
+			sql = " select  p.jh as jh ,p.jh as dm from tbl_wellinformation p,tbl_rpc_productiondata_hist w ,t_wellorder t where 1=1 and p.jh=t.jh and p.jlbh=w.jbh ";
 		}
 		if (StringUtils.isNotBlank(orgCode)) {
 			sql += " and p.dwbh like '%" + orgCode + "%'";
@@ -416,7 +416,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 	 * @throws Exception
 	 */
 	public String showLiftTypeTree() throws Exception {
-		String sql = "select t.itemvalue as id,t.itemname as text from t_code t where t.itemcode='LiftingType'  order  by itemvalue";
+		String sql = "select t.itemvalue as id,t.itemname as text from tbl_code t where t.itemcode='LiftingType'  order  by itemvalue";
 		List<?> list = this.findCallSql(sql);
 		StringBuffer result_json = new StringBuffer();
 		String get_key = "";
@@ -517,7 +517,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 	}
 
 	public List<T> fingProductionDataByJhList(String orgCode) throws Exception {
-		String sql = " select  distinct (h.jh) from t_outputwellproduction w ,t_wellinformation h where h.jlbh=w.jbh  ";
+		String sql = " select  distinct (h.jh) from tbl_rpc_productiondata_hist w ,tbl_wellinformation h where h.jlbh=w.jbh  ";
 		if (StringUtils.isNotBlank(orgCode)) {
 			sql += " and h.dwbh like '%" + orgCode + "%'";
 		}
@@ -553,7 +553,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 	public boolean doBzgtBhEdit(ProductionOutWellInfo pro) {
 		boolean flag = false;
 		if (StringUtils.isNotBlank(pro.getJbh() + "")) {
-			String queryString = "  update  t_outputwellproduction t  set t.bzgtbh=" + pro.getBzgtbh() + " where  t.jbh=" + pro.getJbh();
+			String queryString = "  update  tbl_rpc_productiondata_hist t  set t.bzgtbh=" + pro.getBzgtbh() + " where  t.jbh=" + pro.getJbh();
 			String object = this.getBaseDao().deleteCallSql(queryString) + "";
 			if (object == "1" || object.equals("1"))
 				flag = true;

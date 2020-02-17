@@ -111,7 +111,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		String result="";
 		StringBuffer modIdString = new StringBuffer();
 		List<?> list;
-		String queryString="select md_id from sc_module where md_id in (select distinct md_parentid from sc_module)";
+		String queryString="select md_id from tbl_module where md_id in (select distinct md_parentid from tbl_module)";
 		list=getBaseDao().findSql(queryString);
 		if(list.size()>0){
 			for(int i=0;i<list.size();i++){
@@ -209,7 +209,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	public List<?> queryModules(Class<T> clazz, String moduleName) {
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("select md_id,md_name,md_parentid,md_showname,md_url,md_code,md_seq ,md_icon,md_type,md_control,c.itemname as mdTypeName   ");
-		sqlBuffer.append("from  sc_module u,t_code c where c.itemcode='MD_TYPE' and c.itemvalue=u.md_type ");
+		sqlBuffer.append("from  tbl_module u,tbl_code c where c.itemcode='MD_TYPE' and c.itemvalue=u.md_type ");
 		
 		if(!moduleName.isEmpty()&&moduleName!=null&&!"".equals(moduleName)){
 			sqlBuffer.append("and u.md_name like '%"+moduleName+"%' ");
@@ -262,7 +262,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	public String loadModuleType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='MD_TYPE'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='MD_TYPE'";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");

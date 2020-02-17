@@ -329,7 +329,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	public String queryStatisticsAmountJh(Page pager,String orgId,String jh) throws Exception {
 		StringBuffer sqlCuswhere = new StringBuffer();
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select  v.jh as jh From t_wellinformation   v, sc_Org  o,t_wellorder t where 1=1 and v.jh=t.jh and v.jlx=101  and v.dwbh=o.org_Code and o.org_Id in ("
+		String sql = "select  v.jh as jh From tbl_wellinformation   v, tbl_org  o,t_wellorder t where 1=1 and v.jh=t.jh and v.jlx=101  and v.dwbh=o.org_Code and o.org_Id in ("
 				+ orgId + "  ) ";//order by t.pxbh, v.jh";
 		if (StringUtils.isNotBlank(jh)) {
 			//jh=new String(jh.getBytes("iso-8859-1"),"utf-8");
@@ -390,11 +390,11 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		BufferedInputStream bis = null;
         StringBuffer dataSbf = new StringBuffer();
         StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
-        String tableName="t_indicatordiagram_rt";
+        String tableName="tbl_rpc_diagram_latest";
         if(StringManagerUtils.isNotNull(selectedWellName)){
-        	tableName="t_indicatordiagram";
+        	tableName="tbl_rpc_diagram_hist";
         }else{
-        	tableName="t_indicatordiagram_rt";
+        	tableName="tbl_rpc_diagram_latest";
         }
         String sql="select well.wellName as wellName, to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
         		+ " t.pumpfsdiagram,"
@@ -403,7 +403,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,t.upstrokeimax,t.downstrokeimax,t.idegreebalance,"
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve "
-        		+ " from "+tableName+" t, t_workstatus status,t_wellinformation well  "
+        		+ " from "+tableName+" t, tbl_rpc_worktype status,tbl_wellinformation well  "
         		+ " where t.wellid=well.id and t.workingconditioncode=status.workingconditioncode ";
         if(StringManagerUtils.isNotNull(selectedWellName)){
         	sql+=" and t.id="+id;
@@ -686,9 +686,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			tableName="v_comprehensivehistorydata";
 		}
-		String isControlSql="select t2.role_flag from sc_user t,sc_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
+		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
 		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
-				+ " from T_WELLINFORMATION t,t_acquisitionunit t2,t_acquisitionitems t3,t_acq_unit_item t4 "
+				+ " from tbl_wellinformation t,tbl_acq_group_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
 				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
 				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
 				+ " order by t3.seq";
@@ -883,7 +883,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " to_char(t.gtcjsj,'yyyy-mm-dd hh24:mi:ss'),t.rpm,t.currenta,t.currentb,t.currentc,t.voltagea,t.voltageb,t.voltagec, "
 				+ " t.currentauplimit,t.currentadownlimit,t.currentbuplimit,t.currentbdownlimit,t.currentcuplimit,t.currentcdownlimit, "
 				+ " t.voltageauplimit,t.voltageadownlimit,t.voltagebuplimit,t.voltagebdownlimit,t.voltagecuplimit,t.voltagecdownlimit "
-				+ " from t_outputwellhistory t,t_wellinformation t007 "
+				+ " from t_outputwellhistory t,tbl_wellinformation t007 "
 				+ " where t.jbh=t007.jlbh and t007.jh='"+jh+"' "
 				+ " and t.gtcjsj between to_date(to_char(to_date('"+cjsj+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
 				+ " and to_date('"+cjsj+"','yyyy-mm-dd hh24:mi:ss') "

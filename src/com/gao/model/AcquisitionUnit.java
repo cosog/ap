@@ -6,13 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：采集类型 实体类  t_acquisitionunit</p>
+ *  <p>描述：采集类型 实体类  tbl_acq_group_conf</p>
  *  
  * @author zhao  2018-11-02
  *
  */
 @Entity
-@Table(name = "t_acquisitionunit")
+@Table(name = "tbl_acq_group_conf")
 public class AcquisitionUnit implements java.io.Serializable {
 
 	/**

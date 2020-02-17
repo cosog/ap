@@ -476,10 +476,10 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 	public List<String> getTotalCalculationDataList(int type) throws ParseException{
 		List<String> totalQequestDataList=new ArrayList<String>();
 		StringBuffer dataSbf=null;
-		String sqlWell="select t007.jh,t203.positionandweight from t_wellinformation t007,t_203_balanceinformation t203 "
+		String sqlWell="select t007.jh,t203.positionandweight from tbl_wellinformation t007,t_203_balanceinformation t203 "
 				+ " where t007.jlbh=t203.jbh and t203.updatetime=(select max(t.updatetime) from t_203_balanceinformation t where t.jbh=t203.jbh ) order by t007.jh ";
 		String sql="select t007.jh,to_char(t.gtcjsj,'yyyy-mm-dd hh24:mi:ss') as gtcjsj,t.deltaradius,t.deltablock,t.currentdegreeofbalance,t.optimizationbalance "
-				+ " from t_201_balanceanalysis t ,t_wellinformation t007"
+				+ " from t_201_balanceanalysis t ,tbl_wellinformation t007"
 				+ " where t.jbh=t007.jlbh  and  t.gtcjsj > (select max(to_date(to_char(t2.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd')) from t_201_balanceanalysis t2 where t2.jbh=t.jbh and t2.jsbz=1 and t2.calculatetype="+type+" and t2.gtcjsj <to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'))"
 				+ " and t.jsbz=1 and t.calculatetype="+type+" and t.gtcjsj <to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')order by t007.jh,t.gtcjsj";
 		List<?> welllist = this.findCallSql(sqlWell);
@@ -544,13 +544,13 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 	public List<String> getCycleCalculationDataList(int type,String jh) throws ParseException{
 		List<String> cycleQequestDataList=new ArrayList<String>();
 		StringBuffer dataSbf=null;
-		String sqlWell="select t007.jh,t203.positionandweight from t_wellinformation t007,t_203_balanceinformation t203 "
+		String sqlWell="select t007.jh,t203.positionandweight from tbl_wellinformation t007,t_203_balanceinformation t203 "
 				+ " where  t007.jlbh=t203.jbh and t203.updatetime=(select max(t.updatetime) from t_203_balanceinformation t where t.jbh=t203.jbh )  ";
 		
 		
 		
 		String sql="select t007.jh,to_char(t.gtcjsj,'yyyy-mm-dd hh24:mi:ss') as gtcjsj,t.deltaradius,t.deltablock,t.currentdegreeofbalance,t.optimizationbalance  "
-				+ " from t_201_balanceanalysis t ,t_wellinformation t007 "
+				+ " from t_201_balanceanalysis t ,tbl_wellinformation t007 "
 				+ " where t.jbh=t007.jlbh and "
 				+ " to_date(to_char(t.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd') <=(select max(to_date(to_char(t2.gtcjsj,'yyyy-mm-dd'),'yyyy-mm-dd'))"
 				+ "  from t_201_balanceanalysis t2 where t2.jbh=t.jbh and t2.jsbz=1 and t2.calculatetype="+type+" and t2.gtcjsj <to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') ) "

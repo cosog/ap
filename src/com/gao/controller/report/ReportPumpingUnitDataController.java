@@ -87,7 +87,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 			v.add(null);
 		}
 		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from t_outputwellaggregation t order by calculateDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_rpc_total_day t order by calculateDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				calculateDate = list.get(0).toString();
@@ -141,7 +141,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 			v.add(null);
 		}
 		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from t_outputwellaggregation t order by calculateDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_rpc_total_day t order by calculateDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				calculateDate = list.get(0).toString();
@@ -588,7 +588,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 			v.add(null);
 		}
 		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from t_outputwellaggregation t order by calculateDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_rpc_total_day t order by calculateDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				calculateDate = list.get(0).toString();

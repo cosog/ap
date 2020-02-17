@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
  * Outputwellproduction entity. @ding
  */
 @Entity
-@Table(name = "T_OUTPUTWELLPRODUCTION")
+@Table(name = "tbl_rpc_productiondata_hist")
 public class Outputwellproduction implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer jlbh;

@@ -34,7 +34,7 @@ private CommonDataService service;
 	public String loadRoleType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='ROLE_FLAG'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='ROLE_FLAG'";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");
@@ -88,7 +88,7 @@ private CommonDataService service;
 		String roleName = (String) map.get("roleName");
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append(" select roleCode,roleName,roleFlag,roleFlagName,roleId,remark from ( ");
-		sqlBuffer.append(" select role_code as roleCode,role_name as roleName,role_flag as roleFlag,decode(u.role_flag,1,'是','否') as roleFlagName,role_id as roleId,remark from  sc_role u where 1=1");
+		sqlBuffer.append(" select role_code as roleCode,role_name as roleName,role_flag as roleFlag,decode(u.role_flag,1,'是','否') as roleFlagName,role_id as roleId,remark from  tbl_role u where 1=1");
 		if (StringManagerUtils.isNotNull(roleName)) {
 			sqlBuffer.append(" and u.role_Name like '%" + roleName + "%' ");
 		}

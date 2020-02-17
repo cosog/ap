@@ -89,7 +89,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		sqlwhere.append("u.user_phone as userPhone,u.user_in_email as userInEmail,");
 		sqlwhere.append("u.user_title as userTitle,c.itemname as userTitleName, to_char(u.user_regtime,'YYYY-MM-DD hh24:mi:ss') as userRegtime,");
 		sqlwhere.append("u.user_quicklogin as userQuickLogin,decode(u.user_quicklogin,0,'否','是') as userQuickLoginName,");
-		sqlwhere.append("o.org_name as orgName  from  t_code  c, sc_user u left outer join  sc_org o on u.user_orgid=o.org_id  left outer join sc_role r on u.user_type=r.role_id ");
+		sqlwhere.append("o.org_name as orgName  from  tbl_code  c, tbl_user u left outer join  tbl_org o on u.user_orgid=o.org_id  left outer join tbl_role r on u.user_type=r.role_id ");
 		sqlwhere.append("where  u.user_title=c.itemvalue  and c.itemcode='USER_TITLE' ");
 		String userName = (String) map.get("userName");
 		if (!"".equals(userName) && null != userName && userName.length() > 0) {
@@ -166,7 +166,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	public String loadUserTitleType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='USER_TITLE'";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='USER_TITLE'";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");
@@ -201,7 +201,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	public String loadUserType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.role_id,t.role_name from sc_role t order by t.role_id";
+		sql = " select t.role_id,t.role_name from tbl_role t order by t.role_id";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");
@@ -242,7 +242,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	public String sendZYBZTitleType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.itemvalue,t.itemname from t_code t where  itemcode='USER_TITLE' and t.itemvalue not in(0,4)";
+		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='USER_TITLE' and t.itemvalue not in(0,4)";
 		try {
 			List<?> list = this.getfindByIdList(sql);
 			result_json.append("[");
@@ -303,7 +303,7 @@ public class UserManagerService<T> extends BaseService<T> {
 	public String getUserList() throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String queryString = "select t.user_name,t.user_id,t.user_pwd,t.user_no "
-				+ " from sc_user t ,sc_org org "
+				+ " from tbl_user t ,tbl_org org "
 				+ " where (t.user_orgid=org.org_id or t.user_orgid=0 ) "
 				+ " and t.user_quicklogin=1  "
 				+ " group by t.user_name,t.user_id,t.user_pwd,t.user_no "

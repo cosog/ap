@@ -78,7 +78,7 @@ public class DiagnosisTotalController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(totalDate)){
-			String sql = " select to_char(max(t.jssj),'yyyy-mm-dd') from t_outputwellaggregation t ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				totalDate = list.get(0).toString();
@@ -87,7 +87,7 @@ public class DiagnosisTotalController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.jssj),'yyyy-mm-dd') from t_outputwellaggregation t where t.jbh=( select t2.jlbh from t_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t where t.jbh=( select t2.jlbh from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -144,7 +144,7 @@ public class DiagnosisTotalController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.jssj),'yyyy-mm-dd') from t_outputwellaggregation t where t.jbh=( select t2.jlbh from t_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t where t.jbh=( select t2.jlbh from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -187,7 +187,7 @@ public class DiagnosisTotalController extends BaseController {
 		}
 		
 		if(!StringManagerUtils.isNotNull(totalDate)){
-			String sql = " select to_char(max(t.jssj),'yyyy-mm-dd') from t_outputwellaggregation t ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				totalDate = list.get(0).toString();
@@ -352,10 +352,10 @@ public class DiagnosisTotalController extends BaseController {
 	
 	@RequestMapping("/getScrewPumpDailyAnalysiCurveData")
 	public String getScrewPumpDailyAnalysiCurveData()throws Exception{
-		String jssj = ParamUtils.getParameter(request, "jssj");
+		String calculatedate = ParamUtils.getParameter(request, "calculatedate");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		String json = "";
-		json = this.diagnosisTotalService.getScrewPumpDailyAnalysiCurveData(jssj,wellName);
+		json = this.diagnosisTotalService.getScrewPumpDailyAnalysiCurveData(calculatedate,wellName);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

@@ -15,13 +15,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 /**
- *  <p>描述：用户信息 实体类  sc_user</p>
+ *  <p>描述：用户信息 实体类  tbl_user</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "sc_user")
+@Table(name = "tbl_user")
 public class User implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private String orgName;

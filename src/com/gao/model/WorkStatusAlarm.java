@@ -6,13 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- *  <p>描述：工况报警设置 实体类  T_WORKSTATUSALARM</p>
+ *  <p>描述：工况报警设置 实体类  tbl_rpc_alarmtype_conf</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "T_WORKSTATUSALARM")
+@Table(name = "tbl_rpc_alarmtype_conf")
 public class WorkStatusAlarm implements java.io.Serializable {
 
 	// Fields

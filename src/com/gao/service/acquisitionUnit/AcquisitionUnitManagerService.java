@@ -29,7 +29,7 @@ private CommonDataService service;
 	public String getAcquisitionUnitList(Map map,Page pager) {
 		String unitName = (String) map.get("unitName");
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark from t_acquisitionunit t where 1=1");
+		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark from tbl_acq_group_conf t where 1=1");
 		if (StringManagerUtils.isNotNull(unitName)) {
 			sqlBuffer.append(" and t.unit_name like '%" + unitName + "%' ");
 		}

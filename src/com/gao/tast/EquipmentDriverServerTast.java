@@ -106,13 +106,13 @@ public class EquipmentDriverServerTast {
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
 				+ " totalwattenergy,totalpwattenergy,totalnwattenergy,totalvarenergy,totalpvarenergy,totalnvarenergy,totalvaenergy,"
 				+ " todaywattenergy,todaypwattenergy,todaynwattenergy,todayvarenergy,todaypvarenergy,todaynvarenergy,todayvaenergy "
-				+ " from t_wellinformation t "
-				+ " left outer join  t_indicatordiagram_rt t2 on t2.wellId=t.id"
-				+ " left outer join  t_discretedata_rt  t3 on t3.wellId=t.id"
+				+ " from tbl_wellinformation t "
+				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
+				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where 1=1  "
 				+ " order by t.sortNum";
 		String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		String resetCommStatus="update t_discretedata_rt t set t.commstatus=0  ";
+		String resetCommStatus="update tbl_rpc_discrete_latest t set t.commstatus=0  ";
 		if(clientUnitList!=null){
 			for(int i=0;i<clientUnitList.size();i++){
 				if(clientUnitList.get(i).thread!=null){
@@ -261,8 +261,8 @@ public class EquipmentDriverServerTast {
 		
 		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,t.acqcycle_diagram,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode "
-				+ " from t_wellinformation t "
-				+ " left join t_indicatordiagram_rt t2 on t2.wellId=t.id "
+				+ " from tbl_wellinformation t "
+				+ " left join tbl_rpc_diagram_latest t2 on t2.wellId=t.id "
 				+ " where 1=1  ";
 		if(StringManagerUtils.isNotNull(wellList)){
 			sql+=" and t.wellName in("+wellList+")";
@@ -443,7 +443,7 @@ public class EquipmentDriverServerTast {
 	@SuppressWarnings("static-access")
 	public static boolean  initAcquisitionUnit(){
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
-		String sql="select t.unit_code,t.unit_name from t_acquisitionunit t order by id";
+		String sql="select t.unit_code,t.unit_name from tbl_acq_group_conf t order by id";
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){
 			return false;
@@ -464,9 +464,9 @@ public class EquipmentDriverServerTast {
 				acquisitionUnitData.setAcquisitionUnitCode(rs.getString(1));
 				acquisitionUnitData.setAcquisitionUnitName(rs.getString(2));
 				String itemsSql="select t2.itemcode,t2.itemname "
-						+ " from t_acq_unit_item t,t_acquisitionitems t2,t_acquisitionunit t3 "
+						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_group_conf t3 "
 						+ " where t.itemid=t2.id and  t.unitid=t3.id and t3.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"'  "
-						+ " and t2.id not in(select t4.parentid from t_acquisitionitems t4 )  order by t2.id";
+						+ " and t2.id not in(select t4.parentid from tbl_acq_item_conf t4 )  order by t2.id";
 				pstmt = conn.prepareStatement(itemsSql); 
 				itemRs=pstmt.executeQuery();
 				while(itemRs.next()){
@@ -588,9 +588,9 @@ public class EquipmentDriverServerTast {
 			alarmShowStyle=new AlarmShowStyle();
 		}
 		String sql="select v1.itemvalue,v1.itemname,v2.itemname,v3.itemname from "
-				+ " (select * from t_code t where t.itemcode='BJYS' ) v1,"
-				+ " (select * from t_code t where t.itemcode='BJQJYS' ) v2,"
-				+ " (select * from t_code t where t.itemcode='BJYSTMD' ) v3 "
+				+ " (select * from tbl_code t where t.itemcode='BJYS' ) v1,"
+				+ " (select * from tbl_code t where t.itemcode='BJQJYS' ) v2,"
+				+ " (select * from tbl_code t where t.itemcode='BJYSTMD' ) v3 "
 				+ " where v1.itemvalue=v2.itemvalue and v1.itemvalue=v3.itemvalue order by v1.itemvalue ";
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){

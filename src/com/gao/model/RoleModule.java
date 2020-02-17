@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "SC_ROLE_MODULE")
+@Table(name = "tbl_module2role")
 public class RoleModule implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;

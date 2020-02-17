@@ -6,13 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 /**
- *  <p>描述：井名信息 实体类  T_WELLINFORMATION</p>
+ *  <p>描述：井名信息 实体类  tbl_wellinformation</p>
  *  
- * @author gao  2014-06-10
+ * @author zhao  2020-02-17
  *
  */
 @Entity
-@Table(name = "T_WELLINFORMATION")
+@Table(name = "tbl_wellinformation")
 public class WellInformation implements java.io.Serializable {
 	/**
 	 * 

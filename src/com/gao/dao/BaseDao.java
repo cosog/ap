@@ -173,10 +173,10 @@ public class BaseDao extends HibernateDaoSupport {
 		ResultSet rs = null;
 		String sql1 = "", sql2 = "", sql3 = "", sql4 = "";
 		conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		sql1 = "select count(*) num from t_welltrajectory j,t_wellinformation w where j.jbh=w.jlbh and w.jh= ?";
-		sql2 = "update t_welltrajectory  set jsgj=? where jbh=(select w.jlbh from  t_wellinformation w where w.jh=?) ";
+		sql1 = "select count(*) num from t_welltrajectory j,tbl_wellinformation w where j.jbh=w.jlbh and w.jh= ?";
+		sql2 = "update t_welltrajectory  set jsgj=? where jbh=(select w.jlbh from  tbl_wellinformation w where w.jh=?) ";
 		sql3 = "insert into t_welltrajectory(jbh,jsgj) values(?,?)";
-		sql4 = "select w.jlbh  from t_wellinformation w where  w.jh= ?";
+		sql4 = "select w.jlbh  from tbl_wellinformation w where  w.jh= ?";
 		jsgj = wtvo.getClsd() + "," + wtvo.getCzsd() + "," + wtvo.getJxj() + "," + wtvo.getFwj() + ";";
 		ps = conn.prepareStatement(sql4, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ps.setString(1, jh);
@@ -1020,7 +1020,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select w.jh  from  t_wellinformation  w  order by w.jh";
+		String sql = "select w.jh  from  tbl_wellinformation  w  order by w.jh";
 		try {
 			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 			ps = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -1074,7 +1074,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select w.jh  from  t_welltrajectory j,t_wellinformation  w " + "  left outer join  t_wellorder wo  on w.jh  =wo.jh   where  w.jlbh=j.jbh order by wo.pxbh ";
+		String sql = "select w.jh  from  t_welltrajectory j,tbl_wellinformation  w " + "  left outer join  t_wellorder wo  on w.jh  =wo.jh   where  w.jlbh=j.jbh order by wo.pxbh ";
 		try {
 			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 			ps = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -1523,7 +1523,7 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				delSql="delete from t_outputwellproduction_rt t where t.wellId in ("+delIds+")";
+				delSql="delete from tbl_rpc_productiondata_latest t where t.wellId in ("+delIds+")";
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 //				conn.commit();
@@ -1859,7 +1859,7 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				delSql="delete from t_wellinformation t where t.id in ("+delIds+")";
+				delSql="delete from tbl_wellinformation t where t.id in ("+delIds+")";
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
@@ -2161,7 +2161,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			st=conn.createStatement(); 
 			if(!"GLPHD".equalsIgnoreCase(statType)&&!"PHD".equalsIgnoreCase(statType)){
-				String sql="delete from t_outputstatistics t where t.s_type='"+statType+"'";
+				String sql="delete from tbl_rpc_statistics_conf t where t.s_type='"+statType+"'";
 				int updatecount=st.executeUpdate(sql);
 			}
 			
@@ -2170,9 +2170,9 @@ public class BaseDao extends HibernateDaoSupport {
 				String statitem=everydata.getString("statitem");
 				String downlimit=everydata.getString("downlimit");
 				String uplimit=everydata.getString("uplimit");
-				String sql="insert into t_outputstatistics(s_level,s_min,s_max,s_type) values('"+statitem+"',"+downlimit+","+uplimit+",'"+statType+"')";
+				String sql="insert into tbl_rpc_statistics_conf(s_level,s_min,s_max,s_type) values('"+statitem+"',"+downlimit+","+uplimit+",'"+statType+"')";
 				if("GLPHD".equalsIgnoreCase(statType)||"PHD".equalsIgnoreCase(statType)){
-					sql="update t_outputstatistics set s_min="+downlimit+",s_max="+uplimit+" where s_type='"+statType+"' and s_level='"+statitem+"'";
+					sql="update tbl_rpc_statistics_conf set s_min="+downlimit+",s_max="+uplimit+" where s_type='"+statType+"' and s_level='"+statitem+"'";
 				}
 				int updatecount=st.executeUpdate(sql);
 			}
@@ -2215,7 +2215,7 @@ public class BaseDao extends HibernateDaoSupport {
 		if (StringUtils.isNotBlank(resCode)) {
 			resCode_Str = " and w.yqcbh like ?";
 		}
-		String sql = "select j.jlbh,j.jbh ,j.jsgj  from  t_welltrajectory j  where j.jbh in (select w.jlbh from t_wellinformation  w where w.jh=? ";
+		String sql = "select j.jlbh,j.jbh ,j.jsgj  from  t_welltrajectory j  where j.jbh in (select w.jlbh from tbl_wellinformation  w where w.jh=? ";
 		if (orgCode_Str != "") {
 			sql += orgCode_Str;
 		}
@@ -2432,11 +2432,11 @@ public class BaseDao extends HibernateDaoSupport {
 //				conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 //				conn.setAutoCommit(false);
 //				List<CallbackDataItems> GtList=new ArrayList<CallbackDataItems>();
-//				String sql="select jlbh from t_wellinformation where cjdybm=?";
-//				String sql2="insert into t_indicatordiagram (jbh,cjsj,gtsj) values (?,to_date(?,'yyyy-mm-dd hh24:mi:ss'),empty_blob())";
-//				String sql3="select gtsj from t_indicatordiagram where jbh=? and cjsj=to_date(?,'yyyy-mm-dd hh24:mi:ss')";
+//				String sql="select jlbh from tbl_wellinformation where cjdybm=?";
+//				String sql2="insert into tbl_rpc_diagram_hist (jbh,cjsj,gtsj) values (?,to_date(?,'yyyy-mm-dd hh24:mi:ss'),empty_blob())";
+//				String sql3="select gtsj from tbl_rpc_diagram_hist where jbh=? and cjsj=to_date(?,'yyyy-mm-dd hh24:mi:ss')";
 //				for(int i=0;i<list.size();i++){
-//					if(list.get(i).TableName.equalsIgnoreCase("t_indicatordiagram")){
+//					if(list.get(i).TableName.equalsIgnoreCase("tbl_rpc_diagram_hist")){
 //						GtList.add(list.get(i));
 //					}
 //				}
@@ -5013,7 +5013,7 @@ public class BaseDao extends HibernateDaoSupport {
 //						delIds+=",";
 //					}
 //				}
-//				delSql="delete from t_wellinformation t where t.jlbh in ("+delIds+")";
+//				delSql="delete from tbl_wellinformation t where t.jlbh in ("+delIds+")";
 //				ps=conn.prepareStatement(delSql);
 //				int result=ps.executeUpdate();
 			}

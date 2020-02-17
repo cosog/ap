@@ -54,7 +54,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,"
 				+ " t.structuralunbalance,"
 				+ " t.balanceposition,t.balanceweight,t.prtf "
-				+ " from t_inver_pumpingunit t,t_wellinformation t2,sc_org org "
+				+ " from tbl_rpcinformation t,tbl_wellinformation t2,tbl_org org "
 				+ " where t.wellId=t2.id and t2.orgid=org.org_id "
 				+ " and org.org_id in("+orgId+") "
 				+ " order by t2.sortNum";
@@ -101,7 +101,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.id,t2.wellName,t.manufacturer,t.model,"
 				+ " t.beltpulleydiameter,t.synchrospeed,t.performancecurver"
-				+ " from t_inver_motor t ,t_wellinformation t2,sc_org org "
+				+ " from tbl_rpc_motor t ,tbl_wellinformation t2,tbl_org org "
 				+ " where t.wellId=t2.id and t2.orgid=org.org_id "
 				+ " and org.org_id in("+orgId+") "
 				+ " order by t2.sortNum";
@@ -146,7 +146,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		String sql="select t.id,t2.wellName,t.OffsetAngleOfCrankPS,t.SurfaceSystemEfficiency,"
 				+ " t.FS_LeftPercent,t.FS_RightPercent,t.WattAngle,t.FilterTime_Watt,t.FilterTime_I,t.FilterTime_RPM,"
 				+ " t.FilterTime_FSDiagram,t.FilterTime_FSDiagram_L,t.FilterTime_FSDiagram_R"
-				+ " from t_inver_optimize t,t_wellinformation t2,sc_org org "
+				+ " from tbl_rpc_inver_opt t,tbl_wellinformation t2,tbl_org org "
 				+ " where t.wellId=t2.id and t2.orgid=org.org_id "
 				+ " and org.org_id in("+orgId+") ";
 		
@@ -257,11 +257,11 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,"
 				+ " t.structuralunbalance,t.gearreducerratio,t.gearreducerbeltpulleydiameter,"
 				+ " t.balanceposition,t.balanceweight,t.prtf "
-				+ " from t_inver_pumpingunit t "
+				+ " from tbl_rpcinformation t "
 				+ " where t.wellname='"+wellName+"'";
 		String motorSql="select t.manufacturer,t.model,"
 				+ " t.beltpulleydiameter,t.synchrospeed,t.performancecurver"
-				+ " from t_inver_motor t "
+				+ " from tbl_rpc_motor t "
 				+ " where t.wellname='"+wellName+"'";
 		
 		List<?> pumpingUnitList = this.findCallSql(pumpingUnitSql);
@@ -493,7 +493,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getWellList(String orgId,String wellName) throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.jlbh,t.jh from t_wellinformation t,t_wellorder ord,sc_org org where t.dwbh=org.org_code and t.jh=ord.jh and org.org_id in ("+orgId+") ";
+		String sql = "select t.jlbh,t.jh from tbl_wellinformation t,t_wellorder ord,tbl_org org where t.dwbh=org.org_code and t.jh=ord.jh and org.org_id in ("+orgId+") ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and t.jh='"+wellName+"'";
 		}
@@ -525,7 +525,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " decode(t.fmax@0@null@t.fmax) as fmax,decode(t.fmin@0@null@t.fmin) as fmin,"
 				+ " upStrokeIMax,downStrokeIMax,iDegreeBalance,upStrokeWattMax,downStrokeWattMax,wattDegreeBalance,"
 				+ " signal,interval,deviceVer "
-				+ " from t_indicatordiagram_rt t,t_wellinformation well  "
+				+ " from tbl_rpc_diagram_latest t,tbl_wellinformation well  "
 				+ " where t.wellid=well.id  "
 				+ " and well.orgid in ("+orgId+") "
 				+ " order by well.sortnum";
@@ -536,7 +536,7 @@ public class PSToFSService<T> extends BaseService<T> {
 					+ " decode(t.fmax@0@null@t.fmax) as fmax,decode(t.fmin@0@null@t.fmin) as fmin,"
 					+ " upStrokeIMax,downStrokeIMax,iDegreeBalance,upStrokeWattMax,downStrokeWattMax,wattDegreeBalance, "
 					+ " signal,interval,deviceVer "
-					+ " from t_indicatordiagram t,t_wellinformation well "
+					+ " from tbl_rpc_diagram_hist t,tbl_wellinformation well "
 					+ " where t.wellid=well.id  and well.wellname='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
 					+ " order by t.acquisitionTime desc";
 		}
@@ -570,15 +570,15 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getSingleInverDiagramData(String id,String wellName) throws SQLException, IOException{
         StringBuffer dataSbf = new StringBuffer();
-        String table="t_indicatordiagram";
+        String table="tbl_rpc_diagram_hist";
         if(!StringManagerUtils.isNotNull(wellName)){
-        	table="t_indicatordiagram_rt";
+        	table="tbl_rpc_diagram_latest";
         }
         String sql="select well.wellname,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
         		+ " t.stroke,t.spm,t.fmax,t.fmin,"
         		+ " t.upstrokeimax,t.downstrokeimax,t.idegreebalance,t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,"
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,t.rpm_curve "
-        		+ " from "+table+" t,t_wellinformation well "
+        		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellid=well.id  and t.id="+id;
 		List<?> list=this.GetGtData(sql);
 		String positionCurveData="";
@@ -663,9 +663,9 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getSingleElecCurveData(String id,String wellName) throws SQLException, IOException{
         StringBuffer dataSbf = new StringBuffer();
-        String table="t_indicatordiagram";
+        String table="tbl_rpc_diagram_hist";
         if(!StringManagerUtils.isNotNull(wellName)){
-        	table="t_indicatordiagram_rt";
+        	table="tbl_rpc_diagram_latest";
         }
         String sql="select well.wellname,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
         		+ " t.stroke,t.spm,t.fmax,t.fmin,"
@@ -673,7 +673,7 @@ public class PSToFSService<T> extends BaseService<T> {
         		+ " t.upstrokeimax,t.downstrokeimax,t.idegreebalance,t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,"
         		+ " t.power_curve,t.current_curve,t.rpm_curve, "
         		+ " t.rawpower_curve,t.rawcurrent_curve,t.rawrpm_curve "
-        		+ " from "+table+" t,t_wellinformation well "
+        		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellid=well.id  and t.id="+id;
 		List<?> list=this.GetGtData(sql);
 		if(list.size()>0){
@@ -792,15 +792,15 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getSingleElecInverDiagramCheckData(String recordId,String wellName) throws SQLException, IOException{
         StringBuffer dataSbf = new StringBuffer();
-        String table="t_indicatordiagram";
+        String table="tbl_rpc_diagram_hist";
         if(!StringManagerUtils.isNotNull(wellName)){
-        	table="t_indicatordiagram_rt";
+        	table="tbl_rpc_diagram_latest";
         }
         String sql="select well.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
         		+ " t.stroke,t.spm,t.fmax,t.fmin,"
         		+ " t.position_curve,t.load_curve,"
         		+ " t.position360_curve,t.angle360_curve,t.load360_curve"
-        		+ " from "+table+" t,t_wellinformation well "
+        		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellId=well.id  and t.id="+recordId;
 		List<?> list=this.GetGtData(sql);
 		if(list.size()>0){
@@ -875,13 +875,13 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public boolean exportSingleElecInverDiagramCheckData(String recordId,String wellName,HttpServletResponse response) throws SQLException, IOException{
 		StringBuffer dataSbf = new StringBuffer();
-        String table="t_indicatordiagram";
+        String table="tbl_rpc_diagram_hist";
         if(!StringManagerUtils.isNotNull(wellName)){
-        	table="t_indicatordiagram_rt";
+        	table="tbl_rpc_diagram_latest";
         }
         String sql="select well.wellName,to_char(t.acquisitionTime,'yyyymmddhh24miss') as acquisitionTime,"
         		+ " t.position360_curve,t.angle360_curve,t.load360_curve"
-        		+ " from "+table+" t,t_wellinformation well "
+        		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellId=well.id  and t.id="+recordId;
 		List<?> list=this.findCallSql(sql);
 		boolean result=false;
@@ -1124,7 +1124,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		if(!StringManagerUtils.isNotNull(WorkingConditionString)){
 			WorkingConditionString=transferDiscrete.getResultCode()+"";
 		}
-		String updateDiscreteData="update t_discretedata_rt t set t.CommStatus=1,"
+		String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
 				+ "t.FrequencyRunValue="+transferDiscrete.getFREQ()+","
 				+ "t.signal="+transferDiscrete.getSignal()+","
 				+ "t.interval="+transferDiscrete.getInterval2()+","
@@ -1200,7 +1200,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " ,t.VcUpLimit= "+transferDiscrete.getElectricLimit().getV().getC().getMax()+""
 				+ " ,t.VcDownLimit= "+transferDiscrete.getElectricLimit().getV().getC().getMin()+""
 				+ " ,t.VcZero= "+transferDiscrete.getElectricLimit().getV().getC().getZero()+""
-				+ " where t.wellId= (select t2.id from t_wellinformation t2 where t2.wellName='"+transferDiscrete.getWellName()+"') ";
+				+ " where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+transferDiscrete.getWellName()+"') ";
 		return this.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
 	}
 	
@@ -1406,9 +1406,9 @@ public class PSToFSService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String tableName="";
 		if(StringManagerUtils.isNotNull(wellName)){
-			tableName="t_indicatordiagram";
+			tableName="tbl_rpc_diagram_hist";
 		}else{
-			tableName="t_indicatordiagram_rt";
+			tableName="tbl_rpc_diagram_latest";
 		}
 		String sql="select t.stroke,t.spm,t.fmax,t.fmin,"
 				+ "t.upstrokeimax,t.downstrokeimax,t.idegreebalance,"
@@ -1681,7 +1681,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " t.todaywattenergy,t.todaypwattenergy,t.todaynwattenergy,t.todayvarenergy,t.todaypvarenergy,t.todaynvarenergy,t.todayvaenergy,"
 				+ " t.signal,t.signalmax,t.signalmin,"
 				+ " t.runrange,t.workingconditionstring_e"
-				+ " from t_outputwellaggregation t where id="+id;
+				+ " from tbl_rpc_total_day t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
 		if(list.size()>0){
@@ -1753,7 +1753,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else{
 			itemCode="t."+itemCode;
 		}
-		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from t_outputwellaggregation t,t_wellinformation well "
+		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_rpc_total_day t,tbl_wellinformation well "
 				+ " where t.wellId=well.id and  well.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
 		
 		int totals = getTotalCountRows(sql);//获取总记录数

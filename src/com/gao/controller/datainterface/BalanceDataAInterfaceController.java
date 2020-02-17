@@ -72,7 +72,7 @@ public class BalanceDataAInterfaceController extends BaseController{
 				+ " t020.crankgravityradius,t020.singlecrankweight,t020.balancemaxmovespace,t020.structuralunbalance,t020.maxcnt,t.currentbalance,"
 				+ " to_char(t010.cjsj,'yyyy-mm-dd hh24:mi:ss') as gtcjsj,t010.gtsj,"
 				+ " t.fourbarlinkageefficiency,t.motorefficiency,t.beltefficiency,t.gearreducerefficiency,t.ktzt  "
-				+ " from t_201_balanceanalysis t,t_pumpingunit t020,t_wellinformation t007,t_indicatordiagram t010 "
+				+ " from t_201_balanceanalysis t,t_pumpingunit t020,tbl_wellinformation t007,tbl_rpc_diagram_hist t010 "
 				+ " where t.cyjbh=t020.jlbh and t.jbh=t007.jlbh and t.gtbh=t010.jlbh and t.calculatetype=2 and  jsbz=0"
 				+ ") v where rownum<=1000";
 		

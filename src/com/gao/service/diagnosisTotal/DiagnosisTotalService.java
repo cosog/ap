@@ -468,7 +468,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.PFSum,t.PFSumMax,t.PFSumMin,"
 				+ " t.rpm,t.rpmMax,t.rpMmin,"
 				+ " t.runrange,t.workingconditionstring"
-				+ " from t_outputwellaggregation t where id="+id;
+				+ " from tbl_rpc_total_day t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
 		if(list.size()>0){
@@ -577,7 +577,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}else{
 			itemCode="t."+itemCode;
 		}
-		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from t_outputwellaggregation t,t_wellinformation t007 "
+		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_rpc_total_day t,tbl_wellinformation t007 "
 				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
@@ -606,7 +606,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		StringBuffer dynSbf = new StringBuffer();
 		
 		String sql="select to_char(t.jssj,'yyyy-mm-dd'),t.rpm,t.currenta,t.currentb,t.currentc,t.voltagea,t.voltageb,t.voltagec "
-				+ " from t_outputwellaggregation t,t_wellinformation t007 "
+				+ " from tbl_rpc_total_day t,tbl_wellinformation t007 "
 				+ " where t.jbh=t007.jlbh and t007.jh='"+jh+"' and t.jssj between to_date('"+jssj+"','yyyy-mm-dd')-30 and to_date('"+jssj+"','yyyy-mm-dd') "
 				+ " order by t.jssj";
 		

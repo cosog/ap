@@ -50,11 +50,11 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
 		if (type.equalsIgnoreCase("workingCondition")) {
-			sql = " select distinct t.workingconditioncode,t.workingconditionname from t_workstatus t,t_workstatusalarm g where g.workingconditioncode=t.workingconditioncode";
+			sql = " select distinct t.workingconditioncode,t.workingconditionname from tbl_rpc_worktype t,tbl_rpc_alarmtype_conf g where g.workingconditioncode=t.workingconditioncode";
 		} else if (type.equalsIgnoreCase("alarmType")) {
-			sql = " select  distinct t.itemvalue,t.itemname from t_code t,t_workstatusalarm g where  t.itemcode='BJLX' and t.itemvalue=g.alarmtype";
+			sql = " select  distinct t.itemvalue,t.itemname from tbl_code t,tbl_rpc_alarmtype_conf g where  t.itemcode='BJLX' and t.itemvalue=g.alarmtype";
 		} else if (type.equalsIgnoreCase("alarmLevel")) {
-			sql = " select t.itemvalue,t.itemname from t_code t where  t.itemcode='BJJB' and t.itemvalue<400 order by t.itemvalue";
+			sql = " select t.itemvalue,t.itemname from tbl_code t where  t.itemcode='BJJB' and t.itemvalue<400 order by t.itemvalue";
 		}
 		try {
 			List<?> list = this.getSQLObjects(sql);
@@ -88,9 +88,9 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 				+ "t112.currentbmax,t112.currentbmin,t112.voltagebmax,t112.voltagebmin,t112.activepowerbmax,t112.activepowerbmin,"
 				+ "t112.currentcmax,t112.currentcmin,t112.voltagecmax,t112.voltagecmin,t112.activepowercmax,t112.activepowercmin,"
 				+ "t112.currentavgmax,t112.currentavgmin,t112.voltageavgmax,t112.voltageavgmin,t112.activepowersummax,t112.activepowersummin ,t112.jlbh as limitid "
-				+ " from t_wellinformation t007 "
+				+ " from tbl_wellinformation t007 "
 				+ " left join t_wellorder t019 on t007.jh=t019.jh "
-				+ " left join sc_org org on t007.dwbh=org.org_code "
+				+ " left join tbl_org org on t007.dwbh=org.org_code "
 				+ " left join t_112_distretealarmlimit t112 on t007.jlbh=t112.jbh "
 				+ " where org.org_id in ("+orgId+")";
 		if(StringManagerUtils.isNotNull(jh)){
@@ -146,7 +146,7 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 	
 	public String getBalanceAlarmStatusData(Page pager) {
 		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.jlbh,t.s_level,t.s_min,t.s_max from t_outputstatistics t where t.s_type='PHD' order by t.s_max";
+		String sql = "select t.id,t.s_level,t.s_min,t.s_max from tbl_rpc_statistics_conf t where t.s_type='PHD' order by t.s_max";
 		String columns = commonDataService.showTableHeadersColumns("balanceStatusAlarmSet");
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -199,7 +199,7 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 		else if("commDist".equalsIgnoreCase(type)){
 			statType="TXSL";
 		}
-		String sql = "select t.id,t.s_level,t.s_min,t.s_max from t_outputstatistics t where t.s_type='"+statType+"' order by t.s_max";
+		String sql = "select t.id,t.s_level,t.s_min,t.s_max from tbl_rpc_statistics_conf t where t.s_type='"+statType+"' order by t.s_max";
 		String columns = commonDataService.showTableHeadersColumns("statSet");
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -286,9 +286,9 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 	
 	@SuppressWarnings("unchecked")
 	public String getAlarmLevelColor(){
-		String backColorSql="select t.itemname from t_code t where itemcode='BJYS' order by itemvalue" ;
-		String colorSql="select t.itemname from t_code t where itemcode='BJQJYS' order by itemvalue" ;
-		String opacitySql="select t.itemname from t_code t where itemcode='BJYSTMD' order by itemvalue" ;
+		String backColorSql="select t.itemname from tbl_code t where itemcode='BJYS' order by itemvalue" ;
+		String colorSql="select t.itemname from tbl_code t where itemcode='BJQJYS' order by itemvalue" ;
+		String opacitySql="select t.itemname from tbl_code t where itemcode='BJYSTMD' order by itemvalue" ;
 		String json="";
 		StringBuffer strBuf = new StringBuffer();
 		List<T> backColorList= (List<T>) this.getSQLObjects(backColorSql);

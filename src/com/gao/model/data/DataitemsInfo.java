@@ -19,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @data 2014-4-10
  */
 @Entity
-@Table(name = "tbl_dataitemsinfo")
+@Table(name = "tbl_dist_item")
 public class DataitemsInfo implements Serializable {
 	/**
 	 * 缺省VersionUID

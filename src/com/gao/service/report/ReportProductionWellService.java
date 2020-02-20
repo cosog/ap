@@ -89,7 +89,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ " t.todayWattEnergy,"
 				+ " t.rpm,t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " remark"
-				+ " from v_dailydata t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
@@ -203,7 +203,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ " t.todayWattEnergy,"
 				+ " t.rpm,t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " remark"
-				+ " from v_dailydata t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}

@@ -249,7 +249,7 @@ public class DiagnosisTotalController extends BaseController {
 		}
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from v_dailydata t  where wellName= '"+wellName+"' ";
+			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from viw_rpc_total_day t  where wellName= '"+wellName+"' ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -316,7 +316,7 @@ public class DiagnosisTotalController extends BaseController {
 		
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from v_dailydata t  where wellName= '"+wellName+"' ";
+			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from viw_rpc_total_day t  where wellName= '"+wellName+"' ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

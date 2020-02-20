@@ -82,7 +82,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.tubingStringInsideDiameter,t.casingStringInsideDiameter,"
 			+ "t.anchoringStateName,t.netGrossRatio,t.resultStatus,"
 			+ "t.rodstring"
-			+ " from v_calculateresult t where t.orgid in("+orgId+") "
+			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
 			+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
 		
 		if(StringManagerUtils.isNotNull(wellType)){

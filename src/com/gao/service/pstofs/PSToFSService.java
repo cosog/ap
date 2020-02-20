@@ -955,10 +955,10 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else if("ASDiagram".equalsIgnoreCase(diagramType)){//电流图
 			allsql+="upStrokeIMax,downStrokeIMax,IDegreeBalance,current_curve,";
 		}
-		allsql+="position_curve from v_fsdiagram_rt where 1=1";
+		allsql+="position_curve from viw_rpc_diagramquery_latest where 1=1";
 		
 		if(StringManagerUtils.isNotNull(wellName)){  // 井名不为空 查询该井历史曲线
-			allsql=allsql.replaceAll("v_fsdiagram_rt", "v_fsdiagram");
+			allsql=allsql.replaceAll("viw_rpc_diagramquery_latest", "viw_rpc_diagramquery_hist");
 			allsql+=" and acquisitionTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 and wellName='"+wellName+"' order by acquisitionTime desc";
 		}else{// 井名为空 查询每口井实时曲线
 			allsql+=" and orgid in("+orgId+") order by sortnum";
@@ -1212,9 +1212,9 @@ public class PSToFSService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String tableName="";
 		if("wattdegreebalanceName".equalsIgnoreCase(type)||"idegreebalanceName".equalsIgnoreCase(type)){
-			tableName="v_analysisrealtime";
+			tableName="viw_rpc_diagram_latest";
 		}else{
-			tableName="v_analysisrealtime_elec";
+			tableName="viw_rpc_discrete_latest";
 		}
         String sql="select  t."+type+" ,count(id) from "+tableName+" t where   liftingtype>=200 and liftingtype<400 and t.org_id in("+orgId+")  group by t."+type+"";
 		List<?> list=this.GetGtData(sql);
@@ -1243,9 +1243,9 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getElectricAnalysisRealtimeProfileData(String orgId) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
-        String runWellCountSql="select count(1) from v_analysisrealtime_elec t where  liftingtype>=200 and liftingtype<300 and t.commstatus=1 and t.runStatus=1 and t.org_id in ("+orgId+")";
-        String stopWellCountSql="select count(1) from v_analysisrealtime_elec t where liftingtype>=200 and liftingtype<300 and t.commstatus=1 and t.runStatus=0 and t.org_id in ("+orgId+")";
-        String warnningWellCountSql="select count(1) from v_analysisrealtime_elec t,v_analysisrealtime t2 "
+        String runWellCountSql="select count(1) from viw_rpc_discrete_latest t where  liftingtype>=200 and liftingtype<300 and t.commstatus=1 and t.runStatus=1 and t.org_id in ("+orgId+")";
+        String stopWellCountSql="select count(1) from viw_rpc_discrete_latest t where liftingtype>=200 and liftingtype<300 and t.commstatus=1 and t.runStatus=0 and t.org_id in ("+orgId+")";
+        String warnningWellCountSql="select count(1) from viw_rpc_discrete_latest t,viw_rpc_diagram_latest t2 "
         		+ " where t.wellId=t2.wellId and t.liftingtype>=200 and t.liftingtype<300 "
         		+ " and (t.workingconditionAlarmLevel>0  or t.commAlarmLevel>0 or t.runAlarmLevel>0 or t2.iDegreeBalanceAlarmLevel>0 or t2.wattDegreeBalanceAlarmlevel>0)  "
         		+ " and t.org_id in ("+orgId+")";
@@ -1287,14 +1287,14 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " totalWattEnergy,totalPWattEnergy,totalNWattEnergy,totalVarEnergy,totalPVarEnergy,totalNVarEnergy,totalVAEnergy,"
 				+ " todayWattEnergy,todayPWattEnergy,todayNWattEnergy,todayVarEnergy,todayPVarEnergy,todayNVarEnergy,todayVAEnergy,"
 				+ " frequencyRunValue,signal,interval,deviceVer "
-				+ " from v_analysisrealtime_elec t "
+				+ " from viw_rpc_discrete_latest t "
 				+ " where t.org_id in("+orgId+") ";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sourcesql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+100) ";
 		}
 		sql=sourcesql;
-		sqlHis=sourcesql.replace("v_analysisrealtime_elec", "v_analysishistory_elec");
+		sqlHis=sourcesql.replace("viw_rpc_discrete_latest", "viw_rpc_discrete_hist");
 		
 		if(StringManagerUtils.isNotNull(egkmc)){
 			sql+=" and workingConditionName_Elec='"+egkmc+"' ";
@@ -1336,9 +1336,9 @@ public class PSToFSService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String tableName="";
 		if(StringManagerUtils.isNotNull(wellName)){
-			tableName="v_analysishistory_elec";
+			tableName="viw_rpc_discrete_hist";
 		}else{
-			tableName="v_analysisrealtime_elec";
+			tableName="viw_rpc_discrete_latest";
 		}
 		String sql="select "
 				+ " runTime,runTimeEfficiency,"
@@ -1442,7 +1442,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		String uplimit="";
 		String downlimit="";
 		String zero="";
-		String tableName="v_analysishistory_elec";
+		String tableName="viw_rpc_discrete_hist";
 		String item=itemCode;
 		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
 				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
@@ -1453,9 +1453,9 @@ public class PSToFSService<T> extends BaseService<T> {
 			item="t.downStrokeWattMax,t.upStrokeWattMax ";
 		}
 		if("Discrete".equalsIgnoreCase(type)){
-			tableName="v_analysishistory_elec";
+			tableName="viw_rpc_discrete_hist";
 		}else if("Diagram".equalsIgnoreCase(type)){
-			tableName="v_fsdiagram";
+			tableName="viw_rpc_diagramquery_hist";
 		}
 		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" "
 				+ " from "+tableName+" t "
@@ -1495,9 +1495,9 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getElectricAnalysisDailyProfileData(String orgId,String date) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
-        String runWellCountSql="select count(1) from v_dailydata t where  liftingtype>=200 and liftingtype<300 and  t.runStatus=1 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
-        String stopWellCountSql="select count(1) from v_dailydata t where liftingtype>=200 and liftingtype<300 and  t.runStatus=0 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
-        String warnningWellCountSql="select count(1) from v_dailydata t where liftingtype>=200 and liftingtype<300 and (t.workingConditionAlarmLevel_E>0  or commAlarmLevel>0 or runAlarmLevel>0 or idegreebalanceAlarmLevel>0 or wattdegreebalanceAlarmLevel>0)  and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String runWellCountSql="select count(1) from viw_rpc_total_day t where  liftingtype>=200 and liftingtype<300 and  t.runStatus=1 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String stopWellCountSql="select count(1) from viw_rpc_total_day t where liftingtype>=200 and liftingtype<300 and  t.runStatus=0 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String warnningWellCountSql="select count(1) from viw_rpc_total_day t where liftingtype>=200 and liftingtype<300 and (t.workingConditionAlarmLevel_E>0  or commAlarmLevel>0 or runAlarmLevel>0 or idegreebalanceAlarmLevel>0 or wattdegreebalanceAlarmLevel>0)  and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
         int runWellCount=this.getTotalCountRows(runWellCountSql);
         int stopWellCount=this.getTotalCountRows(stopWellCountSql);
         int warnningWellCount=this.getTotalCountRows(warnningWellCountSql);
@@ -1513,7 +1513,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getElectricAnalysisDailyProfilePieData(String orgId,String date,String type) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
-        String sql="select  t."+type+" ,count(id) from v_dailydata t "
+        String sql="select  t."+type+" ,count(id) from viw_rpc_total_day t "
         		+ " where   liftingtype>=200 and liftingtype<400 "
         		+ " and t.org_id in("+orgId+") "
         		+ " and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')"
@@ -1569,7 +1569,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " iDegreeBalanceMax,iDegreeBalanceMin,iDegreeBalance,iDegreeBalanceStr,iDegreeBalanceLevel,iDegreeBalanceAlarmLevel,"
 				+ " todayWattEnergy,todayPWattEnergy,todayNWattEnergy,todayVarEnergy,todayPVarEnergy,todayNVarEnergy,todayVAEnergy,"
 				+ " signalMax,signalMin,signal,signalStr"
-				+ " from v_dailydata t "
+				+ " from viw_rpc_total_day t "
 				+ " where t.org_id in("+orgId+") ";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
@@ -1596,7 +1596,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve  "
-				+ " from v_fsdiagram t "
+				+ " from viw_rpc_diagramquery_hist t "
 				+ " where t.orgid in ("+orgId+") "
 				+ " and t.acquisitiontime between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and t.wellname='"+wellName+"' "

@@ -1218,7 +1218,7 @@ public class PSToFSController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from v_analysishistory_elec t where t.wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t where t.wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -1304,7 +1304,7 @@ public class PSToFSController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from v_analysishistory_elec t where wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t where wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -1341,7 +1341,7 @@ public class PSToFSController extends BaseController {
 		orgId=ParamUtils.getParameter(request, "orgId");
 		String date=ParamUtils.getParameter(request, "date");
 		if(!StringManagerUtils.isNotNull(date)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from v_analysishistory_elec t ";
+			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				date = list.get(0).toString();
@@ -1373,7 +1373,7 @@ public class PSToFSController extends BaseController {
 		orgId=ParamUtils.getParameter(request, "orgId");
 		String date=ParamUtils.getParameter(request, "date");
 		if(!StringManagerUtils.isNotNull(date)){
-			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from v_dailydata t ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from viw_rpc_total_day t ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				date = list.get(0).toString();
@@ -1421,7 +1421,7 @@ public class PSToFSController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from v_dailydata t where t.wellName='"+wellName+"' ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from viw_rpc_total_day t where t.wellName='"+wellName+"' ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -1511,7 +1511,7 @@ public class PSToFSController extends BaseController {
 		
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from v_dailydata t  where wellName= '"+wellName+"' ";
+			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from viw_rpc_total_day t  where wellName= '"+wellName+"' ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();

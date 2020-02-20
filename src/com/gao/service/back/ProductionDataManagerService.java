@@ -174,7 +174,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
 			+ "rodString,"
 			+ "anchoringStateName,netGrossRatio,to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') "
-			+ "from v_productiondata_rt t "
+			+ "from viw_rpc_productiondata_latest t "
 			+ "where t.org_id in("+orgId+")  "
 			+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
 		if (StringManagerUtils.isNotNull(wellName)) {
@@ -250,7 +250,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 //			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpProductionData");
 //		}
 //		columns = ddic.getTableHeader();
-//		sql=ddic.getSql()+" from v_productiondata_rt t where t.org_id in("+orgId+")  and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
+//		sql=ddic.getSql()+" from viw_rpc_productiondata_latest t where t.org_id in("+orgId+")  and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
 //		
 //		
 //		if (StringManagerUtils.isNotNull(wellName)) {
@@ -276,7 +276,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 				+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
 				+ "rodString,"
 				+ "anchoringStateName,netGrossRatio,to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime "
-				+ "from v_productiondata_rt t "
+				+ "from viw_rpc_productiondata_latest t "
 				+ "where t.org_id in("+orgId+")  "
 				+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
 		if (StringManagerUtils.isNotNull(wellName)) {

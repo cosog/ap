@@ -32,10 +32,6 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 		return this.getBaseDao().deleteObject(hql);
 	}
 
-	public void saveOrUpdateorDeleteProOutputwellproduction(Outputwellproduction w, String ids, String comandType) throws Exception {
-		getBaseDao().saveOrUpdateorDeleteProOutputwellPro(w, ids, comandType);
-	}
-
 	public List<T> loadWellInformationID(Class<T> clazz) {
 		String queryString = "SELECT u.jlbh,u.jh FROM WellInformation u order by u.jlbh ";
 		return getBaseDao().getObjects(queryString);

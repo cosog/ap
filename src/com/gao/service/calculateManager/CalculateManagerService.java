@@ -82,7 +82,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.tubingStringInsideDiameter,t.casingStringInsideDiameter,"
 			+ "t.anchoringStateName,t.netGrossRatio,t.resultStatus,"
 			+ "t.rodstring"
-			+ " from v_calculateresult t where t.orgid in("+orgId+") "
+			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
 			+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
@@ -206,8 +206,17 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void recalculateByProductionData(String orgId, String wellName, String wellType,String startDate,String endDate,String calculateSign)throws Exception {
-		getBaseDao().recalculateByProductionData(orgId,wellName,wellType,startDate,endDate,calculateSign);
+	public int recalculateByProductionData(String orgId, String wellName, String wellType,String startDate,String endDate,String calculateSign)throws Exception {
+		String updateSql="update tbl_rpc_diagram_hist t "
+				+ " set (productiondataid,resultstatus)=(select t2.id,2 from tbl_rpc_productiondata_hist t2,tbl_rpc_productiondata_latest t3 where t2.wellid=t3.wellid and t2.acquisitiontime=t3.acquisitiontime and t2.wellid=t.wellid) "
+				+ " where t.acquisitiontime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+		if(StringManagerUtils.isNotNull(calculateSign)){
+			updateSql+=" and t.resultstatus in ("+calculateSign+")";
+		}
+		if(StringManagerUtils.isNotNull(wellName)){
+			updateSql+=" and t.wellid=(select well.id from tbl_wellinformation well where well.wellname='"+wellName+"')";
+		}
+		return getBaseDao().executeSqlUpdate(updateSql);
 	}
 	
 	public BaseDao getDao() {

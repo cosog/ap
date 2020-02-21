@@ -243,7 +243,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             			}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
             				wellType=400;
             			}
-                        var showWellName='';
+                        var showWellName=wellName;
                     	if(wellName == '' || wellName == null){
                     		if(wellType==200){
                     			showWellName='全部抽油机井';
@@ -496,6 +496,16 @@ var CalculateManagerHandsontableHelper = {
         		//插入的数据的获取
 	        	calculateManagerHandsontableHelper.insertExpressCount();
 	            if (JSON.stringify(calculateManagerHandsontableHelper.AllData) != "{}" && calculateManagerHandsontableHelper.validresult) {
+	            	var bbarId="pumpingCalculateManagerBbar";
+	            	var wellType=200;
+                    var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
+                    if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+                    	bbarId="pumpingCalculateManagerBbar";
+                    	wellType=200;
+					}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+						bbarId="screwPumpCalculateManagerBbar";
+						wellType=400;
+					}
 	            	Ext.Ajax.request({
 	            		method:'POST',
 	            		url:context + '/calculateManagerController/saveRecalculateData',
@@ -523,7 +533,8 @@ var CalculateManagerHandsontableHelper = {
 	                        calculateManagerHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
-	                    	data: JSON.stringify(calculateManagerHandsontableHelper.AllData)
+	                    	data: JSON.stringify(calculateManagerHandsontableHelper.AllData),
+	                    	wellType:wellType
 	                    }
 	            	}); 
 	            } else {

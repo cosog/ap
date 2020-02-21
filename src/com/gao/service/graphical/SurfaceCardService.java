@@ -36,9 +36,9 @@ public class SurfaceCardService <T> extends BaseService<T>{
 		int start = pager.getStart();
 		int maxvalue = limit + start;
 		String allsql="",sql="";
-		String tableName="v_fsdiagram_rt";
+		String tableName="viw_rpc_diagramquery_latest";
 		if(StringManagerUtils.isNotNull(wellName)){
-			tableName="v_fsdiagram";
+			tableName="viw_rpc_diagramquery_hist";
 		}
 		
 		

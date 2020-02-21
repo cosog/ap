@@ -141,7 +141,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String sql=ddic.getSql()+",workingConditionString_E,workingConditionString,"
 				+ " workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel "
-				+ " from v_dailydata t where t.org_id in ("+orgId+") ";
+				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
 				+ " and  t.wellName='"+wellName+"' "
@@ -260,7 +260,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String sql=ddic.getSql()+",workingConditionString_E,workingConditionString,"
 				+ " workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel "
-				+ " from v_dailydata t where t.org_id in ("+orgId+") ";
+				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
 				+ " and  t.wellName='"+wellName+"' "
@@ -308,7 +308,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}else if("12".equalsIgnoreCase(type)){
 			statType="commtimeefficiencyLevel";
 		}
-		sql="select "+statType+", count(*) from v_dailydata t where  org_id in ("+orgId+") and calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
+		sql="select "+statType+", count(*) from viw_rpc_total_day t where  org_id in ("+orgId+") and calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellType)){
 			sql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+99) ";
 		}
@@ -342,7 +342,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve  "
-				+ " from v_fsdiagram t "
+				+ " from viw_rpc_diagramquery_hist t "
 				+ " where t.orgid in ("+orgId+") "
 				+ " and t.acquisitiontime between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and t.wellname='"+wellName+"' "

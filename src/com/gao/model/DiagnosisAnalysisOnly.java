@@ -7,13 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：单井诊断信息 实体类  v_analysisrealtime</p>
+ *  <p>描述：单井诊断信息 实体类  viw_rpc_diagram_latest</p>
  *  
  * @author gao  2014-06-10
  *
  */
 @Entity
-@Table(name = "v_analysisrealtime")
+@Table(name = "viw_rpc_diagram_latest")
 public class DiagnosisAnalysisOnly implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;

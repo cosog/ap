@@ -33,355 +33,442 @@ public class CalculateManagerHandsontableChangedData {
 	{
 		private String id;
 
-	    private String jh;
+	    private String wellName;
 
-	    private String gtcjsj;
+	    private String acquisitionTime;
 	    
-	    private String yymd="0.86";
+	    private String crudeoilDensity="0.86";
 	    
-	    private String smd="1";
+	    private String waterDensity="1";
 	    
-	    private String trqxdmd="0.7";
+	    private String naturalGasRelativeDensity="0.7";
 	    
-	    private String bhyl="0";
+	    private String saturationPressure="0";
 	    
-	    private String yqczbsd="0";
+	    private String reservoirDepth="0";
 	    
-	    private String yqczbwd="0";
+	    private String reservoirTemperature="0";
 
-	    private String yy="0.5";
+	    private String tubingPressure="0.5";
 
-	    private String ty="0.5";
+	    private String casingPressure="0.5";
 
-	    private String jklw="35";
+	    private String wellHeadFluidTemperature="35";
 
-	    private String hsl="0";
+	    private String waterCut="0";
 
-	    private String scqyb="10";
+	    private String productionGasOilRatio="10";
 
-	    private String dym;
+	    private String producingFluidLevel;
 
-	    private String bg;
+	    private String pumpSettingDepth;
 
-	    private String bjb="1";
+	    private String pumpGrade="1";
 
-	    private String bj="38";
+	    private String pumpboreDiameter="38";
 
-	    private String zsc="1.2";
+	    private String plungerLength="1.2";
 
-	    private String btc="2";
+	    private String barrelLength="2";
 
-	    private String bjs="0";
+	    private String barrelSeries="0";
 
-	    private String zzjmzj="0";
+	    private String rotorDiameter="0";
 
-	    private String gcpl="0";
+	    private String QPR="0";
 
-	    private String ygnj="62";
+	    private String tubingStringInsideDiameter="62";
 
-	    private String yctgnj="139.7";
+	    private String casingStringInsideDiameter="139.7";
 
-	    private String yjgjb="D";
+	    private String rodGrade1="D";
 
-	    private String yjgj="25";
+	    private String rodOutsideDiameter1="25";
 
-	    private String yjgnj="0";
+	    private String rodInsideDiameter1="0";
 
-	    private String yjgcd="0";
+	    private String rodLength1="0";
 
-	    private String ejgjb="D";
+	    private String rodGrade2="D";
 
-	    private String ejgj="25";
+	    private String rodOutsideDiameter2="25";
 
-	    private String ejgnj="0";
+	    private String rodInsideDiameter2="0";
 
-	    private String ejgcd="0";
+	    private String rodLength2="0";
 
-	    private String sjgjb="D";
+	    private String rodGrade3="D";
 
-	    private String sjgj="25";
+	    private String rodOutsideDiameter3="25";
 
-	    private String sjgnj="0";
+	    private String rodInsideDiameter3="0";
 
-	    private String sjgcd="0";
+	    private String rodLength3="0";
 
-	    private String sijgjb="D";
+	    private String rodGrade4="D";
 
-	    private String sijgj="25";
+	    private String rodOutsideDiameter4="25";
 
-	    private String sijgnj="0";
+	    private String rodInsideDiameter4="0";
 
-	    private String sijgcd="0";
+	    private String rodLength4="0";
 	    
-	    private String mdzt="未锚定";
+	    private String anchoringStateName="未锚定";
 
-	    private String jmb="1";
+	    private String netGrossRatio="1";
 
-	    private String jsbz;
+	    private String resultStatus;
 
-	    public void setId(String id){
-	        this.id = id;
-	    }
-	    public String getId(){
-	        return this.id;
-	    }
-	    public void setJh(String jh){
-	        this.jh = jh;
-	    }
-	    public String getJh(){
-	        return this.jh;
-	    }
-	    public void setGtcjsj(String gtcjsj){
-	        this.gtcjsj = gtcjsj;
-	    }
-	    public String getGtcjsj(){
-	        return this.gtcjsj;
-	    }
-	    public void setYy(String yy){
-	        this.yy = yy;
-	    }
-	    public String getYy(){
-	        return this.yy;
-	    }
-	    public void setTy(String ty){
-	        this.ty = ty;
-	    }
-	    public String getTy(){
-	        return this.ty;
-	    }
-	    public void setJklw(String jklw){
-	        this.jklw = jklw;
-	    }
-	    public String getJklw(){
-	        return this.jklw;
-	    }
-	    public void setHsl(String hsl){
-	        this.hsl = hsl;
-	    }
-	    public String getHsl(){
-	        return this.hsl;
-	    }
-	    public void setScqyb(String scqyb){
-	        this.scqyb = scqyb;
-	    }
-	    public String getScqyb(){
-	        return this.scqyb;
-	    }
-	    public void setDym(String dym){
-	        this.dym = dym;
-	    }
-	    public String getDym(){
-	        return this.dym;
-	    }
-	    public void setBg(String bg){
-	        this.bg = bg;
-	    }
-	    public String getBg(){
-	        return this.bg;
-	    }
-	    public void setBjb(String bjb){
-	        this.bjb = bjb;
-	    }
-	    public String getBjb(){
-	        return this.bjb;
-	    }
-	    public void setBj(String bj){
-	        this.bj = bj;
-	    }
-	    public String getBj(){
-	        return this.bj;
-	    }
-	    public void setZsc(String zsc){
-	        this.zsc = zsc;
-	    }
-	    public String getZsc(){
-	        return this.zsc;
-	    }
-	    public void setBtc(String btc){
-	        this.btc = btc;
-	    }
-	    public String getBtc(){
-	        return this.btc;
-	    }
-	    public void setBjs(String bjs){
-	        this.bjs = bjs;
-	    }
-	    public String getBjs(){
-	        return this.bjs;
-	    }
-	    public void setZzjmzj(String zzjmzj){
-	        this.zzjmzj = zzjmzj;
-	    }
-	    public String getZzjmzj(){
-	        return this.zzjmzj;
-	    }
-	    public void setGcpl(String gcpl){
-	        this.gcpl = gcpl;
-	    }
-	    public String getGcpl(){
-	        return this.gcpl;
-	    }
-	    public void setYgnj(String ygnj){
-	        this.ygnj = ygnj;
-	    }
-	    public String getYgnj(){
-	        return this.ygnj;
-	    }
-	    public void setYctgnj(String yctgnj){
-	        this.yctgnj = yctgnj;
-	    }
-	    public String getYctgnj(){
-	        return this.yctgnj;
-	    }
-	    public void setYjgjb(String yjgjb){
-	        this.yjgjb = yjgjb;
-	    }
-	    public String getYjgjb(){
-	        return this.yjgjb;
-	    }
-	    public void setYjgj(String yjgj){
-	        this.yjgj = yjgj;
-	    }
-	    public String getYjgj(){
-	        return this.yjgj;
-	    }
-	    public void setYjgnj(String yjgnj){
-	        this.yjgnj = yjgnj;
-	    }
-	    public String getYjgnj(){
-	        return this.yjgnj;
-	    }
-	    public void setYjgcd(String yjgcd){
-	        this.yjgcd = yjgcd;
-	    }
-	    public String getYjgcd(){
-	        return this.yjgcd;
-	    }
-	    public void setEjgjb(String ejgjb){
-	        this.ejgjb = ejgjb;
-	    }
-	    public String getEjgjb(){
-	        return this.ejgjb;
-	    }
-	    public void setEjgj(String ejgj){
-	        this.ejgj = ejgj;
-	    }
-	    public String getEjgj(){
-	        return this.ejgj;
-	    }
-	    public void setEjgnj(String ejgnj){
-	        this.ejgnj = ejgnj;
-	    }
-	    public String getEjgnj(){
-	        return this.ejgnj;
-	    }
-	    public void setEjgcd(String ejgcd){
-	        this.ejgcd = ejgcd;
-	    }
-	    public String getEjgcd(){
-	        return this.ejgcd;
-	    }
-	    public void setSjgjb(String sjgjb){
-	        this.sjgjb = sjgjb;
-	    }
-	    public String getSjgjb(){
-	        return this.sjgjb;
-	    }
-	    public void setSjgj(String sjgj){
-	        this.sjgj = sjgj;
-	    }
-	    public String getSjgj(){
-	        return this.sjgj;
-	    }
-	    public void setSjgnj(String sjgnj){
-	        this.sjgnj = sjgnj;
-	    }
-	    public String getSjgnj(){
-	        return this.sjgnj;
-	    }
-	    public void setSjgcd(String sjgcd){
-	        this.sjgcd = sjgcd;
-	    }
-	    public String getSjgcd(){
-	        return this.sjgcd;
-	    }
-	    public void setSijgjb(String sijgjb){
-	        this.sijgjb = sijgjb;
-	    }
-	    public String getSijgjb(){
-	        return this.sijgjb;
-	    }
-	    public void setSijgj(String sijgj){
-	        this.sijgj = sijgj;
-	    }
-	    public String getSijgj(){
-	        return this.sijgj;
-	    }
-	    public void setSijgnj(String sijgnj){
-	        this.sijgnj = sijgnj;
-	    }
-	    public String getSijgnj(){
-	        return this.sijgnj;
-	    }
-	    public void setSijgcd(String sijgcd){
-	        this.sijgcd = sijgcd;
-	    }
-	    public String getSijgcd(){
-	        return this.sijgcd;
-	    }
-	    public void setJmb(String jmb){
-	        this.jmb = jmb;
-	    }
-	    public String getJmb(){
-	        return this.jmb;
-	    }
-	    public void setJsbz(String jsbz){
-	        this.jsbz = jsbz;
-	    }
-	    public String getJsbz(){
-	        return this.jsbz;
-	    }
-		public String getYymd() {
-			return yymd;
+		public String getId() {
+			return id;
 		}
-		public void setYymd(String yymd) {
-			this.yymd = yymd;
+
+		public void setId(String id) {
+			this.id = id;
 		}
-		public String getSmd() {
-			return smd;
+
+		public String getWellName() {
+			return wellName;
 		}
-		public void setSmd(String smd) {
-			this.smd = smd;
+
+		public void setWellName(String wellName) {
+			this.wellName = wellName;
 		}
-		public String getTrqxdmd() {
-			return trqxdmd;
+
+		public String getAcquisitionTime() {
+			return acquisitionTime;
 		}
-		public void setTrqxdmd(String trqxdmd) {
-			this.trqxdmd = trqxdmd;
+
+		public void setAcquisitionTime(String acquisitionTime) {
+			this.acquisitionTime = acquisitionTime;
 		}
-		public String getBhyl() {
-			return bhyl;
+
+		public String getCrudeoilDensity() {
+			return crudeoilDensity;
 		}
-		public void setBhyl(String bhyl) {
-			this.bhyl = bhyl;
+
+		public void setCrudeoilDensity(String crudeoilDensity) {
+			this.crudeoilDensity = crudeoilDensity;
 		}
-		public String getYqczbsd() {
-			return yqczbsd;
+
+		public String getWaterDensity() {
+			return waterDensity;
 		}
-		public void setYqczbsd(String yqczbsd) {
-			this.yqczbsd = yqczbsd;
+
+		public void setWaterDensity(String waterDensity) {
+			this.waterDensity = waterDensity;
 		}
-		public String getYqczbwd() {
-			return yqczbwd;
+
+		public String getNaturalGasRelativeDensity() {
+			return naturalGasRelativeDensity;
 		}
-		public void setYqczbwd(String yqczbwd) {
-			this.yqczbwd = yqczbwd;
+
+		public void setNaturalGasRelativeDensity(String naturalGasRelativeDensity) {
+			this.naturalGasRelativeDensity = naturalGasRelativeDensity;
 		}
-		public String getMdzt() {
-			return mdzt;
+
+		public String getSaturationPressure() {
+			return saturationPressure;
 		}
-		public void setMdzt(String mdzt) {
-			this.mdzt = mdzt;
+
+		public void setSaturationPressure(String saturationPressure) {
+			this.saturationPressure = saturationPressure;
+		}
+
+		public String getReservoirDepth() {
+			return reservoirDepth;
+		}
+
+		public void setReservoirDepth(String reservoirDepth) {
+			this.reservoirDepth = reservoirDepth;
+		}
+
+		public String getReservoirTemperature() {
+			return reservoirTemperature;
+		}
+
+		public void setReservoirTemperature(String reservoirTemperature) {
+			this.reservoirTemperature = reservoirTemperature;
+		}
+
+		public String getTubingPressure() {
+			return tubingPressure;
+		}
+
+		public void setTubingPressure(String tubingPressure) {
+			this.tubingPressure = tubingPressure;
+		}
+
+		public String getCasingPressure() {
+			return casingPressure;
+		}
+
+		public void setCasingPressure(String casingPressure) {
+			this.casingPressure = casingPressure;
+		}
+
+		public String getWellHeadFluidTemperature() {
+			return wellHeadFluidTemperature;
+		}
+
+		public void setWellHeadFluidTemperature(String wellHeadFluidTemperature) {
+			this.wellHeadFluidTemperature = wellHeadFluidTemperature;
+		}
+
+		public String getWaterCut() {
+			return waterCut;
+		}
+
+		public void setWaterCut(String waterCut) {
+			this.waterCut = waterCut;
+		}
+
+		public String getProductionGasOilRatio() {
+			return productionGasOilRatio;
+		}
+
+		public void setProductionGasOilRatio(String productionGasOilRatio) {
+			this.productionGasOilRatio = productionGasOilRatio;
+		}
+
+		public String getProducingFluidLevel() {
+			return producingFluidLevel;
+		}
+
+		public void setProducingFluidLevel(String producingFluidLevel) {
+			this.producingFluidLevel = producingFluidLevel;
+		}
+
+		public String getPumpSettingDepth() {
+			return pumpSettingDepth;
+		}
+
+		public void setPumpSettingDepth(String pumpSettingDepth) {
+			this.pumpSettingDepth = pumpSettingDepth;
+		}
+
+		public String getPumpGrade() {
+			return pumpGrade;
+		}
+
+		public void setPumpGrade(String pumpGrade) {
+			this.pumpGrade = pumpGrade;
+		}
+
+		public String getPumpboreDiameter() {
+			return pumpboreDiameter;
+		}
+
+		public void setPumpboreDiameter(String pumpboreDiameter) {
+			this.pumpboreDiameter = pumpboreDiameter;
+		}
+
+		public String getPlungerLength() {
+			return plungerLength;
+		}
+
+		public void setPlungerLength(String plungerLength) {
+			this.plungerLength = plungerLength;
+		}
+
+		public String getBarrelLength() {
+			return barrelLength;
+		}
+
+		public void setBarrelLength(String barrelLength) {
+			this.barrelLength = barrelLength;
+		}
+
+		public String getBarrelSeries() {
+			return barrelSeries;
+		}
+
+		public void setBarrelSeries(String barrelSeries) {
+			this.barrelSeries = barrelSeries;
+		}
+
+		public String getRotorDiameter() {
+			return rotorDiameter;
+		}
+
+		public void setRotorDiameter(String rotorDiameter) {
+			this.rotorDiameter = rotorDiameter;
+		}
+
+		public String getQPR() {
+			return QPR;
+		}
+
+		public void setQPR(String qPR) {
+			QPR = qPR;
+		}
+
+		public String getTubingStringInsideDiameter() {
+			return tubingStringInsideDiameter;
+		}
+
+		public void setTubingStringInsideDiameter(String tubingStringInsideDiameter) {
+			this.tubingStringInsideDiameter = tubingStringInsideDiameter;
+		}
+
+		public String getCasingStringInsideDiameter() {
+			return casingStringInsideDiameter;
+		}
+
+		public void setCasingStringInsideDiameter(String casingStringInsideDiameter) {
+			this.casingStringInsideDiameter = casingStringInsideDiameter;
+		}
+
+		public String getRodGrade1() {
+			return rodGrade1;
+		}
+
+		public void setRodGrade1(String rodGrade1) {
+			this.rodGrade1 = rodGrade1;
+		}
+
+		public String getRodOutsideDiameter1() {
+			return rodOutsideDiameter1;
+		}
+
+		public void setRodOutsideDiameter1(String rodOutsideDiameter1) {
+			this.rodOutsideDiameter1 = rodOutsideDiameter1;
+		}
+
+		public String getRodInsideDiameter1() {
+			return rodInsideDiameter1;
+		}
+
+		public void setRodInsideDiameter1(String rodInsideDiameter1) {
+			this.rodInsideDiameter1 = rodInsideDiameter1;
+		}
+
+		public String getRodLength1() {
+			return rodLength1;
+		}
+
+		public void setRodLength1(String rodLength1) {
+			this.rodLength1 = rodLength1;
+		}
+
+		public String getRodGrade2() {
+			return rodGrade2;
+		}
+
+		public void setRodGrade2(String rodGrade2) {
+			this.rodGrade2 = rodGrade2;
+		}
+
+		public String getRodOutsideDiameter2() {
+			return rodOutsideDiameter2;
+		}
+
+		public void setRodOutsideDiameter2(String rodOutsideDiameter2) {
+			this.rodOutsideDiameter2 = rodOutsideDiameter2;
+		}
+
+		public String getRodInsideDiameter2() {
+			return rodInsideDiameter2;
+		}
+
+		public void setRodInsideDiameter2(String rodInsideDiameter2) {
+			this.rodInsideDiameter2 = rodInsideDiameter2;
+		}
+
+		public String getRodLength2() {
+			return rodLength2;
+		}
+
+		public void setRodLength2(String rodLength2) {
+			this.rodLength2 = rodLength2;
+		}
+
+		public String getRodGrade3() {
+			return rodGrade3;
+		}
+
+		public void setRodGrade3(String rodGrade3) {
+			this.rodGrade3 = rodGrade3;
+		}
+
+		public String getRodOutsideDiameter3() {
+			return rodOutsideDiameter3;
+		}
+
+		public void setRodOutsideDiameter3(String rodOutsideDiameter3) {
+			this.rodOutsideDiameter3 = rodOutsideDiameter3;
+		}
+
+		public String getRodInsideDiameter3() {
+			return rodInsideDiameter3;
+		}
+
+		public void setRodInsideDiameter3(String rodInsideDiameter3) {
+			this.rodInsideDiameter3 = rodInsideDiameter3;
+		}
+
+		public String getRodLength3() {
+			return rodLength3;
+		}
+
+		public void setRodLength3(String rodLength3) {
+			this.rodLength3 = rodLength3;
+		}
+
+		public String getRodGrade4() {
+			return rodGrade4;
+		}
+
+		public void setRodGrade4(String rodGrade4) {
+			this.rodGrade4 = rodGrade4;
+		}
+
+		public String getRodOutsideDiameter4() {
+			return rodOutsideDiameter4;
+		}
+
+		public void setRodOutsideDiameter4(String rodOutsideDiameter4) {
+			this.rodOutsideDiameter4 = rodOutsideDiameter4;
+		}
+
+		public String getRodInsideDiameter4() {
+			return rodInsideDiameter4;
+		}
+
+		public void setRodInsideDiameter4(String rodInsideDiameter4) {
+			this.rodInsideDiameter4 = rodInsideDiameter4;
+		}
+
+		public String getRodLength4() {
+			return rodLength4;
+		}
+
+		public void setRodLength4(String rodLength4) {
+			this.rodLength4 = rodLength4;
+		}
+
+		public String getAnchoringStateName() {
+			return anchoringStateName;
+		}
+
+		public void setAnchoringStateName(String anchoringStateName) {
+			this.anchoringStateName = anchoringStateName;
+		}
+
+		public String getNetGrossRatio() {
+			return netGrossRatio;
+		}
+
+		public void setNetGrossRatio(String netGrossRatio) {
+			this.netGrossRatio = netGrossRatio;
+		}
+
+		public String getResultStatus() {
+			return resultStatus;
+		}
+
+		public void setResultStatus(String resultStatus) {
+			this.resultStatus = resultStatus;
 		}
 	}
 }

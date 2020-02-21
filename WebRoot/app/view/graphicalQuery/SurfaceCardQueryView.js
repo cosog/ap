@@ -1,4 +1,3 @@
-var page = 1;
 Ext.define("AP.view.graphicalQuery.SurfaceCardQueryView", {
     extend: 'Ext.panel.Panel', // 继承
     alias: 'widget.SurfaceCardQueryView', // 定义别名

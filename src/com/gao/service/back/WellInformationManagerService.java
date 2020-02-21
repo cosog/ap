@@ -72,15 +72,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public void saveOrUpdateorDeleteProWellInformation(WellInformation w,
-			String ids, String comandType) throws Exception {
-		getBaseDao().saveOrUpdateorDeleteProWellInformation(w, ids, comandType);
-	}
-	
-	public void saveWellEditerGridData(WellGridPanelData w,String ids, String comandType) throws Exception {
-		getBaseDao().saveWellEditerGridData(w, ids, comandType);
-	}
-	
 	public void saveWellEditerGridData(WellHandsontableChangedData wellHandsontableChangedData,String orgIds,String orgId) throws Exception {
 		getBaseDao().saveWellEditerGridData(wellHandsontableChangedData, orgIds,orgId);
 	}
@@ -355,7 +346,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.runtimeefficiencysource,t.videourl,t.sortnum,"
 				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete "
-				+ " from v_wellinformation t where 1=1"
+				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
 				+ "  and t.orgid in ("+orgId+" )  "
@@ -457,7 +448,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
 				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.runtimeefficiencysource,t.videourl,t.sortnum "
-				+ " from v_wellinformation t where 1=1"
+				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
 				+ "  and t.orgid in ("+orgId+" )  "

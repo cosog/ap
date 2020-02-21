@@ -1,3 +1,4 @@
+var diagramPage=1;
 Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查询panel
     extend: 'Ext.panel.Panel', // 继承
     alias: 'widget.SurfaceCardPanel', // 定义别名
@@ -137,19 +138,19 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                     render: function (p, o, i, c) {
                         p.body.on('scroll', function () {
                             var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                            if (page < totalPages) {
+                            if (diagramPage < totalPages) {
                                 var surfaceCardContent = Ext.getCmp("surfaceCardContent");
                                 var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
                                 if (hRatio > 0.75) {
-                                    if (page < 2) {
-                                        page++;
-                                        loadSurfaceCardList(page);
+                                    if (diagramPage < 2) {
+                                        diagramPage++;
+                                        loadSurfaceCardList(diagramPage);
                                     } else {
                                         var divCount = $("#surfaceCardContainer div ").size();
-                                        var count = (page - 1) * defaultGraghSize * 3;
+                                        var count = (diagramPage - 1) * defaultGraghSize * 3;
                                         if (divCount > count) {
-                                            page++;
-                                            loadSurfaceCardList(page);
+                                            diagramPage++;
+                                            loadSurfaceCardList(diagramPage);
                                         }
                                     }
                                 }
@@ -157,12 +158,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                         }, this);
                     }
                 }
-            }],
-            listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    loadSurfaceCardList(1);
-                }
-            }
+            }]
         });
         me.callParent(arguments);
     }
@@ -170,6 +166,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
 
 //功图列表鼠标滚动时自动加载
 loadSurfaceCardList = function (page) {
+	diagramPage=page;
     Ext.getCmp("SurfaceCardQuery_Id").mask(cosog.string.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;

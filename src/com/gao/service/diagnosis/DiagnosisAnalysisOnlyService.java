@@ -164,9 +164,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		
 		columns = ddic.getTableHeader();
 		sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from v_comprehensiverealtimedata t where t.org_id in("+orgId+")";
+				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_latest t where t.org_id in("+orgId+")";
 		sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from v_comprehensiveHistorydata t where t.org_id in("+orgId+")";
+				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_hist t where t.org_id in("+orgId+")";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
@@ -300,9 +300,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		
 		columns = ddic.getTableHeader();
 		sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from v_comprehensiverealtimedata t where t.org_id in("+orgId+")";
+				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_latest t where t.org_id in("+orgId+")";
 		sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from v_comprehensiveHistorydata t where t.org_id in("+orgId+")";
+				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_hist t where t.org_id in("+orgId+")";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
@@ -564,30 +564,38 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	 * 查询单井工况诊断的杆柱应力数据
 	 * */
 	public String queryRodPress(int id) throws SQLException, IOException{
-		String jh="";
-		String cjsj="";
-		Float yjylbfb=0.0f,ejylbfb=0.0f,sjylbfb=0.0f,sijylbfb=0.0f;
+		String wellName="";
+		String acquisitionTime="";
+		String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
 		StringBuffer dataSbf = new StringBuffer();
-		String sql="select v003.jh as jh, to_char(v003.gtcjsj,'yyyy-mm-dd hh24:mi:ss') as cjsj, "
-				  + "v003.yjylbfb*100 as yjylbfb, v003.ejylbfb*100 as ejylbfb, v003.sjylbfb*100 as sjylbfb, v003.sijylbfb*100 as sijylbfb from "
-		          +"v_analysishistory v003 where v003.id in (" + id + ") ";
+		String sql="select t.wellName as wellName, to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
+				  + "t.rodstring from "
+		          +"viw_rpc_diagram_hist t where t.id in (" + id + ") ";
 		List<?> list=this.GetGtData(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
-			jh=obj[0].toString();
-			cjsj=obj[1].toString();
-			yjylbfb=StringManagerUtils.stringToFloat(obj[2].toString(),1);
-			ejylbfb=StringManagerUtils.stringToFloat(obj[3].toString(),1);
-			sjylbfb=StringManagerUtils.stringToFloat(obj[4].toString(),1);
-			sijylbfb=StringManagerUtils.stringToFloat(obj[5].toString(),1);
+			wellName=obj[0].toString();
+			acquisitionTime=obj[1].toString();
+	        String rodDataArr[]=obj[2].toString().split(";");
+	        for(int i=1;i<rodDataArr.length;i++){
+	        	if(i==1&&rodDataArr[i].split(",").length==6){
+	        		rodStressRatio1=rodDataArr[i].split(",")[5];
+	        	}else if(i==2&&rodDataArr[i].split(",").length==6){
+	        		rodStressRatio2=rodDataArr[i].split(",")[5];
+	        	}if(i==3&&rodDataArr[i].split(",").length==6){
+	        		rodStressRatio3=rodDataArr[i].split(",")[5];
+	        	}if(i==4&&rodDataArr[i].split(",").length==6){
+	        		rodStressRatio4=rodDataArr[i].split(",")[5];
+	        	}
+	        }
 	    }
 		dataSbf.append("{success:true,columns:[{\"header\":\"X轴\",\"dataIndex\":\"XData\",children:[]},{\"header\":\"Y轴\",\"dataIndex\":\"YData\",children:[]}],");
-        dataSbf.append("jh:\""+jh+"\",");             // 井名
-        dataSbf.append("cjsj:\""+cjsj+"\",");         // 时间
-        dataSbf.append("yjylbfb:"+yjylbfb+",");       // 一级应力百分比
-        dataSbf.append("ejylbfb:"+ejylbfb+",");       // 二级应力百分比 
-        dataSbf.append("sjylbfb:"+sjylbfb+",");           // 三级应力百分比
-        dataSbf.append("sijylbfb:"+sijylbfb);           // 四级应力百分比
+        dataSbf.append("wellName"+wellName+"\",");             // 井名
+        dataSbf.append("acquisitionTime:\""+acquisitionTime+"\",");         // 时间
+        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
+        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
+        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
+        dataSbf.append("rodStressRatio4:"+rodStressRatio4);           // 四级应力百分比
         dataSbf.append("}");
 		return dataSbf.toString();
 	}
@@ -596,30 +604,30 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	 * 查询单井工况诊断的泵效组成数据
 	 * */
 	public String queryPumpEfficiency(int id) throws SQLException, IOException{
-		String jh="";
-		String cjsj="";
-		Float ccssxs=0.0f,cmxs=0.0f,lsxs=0.0f,ytssxs=0.0f;
+		String wellName="";
+		String acquisitionTime="";
+		Float pumpeff1=0.0f,pumpeff2=0.0f,pumpeff3=0.0f,pumpeff4=0.0f;
 		StringBuffer dataSbf = new StringBuffer();
-		String sql="select v003.jh as jh, to_char(v003.gtcjsj,'yyyy-mm-dd hh24:mi:ss') as cjsj, "
-				  + "v003.ccssxs as ccssxs, v003.cmxs*100 as cmxs, v003.lsxs as lsxs, v003.ytssxs as ytssxs from "
-		          +"v_analysishistory v003 where v003.id in (" + id + ") ";
+		String sql="select t.wellName as wellName, to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
+				  + "t.pumpeff1*100, t.pumpeff2*100, t.pumpeff3*100, t.pumpeff4*100 from "
+		          +"viw_rpc_diagram_hist t where t.id in (" + id + ") ";
 		List<?> list=this.GetGtData(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
-			jh=obj[0].toString();
-			cjsj=obj[1].toString();
-			ccssxs=StringManagerUtils.stringToFloat(obj[2].toString() ,1);
-			cmxs=StringManagerUtils.stringToFloat(obj[3].toString() ,1);
-			lsxs=StringManagerUtils.stringToFloat(obj[4].toString() ,1);
-			ytssxs=StringManagerUtils.stringToFloat(obj[5].toString() ,1);
+			wellName=obj[0].toString();
+			acquisitionTime=obj[1].toString();
+			pumpeff1=StringManagerUtils.stringToFloat(obj[2].toString() ,1);
+			pumpeff2=StringManagerUtils.stringToFloat(obj[3].toString() ,1);
+			pumpeff3=StringManagerUtils.stringToFloat(obj[4].toString() ,1);
+			pumpeff4=StringManagerUtils.stringToFloat(obj[5].toString() ,1);
 	    }
 		dataSbf.append("{success:true,");
-        dataSbf.append("jh:\""+jh+"\",");             // 井名
-        dataSbf.append("cjsj:\""+cjsj+"\",");         // 时间
-        dataSbf.append("ccssxs:\""+ccssxs+"\",");     // 冲程损失系数
-        dataSbf.append("cmxs:\""+cmxs+"\",");         // 充满系数
-        dataSbf.append("lsxs:"+lsxs+",");             // 漏失系数
-        dataSbf.append("ytssxs:\""+ytssxs+"\"");      // 液体收缩系数
+        dataSbf.append("wellName:\""+wellName+"\",");             // 井名
+        dataSbf.append("acquisitionTime:\""+acquisitionTime+"\",");         // 时间
+        dataSbf.append("pumpeff1:\""+pumpeff1+"\",");     // 冲程损失系数
+        dataSbf.append("pumpeff2:\""+pumpeff2+"\",");         // 充满系数
+        dataSbf.append("pumpeff3:"+pumpeff3+",");             // 漏失系数
+        dataSbf.append("pumpeff4:\""+pumpeff4+"\"");      // 液体收缩系数
         dataSbf.append("}");
 		return dataSbf.toString();
 	}
@@ -655,7 +663,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			statType="commtimeefficiencyLevel";
 		}
 		
-		sql="select "+statType+",count(id) from v_comprehensiveRealtimedata t where  t.org_id in("+orgId+")";
+		sql="select "+statType+",count(id) from viw_rpc_comprehensive_latest t where  t.org_id in("+orgId+")";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
@@ -682,9 +690,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	
 	public String getAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String tableName="v_comprehensiverealtimedata";
+		String tableName="viw_rpc_comprehensive_latest";
 		if(StringManagerUtils.isNotNull(wellName)){
-			tableName="v_comprehensivehistorydata";
+			tableName="viw_rpc_comprehensive_hist";
 		}
 		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
 		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
@@ -829,19 +837,19 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		StringBuffer dynSbf = new StringBuffer();
 		String uplimit="";
 		String downlimit="";
-		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from v_analysishistory t "
+		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_rpc_diagram_hist t "
 				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
 				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
 			itemCode="t."+itemCode+",t."+itemCode+"uplimit,t."+itemCode+"downlimit";
-			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from v_analysishistory_elec t "
+			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_rpc_discrete_hist t "
 					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellheadfluidtemperature".equalsIgnoreCase(itemCode)
 				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
-			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from v_analysishistory_elec t "
+			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_rpc_discrete_hist t "
 					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 		}
 		

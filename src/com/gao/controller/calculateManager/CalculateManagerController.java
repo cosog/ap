@@ -75,7 +75,7 @@ public class CalculateManagerController extends BaseController {
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
 		}
-		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
+//		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		

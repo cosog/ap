@@ -223,31 +223,6 @@ public class BaseDao extends HibernateDaoSupport {
 		return flag;
 	}
 
-	public Boolean addProReservoirProperty(ReservoirProperty o) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_T_001_RESERVOIRPROPERTY_A(?,?,?,?,?,?,?,?)}");
-			cs.setString(1, o.getResName());
-			cs.setDouble(2, o.getYymd());
-			cs.setDouble(3, o.getSmd());
-			cs.setDouble(4, o.getTrqxdmd());
-			//cs.setDouble(5, o.getYsrjqyb());
-			cs.setDouble(5, o.getBhyl());
-			//cs.setDouble(7, o.getDmtqyynd());
-			cs.setDouble(6, o.getYqcyl());
-			cs.setDouble(7, o.getYqczbsd());
-			cs.setDouble(8, o.getYqczbwd());
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null)
-				cs.close();
-			conn.close();
-		}
-		return true;
-	}
 
 	/**
 	 * <p>
@@ -1358,42 +1333,13 @@ public class BaseDao extends HibernateDaoSupport {
 		this.getHibernateTemplate().saveOrUpdate(clazz);
 	}
 
-	public Boolean saveOrUpdateorDeleteProOutputwellPro(Outputwellproduction w, String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{call PRO_T_008_update_add_delete(?,?,?,?,?)}");
-			cs.setInt(1, w.getJbh());
-			cs.setDouble(2, w.getRcyl());
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			cs.setString(3, df.format(w.getCjsj()));
-			if (comandType.equalsIgnoreCase("add")) {
-				ids = "no";
-				cs.setInt(4, 0);
-				cs.setString(5, ids);
-			} else if (comandType.equalsIgnoreCase("modify")) {
-				ids = "no";
-				cs.setInt(4, w.getJlbh());
-				cs.setString(5, ids);
-			} else if (comandType.equalsIgnoreCase("delete")) {
-				cs.setInt(4, 0);
-				cs.setString(5, ids);
-			}
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			conn.close();
-		}
-		return true;
-	}
 	public Boolean saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData, String ids) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs;
 		PreparedStatement ps=null;
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		try {
-			cs = conn.prepareCall("{call PRO_saveproductdata(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpc_productiondata(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellProHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
@@ -1538,140 +1484,6 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-
-	/**
-	 * <p>
-	 * 描述：区块物性数据信息的新增、修改的操作
-	 * </p>
-	 * 
-	 * @param o
-	 *            处理对象
-	 * @param ids
-	 *            操作的id信息
-	 * @param comandType
-	 *            处理类型
-	 * @return
-	 * @throws SQLException 
-	 */
-	public Boolean saveOrUpdateorDeleteProReservoirProperty(ReservoirProperty o, String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{call pro_T_001_update_add_delete(?,?,?,?,?,?,?,?,?,?)}");
-			cs.setString(1, o.getResName());
-			cs.setDouble(2, o.getYymd());
-			cs.setDouble(3, o.getSmd());
-			cs.setDouble(4, o.getTrqxdmd());
-			cs.setDouble(5, o.getBhyl());
-			cs.setDouble(6, o.getYqcyl());
-			cs.setDouble(7, o.getYqczbsd());
-			cs.setDouble(8, o.getYqczbwd());
-			if (comandType.equalsIgnoreCase("add")) {
-				ids = "no";
-				cs.setInt(9, 0);
-				cs.setString(10, ids);
-			} else if (comandType.equalsIgnoreCase("modify")) {
-				ids = "no";
-				cs.setInt(9, o.getJlbh());
-				cs.setString(10, ids);
-			} else if (comandType.equalsIgnoreCase("delete")) {
-				cs.setInt(9, 0);
-				cs.setString(10, ids);
-			}
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			conn.close();
-		}
-		return true;
-	}
-	
-	public Boolean saveReservoirPropertyGridData(ReservoirPropertyGridPanelData o, String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{call PRO_saveResProData(?,?,?,?,?,?,?,?)}");
-			cs.setString(1, o.getResName());
-			cs.setDouble(2, o.getYymd());
-			cs.setDouble(3, o.getSmd());
-			cs.setDouble(4, o.getTrqxdmd());
-			cs.setDouble(5, o.getBhyl());
-			cs.setDouble(6, o.getYqcyl());
-			cs.setDouble(7, o.getYqczbsd());
-			cs.setDouble(8, o.getYqczbwd());
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			conn.close();
-		}
-		return true;
-	}
-	
-	public Boolean saveReservoirPropertyGridData(ResProHandsontableChangedData resProHandsontableChangedData) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		PreparedStatement ps=null;
-		try {
-			cs = conn.prepareCall("{call PRO_saveResProData(?,?,?,?,?,?,?,?)}");
-			if(resProHandsontableChangedData.getUpdatelist()!=null){
-				for(int i=0;i<resProHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getResName())){
-						cs.setString(1, resProHandsontableChangedData.getUpdatelist().get(i).getResName());
-						cs.setString(2, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getYymd())?resProHandsontableChangedData.getUpdatelist().get(i).getYymd():"0.85");
-						cs.setString(3, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getSmd())?resProHandsontableChangedData.getUpdatelist().get(i).getSmd():"1");
-						cs.setString(4, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getTrqxdmd())?resProHandsontableChangedData.getUpdatelist().get(i).getTrqxdmd():"0");
-						cs.setString(5, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getBhyl())?resProHandsontableChangedData.getUpdatelist().get(i).getBhyl():"0");
-						cs.setString(6, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getYqcyl())?resProHandsontableChangedData.getUpdatelist().get(i).getYqcyl():"0");
-						cs.setString(7, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getYqczbsd())?resProHandsontableChangedData.getUpdatelist().get(i).getYqczbsd():"0");
-						cs.setString(8, StringManagerUtils.isNotNull(resProHandsontableChangedData.getUpdatelist().get(i).getYqczbwd())?resProHandsontableChangedData.getUpdatelist().get(i).getYqczbwd():"0");
-						cs.executeUpdate();
-					}
-				}
-			}
-			
-			if(resProHandsontableChangedData.getInsertlist()!=null){
-				for(int i=0;i<resProHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getResName())){
-						cs.setString(1, resProHandsontableChangedData.getInsertlist().get(i).getResName());
-						cs.setString(2, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getYymd())?resProHandsontableChangedData.getInsertlist().get(i).getYymd():"0.85");
-						cs.setString(3, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getSmd())?resProHandsontableChangedData.getInsertlist().get(i).getSmd():"1");
-						cs.setString(4, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getTrqxdmd())?resProHandsontableChangedData.getInsertlist().get(i).getTrqxdmd():"0");
-						cs.setString(5, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getBhyl())?resProHandsontableChangedData.getInsertlist().get(i).getBhyl():"0");
-						cs.setString(6, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getYqcyl())?resProHandsontableChangedData.getInsertlist().get(i).getYqcyl():"0");
-						cs.setString(7, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getYqczbsd())?resProHandsontableChangedData.getInsertlist().get(i).getYqczbsd():"0");
-						cs.setString(8, StringManagerUtils.isNotNull(resProHandsontableChangedData.getInsertlist().get(i).getYqczbwd())?resProHandsontableChangedData.getInsertlist().get(i).getYqczbwd():"0");
-						cs.executeUpdate();
-					}
-				}
-			}
-			
-			if(resProHandsontableChangedData.getDelidslist()!=null){
-				String delIds="";
-				String delSql="";
-				for(int i=0;i<resProHandsontableChangedData.getDelidslist().size();i++){
-					delIds+=resProHandsontableChangedData.getDelidslist().get(i);
-					if(i<resProHandsontableChangedData.getDelidslist().size()-1){
-						delIds+=",";
-					}
-				}
-				
-				delSql="delete from t_reservoirproperty t where t.jlbh in ("+delIds+") ";
-				ps=conn.prepareStatement(delSql);
-				int result=ps.executeUpdate();
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(ps!=null)
-				ps.close();
-			conn.close();
-		}
-		return true;
-	}
-	
 	public int updateOrDeleteBySql(String sql) throws SQLException{
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -1696,82 +1508,6 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		return result;
 	}
-
-	public Boolean saveOrUpdateorDeleteProWellInformation(WellInformation w, String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_T_007_update_add_delete(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-			cs.setString(1, w.getDwbh());
-			cs.setString(2, w.getJc());
-			cs.setString(3, w.getJhh());
-			cs.setString(4, w.getJh());
-			cs.setInt(5, w.getJlx());
-			cs.setInt(6, w.getJslx());
-			cs.setInt(7, w.getSsjw());
-			cs.setInt(8, w.getSszcdy());
-			cs.setString(9, w.getRgzsjd());
-			cs.setString(10, w.getYqcbh());
-			cs.setDouble(11, w.getRgzsj());
-			cs.setDouble(12, w.getDmx());
-			cs.setDouble(13, w.getDmy());
-			cs.setInt(14, w.getShowlevel());
-			if (comandType.equalsIgnoreCase("add")) {
-				ids = "no";
-				cs.setInt(15, 0);
-				cs.setString(16, ids);
-			} else if (comandType.equalsIgnoreCase("modify")) {
-				ids = "no";
-				cs.setInt(15, w.getJlbh());
-				cs.setString(16, ids);
-			} else if (comandType.equalsIgnoreCase("delete")) {
-				cs.setInt(15, 0);
-				cs.setString(16, ids);
-			}
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null)
-				cs.close();
-			conn.close();
-		}
-		return true;
-	}
-	
-	
-	public Boolean saveWellEditerGridData(WellGridPanelData w, String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_saveWellInfo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-			cs.setString(1, w.getOrgName());
-			cs.setString(2, w.getResName());
-			cs.setString(3, w.getJc());
-			cs.setString(4, w.getJhh());
-			cs.setString(5, w.getJh());
-			cs.setString(6, w.getJlxName());
-			cs.setString(7, w.getJslxName());
-			cs.setString(8, w.getRgzsjd());
-			cs.setFloat(9, w.getRgzsj());
-			cs.setFloat(10, w.getMpcch());
-			cs.setFloat(11, w.getQbc());
-			cs.setFloat(12, w.getDmx());
-			cs.setFloat(13, w.getDmy());
-			cs.setInt(14, w.getShowLevel());
-			cs.setInt(15, w.getPxbh());
-			cs.setString(16, ids);
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
 	
 	@SuppressWarnings("resource")
 	public Boolean saveWellEditerGridData(WellHandsontableChangedData wellHandsontableChangedData,String orgIds,String orgId) throws SQLException {
@@ -1783,7 +1519,7 @@ public class BaseDao extends HibernateDaoSupport {
 			EquipmentDriverServerTast.initDriverConfig();
 		}
 		try {
-			cs = conn.prepareCall("{call PRO_saveLeafOrgWellData(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_wellinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
@@ -1888,67 +1624,62 @@ public class BaseDao extends HibernateDaoSupport {
 			EquipmentDriverServerTast.initDriverConfig();
 		}
 		try {
-			cs = conn.prepareCall("{call PRO_saverecalculatedata(?,?,?,?,?,?,?,?,"
+			cs = conn.prepareCall("{call pro_save_rpc_recalculateparam(?,"
 					+ "?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,?,"
-					+ "?,?,?,?,"
-					+ "?,?,?,?,"
-					+ "?,?,?,?,"
+					+ "?,"
 					+ "?,?)}");
 			if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getJh())){
+					if(StringManagerUtils.isNotNull(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+						String rodString="";
+						rodString+=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade1()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1()+";"
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade2()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2()+";"
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade3()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3()+";"
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade4()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4();
+						
 						cs.setString(1, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId());
-						cs.setString(2, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYy());
-						cs.setString(3, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTy());
-						cs.setString(4, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getJklw());
-						cs.setString(5, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getHsl());
-						cs.setString(6, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getScqyb());
-						cs.setString(7, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getDym());
-						cs.setString(8, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBg());
 						
-						cs.setString(9, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYymd());
-						cs.setString(10, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSmd());
-						cs.setString(11, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTrqxdmd());
-						cs.setString(12, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBhyl());
-						cs.setString(13, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYqczbsd());
-						cs.setString(14, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYqczbwd());
+						cs.setString(2, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity());
+						cs.setString(3, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterDensity());
+						cs.setString(4, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity());
+						cs.setString(5, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure());
+						cs.setString(6, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth());
+						cs.setString(7, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature());
 						
-						cs.setString(15, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBjb());
-						cs.setString(16, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBj());
-						cs.setString(17, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getZsc());
-						cs.setString(18, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBtc());
-						cs.setString(19, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBjs());
-						cs.setString(20, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getZzjmzj());
-						cs.setString(21, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getGcpl());
+						cs.setString(8, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure());
+						cs.setString(9, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure());
+						cs.setString(10, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature());
+						cs.setString(11, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+						cs.setString(12, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio());
+						cs.setString(13, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel());
+						cs.setString(14, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());
 						
-						cs.setString(22, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYgnj());
-						cs.setString(23, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYctgnj());
+						cs.setString(15, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade());
+						cs.setString(16, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter());
+						cs.setString(17, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength());
 						
-						cs.setString(24, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgj());
-						cs.setString(25, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgnj());
-						cs.setString(26, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgjb());
-						cs.setString(27, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgcd());
+						cs.setString(18, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter());
+						cs.setString(19, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter());
 						
-						cs.setString(28, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgj());
-						cs.setString(29, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgnj());
-						cs.setString(30, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgjb());
-						cs.setString(31, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgcd());
+						cs.setString(20, rodString);
 						
-						cs.setString(32, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgj());
-						cs.setString(33, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgnj());
-						cs.setString(34, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgjb());
-						cs.setString(35, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgcd());
-						
-						cs.setString(36, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgj());
-						cs.setString(37, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgnj());
-						cs.setString(38, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgjb());
-						cs.setString(39, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgcd());
-						
-						cs.setString(40, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getMdzt());
-						cs.setString(41, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getJmb());
+						cs.setString(21, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
+						cs.setString(22, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
 						cs.executeUpdate();
 					}
 				}
@@ -1967,37 +1698,11 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean recalculateByProductionData(String orgId, String wellName, String wellType,String startDate,String endDate,String calculateSign) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_reCalculateByProd(?,?,?,?,?,?)}");
-			cs.setString(1,StringManagerUtils.isNotNull(wellName)?wellName:null);
-			cs.setString(2, wellType);
-			cs.setString(3, startDate);
-			cs.setString(4, endDate);
-			if("0".equals(calculateSign)){
-				calculateSign="0,2";
-			}
-			cs.setString(5, StringManagerUtils.isNotNull(calculateSign)?calculateSign:null);
-			cs.setString(6, orgId);
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
-	
 	public Boolean editWellName(String oldWellName,String newWellName,String orgid) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
-			cs = conn.prepareCall("{call PRO_EDITWELLNAME(?,?,?)}");
+			cs = conn.prepareCall("{call prd_change_wellname(?,?,?)}");
 			cs.setString(1,oldWellName);
 			cs.setString(2, newWellName);
 			cs.setString(3, orgid);
@@ -2095,30 +1800,6 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setDouble(16, StringManagerUtils.getJSONObjectDouble(jsonObject, "jsxxl"));
 			cs.setDouble(17, StringManagerUtils.getJSONObjectDouble(jsonObject, "slgxl"));
 			cs.setDouble(18, StringManagerUtils.getJSONObjectDouble(jsonObject, "djxl"));
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
-	
-	public Boolean saveBalanceInformationData(JSONObject jsonObject,String orgId) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_T_203_SAVEBALANCEINFODATA(?,?,?,?,?,?,?)}");
-			cs.setString(1, StringManagerUtils.getJSONObjectString(jsonObject, "jh"));
-			cs.setString(2, StringManagerUtils.getJSONObjectString(jsonObject, "sccj"));
-			cs.setString(3, StringManagerUtils.getJSONObjectString(jsonObject, "cyjxh"));
-			cs.setString(4, StringManagerUtils.getJSONObjectString(jsonObject, "ktzt"));
-			cs.setString(5, StringManagerUtils.getJSONObjectString(jsonObject, "phkwzzl"));
-			cs.setString(6, StringManagerUtils.getJSONObjectString(jsonObject, "gxsj"));
-			cs.setString(7, orgId);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -2491,7 +2172,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
-			cs = conn.prepareCall("{call PRO_SETALARMCOLOR(?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_alarmcolor(?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, alarmLevelBackgroundColor0);
 			cs.setString(2, alarmLevelBackgroundColor1);
 			cs.setString(3, alarmLevelBackgroundColor2);
@@ -2886,7 +2567,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		
 		try {
-			cs = conn.prepareCall("{call PRO_saveFSDiagram("
+			cs = conn.prepareCall("{call prd_save_rpc_diagram("
 					+ "?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,"
@@ -3056,7 +2737,7 @@ public class BaseDao extends HibernateDaoSupport {
 		pumpFSDiagramClob.putString(1, bgtStrBuff.toString());
 		
 		try {
-			cs = conn.prepareCall("{call PRO_saveFSDiagram("
+			cs = conn.prepareCall("{call prd_save_rpc_diagram("
 					+ "?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,"
@@ -3286,7 +2967,7 @@ public class BaseDao extends HibernateDaoSupport {
 		diagramClob_RPM.putString(1, RPMStr);
 		
 		try {
-			cs = conn.prepareCall("{call Pro_SaveReInverFSDiagram(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpc_reinverdiagram(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, recordId);
 			cs.setFloat(2, F_Max);
 			cs.setFloat(3, F_Min);
@@ -4227,7 +3908,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs = null;
 		try{
-			cs = conn.prepareCall("{call PRO_SaveDiscreteDailyData(?,"          //1
+			cs = conn.prepareCall("{call prd_save_rpc_discretedaily(?,"          //1
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,"                                                           //3
@@ -4275,7 +3956,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs = null;
 		try{
-			cs = conn.prepareCall("{call PRO_SaveFSDiagramDailyData(?,?,?,?,?,"          //5
+			cs = conn.prepareCall("{call prd_save_rpc_diagramdaily(?,?,?,?,?,"          //5
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
@@ -4413,7 +4094,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs = null;
 		try{
-			cs = conn.prepareCall("{call PRO_SAVEElecDailyData("
+			cs = conn.prepareCall("{call prd_save_rpc_inver_daily("
 					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
@@ -4849,7 +4530,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PTFClob = oracle.sql.CLOB.createTemporary(conn,false,1);
 		PTFClob.putString(1, PumpingUnitPTRData);
 		try {
-			cs = conn.prepareCall("{call PRO_SaveInverPumpingUnitData(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpcinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<jsonArray.size();i++){
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
 				cs.setString(1, everydata.getString("WellName"));
@@ -4928,7 +4609,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PerformanceCurverClob = oracle.sql.CLOB.createTemporary(conn,false,1);
 		PerformanceCurverClob.putString(1, MotorPerformanceCurverData);
 		try {
-			cs = conn.prepareCall("{call PRO_SaveInverMotorData(?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpc_motor(?,?,?,?,?,?,?)}");
 			for(int i=0;i<jsonArray.size();i++){
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
 				cs.setString(1, everydata.getString("WellName"));
@@ -4961,7 +4642,7 @@ public class BaseDao extends HibernateDaoSupport {
 			EquipmentDriverServerTast.initDriverConfig();
 		}
 		try {
-			cs = conn.prepareCall("{call PRO_saveInverOptimizeData(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpc_inver_opt(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(inverOptimizeHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<inverOptimizeHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(inverOptimizeHandsontableChangedData.getUpdatelist().get(i).getWellName())){

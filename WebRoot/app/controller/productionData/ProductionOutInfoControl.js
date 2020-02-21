@@ -6,20 +6,8 @@ Ext.define('AP.controller.productionData.ProductionOutInfoControl', {
    }],
     init: function () {
         this.control({
-            'productionOutWellInfoPanel > toolbar button[action=addProductionOutAction]': {
-                click: addProductionOutInfo
-            },
-            'productionOutWellInfoPanel > toolbar button[action=delProductionOutAction]': {
-                click: delProductionOutInfo
-            },
-            'productionOutWellInfoPanel > toolbar button[action=editProductionOutInfoAction]': {
-                click: modifyProductionOutInfo
-            },
             'productionOutWellInfoPanel > toolbar button[action=saveProductionOutGridDataAction]': {
                 click: saveProductionOutGridDataInfo
-            },
-            'productionOutWellInfoPanel': {
-                itemdblclick: modifyProductionOutInfo
             }
         })
     }

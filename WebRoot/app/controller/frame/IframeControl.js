@@ -171,6 +171,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "balance_BalanceTotal"
 		&& module_Code != "balance_BalanceCycle"
 		&& module_Code != "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails"
+		&& module_Code != "graphicalQuery_SurfaceCardQuery"
 		&& module_Code != "diagnosisTotal_DiagnosisTotalData"
 		&& module_Code != "calculate_calculateManager"
 		&& module_Code != "PSToFS_PumpingUnitInfo"
@@ -292,128 +293,6 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		} else {
 			// Ext.Msg.alert("info", '抱歉，该模块正在开发中... ');
 		}
-	}else if(module_Code == "balance_BalanceMonitor"){//平衡监测
-		var tabPanel = Ext.getCmp("BalanceMonitorTab_Id");
-		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="MonitorTorqueMaxValue_Id"){
-			var gridView=Ext.getCmp("MonitorTorqueMaxValueGrid_Id");
-            if (gridView == undefined) {
-                var MonitorTorqueMaxValue = Ext.getCmp("MonitorTorqueMaxValue_Id");
-                MonitorTorqueMaxValue.removeAll();
-                var MonitorTorqueMaxValueView = Ext.create('AP.view.balanceMonitor.MonitorTorqueMaxValueView');
-                MonitorTorqueMaxValue.add(MonitorTorqueMaxValueView);
-            }else{
-            	var store=gridView.getStore().load();
-            }
-            Ext.getCmp("MonitorTorqueMeanSquareRoot_Id").removeAll();
-            Ext.getCmp("MonitorTorqueAveragePower_Id").removeAll();
-			
-		}else if(activeId=="MonitorTorqueMeanSquareRoot_Id"){
-			var gridView=Ext.getCmp("MonitorTorqueMeanSquareRootGrid_Id");
-            if (gridView == undefined) {
-                var MonitorTorqueMeanSquareRoot = Ext.getCmp("MonitorTorqueMeanSquareRoot_Id");
-                MonitorTorqueMeanSquareRoot.removeAll();
-                var MonitorTorqueMeanSquareRootView = Ext.create('AP.view.balanceMonitor.MonitorTorqueMeanSquareRootView');
-                MonitorTorqueMeanSquareRoot.add(MonitorTorqueMeanSquareRootView);
-            }else{
-            	var store=gridView.getStore().load();
-            }
-            Ext.getCmp("MonitorTorqueMaxValue_Id").removeAll();
-            Ext.getCmp("MonitorTorqueAveragePower_Id").removeAll();
-		}else if(activeId=="MonitorTorqueAveragePower_Id"){
-			var gridView=Ext.getCmp("MonitorTorqueAveragePowerGrid_Id");
-            if (gridView == undefined) {
-                var MonitorTorqueAveragePower = Ext.getCmp("MonitorTorqueAveragePower_Id");
-                MonitorTorqueAveragePower.removeAll();
-                var MonitorTorqueAveragePowerView = Ext.create('AP.view.balanceMonitor.MonitorTorqueAveragePowerView');
-                MonitorTorqueAveragePower.add(MonitorTorqueAveragePowerView);
-            }else{
-            	var store=gridView.getStore().load();
-            }
-            Ext.getCmp("MonitorTorqueMaxValue_Id").removeAll();
-            Ext.getCmp("MonitorTorqueMeanSquareRoot_Id").removeAll();
-		}
-	}else if(module_Code == "balance_BalanceTotal"){//平衡全天评价
-		var tabPanel = Ext.getCmp("BalanceTotalTab_Id");
-			var activeId = tabPanel.getActiveTab().id;
-			if(activeId=="TotalTorqueMaxValue_Id"){
-				var gridView=Ext.getCmp("TorqueMaxValueTotalAnalysisiDataGrid_Id");
-             if (gridView == undefined) {
-                 var TotalTorqueMaxValue = Ext.getCmp("TotalTorqueMaxValue_Id");
-                 TotalTorqueMaxValue.removeAll();
-                 var TotalTorqueMaxValueView = Ext.create('AP.view.balanceTotal.TotalTorqueMaxValueView');
-                 TotalTorqueMaxValue.add(TotalTorqueMaxValueView);
-             }else{
-             	var store=gridView.getStore().load();
-             }
-             Ext.getCmp("TotalTorqueMeanSquareRoot_Id").removeAll();
-             Ext.getCmp("TotalTorqueAveragePower_Id").removeAll();
-			}else if(activeId=="TotalTorqueMeanSquareRoot_Id"){
-				var gridView=Ext.getCmp("TorqueMeanSquareRootTotalAnalysisiDataGrid_Id");
-             if (gridView == undefined) {
-                 var TotalTorqueMeanSquareRoot = Ext.getCmp("TotalTorqueMeanSquareRoot_Id");
-                 TotalTorqueMeanSquareRoot.removeAll();
-                 var TotalTorqueMeanSquareRootView = Ext.create('AP.view.balanceTotal.TotalTorqueMeanSquareRootView');
-                 TotalTorqueMeanSquareRoot.add(TotalTorqueMeanSquareRootView);
-             }else{
-             	var store=gridView.getStore().load();
-             }
-             Ext.getCmp("TotalTorqueMaxValue_Id").removeAll();
-             Ext.getCmp("TotalTorqueAveragePower_Id").removeAll();
-			}else if(activeId=="TotalTorqueAveragePower_Id"){
-				var gridView=Ext.getCmp("TorqueAveragePowerTotalAnalysisiDataGrid_Id");
-             if (gridView == undefined) {
-                 var TotalTorqueAveragePower = Ext.getCmp("TotalTorqueAveragePower_Id");
-                 TotalTorqueAveragePower.removeAll();
-                 var TotalTorqueAveragePowerView = Ext.create('AP.view.balanceTotal.TotalTorqueAveragePowerView');
-                 TotalTorqueAveragePower.add(TotalTorqueAveragePowerView);
-             }else{
-             	var store=gridView.getStore().load();
-             }
-             Ext.getCmp("TotalTorqueMaxValue_Id").removeAll();
-             Ext.getCmp("TotalTorqueMeanSquareRoot_Id").removeAll();
-			}
-	}else if(module_Code == "balance_BalanceCycle"){//平衡全天评价
-		var tabPanel = Ext.getCmp("BalanceCycleTab_Id");
-		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="CycleTorqueMaxValue_Id"){
-			var gridView=Ext.getCmp("TorqueMaxValueCycleWellListGrid_Id");
-            if (gridView == undefined) {
-                var CycleTorqueMaxValue = Ext.getCmp("CycleTorqueMaxValue_Id");
-                CycleTorqueMaxValue.removeAll();
-                var CycleTorqueMaxValueView = Ext.create('AP.view.balanceCycle.CycleTorqueMaxValueView');
-                CycleTorqueMaxValue.add(CycleTorqueMaxValueView);
-            }else{
-            	var store=gridView.getStore().load();
-            }
-            Ext.getCmp("CycleTorqueMeanSquareRoot_Id").removeAll();
-            Ext.getCmp("CycleTorqueAveragePower_Id").removeAll();
-			
-		}else if(activeId=="CycleTorqueMeanSquareRoot_Id"){
-			var gridView=Ext.getCmp("TorqueMeanSquareRootCycleWellListGrid_Id");
-            if (gridView == undefined) {
-                var CycleTorqueMeanSquareRoot = Ext.getCmp("CycleTorqueMeanSquareRoot_Id");
-                CycleTorqueMeanSquareRoot.removeAll();
-                var CycleTorqueMeanSquareRootView = Ext.create('AP.view.balanceCycle.CycleTorqueMeanSquareRootView');
-                CycleTorqueMeanSquareRoot.add(CycleTorqueMeanSquareRootView);
-            }else{
-            	var store=gridView.getStore().load();
-            }
-            Ext.getCmp("CycleTorqueMaxValue_Id").removeAll();
-            Ext.getCmp("CycleTorqueAveragePower_Id").removeAll();
-		}else if(activeId=="CycleTorqueAveragePower_Id"){
-			var gridView=Ext.getCmp("TorqueAveragePowerCycleWellListGrid_Id");
-            if (gridView == undefined) {
-                var CycleTorqueAveragePower = Ext.getCmp("CycleTorqueAveragePower_Id");
-                CycleTorqueAveragePower.removeAll();
-                var CycleTorqueAveragePowerView = Ext.create('AP.view.balanceCycle.CycleTorqueAveragePowerView');
-                CycleTorqueAveragePower.add(CycleTorqueAveragePowerView);
-            }else{
-            	var store=gridView.getStore().load();
-            }
-            Ext.getCmp("CycleTorqueMaxValue_Id").removeAll();
-            Ext.getCmp("CycleTorqueMeanSquareRoot_Id").removeAll();
-		}
 	}else if(module_Code == "report_DiagnosisDayReport"){
 		var tabPanel = Ext.getCmp("ProductionWellDailyReportPanel_Id");
 		var activeId = tabPanel.getActiveTab().id;
@@ -446,6 +325,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 //		}
 		Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue("");
 		loadFSDiagramAnalysisSingleStatData();
+	}else if(module_Code=="graphicalQuery_SurfaceCardQuery"){
+		loadSurfaceCardList(1);
 	}else if(module_Code == "diagnosisTotal_DiagnosisTotalData"){
 		var tabPanel = Ext.getCmp("ProductionWellDailyAnalisisPanel");
 		var activeId = tabPanel.getActiveTab().id;

@@ -1624,67 +1624,62 @@ public class BaseDao extends HibernateDaoSupport {
 			EquipmentDriverServerTast.initDriverConfig();
 		}
 		try {
-			cs = conn.prepareCall("{call PRO_saverecalculatedata(?,?,?,?,?,?,?,?,"
+			cs = conn.prepareCall("{call pro_save_rpc_recalculateparam(?,"
 					+ "?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,?,"
-					+ "?,?,?,?,"
-					+ "?,?,?,?,"
-					+ "?,?,?,?,"
+					+ "?,"
 					+ "?,?)}");
 			if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getJh())){
+					if(StringManagerUtils.isNotNull(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+						String rodString="";
+						rodString+=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade1()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1()+";"
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade2()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2()+";"
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade3()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3()+";"
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade4()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4()+","
+									+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4();
+						
 						cs.setString(1, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId());
-						cs.setString(2, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYy());
-						cs.setString(3, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTy());
-						cs.setString(4, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getJklw());
-						cs.setString(5, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getHsl());
-						cs.setString(6, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getScqyb());
-						cs.setString(7, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getDym());
-						cs.setString(8, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBg());
 						
-						cs.setString(9, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYymd());
-						cs.setString(10, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSmd());
-						cs.setString(11, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTrqxdmd());
-						cs.setString(12, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBhyl());
-						cs.setString(13, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYqczbsd());
-						cs.setString(14, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYqczbwd());
+						cs.setString(2, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity());
+						cs.setString(3, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterDensity());
+						cs.setString(4, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity());
+						cs.setString(5, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure());
+						cs.setString(6, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth());
+						cs.setString(7, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature());
 						
-						cs.setString(15, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBjb());
-						cs.setString(16, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBj());
-						cs.setString(17, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getZsc());
-						cs.setString(18, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBtc());
-						cs.setString(19, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBjs());
-						cs.setString(20, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getZzjmzj());
-						cs.setString(21, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getGcpl());
+						cs.setString(8, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure());
+						cs.setString(9, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure());
+						cs.setString(10, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature());
+						cs.setString(11, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+						cs.setString(12, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio());
+						cs.setString(13, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel());
+						cs.setString(14, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());
 						
-						cs.setString(22, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYgnj());
-						cs.setString(23, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYctgnj());
+						cs.setString(15, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade());
+						cs.setString(16, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter());
+						cs.setString(17, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength());
 						
-						cs.setString(24, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgj());
-						cs.setString(25, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgnj());
-						cs.setString(26, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgjb());
-						cs.setString(27, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getYjgcd());
+						cs.setString(18, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter());
+						cs.setString(19, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter());
 						
-						cs.setString(28, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgj());
-						cs.setString(29, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgnj());
-						cs.setString(30, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgjb());
-						cs.setString(31, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getEjgcd());
+						cs.setString(20, rodString);
 						
-						cs.setString(32, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgj());
-						cs.setString(33, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgnj());
-						cs.setString(34, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgjb());
-						cs.setString(35, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSjgcd());
-						
-						cs.setString(36, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgj());
-						cs.setString(37, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgnj());
-						cs.setString(38, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgjb());
-						cs.setString(39, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSijgcd());
-						
-						cs.setString(40, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getMdzt());
-						cs.setString(41, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getJmb());
+						cs.setString(21, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
+						cs.setString(22, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
 						cs.executeUpdate();
 					}
 				}
@@ -1695,32 +1690,6 @@ public class BaseDao extends HibernateDaoSupport {
 			if(ps!=null){
 				ps.close();
 			}
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
-	
-	public Boolean recalculateByProductionData(String orgId, String wellName, String wellType,String startDate,String endDate,String calculateSign) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_reCalculateByProd(?,?,?,?,?,?)}");
-			cs.setString(1,StringManagerUtils.isNotNull(wellName)?wellName:null);
-			cs.setString(2, wellType);
-			cs.setString(3, startDate);
-			cs.setString(4, endDate);
-			if("0".equals(calculateSign)){
-				calculateSign="0,2";
-			}
-			cs.setString(5, StringManagerUtils.isNotNull(calculateSign)?calculateSign:null);
-			cs.setString(6, orgId);
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
 			if(cs!=null){
 				cs.close();
 			}

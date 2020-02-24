@@ -16,6 +16,7 @@ import com.gao.model.DistreteAlarmLimit;
 import com.gao.model.WellInformation;
 import com.gao.model.calculate.CalculateRequestData;
 import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.BaseService;
 import com.gao.utils.Page;
@@ -58,8 +59,8 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public boolean saveSurfaceCard(String wellname,String cjsjstr,String gtstr) throws SQLException, ParseException{
-		return this.getBaseDao().saveSurfaceCard(wellname,cjsjstr,gtstr);
+	public boolean saveSurfaceCard(FSDiagramModel FSDiagramModel) throws SQLException, ParseException{
+		return this.getBaseDao().saveSurfaceCard(FSDiagramModel);
 	}
 	
 	public boolean saveSurfaceCard(WellAcquisitionData wellAcquisitionData) throws SQLException, ParseException{
@@ -178,8 +179,8 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 			        calculateRequestData.getFSDiagram().setSPM(wellAcquisitionData.getDiagram().getSPM());
 			        List<List<Float>> F=new ArrayList<List<Float>>();
 			        List<List<Float>> S=new ArrayList<List<Float>>();
-			        List<Float> P=new ArrayList<Float>();
-			        List<Float> A=new ArrayList<Float>();
+			        List<Float> Watt=new ArrayList<Float>();
+			        List<Float> I=new ArrayList<Float>();
 			        for(int i=0;i<wellAcquisitionData.getDiagram().getF().size();i++){
 			        	List<Float> FList=new ArrayList<Float>();
 			        	FList.add(wellAcquisitionData.getDiagram().getF().get(i));
@@ -191,16 +192,16 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 			        	S.add(SList);
 			        }
 			        for(int i=0;i<wellAcquisitionData.getDiagram().getP().size();i++){
-			        	P.add(wellAcquisitionData.getDiagram().getP().get(i));
+			        	Watt.add(wellAcquisitionData.getDiagram().getP().get(i));
 			        }
 			        for(int i=0;i<wellAcquisitionData.getDiagram().getA().size();i++){
-			        	A.add(wellAcquisitionData.getDiagram().getA().get(i));
+			        	I.add(wellAcquisitionData.getDiagram().getA().get(i));
 			        }
 			        
 			        calculateRequestData.getFSDiagram().setF(F);
 			        calculateRequestData.getFSDiagram().setS(S);
-			        calculateRequestData.getFSDiagram().setP(P);
-			        calculateRequestData.getFSDiagram().setA(A);
+			        calculateRequestData.getFSDiagram().setWatt(Watt);
+			        calculateRequestData.getFSDiagram().setI(I);
 				}
 		        calculateRequestData.setSystemEfficiency(new CalculateRequestData.SystemEfficiency());
 		        

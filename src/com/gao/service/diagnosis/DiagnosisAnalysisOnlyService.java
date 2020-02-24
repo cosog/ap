@@ -891,7 +891,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " to_char(t.gtcjsj,'yyyy-mm-dd hh24:mi:ss'),t.rpm,t.currenta,t.currentb,t.currentc,t.voltagea,t.voltageb,t.voltagec, "
 				+ " t.currentauplimit,t.currentadownlimit,t.currentbuplimit,t.currentbdownlimit,t.currentcuplimit,t.currentcdownlimit, "
 				+ " t.voltageauplimit,t.voltageadownlimit,t.voltagebuplimit,t.voltagebdownlimit,t.voltagecuplimit,t.voltagecdownlimit "
-				+ " from t_outputwellhistory t,tbl_wellinformation t007 "
+				+ " from tbl_rpc_diagram_hist t,tbl_wellinformation t007 "
 				+ " where t.jbh=t007.jlbh and t007.jh='"+jh+"' "
 				+ " and t.gtcjsj between to_date(to_char(to_date('"+cjsj+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
 				+ " and to_date('"+cjsj+"','yyyy-mm-dd hh24:mi:ss') "

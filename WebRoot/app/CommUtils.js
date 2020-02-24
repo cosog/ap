@@ -7221,25 +7221,36 @@ function initSingleYCurveChartFn(catagories, series, tickInterval, divId, title,
 /* 
  * 拼接地面功图曲线数据
  */
-showSurfaceCardUploadChart = function(gtdata, divid) {
-    var cjsj=gtdata.cjsj;
-    var stroke=gtdata.stroke;
-    var spm=gtdata.spm;
-    var jh=gtdata.jh;
+showSurfaceCardUploadChart = function(result, divid) {
+    var acquisitionTime=result.acquisitionTime;
+    var stroke=result.stroke;
+    var spm=result.spm;
+    var wellName=result.wellName;
+    var sData=result.S;
+    var fData=result.F;
+    var wattData=result.Watt;
+    var iData=result.I;
     var data = "["; // 功图data
-    var gt=gtdata.gtsj.split(","); // 功图数据：功图点数， 冲次，冲程 位移1，载荷1，位移2，载荷2...
-    var gtcount=gt[2]; // 功图点数
-    for (var i=5; i <= (gtcount*2+5); i+=2) {
-    	if(i<(gtcount*2+5)){
-    		data += "[" + gt[i] + ","+gt[i+1]+"],";
+//    var diagramData=result.diagramData.split(","); // 功图数据：功图点数， 冲次，冲程 位移1，载荷1，位移2，载荷2...
+//    var diagramPoint=diagramData[2]; // 功图点数
+//    for (var i=5; i <= (diagramPoint*2+5); i+=2) {
+//    	if(i<(diagramPoint*2+5)){
+//    		data += "[" + diagramData[i] + ","+diagramData[i+1]+"],";
+//    	}else{
+//    		data += "[" + diagramData[5] + ","+diagramData[6]+"]";//将图形的第一个点拼到最后面，使图形闭合
+//    	}
+//    }
+    for(var i=0;i<=sData.length;i++){
+    	if(i<sData.length){
+    		data += "[" + sData[i] + ","+fData[i]+"],";
     	}else{
-    		data += "[" + gt[5] + ","+gt[6]+"]";//将图形的第一个点拼到最后面，使图形闭合
+    		data += "[" + sData[0] + ","+fData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
     	}
     }
 	data+="]";
 	var pointdata = Ext.JSON.decode(data);
 	//画功图
-	initSurfaceCardUploadChart(jh,pointdata, cjsj,stroke,spm, divid);
+	initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,spm, divid);
 	return false;
 }
 

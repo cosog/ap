@@ -33,9 +33,9 @@ public class CalculateDataManagerTast {
     private static ResultSet rs = null;  
 	
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
-		String sql="select count(1) from t_outputwellhistory t where jsbz in (0,2)";
+		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2)";
 		String url=Config.getProjectAccessPath()+"/calculateDataController/getBatchCalculateTime";
 		String result="无未计算数据";
 		int count=getCount(sql);

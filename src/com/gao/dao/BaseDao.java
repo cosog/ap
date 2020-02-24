@@ -88,6 +88,7 @@ import com.gao.model.calculate.CalculateResponseData;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.FA2FSResponseData;
+import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.TimeEffResponseData;
 import com.gao.model.calculate.TimeEffTotalResponseData;
 import com.gao.model.calculate.TotalAnalysisRequestData;
@@ -2251,31 +2252,37 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveSurfaceCard(String wellname,String cjsjstr,String gtstr) throws SQLException, ParseException {
+	public Boolean saveSurfaceCard(FSDiagramModel FSDiagramModel) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
-		CLOB gtClob=new CLOB((OracleConnection) conn);
-		gtClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		gtClob.putString(1, gtstr);
-		String gtstrArr[]=gtstr.split("\r\n");
-		StringBuffer sData = new StringBuffer();
-		StringBuffer fData = new StringBuffer();
-		int pointCount=StringManagerUtils.stringToInteger(gtstrArr[2]);
-		for(int j=0;j<pointCount;j++){
-			sData.append(gtstrArr[j*2+5]);
-			fData.append(gtstrArr[j*2+6]);
-			if(j<pointCount-1){
-				sData.append(",");
-				fData.append(",");
-			}
-        }
+		
+		CLOB sClob=new CLOB((OracleConnection) conn);
+		sClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		sClob.putString(1, StringUtils.join(FSDiagramModel.getS(), ","));
+		
+		CLOB fClob=new CLOB((OracleConnection) conn);
+		fClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		fClob.putString(1, StringUtils.join(FSDiagramModel.getF(), ","));
+		
+		CLOB wattClob=new CLOB((OracleConnection) conn);
+		wattClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		wattClob.putString(1, StringUtils.join(FSDiagramModel.getWatt(), ","));
+		
+		CLOB iClob=new CLOB((OracleConnection) conn);
+		iClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		iClob.putString(1, StringUtils.join(FSDiagramModel.getI(), ","));
+		
 		try {
-			cs = conn.prepareCall("{call PRO_saveUploasFSDiagram(?,?,?,?,?)}");
-			cs.setString(1, wellname);
-			cs.setString(2,cjsjstr);
-			cs.setClob(3, gtClob);
-			cs.setString(4,sData.toString());
-			cs.setString(5,fData.toString());
+			cs = conn.prepareCall("{call prd_save_rpc_uploaddiagram(?,?,?,?,?,?,?,?)}");
+			cs.setString(1, FSDiagramModel.getWellName());
+			cs.setString(2, FSDiagramModel.getAcquisitionTime());
+			cs.setFloat(3, FSDiagramModel.getStroke());
+			cs.setFloat(4, FSDiagramModel.getSpm());
+			cs.setClob(5, sClob);
+			cs.setClob(6, fClob);
+			cs.setClob(7, wattClob);
+			cs.setClob(8, iClob);
+			
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -2716,7 +2723,7 @@ public class BaseDao extends HibernateDaoSupport {
 		StringBuffer bgtStrBuff = new StringBuffer();
 		if(calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1&&calculateResponseData.getFSDiagram()!=null){
 			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getCNT();
+			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
 			bgtStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){
@@ -2779,12 +2786,12 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(20,calculateResponseData.getFSDiagram().getFMax().get(0));
 				cs.setFloat(21,calculateResponseData.getFSDiagram().getFMin().get(0));
 				//平衡
-				cs.setFloat(22,calculateResponseData.getFSDiagram().getUpStrokeAMax());
-				cs.setFloat(23,calculateResponseData.getFSDiagram().getDownStrokeAMax());
-				cs.setFloat(24,calculateResponseData.getFSDiagram().getUpStrokePMax());
-				cs.setFloat(25,calculateResponseData.getFSDiagram().getDownStrokePMax());
-				cs.setFloat(26,calculateResponseData.getFSDiagram().getADegreeOfBalance());
-				cs.setFloat(27,calculateResponseData.getFSDiagram().getPDegreeOfBalance());
+				cs.setFloat(22,calculateResponseData.getFSDiagram().getUpStrokeIMax());
+				cs.setFloat(23,calculateResponseData.getFSDiagram().getDownStrokeIMax());
+				cs.setFloat(24,calculateResponseData.getFSDiagram().getUpStrokeWattMax());
+				cs.setFloat(25,calculateResponseData.getFSDiagram().getDownStrokeWattMax());
+				cs.setFloat(26,calculateResponseData.getFSDiagram().getIDegreeBalance());
+				cs.setFloat(27,calculateResponseData.getFSDiagram().getWattDegreeBalance());
 				//工况代码
 				cs.setInt(28,calculateResponseData.getCalculationStatus().getResultCode());
 				//充满叙述
@@ -3150,13 +3157,13 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(74, 0);
 			}
 			
-			cs.setFloat(75, calculateResponseData.getFSDiagram().getUpStrokePMax());
-			cs.setFloat(76, calculateResponseData.getFSDiagram().getDownStrokePMax());
-			cs.setFloat(77, calculateResponseData.getFSDiagram().getPDegreeOfBalance());
-			cs.setFloat(78, calculateResponseData.getFSDiagram().getAverageP());
-			cs.setFloat(79, calculateResponseData.getFSDiagram().getUpStrokeAMax());
-			cs.setFloat(80, calculateResponseData.getFSDiagram().getDownStrokeAMax());
-			cs.setFloat(81, calculateResponseData.getFSDiagram().getADegreeOfBalance());
+			cs.setFloat(75, calculateResponseData.getFSDiagram().getUpStrokeWattMax());
+			cs.setFloat(76, calculateResponseData.getFSDiagram().getDownStrokeWattMax());
+			cs.setFloat(77, calculateResponseData.getFSDiagram().getWattDegreeBalance());
+			cs.setFloat(78, calculateResponseData.getFSDiagram().getAverageWatt());
+			cs.setFloat(79, calculateResponseData.getFSDiagram().getUpStrokeIMax());
+			cs.setFloat(80, calculateResponseData.getFSDiagram().getDownStrokeIMax());
+			cs.setFloat(81, calculateResponseData.getFSDiagram().getIDegreeBalance());
 			
 			cs.setInt(82, calculateResponseData.getCalculationStatus().getResultStatus());
 			cs.executeUpdate();
@@ -3354,15 +3361,15 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(83, rodOutsideDiameterString);
 			
 			//平衡数据保存
-			cs.setFloat(84, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getUpStrokePMax());
-			cs.setFloat(85, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getDownStrokePMax());
-			cs.setFloat(86, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getPDegreeOfBalance());
-			cs.setString(87, calculateResponseData.getFSDiagram()==null?null:calculateResponseData.getFSDiagram().getPMaxRatioString());
-			cs.setFloat(88, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getAverageP());
-			cs.setFloat(89, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getUpStrokeAMax());
-			cs.setFloat(90, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getDownStrokeAMax());
-			cs.setFloat(91, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getADegreeOfBalance());
-			cs.setString(92, calculateResponseData.getFSDiagram()==null?null:calculateResponseData.getFSDiagram().getAMaxRatioString());
+			cs.setFloat(84, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getUpStrokeWattMax());
+			cs.setFloat(85, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getDownStrokeWattMax());
+			cs.setFloat(86, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getWattDegreeBalance());
+			cs.setString(87, calculateResponseData.getFSDiagram()==null?null:calculateResponseData.getFSDiagram().getWattMaxRatioString());
+			cs.setFloat(88, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getAverageWatt());
+			cs.setFloat(89, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getUpStrokeIMax());
+			cs.setFloat(90, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getDownStrokeIMax());
+			cs.setFloat(91, calculateResponseData.getFSDiagram()==null?0:calculateResponseData.getFSDiagram().getIDegreeBalance());
+			cs.setString(92, calculateResponseData.getFSDiagram()==null?null:calculateResponseData.getFSDiagram().getIMaxRatioString());
 			
 			
 			if(electricCalculateResponseData!=null&&electricCalculateResponseData.getResultStatus()==1){//保存电参诊断结果
@@ -3494,7 +3501,7 @@ public class BaseDao extends HibernateDaoSupport {
 	public Boolean saveHYTXCalculateResult_Resp(CalculateResponseData calculateResponseData,String jh) throws SQLException, ParseException {
 		String fs="",fs1="",fs2="",fs3="",fspump="";
 		for(int i=0;i<=calculateResponseData.getRodString().getCNT();i++){
-			for(int j=0;j<calculateResponseData.getFSDiagram().getCNT();j++){
+			for(int j=0;j<calculateResponseData.getFSDiagram().getSCNT();j++){
 				if(i==0){
 					fs+=calculateResponseData.getFSDiagram().getF().get(j).get(i)+","+calculateResponseData.getFSDiagram().getS().get(j).get(i)+";";
 				}
@@ -3533,7 +3540,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(7, calculateResponseData.getFSDiagram().getAcquisitionTime());
 				cs.setString(8, calculateResponseData.getFSDiagram().getStroke()+"");
 				cs.setString(9, calculateResponseData.getFSDiagram().getSPM()+"");
-				cs.setString(10, calculateResponseData.getFSDiagram().getCNT()+"");
+				cs.setString(10, calculateResponseData.getFSDiagram().getSCNT()+"");
 				cs.setString(11, calculateResponseData.getFSDiagram().getUpperLoadLine()+"");
 				cs.setString(12, calculateResponseData.getFSDiagram().getLowerLoadLine()+"");
 				cs.setString(13, calculateResponseData.getFSDiagram().getFullnessCoefficient()+"");

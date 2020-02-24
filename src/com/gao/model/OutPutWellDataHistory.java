@@ -12,7 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "T_OUTPUTWELLHISTORY")
+@Table(name = "tbl_rpc_diagram_hist")
 public abstract class OutPutWellDataHistory implements
 		java.io.Serializable {
 

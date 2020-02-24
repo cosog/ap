@@ -128,7 +128,7 @@ public class MonitorDataController extends BaseController {
 		String fileName=java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
 		String start_Date = "";
 		String end_Date = "";
-		String sql = "select to_char(Max(gtcjsj),'yyyy-mm-dd')   from t_outputwellhistory t";
+		String sql = "select to_char(Max(acquisitionTime),'yyyy-mm-dd')   from tbl_rpc_diagram_hist t";
 		List listd = this.commonDataService.reportDateJssj(sql);
 		if (listd.size() > 0) {
 			end_Date = listd.get(0).toString();
@@ -428,7 +428,7 @@ public class MonitorDataController extends BaseController {
 		bjlx = ParamUtils.getParameter(request, "bjlx");
 		String start_Date = "";
 		String end_Date = "";
-		String sql = " select to_char(Max(gtcjsj),'yyyy-mm-dd')   from t_outputwellhistory t where jsbz=1";
+		String sql = " select to_char(Max(acquisitionTime),'yyyy-mm-dd')   from tbl_rpc_diagram_hist t where jsbz=1";
 		List listd = this.commonDataService.reportDateJssj(sql);
 		if (listd.size() > 0&&listd.get(0)!=null&&!listd.get(0).toString().equals("null")) {
 			end_Date = listd.get(0).toString();

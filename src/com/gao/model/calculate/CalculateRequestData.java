@@ -762,9 +762,9 @@ public class CalculateRequestData {
 
 			    private List<List<Float>> S;
 			    
-			    private List<Float> P;
+			    private List<Float> Watt;
 
-			    private List<Float> A;
+			    private List<Float> I;
 			    
 			    public Analysis getAnalysis() {
 					return Analysis;
@@ -804,17 +804,17 @@ public class CalculateRequestData {
 				public void setAcquisitionTime(String acquisitionTime) {
 					AcquisitionTime = acquisitionTime;
 				}
-				public List<Float> getP() {
-					return P;
+				public List<Float> getWatt() {
+					return Watt;
 				}
-				public void setP(List<Float> p) {
-					P = p;
+				public void setWatt(List<Float> watt) {
+					Watt = watt;
 				}
-				public List<Float> getA() {
-					return A;
+				public List<Float> getI() {
+					return I;
 				}
-				public void setA(List<Float> a) {
-					A = a;
+				public void setI(List<Float> i) {
+					I = i;
 				}
 			}
 

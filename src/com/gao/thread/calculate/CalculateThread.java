@@ -55,14 +55,14 @@ public class CalculateThread extends Thread{
 				+ " t007.slly,t033.yxzt,"
 				+ " t033.jsbz,t033.jlbh"
 				+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
-				+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
+				+ " t_dynamicliquidlevel t011,tbl_rpc_diagram_hist t033  "
 				+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 				+ " and t033.dymbh=t011.jlbh  "
 				+ " and t033.jsbz in (0,2)  "
 				+ " and t033.jbh="+wellNo+""
 				+ " order by t033.gtcjsj "
 				+ " ) v where rownum<=100";
-		String sqlAll="select count(1) from t_outputwellhistory t033  where t033.jsbz in (0,2) and jbh="+wellNo;
+		String sqlAll="select count(1) from tbl_rpc_diagram_hist t033  where t033.jsbz in (0,2) and jbh="+wellNo;
 		List<?> list = calculateDataService.findCallSql(sql);
 		Gson gson = new Gson();
 		for(int i=0;i<list.size();i++){

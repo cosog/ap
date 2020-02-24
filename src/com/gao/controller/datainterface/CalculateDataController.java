@@ -84,21 +84,19 @@ public class CalculateDataController extends BaseController{
 		long allTime=0;
 		String totalDate = StringManagerUtils.getCurrentTime();
 		totalUrl+="?date="+totalDate;
-		//String FSDiagramId=ParamUtils.getParameter(request, "FSDiagramId");
-		//String strCount=ParamUtils.getParameter(request, "claculateCount");
 		
 		CalculateThread calculateThreadList[]=new CalculateThread[20];
 		for(int i=0;i<20;i++){
 			calculateThreadList[i]=null;
 		}
 		
-		String wellListSql="select distinct(jbh) from t_outputwellhistory t033  where t033.jsbz in (0,2)";
-		String sqlAll="select count(1) from t_outputwellhistory t033  where t033.jsbz in (0,2)";
+		String wellListSql="select distinct(wellid) from tbl_rpc_diagram_hist t  where t.resultstatus in (0,2)";
+		String sqlAll="select count(1) from tbl_rpc_diagram_hist t  where t.resultstatus in (0,2)";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		int calCount=0;
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
-			String jbh=wellList.get(j)+"";
+			String wellId=wellList.get(j)+"";
 			String sql="select * from ("
 					+ "select t007.jh,t007.jslx,to_char(t033.gtcjsj,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t033.yymd,t033.smd,t033.trqxdmd,t033.bhyl,t033.yqcyl,t033.yqczbsd,t033.yqczbwd,"
@@ -114,12 +112,11 @@ public class CalculateDataController extends BaseController{
 					+ " t007.slly,t033.yxzt,"
 					+ " to_char(t033.cjsj,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t033.jsbz,t033.jlbh"
-					+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
-					+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
+					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
 					+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 					+ " and t033.dymbh=t011.jlbh  "
 					+ " and t033.jsbz in (0,2)  "
-					+ " and t033.jbh="+jbh+""
+					+ " and t033.jbh="+wellId+""
 					+ " order by t033.gtcjsj "
 					+ " ) v where rownum<=100";
 			List<?> list = calculateDataService.findCallSql(sql);

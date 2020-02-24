@@ -627,7 +627,13 @@ public  class CalculateResponseData {
 
 			    private float SPM;
 
-			    private int CNT;
+			    private int SCNT;
+			    
+			    private int FCNT;
+			    
+			    private int WattCNT;
+			    
+			    private int ICNT;
 			    
 			    private float Area;
 
@@ -643,23 +649,23 @@ public  class CalculateResponseData {
 
 			    private float AvailablePlungerStroke;
 			    
-			    private float UpStrokePMax;
+			    private float UpStrokeWattMax;
 			    
-			    private float DownStrokePMax;
+			    private float DownStrokeWattMax;
 			    
-			    private float PDegreeOfBalance;
+			    private float WattDegreeBalance;
 			    
-			    private String PMaxRatioString;
+			    private String WattMaxRatioString;
 			    
-			    private float AverageP;
+			    private float AverageWatt;
 			    
-			    private float UpStrokeAMax;
+			    private float UpStrokeIMax;
 			    
-			    private float DownStrokeAMax;
+			    private float DownStrokeIMax;
 			    
-			    private float ADegreeOfBalance;
+			    private float IDegreeBalance;
 			    
-			    private String AMaxRatioString;
+			    private String IMaxRatioString;
 
 			    private List<List<Float>> F;
 
@@ -669,165 +675,240 @@ public  class CalculateResponseData {
 
 			    private List<Float> FMin;
 			    
-			    private List<Float> P;
+			    private List<Float> Watt;
 
-			    private List<Float> A;
-			    
-			    public void setStroke(float Stroke){
-			        this.Stroke = Stroke;
-			    }
-			    public float getStroke(){
-			        return this.Stroke;
-			    }
-			    public void setSPM(float SPM){
-			        this.SPM = SPM;
-			    }
-			    public float getSPM(){
-			        return this.SPM;
-			    }
-			    public void setCNT(int CNT){
-			        this.CNT = CNT;
-			    }
-			    public int getCNT(){
-			        return this.CNT;
-			    }
-			    public void setUpperLoadLine(float UpperLoadLine){
-			        this.UpperLoadLine = UpperLoadLine;
-			    }
-			    public float getUpperLoadLine(){
-			        return this.UpperLoadLine;
-			    }
-			    public void setLowerLoadLine(float LowerLoadLine){
-			        this.LowerLoadLine = LowerLoadLine;
-			    }
-			    public float getLowerLoadLine(){
-			        return this.LowerLoadLine;
-			    }
-			    public void setFullnessCoefficient(float FullnessCoefficient){
-			        this.FullnessCoefficient = FullnessCoefficient;
-			    }
-			    public float getFullnessCoefficient(){
-			        return this.FullnessCoefficient;
-			    }
-			    public void setPlungerStroke(float PlungerStroke){
-			        this.PlungerStroke = PlungerStroke;
-			    }
-			    public float getPlungerStroke(){
-			        return this.PlungerStroke;
-			    }
-			    public void setAvailablePlungerStroke(float AvailablePlungerStroke){
-			        this.AvailablePlungerStroke = AvailablePlungerStroke;
-			    }
-			    public float getAvailablePlungerStroke(){
-			        return this.AvailablePlungerStroke;
-			    }
-			    public void setF(List<List<Float>> F){
-			        this.F = F;
-			    }
-			    public List<List<Float>> getF(){
-			        return this.F;
-			    }
-			    public void setS(List<List<Float>> S){
-			        this.S = S;
-			    }
-			    public List<List<Float>> getS(){
-			        return this.S;
-			    }
-			    public void setFMax(List<Float> FMax){
-			        this.FMax = FMax;
-			    }
-			    public List<Float> getFMax(){
-			        return this.FMax;
-			    }
-			    public void setFMin(List<Float> FMin){
-			        this.FMin = FMin;
-			    }
-			    public List<Float> getFMin(){
-			        return this.FMin;
-			    }
+			    private List<Float> I;
+
 				public String getAcquisitionTime() {
 					return AcquisitionTime;
 				}
+
 				public void setAcquisitionTime(String acquisitionTime) {
 					AcquisitionTime = acquisitionTime;
 				}
+
+				public float getStroke() {
+					return Stroke;
+				}
+
+				public void setStroke(float stroke) {
+					Stroke = stroke;
+				}
+
+				public float getSPM() {
+					return SPM;
+				}
+
+				public void setSPM(float sPM) {
+					SPM = sPM;
+				}
+
+				public int getSCNT() {
+					return SCNT;
+				}
+
+				public void setSCNT(int sCNT) {
+					SCNT = sCNT;
+				}
+
+				public int getFCNT() {
+					return FCNT;
+				}
+
+				public void setFCNT(int fCNT) {
+					FCNT = fCNT;
+				}
+
+				public int getWattCNT() {
+					return WattCNT;
+				}
+
+				public void setWattCNT(int wattCNT) {
+					WattCNT = wattCNT;
+				}
+
+				public int getICNT() {
+					return ICNT;
+				}
+
+				public void setICNT(int iCNT) {
+					ICNT = iCNT;
+				}
+
 				public float getArea() {
 					return Area;
 				}
+
 				public void setArea(float area) {
 					Area = area;
 				}
-				public float getUpStrokePMax() {
-					return UpStrokePMax;
+
+				public float getUpperLoadLine() {
+					return UpperLoadLine;
 				}
-				public void setUpStrokePMax(float upStrokePMax) {
-					UpStrokePMax = upStrokePMax;
+
+				public void setUpperLoadLine(float upperLoadLine) {
+					UpperLoadLine = upperLoadLine;
 				}
-				public float getDownStrokePMax() {
-					return DownStrokePMax;
-				}
-				public void setDownStrokePMax(float downStrokePMax) {
-					DownStrokePMax = downStrokePMax;
-				}
-				public float getPDegreeOfBalance() {
-					return PDegreeOfBalance;
-				}
-				public void setPDegreeOfBalance(float pDegreeOfBalance) {
-					PDegreeOfBalance = pDegreeOfBalance;
-				}
-				public float getAverageP() {
-					return AverageP;
-				}
-				public void setAverageP(float averageP) {
-					AverageP = averageP;
-				}
-				public float getUpStrokeAMax() {
-					return UpStrokeAMax;
-				}
-				public void setUpStrokeAMax(float upStrokeAMax) {
-					UpStrokeAMax = upStrokeAMax;
-				}
-				public float getDownStrokeAMax() {
-					return DownStrokeAMax;
-				}
-				public void setDownStrokeAMax(float downStrokeAMax) {
-					DownStrokeAMax = downStrokeAMax;
-				}
-				public float getADegreeOfBalance() {
-					return ADegreeOfBalance;
-				}
-				public void setADegreeOfBalance(float aDegreeOfBalance) {
-					ADegreeOfBalance = aDegreeOfBalance;
-				}
-				public List<Float> getP() {
-					return P;
-				}
-				public void setP(List<Float> p) {
-					P = p;
-				}
-				public List<Float> getA() {
-					return A;
-				}
-				public void setA(List<Float> a) {
-					A = a;
-				}
-				public String getPMaxRatioString() {
-					return PMaxRatioString;
-				}
-				public void setPMaxRatioString(String pMaxRatioString) {
-					PMaxRatioString = pMaxRatioString;
-				}
-				public String getAMaxRatioString() {
-					return AMaxRatioString;
-				}
-				public void setAMaxRatioString(String aMaxRatioString) {
-					AMaxRatioString = aMaxRatioString;
-				}
+
 				public float getUpperLoadLineOfExact() {
 					return UpperLoadLineOfExact;
 				}
+
 				public void setUpperLoadLineOfExact(float upperLoadLineOfExact) {
 					UpperLoadLineOfExact = upperLoadLineOfExact;
+				}
+
+				public float getLowerLoadLine() {
+					return LowerLoadLine;
+				}
+
+				public void setLowerLoadLine(float lowerLoadLine) {
+					LowerLoadLine = lowerLoadLine;
+				}
+
+				public float getFullnessCoefficient() {
+					return FullnessCoefficient;
+				}
+
+				public void setFullnessCoefficient(float fullnessCoefficient) {
+					FullnessCoefficient = fullnessCoefficient;
+				}
+
+				public float getPlungerStroke() {
+					return PlungerStroke;
+				}
+
+				public void setPlungerStroke(float plungerStroke) {
+					PlungerStroke = plungerStroke;
+				}
+
+				public float getAvailablePlungerStroke() {
+					return AvailablePlungerStroke;
+				}
+
+				public void setAvailablePlungerStroke(float availablePlungerStroke) {
+					AvailablePlungerStroke = availablePlungerStroke;
+				}
+
+				public float getUpStrokeWattMax() {
+					return UpStrokeWattMax;
+				}
+
+				public void setUpStrokeWattMax(float upStrokeWattMax) {
+					UpStrokeWattMax = upStrokeWattMax;
+				}
+
+				public float getDownStrokeWattMax() {
+					return DownStrokeWattMax;
+				}
+
+				public void setDownStrokeWattMax(float downStrokeWattMax) {
+					DownStrokeWattMax = downStrokeWattMax;
+				}
+
+				public float getWattDegreeBalance() {
+					return WattDegreeBalance;
+				}
+
+				public void setWattDegreeBalance(float wattDegreeBalance) {
+					WattDegreeBalance = wattDegreeBalance;
+				}
+
+				public String getWattMaxRatioString() {
+					return WattMaxRatioString;
+				}
+
+				public void setWattMaxRatioString(String wattMaxRatioString) {
+					WattMaxRatioString = wattMaxRatioString;
+				}
+
+				public float getAverageWatt() {
+					return AverageWatt;
+				}
+
+				public void setAverageWatt(float averageWatt) {
+					AverageWatt = averageWatt;
+				}
+
+				public float getUpStrokeIMax() {
+					return UpStrokeIMax;
+				}
+
+				public void setUpStrokeIMax(float upStrokeIMax) {
+					UpStrokeIMax = upStrokeIMax;
+				}
+
+				public float getDownStrokeIMax() {
+					return DownStrokeIMax;
+				}
+
+				public void setDownStrokeIMax(float downStrokeIMax) {
+					DownStrokeIMax = downStrokeIMax;
+				}
+
+				public float getIDegreeBalance() {
+					return IDegreeBalance;
+				}
+
+				public void setIDegreeBalance(float iDegreeBalance) {
+					IDegreeBalance = iDegreeBalance;
+				}
+
+				public String getIMaxRatioString() {
+					return IMaxRatioString;
+				}
+
+				public void setIMaxRatioString(String iMaxRatioString) {
+					IMaxRatioString = iMaxRatioString;
+				}
+
+				public List<List<Float>> getF() {
+					return F;
+				}
+
+				public void setF(List<List<Float>> f) {
+					F = f;
+				}
+
+				public List<List<Float>> getS() {
+					return S;
+				}
+
+				public void setS(List<List<Float>> s) {
+					S = s;
+				}
+
+				public List<Float> getFMax() {
+					return FMax;
+				}
+
+				public void setFMax(List<Float> fMax) {
+					FMax = fMax;
+				}
+
+				public List<Float> getFMin() {
+					return FMin;
+				}
+
+				public void setFMin(List<Float> fMin) {
+					FMin = fMin;
+				}
+
+				public List<Float> getWatt() {
+					return Watt;
+				}
+
+				public void setWatt(List<Float> watt) {
+					Watt = watt;
+				}
+
+				public List<Float> getI() {
+					return I;
+				}
+
+				public void setI(List<Float> i) {
+					I = i;
 				}
 			}
 

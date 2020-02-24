@@ -48,6 +48,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import com.gao.controller.base.BaseController;
 import com.gao.model.calculate.CalculateRequestData;
 import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.graphicalupload.GraphicalUploadService;
@@ -126,15 +127,16 @@ public class GraphicalUploadController extends BaseController {
 		String json = "{success:true,flag:true}";
 		String uploadSurfaceCardListStr = ParamUtils.getParameter(request, "uploadSurfaceCardListStr");
 		String uploadAll = ParamUtils.getParameter(request, "uploadAll");
+		Gson gson=new Gson();
+		java.lang.reflect.Type type = null;
 		if(surfaceCardFileMap!=null){
 			if("1".equals(uploadAll)){
 				for(String key : surfaceCardFileMap.keySet()){
 					try{
-						String gtstr =surfaceCardFileMap.get(key);
-						String fileNameArr[]=key.split("@");
-						String wellname=fileNameArr[0];
-						String cjsjstr=fileNameArr[1];
-						raphicalUploadService.saveSurfaceCard(wellname,cjsjstr,gtstr);
+						String diagramData =surfaceCardFileMap.get(key);
+						type = new TypeToken<FSDiagramModel>() {}.getType();
+						FSDiagramModel FSDiagramModel = gson.fromJson(diagramData, type);
+						raphicalUploadService.saveSurfaceCard(FSDiagramModel);
 					}catch(Exception e){
 						continue;
 					}	
@@ -146,11 +148,10 @@ public class GraphicalUploadController extends BaseController {
 					try{
 						for(String key : surfaceCardFileMap.keySet()){
 							if(key.equals(uploadSurfaceCardListStrArr[i])){
-								String gtstr =surfaceCardFileMap.get(key);
-								String fileNameArr[]=key.split("@");
-								String wellname=fileNameArr[0];
-								String cjsjstr=fileNameArr[1];
-								raphicalUploadService.saveSurfaceCard(wellname,cjsjstr,gtstr);
+								String diagramData =surfaceCardFileMap.get(key);
+								type = new TypeToken<FSDiagramModel>() {}.getType();
+								FSDiagramModel FSDiagramModel = gson.fromJson(diagramData, type);
+								raphicalUploadService.saveSurfaceCard(FSDiagramModel);
 							}
 						}
 					}catch(Exception e){
@@ -175,30 +176,16 @@ public class GraphicalUploadController extends BaseController {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> map = DataModelMap.getMapObject();
 		Map<String,String> surfaceCardFileMap=(Map<String, String>) map.get("surfaceCardFileMap");//从内存中将上传的功图取出来
-		String json = "";
-		result_json.append("{\"success\":true,\"list\":[");
+		String json = "{}";
 		String param = ParamUtils.getParameter(request, "param");
 		if(surfaceCardFileMap!=null){
 			for(String key : surfaceCardFileMap.keySet()){
 				if(key.equals(param)){
-					String gtsj =surfaceCardFileMap.get(key).replaceAll("\r\n", "\n").replaceAll("\n", ",");
-					String fileNameArr[]=key.split("@");
-					String wellname=fileNameArr[0];
-					String cjsjstr=fileNameArr[1];
-					String cch=StringManagerUtils.stringToFloat(gtsj.split(",")[4], 2)+"";
-					String cci=StringManagerUtils.stringToFloat(gtsj.split(",")[3], 2)+"";
-					result_json.append("{");
-					result_json.append("\"jh\":\""+wellname+"\",");
-					result_json.append("\"cjsj\":\""+cjsjstr+"\",");
-					result_json.append("\"cch\":"+cch+",");
-					result_json.append("\"cci\":"+cci+",");
-					result_json.append("\"gtsj\":\""+gtsj+"\"}");
+					json =surfaceCardFileMap.get(key);
 					break;
 				}
 			}
 		}
-		result_json.append("]}");
-		json=result_json.toString();
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -295,7 +282,7 @@ public class GraphicalUploadController extends BaseController {
 		}
 		surfaceCardFileMap=new HashMap<String,String>();
 		String json = "";
-		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellname\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"cjsj\"},{ \"header\":\"冲程\",\"dataIndex\":\"cch\"},{ \"header\":\"冲次\",\"dataIndex\":\"cci\"}]";
+		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acquisitionTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"cch\"},{ \"header\":\"冲次\",\"dataIndex\":\"cci\"}]";
 		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+files.length+",");
 		result_json.append("\"totalRoot\":[");
@@ -303,47 +290,51 @@ public class GraphicalUploadController extends BaseController {
 			if(!files[i].isEmpty()){
 				try{
 					byte[] buffer = files[i].getBytes();
-					String gtstr = new String(buffer);
-					StringBuffer newGtsjBuffer = new StringBuffer();
-					gtstr=gtstr.replaceAll("\r", "").replaceAll("\n", "\r\n");
-			        if(gtstr.endsWith("\r\n")){
-			        	gtstr=gtstr.substring(0, gtstr.length()-2);
-			        }
-			        String gtstrArr[]=gtstr.split("\r\n");
-			        newGtsjBuffer.append(gtstrArr[0].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "")).append("\r\n");
-			        newGtsjBuffer.append(gtstrArr[1].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "")).append("\r\n");
-			        newGtsjBuffer.append(gtstrArr[2]).append("\r\n");
-			        newGtsjBuffer.append(gtstrArr[3]).append("\r\n");
-			        newGtsjBuffer.append(gtstrArr[4]).append("\r\n");
-			        int pointCount=StringManagerUtils.stringToInteger(gtstrArr[2]);
-			        for(int j=0;j<pointCount;j++){
-			        	newGtsjBuffer.append(gtstrArr[j*2+5]).append("\r\n");
-			        	newGtsjBuffer.append(gtstrArr[j*2+6]).append("\r\n");
-			        }
-			        gtstr=newGtsjBuffer.toString();
-			        if(gtstr.endsWith("\r\n")){
-			        	gtstr=gtstr.substring(0, gtstr.length()-2);
-			        }
-			        
+					String diagramData = new String(buffer);
+					diagramData=diagramData.replaceAll("\r", "").replaceAll("\n", "\r\n");
+			        String diagramDataStrArr[]=diagramData.split("\r\n");
 			        String fileName=files[i].getOriginalFilename();
 			        String fileNameArr[]=fileName.split("\\.")[0].split("%");
-			        String wellname=fileNameArr[0];
-			        String cjsjstr=fileNameArr[1].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-			        if(cjsjstr.length()==6){
-			        	cjsjstr="00000000"+cjsjstr;
-			        }else if(cjsjstr.length()==8){
-			        	cjsjstr+="000000";
+			        String wellName=fileNameArr[0];
+//			        String acquisitionTimeStr=fileNameArr[1].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
+			        String acquisitionTimeStr=diagramDataStrArr[0]+diagramDataStrArr[1];
+			        if(acquisitionTimeStr.length()==6){
+			        	acquisitionTimeStr="00000000"+acquisitionTimeStr;
+			        }else if(acquisitionTimeStr.length()==8){
+			        	acquisitionTimeStr+="000000";
 			        }
 			        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 					SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
-					Date date = df2.parse(cjsjstr);
-					String testtime=df.format(date);
+					Date date = df2.parse(acquisitionTimeStr);
+					String acquisitionTime=df.format(date);
+					
+					
+					StringBuffer diagramDataBuff = new StringBuffer();
+					String spm=diagramDataStrArr[3];
+					String stroke=diagramDataStrArr[4];
+					int pointCount=StringManagerUtils.stringToInteger(diagramDataStrArr[2]);
+					String sData="",fData="",wattData="",iData="";
+					for(int j=0;j<pointCount;j++){
+						sData+=diagramDataStrArr[j*2+5];
+						fData+=diagramDataStrArr[j*2+6];
+						if(j<pointCount-1){
+							sData+=",";
+							fData+=",";
+						}
+			        }
+		        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTime+"\",\"stroke\":"+stroke+","+"\"spm\":"+spm+",");
+		        	diagramDataBuff.append("\"S\":["+sData+"],");
+		        	diagramDataBuff.append("\"F\":["+fData+"],");
+		        	diagramDataBuff.append("\"Watt\":["+wattData+"],");
+		        	diagramDataBuff.append("\"I\":["+iData+"]");
+		        	diagramDataBuff.append("}");
+		        	
 			        result_json.append("{\"id\":"+(i+1)+",");
-					result_json.append("\"wellname\":\""+wellname+"\",");
-					result_json.append("\"cjsj\":\""+testtime+"\",");
-					result_json.append("\"cch\":\""+gtstrArr[4]+"\",");
-					result_json.append("\"cci\":\""+gtstrArr[3]+"\"},");
-					surfaceCardFileMap.put(wellname+"@"+testtime,gtstr);
+					result_json.append("\"wellName\":\""+wellName+"\",");
+					result_json.append("\"acquisitionTime\":\""+acquisitionTime+"\",");
+					result_json.append("\"stroke\":\""+stroke+"\",");
+					result_json.append("\"spm\":\""+spm+"\"},");
+					surfaceCardFileMap.put(wellName+"@"+acquisitionTime,diagramDataBuff.toString());
 				}catch(Exception e){
 					e.printStackTrace();
 					continue;
@@ -384,7 +375,7 @@ public class GraphicalUploadController extends BaseController {
 		}
 		surfaceCardFileMap=new HashMap<String,String>();
 		String json = "";
-		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellname\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"cjsj\"},{ \"header\":\"冲程\",\"dataIndex\":\"cch\"},{ \"header\":\"冲次\",\"dataIndex\":\"cci\"}]";
+		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acquisitionTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"stroke\"},{ \"header\":\"冲次\",\"dataIndex\":\"spm\"}]";
 		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+tablecolumns+",");
 		result_json.append("\"totalCount\":"+files.length+",");
 		result_json.append("\"totalRoot\":[");
@@ -398,39 +389,29 @@ public class GraphicalUploadController extends BaseController {
 			        int columns = oFirstSheet.getColumns();//获取工作表中的总列数  
 			        for (int j = 1; j < rows; j++) {
 			        	try{
-			        		StringBuffer gtsjbuffer = new StringBuffer();
+			        		StringBuffer diagramDataBuff = new StringBuffer();
 				        	String wellName= oFirstSheet.getCell(1,j).getContents().replaceAll(" ", "");
-				        	String cjsjstr=StringManagerUtils.delOutsideSpace(oFirstSheet.getCell(2,j).getContents()).replaceAll("/", "-");
+				        	String acquisitionTimeStr=StringManagerUtils.delOutsideSpace(oFirstSheet.getCell(2,j).getContents()).replaceAll("/", "-");
 				        	String sData=oFirstSheet.getCell(3,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
 				        	String fData=oFirstSheet.getCell(4,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-				        	String cch=oFirstSheet.getCell(5,j).getContents().replaceAll(" ", "");
-				        	String cci=oFirstSheet.getCell(6,j).getContents().replaceAll(" ", "");
-				        	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-							SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd_HHmmss");//设置日期格式
-							Date date = df.parse(cjsjstr);
-							String testtime=df2.format(date);
-							String sDataArr[]=sData.split(",");
-							String fDataArr[]=fData.split(",");
-							int pointcount=sDataArr.length<fDataArr.length?sDataArr.length:fDataArr.length;
-							gtsjbuffer.append(testtime.split("_")[0]).append("\r\n");
-							gtsjbuffer.append(testtime.split("_")[1]).append("\r\n");
-							gtsjbuffer.append(pointcount).append("\r\n");
-							gtsjbuffer.append(cci).append("\r\n");
-							gtsjbuffer.append(cch).append("\r\n");
-							for(int k=0;k<pointcount;k++){
-								gtsjbuffer.append(sDataArr[k]).append("\r\n");
-								gtsjbuffer.append(fDataArr[k]);
-								if(k<pointcount-1){
-									gtsjbuffer.append("\r\n");
-								}
-							}
+				        	String wattData=oFirstSheet.getCell(5,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+				        	String iData=oFirstSheet.getCell(6,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+				        	String stroke=oFirstSheet.getCell(7,j).getContents().replaceAll(" ", "");
+				        	String spm=oFirstSheet.getCell(8,j).getContents().replaceAll(" ", "");
+				        	
+				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTimeStr+"\",\"stroke\":"+stroke+","+"\"spm\":"+spm+",");
+				        	diagramDataBuff.append("\"S\":["+sData+"],");
+				        	diagramDataBuff.append("\"F\":["+fData+"],");
+				        	diagramDataBuff.append("\"Watt\":["+wattData+"],");
+				        	diagramDataBuff.append("\"I\":["+iData+"]");
+				        	diagramDataBuff.append("}");
 							
 							result_json.append("{\"id\":"+j+",");
-							result_json.append("\"wellname\":\""+wellName+"\",");
-							result_json.append("\"cjsj\":\""+cjsjstr+"\",");
-							result_json.append("\"cch\":\""+cch+"\",");
-							result_json.append("\"cci\":\""+cci+"\"},");
-							surfaceCardFileMap.put(wellName+"@"+cjsjstr,gtsjbuffer.toString());
+							result_json.append("\"wellName\":\""+wellName+"\",");
+							result_json.append("\"acquisitionTime\":\""+acquisitionTimeStr+"\",");
+							result_json.append("\"stroke\":\""+stroke+"\",");
+							result_json.append("\"spm\":\""+spm+"\"},");
+							surfaceCardFileMap.put(wellName+"@"+acquisitionTimeStr,diagramDataBuff.toString());
 			        	}catch(Exception e){
 							continue;
 						}
@@ -693,11 +674,11 @@ public class GraphicalUploadController extends BaseController {
             TimeZone zone = TimeZone.getTimeZone("GMT");  
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
             sdf.setTimeZone(zone);  
-            String cjsjstr = sdf.format(date);
+            String acquisitionTimeStr = sdf.format(date);
         	
-//        	String cjsjstr=oFirstSheet.getCell(1,i).getContents();//2017-10-22 01:00:00
-        	String dateStr=cjsjstr.split(" ")[0].replaceAll("-", "");
-        	String timeStr=cjsjstr.split(" ")[1].replaceAll(":", "");
+//        	String acquisitionTimeStr=oFirstSheet.getCell(1,i).getContents();//2017-10-22 01:00:00
+        	String dateStr=acquisitionTimeStr.split(" ")[0].replaceAll("-", "");
+        	String timeStr=acquisitionTimeStr.split(" ")[1].replaceAll(":", "");
         	String cch=oFirstSheet.getCell(2,i).getContents();
         	String cci=oFirstSheet.getCell(3,i).getContents();
         	String gtstr=oFirstSheet.getCell(7,i).getContents();
@@ -719,7 +700,7 @@ public class GraphicalUploadController extends BaseController {
         		}
         	}
 //        	System.out.println(gtBuf.toString());
-        	raphicalUploadService.saveSurfaceCard(wellName,cjsjstr,gtBuf.toString());
+//        	raphicalUploadService.saveSurfaceCard(wellName,acquisitionTimeStr,gtBuf.toString());
         }
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -772,7 +753,7 @@ public class GraphicalUploadController extends BaseController {
         	}
         	
 //        	System.out.println(gtBuf.toString());
-        	raphicalUploadService.saveSurfaceCard(wellName,"2018-04-25 08:00:00",gtBuf.toString());
+//        	raphicalUploadService.saveSurfaceCard(wellName,"2018-04-25 08:00:00",gtBuf.toString());
         }
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -828,7 +809,7 @@ public class GraphicalUploadController extends BaseController {
 //        	System.out.println(gtBuf.toString());
         	
         }
-        raphicalUploadService.saveSurfaceCard(wellName,"2018-04-26 08:00:00",gtBuf.toString());
+//        raphicalUploadService.saveSurfaceCard(wellName,"2018-04-26 08:00:00",gtBuf.toString());
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -1007,7 +988,7 @@ public class GraphicalUploadController extends BaseController {
 						while(rs.next()){
 							try{
 								wellName=rs.getString(1)==null?"":rs.getString(1);
-								String cjsjstr=rs.getString(2)==null?"":rs.getString(2);
+								String acquisitionTimeStr=rs.getString(2)==null?"":rs.getString(2);
 								float stroke;
 								float frequency;
 								if(rs.getObject(3)==null){
@@ -1027,8 +1008,8 @@ public class GraphicalUploadController extends BaseController {
 								String AStr=rs.getString(8)==null?"":rs.getString(8).replaceAll(";", ",");
 								String PStr=rs.getString(9)==null?"":rs.getString(9).replaceAll(";", ",");
 								point=SStr.split(",").length;
-								System.out.println(cjsjstr);
-								raphicalUploadService.saveSurfaceCard(wellName,cjsjstr,point,stroke,frequency,SStr,FStr,AStr,PStr);
+								System.out.println(acquisitionTimeStr);
+								raphicalUploadService.saveSurfaceCard(wellName,acquisitionTimeStr,point,stroke,frequency,SStr,FStr,AStr,PStr);
 							}catch(Exception ee){
 								ee.printStackTrace();
 								continue;

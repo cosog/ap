@@ -30,7 +30,7 @@ function submitSurfaceCardFile() {
                 }
                 var result =  Ext.JSON.decode(o.response.responseText);
                 var store=Ext.create('Ext.data.Store', {
-                    fields:[ 'id', 'wellname', 'cjsj','cch','cci'],
+                    fields:[ 'id', 'wellName', 'acquisitionTime','stroke','spm'],
                     data:result.totalRoot
                 });
                 var column=createDiagStatisticsColumn(result.columns);
@@ -47,9 +47,9 @@ function submitSurfaceCardFile() {
                     listeners: {
                     	selectionchange:function(grid, record , eOpts) {
                     		if(record.length>0){
-                    			var wellName=record[record.length-1].data.wellname;
-                    			var cjsj=record[record.length-1].data.cjsj;
-                    			var param=wellName+"@"+cjsj;
+                    			var wellName=record[record.length-1].data.wellName;
+                    			var acquisitionTime=record[record.length-1].data.acquisitionTime;
+                    			var param=wellName+"@"+acquisitionTime;
                     			Ext.Ajax.request({
                     				url : context + '/graphicalUploadController/getSurfaceCardGraphicalData',
                     				method : "POST",
@@ -59,8 +59,10 @@ function submitSurfaceCardFile() {
                     				},
                     				success : function(response) {
                     					var result = Ext.JSON.decode(response.responseText);
-                    					if(result.list.length>0){
-                    						showSurfaceCardUploadChart(result.list[0], "SurfaceCardUploadShowDiv_Id");
+                    					if(result!=null){
+                    						showSurfaceCardUploadChart(result, "SurfaceCardUploadShowDiv_Id");
+                    					}else{
+                    						$("#SurfaceCardUploadShowDiv_Id").html('');
                     					}
                     				},
                     				failure : function() {
@@ -88,11 +90,11 @@ function uploadAllSurfaceCardFile(){
 		var gridPanel_model = surfaceCardUploadGridpanel.getSelectionModel();
 		gridPanel_model.selectAll();
 		var record = gridPanel_model.getSelection();
-		var deletejson = [];
+		var uploadData = [];
 		Ext.Array.each(record, function(name, index, countriesItSelf) {
-			deletejson.push(record[index].get("wellname")+"@"+record[index].get("cjsj"));
+			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
 			});
-		var uploadSurfaceCardList = "" + deletejson.join(",");
+		var uploadSurfaceCardList = "" + uploadData.join(",");
 		// AJAX提交方式
 		Ext.Ajax.request({
 			url : context + '/graphicalUploadController/saveUploadSurfaceCardFile',
@@ -125,11 +127,11 @@ function uploadSelectedSurfaceCardFile(){
 	if(isNotVal(surfaceCardUploadGridpanel)){
 		var gridPanel_model = surfaceCardUploadGridpanel.getSelectionModel();
 		var record = gridPanel_model.getSelection();
-		var deletejson = [];
+		var uploadData = [];
 		Ext.Array.each(record, function(name, index, countriesItSelf) {
-			deletejson.push(record[index].get("wellname")+"@"+record[index].get("cjsj"));
+			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
 			});
-		var uploadSurfaceCardList = "" + deletejson.join(",");
+		var uploadSurfaceCardList = "" + uploadData.join(",");
 		// AJAX提交方式
 		Ext.Ajax.request({
 			url : context + '/graphicalUploadController/saveUploadSurfaceCardFile',

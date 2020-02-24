@@ -227,8 +227,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 			        calculateRequestData.getFSDiagram().setSPM(StringManagerUtils.stringToFloat(arrgtsj[3]));
 			        List<List<Float>> F=new ArrayList<List<Float>>();
 			        List<List<Float>> S=new ArrayList<List<Float>>();
-			        List<Float> P=new ArrayList<Float>();
-			        List<Float> A=new ArrayList<Float>();
+			        List<Float> Watt=new ArrayList<Float>();
+			        List<Float> I=new ArrayList<Float>();
 			        for(int i=0;i<(arrgtsj.length-5)/2;i++){
 			        	List<Float> FList=new ArrayList<Float>();
 						List<Float> SList=new ArrayList<Float>();
@@ -240,20 +240,20 @@ public class CalculateDataService<T> extends BaseService<T> {
 			        if(StringManagerUtils.isNotNull(object[37]+"")){
 						String powerCurve[]=(object[37]+"").replaceAll("null", "").split(",");
 						for(int i=0;i<powerCurve.length;i++){
-				        	P.add(StringManagerUtils.stringToFloat(powerCurve[i]));
+							Watt.add(StringManagerUtils.stringToFloat(powerCurve[i]));
 				        }
 					}
 					if(StringManagerUtils.isNotNull(object[38]+"")){
 						String currentCurve[]=(object[38]+"").replaceAll("null", "").split(",");
 						for(int i=0;i<currentCurve.length;i++){
-				        	A.add(StringManagerUtils.stringToFloat(currentCurve[i]));
+				        	I.add(StringManagerUtils.stringToFloat(currentCurve[i]));
 				        }
 					}
 			        
 			        calculateRequestData.getFSDiagram().setF(F);
 			        calculateRequestData.getFSDiagram().setS(S);
-			        calculateRequestData.getFSDiagram().setP(P);
-			        calculateRequestData.getFSDiagram().setA(A);
+			        calculateRequestData.getFSDiagram().setWatt(Watt);
+			        calculateRequestData.getFSDiagram().setI(I);
 				}
 			}
 	        calculateRequestData.setSystemEfficiency(new CalculateRequestData.SystemEfficiency());
@@ -471,7 +471,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		StringBuffer bgtStrBuff = new StringBuffer();
 		if(calculateResponseData.getCalculationStatus().getResultStatus()!=-99){
 			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getCNT();
+			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
 			bgtStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){
@@ -497,7 +497,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		StringBuffer bgtStrBuff = new StringBuffer();
 		if(calculateResponseData.getCalculationStatus().getResultStatus()==1&&calculateResponseData.getFSDiagram()!=null){
 			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getCNT();
+			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
 			bgtStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){
@@ -519,10 +519,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public int deleteInvalidData() throws SQLException{
-		String sql="delete from t_outputwellhistory where jsbz=0 and jlbh not in"
+		String sql="delete from tbl_rpc_diagram_hist where jsbz=0 and jlbh not in"
 				+ " (select t033.jlbh"
 				+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
-				+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
+				+ " t_dynamicliquidlevel t011,tbl_rpc_diagram_hist t033  "
 				+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 				+ " and t033.dymbh=t011.jlbh  "
 				+ " and  t033.jsbz in (0,2))";
@@ -530,10 +530,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public int deleteInvalidData(int jbh) throws SQLException{
-		String sql="delete from t_outputwellhistory where jsbz=0 and jlbh not in"
+		String sql="delete from tbl_rpc_diagram_hist where jsbz=0 and jlbh not in"
 				+ " (select t033.jlbh"
 				+ " from tbl_wellinformation t007, tbl_rpc_diagram_hist t010,"
-				+ " t_dynamicliquidlevel t011,t_outputwellhistory t033  "
+				+ " t_dynamicliquidlevel t011,tbl_rpc_diagram_hist t033  "
 				+ " where t007.jlbh=t010.jbh and t033.jbh=t007.jlbh and t033.gtbh=t010.jlbh  "
 				+ " and t033.dymbh=t011.jlbh  "
 				+ " and  t033.jsbz in (0,2))"

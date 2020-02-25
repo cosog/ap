@@ -33,9 +33,9 @@ public class CalculateDataManagerTast {
     private static ResultSet rs = null;  
 	
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
-		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2)";
+		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
 		String url=Config.getProjectAccessPath()+"/calculateDataController/getBatchCalculateTime";
 		String result="无未计算数据";
 		int count=getCount(sql);
@@ -61,7 +61,7 @@ public class CalculateDataManagerTast {
 		result=StringManagerUtils.sendPostMethod(discreteDailyCalculationUrl, "","utf-8");
 	}
 	
-	//离散数据汇总
+	//离散数据实时汇总
 //	@Scheduled(cron = "0 30 0/1 * * ?")
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();

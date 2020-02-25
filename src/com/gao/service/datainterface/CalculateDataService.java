@@ -83,15 +83,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public String getObjectToCalculateRequestData(Object[] object) throws SQLException, IOException, ParseException{
 		Gson gson = new Gson();
 		CalculateRequestData calculateRequestData=new CalculateRequestData();
+		
 		try{
 			calculateRequestData.setAKString("");
 			calculateRequestData.setWellName(object[0]+"");
 			calculateRequestData.setLiftingType(StringManagerUtils.stringToInteger(object[1]+""));
 			calculateRequestData.setAcquisitionTime(object[2]+"");
-			//如果是螺杆泵，添加转速
-			if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){
-				calculateRequestData.setRPM(StringManagerUtils.stringToFloat(object[55]+""));
-			}
 			//流体PVT物性
 			calculateRequestData.setFluidPVT(new CalculateRequestData.FluidPVT());
 			calculateRequestData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(object[3]+""));
@@ -101,167 +98,135 @@ public class CalculateDataService<T> extends BaseService<T> {
 			
 			//油藏物性
 			calculateRequestData.setReservoir(new CalculateRequestData.Reservoir());
-			calculateRequestData.getReservoir().setPressure(StringManagerUtils.stringToFloat(object[7]+""));
-			calculateRequestData.getReservoir().setDepth(StringManagerUtils.stringToFloat(object[8]+""));
-			calculateRequestData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(object[9]+""));
+			calculateRequestData.getReservoir().setDepth(StringManagerUtils.stringToFloat(object[7]+""));
+			calculateRequestData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(object[8]+""));
 			
 			//井深轨迹
 			calculateRequestData.setWellboreTrajectory(new CalculateRequestData.WellboreTrajectory());
-			calculateRequestData.getWellboreTrajectory().setMeasuringDepth(new ArrayList<Float>());
-			calculateRequestData.getWellboreTrajectory().setVerticalDepth(new ArrayList<Float>());
-			calculateRequestData.getWellboreTrajectory().setDeviationAngle(new ArrayList<Float>());
-			calculateRequestData.getWellboreTrajectory().setAzimuthAngle(new ArrayList<Float>());
-			calculateRequestData.getWellboreTrajectory().getMeasuringDepth().add((float) 100);
-			calculateRequestData.getWellboreTrajectory().getMeasuringDepth().add((float) 200);
-			calculateRequestData.getWellboreTrajectory().getVerticalDepth().add((float) 100);
-			calculateRequestData.getWellboreTrajectory().getVerticalDepth().add((float) 200);
-			calculateRequestData.getWellboreTrajectory().getDeviationAngle().add((float) 0);
-			calculateRequestData.getWellboreTrajectory().getDeviationAngle().add((float) 0);
-			calculateRequestData.getWellboreTrajectory().getAzimuthAngle().add((float) 0);
-			calculateRequestData.getWellboreTrajectory().getAzimuthAngle().add((float) 0);
 			
 			//抽油杆参数
-			CalculateRequestData.EveryRod everyRod1=new CalculateRequestData.EveryRod();
-			everyRod1.setType(1);
-			everyRod1.setGrade(object[10]+"");
-			everyRod1.setLength(StringManagerUtils.stringToFloat(object[11]+""));
-			everyRod1.setOutsideDiameter(StringManagerUtils.stringToFloat(object[12]+"")/1000);
-			everyRod1.setInsideDiameter(StringManagerUtils.stringToFloat(object[40]+"")/1000);
-			
-			CalculateRequestData.EveryRod everyRod2=new CalculateRequestData.EveryRod();
-			everyRod2.setType(1);
-			everyRod2.setGrade(object[13]+"");
-			everyRod2.setLength(StringManagerUtils.stringToFloat(object[14]+""));
-			everyRod2.setOutsideDiameter(StringManagerUtils.stringToFloat(object[15]+"")/1000);
-			everyRod2.setInsideDiameter(StringManagerUtils.stringToFloat(object[41]+"")/1000);
-			
-			CalculateRequestData.EveryRod everyRod3=new CalculateRequestData.EveryRod();
-			everyRod3.setType(1);
-			everyRod3.setGrade(object[16]+"");
-			everyRod3.setLength(StringManagerUtils.stringToFloat(object[17]+""));
-			everyRod3.setOutsideDiameter(StringManagerUtils.stringToFloat(object[18]+"")/1000);
-			everyRod3.setInsideDiameter(StringManagerUtils.stringToFloat(object[42]+"")/1000);
-			
-			CalculateRequestData.EveryRod everyRod4=new CalculateRequestData.EveryRod();
-			everyRod4.setType(1);
-			everyRod4.setGrade(object[19]+"");
-			everyRod4.setLength(StringManagerUtils.stringToFloat(object[20]+""));
-			everyRod4.setOutsideDiameter(StringManagerUtils.stringToFloat(object[21]+"")/1000);
-			everyRod4.setInsideDiameter(StringManagerUtils.stringToFloat(object[43]+"")/1000);
-			
 			calculateRequestData.setRodString(new CalculateRequestData.RodString());
 			calculateRequestData.getRodString().setEveryRod(new ArrayList<CalculateRequestData.EveryRod>());
-			if(everyRod1.getLength()>0){
-				calculateRequestData.getRodString().getEveryRod().add(everyRod1);
-			}
-			if(everyRod2.getLength()>0){
-				calculateRequestData.getRodString().getEveryRod().add(everyRod2);
-			}
-			if(everyRod3.getLength()>0){
-				calculateRequestData.getRodString().getEveryRod().add(everyRod3);
-			}if(everyRod4.getLength()>0){
-				calculateRequestData.getRodString().getEveryRod().add(everyRod4);
+			String rodStringArr[]=(object[9]+"").split(";");
+			for(int i=0;i<rodStringArr.length;i++){
+				if(StringManagerUtils.isNotNull(rodStringArr[i])){
+					String everyRodStringArr[]=rodStringArr[i].split(",");
+					if(StringManagerUtils.stringToFloat(everyRodStringArr[3]+"")>0){
+						String rodGrade=everyRodStringArr[0];
+						String rodOutsideDiameter=everyRodStringArr[1];
+						String rodInsideDiameter=everyRodStringArr[2];
+						String rodLength=everyRodStringArr[3];
+						CalculateRequestData.EveryRod everyRod=new CalculateRequestData.EveryRod();
+						everyRod.setType(1);
+						everyRod.setGrade(rodGrade);
+						everyRod.setLength(StringManagerUtils.stringToFloat(rodLength));
+						everyRod.setOutsideDiameter(StringManagerUtils.stringToFloat(rodOutsideDiameter)/1000);
+						everyRod.setInsideDiameter(StringManagerUtils.stringToFloat(rodInsideDiameter)/1000);
+						calculateRequestData.getRodString().getEveryRod().add(everyRod);
+					}
+				}
 			}
 			
 			//油管参数
 			CalculateRequestData.EveryTubing everyTubing=new CalculateRequestData.EveryTubing();
-			everyTubing.setInsideDiameter(StringManagerUtils.stringToFloat(object[22]+"")/1000);
+			everyTubing.setInsideDiameter(StringManagerUtils.stringToFloat(object[10]+"")/1000);
 			calculateRequestData.setTubingString(new CalculateRequestData.TubingString());
 			calculateRequestData.getTubingString().setEveryTubing(new ArrayList<CalculateRequestData.EveryTubing>());
 			calculateRequestData.getTubingString().getEveryTubing().add(everyTubing);
 			
 			//抽油泵参数
 			calculateRequestData.setPump(new CalculateRequestData.Pump());
-			//如果是螺杆泵，添加螺杆泵参数
-			if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){
-				calculateRequestData.getPump().setBarrelLength(StringManagerUtils.stringToFloat(object[57]+""));
-				calculateRequestData.getPump().setBarrelSeries((int)(StringManagerUtils.stringToFloat(object[58]+"")+0.5));
-				calculateRequestData.getPump().setRotorDiameter(StringManagerUtils.stringToFloat(object[59]+"")/1000);
-				calculateRequestData.getPump().setQPR(StringManagerUtils.stringToFloat(object[60]+"")/1000000);
-			}else{
-				calculateRequestData.getPump().setPumpType(object[23]+"");
-				calculateRequestData.getPump().setBarrelType("L");
-				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[24]+""));
-				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[25]+""));
-				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[26]+"")/1000);
-			}
+			calculateRequestData.getPump().setPumpType(object[11]+"");
+			calculateRequestData.getPump().setBarrelType("L");
+			calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[12]+""));
+			calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[13]+""));
+			calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[14]+"")/1000);
 			
 			
 			//套管数据
 			CalculateRequestData.EveryCasing  everyCasing=new CalculateRequestData.EveryCasing();
-			everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[27]+"")/1000);
-			everyCasing.setLength(StringManagerUtils.stringToFloat(object[34]+""));
+			everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[15]+"")/1000);
 			calculateRequestData.setCasingString(new CalculateRequestData.CasingString());
 			calculateRequestData.getCasingString().setEveryCasing(new ArrayList<CalculateRequestData.EveryCasing>());
 			calculateRequestData.getCasingString().getEveryCasing().add(everyCasing);
 			
 			//生产数据
 			calculateRequestData.setProductionParameter(new CalculateRequestData.ProductionParameter());
-			calculateRequestData.getProductionParameter().setWaterCut(StringManagerUtils.stringToFloat(object[28]+""));
-			calculateRequestData.getProductionParameter().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[29]+""));
-			calculateRequestData.getProductionParameter().setTubingPressure(StringManagerUtils.stringToFloat(object[30]+""));
-			calculateRequestData.getProductionParameter().setCasingPressure(StringManagerUtils.stringToFloat(object[31]+""));
-			calculateRequestData.getProductionParameter().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[32]+""));
-			calculateRequestData.getProductionParameter().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[33]+""));
-			calculateRequestData.getProductionParameter().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[34]+""));
-			calculateRequestData.getProductionParameter().setSubmergence(StringManagerUtils.stringToFloat(object[34]+"")-StringManagerUtils.stringToFloat(object[34]+""));
-			//calculateRequestData.getProductionParameter().setOutputCoefficient(StringManagerUtils.stringToFloat(object[30]+""));
+			calculateRequestData.getProductionParameter().setWaterCut(StringManagerUtils.stringToFloat(object[16]+""));
+			calculateRequestData.getProductionParameter().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[17]+""));
+			calculateRequestData.getProductionParameter().setTubingPressure(StringManagerUtils.stringToFloat(object[18]+""));
+			calculateRequestData.getProductionParameter().setCasingPressure(StringManagerUtils.stringToFloat(object[19]+""));
+			calculateRequestData.getProductionParameter().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[20]+""));
+			calculateRequestData.getProductionParameter().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[21]+""));
+			calculateRequestData.getProductionParameter().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[22]+""));
+			calculateRequestData.getProductionParameter().setSubmergence(StringManagerUtils.stringToFloat(object[22]+"")-StringManagerUtils.stringToFloat(object[21]+""));
 			
 			//功图数据
-			if(object[36]!=null){
-				SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[36]);
-				CLOB realClob = (CLOB) proxy.getWrappedClob(); 
-				String gtsj=StringManagerUtils.CLOBtoString(realClob);
-				String arrgtsj[]=gtsj.replaceAll("\r\n", "\n").split("\n");
-				if(StringManagerUtils.isNotNull(gtsj)&&arrgtsj.length>0){
-			        String cjsj=arrgtsj[0].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "")
-			        		+" "+arrgtsj[1].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "");
-			        
-			        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd HHmmss");
-			        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			        Date date = df.parse(cjsj);
-			        String testtime=df2.format(date);
-			        calculateRequestData.setFSDiagram(new CalculateRequestData.FSDiagram());
-			        calculateRequestData.getFSDiagram().setAcquisitionTime(testtime);
-			        calculateRequestData.getFSDiagram().setStroke(StringManagerUtils.stringToFloat(arrgtsj[4]));
-			        calculateRequestData.getFSDiagram().setSPM(StringManagerUtils.stringToFloat(arrgtsj[3]));
-			        List<List<Float>> F=new ArrayList<List<Float>>();
-			        List<List<Float>> S=new ArrayList<List<Float>>();
-			        List<Float> Watt=new ArrayList<Float>();
-			        List<Float> I=new ArrayList<Float>();
-			        for(int i=0;i<(arrgtsj.length-5)/2;i++){
-			        	List<Float> FList=new ArrayList<Float>();
-						List<Float> SList=new ArrayList<Float>();
-			        	SList.add(StringManagerUtils.stringToFloat(arrgtsj[i*2+5]));
-			        	FList.add(StringManagerUtils.stringToFloat(arrgtsj[i*2+6]));
-			        	S.add(SList);
-				        F.add(FList);
-			        }
-			        if(StringManagerUtils.isNotNull(object[37]+"")){
-						String powerCurve[]=(object[37]+"").replaceAll("null", "").split(",");
-						for(int i=0;i<powerCurve.length;i++){
-							Watt.add(StringManagerUtils.stringToFloat(powerCurve[i]));
-				        }
-					}
-					if(StringManagerUtils.isNotNull(object[38]+"")){
-						String currentCurve[]=(object[38]+"").replaceAll("null", "").split(",");
-						for(int i=0;i<currentCurve.length;i++){
-				        	I.add(StringManagerUtils.stringToFloat(currentCurve[i]));
-				        }
-					}
-			        
-			        calculateRequestData.getFSDiagram().setF(F);
-			        calculateRequestData.getFSDiagram().setS(S);
-			        calculateRequestData.getFSDiagram().setWatt(Watt);
-			        calculateRequestData.getFSDiagram().setI(I);
+			calculateRequestData.setFSDiagram(new CalculateRequestData.FSDiagram());
+	        calculateRequestData.getFSDiagram().setAcquisitionTime(object[2]+"");
+	        calculateRequestData.getFSDiagram().setStroke(StringManagerUtils.stringToFloat(object[24]+""));
+	        calculateRequestData.getFSDiagram().setSPM(StringManagerUtils.stringToFloat(object[25]+""));
+			
+	        List<List<Float>> F=new ArrayList<List<Float>>();
+	        List<List<Float>> S=new ArrayList<List<Float>>();
+	        List<Float> Watt=new ArrayList<Float>();
+	        List<Float> I=new ArrayList<Float>();
+	        SerializableClobProxy proxy=null;
+	        CLOB realClob =null;
+	        String clobStr="";
+	        String[] curveData=null;
+	        if(object[26]!=null){//位移曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[26]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				curveData=clobStr.split(",");
+				for(int i=0;i<curveData.length;i++){
+					List<Float> SList=new ArrayList<Float>();
+					SList.add(StringManagerUtils.stringToFloat(curveData[i]));
+					S.add(SList);
 				}
-			}
+	        }
+	        if(object[27]!=null){//载荷曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[27]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				curveData=clobStr.split(",");
+				for(int i=0;i<curveData.length;i++){
+					List<Float> FList=new ArrayList<Float>();
+					FList.add(StringManagerUtils.stringToFloat(curveData[i]));
+					F.add(FList);
+				}
+	        }
+	        if(object[28]!=null){//功率曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[28]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				curveData=clobStr.split(",");
+				for(int i=0;i<curveData.length;i++){
+					Watt.add(StringManagerUtils.stringToFloat(curveData[i]));
+				}
+	        }
+	        if(object[29]!=null){//电流曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[29]);
+				realClob = (CLOB) proxy.getWrappedClob();
+				clobStr=StringManagerUtils.CLOBtoString(realClob);
+				curveData=clobStr.split(",");
+				for(int i=0;i<curveData.length;i++){
+					I.add(StringManagerUtils.stringToFloat(curveData[i]));
+				}
+	        }
+	        calculateRequestData.getFSDiagram().setF(F);
+	        calculateRequestData.getFSDiagram().setS(S);
+	        calculateRequestData.getFSDiagram().setWatt(Watt);
+	        calculateRequestData.getFSDiagram().setI(I);
+			
+	        //系统效率
 	        calculateRequestData.setSystemEfficiency(new CalculateRequestData.SystemEfficiency());
 	        
-	      //人工干预
+	        //人工干预
 	        calculateRequestData.setManualIntervention(new CalculateRequestData.ManualIntervention());
-	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[39]+""));
-	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[35]+""));
+	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[30]+""));
+	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[23]+""));
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";
@@ -468,54 +433,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public boolean saveCalculateResult(int jlbh,CalculateResponseData calculateResponseData) throws SQLException, ParseException{
-		StringBuffer bgtStrBuff = new StringBuffer();
-		if(calculateResponseData.getCalculationStatus().getResultStatus()!=-99){
-			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
-			bgtStrBuff.append(curvecount+";"+pointcount+";");
-			for(int i=0;i<curvecount;i++){
-				for(int j=0;j<pointcount;j++){
-					bgtStrBuff.append(calculateResponseData.getFSDiagram().getS().get(j).get(i)+",");//位移
-					bgtStrBuff.append(calculateResponseData.getFSDiagram().getF().get(j).get(i)+",");//载荷
-				}
-				if(pointcount>0){
-					bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
-				}
-				bgtStrBuff.append(";");
-			}
-			if(curvecount>0){
-				bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
-			}
-		}
-		String bgtStr=bgtStrBuff.toString();
-		
-		return this.getBaseDao().saveCalculateResult(jlbh,calculateResponseData,bgtStr,"");
-	}
-	
-	public boolean saveCalculateResult(int jlbh,CalculateResponseData calculateResponseData,
-			ElectricCalculateResponseData electricCalculateResponseData,TimeEffResponseData timeEffResponseData,CommResponseData commResponseData) throws SQLException, ParseException{
-		StringBuffer bgtStrBuff = new StringBuffer();
-		if(calculateResponseData.getCalculationStatus().getResultStatus()==1&&calculateResponseData.getFSDiagram()!=null){
-			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
-			bgtStrBuff.append(curvecount+";"+pointcount+";");
-			for(int i=0;i<curvecount;i++){
-				for(int j=0;j<pointcount;j++){
-					bgtStrBuff.append(calculateResponseData.getFSDiagram().getS().get(j).get(i)+",");//位移
-					bgtStrBuff.append(calculateResponseData.getFSDiagram().getF().get(j).get(i)+",");//载荷
-				}
-				if(pointcount>0){
-					bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
-				}
-				bgtStrBuff.append(";");
-			}
-			if(curvecount>0){
-				bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
-			}
-		}
-		String bgtStr=bgtStrBuff.toString();
-		
-		return this.getBaseDao().saveCalculateResult(jlbh,calculateResponseData,electricCalculateResponseData,timeEffResponseData,commResponseData,bgtStr,"");
+		return this.getBaseDao().saveCalculateResult(jlbh,calculateResponseData);
 	}
 	
 	public int deleteInvalidData() throws SQLException{
@@ -541,37 +459,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
-	public boolean saveHYTXCalculateResult(int jlbh,CalculateResponseData calculateResponseData,String jh) throws SQLException, ParseException{
-		StringBuffer bgtStrBuff = new StringBuffer();
-		if(calculateResponseData.getCalculationStatus().getResultStatus()==1&&calculateResponseData.getCalculationStatus().getResultCode()!=1232){
-			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getF().size();
-			bgtStrBuff.append(curvecount+";"+pointcount+";");
-			for(int i=0;i<curvecount;i++){
-				for(int j=0;j<pointcount;j++){
-					bgtStrBuff.append(calculateResponseData.getFSDiagram().getS().get(j).get(i)+",");//位移
-					bgtStrBuff.append(calculateResponseData.getFSDiagram().getF().get(j).get(i)+",");//载荷
-				}
-				if(pointcount>0){
-					bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
-				}
-				bgtStrBuff.append(";");
-			}
-			if(curvecount>0){
-				bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
-			}
-		}
-		String bgtStr=bgtStrBuff.toString();
-		
-		this.getBaseDao().saveCalculateResult(jlbh,calculateResponseData,bgtStr,jh);
-		if(calculateResponseData.getCalculationStatus().getResultStatus()==1){
-			this.getBaseDao().saveHYTXCalculateResult_Resp(calculateResponseData,jh);
-			this.getBaseDao().saveHYTXCalculateResult_Prod(calculateResponseData,jh);
-			this.getBaseDao().saveHYTXCalculateResult_Eff(calculateResponseData,jh);
-			this.getBaseDao().saveHYTXCalculateResult_Diag(calculateResponseData,jh);
-		}
-		return false;
-	}
 	
 	public List<String> getFSDiagramDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
 		StringBuffer dataSbf=null;

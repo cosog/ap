@@ -939,13 +939,13 @@ public class GraphicalUploadController extends BaseController {
 	 */
 	@RequestMapping("/getOuterSurfaceCardData")
 	public String getOuterSurfaceCardData(){
-		String localSql="select t.jh,t008.bg,to_char(t010.cjsj,'yyyy-mm-dd hh24:mi:ss') "
+		String localSql="select t.wellName,t2.pumpsettingdepth,to_char(t3.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t  "
-				+ " left outer join tbl_rpc_productiondata_hist t008 on t008.jbh=t.jlbh "
-				+ " left outer join  ( select jbh,max(cjsj) as cjsj from tbl_rpc_diagram_hist t group by jbh ) t010 on t010.jbh=t.jlbh  "
+				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "
+				+ " left outer join tbl_rpc_diagram_latest t3 on t3.wellid=t.id "
 				+ " where 1=1 "
-				+ " and t.jslx >=200 and t.jslx<300 "
-				+ " order by t.jh";
+				+ " and t.liftingtype >=200 and t.liftingtype<300 "
+				+ " order by t.sortnum";
 		Connection outerConn= OracleJdbcUtis.getOuterConnection();
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
@@ -956,11 +956,11 @@ public class GraphicalUploadController extends BaseController {
 				try{
 					Object[] obj = (Object[]) localList.get(i);
 					String wellName=obj[0]+"";
-					String bg=obj[1]+"";
+					String pumpSettingSepth=obj[1]+"";
 					String acquisitionTime=obj[2]+"";
 					int record=100;
 //					acquisitionTime=StringManagerUtils.isNotNull(acquisitionTime)?acquisitionTime:"1970-01-01 00:00:00";
-					if(StringManagerUtils.isNotNull(bg)){//如果生产数据不是空
+					if(StringManagerUtils.isNotNull(pumpSettingSepth)){//如果生产数据不是空
 						pstmt=null;
 						rs=null;
 						String outerSql=""

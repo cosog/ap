@@ -36,13 +36,13 @@ boolean isConnection=false;
 
 
 %>
-<link rel="stylesheet" href="<%=path%>/styles/style.css?timestamp=202002160840" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=202002160840" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="<%=path%>/scripts/extjs/resources/classic/ext-theme-classic/theme-classic-all.css?timestamp=202002160840" />
-<link rel="stylesheet" type="text/css" href="<%=path%>/scripts/extjs/ux/classic/resources/ux-all.css?timestamp=202002160840" />
-<link rel="stylesheet" href="<%=path%>/scripts/customMap/css/wellmap.css?timestamp=202002160840" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.css?timestamp=202002160840" type="text/css"/>
-<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=202002160840" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/styles/style.css?timestamp=202002271630" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/styles/icon.css?timestamp=202002271630" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<%=path%>/scripts/extjs/resources/classic/ext-theme-classic/theme-classic-all.css?timestamp=202002271630" />
+<link rel="stylesheet" type="text/css" href="<%=path%>/scripts/extjs/ux/classic/resources/ux-all.css?timestamp=202002271630" />
+<link rel="stylesheet" href="<%=path%>/scripts/customMap/css/wellmap.css?timestamp=202002271630" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/handsontable.css?timestamp=202002271630" type="text/css"/>
+<link rel="stylesheet" href="<%=path%>/scripts/handsontable/css/table.css?timestamp=202002271630" type="text/css"/>
 <!-- 样式区 （结束） --> 
 <!-- 定义Extjs常量 -->
 <script type="text/javascript">
@@ -57,36 +57,36 @@ boolean isConnection=false;
 	var isConnectionInternet=<%=isConnection%>;
 </script>
 <!-- Extjs 核心脚本-->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ext-all.js?timestamp=202002160840"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ext-all.js?timestamp=202002271630"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ext-all-debug.js"></script> --> 
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/Month.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimePicker.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimeField.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=202002160840"></script>
-<!-- <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/GridPanelAfterRender.js?timestamp=202002160840"></script>-->
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/Month.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimePicker.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimeField.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=202002271630"></script>
+<!-- <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/GridPanelAfterRender.js?timestamp=202002271630"></script>-->
 <!-- Extjs 中文脚本 -->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=202002160840"></script> 
-<script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202002160840"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=202002271630"></script> 
+<script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202002271630"></script>
 <!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/TreeStoreBug.js"></script>-->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/app/app.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-2.2.0.min.js?timestamp=202002160840"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/app/app.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-2.2.0.min.js?timestamp=202002271630"></script>
 
-<script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202002160840"></script>
+<script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202002271630"></script>
 <!-- highcharts -->
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highstock.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/grid.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-more.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=202002160840"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highstock.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/grid.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-more.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-3d.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=202002271630"></script>
 
-<!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/color/ColorField.js?timestamp=202002160840"></script>-->
-<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/customMap/js/wellmap.js?timestamp=202002160840"></script>
-<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable-pro.full.min.js?timestamp=202002160840"></script>
+<!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/color/ColorField.js?timestamp=202002271630"></script>-->
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/customMap/js/wellmap.js?timestamp=202002271630"></script>
+<script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable-pro.full.min.js?timestamp=202002271630"></script>
 
 <!--<script src="https://open.ys7.com/sdk/js/1.3/ezuikit.js"></script>-->
-<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit.js?timestamp=202002160840"></script>
+<script type="text/javascript" src="<%=path%>/scripts/UIKit/ezuikit.js?timestamp=202002271630"></script>
 <!-- JavaScript （结束） -->

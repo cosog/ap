@@ -2667,8 +2667,8 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		StringBuffer bgtStrBuff = new StringBuffer();
 		if(calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1&&calculateResponseData.getFSDiagram()!=null){
-			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
+			int curvecount=calculateResponseData.getFSDiagram().getS().get(0).size();
+			int pointcount=calculateResponseData.getFSDiagram().getS().size();
 			bgtStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){
@@ -2959,8 +2959,8 @@ public class BaseDao extends HibernateDaoSupport {
 		CallableStatement cs=null;
 		StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
 		if(calculateResponseData.getCalculationStatus().getResultStatus()==1){
-			int curvecount=calculateResponseData.getFSDiagram().getF().get(0).size();
-			int pointcount=calculateResponseData.getFSDiagram().getSCNT();
+			int curvecount=calculateResponseData.getFSDiagram().getS().get(0).size();
+			int pointcount=calculateResponseData.getFSDiagram().getS().size();
 			pumpFSDiagramStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){

@@ -40,7 +40,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
-    <fmt:setBundle basename="config/messages" />
+    <!--<fmt:setBundle basename="config/messages" />-->
+    <script type="text/javascript" src="<%=path%>/app/locale.js?timestamp=202002160840"></script>
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
@@ -65,10 +66,14 @@
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-2.2.0.min.js"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js"></script>
+    
 
 	<script>
+	//document.getElementById("text111111").innerHTML=cosog.string.title;
+	//$("#text111111").html("<span>aaaa</span>");
 	
 	$(function () {
+		initDisplayInformation();
 		var getUserListURL="<%=path%>/userLoginManagerController/getUserList";
 		$.ajax({
 			url: getUserListURL,
@@ -87,6 +92,22 @@
 		});
 	});
 	
+	function initDisplayInformation(){
+		$("#login_userlogin").html(cosog.string.userlogin);
+		$("#login_loginInfo").html(cosog.string.loginInfo);
+		$("#login_title").html(cosog.string.title);
+		$("#login_myself").html(cosog.string.myself);
+		$("#userId").attr("placeholder", cosog.string.entername);
+		$("#userPwd").attr("placeholder", cosog.string.enterpwd);
+		$("#login_rememberpassword").html(cosog.string.rememberpassword);
+		$("#login_forgerpassword").html(cosog.string.forgerpassword);
+		$("#login_contact").html(cosog.string.contact);
+		$("#login_loginButton").html(cosog.string.login);
+		$("#login_copy").html(cosog.string.copy);
+		$("#login_link").text(cosog.string.linkshow);
+		$('#login_link').attr('href',cosog.string.linkaddress);
+	}
+	
 	function userSelectpickerChange(obj){
 		//alert(obj[obj.selectedIndex].value);
 		//alert(obj[obj.selectedIndex].dataset.password);
@@ -102,7 +123,7 @@
 		var get_name=$("#userId").val();
 		var get_pwd=$("#userPwd").val();
 		if(null!=get_name&&get_name!=""&&null!=get_pwd&&get_pwd!=""){
-			$("#errorName").html("<font style='color:#666666'><fmt:message key='login.logining'/></font>");
+			$("#errorName").html("<font style='color:#666666'>"+cosog.string.logining+"</font>");
 			$("#errorPwd").html("");
 			verifyFn();
 		}else if(null==get_name||get_name==""){
@@ -139,7 +160,7 @@
 	 };
 	 //自动登录
 	 function verifyAutoFn(selectUsername,selectUserpwd){
-		 	$("#errorName").html("<font style='color:#666666'><fmt:message key='login.logining'/></font>");
+		 	$("#errorName").html("<font style='color:#666666'>"+cosog.string.logining+"</font>");
 			$("#errorPwd").html("");
 			var getTime=new Date();
 			var getSeconds=getTime.getMinutes()+getTime.getSeconds();
@@ -187,14 +208,14 @@
 	// 登录账号处理
 	 function error_NameFn(){
 	     $("#userId").focus();
-	     $("#errorName").html("<fmt:message key='login.entername'/>");
+	     $("#errorName").html(cosog.string.entername);
 	     return false;
 	 }
 	 
 	 // 登录密码处理
 	 function error_PwdFn(){
 	     $("#userPwd").focus();
-	     $("#errorName").html("<fmt:message key='login.enterpwd'/>"); 
+	     $("#errorName").html(cosog.string.enterpwd); 
 	     return false;
 	 }
 	</script>
@@ -207,8 +228,7 @@
                 <div class="page-brand vertical-align-middle">
                     <ul class="list-icons hidden-sm" style="width:52%;float:right;line-height: 45px;">
                         <li style="text-indent:35px" >
-                        	  <span><fmt:message key="login.loginInfo" />
-                        	  </span>
+                        	  <span  id= "login_loginInfo"></span>
                         </li>
                     </ul>
                     <div class="hidden-sm">
@@ -227,20 +247,20 @@
                         <div class="visible-xs text-center">
                             Agile
                         </div>
-                        <h3 class="hidden-xs" style="text-align:left;margin-bottom:20px;font-size:22px;color:#009900"><fmt:message key="login.userlogin" /></h3>
-                        <h4 class="hidden-xs" style="text-align:left;margin-bottom:0px;font-size:17px;"><fmt:message key="login.title" /></h4> 
+                        <h3 class="hidden-xs" style="text-align:left;margin-bottom:20px;font-size:22px;color:#009900"><span  id= "login_userlogin"></span> </h3>
+                        <h4 class="hidden-xs" style="text-align:left;margin-bottom:0px;font-size:17px;"><span  id= "login_title"></span></h4>
                         <!-- <p class="hidden-xs"></p> -->
                         <form id="frmlogin" class="login-form fv-form fv-form-bootstrap" method="post">
 							<div class="form-group " >
 								<select  class="selectpicker form-control"  title="我自己" id="userSelectpicker" onchange="userSelectpickerChange(this)">
-									<option ><fmt:message key="login.myself" /></option>
+									<option ><span  id= "login_myself"></span></option>
 								</select>
 							</div>
                             <div class="form-group">
-                                <input type="text" id="userId" class="form-control" placeholder="<fmt:message key="login.entername" />" required="" value="<%=name%>">
+                                <input type="text" id="userId" class="form-control"  required="" value="<%=name%>">
                             </div>
                             <div class="form-group">
-                                <input type="password" id="userPwd" class="form-control" placeholder="<fmt:message key="login.enterpwd" />" required="" value="<%=password%>" onkeypress="if(event.keyCode==13){loginFn();}">
+                                <input type="password" id="userPwd" class="form-control" required="" value="<%=password%>" onkeypress="if(event.keyCode==13){loginFn();}">
                             </div>
                             <div class="form-group clearfix">
         						<div class="checkbox-custom checkbox-inline checkbox-primary pull-left">
@@ -248,24 +268,22 @@
             						<%if(flag!=null && flag.equals("1")) 
 					       				{ %> checked="checked"<%; %>value="1" <% ;%> <%}
 					  				else { %> value="0"<%;} %>>
-            						<label for="remember"><fmt:message key="login.rememberpassword" /></label>
+            						<label for="remember" id="login_rememberpassword"></label>
         						</div>
-        						<a class="pull-right collapsed" data-toggle="collapse" href="#forgetPassword" aria-expanded="false" aria-controls="forgetPassword">
-            						 <fmt:message key="login.forgerpassword" />
+        						<a class="pull-right collapsed" data-toggle="collapse" href="#forgetPassword" aria-expanded="false" aria-controls="forgetPassword" id="login_forgerpassword">
         						</a>
     						</div>
     						<div class="collapse" id="forgetPassword" aria-expanded="false" style="height: 0px;">
-                            	<div class="alert alert-warning alert-dismissible" role="alert">
-                                	<fmt:message key="login.contact" />
+                            	<div class="alert alert-warning alert-dismissible" role="alert" id="login_contact">
                             	</div>
                         	</div>
-                            <button type="button" class="btn btn-primary btn-block margin-top-30" onclick="loginFn();"><fmt:message key="login.login" /></button>
+                            <button type="button" class="btn btn-primary btn-block margin-top-30" id="login_loginButton" onclick="loginFn();"></button>
                             <span id="errorName" class="errorMsg"></span>
                         </form>
                     </div>
                 </div>
                 <footer class="page-copyright">
-                    <p><fmt:message key="login.copy"/><a href='<fmt:message key="login.linkaddress"/>' target='_blank'><fmt:message key="login.linkshow"/></a>  </p>
+                    <p><span id="login_copy"></span><a target='_blank' id='login_link'></a></p>
                 </footer>
             </div>
         </div>

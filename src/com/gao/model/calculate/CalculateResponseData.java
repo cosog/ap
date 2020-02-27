@@ -626,8 +626,10 @@ public  class CalculateResponseData {
 			    private float Stroke;
 
 			    private float SPM;
+			    
+			    private int CNT;
 
-			    private int SCNT;
+				private int SCNT;
 			    
 			    private int FCNT;
 			    
@@ -701,6 +703,14 @@ public  class CalculateResponseData {
 
 				public void setSPM(float sPM) {
 					SPM = sPM;
+				}
+				
+				public int getCNT() {
+					return CNT;
+				}
+
+				public void setCNT(int cNT) {
+					CNT = cNT;
 				}
 
 				public int getSCNT() {

@@ -432,7 +432,7 @@ public class EquipmentDriverServerTast {
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
-		//添加四化驱动配置
+		//添加蚌埠日月驱动配置
 		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();

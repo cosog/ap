@@ -265,27 +265,78 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 	
 	
 	public String exportWellProdInformationData(String wellName,String orgId,Page pager,String wellType) {
-		DataDictionary ddic = null;
-		String columns= "";
-		String sql="";
-		sql="select id,wellName,runTime,"
-				+ "crudeOilDensity,waterDensity,naturalGasRelativeDensity,saturationPressure,reservoirDepth,reservoirTemperature,"
-				+ "tubingPressure,casingPressure,wellHeadFluidTemperature,waterCut_W,productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
-				+ "pumpGrade,pumpBoreDiameter,plungerLength,"
-				+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
-				+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
-				+ "rodString,"
-				+ "anchoringStateName,netGrossRatio,to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime "
-				+ "from viw_rpc_productiondata_latest t "
-				+ "where t.org_id in("+orgId+")  "
-				+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
+		StringBuffer result_json = new StringBuffer();
+		String sql="select id,wellName,runTime,"
+			+ "crudeOilDensity,waterDensity,naturalGasRelativeDensity,saturationPressure,reservoirDepth,reservoirTemperature,"
+			+ "tubingPressure,casingPressure,wellHeadFluidTemperature,waterCut_W,productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
+			+ "pumpGrade,pumpBoreDiameter,plungerLength,"
+			+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
+			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
+			+ "rodString,"
+			+ "anchoringStateName,netGrossRatio,to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') "
+			+ "from viw_rpc_productiondata_latest t "
+			+ "where t.org_id in("+orgId+")  "
+			+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
 		if (StringManagerUtils.isNotNull(wellName)) {
 			sql+= " and t.wellname like '%" + wellName + "%'";
 		}
-			
+		
 		sql+= "order by t.sortnum, t.wellname";
 		
-		String json  = this.findExportExcelData(sql, columns, pager);
+		List<?> list = this.findCallSql(sql);
+		result_json.append("[");
+		
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String rodString=obj[25]+"";
+			String[] rodStringArr={};
+			if(StringManagerUtils.isNotNull(rodString)){
+				rodStringArr=rodString.split(";");
+			}
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"runTime\":\""+obj[2]+"\",");
+			result_json.append("\"crudeOilDensity\":\""+obj[3]+"\",");
+			result_json.append("\"waterDensity\":\""+obj[4]+"\",");
+			result_json.append("\"naturalGasRelativeDensity\":\""+obj[5]+"\",");
+			result_json.append("\"saturationPressure\":\""+obj[6]+"\",");
+			result_json.append("\"reservoirDepth\":\""+obj[7]+"\",");
+			result_json.append("\"reservoirTemperature\":\""+obj[8]+"\",");
+			result_json.append("\"tubingPressure\":\""+obj[9]+"\",");
+			result_json.append("\"casingPressure\":\""+obj[10]+"\",");
+			result_json.append("\"wellHeadFluidTemperature\":\""+obj[11]+"\",");
+			result_json.append("\"waterCut_W\":\""+obj[12]+"\",");
+			result_json.append("\"productionGasOilRatio\":\""+obj[13]+"\",");
+			result_json.append("\"producingfluidLevel\":\""+obj[14]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[15]+"\",");
+			result_json.append("\"pumpGrade\":\""+obj[16]+"\",");
+			result_json.append("\"pumpBoreDiameter\":\""+obj[17]+"\",");
+			result_json.append("\"plungerLength\":\""+obj[18]+"\",");
+			result_json.append("\"barrelLength\":\""+obj[19]+"\",");
+			result_json.append("\"barrelSeries\":\""+obj[20]+"\",");
+			result_json.append("\"rotorDiameter\":\""+obj[21]+"\",");
+			result_json.append("\"QPR\":\""+obj[22]+"\",");
+			result_json.append("\"tubingStringInsideDiameter\":\""+obj[23]+"\",");
+			result_json.append("\"casingStringInsideDiameter\":\""+obj[24]+"\",");
+			
+			for(int j=0;j<rodStringArr.length;j++){
+				String[] everyRod=rodStringArr[j].split(",");
+				int arrLength=everyRod.length;
+				result_json.append("\"rodGrade"+(j+1)+"\":\""+(arrLength>=1?everyRod[0]:"")+"\",");
+				result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+(arrLength>=2?everyRod[1]:"")+"\",");
+				result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+(arrLength>=3?everyRod[2]:"")+"\",");
+				result_json.append("\"rodLength"+(j+1)+"\":\""+(arrLength>=4?everyRod[3]:"")+"\",");
+			}
+			
+			result_json.append("\"anchoringStateName\":\""+obj[26]+"\",");
+			result_json.append("\"netGrossRatio\":\""+obj[27]+"\",");
+			result_json.append("\"acquisitionTime\":\""+obj[28]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json = result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		String json=result_json.toString().replaceAll("null", "");
 		return json;
 	}
 	

@@ -1,6 +1,6 @@
 // ////// 操作公用方法//////////////
 var sfycjhh=true;
-copyright=cosog.string.copy+"&nbsp;<a href='"+cosog.string.address+"' target='_blank'>"+cosog.string.cosog+"</a> ";
+copyright=cosog.string.copy+"&nbsp;<a href='"+cosog.string.linkaddress+"' target='_blank'>"+cosog.string.linkshow+"</a> ";
 graghMinWidth = 300;
 defaultWellComboxSize=10000;
 comboxPagingStatus=0;//0-不分页  大于0分页

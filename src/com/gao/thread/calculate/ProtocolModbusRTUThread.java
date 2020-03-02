@@ -737,6 +737,17 @@ public class ProtocolModbusRTUThread extends Thread{
         					
         					String diagramAcquisitionTime="1970-01-01 08:00:00";
         					
+        					String prodTableName="tbl_rpc_productiondata_latest";
+    						String discreteTableName="tbl_rpc_discrete_latest";
+    						if(clientUnit.unitDataList.get(i).getLiftingType()>=400&&clientUnit.unitDataList.get(i).getLiftingType()<500){//螺杆泵井
+    							prodTableName="tbl_pcp_productiondata_latest";
+        						discreteTableName="pcp_rpc_discrete_latest";
+    						}
+    						boolean hasProData=false;
+    						String updateProdData="update "+prodTableName+" t set t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+    						String updateDailyData="";
+    						String updateDiscreteData="update "+discreteTableName+" t set t.commStatus=1,t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+        					
         					clientUnit.unitDataList.get(i).getAcquisitionData().setAcquisitionTime(AcquisitionTime);
         					//如果是抽油机读取功图点数、采集时间、冲次、冲程数据 
         					if(clientUnit.unitDataList.get(i).getLiftingType()>=200&&clientUnit.unitDataList.get(i).getLiftingType()<300){
@@ -758,6 +769,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								acquisitionCycle=StringManagerUtils.getUnsignedShort(recByte, 3);
         								clientUnit.unitDataList.get(i).getAcquisitionData().setAcquisitionCycle(acquisitionCycle);
+        								updateDiscreteData+=",t.acqCycle_Diagram="+acquisitionCycle;
         							}
         						}
         						//读取功图设置点数
@@ -884,10 +896,14 @@ public class ProtocolModbusRTUThread extends Thread{
         								spmAutoControl=(short) (0x0000 | (0x02 & recByte[4]));  
         								balanceFrontLimit=(short) (0x0000 | (0x04 & recByte[4])>>2);  
         								balanceAfterLimit=(short) (0x0000 | (0x08 & recByte[4])>>3);  
-                    					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAutoControl(balanceAutoControl);
-                    					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAutoControl(balanceAutoControl);
-                    					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAutoControl(balanceAutoControl);
-                    					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAutoControl(balanceAutoControl);
+        								clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAutoControl(balanceAutoControl);
+                    					clientUnit.unitDataList.get(i).getAcquisitionData().setSpmAutoControl(spmAutoControl);
+                    					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceFrontLimit(balanceFrontLimit);
+                    					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAfterLimit(balanceAfterLimit);
+                    					updateDiscreteData+=",t.balanceAutoControl="+balanceAutoControl;
+                    					updateDiscreteData+=",t.spmAutoControl="+spmAutoControl;
+                    					updateDiscreteData+=",t.balanceFrontLimit="+balanceFrontLimit;
+                    					updateDiscreteData+=",t.balanceAfterLimit="+balanceAfterLimit;
         							}
         						}
         						
@@ -909,6 +925,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceControlMode=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceControlMode(balanceControlMode);
+                    					updateDiscreteData+=",t.balanceControlMode="+balanceControlMode;
         							}
         						}
         						
@@ -930,6 +947,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceCalculateMode=StringManagerUtils.getUnsignedShort(recByte,3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCalculateMode(balanceCalculateMode);
+                    					updateDiscreteData+=",t.balanceCalculateMode="+balanceCalculateMode;
         							}
         						}
         						
@@ -951,10 +969,11 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceAwayTime=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAwayTime(balanceAwayTime);
+                    					updateDiscreteData+=",t.balanceAwayTime="+balanceAwayTime;
         							}
         						}
         						
-        						//重心接近支点每拍调节时间
+        						//重心接近支点调节时间
         						if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getBalanceCloseTime()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime()!=null){
         							wellReaded=true;
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
@@ -972,6 +991,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceCloseTime=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCloseTime(balanceCloseTime);
+                    					updateDiscreteData+=",t.balanceCloseTime="+balanceCloseTime;
         							}
         						}
         						
@@ -993,6 +1013,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceAwayTimePerBeat=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAwayTimePerBeat(balanceAwayTimePerBeat);
+                    					updateDiscreteData+=",t.balanceAwayTimePerBeat="+balanceAwayTimePerBeat;
         							}
         						}
         						
@@ -1014,6 +1035,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceCloseTimePerBeat=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCloseTimePerBeat(balanceCloseTimePerBeat);
+                    					updateDiscreteData+=",t.balanceCloseTimePerBeat="+balanceCloseTimePerBeat;
         							}
         						}
         						
@@ -1035,6 +1057,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceStrokeCount=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceStrokeCount(balanceStrokeCount);
+                    					updateDiscreteData+=",t.balanceStrokeCount="+balanceStrokeCount;
         							}
         						}
         						
@@ -1056,6 +1079,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceOperationUpLimit=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceOperationUpLimit(balanceOperationUpLimit);
+                    					updateDiscreteData+=",t.balanceOperationUpLimit="+balanceOperationUpLimit;
         							}
         						}
         						
@@ -1077,6 +1101,7 @@ public class ProtocolModbusRTUThread extends Thread{
         							}else{
         								balanceOperationDownLimit=StringManagerUtils.getUnsignedShort(recByte, 3);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceOperationDownLimit(balanceOperationDownLimit);
+                    					updateDiscreteData+=",t.balanceOperationDownLimit="+balanceOperationDownLimit;
         							}
         						}
         					}	
@@ -1119,6 +1144,9 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								TubingPressure=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setTubingPressure(TubingPressure);
+    								updateDiscreteData+=",t.TubingPressure="+TubingPressure;
+    								updateProdData+=",t.tubingPressure="+TubingPressure;
+    								hasProData=true;
     							}
         					}
         					//读取套压
@@ -1139,6 +1167,9 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								CasingPressure=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCasingPressure(CasingPressure);
+    								updateDiscreteData+=",t.CasingPressure="+CasingPressure;
+    								updateProdData+=",t.casingPressure="+CasingPressure;
+    								hasProData=true;
     							}
         					}
         					//读取回压
@@ -1159,6 +1190,9 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								BackPressure=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setBackPressure(BackPressure);
+    								updateDiscreteData+=",t.BackPressure="+BackPressure;
+    								updateProdData+=",t.backPressure="+BackPressure;
+    								hasProData=true;
     							}
         					}
         					//读取井口油温
@@ -1179,6 +1213,9 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								WellHeadFluidTemperature=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWellHeadFluidTemperature(WellHeadFluidTemperature);
+    								updateDiscreteData+=",t.WellHeadFluidTemperature="+WellHeadFluidTemperature;
+    								updateProdData+=",t.wellHeadFluidTemperature="+WellHeadFluidTemperature;
+    								hasProData=true;
     							}
         					}
         					//读取动液面
@@ -1199,6 +1236,8 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								ProducingfluidLevel=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setProducingfluidLevel(ProducingfluidLevel);
+    								updateProdData+=",t.producingfluidLevel="+ProducingfluidLevel;
+    								hasProData=true;
     							}
         					}
         					//读取含水率
@@ -1219,6 +1258,8 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								WaterCut=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWaterCut(WaterCut);
+    								updateProdData+=",t.waterCut_W="+WaterCut;
+    								hasProData=true;
     							}
         					}
         					
@@ -1241,6 +1282,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								CurrentA=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentA(CurrentA);
+    								updateDiscreteData+=",t.Ia="+CurrentA;
     							}
         					}
         					//读取B相电流
@@ -1261,6 +1303,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								CurrentB=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentB(CurrentB);
+    								updateDiscreteData+=",t.Ib="+CurrentB;
     							}
         					}
         					//读取C相电流
@@ -1281,6 +1324,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								CurrentC=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentC(CurrentC);
+    								updateDiscreteData+=",t.Ic="+CurrentC;
     							}
         					}
         					//读取A相电压
@@ -1306,6 +1350,7 @@ public class ProtocolModbusRTUThread extends Thread{
     									VoltageA=500;
     								}
     								clientUnit.unitDataList.get(i).getAcquisitionData().setVoltageA(VoltageA);
+    								updateDiscreteData+=",t.Va="+VoltageA;
     							}
         					}
         					//读取B相电压
@@ -1331,6 +1376,7 @@ public class ProtocolModbusRTUThread extends Thread{
     									VoltageB=500;
     								}
     								clientUnit.unitDataList.get(i).getAcquisitionData().setVoltageB(VoltageB);
+    								updateDiscreteData+=",t.Vb="+VoltageB;
     							}
         					}
         					//读取C相电压
@@ -1356,6 +1402,7 @@ public class ProtocolModbusRTUThread extends Thread{
     									VoltageC=500;
     								}
     								clientUnit.unitDataList.get(i).getAcquisitionData().setVoltageC(VoltageC);
+    								updateDiscreteData+=",t.Vc="+VoltageC;
     							}
         					}
         					//读取有功功耗
@@ -1416,6 +1463,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								ActivePower=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setActivePower(ActivePower);
+    								updateDiscreteData+=",t.wattSum="+ActivePower;
     							}
         					}
         					//读取无功功率
@@ -1436,6 +1484,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								ReactivePower=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReactivePower(ReactivePower);
+    								updateDiscreteData+=",t.varSum="+ReactivePower;
     							}
         					}
         					//读取反向功率
@@ -1456,6 +1505,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								ReversePower=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReversePower(ReversePower);
+    								updateDiscreteData+=",t.ReversePower="+ReversePower;
     							}
         					}
         					//读取功率因数
@@ -1476,6 +1526,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								PowerFactor=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setPowerFactor(PowerFactor);
+    								updateDiscreteData+=",t.pfSum="+PowerFactor;
     							}
         					}
         					
@@ -1498,6 +1549,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								SetFrequency=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setSetFrequency(SetFrequency);
+    								updateDiscreteData+=",t.frequencySetValue="+SetFrequency;
     							}
         					}
         					//读取变频运行频率
@@ -1518,6 +1570,7 @@ public class ProtocolModbusRTUThread extends Thread{
     							}else{
     								RunFrequency=StringManagerUtils.getFloat(recByte, 3);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setRunFrequency(RunFrequency);
+    								updateDiscreteData+=",t.frequencyRunValue="+RunFrequency;
     							}
         					}
         					
@@ -1679,63 +1732,8 @@ public class ProtocolModbusRTUThread extends Thread{
         						Connection conn=OracleJdbcUtis.getConnection();
         						Statement stmt=null;
         						
-        						String updateProdData="update tbl_rpc_productiondata_latest t set t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
-        						boolean hasProData=false;
-            					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getTubingPressure()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getTubingPressure().getAddress()>40000){
-            						hasProData=true;
-            						updateProdData+=",t.tubingPressure="+TubingPressure;
-            					}
-            					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getCasingPressure()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCasingPressure().getAddress()>40000){
-            						hasProData=true;
-            						updateProdData+=",t.casingPressure="+CasingPressure;
-            					}
-            					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getBackPressure()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBackPressure().getAddress()>40000){
-            						hasProData=true;
-            						updateProdData+=",t.backPressure="+BackPressure;
-            					}
-            					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getWellHeadFluidTemperature()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getWellHeadFluidTemperature().getAddress()>40000){
-            						hasProData=true;
-            						updateProdData+=",t.wellHeadFluidTemperature="+WellHeadFluidTemperature;
-            					}
-            					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getWaterCut()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getWaterCut().getAddress()>40000){
-            						hasProData=true;
-            						updateProdData+=",t.waterCut_W="+WaterCut;
-            					}
-            					if(clientUnit.unitDataList.get(i).getAcquisitionUnitData().getProducingfluidLevel()==1&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getProducingfluidLevel().getAddress()>40000){
-            						hasProData=true;
-            						updateProdData+=",t.producingfluidLevel="+ProducingfluidLevel;
-            					}
             					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t007.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
-            					
-            					String updateDailyData="";
-        						String updateDiscreteData="update tbl_rpc_discrete_latest t set t.commStatus=1,t.acqCycle_Diagram="+acquisitionCycle+",t.frequencySetValue="+SetFrequency+",t.frequencyRunValue="+RunFrequency+","
-        								+ "t.TubingPressure="+TubingPressure+",t.CasingPressure="+CasingPressure+",t.BackPressure="+BackPressure+",t.WellHeadFluidTemperature="+WellHeadFluidTemperature+","
-        								+ "t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')"
-        								+ " ,t.Ia= "+CurrentA+""
-        								+ " ,t.Ib= "+CurrentB+""
-        								+ " ,t.Ic= "+CurrentC+""
-        								+ " ,t.Va= "+VoltageA+""
-        								+ " ,t.Vb= "+VoltageB+""
-        								+ " ,t.Vc= "+VoltageC+""
-        								+ " ,t.wattSum= "+ActivePower+""
-        								+ " ,t.varSum= "+ReactivePower+""
-        								+ " ,t.ReversePower= "+ReversePower+""
-        								+ " ,t.pfSum= "+PowerFactor+""
-                						
-                						+ " ,t.balanceAutoControl= "+balanceAutoControl
-                						+ " ,t.spmAutoControl= "+spmAutoControl
-                						+ " ,t.balanceFrontLimit= "+balanceFrontLimit
-                						+ " ,t.balanceAfterLimit= "+balanceAfterLimit
-                						+ " ,t.balanceControlMode= "+balanceControlMode
-                						+ " ,t.balanceCalculateMode= "+balanceCalculateMode
-                						+ " ,t.balanceAwayTime= "+balanceAwayTime
-                						+ " ,t.balanceCloseTime= "+balanceCloseTime
-                						+ " ,t.balanceAwayTimePerBeat= "+balanceAwayTimePerBeat
-                						+ " ,t.balanceCloseTimePerBeat= "+balanceCloseTimePerBeat
-                						+ " ,t.balanceStrokeCount= "+balanceStrokeCount
-                						+ " ,t.balanceOperationUpLimit= "+balanceOperationUpLimit
-                						+ " ,t.balanceOperationDownLimit= "+balanceOperationDownLimit;
-                						
+            						
         						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
         							updateDiscreteData+=" ,t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
         								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
@@ -1863,7 +1861,7 @@ public class ProtocolModbusRTUThread extends Thread{
             						StringBuffer elecBuff=new StringBuffer();
             						proParamsBuff.append("\"ProductionParameter\": {");
             						elecBuff.append("\"Electric\": {");
-            						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"AcquisitionTime\":\""+AcquisitionTime+"\",");
+            						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"LiftingType\":"+clientUnit.unitDataList.get(i).getLiftingType()+",\"AcquisitionTime\":\""+AcquisitionTime+"\",");
             						
             						
                 					proParamsBuff.append("\"TubingPressure\":"+TubingPressure+",");
@@ -1916,7 +1914,7 @@ public class ProtocolModbusRTUThread extends Thread{
             						recvPBuff.append("\"P\": [");
             						proParamsBuff.append("\"ProductionParameter\": {");
             						elecBuff.append("\"Electric\": {");
-            						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"AcquisitionTime\":\""+diagramAcquisitionTime+"\",");
+            						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"LiftingType\":"+clientUnit.unitDataList.get(i).getLiftingType()+",\"AcquisitionTime\":\""+diagramAcquisitionTime+"\",");
             						
             						
                 					proParamsBuff.append("\"TubingPressure\":"+TubingPressure+",");

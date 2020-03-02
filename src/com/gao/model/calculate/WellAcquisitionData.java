@@ -8,9 +8,11 @@ public class WellAcquisitionData {
 	
 	private Integer wellId;
 	
+	private Integer LiftingType;
+	
 	private Integer ProdDataId;
-
-    private String AcquisitionTime;
+	
+	private String AcquisitionTime;
 
     private ProductionParameter ProductionParameter;
 
@@ -311,6 +313,13 @@ public class WellAcquisitionData {
 	}
 	public void setWellId(Integer wellId) {
 		this.wellId = wellId;
+	}
+	
+	public Integer getLiftingType() {
+		return LiftingType;
+	}
+	public void setLiftingType(Integer liftingType) {
+		LiftingType = liftingType;
 	}
 
 }

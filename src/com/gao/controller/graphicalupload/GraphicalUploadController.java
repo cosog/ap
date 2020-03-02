@@ -857,6 +857,7 @@ public class GraphicalUploadController extends BaseController {
 	@RequestMapping("/saveRTUAcquisitionData")
 	public String saveRTUAcquisitionData() throws Exception {
 		String FSdiagramCalculateHttpServerURL[]=Config.getCalculateHttpServerURL().split(",");
+		String ScrewPumpCalculateHttpServerURL[]=Config.getScrewPumpCalculateHttpServerURL().split(",");
 		Gson gson=new Gson();
 		String totalDate = StringManagerUtils.getCurrentTime();
 		String totalUrl=Config.getProjectAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
@@ -865,11 +866,19 @@ public class GraphicalUploadController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<WellAcquisitionData>() {}.getType();
 		WellAcquisitionData wellAcquisitionData = gson.fromJson(data, type);
 		if(wellAcquisitionData!=null){
-			String requestData=raphicalUploadService.getFsdiagramCalculateRequestData(wellAcquisitionData);
-			String responseData=StringManagerUtils.sendPostMethod(FSdiagramCalculateHttpServerURL[0], requestData,"utf-8");
+			String requestData="";
+			String[] calculateHttpServerURL=null;
+			if(wellAcquisitionData.getLiftingType()>=400 && wellAcquisitionData.getLiftingType()<400){//螺杆泵
+				requestData=raphicalUploadService.getScrewPumpRPMCalculateRequestData(wellAcquisitionData);
+				calculateHttpServerURL=ScrewPumpCalculateHttpServerURL;
+			}else if(wellAcquisitionData.getLiftingType()>=200 && wellAcquisitionData.getLiftingType()<300){//抽油机
+				requestData=raphicalUploadService.getFSdiagramCalculateRequestData(wellAcquisitionData);
+				calculateHttpServerURL=FSdiagramCalculateHttpServerURL;
+			}
+			String responseData=StringManagerUtils.sendPostMethod(calculateHttpServerURL[0], requestData,"utf-8");
 			type = new TypeToken<CalculateResponseData>() {}.getType();
 			CalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
-			raphicalUploadService.saveFSDiagramAndCalculateData(wellAcquisitionData,calculateResponseData);
+			raphicalUploadService.saveAcquisitionAndCalculateData(wellAcquisitionData,calculateResponseData);
 			if(calculateResponseData.getCalculationStatus().getResultStatus()==1){
 				totalUrl+="&wellId="+wellAcquisitionData.getWellId();
 				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");

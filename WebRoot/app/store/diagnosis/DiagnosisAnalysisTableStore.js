@@ -58,13 +58,13 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		
     		dataStr+="{\"item\":\"泵入口压力(MPa)\",\"itemCode\":\"pumpintakep\",\"value\":\""+get_rawData.pumpintakep+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵入口温度(℃)\",\"itemCode\":\"pumpintaket\",\"value\":\""+get_rawData.pumpintaket+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵入口就地气液比(m^3/t)\",\"itemCode\":\"pumpintakegol\",\"value\":\""+get_rawData.pumpintakegol+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"泵入口就地气液比(m^3/m^3)\",\"itemCode\":\"pumpintakegol\",\"value\":\""+get_rawData.pumpintakegol+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵入口液体粘度(mPa·s)\",\"itemCode\":\"pumpinletvisl\",\"value\":\""+get_rawData.pumpinletvisl+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵入口原油体积系数\",\"itemCode\":\"pumpinletbo\",\"value\":\""+get_rawData.pumpinletbo+"\",\"curve\":\"\"},";
     		
     		dataStr+="{\"item\":\"泵出口压力(MPa)\",\"itemCode\":\"pumpoutletp\",\"value\":\""+get_rawData.pumpoutletp+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵出口温度(℃)\",\"itemCode\":\"pumpoutlett\",\"value\":\""+get_rawData.pumpoutlett+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵出口就地气液比(m^3/t)\",\"itemCode\":\"pumpOutletGol\",\"value\":\""+get_rawData.pumpOutletGol+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"泵出口就地气液比(m^3/m^3)\",\"itemCode\":\"pumpOutletGol\",\"value\":\""+get_rawData.pumpOutletGol+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵出口液体粘度(mPa·s)\",\"itemCode\":\"pumpoutletvisl\",\"value\":\""+get_rawData.pumpoutletvisl+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵出口原油体积系数\",\"itemCode\":\"pumpoutletbo\",\"value\":\""+get_rawData.pumpoutletbo+"\",\"curve\":\"\"}";
     		

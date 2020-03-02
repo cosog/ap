@@ -2739,7 +2739,7 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(27,calculateResponseData.getFSDiagram().getWattDegreeBalance());
 				//工况代码
 				cs.setInt(28,calculateResponseData.getCalculationStatus().getResultCode());
-				//充满叙述
+				//充满系数
 				cs.setFloat(29,calculateResponseData.getFSDiagram().getFullnessCoefficient());
 				//上下理论载荷线
 				cs.setFloat(30,calculateResponseData.getFSDiagram().getUpperLoadLine());
@@ -2864,6 +2864,104 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(78,"");
 			cs.setString(79,"");
 			cs.setString(80,"");
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
+	public Boolean saveScrewPumpRPMAndCalculateData(WellAcquisitionData wellAcquisitionData,CalculateResponseData calculateResponseData) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_pcp_rpm("
+					+ "?,?,"
+					+ "?,?,"
+					+ "?,?"
+					+ "?,"
+					+ "?,?,?,?,?,?,?,"
+					+ "?,?,?,?"
+					+ "?,?,?,"
+					+ "?,?,?,?,?,?,?,?,?,?,"
+					+ "?)}");
+			cs.setString(1, wellAcquisitionData.getWellName());
+			cs.setString(2,wellAcquisitionData.getAcquisitionTime());
+			
+			cs.setFloat(3,wellAcquisitionData.getScrewPump().getRPM());
+			cs.setFloat(4,wellAcquisitionData.getScrewPump().getTorque());
+			
+			cs.setInt(5,wellAcquisitionData.getProdDataId());//生产数据Id
+			cs.setInt(6,calculateResponseData==null?0:calculateResponseData.getCalculationStatus().getResultStatus());//计算标志
+			if(calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1){//如果计算成功
+				//工况代码
+				cs.setInt(7,calculateResponseData.getCalculationStatus().getResultCode());
+				//产量
+				cs.setFloat(8,calculateResponseData.getProductionParameter().getTheoreticalProduction());
+				cs.setFloat(9,calculateResponseData.getProductionParameter().getLiquidVolumetricProduction());
+				cs.setFloat(10,calculateResponseData.getProductionParameter().getOilVolumetricProduction());
+				cs.setFloat(11,calculateResponseData.getProductionParameter().getWaterVolumetricProduction());
+				cs.setFloat(12,calculateResponseData.getProductionParameter().getLiquidWeightProduction());
+				cs.setFloat(13,calculateResponseData.getProductionParameter().getOilWeightProduction());
+				cs.setFloat(14,calculateResponseData.getProductionParameter().getWaterWeightProduction());
+				//系统效率
+				cs.setFloat(15,calculateResponseData.getSystemEfficiency().getMotorInputActivePower());
+				cs.setFloat(16,calculateResponseData.getSystemEfficiency().getWaterPower());
+				cs.setFloat(17,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
+				cs.setFloat(18,calculateResponseData.getSystemEfficiency().getPowerConsumptionPerTHM());
+				//泵效
+				cs.setFloat(19,calculateResponseData.getPumpEfficiency().getPumpEff1());
+				cs.setFloat(20,calculateResponseData.getPumpEfficiency().getPumpEff2());
+				cs.setFloat(21,calculateResponseData.getPumpEfficiency().getPumpEff());
+				//泵入口出口参数
+				cs.setFloat(22,calculateResponseData.getProductionParameter().getPumpIntakeP());
+				cs.setFloat(23,calculateResponseData.getProductionParameter().getPumpIntakeT());
+				cs.setFloat(24,calculateResponseData.getProductionParameter().getPumpIntakeGOL());
+				cs.setFloat(25,calculateResponseData.getProductionParameter().getPumpIntakeVisl());
+				cs.setFloat(26,calculateResponseData.getProductionParameter().getPumpIntakeBo());
+				cs.setFloat(27,calculateResponseData.getProductionParameter().getPumpOutletP());
+				cs.setFloat(28,calculateResponseData.getProductionParameter().getPumpOutletT());
+				cs.setFloat(29,calculateResponseData.getProductionParameter().getPumpOutletGOL());
+				cs.setFloat(30,calculateResponseData.getProductionParameter().getPumpOutletVisl());
+				cs.setFloat(31,calculateResponseData.getProductionParameter().getPumpOutletBo());
+				//杆参数
+				cs.setString(32,calculateResponseData.getRodCalData());
+			}else{
+				cs.setString(7,"");
+				cs.setString(8,"");
+				cs.setString(9,"");
+				cs.setString(10,"");
+				
+				cs.setString(11,"");
+				cs.setString(12,"");
+				cs.setString(13,"");
+				cs.setString(14,"");
+				cs.setString(15,"");
+				cs.setString(16,"");
+				cs.setString(17,"");
+				cs.setString(18,"");
+				cs.setString(19,"");
+				cs.setString(20,"");
+				
+				cs.setString(21,"");
+				cs.setString(22,"");
+				cs.setString(23,"");
+				cs.setString(24,"");
+				cs.setString(25,"");
+				cs.setString(26,"");
+				cs.setString(27,"");
+				cs.setString(28,"");
+				cs.setString(29,"");
+				cs.setString(30,"");
+				cs.setString(31,"");
+				cs.setString(32,"");
+			}
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

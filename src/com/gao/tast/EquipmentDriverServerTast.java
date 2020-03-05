@@ -419,25 +419,36 @@ public class EquipmentDriverServerTast {
 		String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
+		if(BeeTechRTUDrive.getPort()>0){
+			equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
+		}
+		
 		//添加A11驱动配置
 		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
+		if(CNPCStandardDriver.getPort()>0){
+			equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
+		}
+		
 		//添加四化驱动配置
 		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
+		if(SinoepcStandardDriver.getPort()>0){
+			equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
+		}
+		
 		//添加蚌埠日月驱动配置
 		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
+		if(SunMoonStandardDriver.getPort()>0){
+			equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
+		}
 	}
 	
 	@SuppressWarnings("static-access")

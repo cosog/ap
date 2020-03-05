@@ -208,112 +208,6 @@ Ext.define('AP.view.electricAnalysis.RealtimeDetailsInfoView', {
                   hidden: true
               }],
                 items: [{
-                	title:'离散数据',
-                	id: 'electricAnalysisRealtimeDetailsDiscretePanel_Id',
-                    border: false,
-                    layout: 'border',
-                    items:[{
-                    	region: 'center',
-                        id:'electricAnalysisRealtimeDiscreteDetailsTable_Id',
-                        title:'数据列表',
-                        layout: 'fit'
-                    },{
-                    	region: 'east',
-                    	title:'数据详情',
-                        width: '22%',
-                        border: false,
-                        collapsible: true, // 是否可折叠
-                        collapsed:false,//是否折叠
-                        split: true, // 竖折叠条
-                        layout: {
-                            type: 'hbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
-                        items: [{
-                        	border: false,
-                            flex: 2,
-                            margin: '0 0 0 0',
-                            padding: 0,
-                            autoScroll:true,
-                            scrollable: true,
-                            hidden:true
-                        },{
-                        	xtype: 'tabpanel',
-                            id: 'ElectricAnalysisRealtimeDiscreteDetailsRightTabPanel_Id',
-                            flex: 1,
-                            activeTab: 0,
-                            header: false,
-                            collapsible: true,
-                            split: true,
-                            collapseDirection: 'right',
-                            border: true,
-                            tabPosition: 'top',
-                            items: [{
-                                    title: '分析',
-                                    layout: 'border',
-                                    items:[
-                                    	{
-                                    		region: 'center',
-                                    		id: 'ElectricAnalysisRealtimeDiscreteDetailsRightAnalysisPanel_Id',
-                                            border: false,
-                                            layout: 'fit',
-                                            height:'60%'
-//                                            collapseDirection:'top'
-                                    	},{
-                                    		region: 'south',
-                                    		height:'40%',
-                                    		border: false,
-                                    		header: false,
-                                            collapsible:true,
-                                            split: true,
-                                    		xtype:'form',
-                                    		layout: 'auto',
-                                    		items: [{
-                                    			xtype:'label',
-                                    			text:'运行区间:',
-                                    			margin:'0 0 20 0'
-                                    		},{
-                                            	xtype:'textareafield',
-                                            	id:'ElectricAnalysisRealtimeDiscreteDetailsRightRunRangeTextArea_Id',
-                                            	grow:true,
-                                            	width:'99.9%',
-                                                height: '45%',
-                                                readOnly:true
-                                            },{
-                                    			xtype:'label',
-                                    			text:'工况累计:',
-                                    			margin:'200 0 20 0'
-                                    		},{
-                                            	xtype:'textareafield',
-                                            	id:'ElectricAnalysisRealtimeDiscreteDetailsRightResultCodeTextArea_Id',
-                                            	grow:true,
-                                            	width:'99.9%',
-                                            	height: '45%',
-                                                readOnly:true
-                                            }]
-                                    	}
-                                    ]
-                            }, {
-                                    title: '采集',
-                                    id: 'ElectricAnalysisRealtimeDiscreteDetailsRightAcqPanel_Id',
-                                    border: false,
-                                    layout: 'fit',
-                                    autoScroll: true,
-                                    scrollable: true
-                            }]
-                        }],
-                        listeners: {
-                            beforeCollapse: function (panel, eOpts) {
-                                
-                            },
-                            expand: function (panel, eOpts) {
-                                
-                            }
-                        }
-                    }]
-                    
-                },{
                 	title:'曲线数据',
                 	id: 'electricAnalysisRealtimeDetailsDiagramPanel_Id',
                     border: false,
@@ -505,11 +399,125 @@ Ext.define('AP.view.electricAnalysis.RealtimeDetailsInfoView', {
                             }
                         }
                     }]
+                },{
+                	title:'离散数据',
+                	id: 'electricAnalysisRealtimeDetailsDiscretePanel_Id',
+                    border: false,
+                    layout: 'border',
+                    items:[{
+                    	region: 'center',
+                        id:'electricAnalysisRealtimeDiscreteDetailsTable_Id',
+                        title:'数据列表',
+                        layout: 'fit'
+                    },{
+                    	region: 'east',
+                    	title:'数据详情',
+                        width: '22%',
+                        border: false,
+                        collapsible: true, // 是否可折叠
+                        collapsed:false,//是否折叠
+                        split: true, // 竖折叠条
+                        layout: {
+                            type: 'hbox',
+                            pack: 'start',
+                            align: 'stretch'
+                        },
+                        items: [{
+                        	border: false,
+                            flex: 2,
+                            margin: '0 0 0 0',
+                            padding: 0,
+                            autoScroll:true,
+                            scrollable: true,
+                            hidden:true
+                        },{
+                        	xtype: 'tabpanel',
+                            id: 'ElectricAnalysisRealtimeDiscreteDetailsRightTabPanel_Id',
+                            flex: 1,
+                            activeTab: 0,
+                            header: false,
+                            collapsible: true,
+                            split: true,
+                            collapseDirection: 'right',
+                            border: true,
+                            tabPosition: 'top',
+                            items: [{
+                                    title: '分析',
+                                    layout: 'border',
+                                    items:[
+                                    	{
+                                    		region: 'center',
+                                    		id: 'ElectricAnalysisRealtimeDiscreteDetailsRightAnalysisPanel_Id',
+                                            border: false,
+                                            layout: 'fit',
+                                            height:'60%'
+//                                            collapseDirection:'top'
+                                    	},{
+                                    		region: 'south',
+                                    		height:'40%',
+                                    		border: false,
+                                    		header: false,
+                                            collapsible:true,
+                                            split: true,
+                                    		xtype:'form',
+                                    		layout: 'auto',
+                                    		items: [{
+                                    			xtype:'label',
+                                    			text:'运行区间:',
+                                    			margin:'0 0 20 0'
+                                    		},{
+                                            	xtype:'textareafield',
+                                            	id:'ElectricAnalysisRealtimeDiscreteDetailsRightRunRangeTextArea_Id',
+                                            	grow:true,
+                                            	width:'99.9%',
+                                                height: '45%',
+                                                readOnly:true
+                                            },{
+                                    			xtype:'label',
+                                    			text:'工况累计:',
+                                    			margin:'200 0 20 0'
+                                    		},{
+                                            	xtype:'textareafield',
+                                            	id:'ElectricAnalysisRealtimeDiscreteDetailsRightResultCodeTextArea_Id',
+                                            	grow:true,
+                                            	width:'99.9%',
+                                            	height: '45%',
+                                                readOnly:true
+                                            }]
+                                    	}
+                                    ]
+                            }, {
+                                    title: '采集',
+                                    id: 'ElectricAnalysisRealtimeDiscreteDetailsRightAcqPanel_Id',
+                                    border: false,
+                                    layout: 'fit',
+                                    autoScroll: true,
+                                    scrollable: true
+                            }]
+                        }],
+                        listeners: {
+                            beforeCollapse: function (panel, eOpts) {
+                                
+                            },
+                            expand: function (panel, eOpts) {
+                                
+                            }
+                        }
+                    }]
+                    
                 }],
                 listeners: {
                 	tabchange: function (tabPanel, newCard, oldCard,obj) {
                 		if(newCard.id=="electricAnalysisRealtimeDetailsDiscretePanel_Id"){
-                    		Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetails_Id").getStore().loadPage(1);
+                			var gridPanel=Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetails_Id");
+                			if(isNotVal(gridPanel)){
+                				gridPanel.getStore().loadPage(1);
+                    		}else{
+                    			Ext.create('AP.store.electricAnalysis.ElectricAnalysisRealtimeDetailsListStore');
+                    		}
+                			
+                			
+                    		
                     	}else if(newCard.id=="electricAnalysisRealtimeDetailsDiagramPanel_Id"){
                     		var ElectricAnalysisRealtimeDetailsDiagramTable=Ext.getCmp("ElectricAnalysisRealtimeDiagramDetails_Id");
                     		if(isNotVal(ElectricAnalysisRealtimeDetailsDiagramTable)){

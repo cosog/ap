@@ -526,7 +526,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " upStrokeIMax,downStrokeIMax,iDegreeBalance,upStrokeWattMax,downStrokeWattMax,wattDegreeBalance,"
 				+ " signal,interval,deviceVer "
 				+ " from tbl_rpc_diagram_latest t,tbl_wellinformation well  "
-				+ " where t.wellid=well.id  "
+				+ " where t.wellid=well.id  and t.datasource=1"
 				+ " and well.orgid in ("+orgId+") "
 				+ " order by well.sortnum";
 		
@@ -537,7 +537,7 @@ public class PSToFSService<T> extends BaseService<T> {
 					+ " upStrokeIMax,downStrokeIMax,iDegreeBalance,upStrokeWattMax,downStrokeWattMax,wattDegreeBalance, "
 					+ " signal,interval,deviceVer "
 					+ " from tbl_rpc_diagram_hist t,tbl_wellinformation well "
-					+ " where t.wellid=well.id  and well.wellname='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
+					+ " where t.wellid=well.id and t.datasource=1  and well.wellname='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
 					+ " order by t.acquisitionTime desc";
 		}
 		
@@ -955,7 +955,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else if("ASDiagram".equalsIgnoreCase(diagramType)){//电流图
 			allsql+="upStrokeIMax,downStrokeIMax,IDegreeBalance,current_curve,";
 		}
-		allsql+="position_curve from viw_rpc_diagramquery_latest where 1=1";
+		allsql+="position_curve from viw_rpc_diagramquery_latest where 1=1 and datasource=1 ";
 		
 		if(StringManagerUtils.isNotNull(wellName)){  // 井名不为空 查询该井历史曲线
 			allsql=allsql.replaceAll("viw_rpc_diagramquery_latest", "viw_rpc_diagramquery_hist");

@@ -16,7 +16,7 @@ Ext.define('AP.view.Viewport', {
         		"<div id='passAndExitButton'><a href='#' id='logon_a1' onclick='resetPwdFn()'><span id='logon_a1_text'>修改密码</span></a></div> " +
         		"<div id='passAndExitButton'><a href='#' id='logon_a2' onclick='userLoginOut()'><span id='logon_a2_text'>退出</span></a></div>" +
         		"<div id='passAndExitButton'><a href='#' id='logon_a5' onclick='showHelpDocumentWinFn()'><span id='logon_a5_text'>帮助</span></a></div>" +
-//        		"<div id='passAndExitButton'><a href='#' id='logon_a5' class='help-tip''><span id='logon_a5_text'>帮助</span><p><img src='../images/help2vm.png' width='260' /></p></a></div>" +
+//        		"<div id='passAndExitButton'><a href='https://github.com/cosog/apmd' target='_blank' id='logon_a5' class='help-tip''><span id='logon_a5_text'>帮助</span><p><img src='../images/help2vm.png' width='260' /></p></a></div>" +
         		"<div id='passAndExitButton2' ><a href='#' title='全屏显示' id='logon_a3' onclick='fullscreen()'></a></div> " +
         		"<div id='passAndExitButton3' style='display:none;'><a href='#' title='退出全屏' id='logon_a4'  onclick='exitFullscreen()'></a></div> " +
         		"</div>"
@@ -214,8 +214,44 @@ function resetPwdFn() {
 
 //帮助文档窗口
 function showHelpDocumentWinFn() {
-    var HelpDocumentWin = Ext.create("AP.view.help.HelpDocumentWin");
-    HelpDocumentWin.show();
+//    var HelpDocumentWin = Ext.create("AP.view.help.HelpDocumentWin");
+//    HelpDocumentWin.show();
+	var tabPanel = Ext.getCmp("frame_center_ids");
+	var getTabId = tabPanel.getComponent("HelpDocPanel");
+	if(!getTabId){
+		tabPanel.add(Ext.create("AP.view.help.HelpDocPanel", {
+            id: 'HelpDocPanel',
+            closable: true,
+            iconCls: 'Help',
+            closeAction: 'destroy',
+            title: '帮助',
+            listeners: {
+                afterrender: function () {
+                    //all_loading.hide();
+                },
+                delay: 150
+            }
+        })).show();
+		
+		Ext.Ajax.request({
+    		method:'POST',
+    		url:context + '/helpDocController/getHelpDocHtml',
+    		success:function(response) {
+    			var p =Ext.getCmp("HelpDocPanel_Id");
+    			p.body.update(response.responseText.replace(/.\/Image/g,"..\/images"));
+    		},
+    		failure:function(){
+    			Ext.MessageBox.alert("信息","请求失败");
+    		},
+    		params: {
+            }
+    	}); 
+		
+	}
+	tabPanel.setActiveTab("HelpDocPanel");
+	
+	
+	
     return false;
 }
 

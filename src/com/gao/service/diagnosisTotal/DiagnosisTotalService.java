@@ -338,7 +338,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	@SuppressWarnings("deprecation")
 	public String getFSDiagramOverlayData(Page pager,String orgId,String wellName,String calculateDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		String sql="select t.id,t.wellname,to_char(t.acquisitiontime,'hh24:mi:ss'),t.stroke,t.spm,t.fmax,t.fmin,"
+		String sql="select t.id,t.wellname,to_char(t.acquisitiontime,'hh24:mi:ss'),"
+				+ " t.workingConditionName,t.workingConditionAlarmLevel,t.liquidweightproduction,"
+				+ " t.stroke,t.spm,t.fmax,t.fmin,"
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve  "
@@ -353,6 +355,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"calculateDate\"},"
+				+ "{ \"header\":\"工况\",\"dataIndex\":\"workingConditionName\"},"
+				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidweightproduction\"},"
 				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\"},"
 				+ "{ \"header\":\"冲次(1/min)\",\"dataIndex\":\"spm\"},"
 				+ "{ \"header\":\"最大载荷(kN)\",\"dataIndex\":\"fmax\"},"
@@ -370,39 +374,42 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				SerializableClobProxy   proxy=null;
 				CLOB realClob=null;
 				Object[] obj = (Object[]) list.get(i);
-				if(obj[13]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[13]);
+				if(obj[16]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					positionCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				if(obj[14]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[14]);
+				if(obj[17]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					loadCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				if(obj[15]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[15]);
+				if(obj[18]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					powerCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				if(obj[16]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
+				if(obj[19]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					currentCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
 				dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
 				dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
 				dynSbf.append("\"calculateDate\":\"" + obj[2] + "\",");
-				dynSbf.append("\"stroke\":\""+obj[3]+"\",");
-				dynSbf.append("\"spm\":\""+obj[4]+"\",");
-				dynSbf.append("\"fmax\":\""+obj[5]+"\",");
-				dynSbf.append("\"fmin\":\""+obj[6]+"\",");
-				dynSbf.append("\"iDegreeBalanceLevel\":\"" + obj[7] + "\",");
-				dynSbf.append("\"iDegreeBalance\":\"" + obj[8] + "\",");
-				dynSbf.append("\"iDegreeBalanceAlarmLevel\":\"" + obj[9] + "\",");
-				dynSbf.append("\"wattDegreeBalanceLevel\":\"" + obj[10] + "\",");
-				dynSbf.append("\"wattDegreeBalance\":\"" + obj[11] + "\",");
-				dynSbf.append("\"wattDegreeBalanceAlarmLevel\":\"" + obj[12] + "\",");
+				dynSbf.append("\"workingConditionName\":\""+obj[3]+"\",");
+				dynSbf.append("\"workingConditionAlarmLevel\":\""+obj[4]+"\",");
+				dynSbf.append("\"liquidweightproduction\":\""+obj[5]+"\",");
+				dynSbf.append("\"stroke\":\""+obj[6]+"\",");
+				dynSbf.append("\"spm\":\""+obj[7]+"\",");
+				dynSbf.append("\"fmax\":\""+obj[8]+"\",");
+				dynSbf.append("\"fmin\":\""+obj[9]+"\",");
+				dynSbf.append("\"iDegreeBalanceLevel\":\"" + obj[10] + "\",");
+				dynSbf.append("\"iDegreeBalance\":\"" + obj[11] + "\",");
+				dynSbf.append("\"iDegreeBalanceAlarmLevel\":\"" + obj[12] + "\",");
+				dynSbf.append("\"wattDegreeBalanceLevel\":\"" + obj[13] + "\",");
+				dynSbf.append("\"wattDegreeBalance\":\"" + obj[14] + "\",");
+				dynSbf.append("\"wattDegreeBalanceAlarmLevel\":\"" + obj[15] + "\",");
 				dynSbf.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 				dynSbf.append("\"loadCurveData\":\"" + loadCurveData + "\",");
 				dynSbf.append("\"powerCurveData\":\"" + powerCurveData + "\",");

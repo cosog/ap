@@ -351,6 +351,14 @@ var WellProHandsontableHelper = {
 	            //插入的数据的获取
 	        	wellProHandsontableHelper.insertExpressCount();
 	            if (JSON.stringify(wellProHandsontableHelper.AllData) != "{}" && wellProHandsontableHelper.validresult) {
+	            	var wellType=200;
+	                var tabPanel = Ext.getCmp("ProductionWellProductionPanel");
+	            	var activeId = tabPanel.getActiveTab().id;
+	            	if(activeId=="PumpingUnitProductionDataPanel"){
+	            		wellType=200;
+	            	}else if(activeId=="ScrewPumpProductionDataPanel"){
+	            		wellType=400;
+	            	}
 	            	Ext.Ajax.request({
 	            		method:'POST',
 	            		url:context + '/productionDataController/saveWellProHandsontableData',
@@ -373,7 +381,8 @@ var WellProHandsontableHelper = {
 	                        wellProHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
-	                    	data: JSON.stringify(wellProHandsontableHelper.AllData)
+	                    	data: JSON.stringify(wellProHandsontableHelper.AllData),
+	                    	wellType:wellType
 	                    }
 	            	}); 
 	            } else {

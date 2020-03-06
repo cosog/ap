@@ -160,10 +160,13 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		String columns= "";
 		String sql="";
 		StringBuffer result_json = new StringBuffer();
+		String tableName="viw_rpc_productiondata_latest";
 		if("200".equalsIgnoreCase(wellType)){
 			columns=service.showTableHeadersColumns("produceOutData");
+			tableName="viw_rpc_productiondata_latest";
 		}else if("400".equalsIgnoreCase(wellType)){
 			columns=service.showTableHeadersColumns("screwPumpProductionData");
+			tableName="viw_pcp_productiondata_latest";
 		}
 		
 		sql="select id,wellName,runTime,"
@@ -174,7 +177,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
 			+ "rodString,"
 			+ "anchoringStateName,netGrossRatio,to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') "
-			+ "from viw_rpc_productiondata_latest t "
+			+ "from "+tableName+" t "
 			+ "where t.org_id in("+orgId+")  "
 			+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
 		if (StringManagerUtils.isNotNull(wellName)) {
@@ -615,7 +618,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 
 	
 	
-	public void saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData, String ids) throws Exception {
-		getBaseDao().saveProductionDataEditerGridData(wellProHandsontableChangedData, ids);
+	public void saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData,String wellType, String ids) throws Exception {
+		getBaseDao().saveProductionDataEditerGridData(wellProHandsontableChangedData,wellType, ids);
 	}
 }

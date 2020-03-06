@@ -238,7 +238,8 @@ function showHelpDocumentWinFn() {
     		url:context + '/helpDocController/getHelpDocHtml',
     		success:function(response) {
     			var p =Ext.getCmp("HelpDocPanel_Id");
-    			p.body.update(response.responseText.replace(/.\/Image/g,"..\/images"));
+//    			p.body.update(response.responseText.replace(/.\/Image/g,"..\/images"));
+    			p.body.update(response.responseText);
     		},
     		failure:function(){
     			Ext.MessageBox.alert("信息","请求失败");

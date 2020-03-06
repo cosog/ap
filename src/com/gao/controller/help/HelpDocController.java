@@ -20,10 +20,10 @@ public class HelpDocController extends BaseController{
 	@RequestMapping("/getHelpDocHtml")
 	public String getHelpDocHtml() throws Exception {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String path=stringManagerUtils.getFilePath("help.md","app/view/help/");
+		String path=stringManagerUtils.getFilePath("help.md","doc/");
 		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
 		String fileContent=html.toString();
-//		System.out.println(fileContent);
+		System.out.println(fileContent);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

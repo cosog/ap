@@ -60,6 +60,18 @@ public class ProductionDataController extends BaseController {
 	private ProductionOutWellInfo out;
 	private String page;
 	private String resCode;
+	private String wellType;
+	public String getWellType() {
+		return wellType;
+	}
+
+
+
+	public void setWellType(String wellType) {
+		this.wellType = wellType;
+	}
+
+
 	@Autowired
 	private ProductionDataManagerService<ProductionOutWellInfo> services;
 	@Autowired
@@ -112,11 +124,12 @@ public class ProductionDataController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String orgid=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
+		wellType=ParamUtils.getParameter(request, "wellType");
 		System.out.println(data);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellProHandsontableChangedData>() {}.getType();
 		WellProHandsontableChangedData wellProHandsontableChangedData=gson.fromJson(data, type);
-		this.services.saveProductionDataEditerGridData(wellProHandsontableChangedData, orgid);
+		this.services.saveProductionDataEditerGridData(wellProHandsontableChangedData,wellType, orgid);
 		String json ="{success:true}";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
@@ -269,7 +282,7 @@ public class ProductionDataController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		wellName = ParamUtils.getParameter(request, "wellName");
 		orgId=ParamUtils.getParameter(request, "orgId");
-		String wellType=ParamUtils.getParameter(request, "wellType");
+		wellType=ParamUtils.getParameter(request, "wellType");
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			HttpSession session=request.getSession();

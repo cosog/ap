@@ -1334,13 +1334,22 @@ public class BaseDao extends HibernateDaoSupport {
 		this.getHibernateTemplate().saveOrUpdate(clazz);
 	}
 
-	public Boolean saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData, String ids) throws SQLException {
+	public Boolean saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData,String wellType, String ids) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs;
 		PreparedStatement ps=null;
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String tableName="tbl_rpc_productiondata_latest";
+		String prdName="prd_save_rpc_productiondata";
+		if("200".equalsIgnoreCase(wellType)){
+			tableName="tbl_rpc_productiondata_latest";
+			prdName="prd_save_rpc_productiondata";
+		}else if("400".equalsIgnoreCase(wellType)){
+			tableName="tbl_pcp_productiondata_latest";
+			prdName="prd_save_pcp_productiondata";
+		}
 		try {
-			cs = conn.prepareCall("{call prd_save_rpc_productiondata(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call "+prdName+"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellProHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
@@ -1470,7 +1479,7 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				delSql="delete from tbl_rpc_productiondata_latest t where t.wellId in ("+delIds+")";
+				delSql="delete from "+tableName+" t where t.wellId in ("+delIds+")";
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 //				conn.commit();

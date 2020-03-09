@@ -314,17 +314,15 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	}else if(module_Code == "blockdata_Ids"){
 		CreateAndLoadReservoirPropertyTable(true);
 	}else if(module_Code == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails"){
-//		var tabPanel = Ext.getCmp("ProductionWellRealtimeAnalisisPanel");
-//		var activeId = tabPanel.getActiveTab().id;
-//		if(activeId=="pumpUnitRealtimeAnalysisPanel_Id"){
-//			Ext.getCmp('singleJh_Id').setValue("");
-//			loadStatData();
-//		}else if(activeId=="screwPumpRealtimeAnalysisPanel_Id"){
-//			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue("");
-//			loadScrewPumpRealtimeStatData();
-//		}
-		Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue("");
-		loadFSDiagramAnalysisSingleStatData();
+		var tabPanel = Ext.getCmp("ProductionWellRealtimeAnalisisPanel");
+		var activeId = tabPanel.getActiveTab().id;
+		if(activeId=="RPCSingleDetailsInfoPanel_Id"){
+			Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue("");
+			loadFSDiagramAnalysisSingleStatData();
+		}else if(activeId=="PCPSingleDetailsInfoPanel_Id"){
+			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue("");
+			loadScrewPumpRealtimeStatData();
+		}
 	}else if(module_Code=="graphicalQuery_SurfaceCardQuery"){
 		loadSurfaceCardList(1);
 	}else if(module_Code == "diagnosisTotal_DiagnosisTotalData"){

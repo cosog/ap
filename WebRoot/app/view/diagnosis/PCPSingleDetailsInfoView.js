@@ -4,9 +4,9 @@
  * @author zhao
  *
  */
-Ext.define("AP.view.diagnosis.ScrewPumpRealtimeAnalysisView", {
+Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.screwPumpRealtimeAnalysisView', // 定义别名
+    alias: 'widget.PCPSingleDetailsInfoView', // 定义别名
     layout: 'fit',
     border: false,
     initComponent: function () {

@@ -33,7 +33,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                     	if(newCard.id=="RPCSingleDetailsInfoPanel_Id"){
                     		loadFSDiagramAnalysisSingleStatData();
                     	}else if(newCard.id=="PCPSingleDetailsInfoPanel_Id"){
-                    		loadScrewPumpRealtimeStatData();
+                    		loadPCPRPMAnalysisSingleStatData();
                     	}
                     }
                 }

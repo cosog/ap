@@ -941,7 +941,7 @@ function exportSingleFSDiagramAnalysisDataExcel() {
     
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var jh = Ext.getCmp('singleJh_Id').getValue();
-    var statValue = Ext.getCmp('ScrewPumpSelectedStatValue_Id').getValue();
+    var statValue = Ext.getCmp('PCPRPMAnalysisSingleDetailsSelectedStatValue_Id').getValue();
     var startDate=Ext.getCmp('DiagnosisAnalysisStartDate_Id').rawValue;
     var endDate=Ext.getCmp('DiagnosisAnalysisEndDate_Id').rawValue;
     var type=getSelectStatType();

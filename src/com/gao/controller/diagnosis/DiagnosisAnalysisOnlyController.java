@@ -224,6 +224,31 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getPCPAnalysisAndAcqAndControlData")
+	public String getPCPAnalysisAndAcqAndControlData() throws Exception {
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String recordId = ParamUtils.getParameter(request, "id");
+		wellName = ParamUtils.getParameter(request, "wellName");
+		String selectedWellName = ParamUtils.getParameter(request, "selectedWellName");
+		this.pager = new Page("pagerForm", request);
+		
+		String json =diagnosisAnalysisOnlyService.getPCPAnalysisAndAcqAndControlData(recordId,wellName,selectedWellName,user.getUserNo());
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/getDiagnosisDataCurveData")
@@ -434,10 +459,10 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 	@RequestMapping("/getScrewPumpRTAnalysiCurveData")
 	public String getScrewPumpRTAnalysiCurveData()throws Exception{
 		@SuppressWarnings("unused")
-		String cjsj = ParamUtils.getParameter(request, "cjsj");
+		String acquisitionTime = ParamUtils.getParameter(request, "acquisitionTime");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		String json = "";
-		json = this.diagnosisAnalysisOnlyService.getScrewPumpRTAnalysiCurveData(cjsj,wellName);
+		json = this.diagnosisAnalysisOnlyService.getScrewPumpRTAnalysiCurveData(acquisitionTime,wellName);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

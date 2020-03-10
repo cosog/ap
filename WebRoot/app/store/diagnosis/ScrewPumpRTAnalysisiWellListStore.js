@@ -6,12 +6,11 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisiWellListStore', {
     	'workingConditionName', 'optimizationSuggestion', 
     	'liquidWeightProduction', 'oilWeightProduction', 'waterWeightProduction', 'waterCut', 
     	'productionGasOilRatio','tubingPressure', 'casingPressure', 'wellheadFluidTemperature',
-        'stroke', 'SPM', 'fullnesscoEfficient', 
         'pumpboreDiameter','pumpEff', 'pumpSettingDepth', 'producingFluidLevel', 'submergence', 
         'wattDegreeBalanceName', 'wattDegreeBalance','wattRatio', 'iDegreeBalanceName', 'iDegreeBalance', 'iRatio', 
-        'systemEfficiency', 'surfaceSystemEfficiency','welldownSystemEfficiency', 'motorInputActivePower', 'polishrodPower', 'waterPower','powerConsumptionPerthm', 
+        'systemEfficiency', 'motorInputActivePower','waterPower','powerConsumptionPerthm', 
         'todayWattEnergy', 
-        'theoreticalProduction', 'availablePlungerstrokeProd', 'pumpClearanceLeakProd', 'pumpOutletGol'],
+        'theoreticalProduction', 'pumpOutletGol'],
     autoLoad: true,
     pageSize: 50,
     proxy: {
@@ -56,34 +55,33 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisiWellListStore', {
                     listeners: {
                         selectionchange: function (view, selected, o) {
                             if (selected.length > 0) {
-                        		//请求图形数据
+                        		//请求单井详情数据
                         		Ext.create("AP.store.diagnosis.ScrewPumpRTAnalysiCurveDataStore");
                         		Ext.create("AP.store.diagnosis.ScrewPumpRTAnalysisTableStore");
                             }
                             
                         },
                         itemdblclick: function (view,record,item,index,e,eOpts) {
-                        	var jh=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
-                    		if(jh==null||jh==""){
-                    			Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+                        	var wellName=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
+                    		if(wellName==null||wellName==""){
                     			Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
                             	
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisHisBtn_Id").hide();
                                 Ext.getCmp("ScrewPumpRealtimeAnalysisAllBtn_Id").show();
                                 
-                                var statPanelId=getScrewPumpRealtimeWellListPanelId().replace("WellList","StatGraph");
+                                var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;
                             	Ext.getCmp(statPanelId).collapse();
                             	
-                    			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue(record.data.jh);
-                            	Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setRawValue(record.data.jh);
+                    			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue(record.data.wellName);
+                            	Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setRawValue(record.data.wellName);
                             	Ext.getCmp('ScrewPumpRTAnalysisWellList_Id').getStore().loadPage(1);
                             	
                     		}
                         }
                     }
                 })
-            	var panelId=getScrewPumpRealtimeWellListPanelId();
+            	var panelId=getPCPRPMAnalysisSingleStatType().panelId;
             	Ext.getCmp(panelId).add(gridPanel);
             	
             	var length = gridPanel.dockedItems.keys.length;
@@ -127,14 +125,14 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisiWellListStore', {
         },
         beforeload: function (store, options) {
             var orgId = Ext.getCmp('leftOrg_Id').getValue();
-            var jh = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
-            var statValue = Ext.getCmp('ScrewPumpSelectedStatValue_Id').getValue();
-            var startDate=Ext.getCmp('DiagnosisAnalysisStartDate_Id').rawValue;
-            var endDate=Ext.getCmp('DiagnosisAnalysisEndDate_Id').rawValue;
-            var type=getScrewPumpRTStatType();
+            var wellName = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
+            var statValue = Ext.getCmp('PCPRPMAnalysisSingleDetailsSelectedStatValue_Id').getValue();
+            var startDate=Ext.getCmp('ScrewPumpRealtimeAnalysisStartDate_Id').rawValue;
+            var endDate=Ext.getCmp('ScrewPumpRealtimeAnalysisEndDate_Id').rawValue;
+            var type=getPCPRPMAnalysisSingleStatType().type;
             var new_params = {
                 orgId: orgId,
-                jh: jh,
+                wellName: wellName,
                 statValue:statValue,
                 startDate:startDate,
                 endDate:endDate,

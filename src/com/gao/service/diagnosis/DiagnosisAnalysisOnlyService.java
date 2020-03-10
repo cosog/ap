@@ -65,6 +65,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String finalSql="";
 		String sqlAll="";
 		String ddicName="";
+		String tableName_latest="viw_rpc_comprehensive_latest";
+		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="workingConditionName";
 		
 		if("1".equalsIgnoreCase(type)){
@@ -163,14 +165,27 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
 		columns = ddic.getTableHeader();
-		sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_latest t where t.org_id in("+orgId+")";
-		sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_hist t where t.org_id in("+orgId+")";
 		
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
+		if("400".equals(wellType)){//螺杆泵井
+			tableName_latest="viw_pcp_comprehensive_latest";
+			tableName_hist="viw_pcp_comprehensive_hist";
+			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		}else{//默认为抽油机
+			tableName_latest="viw_rpc_comprehensive_latest";
+			tableName_hist="viw_rpc_comprehensive_hist";
+			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
+		
+		
+		sql+= " from "+tableName_latest+" t where t.org_id in("+orgId+")";
+		sqlHis+= " from "+tableName_hist+" t where t.org_id in("+orgId+")";
+		
 		
 		if(StringManagerUtils.isNotNull(statValue)){
 			sql+=" and "+typeColumnName+"='"+statValue+"' ";
@@ -633,12 +648,16 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	}
 	
 	public String statisticsData(String orgId,String type,String wellType){
-		
 		StringBuffer result_json = new StringBuffer();
 		String sql="";
 		String statType="workingConditionName";
+		String tableName="viw_rpc_comprehensive_latest";
 		if("1".equalsIgnoreCase(type)){
-			statType="workingConditionName";
+			if("200".equals(wellType)){
+				statType="workingConditionName";
+			}else{
+				statType="workingConditionName_E";
+			}
 		}else if("2".equalsIgnoreCase(type)){
 			statType="liquidWeightProductionlevel";
 		}else if("3".equalsIgnoreCase(type)){
@@ -662,12 +681,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else if("12".equalsIgnoreCase(type)){
 			statType="commtimeefficiencyLevel";
 		}
-		
-		sql="select "+statType+",count(id) from viw_rpc_comprehensive_latest t where  t.org_id in("+orgId+")";
-		
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
+		if("200".equals(wellType)){
+			tableName="viw_rpc_comprehensive_latest";
+		}else{
+			tableName="viw_pcp_comprehensive_latest";
 		}
+		sql="select "+statType+",count(id) from "+tableName+" t where  t.org_id in("+orgId+")";
+		
 		sql+=" group by "+statType;
 		
 		List<?> list = this.findCallSql(sql);
@@ -833,6 +853,104 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getPCPAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String tableName="viw_pcp_comprehensive_latest";
+		if(StringManagerUtils.isNotNull(wellName)){
+			tableName="viw_pcp_comprehensive_hist";
+		}
+		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
+		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
+				+ " from tbl_wellinformation t,tbl_acq_group_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
+				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
+				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
+				+ " order by t3.seq";
+		String sql="select liquidWeightProduction,oilWeightProduction,waterCut,"
+				+ " qpr,"
+				+ " motorInputActivePower,waterPower,systemEfficiency,powerConsumptionPerthm,"
+				+ " pumpEff1,pumpEff2,pumpEff,"
+				+ " pumpintakep,pumpintaket,pumpintakegol,pumpinletvisl,pumpinletbo,"
+				+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo,"
+				+ " rodString,"
+				+ " tubingPressure,casingPressure,wellheadFluidTemperature,"
+				+ " commStatus,runStatus,"
+				+ " Ia,Ib,Ic,Va,Vb,Vc,"
+				+ " totalWattEnergy,totalVarEnergy,wattSum,varSum,reversePower,pfSum,"
+				+ " frequencySetValue,frequencyRunValue,"
+				+ " videourl,"
+				+ " runRange"
+				+ " from "+tableName+" t where id="+recordId;
+		List<?> isControlList = this.findCallSql(isControlSql);
+		List<?> controlItemsList = this.findCallSql(controlItemSql);
+		List<?> list = this.findCallSql(sql);
+		String isControl=isControlList.size()>0?isControlList.get(0).toString():"0";
+		result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
+		result_json.append("\"controlItems\":[");
+		for(int i=0;i<controlItemsList.size();i++){
+			Object[] obj=(Object[]) controlItemsList.get(i);
+			result_json.append("{\"tiem\":\""+obj[2]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],");
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			result_json.append("\"liquidWeightProduction\":\""+obj[0]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[1]+"\",");
+			result_json.append("\"waterCut\":\""+obj[2]+"\",");
+			result_json.append("\"qpr\":\""+obj[3]+"\",");
+			
+			result_json.append("\"motorInputActivePower\":\""+obj[4]+"\",");
+			result_json.append("\"waterPower\":\""+obj[5]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[6]+"\",");
+			result_json.append("\"powerConsumptionPerthm\":\""+obj[7]+"\",");
+			
+			result_json.append("\"pumpEff1\":\""+obj[8]+"\",");
+			result_json.append("\"pumpEff2\":\""+obj[9]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[10]+"\",");
+			
+			result_json.append("\"pumpintakep\":\""+obj[11]+"\",");
+			result_json.append("\"pumpintaket\":\""+obj[12]+"\",");
+			result_json.append("\"pumpintakegol\":\""+obj[13]+"\",");
+			result_json.append("\"pumpinletvisl\":\""+obj[14]+"\",");
+			result_json.append("\"pumpinletbo\":\""+obj[15]+"\",");
+			
+			result_json.append("\"pumpoutletp\":\""+obj[16]+"\",");
+			result_json.append("\"pumpoutlett\":\""+obj[17]+"\",");
+			result_json.append("\"pumpOutletGol\":\""+obj[18]+"\",");
+			result_json.append("\"pumpoutletvisl\":\""+obj[19]+"\",");
+			result_json.append("\"pumpoutletbo\":\""+obj[20]+"\",");
+			
+			result_json.append("\"rodString\":\""+obj[21]+"\",");
+			
+			result_json.append("\"tubingPressure\":\""+obj[22]+"\",");
+			result_json.append("\"casingPressure\":\""+obj[23]+"\",");
+			result_json.append("\"wellheadFluidTemperature\":\""+obj[24]+"\",");
+			result_json.append("\"commStatus\":\""+obj[25]+"\",");
+			result_json.append("\"runStatus\":\""+obj[26]+"\",");
+			result_json.append("\"Ia\":\""+obj[27]+"\",");
+			result_json.append("\"Ib\":\""+obj[28]+"\",");
+			result_json.append("\"Ic\":\""+obj[29]+"\",");
+			result_json.append("\"Va\":\""+obj[30]+"\",");
+			result_json.append("\"Vb\":\""+obj[31]+"\",");
+			result_json.append("\"Vc\":\""+obj[32]+"\",");
+			result_json.append("\"totalWattEnergy\":\""+obj[33]+"\",");
+			result_json.append("\"totalVarEnergy\":\""+obj[34]+"\",");
+			result_json.append("\"wattSum\":\""+obj[35]+"\",");
+			result_json.append("\"varSum\":\""+obj[36]+"\",");
+			result_json.append("\"reversePower\":\""+obj[37]+"\",");
+			result_json.append("\"pfSum\":\""+obj[38]+"\",");
+			result_json.append("\"frequencySetValue\":\""+obj[39]+"\",");
+			result_json.append("\"frequencyRunValue\":\""+obj[40]+"\",");
+			
+			result_json.append("\"videourl\":\""+obj[41]+"\",");
+			result_json.append("\"runRange\":\""+obj[42]+"\"");
+		}
+		result_json.append("}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getDiagnosisDataCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		String uplimit="";
@@ -873,68 +991,67 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
-	public String getScrewPumpRTAnalysiCurveData(String cjsj,String jh) throws SQLException, IOException {
+	public String getScrewPumpRTAnalysiCurveData(String acquisitionTime,String wellName) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		float currentauplimit=0;
-		float currentadownlimit=0;
-		float currentbuplimit=0;
-		float currentbdownlimit=0;
-		float currentcuplimit=0;
-		float currentcdownlimit=0;
-		float voltageauplimit=0;
-		float voltageadownlimit=0;
-		float voltagebuplimit=0;
-		float voltagebdownlimit=0;
-		float voltagecuplimit=0;
-		float voltagecdownlimit=0;
-		String sql="select "
-				+ " to_char(t.gtcjsj,'yyyy-mm-dd hh24:mi:ss'),t.rpm,t.currenta,t.currentb,t.currentc,t.voltagea,t.voltageb,t.voltagec, "
-				+ " t.currentauplimit,t.currentadownlimit,t.currentbuplimit,t.currentbdownlimit,t.currentcuplimit,t.currentcdownlimit, "
-				+ " t.voltageauplimit,t.voltageadownlimit,t.voltagebuplimit,t.voltagebdownlimit,t.voltagecuplimit,t.voltagecdownlimit "
-				+ " from tbl_rpc_diagram_hist t,tbl_wellinformation t007 "
-				+ " where t.jbh=t007.jlbh and t007.jh='"+jh+"' "
-				+ " and t.gtcjsj between to_date(to_char(to_date('"+cjsj+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
-				+ " and to_date('"+cjsj+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " order by t.gtcjsj";
+		float iauplimit=0;
+		float iadownlimit=0;
+		float ibuplimit=0;
+		float ibdownlimit=0;
+		float icuplimit=0;
+		float icdownlimit=0;
+		float vauplimit=0;
+		float vadownlimit=0;
+		float vbuplimit=0;
+		float vbdownlimit=0;
+		float vcuplimit=0;
+		float vcdownlimit=0;
 		
+		String sql="select "
+				+ " to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.ia,t.ib,t.ic,t.va,t.vb,t.vc, "
+				+ " t.iauplimit,t.iadownlimit,t.ibuplimit,t.ibdownlimit,t.icuplimit,t.icdownlimit, "
+				+ " t.vauplimit,t.vadownlimit,t.vbuplimit,t.vbdownlimit,t.vcuplimit,t.vcdownlimit "
+				+ " from viw_pcp_comprehensive_hist t "
+				+ " where t.acquisitionTime between to_date(to_char(to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
+				+ " and to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " order by t.acquisitionTime";
 		List<?> list=this.findCallSql(sql);
 		
-		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"jh\":\""+jh+"\",\"cjsj\":\""+cjsj+"\",\"totalRoot\":[");
+		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTime+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
-				dynSbf.append("{ \"cjsj\":\"" + obj[0] + "\",");
+				dynSbf.append("{ \"acquisitionTime\":\"" + obj[0] + "\",");
 				dynSbf.append("\"rpm\":"+obj[1]+",");
-				dynSbf.append("\"currenta\":"+obj[2]+",");
-				dynSbf.append("\"currentb\":"+obj[3]+",");
-				dynSbf.append("\"currentc\":"+obj[4]+",");
-				dynSbf.append("\"voltagea\":"+obj[5]+",");
-				dynSbf.append("\"voltageb\":"+obj[6]+",");
-				dynSbf.append("\"voltagec\":"+obj[7]+"},");
+				dynSbf.append("\"ia\":"+obj[2]+",");
+				dynSbf.append("\"ib\":"+obj[3]+",");
+				dynSbf.append("\"ic\":"+obj[4]+",");
+				dynSbf.append("\"va\":"+obj[5]+",");
+				dynSbf.append("\"vb\":"+obj[6]+",");
+				dynSbf.append("\"vc\":"+obj[7]+"},");
 				if(i==list.size()-1){
-					currentauplimit=StringManagerUtils.stringToFloat(obj[8]+"");
-					currentadownlimit=StringManagerUtils.stringToFloat(obj[9]+"");
-					currentbuplimit=StringManagerUtils.stringToFloat(obj[10]+"");
-					currentbdownlimit=StringManagerUtils.stringToFloat(obj[11]+"");
-					currentcuplimit=StringManagerUtils.stringToFloat(obj[12]+"");
-					currentcdownlimit=StringManagerUtils.stringToFloat(obj[13]+"");
-					voltageauplimit=StringManagerUtils.stringToFloat(obj[14]+"");
-					voltageadownlimit=StringManagerUtils.stringToFloat(obj[15]+"");
-					voltagebuplimit=StringManagerUtils.stringToFloat(obj[16]+"");
-					voltagebdownlimit=StringManagerUtils.stringToFloat(obj[17]+"");
-					voltagecuplimit=StringManagerUtils.stringToFloat(obj[18]+"");
-					voltagecdownlimit=StringManagerUtils.stringToFloat(obj[19]+"");
+					iauplimit=StringManagerUtils.stringToFloat(obj[8]+"");
+					iadownlimit=StringManagerUtils.stringToFloat(obj[9]+"");
+					ibuplimit=StringManagerUtils.stringToFloat(obj[10]+"");
+					ibdownlimit=StringManagerUtils.stringToFloat(obj[11]+"");
+					icuplimit=StringManagerUtils.stringToFloat(obj[12]+"");
+					icdownlimit=StringManagerUtils.stringToFloat(obj[13]+"");
+					vauplimit=StringManagerUtils.stringToFloat(obj[14]+"");
+					vadownlimit=StringManagerUtils.stringToFloat(obj[15]+"");
+					vbuplimit=StringManagerUtils.stringToFloat(obj[16]+"");
+					vbdownlimit=StringManagerUtils.stringToFloat(obj[17]+"");
+					vcuplimit=StringManagerUtils.stringToFloat(obj[18]+"");
+					vcdownlimit=StringManagerUtils.stringToFloat(obj[19]+"");
 				}
 			}
 			dynSbf.deleteCharAt(dynSbf.length() - 1);
 		}
 		dynSbf.append("],");
-		dynSbf.append("\"currentauplimit\":"+currentauplimit+",\"currentadownlimit\":"+currentadownlimit+",");
-		dynSbf.append("\"currentbuplimit\":"+currentbuplimit+",\"currentbdownlimit\":"+currentbdownlimit+",");
-		dynSbf.append("\"currentcuplimit\":"+currentcuplimit+",\"currentcdownlimit\":"+currentcdownlimit+",");
-		dynSbf.append("\"voltageauplimit\":"+voltageauplimit+",\"voltageadownlimit\":"+voltageadownlimit+",");
-		dynSbf.append("\"voltagebuplimit\":"+voltagebuplimit+",\"voltagebdownlimit\":"+voltagebdownlimit+",");
-		dynSbf.append("\"voltagecuplimit\":"+voltagecuplimit+",\"voltagecdownlimit\":"+voltagecdownlimit+"");
+		dynSbf.append("\"iauplimit\":"+iauplimit+",\"iadownlimit\":"+iadownlimit+",");
+		dynSbf.append("\"ibuplimit\":"+ibuplimit+",\"ibdownlimit\":"+ibdownlimit+",");
+		dynSbf.append("\"icuplimit\":"+icuplimit+",\"icdownlimit\":"+icdownlimit+",");
+		dynSbf.append("\"vauplimit\":"+vauplimit+",\"vadownlimit\":"+vadownlimit+",");
+		dynSbf.append("\"vbuplimit\":"+vbuplimit+",\"vbdownlimit\":"+vbdownlimit+",");
+		dynSbf.append("\"vcuplimit\":"+vcuplimit+",\"vcdownlimit\":"+vcdownlimit+"");
 		dynSbf.append("}");
 		return dynSbf.toString();
 	}

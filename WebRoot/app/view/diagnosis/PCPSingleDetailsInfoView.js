@@ -99,7 +99,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                         title: '统计数据',
                         border: false,
                         tbar: [wellComb, '-',{
-                            id: 'ScrewPumpSelectedStatValue_Id',//选择的统计项的值
+                            id: 'PCPRPMAnalysisSingleDetailsSelectedStatValue_Id',//选择的统计项的值
                             xtype: 'textfield',
                             value: '',
                             hidden: true
@@ -156,9 +156,9 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                 Ext.getCmp("ScrewPumpRealtimeAnalysisAllBtn_Id").show();
                             	Ext.getCmp(statPanelId).collapse();
                                 
-                                var jh  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.jh;
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisWellCom_Id").setValue(jh);
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisWellCom_Id").setRawValue(jh);
+                                var wellName  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                Ext.getCmp("ScrewPumpRealtimeAnalysisWellCom_Id").setValue(wellName);
+                                Ext.getCmp("ScrewPumpRealtimeAnalysisWellCom_Id").setRawValue(wellName);
                                 Ext.getCmp('ScrewPumpRTAnalysisWellList_Id').getStore().loadPage(1);
                             }
                       }, {
@@ -189,7 +189,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                     }],
                         items: {
                             xtype: 'tabpanel',
-                            id: 'ScrewPumpRealtimeAnalysisStatTabpanel_Id',
+                            id: 'PCPRPMAnalysisSingleDetailsStatTabpanel_Id',
                             activeTab: 0,
                             border: true,
                             header: false,
@@ -201,34 +201,34 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                     tabPosition: 'right',
                                     title: '工况',
                                     iconCls: 'select',
-                                    id: 'ScrewPumpRealtimeAnalysisGkStatPiePanel_Id',
+                                    id: 'PCPRPMAnalysisSingleWorkCondStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
                                         title: '电参工况',
                                         border: false,
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisDCGkStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleElecWorkCondStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListEGkmc_Id',
+                                            id: 'PCPRPMAnalysisSingleElecWorkCondDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphEGkmc_Id',
+                                            id: 'PCPRPMAnalysisSingleElecWorkCondStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisDCGkStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisDCGkStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisDCGkStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisDCGkStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -240,121 +240,89 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         tabchange: function (tabPanel, newCard, oldCard, obj) {
                                             newCard.setIconCls("dtgreen");
                                             oldCard.setIconCls("");
-                                            loadScrewPumpRealtimeStatData();
+                                            loadPCPRPMAnalysisSingleStatData();
                                         }
                                     }
                             }, {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '产量',
-                                    id: 'ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id',
+                                    id: 'PCPRPMAnalysisSingleProdStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
                                         title: '产量分布',
                                         border: false,
                                         iconCls: 'dtgreen',
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisProStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleProdStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListProdDist_Id',
+                                            id: 'PCPRPMAnalysisSingleProdDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphProdDist_Id',
+                                            id: 'PCPRPMAnalysisSingleProdStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisProStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleProdStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisProStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisProStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisProStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleProdStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
                                                 }
                                             }
                                         }]
-                                 }, {
-                                        title: '产量波动',
-                                        border: false,
-                                        layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisFluStatPiePanel_Id',
-                                        items: [{
-                                            region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListProdFluc_Id',
-                                            header: false,
-                                            layout: 'fit'
-                                        }, {
-                                            region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphProdFluc_Id',
-                                            height: '50%',
-                                            border: true,
-                                            header: false,
-                                            collapsible: true, // 是否折叠
-                                            split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisFluStatPieDiv_Id" style="width:100%;height:100%;"></div>',
-                                            listeners: {
-                                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisFluStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisFluStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
-                                                    }else{
-                                                    	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisFluStatPieDiv_Id',
-                                                            html: '点击饼图不同区域或标签，查看相应统计数据'
-                                                        });
-                                                    }
-                                                }
-                                            }
-                                        }]
-                                    }],
+                                 }],
                                     listeners: {
                                         tabchange: function (tabPanel, newCard, oldCard, obj) {
                                             newCard.setIconCls("dtgreen");
                                             oldCard.setIconCls("");
-                                            loadScrewPumpRealtimeStatData();
+                                            loadPCPRPMAnalysisSingleStatData();
                                         }
                                     }
                                 },{
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '时率',
-                                    id: 'ScrewPumpRealtimeAnalysisScslStatPiePanel_Id',
+                                    id: 'PCPRPMAnalysisSingleRunTimeEffStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
                                         title: '运行状态',
                                         border: false,
                                         iconCls: 'dtgreen',
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisYxztStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleRunStatusStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListRunStatus_Id',
+                                            id: 'PCPRPMAnalysisSingleRunStatusDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphRunStatus_Id',
+                                            id: 'PCPRPMAnalysisSingleRunStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisYxztStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisYxztStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisYxztStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisYxztStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -365,28 +333,28 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         title: '运行时率',
                                         border: false,
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisSlfbStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleRunTimeEffStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListTimeDist_Id',
+                                            id: 'PCPRPMAnalysisSingleRunTimeEffDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphTimeDist_Id',
+                                            id: 'PCPRPMAnalysisSingleRunTimeEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisSlfbStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisSlfbStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisSlfbStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisSlfbStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -398,42 +366,42 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         tabchange: function (tabPanel, newCard, oldCard, obj) {
                                             newCard.setIconCls("dtgreen");
                                             oldCard.setIconCls("");
-                                            loadScrewPumpRealtimeStatData();
+                                            loadPCPRPMAnalysisSingleStatData();
                                         }
                                     }
                                 }, {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '效率',
-                                    id: 'ScrewPumpRealtimeAnalysisXlStatPiePanel_Id',
+                                    id: 'PCPRPMAnalysisSingleSysEffStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
                                         title: '系统效率',
                                         border: false,
                                         iconCls: 'dtgreen',
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisXtxlStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleSysEffStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListSystemEff_Id',
+                                            id: 'PCPRPMAnalysisSingleSysEffDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphSystemEff_Id',
+                                            id: 'PCPRPMAnalysisSingleSysEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisXtxlStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisXtxlStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisXtxlStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisXtxlStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -446,42 +414,42 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         tabchange: function (tabPanel, newCard, oldCard, obj) {
                                             newCard.setIconCls("dtgreen");
                                             oldCard.setIconCls("");
-                                            loadScrewPumpRealtimeStatData();
+                                            loadPCPRPMAnalysisSingleStatData();
                                         }
                                     }
                                 }, {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '电量',
-                                    id: 'ScrewPumpRealtimeAnalysisRydlPiePanel_Id',
+                                    id: 'PCPRPMAnalysisSingleEnergyStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
                                         title: '日用电量',
                                         border: false,
                                         iconCls: 'dtgreen',
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisRydlStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleTodayEnergyStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListPowerDist_Id',
+                                            id: 'PCPRPMAnalysisSingleTodayEnergyDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphPowerDist_Id',
+                                            id: 'PCPRPMAnalysisSingleTodayEnergyStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisRydlStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisRydlStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisRydlStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisRydlStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -493,35 +461,35 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '通信',
-                                    id: 'ScrewPumpRealtimeAnalysisCommStatPiePanel_Id',
+                                    id: 'PCPRPMAnalysisSingleCommEffStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
                                         title: '通信状态',
                                         border: false,
                                         iconCls: 'dtgreen',
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisCommStatusStatPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleCommStatusStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListCommStatus_Id',
+                                            id: 'PCPRPMAnalysisSingleCommStatusDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphCommStatus_Id',
+                                            id: 'PCPRPMAnalysisSingleCommStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisCommStatusStatPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisCommStatusStatPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisCommStatusStatPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisCommStatusStatPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -532,28 +500,28 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         title: '在线时率',
                                         border: false,
                                         layout: 'border',
-                                        id: 'ScrewPumpRealtimeAnalysisCommDistPiePanel_Id',
+                                        id: 'PCPRPMAnalysisSingleCommEffStatPanel_Id',
                                         items: [{
                                             region: 'center',
-                                            id: 'ScrewPumpRealtimeAnalysisWellListCommDist_Id',
+                                            id: 'PCPRPMAnalysisSingleCommEffDataListPanel_Id',
                                             header: false,
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
-                                            id: 'ScrewPumpRealtimeAnalysisStatGraphCommDist_Id',
+                                            id: 'PCPRPMAnalysisSingleCommEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
                                             header: false,
                                             collapsible: true, // 是否折叠
                                             split: true, // 竖折叠条
-                                            html: '<div id="ScrewPumpRealtimeAnalysisCommDistPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                            html: '<div id="PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if ($("#ScrewPumpRealtimeAnalysisCommDistPieDiv_Id").highcharts() != undefined) {
-                                                        $("#ScrewPumpRealtimeAnalysisCommDistPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                	if ($("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                        $("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
-                                                            target: 'ScrewPumpRealtimeAnalysisCommDistPieDiv_Id',
+                                                            target: 'PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id',
                                                             html: '点击饼图不同区域或标签，查看相应统计数据'
                                                         });
                                                     }
@@ -565,7 +533,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         tabchange: function (tabPanel, newCard, oldCard, obj) {
                                             newCard.setIconCls("dtgreen");
                                             oldCard.setIconCls("");
-                                            loadScrewPumpRealtimeStatData();
+                                            loadPCPRPMAnalysisSingleStatData();
                                         }
                                     }
                                 }
@@ -574,28 +542,28 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                 tabchange: function (tabPanel, newCard, oldCard, obj) {
                                     oldCard.setIconCls("");
                                     newCard.setIconCls("select");
-                                    loadScrewPumpRealtimeStatData();
+                                    loadPCPRPMAnalysisSingleStatData();
                                 }
                             }
                         },
                         listeners: {
                             afterrender: function (comp, eOpts) {
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisGkStatPiePanel_Id").getTabBar().insert(0, {
+                                Ext.getCmp("PCPRPMAnalysisSingleWorkCondStatTabpanel_Id").getTabBar().insert(0, {
                                     xtype: 'tbfill'
                                 });
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id").getTabBar().insert(0, {
+                                Ext.getCmp("PCPRPMAnalysisSingleProdStatTabpanel_Id").getTabBar().insert(0, {
                                     xtype: 'tbfill'
                                 });
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisScslStatPiePanel_Id").getTabBar().insert(0, {
+                                Ext.getCmp("PCPRPMAnalysisSingleRunTimeEffStatTabpanel_Id").getTabBar().insert(0, {
                                     xtype: 'tbfill'
                                 });
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisXlStatPiePanel_Id").getTabBar().insert(0, {
+                                Ext.getCmp("PCPRPMAnalysisSingleSysEffStatTabpanel_Id").getTabBar().insert(0, {
                                     xtype: 'tbfill'
                                 });
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisRydlPiePanel_Id").getTabBar().insert(0, {
+                                Ext.getCmp("PCPRPMAnalysisSingleEnergyStatTabpanel_Id").getTabBar().insert(0, {
                                     xtype: 'tbfill'
                                 });
-                                Ext.getCmp("ScrewPumpRealtimeAnalysisCommStatPiePanel_Id").getTabBar().insert(0, {
+                                Ext.getCmp("PCPRPMAnalysisSingleCommEffStatTabpanel_Id").getTabBar().insert(0, {
                                     xtype: 'tbfill'
                                 });
                             }
@@ -791,114 +759,78 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
     }
 });
 
-
-function getScrewPumpRealtimeWellListPanelId() {
-	var type='ScrewPumpRealtimeAnalysisWellListEGkmc_Id';
-	var tabPanel = Ext.getCmp("ScrewPumpRealtimeAnalysisStatTabpanel_Id");
-	var activeId = tabPanel.getActiveTab().id;
-	if(activeId=="ScrewPumpRealtimeAnalysisGkStatPiePanel_Id"){//工况
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisGkStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisDCGkStatPiePanel_Id"){//电参工况
-			type='ScrewPumpRealtimeAnalysisWellListEGkmc_Id';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id"){//产量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisProStatPiePanel_Id"){//产量分布
-			type='ScrewPumpRealtimeAnalysisWellListProdDist_Id'
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisFluStatPiePanel_Id"){//产量波动
-			type='ScrewPumpRealtimeAnalysisWellListProdFluc_Id'
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisScslStatPiePanel_Id"){//时率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisScslStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisYxztStatPiePanel_Id"){//运行状态
-			type='ScrewPumpRealtimeAnalysisWellListRunStatus_Id'
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisSlfbStatPiePanel_Id"){//运行时率
-			type='ScrewPumpRealtimeAnalysisWellListTimeDist_Id'
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisXlStatPiePanel_Id"){//效率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisXlStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisXtxlStatPiePanel_Id"){//系统效率
-			type='ScrewPumpRealtimeAnalysisWellListSystemEff_Id'
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisRydlPiePanel_Id"){//电量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisRydlPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisRydlStatPiePanel_Id"){//日用电量
-			type='ScrewPumpRealtimeAnalysisWellListPowerDist_Id';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisCommStatPiePanel_Id"){//通信状态
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisCommStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisCommStatusStatPiePanel_Id"){//通信状态
-			type='ScrewPumpRealtimeAnalysisWellListCommStatus_Id';
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisCommDistPiePanel_Id"){//在线时率
-			type='ScrewPumpRealtimeAnalysisWellListCommDist_Id';
-		}
-	}else{
-		type='ScrewPumpRealtimeAnalysisWellListEGkmc_Id';
+function getPCPRPMAnalysisSingleStatType() {
+	var type=1;
+	var panelId="PCPRPMAnalysisSingleElecWorkCondDataListPanel_Id";
+	var piePanelId="PCPRPMAnalysisSingleElecWorkCondStatGraphPanel_Id";
+	var pieDivId="PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id";
+	var pieChartTitle="电参工况";
+	var exportExcelTitle='螺杆泵实时评价-电参工况';
+	var activeTabId= Ext.getCmp(Ext.getCmp("PCPRPMAnalysisSingleDetailsStatTabpanel_Id").getActiveTab().id).getActiveTab().id;
+	if(activeTabId=="PCPRPMAnalysisSingleElecWorkCondStatPanel_Id"){//电参工况
+		type=1;
+		panelId="PCPRPMAnalysisSingleElecWorkCondDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleElecWorkCondStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id";
+		pieChartTitle="电参工况";
+		exportExcelTitle='螺杆泵实时评价-电参工况';
+	}else if(activeTabId=="PCPRPMAnalysisSingleProdStatPanel_Id"){//产量
+		type=2;
+		panelId="PCPRPMAnalysisSingleProdDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleProdStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleProdStatGraphPieDiv_Id";
+		pieChartTitle="产量分布";
+		exportExcelTitle='螺杆泵实时评价-产量分布';
+	}else if(activeTabId=="PCPRPMAnalysisSingleRunStatusStatPanel_Id"){//运行状态
+		type=5;
+		panelId="PCPRPMAnalysisSingleRunStatusDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleRunStatusStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id";
+		pieChartTitle="运行状态";
+		exportExcelTitle='螺杆泵实时评价-运行状态';
+	}else if(activeTabId=="PCPRPMAnalysisSingleRunTimeEffStatPanel_Id"){//运行时率
+		type=6;
+		panelId="PCPRPMAnalysisSingleRunTimeEffDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleRunTimeEffStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id";
+		pieChartTitle="运行时率";
+		exportExcelTitle='螺杆泵实时评价-运行时率';
+	}else if(activeTabId=="PCPRPMAnalysisSingleSysEffStatPanel_Id"){//系统效率
+		type=7;
+		panelId="PCPRPMAnalysisSingleSysEffDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleSysEffStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id";
+		pieChartTitle="系统效率";
+		exportExcelTitle='螺杆泵实时评价-系统效率';
+	}else if(activeTabId=="PCPRPMAnalysisSingleTodayEnergyStatPanel_Id"){//日用电量
+		type=10;
+		panelId="PCPRPMAnalysisSingleTodayEnergyDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleTodayEnergyStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id";
+		pieChartTitle="日用电量";
+		exportExcelTitle='螺杆泵实时评价-日用电量';
+	}else if(activeTabId=="PCPRPMAnalysisSingleCommStatusStatPanel_Id"){//通信状态
+		type=11;
+		panelId="PCPRPMAnalysisSingleCommStatusDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleCommStatusStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id";
+		pieChartTitle="通信状态";
+		exportExcelTitle='螺杆泵实时评价-通信状态';
+	}else if(activeTabId=="PCPRPMAnalysisSingleCommEffStatPanel_Id"){//在线时率
+		type=12;
+		panelId="PCPRPMAnalysisSingleCommEffDataListPanel_Id";
+		piePanelId="PCPRPMAnalysisSingleCommEffStatGraphPanel_Id";
+		pieDivId="PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id";
+		pieChartTitle="在线时率";
+		exportExcelTitle='螺杆泵实时评价-在线时率';
 	}
-	return type;
-}
-
-function getScrewPumpRTStatType() {
-	var type='DCGKLX';
-	var tabPanel = Ext.getCmp("ScrewPumpRealtimeAnalysisStatTabpanel_Id");
-	var activeId = tabPanel.getActiveTab().id;
-	if(activeId=="ScrewPumpRealtimeAnalysisGkStatPiePanel_Id"){//工况
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisGkStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisDCGkStatPiePanel_Id"){//电参工况
-			type='DCGKLX';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id"){//产量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisProStatPiePanel_Id"){//产量分布
-			type='CYL'
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisFluStatPiePanel_Id"){//产量波动
-			type='CYLBD'
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisScslStatPiePanel_Id"){//时率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisScslStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisYxztStatPiePanel_Id"){//运行状态
-			type='YXZT'
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisSlfbStatPiePanel_Id"){//运行时率
-			type='SCSL'
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisXlStatPiePanel_Id"){//效率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisXlStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisXtxlStatPiePanel_Id"){//系统效率
-			type='XTXL'
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisRydlPiePanel_Id"){//电量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisRydlPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisRydlStatPiePanel_Id"){//日用电量
-			type='RHDL';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisCommStatPiePanel_Id"){//通信状态
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisCommStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisCommStatusStatPiePanel_Id"){//通信状态
-			type='TXZT';
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisCommDistPiePanel_Id"){//在线时率
-			type='TXSL';
-		}
-	}else{
-		type='DCGKLX';
-	}
-	return type;
+	var result=Ext.JSON.decode("{\"type\":"+type+",\"panelId\":\""+panelId+"\",\"piePanelId\":\""+piePanelId+"\",\"pieDivId\":\""+pieDivId+"\",\"pieChartTitle\":\""+pieChartTitle+"\",\"exportExcelTitle\":\""+exportExcelTitle+"\"}");
+	return result;
 }
 
 function initScrewPumpRTStatPieChat(store) {
-	var divid="";
-	var title="";
+	var divid=getPCPRPMAnalysisSingleStatType().pieDivId;
+	var title=getPCPRPMAnalysisSingleStatType().pieChartTitle;
 	var get_rawData = store.proxy.reader.rawData;
 	var datalist=get_rawData.List;
 	
@@ -911,106 +843,9 @@ function initScrewPumpRTStatPieChat(store) {
 	}
 	pieDataStr+="]";
 	var pieData = Ext.JSON.decode(pieDataStr);
-	var tabPanel = Ext.getCmp("ScrewPumpRealtimeAnalysisStatTabpanel_Id");
-	var activeId = tabPanel.getActiveTab().id;
-	if(activeId=="ScrewPumpRealtimeAnalysisGkStatPiePanel_Id"){//工况
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisGkStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisDCGkStatPiePanel_Id"){//电参工况
-			ShowScrewPumpRTStatPieChat("电参工况","ScrewPumpRealtimeAnalysisDCGkStatPieDiv_Id", "井数占", pieData);
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id"){//产量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisProStatPiePanel_Id"){//产量分布
-			ShowScrewPumpRTStatPieChat("产量分布","ScrewPumpRealtimeAnalysisProStatPieDiv_Id", "井数占", pieData);
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisFluStatPiePanel_Id"){//产量波动
-			ShowScrewPumpRTStatPieChat("产量波动","ScrewPumpRealtimeAnalysisFluStatPieDiv_Id", "井数占", pieData);
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisScslStatPiePanel_Id"){//时率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisScslStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisYxztStatPiePanel_Id"){//运行状态
-			ShowScrewPumpRTStatPieChat("运行状态","ScrewPumpRealtimeAnalysisYxztStatPieDiv_Id", "井数占", pieData);
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisSlfbStatPiePanel_Id"){//运行时率
-			ShowScrewPumpRTStatPieChat("运行时率","ScrewPumpRealtimeAnalysisSlfbStatPieDiv_Id", "井数占", pieData);
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisXlStatPiePanel_Id"){//效率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisXlStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisXtxlStatPiePanel_Id"){//系统效率
-			ShowScrewPumpRTStatPieChat("系统效率","ScrewPumpRealtimeAnalysisXtxlStatPieDiv_Id", "井数占", pieData);
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisRydlPiePanel_Id"){//电量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisRydlPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisRydlStatPiePanel_Id"){//日用电量
-			ShowScrewPumpRTStatPieChat("日用电量","ScrewPumpRealtimeAnalysisRydlStatPieDiv_Id", "井数占", pieData);
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisCommStatPiePanel_Id"){//通信状态
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisCommStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisCommStatusStatPiePanel_Id"){//通信状态
-			ShowScrewPumpRTStatPieChat("通信状态","ScrewPumpRealtimeAnalysisCommStatusStatPieDiv_Id", "井数占", pieData);
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisCommDistPiePanel_Id"){//在线时率
-			ShowScrewPumpRTStatPieChat("在线时率","ScrewPumpRealtimeAnalysisCommDistPieDiv_Id", "井数占", pieData);
-		}
-	}else{
-		ShowScrewPumpRTStatPieChat("电参工况","ScrewPumpRealtimeAnalysisDCGkStatPieDiv_Id", "井数占", pieData);
-	}
+	ShowScrewPumpRTStatPieChat(title,divid, "井数占", pieData);
 }
 
-function getScrewPumpRTExportExcelTitle() {
-	var title='螺杆泵实时评价-电参工况';
-	var tabPanel = Ext.getCmp("ScrewPumpRealtimeAnalysisStatTabpanel_Id");
-	var activeId = tabPanel.getActiveTab().id;
-	if(activeId=="ScrewPumpRealtimeAnalysisGkStatPiePanel_Id"){//工况
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisGkStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisDCGkStatPiePanel_Id"){//电参工况
-			title='螺杆泵实时评价-电参工况';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id"){//产量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisProAndFluStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisProStatPiePanel_Id"){//产量分布
-			title='螺杆泵实时评价-产量分布';
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisFluStatPiePanel_Id"){//产量波动
-			title='螺杆泵实时评价-产量波动';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisScslStatPiePanel_Id"){//时率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisScslStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisYxztStatPiePanel_Id"){//运行状态
-			title='螺杆泵实时评价-运行状态';
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisSlfbStatPiePanel_Id"){//运行时率
-			title='螺杆泵实时评价-运行时率';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisXlStatPiePanel_Id"){//效率
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisXlStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisXtxlStatPiePanel_Id"){//系统效率
-			title='螺杆泵实时评价-系统效率';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisRydlPiePanel_Id"){//电量
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisRydlPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisRydlStatPiePanel_Id"){//日用电量
-			title='螺杆泵实时评价-日用电量';
-		}
-	}else if(activeId=="ScrewPumpRealtimeAnalysisCommStatPiePanel_Id"){//通信状态
-		var tabPanel2 = Ext.getCmp("ScrewPumpRealtimeAnalysisCommStatPiePanel_Id");
-		var activeId2 = tabPanel2.getActiveTab().id;
-		if(activeId2=="ScrewPumpRealtimeAnalysisCommStatusStatPiePanel_Id"){//通信状态
-			title='螺杆泵实时评价-通信状态';
-		}else if(activeId2=="ScrewPumpRealtimeAnalysisCommDistPiePanel_Id"){//在线时率
-			title='螺杆泵实时评价-在线时率';
-		}
-	}else{
-		title='螺杆泵实时评价-电参工况';
-	}
-	return title;
-}
 
 function ShowScrewPumpRTStatPieChat(title,divid, name, data) {
 	$('#'+divid).highcharts({
@@ -1048,9 +883,9 @@ function ShowScrewPumpRTStatPieChat(title,divid, name, data) {
 				events: {
 					click: function(e) {
 						if(!e.point.selected){//如果没被选中
-							Ext.getCmp('ScrewPumpSelectedStatValue_Id').setValue(e.point.name);
+							Ext.getCmp('PCPRPMAnalysisSingleDetailsSelectedStatValue_Id').setValue(e.point.name);
 						}else{
-							Ext.getCmp('ScrewPumpSelectedStatValue_Id').setValue("");
+							Ext.getCmp('PCPRPMAnalysisSingleDetailsSelectedStatValue_Id').setValue("");
 						}
 						Ext.getCmp("ScrewPumpRealtimeAnalysisWellCom_Id").setValue("");
 	            		Ext.getCmp("ScrewPumpRealtimeAnalysisWellCom_Id").setRawValue("");
@@ -1078,15 +913,15 @@ function ShowScrewPumpRTStatPieChat(title,divid, name, data) {
 }
 
 
-function loadScrewPumpRealtimeStatData() {
-	var selectjh=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
-	var statPanelId=getScrewPumpRealtimeWellListPanelId().replace("WellList","StatGraph");
-	if(selectjh==null||selectjh==""){
+function loadPCPRPMAnalysisSingleStatData() {
+	var selectWellName=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
+	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;
+	if(selectWellName==null||selectWellName==""){
     	Ext.getCmp(statPanelId).expand(true);
     }else{
     	Ext.getCmp(statPanelId).collapse();
     }
-	Ext.getCmp("ScrewPumpSelectedStatValue_Id").setValue("");
+	Ext.getCmp("PCPRPMAnalysisSingleDetailsSelectedStatValue_Id").setValue("");
 	
 	var gridPanel=Ext.getCmp("ScrewPumpRTAnalysisWellList_Id");
 	if(isNotVal(gridPanel)){
@@ -1102,10 +937,10 @@ function exportScrewPumpRTAnalisiDataExcel() {
     var title =  getScrewPumpRTExportExcelTitle();
     
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var jh = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
+    var wellName = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
     var startDate=Ext.getCmp('DiagnosisAnalysisStartDate_Id').rawValue;
     var endDate=Ext.getCmp('DiagnosisAnalysisEndDate_Id').rawValue;
-    var statValue = Ext.getCmp('ScrewPumpSelectedStatValue_Id').getValue();
+    var statValue = Ext.getCmp('PCPRPMAnalysisSingleDetailsSelectedStatValue_Id').getValue();
     var type=getSelectStatType();
     var wellType=400;
     
@@ -1142,7 +977,7 @@ function exportScrewPumpRTAnalisiDataExcel() {
     heads = "序号," + lockedheads+","+unlockedheads;
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
-    + "&jh=" + URLencode(URLencode(jh)) 
+    + "&wellName=" + URLencode(URLencode(wellName)) 
     + "&statValue=" + URLencode(URLencode(statValue))  
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
@@ -1157,95 +992,95 @@ function exportScrewPumpRTAnalisiDataExcel() {
 initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
 	var items=get_rawData.totalRoot;
 	var RPM=[];
-	var currentA=[];
-	var currentB=[];
-	var currentC=[];
-	var voltageA=[];
-	var voltageB=[];
-	var voltageC=[];
+	var Ia=[];
+	var Ib=[];
+	var Ic=[];
+	var Va=[];
+	var Vb=[];
+	var Vc=[];
 	
-	var currentAMax,currentBMax,currentCMax,voltageAMax,voltageBMax,voltageCMax;
-	var currentAMin,currentBMin,currentCMin,voltageAMin,voltageBMin,voltageCMin;
-	currentAMax=currentBMax=currenCAMax=voltageAMax=voltageBMax=voltageCMax=2000;
-	currentAMin=currentBMin=currentCMin=voltageAMin=voltageBMin=voltageCMin=0;
+	var IaMax,IbMax,IcMax,VaMax,VbMax,VcMax;
+	var IaMin,IbMin,IcMin,VaMin,VbMin,VcMin;
+	IaMax=IbMax=IcMax=VaMax=VbMax=VcMax=2000;
+	IaMin=IbMin=IcMin=VaMin=VbMin=VcMin=0;
 	for(var i=0;i<items.length;i++){
 		if(i==0){
-			currentAMax=currentAMin=items[i].currenta;
-			currentBMax=currentBMin=items[i].currentb;
-			currentCMax=currentCMin=items[i].currentc;
-			voltageAMax=voltageAMin=items[i].voltagea;
-			voltageBMax=voltageBMin=items[i].voltageb;
-			voltageCMax=voltageCMin=items[i].voltagec;
+			IaMax=IaMin=items[i].ia;
+			IbMax=IbMin=items[i].ib;
+			IcMax=IcMin=items[i].ic;
+			VaMax=VaMin=items[i].va;
+			VbMax=VbMin=items[i].vb;
+			VcMax=VcMin=items[i].vc;
 		}else{
-			if(items[i].currenta>currentAMax){
-				currentAMax=items[i].currenta;
+			if(items[i].ia>IaMax){
+				IaMax=items[i].ia;
 			}
-			if(items[i].currenta<currentAMin){
-				currentAMin=items[i].currenta;
-			}
-			
-			if(items[i].currentb>currentBMax){
-				currentBMax=items[i].currentb;
-			}
-			if(items[i].currentb<currentBMin){
-				currentBMin=items[i].currentb;
+			if(items[i].ia<IaMin){
+				IaMin=items[i].ia;
 			}
 			
-			if(items[i].currentc>currentCMax){
-				currentCMax=items[i].currentc;
+			if(items[i].ib>IbMax){
+				IbMax=items[i].ib;
 			}
-			if(items[i].currentc<currentCMin){
-				currentCMin=items[i].currentc;
-			}
-			
-			if(items[i].voltagea>voltageAMax){
-				voltageAMax=items[i].voltagea;
-			}
-			if(items[i].voltagea<voltageAMin){
-				voltageAMin=items[i].voltagea;
+			if(items[i].ib<IbMin){
+				IbMin=items[i].ib;
 			}
 			
-			if(items[i].voltageb>voltageBMax){
-				voltageBMax=items[i].voltageb;
+			if(items[i].ic>IcMax){
+				IcMax=items[i].ic;
 			}
-			if(items[i].voltageb<voltageBMin){
-				voltageBMin=items[i].voltageb;
+			if(items[i].ic<IcMin){
+				IcMin=items[i].ic;
 			}
 			
-			if(items[i].voltagec>voltageCMax){
-				voltageCMax=items[i].voltagec;
+			if(items[i].va>VaMax){
+				VaMax=items[i].va;
 			}
-			if(items[i].voltagec<voltageCMin){
-				voltageCMin=items[i].voltagec;
+			if(items[i].va<VaMin){
+				VaMin=items[i].va;
+			}
+			
+			if(items[i].vb>VbMax){
+				VbMax=items[i].vb;
+			}
+			if(items[i].vb<VbMin){
+				VbMin=items[i].vb;
+			}
+			
+			if(items[i].vc>VcMax){
+				VcMax=items[i].vc;
+			}
+			if(items[i].vc<VcMin){
+				VcMin=items[i].vc;
 			}
 		}
 		RPM.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
             parseFloat(items[i].rpm)
         ]);
-		currentA.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
-            parseFloat(items[i].currenta)
+		Ia.push([
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            parseFloat(items[i].ia)
         ]);
-		currentB.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
-            parseFloat(items[i].currentb)
+		Ib.push([
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            parseFloat(items[i].ib)
         ]);
-		currentC.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
-            parseFloat(items[i].currentc)
+		Ic.push([
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            parseFloat(items[i].ic)
         ]);
-		voltageA.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
-            parseFloat(items[i].voltagea)
+		Va.push([
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            parseFloat(items[i].va)
         ]);
-		voltageB.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
-            parseFloat(items[i].voltageb)
+		Vb.push([
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            parseFloat(items[i].vb)
         ]);
-		voltageC.push([
-            Date.parse(items[i].cjsj.replace(/-/g, '/')),
-            parseFloat(items[i].voltagec)
+		Vc.push([
+            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            parseFloat(items[i].vc)
         ]);
 	}
 	
@@ -1274,7 +1109,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             selected: 1
         },
         title: {
-            text: get_rawData.jh+'井实时曲线'
+            text: get_rawData.wellName+'井实时曲线'
         },
         tooltip:{  
             // 日期时间格式化  
@@ -1339,8 +1174,8 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 text: 'A相电流(A)'
             },
             endOnTick: false,
-            max:currentAMax>get_rawData.currentauplimit?currentAMax+10:get_rawData.currentauplimit+10,
-            min:currentAMin<get_rawData.currentadownlimit?(currentAMin<5?0:currentAMin-5):(get_rawData.currentadownlimit<5?0:get_rawData.currentadownlimit-5),
+            max:IaMax>get_rawData.iauplimit?IaMax+10:get_rawData.iauplimit+10,
+            min:IaMin<get_rawData.iadownlimit?(IaMin<5?0:IaMin-5):(get_rawData.iadownlimit<5?0:get_rawData.iadownlimit-5),
             height: '13%',
             top: '14.5%',
             offset: 0,
@@ -1349,24 +1184,24 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 color: 'red',
                 dashStyle: 'shortdash', //Dash,Dot,Solid,shortdash,默认Solid
                 label: {
-                    text: '上限:'+get_rawData.currentauplimit,
+                    text: '上限:'+get_rawData.iauplimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.currentauplimit //y轴显示位置
+                value: get_rawData.iauplimit //y轴显示位置
            }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
-                	text: '下限:'+get_rawData.currentadownlimit,
+                	text: '下限:'+get_rawData.iadownlimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.currentadownlimit //y轴显示位置
+                value: get_rawData.iadownlimit //y轴显示位置
             }]
         },{
         	opposite:false,
@@ -1378,8 +1213,8 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 text: 'B相电流(A)'
             },
             endOnTick: false,
-            max:currentBMax>get_rawData.currentbuplimit?currentBMax+10:get_rawData.currentbuplimit+10,
-            min:currentBMin<get_rawData.currentbdownlimit?(currentBMin<5?0:currentBMin-5):(get_rawData.currentbdownlimit<5?0:get_rawData.currentbdownlimit-5),
+            max:IbMax>get_rawData.ibuplimit?IbMax+10:get_rawData.ibuplimit+10,
+            min:IbMin<get_rawData.ibdownlimit?(IbMin<5?0:IbMin-5):(get_rawData.ibdownlimit<5?0:get_rawData.ibdownlimit-5),
             height: '13%',
             top: '29%',
             offset: 0,
@@ -1388,24 +1223,24 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 color: 'red',
                 dashStyle: 'shortdash', //Dash,Dot,Solid,shortdash,默认Solid
                 label: {
-                    text: '上限:'+get_rawData.currentbuplimit,
+                    text: '上限:'+get_rawData.ibuplimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.currentbuplimit //y轴显示位置
+                value: get_rawData.ibuplimit //y轴显示位置
            }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
-                	text: '下限:'+get_rawData.currentbdownlimit,
+                	text: '下限:'+get_rawData.ibdownlimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.currentbdownlimit //y轴显示位置
+                value: get_rawData.ibdownlimit //y轴显示位置
             }]
         },{
         	opposite:false,
@@ -1417,8 +1252,8 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 text: 'C相电流(A)'
             },
             endOnTick: false,
-            max:currentCMax>get_rawData.currentcuplimit?currentCMax+10:get_rawData.currentcuplimit+10,
-            min:currentCMin<get_rawData.currentcdownlimit?(currentCMin<5?0:currentCMin-5):(get_rawData.currentcdownlimit<5?0:get_rawData.currentcdownlimit-5),
+            max:IcMax>get_rawData.icuplimit?IcMax+10:get_rawData.icuplimit+10,
+            min:IcMin<get_rawData.icdownlimit?(IcMin<5?0:IcMin-5):(get_rawData.icdownlimit<5?0:get_rawData.icdownlimit-5),
             height: '13%',
             top: '43.5%',
             offset: 0,
@@ -1427,24 +1262,24 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 color: 'red',
                 dashStyle: 'shortdash', //Dash,Dot,Solid,shortdash,默认Solid
                 label: {
-                    text: '上限:'+get_rawData.currentcuplimit,
+                    text: '上限:'+get_rawData.icuplimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.currentcuplimit //y轴显示位置
+                value: get_rawData.icuplimit //y轴显示位置
            }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
-                	text: '下限:'+get_rawData.currentcdownlimit,
+                	text: '下限:'+get_rawData.icdownlimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.currentcdownlimit //y轴显示位置
+                value: get_rawData.icdownlimit //y轴显示位置
             }]
         },{
         	opposite:false,
@@ -1456,8 +1291,8 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 text: 'A相电压(V)'
             },
             endOnTick: false,
-            max:voltageAMax>get_rawData.voltageauplimit?voltageAMax+10:get_rawData.voltageauplimit+10,
-            min:voltageAMin<get_rawData.voltageadownlimit?(voltageAMin<5?0:voltageAMin-5):(get_rawData.voltageadownlimit<5?0:get_rawData.voltageadownlimit-5),
+            max:VaMax>get_rawData.vauplimit?VaMax+10:get_rawData.vauplimit+10,
+            min:VaMin<get_rawData.vadownlimit?(VaMin<5?0:VaMin-5):(get_rawData.vadownlimit<5?0:get_rawData.vadownlimit-5),
             height: '13%',
             top: '58%',
             offset: 0,
@@ -1466,24 +1301,24 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 color: 'red',
                 dashStyle: 'shortdash', //Dash,Dot,Solid,shortdash,默认Solid
                 label: {
-                    text: '上限:'+get_rawData.voltageauplimit,
+                    text: '上限:'+get_rawData.vauplimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.voltageauplimit //y轴显示位置
+                value: get_rawData.vauplimit //y轴显示位置
            }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
-                	text: '下限:'+get_rawData.voltageadownlimit,
+                	text: '下限:'+get_rawData.vadownlimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.voltageadownlimit //y轴显示位置
+                value: get_rawData.vadownlimit //y轴显示位置
             }]
         },{
         	opposite:false,
@@ -1495,8 +1330,8 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 text: 'B相电压(V)'
             },
             endOnTick: false,
-            max:voltageBMax>get_rawData.voltagebuplimit?voltageBMax+10:get_rawData.voltagebuplimit+10,
-            min:voltageBMin<get_rawData.voltagebdownlimit?(voltageBMin<5?0:voltageBMin-5):(get_rawData.voltagebdownlimit<5?0:get_rawData.voltagebdownlimit-5),
+            max:VbMax>get_rawData.vbuplimit?VbMax+10:get_rawData.vbuplimit+10,
+            min:VbMin<get_rawData.vbdownlimit?(VbMin<5?0:VbMin-5):(get_rawData.vbdownlimit<5?0:get_rawData.vbdownlimit-5),
             height: '13%',
             top: '72.5%',
             offset: 0,
@@ -1505,24 +1340,24 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 color: 'red',
                 dashStyle: 'shortdash', //Dash,Dot,Solid,shortdash,默认Solid
                 label: {
-                    text: '上限:'+get_rawData.voltagebuplimit,
+                    text: '上限:'+get_rawData.vbuplimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.voltagebuplimit //y轴显示位置
+                value: get_rawData.vbuplimit //y轴显示位置
            }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
-                	text: '下限:'+get_rawData.voltagebdownlimit,
+                	text: '下限:'+get_rawData.vbdownlimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.voltagebdownlimit //y轴显示位置
+                value: get_rawData.vbdownlimit //y轴显示位置
             }]
         },{
         	opposite:false,
@@ -1534,8 +1369,8 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 text: 'C相电压(V)'
             },
             endOnTick: false,
-            max:voltageCMax>get_rawData.voltagecuplimit?voltageCMax+10:get_rawData.voltagecuplimit+10,
-            min:voltageCMin<get_rawData.voltagecdownlimit?(voltageCMin<5?0:voltageCMin-5):(get_rawData.voltagecdownlimit<5?0:get_rawData.voltagecdownlimit-5),
+            max:VcMax>get_rawData.vcuplimit?VcMax+10:get_rawData.vcuplimit+10,
+            min:VcMin<get_rawData.vcdownlimit?(VcMin<5?0:VcMin-5):(get_rawData.vcdownlimit<5?0:get_rawData.vcdownlimit-5),
             height: '13%',
             top: '87%',
             offset: 0,
@@ -1544,24 +1379,24 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
                 color: 'red',
                 dashStyle: 'shortdash', //Dash,Dot,Solid,shortdash,默认Solid
                 label: {
-                    text: '上限:'+get_rawData.voltagecuplimit,
+                    text: '上限:'+get_rawData.vcuplimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.voltagecuplimit //y轴显示位置
+                value: get_rawData.vcuplimit //y轴显示位置
            }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
-                	text: '下限:'+get_rawData.voltagecdownlimit,
+                	text: '下限:'+get_rawData.vcdownlimit,
                     align: 'right',
                     x: -10
                 },
                 width: 3,
                 zIndex:10,
-                value: get_rawData.voltagecdownlimit //y轴显示位置
+                value: get_rawData.vcdownlimit //y轴显示位置
             }]
         }],
         rangeSelector: {  
@@ -1607,7 +1442,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
         	},{
             	type: 'spline',
             	name: 'A相电流(A)',
-            	data: currentA,
+            	data: Ia,
             	marker:{
             		enabled:true,
             		radius: 3
@@ -1616,7 +1451,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             },{
             	type: 'spline',
             	name: 'B相电流(A)',
-            	data: currentB,
+            	data: Ib,
             	marker:{
             		enabled:true,
             		radius: 3
@@ -1625,7 +1460,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             },{
             	type: 'spline',
             	name: 'C相电流(A)',
-            	data: currentC,
+            	data: Ic,
             	marker:{
             		enabled:true,
             		radius: 3
@@ -1634,7 +1469,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             },{
             	type: 'spline',
             	name: 'A相电压(V)',
-            	data: voltageA,
+            	data: Va,
             	marker:{
             		enabled:true,
             		radius: 3
@@ -1643,7 +1478,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             },{
             	type: 'spline',
             	name: 'B相电压(V)',
-            	data: voltageB,
+            	data: Vb,
             	marker:{
             		enabled:true,
             		radius: 3
@@ -1652,7 +1487,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             },{
             	type: 'spline',
             	name: 'C相电压(V)',
-            	data: voltageC,
+            	data: Vc,
             	marker:{
             		enabled:true,
             		radius: 3

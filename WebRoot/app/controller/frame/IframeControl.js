@@ -321,7 +321,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			loadFSDiagramAnalysisSingleStatData();
 		}else if(activeId=="PCPSingleDetailsInfoPanel_Id"){
 			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue("");
-			loadScrewPumpRealtimeStatData();
+			loadPCPRPMAnalysisSingleStatData();
 		}
 	}else if(module_Code=="graphicalQuery_SurfaceCardQuery"){
 		loadSurfaceCardList(1);

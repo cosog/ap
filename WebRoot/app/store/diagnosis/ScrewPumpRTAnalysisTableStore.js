@@ -361,7 +361,7 @@ var controlSataStr="{\"items\":[";
         	var new_params = {
         			id:id,
         			wellName:wellName,
-        			selectedWellName
+        			selectedWellName:selectedWellName
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

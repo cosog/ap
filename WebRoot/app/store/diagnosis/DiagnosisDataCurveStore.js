@@ -32,13 +32,16 @@ Ext.define('AP.store.diagnosis.DiagnosisDataCurveStore', {
         },
         beforeload: function (store, options) {
         	var tabPanel = Ext.getCmp("ProductionWellRealtimeAnalisisPanel");
-//    		var activeId = tabPanel.getActiveTab().id;
+    		var activeId = tabPanel.getActiveTab().id;
     		var gridPanelId="FSDiagramAnalysisSingleDetails_Id";
-//    		if(activeId=="pumpUnitRealtimeAnalysisPanel_Id"){
-//    			gridPanelId="FSDiagramAnalysisSingleDetails_Id";
-//    		}else if(activeId=="screwPumpRealtimeAnalysisPanel_Id"){
-//    			gridPanelId="ScrewPumpRTAnalysisWellList_Id";
-//    		}
+    		var wellType=200;
+    		if(activeId=="RPCSingleDetailsInfoPanel_Id"){
+    			gridPanelId="FSDiagramAnalysisSingleDetails_Id";
+    			wellType=200;
+    		}else if(activeId=="PCPSingleDetailsInfoPanel_Id"){
+    			gridPanelId="ScrewPumpRTAnalysisWellList_Id";
+    			wellType=400;
+    		}
         	var wellName  = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
         	var StartDate = Ext.getCmp('DiagnosisData_from_date_Id').rawValue;
         	var EndDate = Ext.getCmp('DiagnosisData_end_date_Id').rawValue;
@@ -49,7 +52,8 @@ Ext.define('AP.store.diagnosis.DiagnosisDataCurveStore', {
                     startDate:StartDate,
                     endDate:EndDate,
                     itemName:itemName,
-                    itemCode:itemCode
+                    itemCode:itemCode,
+                    wellType:wellType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

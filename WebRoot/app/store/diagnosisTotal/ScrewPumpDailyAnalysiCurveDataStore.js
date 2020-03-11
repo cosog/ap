@@ -21,11 +21,11 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDailyAnalysiCurveDataStore', {
         	initScrewPumpDailyCurveChartFn(get_rawData,"ScrewPumpDailyCurveDataChartDiv_Id");
         },
         beforeload: function (store, options) {
-        	var jssj  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.jssj;
-        	var jh  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.jh;
+        	var calculateDate  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.calculateDate;
+        	var wellName  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
             var new_params = {
-            	jssj: jssj,
-                jh:jh
+            		calculateDate: calculateDate,
+            		wellName:wellName
             };
             Ext.apply(store.proxy.extraParams, new_params);
         }

@@ -951,7 +951,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDiagnosisDataCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
+	public String getRPCDiagnosisDataCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		String uplimit="";
 		String downlimit="";
@@ -968,6 +968,46 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
 			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_rpc_discrete_hist t "
+					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		}
+		
+		int totals = getTotalCountRows(sql);//获取总记录数
+		List<?> list=this.findCallSql(sql);
+		
+		dynSbf.append("{\"success\":true,\"totalCount\":" + totals + ",\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Object[] obj = (Object[]) list.get(i);
+				dynSbf.append("{ \"acquisitionTime\":\"" + obj[0] + "\",");
+				dynSbf.append("\"value\":\""+obj[1]+"\"},");
+				if(obj.length==4&&i==list.size()-1){
+					uplimit=obj[2]+"";
+					downlimit=obj[3]+"";
+				}
+			}
+			dynSbf.deleteCharAt(dynSbf.length() - 1);
+		}
+		dynSbf.append("],\"uplimit\":\""+uplimit+"\",\"downlimit\":\""+downlimit+"\"}");
+		return dynSbf.toString();
+	}
+	
+	public String getPCPDiagnosisDataCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		String uplimit="";
+		String downlimit="";
+		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_rpm_hist t "
+				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
+				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
+			itemCode="t."+itemCode+",t."+itemCode+"uplimit,t."+itemCode+"downlimit";
+			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
+					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
+				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellheadfluidtemperature".equalsIgnoreCase(itemCode)
+				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
+				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
+				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
+			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_discrete_hist t "
 					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 		}
 		

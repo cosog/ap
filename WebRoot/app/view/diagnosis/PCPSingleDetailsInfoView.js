@@ -207,6 +207,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                         title: '电参工况',
                                         border: false,
                                         layout: 'border',
+                                        iconCls: 'dtgreen',
                                         id: 'PCPRPMAnalysisSingleElecWorkCondStatPanel_Id',
                                         items: [{
                                             region: 'center',

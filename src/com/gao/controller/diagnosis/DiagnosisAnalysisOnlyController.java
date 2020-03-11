@@ -259,6 +259,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		String wellType = ParamUtils.getParameter(request, "wellType");
 		
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
@@ -277,7 +278,12 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json =  this.diagnosisAnalysisOnlyService.getDiagnosisDataCurveData(wellName, startDate,endDate,itemName,itemCode);
+		if("400".equals(wellType)){//螺杆泵
+			json =  this.diagnosisAnalysisOnlyService.getPCPDiagnosisDataCurveData(wellName, startDate,endDate,itemName,itemCode);
+		}else{//抽油机
+			json =  this.diagnosisAnalysisOnlyService.getRPCDiagnosisDataCurveData(wellName, startDate,endDate,itemName,itemCode);
+		}
+		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

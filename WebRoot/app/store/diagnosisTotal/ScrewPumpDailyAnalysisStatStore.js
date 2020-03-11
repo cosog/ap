@@ -29,7 +29,7 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDailyAnalysisStatStore', {
             }
         },
         beforeload: function (store, options) {
-        	var type=getScrewPumpDailyStatType();
+        	var type=getPCPSelectDailyStatType().type;
         	var totalDate=Ext.getCmp('ScrewPumpDailyAnalysisDate_Id').rawValue;
         	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
         	var new_params = {

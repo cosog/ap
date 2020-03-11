@@ -77,8 +77,14 @@ public class DiagnosisTotalController extends BaseController {
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String type = ParamUtils.getParameter(request, "type");
 		this.pager = new Page("pagerForm", request);
+		String tableName="tbl_rpc_total_day";
+		if("200".equals(wellType)){
+			tableName="tbl_rpc_total_day";
+		}else{
+			tableName="tbl_pcp_total_day";
+		}
 		if(!StringManagerUtils.isNotNull(totalDate)){
-			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from "+tableName+" t ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				totalDate = list.get(0).toString();
@@ -87,7 +93,7 @@ public class DiagnosisTotalController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t where t.jbh=( select t2.jlbh from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from "+tableName+" t where t.jbh=( select t2.jlbh from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -303,6 +309,26 @@ public class DiagnosisTotalController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getPCPAnalysisAndAcqAndControlData")
+	public String getPCPAnalysisAndAcqAndControlData() throws Exception {
+		String id = ParamUtils.getParameter(request, "id");
+		this.pager = new Page("pagerForm", request);
+		String json =diagnosisTotalService.getPCPAnalysisAndAcqAndControlData(id);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/getDiagnosisTotalDataCurveData")
@@ -352,10 +378,10 @@ public class DiagnosisTotalController extends BaseController {
 	
 	@RequestMapping("/getScrewPumpDailyAnalysiCurveData")
 	public String getScrewPumpDailyAnalysiCurveData()throws Exception{
-		String calculatedate = ParamUtils.getParameter(request, "calculatedate");
+		String calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		String json = "";
-		json = this.diagnosisTotalService.getScrewPumpDailyAnalysiCurveData(calculatedate,wellName);
+		json = this.diagnosisTotalService.getScrewPumpDailyAnalysiCurveData(calculateDate,wellName);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

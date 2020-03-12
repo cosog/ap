@@ -228,6 +228,56 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/PCPRPMDailyCalculation")
+	public String PCPRPMDailyCalculation() throws ParseException{
+		String tatalDate=ParamUtils.getParameter(request, "date");
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
+		List<String> requestDataList=calculateDataService.getPCPRPMDailyCalculationRequestData(tatalDate,wellId);
+		String url=Config.getTotalCalculateHttpServerURL();
+		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
+			try {
+//				System.out.println(requestDataList.get(i));
+				Gson gson = new Gson();
+				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
+				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
+				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
+				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
+				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
+				
+				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					calculateDataService.savePCPRPMDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+				}else{
+					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		System.out.println("汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@RequestMapping("/DiscreteDailyCalculation")
 	public String DiscreteDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
@@ -250,6 +300,55 @@ public class CalculateDataController extends BaseController{
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+				}else{
+					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		System.out.println("汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/PCPDiscreteDailyCalculation")
+	public String PCPDiscreteDailyCalculation() throws ParseException{
+		String tatalDate=ParamUtils.getParameter(request, "date");
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
+		List<String> requestDataList=calculateDataService.getPCPDiscreteDailyCalculation(tatalDate,wellId);
+		String url=Config.getTotalCalculateHttpServerURL();
+		for(int i=0;i<requestDataList.size();i++){
+			try {
+				Gson gson = new Gson();
+				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
+				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
+				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
+				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
+				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
+				
+				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					calculateDataService.savePCPDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
 					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
 				}

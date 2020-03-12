@@ -106,6 +106,8 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("totalCalculation")
 						||urlString.indexOf("FSDiagramDailyCalculation")>=0
 						||urlString.indexOf("DiscreteDailyCalculation")>=0
+						||urlString.indexOf("PCPRPMDailyCalculation")>=0
+						||urlString.indexOf("PCPDiscreteDailyCalculation")>=0
 						||urlString.equals("getBalanceTorqueCalulate")||urlString.equals("balanceTotalCalculation")
 						||urlString.equals("saveRTUAcquisitionData")||urlString.equals("getOuterSurfaceCardData")
 						||urlString.equals("saveMQTTTransferElecDiscreteData")||urlString.equals("saveMQTTTransferElecDiagramData")||urlString.equals("saveMQTTTransferElecDailyData")

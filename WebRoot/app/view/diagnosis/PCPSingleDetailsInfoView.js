@@ -934,15 +934,15 @@ function loadPCPRPMAnalysisSingleStatData() {
 function exportScrewPumpRTAnalisiDataExcel() {
 	var gridId = "ScrewPumpRTAnalysisWellList_Id";
     var url = context + '/diagnosisAnalysisOnlyController/exportProductionWellRTAnalysisDataExcel';
-    var fileName = getScrewPumpRTExportExcelTitle();
-    var title =  getScrewPumpRTExportExcelTitle();
+    var fileName = getPCPRPMAnalysisSingleStatType().exportExcelTitle;
+    var title =  getPCPRPMAnalysisSingleStatType().exportExcelTitle;
     
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
     var wellName = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
-    var startDate=Ext.getCmp('DiagnosisAnalysisStartDate_Id').rawValue;
-    var endDate=Ext.getCmp('DiagnosisAnalysisEndDate_Id').rawValue;
+    var startDate=Ext.getCmp('ScrewPumpRealtimeAnalysisStartDate_Id').rawValue;
+    var endDate=Ext.getCmp('ScrewPumpRealtimeAnalysisEndDate_Id').rawValue;
     var statValue = Ext.getCmp('PCPRPMAnalysisSingleDetailsSelectedStatValue_Id').getValue();
-    var type=getSelectStatType();
+    var type=getPCPRPMAnalysisSingleStatType().type;
     var wellType=400;
     
     var fields = "";
@@ -978,8 +978,8 @@ function exportScrewPumpRTAnalisiDataExcel() {
     heads = "序号," + lockedheads+","+unlockedheads;
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
-    + "&wellName=" + URLencode(URLencode(wellName)) 
-    + "&statValue=" + URLencode(URLencode(statValue))  
+    + "&wellName=" + URLencode(URLencode(wellName))
+    + "&statValue=" + URLencode(URLencode(statValue)) 
     + "&fileName=" + URLencode(URLencode(fileName)) 
     + "&title=" + URLencode(URLencode(title))
     + "&type=" + type 

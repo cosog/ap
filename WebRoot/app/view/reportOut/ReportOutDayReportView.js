@@ -25,7 +25,7 @@ Ext.define("AP.view.reportOut.ReportOutDayReportView", {
                     id:'screwPumpDailyReportPanel_Id',
                     layout: "fit",
                     border: false,
-                    hidden:true,
+                    hidden:false,
                     items:[ScrewPumpDailyReportPanel]
                 }],
                 listeners: {

@@ -77,7 +77,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	}
 
 	
-	public String showDiagnosisDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
+	public String showRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
@@ -109,7 +109,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ "{ \"header\":\"在线时率(%)\",\"dataIndex\":\"commTimeEfficiency\"},"
 				
 				+ "{ \"header\":\"运行时间(h)\",\"dataIndex\":\"runTime\"},"
-				+ "{ \"header\":\"运行区间\",\"dataIndex\":\"commRange\"},"
+				+ "{ \"header\":\"运行区间\",\"dataIndex\":\"runRange\"},"
 				+ "{ \"header\":\"运行时率(%)\",\"dataIndex\":\"runTimeEfficiency\"},";
 		if("200".equals(wellType)){//抽油机
 			columns += "{ \"header\":\"功图工况\",\"dataIndex\":\"workingConditionName\"},"
@@ -191,27 +191,102 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String showPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
+				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
+				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
+				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.rpm,"
+				+ " t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
+				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
+				+ " t.todayWattEnergy,"
+				+ " remark"
+				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and  t.wellName='"+wellName+"'";
+		}
+		sql+=" order by t.sortNum, t.wellName";
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		String columns= "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},"
+				+ "{ \"header\":\"日期\",\"dataIndex\":\"calculateDate\",width:100},"
+				
+				+ "{ \"header\":\"通信时间(h)\",\"dataIndex\":\"commTime\"},"
+				+ "{ \"header\":\"在线区间\",\"dataIndex\":\"commRange\"},"
+				+ "{ \"header\":\"在线时率(%)\",\"dataIndex\":\"commTimeEfficiency\"},"
+				
+				+ "{ \"header\":\"运行时间(h)\",\"dataIndex\":\"runTime\"},"
+				+ "{ \"header\":\"运行区间\",\"dataIndex\":\"runRange\"},"
+				+ "{ \"header\":\"运行时率(%)\",\"dataIndex\":\"runTimeEfficiency\"},"
+				
+				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidWeightProduction\"},"
+				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilWeightProduction\"},"
+				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterWeightProduction\"},"
+				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\"},"
+				+ "{ \"header\":\"转速(r/min)\",\"dataIndex\":\"rpm\"},"
+				+ "{ \"header\":\"泵挂(m)\",\"dataIndex\":\"pumpSettingDepth\"},"
+				+ "{ \"header\":\"动液面(m)\",\"dataIndex\":\"producingFluidLevel\"},"
+				+ "{ \"header\":\"沉没度(m)\",\"dataIndex\":\"submergence\"},"
+				
+				+ "{ \"header\":\"系统效率(%)\",\"dataIndex\":\"systemEfficiency\"},"
+				+ "{ \"header\":\"吨液百米耗电量(kW·h/100·t)\",\"dataIndex\":\"powerConsumptionPerthm\"},"
+				+ "{ \"header\":\"日用电量(kW·h)\",\"dataIndex\":\"todayWattEnergy\"},"
+				+ "{ \"header\":\"备注\",\"dataIndex\":\"remark\"}"
+				
+		        + "]";
+		result_json.append("{ \"success\":true,\"wellName\":\""+wellName+"\",\"calculateDate\":\""+calculateDate+"\",\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
+			result_json.append("\"commTime\":\""+obj[3]+"\",");
+			result_json.append("\"commRange\":\""+obj[4]+"\",");
+			result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
+			result_json.append("\"runTime\":\""+obj[6]+"\",");
+			result_json.append("\"runRange\":\""+obj[7]+"\",");
+			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
+		
+			result_json.append("\"liquidWeightProduction\":\""+obj[9]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[10]+"\",");
+			result_json.append("\"waterWeightProduction\":\""+obj[11]+"\",");
+			result_json.append("\"waterCut\":\""+obj[12]+"\",");
+			result_json.append("\"rpm\":\""+obj[13]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[14]+"\",");
+			result_json.append("\"producingFluidLevel\":\""+obj[15]+"\",");
+			result_json.append("\"submergence\":\""+obj[16]+"\",");
+			
+			result_json.append("\"systemEfficiency\":\""+obj[17]+"\",");
+			result_json.append("\"powerConsumptionPerthm\":\""+obj[18]+"\",");
+			result_json.append("\"todayWattEnergy\":\""+obj[19]+"\",");
+			result_json.append("\"remark\":\""+obj[20]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String exportDiagnosisDailyReportExcelData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
-				+ " t.workingConditionName,t.optimizationSuggestion,"
-				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.fullnesscoEfficient,"
-				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
-				+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
+				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.rpm,"
+				+ " t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
+				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
 				+ " t.todayWattEnergy,"
-				+ " t.rpm,t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " remark"
-				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+99) ";
-		}
 		sql+=" order by t.sortNum, t.wellName";
-		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		
 		result_json.append("[");
@@ -226,32 +301,20 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"runTime\":\""+obj[6]+"\",");
 			result_json.append("\"runRange\":\""+obj[7]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
+		
+			result_json.append("\"liquidWeightProduction\":\""+obj[9]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[10]+"\",");
+			result_json.append("\"waterWeightProduction\":\""+obj[11]+"\",");
+			result_json.append("\"waterCut\":\""+obj[12]+"\",");
+			result_json.append("\"rpm\":\""+obj[13]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[14]+"\",");
+			result_json.append("\"producingFluidLevel\":\""+obj[15]+"\",");
+			result_json.append("\"submergence\":\""+obj[16]+"\",");
 			
-			result_json.append("\"optimizationSuggestion\":\""+obj[10]+"\",");
-			result_json.append("\"liquidWeightProduction\":\""+obj[11]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[12]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[13]+"\",");
-			result_json.append("\"waterCut\":\""+obj[14]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
-			result_json.append("\"powerConsumptionPerthm\":\""+obj[24]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[25]+"\",");
-			if("200".equals(wellType)){//抽油机
-				result_json.append("\"workingConditionName\":\""+obj[9]+"\",");
-				result_json.append("\"fullnesscoEfficient\":\""+obj[15]+"\",");
-				result_json.append("\"wattDegreeBalanceLevel\":\""+obj[16]+"\",");
-				result_json.append("\"wattDegreeBalance\":\""+obj[17]+"\",");
-				result_json.append("\"iDegreeBalanceLevel\":\""+obj[18]+"\",");
-				result_json.append("\"iDegreeBalance\":\""+obj[19]+"\",");
-				result_json.append("\"deltaRadius\":\""+obj[20]+"\",");
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[22]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[23]+"\",");
-			}else if("400".equals(wellType)){//螺杆泵
-				result_json.append("\"rpm\":\""+obj[26]+"\",");
-				result_json.append("\"pumpSettingDepth\":\""+obj[27]+"\",");
-				result_json.append("\"producingFluidLevel\":\""+obj[28]+"\",");
-				result_json.append("\"submergence\":\""+obj[29]+"\",");
-			}
-			result_json.append("\"remark\":\""+obj[30]+"\"},");
+			result_json.append("\"systemEfficiency\":\""+obj[17]+"\",");
+			result_json.append("\"powerConsumptionPerthm\":\""+obj[18]+"\",");
+			result_json.append("\"todayWattEnergy\":\""+obj[19]+"\",");
+			result_json.append("\"remark\":\""+obj[20]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

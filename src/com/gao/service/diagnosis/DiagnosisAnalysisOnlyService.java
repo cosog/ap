@@ -216,6 +216,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String finalSql="";
 		String sqlAll="";
 		String ddicName="";
+		String tableName_latest="viw_rpc_comprehensive_latest";
+		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="workingConditionName";
 		
 		if("1".equalsIgnoreCase(type)){
@@ -314,14 +316,27 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
 		columns = ddic.getTableHeader();
-		sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_latest t where t.org_id in("+orgId+")";
-		sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ "commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel from viw_rpc_comprehensive_hist t where t.org_id in("+orgId+")";
 		
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
+		if("400".equals(wellType)){//螺杆泵井
+			tableName_latest="viw_pcp_comprehensive_latest";
+			tableName_hist="viw_pcp_comprehensive_hist";
+			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		}else{//默认为抽油机
+			tableName_latest="viw_rpc_comprehensive_latest";
+			tableName_hist="viw_rpc_comprehensive_hist";
+			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
+		
+		
+		sql+= " from "+tableName_latest+" t where t.org_id in("+orgId+")";
+		sqlHis+= " from "+tableName_hist+" t where t.org_id in("+orgId+")";
+		
 		
 		if(StringManagerUtils.isNotNull(statValue)){
 			sql+=" and "+typeColumnName+"='"+statValue+"' ";

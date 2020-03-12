@@ -140,7 +140,10 @@ public class DiagnosisTotalController extends BaseController {
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String type = ParamUtils.getParameter(request, "type");
 		String wellType = ParamUtils.getParameter(request, "wellType");
-		
+		String tableName="tbl_rpc_total_day";
+		if(StringManagerUtils.stringToInteger(wellType)>=400 && StringManagerUtils.stringToInteger(wellType)<500){
+			tableName="tbl_pcp_total_day";
+		}
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			HttpSession session=request.getSession();
@@ -150,7 +153,7 @@ public class DiagnosisTotalController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from tbl_rpc_total_day t where t.jbh=( select t2.jlbh from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
+			String sql = " select to_char(max(t.calculatedate),'yyyy-mm-dd') from "+tableName+" t where t.wellId=( select t2.id from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -339,10 +342,14 @@ public class DiagnosisTotalController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String itemName = ParamUtils.getParameter(request, "itemName");
 		String itemCode = ParamUtils.getParameter(request, "itemCode");
-		
+		String wellType = ParamUtils.getParameter(request, "wellType");
+		String tableName="viw_rpc_total_day";
+		if("400".equals(wellType)){//螺杆泵
+			tableName="viw_pcp_total_day";
+		}
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from viw_rpc_total_day t  where wellName= '"+wellName+"' ";
+			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from "+tableName+" t  where wellName= '"+wellName+"' ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -359,7 +366,12 @@ public class DiagnosisTotalController extends BaseController {
 		
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json =  this.diagnosisTotalService.getDiagnosisTotalDataCurveData(wellName, startDate,endDate,itemName,itemCode);
+		if("400".equals(wellType)){//螺杆泵
+			json =  this.diagnosisTotalService.getPCPDiagnosisDailyCurveData(wellName, startDate,endDate,itemName,itemCode);
+		}else{
+			json =  this.diagnosisTotalService.getRPCDiagnosisDailyCurveData(wellName, startDate,endDate,itemName,itemCode);
+		}
+		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

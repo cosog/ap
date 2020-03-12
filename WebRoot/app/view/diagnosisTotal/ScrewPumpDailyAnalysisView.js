@@ -892,11 +892,11 @@ function loadScrewPumpDailyStatData() {
 function exportScrewPumpDailyAnalisiDataExcel() {
 	var gridId = "ScrewPumpDailyAnalysisWellList_Id";
 	var url = context + '/diagnosisTotalController/exportDiagnosisTotalDataExcel';
-    var fileName = getScrewPumpDailyExportExcelTitle();
-    var title =  getScrewPumpDailyExportExcelTitle();
+	var fileName = getPCPSelectDailyStatType().exportExcelTitle;
+    var title = getPCPSelectDailyStatType().exportExcelTitle;
     
     var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var jh = Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').getValue();
+    var wellName = Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').getValue();
     var totalDate=Ext.getCmp('ScrewPumpDailyAnalysisDate_Id').rawValue;
     var statValue=Ext.getCmp('ScrewPumpDailyStatSelectedValue_Id').getValue();
 	var startDate=Ext.getCmp('ScrewPumpDailyAnalysisStartDate_Id').rawValue;
@@ -937,15 +937,15 @@ function exportScrewPumpDailyAnalisiDataExcel() {
     heads = "序号," + lockedheads+","+unlockedheads;
     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
     + "&orgId=" + orgId 
-    + "&jh=" + URLencode(URLencode(jh)) 
-    + "&statValue=" + URLencode(URLencode(statValue))  
-    + "&fileName=" + URLencode(URLencode(fileName)) 
-    + "&title=" + URLencode(URLencode(title))
-    + "&type=" + type 
-    + "&wellType=" + wellType 
     + "&totalDate=" + totalDate 
     + "&startDate=" + startDate 
-    + "&endDate=" + endDate ;
+    + "&endDate=" + endDate 
+    + "&wellName=" + URLencode(URLencode(wellName)) 
+    + "&statValue=" + URLencode(URLencode(statValue)) 
+    + "&wellType=" + URLencode(URLencode(wellType)) 
+    + "&type=" + URLencode(URLencode(type)) 
+    + "&fileName=" + URLencode(URLencode(fileName)) 
+    + "&title=" + URLencode(URLencode(title));
     openExcelWindow(url + '?flag=true' + param);
 };
 

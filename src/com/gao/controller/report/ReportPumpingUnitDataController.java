@@ -74,6 +74,10 @@ public class ReportPumpingUnitDataController extends BaseController {
 		wellName = ParamUtils.getParameter(request, "wellName");
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		String wellType = ParamUtils.getParameter(request, "wellType");
+		String tableName="tbl_rpc_total_day";
+		if("400".equals(wellType)){
+			tableName="tbl_pcp_total_day";
+		}
 		if (!StringUtils.isNotBlank(orgId)) {
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
@@ -87,7 +91,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 			v.add(null);
 		}
 		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_rpc_total_day t order by calculateDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from "+tableName+" t order by calculateDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				calculateDate = list.get(0).toString();
@@ -100,7 +104,12 @@ public class ReportPumpingUnitDataController extends BaseController {
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setJssj(calculateDate);
-		json = reportProductionWellService.showDiagnosisDailyReportData(pager, orgId, wellName, calculateDate,wellType);
+		if("400".equals(wellType)){
+			json = reportProductionWellService.showPCPDailyReportData(pager, orgId, wellName, calculateDate);
+		}else{
+			json = reportProductionWellService.showRPCDailyReportData(pager, orgId, wellName, calculateDate,wellType);
+		}
+		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -588,7 +597,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 			v.add(null);
 		}
 		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_rpc_total_day t order by calculateDate desc) where rownum=1 ";
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_pcp_total_day t order by calculateDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
 				calculateDate = list.get(0).toString();
@@ -653,24 +662,20 @@ public class ReportPumpingUnitDataController extends BaseController {
 	        sheetOne.setColumnView(8, 15); // 设置列的宽度    
 	        
 	        sheetOne.setColumnView(9, 15); // 设置列的宽度    
-	        sheetOne.setColumnView(10, 20); // 设置列的宽度   
-	        
+	        sheetOne.setColumnView(10, 15); // 设置列的宽度   
 	        sheetOne.setColumnView(11, 15); // 设置列的宽度   
 	        sheetOne.setColumnView(12, 15); // 设置列的宽度   
 	        sheetOne.setColumnView(13, 15); // 设置列的宽度  
 	        sheetOne.setColumnView(14, 15); // 设置列的宽度
 	        sheetOne.setColumnView(15, 15); // 设置列的宽度
 	        sheetOne.setColumnView(16, 15); // 设置列的宽度
+	        
 	        sheetOne.setColumnView(17, 15); // 设置列的宽度
-	        sheetOne.setColumnView(18, 15); // 设置列的宽度
+	        sheetOne.setColumnView(18, 20); // 设置列的宽度
+	        
 	        sheetOne.setColumnView(19, 15); // 设置列的宽度
 	        
 	        sheetOne.setColumnView(20, 15); // 设置列的宽度
-	        sheetOne.setColumnView(21, 20); // 设置列的宽度
-	        
-	        sheetOne.setColumnView(22, 15); // 设置列的宽度
-	        
-	        sheetOne.setColumnView(23, 15); // 设置列的宽度
 	   
 	        //在Label对象的构造子中指名单元格位置是第一列第一行(0,0)     
 	        //以及单元格内容为test
@@ -689,29 +694,24 @@ public class ReportPumpingUnitDataController extends BaseController {
 	        Label header5_1=new Label(6,2,"运行时间(h)",wcf_head);
 	        Label header5_2=new Label(7,2,"运行区间",wcf_head);
 	        Label header5_3=new Label(8,2,"运行时率(%)",wcf_head);
-	           
-	       Label header6=new Label(9,1,"工况",wcf_head);
-	       Label header6_1=new Label(9,2,"电参工况",wcf_head);
-	       Label header6_2=new Label(10,2,"优化建议",wcf_head);
 	       
-	       Label header7=new Label(11,1,"产量",wcf_head);
-	       Label header7_1=new Label(11,2,"产液量(t/d)",wcf_head);
-	       Label header7_2=new Label(12,2,"产油量(t/d)",wcf_head);
-	       Label header7_3=new Label(13,2,"产水量(t/d)",wcf_head);
-	       Label header7_4=new Label(14,2,"含水率(%)",wcf_head);
-	       Label header7_5=new Label(15,2,"产量波动(%)",wcf_head);
-	       Label header7_6=new Label(16,2,"转速(r/min)",wcf_head);
-	       Label header7_7=new Label(17,2,"泵挂(m)",wcf_head);
-	       Label header7_8=new Label(18,2,"动液面(m)",wcf_head);
-	       Label header7_9=new Label(19,2,"沉没度(m)",wcf_head);
+	       Label header6=new Label(9,1,"产量",wcf_head);
+	       Label header6_1=new Label(9,2,"产液量(t/d)",wcf_head);
+	       Label header6_2=new Label(10,2,"产油量(t/d)",wcf_head);
+	       Label header6_3=new Label(11,2,"产水量(t/d)",wcf_head);
+	       Label header6_4=new Label(12,2,"含水率(%)",wcf_head);
+	       Label header6_5=new Label(13,2,"转速(r/min)",wcf_head);
+	       Label header6_6=new Label(14,2,"泵挂(m)",wcf_head);
+	       Label header6_7=new Label(15,2,"动液面(m)",wcf_head);
+	       Label header6_8=new Label(16,2,"沉没度(m)",wcf_head);
 	       
-	       Label header9=new Label(20,1,"效率",wcf_head);
-	       Label header9_1=new Label(20,2,"系统效率(%)",wcf_head);
-	       Label header9_2=new Label(21,2,"吨液百米耗电量(kW·h/100·t)",wcf_head);
+	       Label header7=new Label(17,1,"效率",wcf_head);
+	       Label header7_1=new Label(17,2,"系统效率(%)",wcf_head);
+	       Label header7_2=new Label(18,2,"吨液百米耗电量(kW·h/100·t)",wcf_head);
 	       
-	       Label header10=new Label(22,1,"日用电量(kW·h)",wcf_head);
+	       Label header8=new Label(19,1,"日用电量(kW·h)",wcf_head);
 	       
-	       Label header11=new Label(23,1,"备注",wcf_head);
+	       Label header9=new Label(20,1,"备注",wcf_head);
 	       
            sheetOne.addCell(title);   
            sheetOne.addCell(header1);     
@@ -728,47 +728,42 @@ public class ReportPumpingUnitDataController extends BaseController {
            sheetOne.addCell(header6);
            sheetOne.addCell(header6_1);     
            sheetOne.addCell(header6_2);
+           sheetOne.addCell(header6_3);
+           sheetOne.addCell(header6_4);
+           sheetOne.addCell(header6_5);
+           sheetOne.addCell(header6_6);
+           sheetOne.addCell(header6_7);
+           sheetOne.addCell(header6_8);
            sheetOne.addCell(header7);
            sheetOne.addCell(header7_1);
            sheetOne.addCell(header7_2);
-           sheetOne.addCell(header7_3);
-           sheetOne.addCell(header7_4);
-           sheetOne.addCell(header7_5);
-           sheetOne.addCell(header7_6);
-           sheetOne.addCell(header7_7);
-           sheetOne.addCell(header7_8);
-           sheetOne.addCell(header7_9);
+           sheetOne.addCell(header8);
            sheetOne.addCell(header9);
-           sheetOne.addCell(header9_1);
-           sheetOne.addCell(header9_2);
-           sheetOne.addCell(header10);
-           sheetOne.addCell(header11);
            
          //合： 第1列第1行  到 第13列第1行     
-           sheetOne.mergeCells(0, 0, 23, 0);   
+           sheetOne.mergeCells(0, 0, 20, 0);   
            
            sheetOne.mergeCells(0, 1, 0, 2);     
            sheetOne.mergeCells(1, 1, 1, 2);
            sheetOne.mergeCells(2, 1, 2, 2);
            sheetOne.mergeCells(3, 1, 5, 1);
            sheetOne.mergeCells(6, 1, 8, 1);
-           sheetOne.mergeCells(9, 1, 10, 1);
-           sheetOne.mergeCells(11, 1, 19, 1);
-           sheetOne.mergeCells(20, 1, 21, 1);
-           sheetOne.mergeCells(22, 1, 22, 2);
-           sheetOne.mergeCells(23, 1, 23, 2);
+           sheetOne.mergeCells(9, 1, 16, 1);
+           sheetOne.mergeCells(17, 1, 18, 1);
+           sheetOne.mergeCells(19, 1, 19, 2);
+           sheetOne.mergeCells(20, 1, 20, 2);
            /*动态数据   */ 
-           float sumTxsj=0;
-           float sumYxsj=0;
-           float sumCyl=0;
-           float sumCyl1=0;
-           float sumCsl=0;
+           float sumCommTime=0;
+           float sumRunTime=0;
+           float sumLiquidWeightProduction=0;
+           float sumOilWeightProduction=0;
+           float sumWaterWeightProduction=0;
            
-           int txsjRecords=0;
-           int yxsjRecords=0;
-           int cylRecords=0;
-           int cyl1Records=0;
-           int cslRecords=0;
+           int commTimeRecords=0;
+           int runTimeRecords=0;
+           int liquidWeightProductionRecords=0;
+           int oilWeightProductionRecords=0;
+           int waterWeightProductionRecords=0;
            for(int i=0;i<=jsonArray.size()+1;i++){
         	   Label content1=null;
         	   Label content2=null;
@@ -791,156 +786,137 @@ public class ReportPumpingUnitDataController extends BaseController {
         	   Label content19=null;
         	   Label content20=null;
         	   Label content21=null;
-        	   Label content22=null;
-        	   Label content23=null;
-        	   Label content24=null;
         	   if(i<jsonArray.size()){
         		   JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-            	   sumTxsj+=StringManagerUtils.stringToFloat(everydata.getString("tzsj"));
-            	   sumYxsj+=StringManagerUtils.stringToFloat(everydata.getString("rgzsj"));
-            	   sumCyl+=StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl"));
-            	   sumCyl1+=StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl1"));
-            	   sumCsl+=StringManagerUtils.stringToFloat(everydata.getString("jsdjrcsl"));
+        		   sumCommTime+=StringManagerUtils.stringToFloat(everydata.getString("commTime"));
+        		   sumRunTime+=StringManagerUtils.stringToFloat(everydata.getString("runTime"));
+        		   sumLiquidWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("liquidWeightProduction"));
+        		   sumOilWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("oilWeightProduction"));
+        		   sumWaterWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("waterWeightProduction"));
             	   
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("tzsj"))>0){
-            		   txsjRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("commTime"))>0){
+            		   commTimeRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("rgzsj"))>0){
-            		   yxsjRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("runTime"))>0){
+            		   runTimeRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl"))>0){
-            		   cylRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("liquidWeightProduction"))>0){
+            		   liquidWeightProductionRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("jsdjrcyl1"))>0){
-            		   cyl1Records+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("oilWeightProduction"))>0){
+            		   oilWeightProductionRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("jsdjrcsl"))>0){
-            		   cslRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("waterWeightProduction"))>0){
+            		   waterWeightProductionRecords+=1;
             	   }
             	   
             	   content1=new Label(0,i+3,i+1+"",wcf_table);
             	   content2=new Label(1,i+3,everydata.getString("wellName"),wcf_table);
             	   content3=new Label(2,i+3,everydata.getString("calculateDate"),wcf_table);
             	   
-            	   content4=new Label(3,i+3,everydata.getString("tzsj"),wcf_table);
-            	   content5=new Label(4,i+3,everydata.getString("txqj"),wcf_table);
-            	   content6=new Label(5,i+3,everydata.getString("txsl"),wcf_table);
+            	   content4=new Label(3,i+3,everydata.getString("commTime"),wcf_table);
+            	   content5=new Label(4,i+3,everydata.getString("commRange"),wcf_table);
+            	   content6=new Label(5,i+3,everydata.getString("commTimeEfficiency"),wcf_table);
             	   
-            	   content7=new Label(6,i+3,everydata.getString("rgzsj"),wcf_table);
-            	   content8=new Label(7,i+3,everydata.getString("yxqj"),wcf_table);
-            	   content9=new Label(8,i+3,everydata.getString("scsl"),wcf_table);
+            	   content7=new Label(6,i+3,everydata.getString("runTime"),wcf_table);
+            	   content8=new Label(7,i+3,everydata.getString("runRange"),wcf_table);
+            	   content9=new Label(8,i+3,everydata.getString("runTimeEfficiency"),wcf_table);
             	   
-            	   content10=new Label(9,i+3,everydata.getString("egkmc"),wcf_table);
-            	   content11=new Label(10,i+3,everydata.getString("yhjy"),wcf_table);
+            	   content10=new Label(9,i+3,everydata.getString("liquidWeightProduction"),wcf_table);
+            	   content11=new Label(10,i+3,everydata.getString("oilWeightProduction"),wcf_table);
+            	   content12=new Label(11,i+3,everydata.getString("waterWeightProduction"),wcf_table);
+            	   content13=new Label(12,i+3,everydata.getString("waterCut"),wcf_table);
+            	   content14=new Label(13,i+3,everydata.getString("rpm"),wcf_table);
+            	   content15=new Label(14,i+3,everydata.getString("pumpSettingDepth"),wcf_table);
+            	   content16=new Label(15,i+3,everydata.getString("producingFluidLevel"),wcf_table);
+            	   content17=new Label(16,i+3,everydata.getString("submergence"),wcf_table);
             	   
+            	   content18=new Label(17,i+3,everydata.getString("systemEfficiency"),wcf_table);
+            	   content19=new Label(18,i+3,everydata.getString("powerConsumptionPerthm"),wcf_table);
             	   
-            	   content12=new Label(11,i+3,everydata.getString("jsdjrcyl"),wcf_table);
-            	   content13=new Label(12,i+3,everydata.getString("jsdjrcyl1"),wcf_table);
-            	   content14=new Label(13,i+3,everydata.getString("jsdjrcsl"),wcf_table);
-            	   content15=new Label(14,i+3,everydata.getString("hsld"),wcf_table);
-            	   content16=new Label(15,i+3,everydata.getString("jsdjrcylbd"),wcf_table);
-            	   content17=new Label(16,i+3,everydata.getString("rpm"),wcf_table);
+            	   content20=new Label(19,i+3,everydata.getString("todayWattEnergy"),wcf_table);
             	   
-            	   content18=new Label(17,i+3,everydata.getString("bg"),wcf_table);
-            	   content19=new Label(18,i+3,everydata.getString("dym"),wcf_table);
-            	   content20=new Label(19,i+3,everydata.getString("cmd"),wcf_table);
-            	   
-            	   content21=new Label(20,i+3,everydata.getString("xtxl"),wcf_table);
-            	   content22=new Label(21,i+3,everydata.getString("dybmhdl"),wcf_table);
-            	   
-            	   content23=new Label(22,i+3,everydata.getString("rydl"),wcf_table);
-            	   content24=new Label(23,i+3,everydata.getString("bz"),wcf_table);
+            	   content21=new Label(20,i+3,everydata.getString("remark"),wcf_table);
         	   }else if(i==jsonArray.size()){
-        		   sumTxsj=StringManagerUtils.stringToFloat(sumTxsj+"",2);
-            	   sumYxsj=StringManagerUtils.stringToFloat(sumYxsj+"",2);
-            	   sumCyl=StringManagerUtils.stringToFloat(sumCyl+"",2);
-            	   sumCyl1=StringManagerUtils.stringToFloat(sumCyl1+"",2);
-            	   sumCsl=StringManagerUtils.stringToFloat(sumCsl+"",2);
+        		   sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
+        		   sumRunTime=StringManagerUtils.stringToFloat(sumRunTime+"",2);
+        		   sumLiquidWeightProduction=StringManagerUtils.stringToFloat(sumLiquidWeightProduction+"",2);
+        		   sumOilWeightProduction=StringManagerUtils.stringToFloat(sumOilWeightProduction+"",2);
+        		   sumWaterWeightProduction=StringManagerUtils.stringToFloat(sumWaterWeightProduction+"",2);
             	   content1=new Label(0,i+3,"合计",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
             	   content3=new Label(2,i+3,"",wcf_table);
             	   
-            	   content4=new Label(3,i+3,sumTxsj+"",wcf_table);
+            	   content4=new Label(3,i+3,sumCommTime+"",wcf_table);
             	   content5=new Label(4,i+3,"",wcf_table);
             	   content6=new Label(5,i+3,"",wcf_table);
             	   
-            	   content7=new Label(6,i+3,sumYxsj+"",wcf_table);
+            	   content7=new Label(6,i+3,sumRunTime+"",wcf_table);
             	   content8=new Label(7,i+3,"",wcf_table);
             	   content9=new Label(8,i+3,"",wcf_table);
             	   
-            	   content10=new Label(9,i+3,"",wcf_table);
-            	   content11=new Label(10,i+3,"",wcf_table);
-            	   
-            	   
-            	   content12=new Label(11,i+3,sumCyl+"",wcf_table);
-            	   content13=new Label(12,i+3,sumCyl1+"",wcf_table);
-            	   content14=new Label(13,i+3,sumCsl+"",wcf_table);
+            	   content10=new Label(9,i+3,sumLiquidWeightProduction+"",wcf_table);
+            	   content11=new Label(10,i+3,sumOilWeightProduction+"",wcf_table);
+            	   content12=new Label(11,i+3,sumWaterWeightProduction+"",wcf_table);
+            	   content13=new Label(12,i+3,"",wcf_table);
+            	   content14=new Label(13,i+3,"",wcf_table);
             	   content15=new Label(14,i+3,"",wcf_table);
             	   content16=new Label(15,i+3,"",wcf_table);
             	   content17=new Label(16,i+3,"",wcf_table);
             	   
             	   content18=new Label(17,i+3,"",wcf_table);
             	   content19=new Label(18,i+3,"",wcf_table);
+            	   
             	   content20=new Label(19,i+3,"",wcf_table);
-            	   
             	   content21=new Label(20,i+3,"",wcf_table);
-            	   content22=new Label(21,i+3,"",wcf_table);
-            	   
-            	   content23=new Label(22,i+3,"",wcf_table);
-            	   content24=new Label(23,i+3,"",wcf_table);
         	   }else{
-        		   float averageTxsj=0;
-                   float averageYxsj=0;
-                   float averageCyl=0;
-                   float averageCyl1=0;
-                   float averageCsl=0;
-        		   if(txsjRecords>0){
-        			   averageTxsj=StringManagerUtils.stringToFloat(sumTxsj/txsjRecords+"",2);
+        		   float averageCommTime=0;
+                   float averageRunTime=0;
+                   float averageLiquidWeightProduction=0;
+                   float averageOilWeightProduction=0;
+                   float averageWaterWeightProduction=0;
+        		   if(commTimeRecords>0){
+        			   averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
         		   }
-        		   if(yxsjRecords>0){
-        			   averageYxsj=StringManagerUtils.stringToFloat(sumYxsj/yxsjRecords+"",2);
+        		   if(runTimeRecords>0){
+        			   averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
         		   }
-        		   if(cylRecords>0){
-        			   averageCyl=StringManagerUtils.stringToFloat(sumCyl/cylRecords+"",2);
+        		   if(liquidWeightProductionRecords>0){
+        			   averageLiquidWeightProduction=StringManagerUtils.stringToFloat(sumLiquidWeightProduction/liquidWeightProductionRecords+"",2);
         		   }
-        		   if(cyl1Records>0){
-        			   averageCyl1=StringManagerUtils.stringToFloat(sumCyl1/cyl1Records+"",2);
+        		   if(oilWeightProductionRecords>0){
+        			   averageOilWeightProduction=StringManagerUtils.stringToFloat(sumOilWeightProduction/oilWeightProductionRecords+"",2);
         		   }
-        		   if(cslRecords>0){
-        			   averageCsl=StringManagerUtils.stringToFloat(sumCsl/cslRecords+"",2);
+        		   if(waterWeightProductionRecords>0){
+        			   averageWaterWeightProduction=StringManagerUtils.stringToFloat(sumWaterWeightProduction/waterWeightProductionRecords+"",2);
         		   }
         		   content1=new Label(0,i+3,"合计",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
             	   content3=new Label(2,i+3,"",wcf_table);
             	   
-            	   content4=new Label(3,i+3,averageTxsj+"",wcf_table);
+            	   content4=new Label(3,i+3,averageCommTime+"",wcf_table);
             	   content5=new Label(4,i+3,"",wcf_table);
             	   content6=new Label(5,i+3,"",wcf_table);
             	   
-            	   content7=new Label(6,i+3,averageYxsj+"",wcf_table);
+            	   content7=new Label(6,i+3,averageRunTime+"",wcf_table);
             	   content8=new Label(7,i+3,"",wcf_table);
             	   content9=new Label(8,i+3,"",wcf_table);
             	   
-            	   content10=new Label(9,i+3,"",wcf_table);
-            	   content11=new Label(10,i+3,"",wcf_table);
-            	   
-            	   
-            	   content12=new Label(11,i+3,averageCyl+"",wcf_table);
-            	   content13=new Label(12,i+3,averageCyl1+"",wcf_table);
-            	   content14=new Label(13,i+3,averageCsl+"",wcf_table);
+            	   content10=new Label(9,i+3,averageLiquidWeightProduction+"",wcf_table);
+            	   content11=new Label(10,i+3,averageOilWeightProduction+"",wcf_table);
+            	   content12=new Label(11,i+3,averageWaterWeightProduction+"",wcf_table);
+            	   content13=new Label(12,i+3,"",wcf_table);
+            	   content14=new Label(13,i+3,"",wcf_table);
             	   content15=new Label(14,i+3,"",wcf_table);
             	   content16=new Label(15,i+3,"",wcf_table);
             	   content17=new Label(16,i+3,"",wcf_table);
             	   
             	   content18=new Label(17,i+3,"",wcf_table);
             	   content19=new Label(18,i+3,"",wcf_table);
+            	   
             	   content20=new Label(19,i+3,"",wcf_table);
             	   
             	   content21=new Label(20,i+3,"",wcf_table);
-            	   content22=new Label(21,i+3,"",wcf_table);
-            	   
-            	   content23=new Label(22,i+3,"",wcf_table);
-            	   content24=new Label(23,i+3,"",wcf_table);
         	   }
         	   sheetOne.addCell(content1);
         	   sheetOne.addCell(content2);
@@ -963,9 +939,6 @@ public class ReportPumpingUnitDataController extends BaseController {
         	   sheetOne.addCell(content19);
         	   sheetOne.addCell(content20);
         	   sheetOne.addCell(content21);
-        	   sheetOne.addCell(content22);
-        	   sheetOne.addCell(content23);
-        	   sheetOne.addCell(content24);
            }
            //写入数据并关闭文件     
            book.write();     

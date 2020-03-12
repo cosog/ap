@@ -34,10 +34,13 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalDataCurveStore', {
         	var tabPanel = Ext.getCmp("ProductionWellDailyAnalisisPanel");
         	var activeId = tabPanel.getActiveTab().id;
         	var wellName;
+        	var wellType=200;
         	if(activeId=="pumpUnitDailyAnalysisPanel_Id"){
         		wellName  = Ext.getCmp("DiagnosisTotalData_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		wellType=200;
         	}else if(activeId=="screwPumpDailyAnalysisPanel_Id"){
         		wellName  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		wellType=400;
         	}
         	var StartDate = Ext.getCmp('TotalDiagnosisDataStartDate_Id').rawValue;
         	var EndDate = Ext.getCmp('TotalDiagnosisDataEndDate_Id').rawValue;
@@ -48,7 +51,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalDataCurveStore', {
                     startDate:StartDate,
                     endDate:EndDate,
                     itemName:itemName,
-                    itemCode:itemCode
+                    itemCode:itemCode,
+                    wellType:wellType
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

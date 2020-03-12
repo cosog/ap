@@ -172,7 +172,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String columns= "";
 		DataDictionary ddic = null;
 		String ddicName="";
-		
+		String tableName="viw_rpc_total_day";
 		String typeColumnName="workingConditionName";
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
@@ -261,10 +261,17 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",workingConditionString_E,workingConditionString,"
-				+ " workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
-				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel "
-				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") ";
+		String sql=ddic.getSql()+",workingConditionString,"
+				+ " workingConditionAlarmLevel,"
+				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		if("200".equals(wellType)){
+			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			tableName="viw_rpc_total_day";
+		}else{
+			tableName="viw_pcp_total_day";
+		}
+				
+		sql+= " from "+tableName+" t where t.org_id in ("+orgId+") ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
 				+ " and  t.wellName='"+wellName+"' "
@@ -273,9 +280,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			sql+=" and t.calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
 			if(StringManagerUtils.isNotNull(statValue)){
 				sql+=" and "+typeColumnName+"='"+statValue+"'";
-			}
-			if(StringManagerUtils.isNotNull(wellType)){
-				sql+=" and liftingType>="+wellType+" and liftingType<("+wellType+"+100) ";
 			}
 			sql+=" order by t.sortnum, t.wellName";
 		}
@@ -679,7 +683,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getDiagnosisTotalDataCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
+	public String getRPCDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
 			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)){
@@ -691,6 +695,41 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			itemCode="t."+itemCode;
 		}
 		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_rpc_total_day t,tbl_wellinformation t007 "
+				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
+		
+		int totals = getTotalCountRows(sql);//获取总记录数
+		List<?> list=this.findCallSql(sql);
+		
+		dynSbf.append("{\"success\":true,\"totalCount\":" + totals+",\"itemNum\":"+itemCode.split(",").length + ",\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Object[] obj = (Object[]) list.get(i);
+				dynSbf.append("{ \"calculateDate\":\"" + obj[0] + "\",");
+				dynSbf.append("\"value\":\""+obj[1]+"\"");
+				if(obj.length==4){
+					dynSbf.append(",\"maxValue\":\""+obj[2]+"\"");
+					dynSbf.append(",\"minValue\":\""+obj[3]+"\"");
+				}
+				dynSbf.append("},");
+			}
+			dynSbf.deleteCharAt(dynSbf.length() - 1);
+		}
+		dynSbf.append("]}");
+		return dynSbf.toString();
+	}
+	
+	public String getPCPDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
+			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)){
+				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
+			}else{
+				itemCode="t."+itemCode+",t."+itemCode+"Max,t."+itemCode+"Min";
+			}
+		}else{
+			itemCode="t."+itemCode;
+		}
+		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_pcp_total_day t,tbl_wellinformation t007 "
 				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
 		
 		int totals = getTotalCountRows(sql);//获取总记录数

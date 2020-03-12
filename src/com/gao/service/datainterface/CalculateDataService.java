@@ -471,7 +471,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " left outer join tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
-				+ " where 1=1";
+				+ " where t.liftingType between 200 and 299 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
 											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
 											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
@@ -656,15 +656,263 @@ public class CalculateDataService<T> extends BaseService<T> {
 		return requestDataList;
 	}
 	
+	public List<String> getPCPRPMDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
+		StringBuffer dataSbf=null;
+		List<String> requestDataList=new ArrayList<String>();
+		String timeEffTotalUrl=Config.getTimeEfficiencyHttpServerURL();
+		String commTotalUrl=Config.getCommHttpServerURL();
+		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t.runtimeefficiencysource,t.driveraddr,t.driverid,"
+				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
+				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "
+				+ " from tbl_wellinformation t "
+				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
+				+ " left outer join tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
+				+ " where t.liftingType between 400 and 499 ";
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.rpm,"
+											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
+											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
+											+" t.systemefficiency,t.powerconsumptionperthm,"
+											+" prod.productiongasoilratio,prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,t.pumpeff,"
+											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature"
+											+" from tbl_pcp_rpm_hist t ,tbl_wellinformation t007 ,tbl_pcp_productiondata_hist prod"
+											+" where t.wellid=t007.id and t.productiondataid=prod.id "
+											+" and  t.acquisitiontime > "
+											+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
+											+" from tbl_pcp_rpm_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
+											+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
+											+" and t.resultstatus=1 and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+		String statusSql="select well.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
+				+ " from tbl_pcp_discrete_hist t,tbl_wellinformation well "
+				+ " where t.wellid=well.id and t.acquisitiontime=( select max(t2.acquisitiontime) from tbl_pcp_discrete_hist t2 where t2.wellid=t.wellid and t2.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
+		if(StringManagerUtils.isNotNull(wellId)){
+			wellinformationSql+=" and t.id in ("+wellId+")";
+			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
+			statusSql+=" and t.wellid in("+wellId+")";
+		}
+//		wellinformationSql+=" and t.jh='龙1-斜09'";
+//		singleCalculateResuleSql+=" and t007.jh='龙1-斜09'";
+		
+		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
+		wellinformationSql+=" order by t.sortnum";
+		statusSql+=" order by well.sortnum";
+		List<?> welllist = findCallSql(wellinformationSql);
+		List<?> singleresultlist = findCallSql(singleCalculateResuleSql);
+
+		for(int i=0;i<welllist.size();i++){
+			try{
+				Object[] wellObj=(Object[]) welllist.get(i);
+				TimeEffResponseData timeEffResponseData=null;
+				CommResponseData commResponseData=null;
+				if(!StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果不是当天实时汇总，进行跨天汇总
+					List<?> statusList = findCallSql(statusSql);
+					for(int j=0;j<statusList.size();j++){
+						Object[] statusObj=(Object[]) statusList.get(j);
+						if(wellObj[0].toString().equals(statusObj[0].toString())){
+							boolean commStatus=false;
+							boolean runStatus=false;
+							if(statusObj[2]!=null&&StringManagerUtils.stringToInteger(statusObj[2]+"")==1){
+								commStatus=true;
+							}
+							if(statusObj[6]!=null&&StringManagerUtils.stringToInteger(statusObj[6]+"")==1){
+								runStatus=true;
+							}
+							String commTotalRequestData="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+wellObj[0]+"\","
+									+ "\"Last\":{"
+									+ "\"AcquisitionTime\": \""+statusObj[1]+"\","
+									+ "\"CommStatus\": "+commStatus+","
+									+ "\"CommEfficiency\": {"
+									+ "\"Efficiency\": "+statusObj[3]+","
+									+ "\"Time\": "+statusObj[4]+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[5]+"")+""
+									+ "}"
+									+ "},"
+									+ "\"Current\": {"
+									+ "\"AcquisitionTime\":\""+tatalDate+" 01:00:00\","
+									+ "\"CommStatus\":true"
+									+ "}"
+									+ "}";
+							String runTotalRequestData="{"
+									+ "\"AKString\":\"\","
+									+ "\"WellName\":\""+wellObj[0]+"\","
+									+ "\"Last\":{"
+									+ "\"AcquisitionTime\": \""+statusObj[1]+"\","
+									+ "\"RunStatus\": "+runStatus+","
+									+ "\"RunEfficiency\": {"
+									+ "\"Efficiency\": "+statusObj[7]+","
+									+ "\"Time\": "+statusObj[8]+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[9]+"")+""
+									+ "}"
+									+ "},"
+									+ "\"Current\": {"
+									+ "\"AcquisitionTime\":\""+tatalDate+" 01:00:00\","
+									+ "\"RunStatus\":true"
+									+ "}"
+									+ "}";
+							Gson gson = new Gson();
+							java.lang.reflect.Type type=null;
+							if(wellObj[3]!=null&&wellObj[4]!=null){
+								String commTotalResponse=StringManagerUtils.sendPostMethod(commTotalUrl, commTotalRequestData,"utf-8");
+								type = new TypeToken<CommResponseData>() {}.getType();
+								commResponseData = gson.fromJson(commTotalResponse, type);
+							}
+							if(!"0".equals(wellObj[2]+"")){
+								String runTotalResponse=StringManagerUtils.sendPostMethod(timeEffTotalUrl, runTotalRequestData,"utf-8");
+								type = new TypeToken<TimeEffResponseData>() {}.getType();
+								timeEffResponseData = gson.fromJson(runTotalResponse, type);
+							}
+							break;
+						}
+					}
+				}
+				dataSbf = new StringBuffer();
+				dataSbf.append("{\"AKString\":\"\",");
+				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
+				dataSbf.append("\"EveryTime\": [");
+				for(int j=0;j<singleresultlist.size();j++){
+					Object[] resuleObj=(Object[]) singleresultlist.get(j);
+					if(wellObj[0].toString().equals(resuleObj[0].toString())){
+						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
+						if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
+							dataSbf.append("\"CommStatus\":"+(commResponseData.getDaily().getCommStatus()?1:0)+",");
+							dataSbf.append("\"CommTime\":"+commResponseData.getDaily().getCommEfficiency().getTime()+",");
+							dataSbf.append("\"CommTimeEfficiency\":"+commResponseData.getDaily().getCommEfficiency().getEfficiency()+",");
+							dataSbf.append("\"CommRange\":\""+commResponseData.getDaily().getCommEfficiency().getRangeString()+"\",");
+						}else if(StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果是实时汇总
+							dataSbf.append("\"CommStatus\":"+wellObj[5]+",");
+							dataSbf.append("\"CommTime\":"+wellObj[6]+",");
+							dataSbf.append("\"CommTimeEfficiency\":"+wellObj[7]+",");
+							dataSbf.append("\"CommRange\":\""+wellObj[8]+"\",");
+						}
+						if("0".equals(wellObj[2]+"")){//如果时率来源是人工计算
+							String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
+							dataSbf.append("\"RunStatus\":1,");
+							dataSbf.append("\"RunTime\":"+wellObj[1]+",");
+							dataSbf.append("\"RunTimeEfficiency\":"+(StringManagerUtils.stringToFloat(wellObj[1]+"", 2))/24+",");
+							dataSbf.append("\"RunRange\":\""+wellRunRime+"\",");
+						}else{
+							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1&&timeEffResponseData.getDaily().getRunEfficiency().getRange()!=null&&timeEffResponseData.getDaily().getRunEfficiency().getRange().size()>0){
+								dataSbf.append("\"RunStatus\":"+(timeEffResponseData.getDaily().getRunStatus()?1:0)+",");
+								dataSbf.append("\"RunTime\":"+timeEffResponseData.getDaily().getRunEfficiency().getTime()+",");
+								dataSbf.append("\"RunTimeEfficiency\":"+timeEffResponseData.getDaily().getRunEfficiency().getEfficiency()+",");
+								dataSbf.append("\"RunRange\":\""+timeEffResponseData.getDaily().getRunEfficiency().getRangeString()+"\",");
+							}else if(StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())).equals(tatalDate)){//如果是实时汇总
+								dataSbf.append("\"RunStatus\":"+wellObj[9]+",");
+								dataSbf.append("\"RunTime\":"+wellObj[10]+",");
+								dataSbf.append("\"RunTimeEfficiency\":"+wellObj[11]+",");
+								dataSbf.append("\"RunRange\":\""+wellObj[12]+"\",");
+							}
+						}
+						dataSbf.append("\"RPM\":"+resuleObj[2]+",");
+						dataSbf.append("\"LiquidVolumetricProduction\":"+resuleObj[3]+",");
+						dataSbf.append("\"OilVolumetricProduction\":"+resuleObj[4]+",");
+						dataSbf.append("\"WaterVolumetricProduction\":"+resuleObj[5]+",");
+						dataSbf.append("\"VolumeWaterCut\":"+resuleObj[6]+",");
+						dataSbf.append("\"LiquidWeightProduction\":"+resuleObj[7]+",");
+						dataSbf.append("\"OilWeightProduction\":"+resuleObj[8]+",");
+						dataSbf.append("\"WaterWeightProduction\":"+resuleObj[9]+",");
+						dataSbf.append("\"WeightWaterCut\":"+resuleObj[10]+",");
+						dataSbf.append("\"SystemEfficiency\":"+resuleObj[11]+",");
+						dataSbf.append("\"PowerConsumptionPerTHM\":"+resuleObj[12]+",");
+						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[13]+",");
+						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[14]+",");
+						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[15]+",");
+						dataSbf.append("\"Submergence\":"+resuleObj[16]+",");
+						dataSbf.append("\"PumpEff\":"+resuleObj[17]+",");
+						dataSbf.append("\"TubingPressure\":"+resuleObj[18]+",");
+						dataSbf.append("\"CasingPressure\":"+resuleObj[19]+",");
+						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[20]+"},");
+					}
+				}
+				if(dataSbf.toString().endsWith(",")){
+					dataSbf.deleteCharAt(dataSbf.length() - 1);
+				}
+				dataSbf.append("]}");
+				requestDataList.add(dataSbf.toString());
+			}catch(Exception e){
+				e.printStackTrace();
+				continue;
+			}
+		}
+		//遍历无井环的井
+		
+		return requestDataList;
+	}
+	
 	
 	public List<String> getDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid from tbl_wellinformation t left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  where 1=1";
+		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid "
+				+ " from tbl_wellinformation t "
+				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
+				+ " where t.liftingType between 200 and 299 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
+				+" where t.wellid=t007.id "
+				+" and t.acquisitiontime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
+		if(StringManagerUtils.isNotNull(wellId)){
+			wellinformationSql+=" and t.id in ("+wellId+")";
+			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
+		}
+		
+		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
+		wellinformationSql+=" order by t.sortnum";
+		List<?> welllist = findCallSql(wellinformationSql);
+		List<?> singleresultlist = findCallSql(singleCalculateResuleSql);
+
+		for(int i=0;i<welllist.size();i++){
+			try{
+				Object[] wellObj=(Object[]) welllist.get(i);
+				dataSbf = new StringBuffer();
+				dataSbf.append("{\"AKString\":\"\",");
+				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
+				dataSbf.append("\"EveryTime\": [");
+				String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
+				for(int j=0;j<singleresultlist.size();j++){
+					Object[] resuleObj=(Object[]) singleresultlist.get(j);
+					if(wellObj[0].toString().equals(resuleObj[0].toString())){
+						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
+						dataSbf.append("\"IA\":"+resuleObj[2]+",");
+						dataSbf.append("\"IB\":"+resuleObj[3]+",");
+						dataSbf.append("\"IC\":"+resuleObj[4]+",");
+						dataSbf.append("\"VA\":"+resuleObj[5]+",");
+						dataSbf.append("\"VB\":"+resuleObj[6]+",");
+						dataSbf.append("\"VC\":"+resuleObj[7]+",");
+						dataSbf.append("\"RunFrequency\":"+StringManagerUtils.stringToFloat(resuleObj[8]+"")+"},");
+					}
+				}
+				if(dataSbf.toString().endsWith(",")){
+					dataSbf.deleteCharAt(dataSbf.length() - 1);
+				}
+				dataSbf.append("]}");
+				requestDataList.add(dataSbf.toString());
+			}catch(Exception e){
+				e.printStackTrace();
+				continue;
+			}
+		}
+		//遍历无井环的井
+		
+		return requestDataList;
+	}
+	
+	public List<String> getPCPDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
+		StringBuffer dataSbf=null;
+		List<String> requestDataList=new ArrayList<String>();
+		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid "
+				+ " from tbl_wellinformation t "
+				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
+				+ " where t.liftingType between 400 and 499 ";
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
+				+" t.frequencyrunvalue"
+				+" from tbl_pcp_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+" and t.acquisitiontime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
 		if(StringManagerUtils.isNotNull(wellId)){
@@ -719,8 +967,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public boolean saveFSDiagramDailyCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
 		return this.getBaseDao().saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData, tatalDate);
 	}
+	public boolean savePCPRPMDailyCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
+		return this.getBaseDao().savePCPRPMDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData, tatalDate);
+	}
 	public boolean saveDiscreteDailyCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
 		return this.getBaseDao().saveDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData, tatalDate);
+	}
+	public boolean savePCPDiscreteDailyCalculationData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
+		return this.getBaseDao().savePCPDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData, tatalDate);
 	}
 	
 }

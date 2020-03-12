@@ -55,10 +55,14 @@ public class CalculateDataManagerTast {
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getProjectAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
 		String discreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/DiscreteDailyCalculation";
+		String rpmDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/PCPRPMDailyCalculation";
+		String PCPDiscreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation";
 		@SuppressWarnings("unused")
 		String result="";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 		result=StringManagerUtils.sendPostMethod(discreteDailyCalculationUrl, "","utf-8");
+		result=StringManagerUtils.sendPostMethod(rpmDailyCalculationUrl, "","utf-8");
+		result=StringManagerUtils.sendPostMethod(PCPDiscreteDailyCalculationUrl, "","utf-8");
 	}
 	
 	//离散数据实时汇总
@@ -66,9 +70,11 @@ public class CalculateDataManagerTast {
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
 		String discreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
+		String PCPDiscreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("unused")
 		String result="";
 		result=StringManagerUtils.sendPostMethod(discreteDailyCalculationUrl, "","utf-8");
+		result=StringManagerUtils.sendPostMethod(PCPDiscreteDailyCalculationUrl, "","utf-8");
 	}
 	
 	/**

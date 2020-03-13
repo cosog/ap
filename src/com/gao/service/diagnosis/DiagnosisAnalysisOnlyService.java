@@ -737,7 +737,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " order by t3.seq";
 		String sql="select wattDegreeBalance,iDegreeBalance,"
 				+ " liquidWeightProduction,oilWeightProduction,waterCut,"
-				+ " theoreticalProduction,availablePlungerstrokeProd,pumpClearanceLeakProd,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd,"
+				+ " theoreticalProduction,"
+				+ " plungerstroke,availableplungerstroke,"
+				+ " availablePlungerstrokeProd,pumpClearanceLeakProd,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd,"
 				+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
 				+ " stroke,spm,motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
 				+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
@@ -782,87 +784,89 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"oilWeightProduction\":\""+obj[3]+"\",");
 			result_json.append("\"waterCut\":\""+obj[4]+"\",");
 			result_json.append("\"theoreticalProduction\":\""+obj[5]+"\",");
-			result_json.append("\"availablePlungerstrokeProd\":\""+obj[6]+"\",");
-			result_json.append("\"pumpClearanceLeakProd\":\""+obj[7]+"\",");
-			result_json.append("\"tvleakWeightProduction\":\""+obj[8]+"\",");
-			result_json.append("\"svleakWeightProduction\":\""+obj[9]+"\",");
-			result_json.append("\"gasInfluenceProd\":\""+obj[10]+"\",");
-			result_json.append("\"pumpBoreDiameter\":\""+obj[11]+"\",");
-			result_json.append("\"pumpSettingDepth\":\""+obj[12]+"\",");
-			result_json.append("\"producingFluidLevel\":\""+obj[13]+"\",");
-			result_json.append("\"submergence\":\""+obj[14]+"\",");
-			result_json.append("\"stroke\":\""+obj[15]+"\",");
-			result_json.append("\"spm\":\""+obj[16]+"\",");
-			result_json.append("\"motorInputActivePower\":\""+obj[17]+"\",");
-			result_json.append("\"polishrodPower\":\""+obj[18]+"\",");
-			result_json.append("\"waterPower\":\""+obj[19]+"\",");
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[20]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[21]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[22]+"\",");
-			result_json.append("\"powerConsumptionPerthm\":\""+obj[23]+"\",");
-			result_json.append("\"pumpEff1\":\""+obj[24]+"\",");
-			result_json.append("\"pumpEff2\":\""+obj[25]+"\",");
-			result_json.append("\"pumpEff3\":\""+obj[26]+"\",");
-			result_json.append("\"pumpEff4\":\""+obj[27]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[28]+"\",");
-			result_json.append("\"rodFlexLength\":\""+obj[29]+"\",");
-			result_json.append("\"tubingFlexLength\":\""+obj[30]+"\",");
-			result_json.append("\"inertiaLength\":\""+obj[31]+"\",");
+			result_json.append("\"plungerStroke\":\""+obj[6]+"\",");
+			result_json.append("\"availablePlungerStroke\":\""+obj[7]+"\",");
+			result_json.append("\"availablePlungerstrokeProd\":\""+obj[8]+"\",");
+			result_json.append("\"pumpClearanceLeakProd\":\""+obj[9]+"\",");
+			result_json.append("\"tvleakWeightProduction\":\""+obj[10]+"\",");
+			result_json.append("\"svleakWeightProduction\":\""+obj[11]+"\",");
+			result_json.append("\"gasInfluenceProd\":\""+obj[12]+"\",");
+			result_json.append("\"pumpBoreDiameter\":\""+obj[13]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[14]+"\",");
+			result_json.append("\"producingFluidLevel\":\""+obj[15]+"\",");
+			result_json.append("\"submergence\":\""+obj[16]+"\",");
+			result_json.append("\"stroke\":\""+obj[17]+"\",");
+			result_json.append("\"spm\":\""+obj[18]+"\",");
+			result_json.append("\"motorInputActivePower\":\""+obj[19]+"\",");
+			result_json.append("\"polishrodPower\":\""+obj[20]+"\",");
+			result_json.append("\"waterPower\":\""+obj[21]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[22]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[23]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[24]+"\",");
+			result_json.append("\"powerConsumptionPerthm\":\""+obj[25]+"\",");
+			result_json.append("\"pumpEff1\":\""+obj[26]+"\",");
+			result_json.append("\"pumpEff2\":\""+obj[27]+"\",");
+			result_json.append("\"pumpEff3\":\""+obj[28]+"\",");
+			result_json.append("\"pumpEff4\":\""+obj[29]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[30]+"\",");
+			result_json.append("\"rodFlexLength\":\""+obj[31]+"\",");
+			result_json.append("\"tubingFlexLength\":\""+obj[32]+"\",");
+			result_json.append("\"inertiaLength\":\""+obj[33]+"\",");
 			
-			result_json.append("\"pumpintakep\":\""+obj[32]+"\",");
-			result_json.append("\"pumpintaket\":\""+obj[33]+"\",");
-			result_json.append("\"pumpintakegol\":\""+obj[34]+"\",");
-			result_json.append("\"pumpinletvisl\":\""+obj[35]+"\",");
-			result_json.append("\"pumpinletbo\":\""+obj[36]+"\",");
+			result_json.append("\"pumpintakep\":\""+obj[34]+"\",");
+			result_json.append("\"pumpintaket\":\""+obj[35]+"\",");
+			result_json.append("\"pumpintakegol\":\""+obj[36]+"\",");
+			result_json.append("\"pumpinletvisl\":\""+obj[37]+"\",");
+			result_json.append("\"pumpinletbo\":\""+obj[38]+"\",");
 			
-			result_json.append("\"pumpoutletp\":\""+obj[37]+"\",");
-			result_json.append("\"pumpoutlett\":\""+obj[38]+"\",");
-			result_json.append("\"pumpOutletGol\":\""+obj[39]+"\",");
-			result_json.append("\"pumpoutletvisl\":\""+obj[40]+"\",");
-			result_json.append("\"pumpoutletbo\":\""+obj[41]+"\",");
+			result_json.append("\"pumpoutletp\":\""+obj[39]+"\",");
+			result_json.append("\"pumpoutlett\":\""+obj[40]+"\",");
+			result_json.append("\"pumpOutletGol\":\""+obj[41]+"\",");
+			result_json.append("\"pumpoutletvisl\":\""+obj[42]+"\",");
+			result_json.append("\"pumpoutletbo\":\""+obj[43]+"\",");
 			
-			result_json.append("\"rodString\":\""+obj[42]+"\",");
+			result_json.append("\"rodString\":\""+obj[44]+"\",");
 			
-			result_json.append("\"upperLoadLineOfExact\":\""+obj[43]+"\",");
+			result_json.append("\"upperLoadLineOfExact\":\""+obj[45]+"\",");
 			
-			result_json.append("\"tubingPressure\":\""+obj[44]+"\",");
-			result_json.append("\"casingPressure\":\""+obj[45]+"\",");
-			result_json.append("\"wellheadFluidTemperature\":\""+obj[46]+"\",");
-			result_json.append("\"commStatus\":\""+obj[47]+"\",");
-			result_json.append("\"runStatus\":\""+obj[48]+"\",");
-			result_json.append("\"Ia\":\""+obj[49]+"\",");
-			result_json.append("\"Ib\":\""+obj[50]+"\",");
-			result_json.append("\"Ic\":\""+obj[51]+"\",");
-			result_json.append("\"Va\":\""+obj[52]+"\",");
-			result_json.append("\"Vb\":\""+obj[53]+"\",");
-			result_json.append("\"Vc\":\""+obj[54]+"\",");
-			result_json.append("\"totalWattEnergy\":\""+obj[55]+"\",");
-			result_json.append("\"totalVarEnergy\":\""+obj[56]+"\",");
-			result_json.append("\"wattSum\":\""+obj[57]+"\",");
-			result_json.append("\"varSum\":\""+obj[58]+"\",");
-			result_json.append("\"reversePower\":\""+obj[59]+"\",");
-			result_json.append("\"pfSum\":\""+obj[60]+"\",");
-			result_json.append("\"frequencySetValue\":\""+obj[61]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[62]+"\",");
+			result_json.append("\"tubingPressure\":\""+obj[46]+"\",");
+			result_json.append("\"casingPressure\":\""+obj[47]+"\",");
+			result_json.append("\"wellheadFluidTemperature\":\""+obj[48]+"\",");
+			result_json.append("\"commStatus\":\""+obj[49]+"\",");
+			result_json.append("\"runStatus\":\""+obj[50]+"\",");
+			result_json.append("\"Ia\":\""+obj[51]+"\",");
+			result_json.append("\"Ib\":\""+obj[52]+"\",");
+			result_json.append("\"Ic\":\""+obj[53]+"\",");
+			result_json.append("\"Va\":\""+obj[54]+"\",");
+			result_json.append("\"Vb\":\""+obj[55]+"\",");
+			result_json.append("\"Vc\":\""+obj[56]+"\",");
+			result_json.append("\"totalWattEnergy\":\""+obj[57]+"\",");
+			result_json.append("\"totalVarEnergy\":\""+obj[58]+"\",");
+			result_json.append("\"wattSum\":\""+obj[59]+"\",");
+			result_json.append("\"varSum\":\""+obj[60]+"\",");
+			result_json.append("\"reversePower\":\""+obj[61]+"\",");
+			result_json.append("\"pfSum\":\""+obj[62]+"\",");
+			result_json.append("\"frequencySetValue\":\""+obj[63]+"\",");
+			result_json.append("\"frequencyRunValue\":\""+obj[64]+"\",");
 			
-			result_json.append("\"balanceControlMode\":\""+obj[63]+"\",");
-			result_json.append("\"balanceCalculateMode\":\""+obj[64]+"\",");
-			result_json.append("\"balanceAwayTime\":\""+obj[65]+"\",");
-			result_json.append("\"balanceCloseTime\":\""+obj[66]+"\",");
+			result_json.append("\"balanceControlMode\":\""+obj[65]+"\",");
+			result_json.append("\"balanceCalculateMode\":\""+obj[66]+"\",");
+			result_json.append("\"balanceAwayTime\":\""+obj[67]+"\",");
+			result_json.append("\"balanceCloseTime\":\""+obj[68]+"\",");
 			
-			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[67]+"\",");
-			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[68]+"\",");
+			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[69]+"\",");
+			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[70]+"\",");
 			
-			result_json.append("\"balanceStrokeCount\":\""+obj[69]+"\",");
-			result_json.append("\"balanceOperationUpLimit\":\""+obj[70]+"\",");
-			result_json.append("\"balanceOperationDownLimit\":\""+obj[71]+"\",");
-			result_json.append("\"balanceAutoControl\":\""+obj[72]+"\",");
-			result_json.append("\"spmAutoControl\":\""+obj[73]+"\",");
-			result_json.append("\"balanceFrontLimit\":\""+obj[74]+"\",");
-			result_json.append("\"balanceAfterLimit\":\""+obj[75]+"\",");
+			result_json.append("\"balanceStrokeCount\":\""+obj[71]+"\",");
+			result_json.append("\"balanceOperationUpLimit\":\""+obj[72]+"\",");
+			result_json.append("\"balanceOperationDownLimit\":\""+obj[73]+"\",");
+			result_json.append("\"balanceAutoControl\":\""+obj[74]+"\",");
+			result_json.append("\"spmAutoControl\":\""+obj[75]+"\",");
+			result_json.append("\"balanceFrontLimit\":\""+obj[76]+"\",");
+			result_json.append("\"balanceAfterLimit\":\""+obj[77]+"\",");
 			
-			result_json.append("\"videourl\":\""+obj[76]+"\",");
-			result_json.append("\"runRange\":\""+obj[77]+"\"");
+			result_json.append("\"videourl\":\""+obj[78]+"\",");
+			result_json.append("\"runRange\":\""+obj[79]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");

@@ -21,12 +21,21 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         	var get_rawData = store.proxy.reader.rawData;
         	var isControl=get_rawData.isControl;
     		var dataStr="{\"items\":[";
-    		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidWeightProduction+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilWeightProduction+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"理论排量(m^3/d)\",\"itemCode\":\"theoreticalProduction\",\"value\":\""+get_rawData.theoreticalProduction+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"柱塞冲程(m)\",\"itemCode\":\"plungerStroke\",\"value\":\""+get_rawData.plungerStroke+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"柱塞有效冲程(m)\",\"itemCode\":\"availablePlungerStroke\",\"value\":\""+get_rawData.availablePlungerStroke+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"冲程损失系数(%)\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"功图充满系数(%)\",\"itemCode\":\"pumpEff2\",\"value\":\""+get_rawData.pumpEff2+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"漏失系数(%)\",\"itemCode\":\"pumpEff3\",\"value\":\""+get_rawData.pumpEff3+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"液体收缩系数(%)\",\"itemCode\":\"pumpEff4\",\"value\":\""+get_rawData.pumpEff4+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"总泵效(%)\",\"itemCode\":\"pumpEff\",\"value\":\""+get_rawData.pumpEff+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"抽油杆伸缩量(m)\",\"itemCode\":\"rodFlexLength\",\"value\":\""+get_rawData.rodFlexLength+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"油管伸缩量(m)\",\"itemCode\":\"tubingFlexLength\",\"value\":\""+get_rawData.tubingFlexLength+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"惯性增量(m)\",\"itemCode\":\"inertiaLength\",\"value\":\""+get_rawData.inertiaLength+"\",\"curve\":\"\"},";
+    		
     		dataStr+="{\"item\":\"有效冲程计算产量(t/d)\",\"itemCode\":\"availablePlungerstrokeProd\",\"value\":\""+get_rawData.availablePlungerstrokeProd+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"间隙漏失量(t/d)\",\"itemCode\":\"pumpClearanceLeakProd\",\"value\":\""+get_rawData.pumpClearanceLeakProd+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"游动凡尔漏失量(t/d)\",\"itemCode\":\"tvleakWeightProduction\",\"value\":\""+get_rawData.tvleakWeightProduction+"\",\"curve\":\"\"},";
@@ -47,14 +56,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		dataStr+="{\"item\":\"系统效率(%)\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"吨液百米耗电量(kW·h/100m·t)\",\"itemCode\":\"powerConsumptionPerthm\",\"value\":\""+get_rawData.powerConsumptionPerthm+"\",\"curve\":\"\"},";
     		
-    		dataStr+="{\"item\":\"冲程损失系数(%)\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"功图充满系数\",\"itemCode\":\"pumpEff2\",\"value\":\""+get_rawData.pumpEff2+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"漏失系数(%)\",\"itemCode\":\"pumpEff3\",\"value\":\""+get_rawData.pumpEff3+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"液体收缩系数(%)\",\"itemCode\":\"pumpEff4\",\"value\":\""+get_rawData.pumpEff4+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"总泵效(%)\",\"itemCode\":\"pumpEff\",\"value\":\""+get_rawData.pumpEff+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"抽油杆伸缩量(m)\",\"itemCode\":\"rodFlexLength\",\"value\":\""+get_rawData.rodFlexLength+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"油管伸缩量(m)\",\"itemCode\":\"tubingFlexLength\",\"value\":\""+get_rawData.tubingFlexLength+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"惯性增量(m)\",\"itemCode\":\"inertiaLength\",\"value\":\""+get_rawData.inertiaLength+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
     		
     		dataStr+="{\"item\":\"泵入口压力(MPa)\",\"itemCode\":\"pumpintakep\",\"value\":\""+get_rawData.pumpintakep+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵入口温度(℃)\",\"itemCode\":\"pumpintaket\",\"value\":\""+get_rawData.pumpintaket+"\",\"curve\":\"\"},";

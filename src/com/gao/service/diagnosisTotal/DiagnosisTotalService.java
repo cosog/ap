@@ -351,6 +351,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	@SuppressWarnings("deprecation")
 	public String getFSDiagramOverlayData(Page pager,String orgId,String wellName,String calculateDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
+		DataDictionary ddic = null;
 		String sql="select t.id,t.wellname,to_char(t.acquisitiontime,'hh24:mi:ss'),"
 				+ " t.workingConditionName,t.workingConditionAlarmLevel,t.liquidweightproduction,"
 				+ " t.stroke,t.spm,t.fmax,t.fmin,"
@@ -364,22 +365,22 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " order by t.acquisitiontime";
 		
 		List<?> list=this.GetGtData(sql);
-		
-		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
-				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"calculateDate\"},"
-				+ "{ \"header\":\"工况\",\"dataIndex\":\"workingConditionName\"},"
-				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidweightproduction\"},"
-				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\"},"
-				+ "{ \"header\":\"冲次(1/min)\",\"dataIndex\":\"spm\"},"
-				+ "{ \"header\":\"最大载荷(kN)\",\"dataIndex\":\"fmax\"},"
-				+ "{ \"header\":\"最小载荷(kN)\",\"dataIndex\":\"fmin\"},"
-				+ "{ \"header\":\"电流平衡度(%)\",\"dataIndex\":\"iDegreeBalance\"},"
-				+ "{ \"header\":\"电流平衡状态\",\"dataIndex\":\"iDegreeBalanceLevel\"},"
-				+ "{ \"header\":\"功率平衡度(%)\",\"dataIndex\":\"wattDegreeBalance\"},"
-				+ "{ \"header\":\"功率平衡状态\",\"dataIndex\":\"wattDegreeBalanceLevel\"}"
-				+ "]";
-		
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyDiagramOverlay");
+		String columns = ddic.getTableHeader();
+//		String columns = "["
+//				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
+//				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"calculateDate\"},"
+//				+ "{ \"header\":\"工况\",\"dataIndex\":\"workingConditionName\"},"
+//				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidweightproduction\"},"
+//				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\"},"
+//				+ "{ \"header\":\"冲次(1/min)\",\"dataIndex\":\"spm\"},"
+//				+ "{ \"header\":\"最大载荷(kN)\",\"dataIndex\":\"fmax\"},"
+//				+ "{ \"header\":\"最小载荷(kN)\",\"dataIndex\":\"fmin\"},"
+//				+ "{ \"header\":\"电流平衡度(%)\",\"dataIndex\":\"iDegreeBalance\"},"
+//				+ "{ \"header\":\"电流平衡状态\",\"dataIndex\":\"iDegreeBalanceLevel\"},"
+//				+ "{ \"header\":\"功率平衡度(%)\",\"dataIndex\":\"wattDegreeBalance\"},"
+//				+ "{ \"header\":\"功率平衡状态\",\"dataIndex\":\"wattDegreeBalanceLevel\"}"
+//				+ "]";
 		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"calculateDate\":\""+calculateDate+"\",\"columns\":"+columns+",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {

@@ -56,22 +56,21 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDetailsDiagramList
                             		url:context + '/PSToFSController/getSingleInverDiagramData',
                             		success:function(response) {
                             			var result =  Ext.JSON.decode(response.responseText);
-                            			
-                            			showPContinuousDiagram(result.powerCurveData,"功率曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"有功功率(kW)",'#FF6633',"electricAnalysisRealtimeDetailsInverDiv1_id");
-                            			showPContinuousDiagram(result.currentCurveData,"电流曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"电流(A)",'#CC0000',"electricAnalysisRealtimeDetailsInverDiv2_id");
-                            			
-                            			
-                            			showPContinuousDiagram(result.rpmCurveData,"转速曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"转速(r/min)",'#e3cc19',"electricAnalysisRealtimeDetailsInverDiv6_id");
-                            			
                             			var positionCurveData=result.positionCurveData.split(",");
                             			if(result.positionCurveData!=undefined && result.positionCurveData!="" && result.positionCurveData.split(",").length>0){
-                            				showFSDiagramWithAtrokeSPM(result,"electricAnalysisRealtimeDetailsInverDiv3_id");
-                                			showPSDiagram(result,"electricAnalysisRealtimeDetailsInverDiv4_id");
-                                			showASDiagram(result,"electricAnalysisRealtimeDetailsInverDiv5_id");
+                            				showFSDiagramWithAtrokeSPM(result,"electricAnalysisRealtimeDetailsInverDiv1_id");
+                                			showPSDiagram(result,"electricAnalysisRealtimeDetailsInverDiv2_id");
+                                			showASDiagram(result,"electricAnalysisRealtimeDetailsInverDiv3_id");
+                                			showPContinuousDiagram(result.powerCurveData,"功率曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"有功功率(kW)",'#FF6633',"electricAnalysisRealtimeDetailsInverDiv4_id");
+                                			showPContinuousDiagram(result.currentCurveData,"电流曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"电流(A)",'#CC0000',"electricAnalysisRealtimeDetailsInverDiv5_id");
+                                			showPContinuousDiagram(result.rpmCurveData,"转速曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"转速(r/min)",'#e3cc19',"electricAnalysisRealtimeDetailsInverDiv6_id");
                             			}else{
-                                        	$("#electricAnalysisRealtimeDetailsInverDiv3_id").html('');
+                            				showPContinuousDiagram(result.powerCurveData,"功率曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"有功功率(kW)",'#FF6633',"electricAnalysisRealtimeDetailsInverDiv1_id");
+                                			showPContinuousDiagram(result.currentCurveData,"电流曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"电流(A)",'#CC0000',"electricAnalysisRealtimeDetailsInverDiv2_id");
+                                			showPContinuousDiagram(result.rpmCurveData,"转速曲线",result.wellName+' ['+result.acquisitionTime+']','<span style="text-align:center;">点数<br />',"转速(r/min)",'#e3cc19',"electricAnalysisRealtimeDetailsInverDiv3_id");
                                         	$("#electricAnalysisRealtimeDetailsInverDiv4_id").html('');
                                         	$("#electricAnalysisRealtimeDetailsInverDiv5_id").html('');
+                                        	$("#electricAnalysisRealtimeDetailsInverDiv6_id").html('');
                                         }
                             		},
                             		failure:function(){

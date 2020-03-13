@@ -16,6 +16,16 @@ Ext.define("AP.view.user.UserPanelInfoWindow", {
     modal: true,
     border: false,
     initComponent: function () {
+    	Ext.apply(Ext.form.VTypes, {
+            password: function (val, field) { // val指这里的文本框值，field指这个文本框组件，大家要明白这个意思  
+                if (field.confirmTo) { // confirmTo是我们自定义的配置参数，一般用来保存另外的组件的id值  
+                    var pwd = Ext.get(field.confirmTo); // 取得confirmTo的那个id的值  
+                    var newpwd = Ext.getCmp(pwd.id).getValue();
+                    return (val == newpwd);
+                }
+
+            }
+        });
         var me = this;
         var userTitleStore_A = new Ext.data.SimpleStore({
             fields: [{
@@ -111,6 +121,7 @@ Ext.define("AP.view.user.UserPanelInfoWindow", {
                 blankText: '--请选择角色--',
                 typeAhead: true,
                 allowBlank: true,
+                blankText: cosog.string.required,
                 triggerAction: 'all',
                 displayField: "boxval",
                 valueField: "boxkey",
@@ -179,6 +190,7 @@ Ext.define("AP.view.user.UserPanelInfoWindow", {
             allowBlank: false,
             autoSelect:true,
             editable:false,
+            blankText: cosog.string.required,
 			
             anchor: '100%',
             emptyText: '--请选择--',
@@ -227,7 +239,8 @@ Ext.define("AP.view.user.UserPanelInfoWindow", {
                     id: 'userName_Id',
                     anchor: '100%',
                     allowBlank: false,
-                    name: "user.userName"
+                    name: "user.userName",
+                    blankText: cosog.string.required
          }
          , {
                     fieldLabel: cosog.string.userId,
@@ -237,6 +250,7 @@ Ext.define("AP.view.user.UserPanelInfoWindow", {
                     //minLengthText : '您输入的用户名称太短',
                     id: 'userId_Id',
                     name: "user.userId",
+                    blankText: cosog.string.required,
                     value:'',
                     listeners: {
                         blur: function (t, e) {
@@ -265,18 +279,37 @@ Ext.define("AP.view.user.UserPanelInfoWindow", {
                         }
                     }
          }, {
+                    id: "userPwd_Id",
+                    name: "user.userPwd",
                     inputType: 'password',
-                    id: 'userPwd_Id',
                     anchor: '100%',
-                    value:'',
-                    allowBlank: false,
                     fieldLabel: cosog.string.userPwd,
-                    name: "user.userPwd"
-         },quidkLoginComboxsimp,
+                    emptyText: cosog.string.enterpwd,
+                    labelWidth: 100,
+                    allowBlank: false,
+                    msgTarget: 'side',
+                    blankText: cosog.string.required
+         },
+         {
+             id: "userPwdAgain_Id",
+             inputType: 'password',
+             emptyText: cosog.string.enterNewPwdAgain,
+             vtype: "password", // 自定义的验证类型  
+             vtypeText: cosog.string.enterpwdNotEqual,
+             confirmTo: "userPwd_Id",
+             anchor: '100%',
+             fieldLabel:cosog.string.enterNewPwdAgain1,
+             allowBlank: false,
+             labelWidth: 100,
+             msgTarget: 'side',
+             blankText: cosog.string.required
+         },
+         quidkLoginComboxsimp,
          {
              	xtype: "hidden",
              	id: 'userQuidkLoginValue_Id',
              	anchor: '100%',
+             	allowBlank: false,
              	value: 0,
              	name: "user.userQuickLogin",
          },{

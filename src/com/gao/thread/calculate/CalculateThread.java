@@ -3,8 +3,9 @@ package com.gao.thread.calculate;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.gao.model.calculate.CalculateRequestData;
-import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.PCPCalculateRequestData;
+import com.gao.model.calculate.PCPCalculateResponseData;
+import com.gao.model.calculate.RPCCalculateResponseData;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
@@ -63,9 +64,9 @@ public class CalculateThread extends Thread{
 				Object[] obj=(Object[])list.get(i);
 				wellName=obj[0]+"";
 				//诊断计产
-				String requestData=calculateDataService.getObjectToCalculateRequestData(obj);
-				java.lang.reflect.Type type = new TypeToken<CalculateRequestData>() {}.getType();
-				CalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
+				String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+				java.lang.reflect.Type type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+				PCPCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
 				String responseData="";
 				if(calculateRequestData!=null){
 					if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){//举升类型为螺杆泵时
@@ -73,8 +74,8 @@ public class CalculateThread extends Thread{
 					}else{
 						responseData=StringManagerUtils.sendPostMethod(url[i%(url.length)], requestData,"utf-8");
 					}
-					type = new TypeToken<CalculateResponseData>() {}.getType();
-					CalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
+					type = new TypeToken<RPCCalculateResponseData>() {}.getType();
+					RPCCalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
 					
 					if(calculateResponseData==null){
 						int jlbh=Integer.parseInt(obj[obj.length-1].toString());

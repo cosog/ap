@@ -533,9 +533,15 @@ iconDiagnoseAnalysisCurve = function(value, e, o) {
 	var itemCode = o.data.itemCode;
 	var item=o.data.item;
 	var index=o.internalId%2;
-	var resultstring = "<img src='"
+	var resultstring='';
+	if(itemCode == 'acquisitionTime'.toUpperCase()){
+		resultstring=o.data.value;
+	}else{
+		resultstring = "<img src='"
 			+ context
 			+ "/images/icon/curvetest"+index+".png' style='cursor:pointer' onclick=callBackHistoryData(\""+item+"\",\""+itemCode+"\") />";
+	}
+	
 	return resultstring;
 }
 

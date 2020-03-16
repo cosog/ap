@@ -46,8 +46,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.gao.controller.base.BaseController;
-import com.gao.model.calculate.CalculateRequestData;
-import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.PCPCalculateRequestData;
+import com.gao.model.calculate.PCPCalculateResponseData;
+import com.gao.model.calculate.RPCCalculateResponseData;
 import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.CommonDataService;
@@ -876,10 +877,22 @@ public class GraphicalUploadController extends BaseController {
 				calculateHttpServerURL=FSdiagramCalculateHttpServerURL;
 			}
 			String responseData=StringManagerUtils.sendPostMethod(calculateHttpServerURL[0], requestData,"utf-8");
-			type = new TypeToken<CalculateResponseData>() {}.getType();
-			CalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
-			raphicalUploadService.saveAcquisitionAndCalculateData(wellAcquisitionData,calculateResponseData);
-			if(calculateResponseData.getCalculationStatus().getResultStatus()==1){
+			
+			
+			PCPCalculateResponseData pcpCalculateResponseData=null;
+			RPCCalculateResponseData rpcCalculateResponseData=null;
+			if(wellAcquisitionData.getLiftingType()>=400 && wellAcquisitionData.getLiftingType()<400){//螺杆泵
+				type = new TypeToken<PCPCalculateResponseData>() {}.getType();
+				pcpCalculateResponseData=gson.fromJson(responseData, type);
+				raphicalUploadService.savePCPAcquisitionAndCalculateData(wellAcquisitionData,pcpCalculateResponseData);
+			}else if(wellAcquisitionData.getLiftingType()>=200 && wellAcquisitionData.getLiftingType()<300){//抽油机
+				type = new TypeToken<RPCCalculateResponseData>() {}.getType();
+				rpcCalculateResponseData=gson.fromJson(responseData, type);
+				raphicalUploadService.saveRPCAcquisitionAndCalculateData(wellAcquisitionData,rpcCalculateResponseData);
+			}
+			
+			if((rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1)
+					||(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1)){
 				totalUrl+="&wellId="+wellAcquisitionData.getWellId();
 				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 			}

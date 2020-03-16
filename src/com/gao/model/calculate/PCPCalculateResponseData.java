@@ -1,16 +1,14 @@
 package com.gao.model.calculate;
 
 import java.util.List;
-public  class CalculateResponseData {
+public  class PCPCalculateResponseData {
 
 	private String WellName;
 	private String AcquisitionTime;
 	private float RPM;
 	private int RunStatus;
-	
 	private RodString RodString;
-	private ProductionParameter ProductionParameter;
-	private FSDiagram FSDiagram;
+	private Production Production;
 	private PumpEfficiency PumpEfficiency;
 	private SystemEfficiency SystemEfficiency;
 	private Verification Verification;
@@ -26,8 +24,6 @@ public  class CalculateResponseData {
 			result.append(this.getRodString().CNT+","+this.getRodString().getLengthAll()+","+this.getRodString().getWeightAll()+","+this.getRodString().getBuoyancyForceAll());
 			for(int i=0;i<this.getRodString().getEveryRod().size();i++){
 				result.append(";");
-				result.append(this.getFSDiagram().getFMax().get(i)+",");
-				result.append(this.getFSDiagram().getFMin().get(i)+",");
 				result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
 				result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
 				result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
@@ -52,23 +48,13 @@ public  class CalculateResponseData {
 	}
 
 
-	public ProductionParameter getProductionParameter() {
-		return ProductionParameter;
+	public Production getProduction() {
+		return Production;
 	}
 
 
-	public void setProductionParameter(ProductionParameter productionParameter) {
-		ProductionParameter = productionParameter;
-	}
-
-
-	public FSDiagram getFSDiagram() {
-		return FSDiagram;
-	}
-
-
-	public void setFSDiagram(FSDiagram fSDiagram) {
-		FSDiagram = fSDiagram;
+	public void setProduction(Production production) {
+		Production = production;
 	}
 
 
@@ -318,7 +304,7 @@ public  class CalculateResponseData {
 			}
 
 			
-			public static class ProductionParameter
+			public static class Production
 			{
 			    private float WaterCut;
 
@@ -619,346 +605,17 @@ public  class CalculateResponseData {
 			}
 
 			
-			public static class FSDiagram
-			{
-			    private String AcquisitionTime;
-
-			    private float Stroke;
-
-			    private float SPM;
-			    
-			    private int CNT;
-
-				private int SCNT;
-			    
-			    private int FCNT;
-			    
-			    private int WattCNT;
-			    
-			    private int ICNT;
-			    
-			    private float Area;
-
-			    private float UpperLoadLine;
-			    
-			    private float UpperLoadLineOfExact;
-
-			    private float LowerLoadLine;
-
-			    private float FullnessCoefficient;
-
-			    private float PlungerStroke;
-
-			    private float AvailablePlungerStroke;
-			    
-			    private float UpStrokeWattMax;
-			    
-			    private float DownStrokeWattMax;
-			    
-			    private float WattDegreeBalance;
-			    
-			    private String WattMaxRatioString;
-			    
-			    private float AverageWatt;
-			    
-			    private float UpStrokeIMax;
-			    
-			    private float DownStrokeIMax;
-			    
-			    private float IDegreeBalance;
-			    
-			    private String IMaxRatioString;
-
-			    private List<List<Float>> F;
-
-			    private List<List<Float>> S;
-
-			    private List<Float> FMax;
-
-			    private List<Float> FMin;
-			    
-			    private List<Float> Watt;
-
-			    private List<Float> I;
-
-				public String getAcquisitionTime() {
-					return AcquisitionTime;
-				}
-
-				public void setAcquisitionTime(String acquisitionTime) {
-					AcquisitionTime = acquisitionTime;
-				}
-
-				public float getStroke() {
-					return Stroke;
-				}
-
-				public void setStroke(float stroke) {
-					Stroke = stroke;
-				}
-
-				public float getSPM() {
-					return SPM;
-				}
-
-				public void setSPM(float sPM) {
-					SPM = sPM;
-				}
-				
-				public int getCNT() {
-					return CNT;
-				}
-
-				public void setCNT(int cNT) {
-					CNT = cNT;
-				}
-
-				public int getSCNT() {
-					return SCNT;
-				}
-
-				public void setSCNT(int sCNT) {
-					SCNT = sCNT;
-				}
-
-				public int getFCNT() {
-					return FCNT;
-				}
-
-				public void setFCNT(int fCNT) {
-					FCNT = fCNT;
-				}
-
-				public int getWattCNT() {
-					return WattCNT;
-				}
-
-				public void setWattCNT(int wattCNT) {
-					WattCNT = wattCNT;
-				}
-
-				public int getICNT() {
-					return ICNT;
-				}
-
-				public void setICNT(int iCNT) {
-					ICNT = iCNT;
-				}
-
-				public float getArea() {
-					return Area;
-				}
-
-				public void setArea(float area) {
-					Area = area;
-				}
-
-				public float getUpperLoadLine() {
-					return UpperLoadLine;
-				}
-
-				public void setUpperLoadLine(float upperLoadLine) {
-					UpperLoadLine = upperLoadLine;
-				}
-
-				public float getUpperLoadLineOfExact() {
-					return UpperLoadLineOfExact;
-				}
-
-				public void setUpperLoadLineOfExact(float upperLoadLineOfExact) {
-					UpperLoadLineOfExact = upperLoadLineOfExact;
-				}
-
-				public float getLowerLoadLine() {
-					return LowerLoadLine;
-				}
-
-				public void setLowerLoadLine(float lowerLoadLine) {
-					LowerLoadLine = lowerLoadLine;
-				}
-
-				public float getFullnessCoefficient() {
-					return FullnessCoefficient;
-				}
-
-				public void setFullnessCoefficient(float fullnessCoefficient) {
-					FullnessCoefficient = fullnessCoefficient;
-				}
-
-				public float getPlungerStroke() {
-					return PlungerStroke;
-				}
-
-				public void setPlungerStroke(float plungerStroke) {
-					PlungerStroke = plungerStroke;
-				}
-
-				public float getAvailablePlungerStroke() {
-					return AvailablePlungerStroke;
-				}
-
-				public void setAvailablePlungerStroke(float availablePlungerStroke) {
-					AvailablePlungerStroke = availablePlungerStroke;
-				}
-
-				public float getUpStrokeWattMax() {
-					return UpStrokeWattMax;
-				}
-
-				public void setUpStrokeWattMax(float upStrokeWattMax) {
-					UpStrokeWattMax = upStrokeWattMax;
-				}
-
-				public float getDownStrokeWattMax() {
-					return DownStrokeWattMax;
-				}
-
-				public void setDownStrokeWattMax(float downStrokeWattMax) {
-					DownStrokeWattMax = downStrokeWattMax;
-				}
-
-				public float getWattDegreeBalance() {
-					return WattDegreeBalance;
-				}
-
-				public void setWattDegreeBalance(float wattDegreeBalance) {
-					WattDegreeBalance = wattDegreeBalance;
-				}
-
-				public String getWattMaxRatioString() {
-					return WattMaxRatioString;
-				}
-
-				public void setWattMaxRatioString(String wattMaxRatioString) {
-					WattMaxRatioString = wattMaxRatioString;
-				}
-
-				public float getAverageWatt() {
-					return AverageWatt;
-				}
-
-				public void setAverageWatt(float averageWatt) {
-					AverageWatt = averageWatt;
-				}
-
-				public float getUpStrokeIMax() {
-					return UpStrokeIMax;
-				}
-
-				public void setUpStrokeIMax(float upStrokeIMax) {
-					UpStrokeIMax = upStrokeIMax;
-				}
-
-				public float getDownStrokeIMax() {
-					return DownStrokeIMax;
-				}
-
-				public void setDownStrokeIMax(float downStrokeIMax) {
-					DownStrokeIMax = downStrokeIMax;
-				}
-
-				public float getIDegreeBalance() {
-					return IDegreeBalance;
-				}
-
-				public void setIDegreeBalance(float iDegreeBalance) {
-					IDegreeBalance = iDegreeBalance;
-				}
-
-				public String getIMaxRatioString() {
-					return IMaxRatioString;
-				}
-
-				public void setIMaxRatioString(String iMaxRatioString) {
-					IMaxRatioString = iMaxRatioString;
-				}
-
-				public List<List<Float>> getF() {
-					return F;
-				}
-
-				public void setF(List<List<Float>> f) {
-					F = f;
-				}
-
-				public List<List<Float>> getS() {
-					return S;
-				}
-
-				public void setS(List<List<Float>> s) {
-					S = s;
-				}
-
-				public List<Float> getFMax() {
-					return FMax;
-				}
-
-				public void setFMax(List<Float> fMax) {
-					FMax = fMax;
-				}
-
-				public List<Float> getFMin() {
-					return FMin;
-				}
-
-				public void setFMin(List<Float> fMin) {
-					FMin = fMin;
-				}
-
-				public List<Float> getWatt() {
-					return Watt;
-				}
-
-				public void setWatt(List<Float> watt) {
-					Watt = watt;
-				}
-
-				public List<Float> getI() {
-					return I;
-				}
-
-				public void setI(List<Float> i) {
-					I = i;
-				}
-			}
-
+			
 			
 			public static class PumpEfficiency
 			{
-			    private float RodFlexLength;
-
-			    private float TubingFlexLength;
-
-			    private float InertiaLength;
 
 			    private float PumpEff1;
 
 			    private float PumpEff2;
 
-			    private float PumpEff3;
-
-			    private float PumpEff4;
-
 			    private float PumpEff;
-
-			    public void setRodFlexLength(float RodFlexLength){
-			        this.RodFlexLength = RodFlexLength;
-			    }
-			    public float getRodFlexLength(){
-			        return this.RodFlexLength;
-			    }
-			    public void setTubingFlexLength(float TubingFlexLength){
-			        this.TubingFlexLength = TubingFlexLength;
-			    }
-			    public float getTubingFlexLength(){
-			        return this.TubingFlexLength;
-			    }
-			    public void setInertiaLength(float InertiaLength){
-			        this.InertiaLength = InertiaLength;
-			    }
-			    public float getInertiaLength(){
-			        return this.InertiaLength;
-			    }
+			    
 			    public void setPumpEff1(float PumpEff1){
 			        this.PumpEff1 = PumpEff1;
 			    }
@@ -971,18 +628,6 @@ public  class CalculateResponseData {
 			    public float getPumpEff2(){
 			        return this.PumpEff2;
 			    }
-			    public void setPumpEff3(float PumpEff3){
-			        this.PumpEff3 = PumpEff3;
-			    }
-			    public float getPumpEff3(){
-			        return this.PumpEff3;
-			    }
-			    public void setPumpEff4(float PumpEff4){
-			        this.PumpEff4 = PumpEff4;
-			    }
-			    public float getPumpEff4(){
-			        return this.PumpEff4;
-			    }
 			    public void setPumpEff(float PumpEff){
 			        this.PumpEff = PumpEff;
 			    }
@@ -994,49 +639,26 @@ public  class CalculateResponseData {
 			
 			public static class SystemEfficiency
 			{
-			    private float SurfaceSystemEfficiency;
-
-			    private float WellDownSystemEfficiency;
 
 			    private float SystemEfficiency;
 
-			    private float MotorInputActivePower;
-
-			    private float PolishRodPower;
+			    private float MotorInputWatt;
 
 			    private float WaterPower;
 			    
-			    private float PowerConsumptionPerTHM;
+			    private float EnergyPer100mLift;
 
-			    public void setSurfaceSystemEfficiency(float SurfaceSystemEfficiency){
-			        this.SurfaceSystemEfficiency = SurfaceSystemEfficiency;
-			    }
-			    public float getSurfaceSystemEfficiency(){
-			        return this.SurfaceSystemEfficiency;
-			    }
-			    public void setWellDownSystemEfficiency(float WellDownSystemEfficiency){
-			        this.WellDownSystemEfficiency = WellDownSystemEfficiency;
-			    }
-			    public float getWellDownSystemEfficiency(){
-			        return this.WellDownSystemEfficiency;
-			    }
 			    public void setSystemEfficiency(float SystemEfficiency){
 			        this.SystemEfficiency = SystemEfficiency;
 			    }
 			    public float getSystemEfficiency(){
 			        return this.SystemEfficiency;
 			    }
-			    public void setMotorInputActivePower(float MotorInputActivePower){
-			        this.MotorInputActivePower = MotorInputActivePower;
+			    public void setMotorInputWatt(float MotorInputWatt){
+			        this.MotorInputWatt = MotorInputWatt;
 			    }
-			    public float getMotorInputActivePower(){
-			        return this.MotorInputActivePower;
-			    }
-			    public void setPolishRodPower(float PolishRodPower){
-			        this.PolishRodPower = PolishRodPower;
-			    }
-			    public float getPolishRodPower(){
-			        return this.PolishRodPower;
+			    public float getMotorInputWatt(){
+			        return this.MotorInputWatt;
 			    }
 			    public void setWaterPower(float WaterPower){
 			        this.WaterPower = WaterPower;
@@ -1044,11 +666,11 @@ public  class CalculateResponseData {
 			    public float getWaterPower(){
 			        return this.WaterPower;
 			    }
-				public float getPowerConsumptionPerTHM() {
-					return PowerConsumptionPerTHM;
+				public float getEnergyPer100mLift() {
+					return EnergyPer100mLift;
 				}
-				public void setPowerConsumptionPerTHM(float powerConsumptionPerTHM) {
-					PowerConsumptionPerTHM = powerConsumptionPerTHM;
+				public void setEnergyPer100mLift(float EnergyPer100mLift) {
+					EnergyPer100mLift = EnergyPer100mLift;
 				}
 			}
 

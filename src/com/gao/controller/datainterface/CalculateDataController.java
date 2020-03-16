@@ -27,8 +27,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gao.controller.base.BaseController;
-import com.gao.model.calculate.CalculateRequestData;
-import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.PCPCalculateRequestData;
+import com.gao.model.calculate.PCPCalculateResponseData;
+import com.gao.model.calculate.RPCCalculateResponseData;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
@@ -121,9 +122,9 @@ public class CalculateDataController extends BaseController{
 
 					Object[] obj=(Object[])list.get(i);
 					//诊断计产
-					String requestData=calculateDataService.getObjectToCalculateRequestData(obj);
-					java.lang.reflect.Type type = new TypeToken<CalculateRequestData>() {}.getType();
-					CalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
+					String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+					java.lang.reflect.Type type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+					PCPCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
 					String responseData="";
 					if(calculateRequestData!=null){
 						if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){//举升类型为螺杆泵时
@@ -131,8 +132,8 @@ public class CalculateDataController extends BaseController{
 						}else{
 							responseData=StringManagerUtils.sendPostMethod(url[i%(url.length)], requestData,"utf-8");
 						}
-						type = new TypeToken<CalculateResponseData>() {}.getType();
-						CalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
+						type = new TypeToken<RPCCalculateResponseData>() {}.getType();
+						RPCCalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
 						int id=Integer.parseInt(obj[obj.length-1].toString());
 						if(calculateResponseData==null){
 							System.out.println("记录:"+id+"计算无数据返回");

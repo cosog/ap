@@ -12,7 +12,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.EnergyCalculateResponseData;

@@ -24,7 +24,7 @@ import com.gao.model.User;
 import com.gao.model.gridmodel.WellGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.WellInformation;
-import com.gao.model.calculate.CalculateResponseData;
+import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.service.back.WellInformationManagerService;
 import com.gao.service.base.CommonDataService;
 import com.gao.tast.EquipmentDriverServerTast;

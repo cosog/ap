@@ -114,6 +114,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			commStatus="离线";
     			runStatus=""
     		}
+    		acqSataStr+="{\"item\":\"采集时间:"+get_rawData.acquisitionTime_d+"\",\"itemCode\":\"acquisitionTime_d\",\"value\":\"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"通信状态\",\"itemCode\":\"commStatus\",\"value\":\""+commStatus+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"运行状态\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";

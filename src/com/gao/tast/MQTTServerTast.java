@@ -55,7 +55,7 @@ public class MQTTServerTast {
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runMQTTServer() throws InstantiationException, IllegalAccessException, SQLException{
 		//将以前接收到的数据清空
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();

@@ -2,6 +2,10 @@ package com.gao.utils;
 
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+
 /**
  * <p>
  * 描述：数据库配置文件解析类
@@ -74,6 +78,14 @@ public class Config {
 
 	public static String getCONFIG_FILE() {
 		return CONFIG_FILE;
+	}
+	
+	public static PropertySourcesPlaceholderConfigurer properties() {
+	      PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+	      YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
+	      yaml.setResources(new ClassPathResource("appConfig.yml"));
+	      propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject());
+	      return propertySourcesPlaceholderConfigurer;
 	}
 
 	static void getconfiguration() {

@@ -534,7 +534,7 @@ iconDiagnoseAnalysisCurve = function(value, e, o) {
 	var item=o.data.item;
 	var index=o.internalId%2;
 	var resultstring='';
-	if(itemCode == 'acquisitionTime'.toUpperCase()){
+	if(itemCode.toUpperCase() == 'acquisitionTime_d'.toUpperCase()){
 		resultstring=o.data.value;
 	}else{
 		resultstring = "<img src='"

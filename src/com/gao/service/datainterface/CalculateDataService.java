@@ -661,7 +661,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+" t.frequencyrunvalue"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
-				+" and t.acquisitiontime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
+				+ " and t.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";

@@ -1646,6 +1646,11 @@ public class ProtocolModbusRTUThread extends Thread{
             					timeEffResponseData=gson.fromJson(timeEffResponse, type);
         					}
         					if(timeEffResponseData!=null){
+        						if(StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate()) ){
+        							System.out.println("时率跨天");
+        							System.out.println("时率请求数据："+tiemEffRequest);
+        							System.out.println("时率返回数据："+timeEffResponseData);
+        						}
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunTime(timeEffResponseData.getCurrent().getRunEfficiency().getTime());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunTimeEfficiency(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunRangeString(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
@@ -1698,9 +1703,15 @@ public class ProtocolModbusRTUThread extends Thread{
 									+ "}"
 									+ "}";
         					String energyResponse=StringManagerUtils.sendPostMethod(energyUrl, energyRequest,"utf-8");
+        					
         					type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
         					energyCalculateResponseData=gson.fromJson(energyResponse, type);
         					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
+        						if(StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){//如果跨天
+        							System.out.println("电量跨天");
+        							System.out.println("电量请求数据："+energyRequest);
+        							System.out.println("电量返回数据："+energyResponse);
+            					}
         						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
         						clientUnit.unitDataList.get(i).lastTotalWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getWatt();
         						clientUnit.unitDataList.get(i).lastTotalPWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getPWatt();

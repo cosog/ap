@@ -2537,7 +2537,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,?,"
 					+ "?,"
 					+ "?,"
-					+ "?,?,?,"
+					+ "?,?,?,?,?,"
 					+ "?,"
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,"
@@ -2583,10 +2583,10 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(30,"");
 			cs.setString(31,"");
 			cs.setString(32,"");
-			cs.setClob(33,nullClob);//泵功图
-			//产量
+			cs.setString(33,"");
 			cs.setString(34,"");
-			cs.setString(35,"");
+			cs.setClob(35,nullClob);//泵功图
+			//产量
 			cs.setString(36,"");
 			cs.setString(37,"");
 			cs.setString(38,"");
@@ -2602,27 +2602,27 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(48,"");
 			cs.setString(49,"");
 			cs.setString(50,"");
-			//系统效率
 			cs.setString(51,"");
 			cs.setString(52,"");
+			//系统效率
 			cs.setString(53,"");
 			cs.setString(54,"");
 			cs.setString(55,"");
 			cs.setString(56,"");
 			cs.setString(57,"");
 			cs.setString(58,"");
-			//泵效
 			cs.setString(59,"");
 			cs.setString(60,"");
+			//泵效
 			cs.setString(61,"");
 			cs.setString(62,"");
 			cs.setString(63,"");
 			cs.setString(64,"");
 			cs.setString(65,"");
 			cs.setString(66,"");
-			//泵入口出口参数
 			cs.setString(67,"");
 			cs.setString(68,"");
+			//泵入口出口参数
 			cs.setString(69,"");
 			cs.setString(70,"");
 			cs.setString(71,"");
@@ -2631,12 +2631,14 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(74,"");
 			cs.setString(75,"");
 			cs.setString(76,"");
-			//杆参数
 			cs.setString(77,"");
+			cs.setString(78,"");
+			//杆参数
+			cs.setString(79,"");
 			
-			cs.setFloat(78,Signal);
-			cs.setInt(79,Interval);
-			cs.setString(80,Ver);
+			cs.setFloat(80,Signal);
+			cs.setInt(81,Interval);
+			cs.setString(82,Ver);
 			
 			
 			cs.executeUpdate();

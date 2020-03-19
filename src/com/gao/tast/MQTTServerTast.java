@@ -224,9 +224,9 @@ public class MQTTServerTast {
 				String diagramUrl=Config.getProjectAccessPath()+"/PSToFSController/saveMQTTTransferElecDiagramData";
 				String dailyUrl=Config.getProjectAccessPath()+"/PSToFSController/saveMQTTTransferElecDailyData";
 				
-//				if(topic.contains("412831d4f21c4715")){
-//					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
-//				}
+				if(topic.contains("3b1c91d4f21c47ed")){
+					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
+				}
 				
 				
 				int Qos=message.getQos();
@@ -271,7 +271,10 @@ public class MQTTServerTast {
 							}
 							//将数据取出后，从内存中删掉
 							map.remove(key);
-//							System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
+							if(topic.contains("3b1c91d4f21c47ed")){
+								System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
+							}
+							
 							String pubTimerCorrectionTopic="TimerCorrection/"+ID;//时间校正主题
 							String pubTransferDiscreteIntervalTopic="TransferDiscreteInterval/"+ID;//离散传输周期设置主题
 							String pubTransferDiagramIntervalTopic="TransferDiagramInterval/"+ID;//曲线传输周期设置主题

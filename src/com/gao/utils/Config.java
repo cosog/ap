@@ -1,10 +1,14 @@
 package com.gao.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * <p>
@@ -70,6 +74,23 @@ public class Config {
 	private static String mqttServerUrl = "";
 	static {
 		getconfiguration();
+		Yaml yaml = new Yaml();
+		
+		
+		InputStream inputStream =new InputStream() {
+	        public InputStream getPath() {
+	            return this.getClass().getClassLoader().getResourceAsStream("customer.yaml");
+	        }
+
+			@Override
+			public int read() throws IOException {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
+		Map<String, Object> obj = yaml.load(inputStream);
+		System.out.println(obj);
+
 	}
 
 	public static String getCache() {

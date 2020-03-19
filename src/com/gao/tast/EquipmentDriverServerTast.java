@@ -62,7 +62,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;

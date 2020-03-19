@@ -31,17 +31,22 @@
    	<!-- 开启这个配置，spring才能识别@Scheduled注解   -->  
     <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>  
     <task:scheduler id="qbScheduler" pool-size="10"/>  
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<value>classpath:config/config.properties</value>
-		</property>
+    <!--
+	<beanclass="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations"><value>classpath:config/config.properties</value></property>
 	</bean>
+	-->
+	<bean id="yamlProperties" class="org.springframework.beans.factory.config.YamlPropertiesFactoryBean">
+    	<property name="resources" value="classpath:config/config.yml"/>
+	</bean>
+
+	<context:property-placeholder properties-ref="yamlProperties"/>
+	
 	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
-		<property name="driver" value="${driver}" />
-		<property name="driverUrl" value="${driverUrl}" />
-		<property name="user" value="${user}" />
-		<property name="password" value="${password}" />
+		<property name="driver" value="${spring.datasource.driver}" />
+		<property name="driverUrl" value="${spring.datasource.driverUrl}" />
+		<property name="user" value="${spring.datasource.user}" />
+		<property name="password" value="${spring.datasource.password}" />
 		<property name="maximumConnectionCount">
 			<value>100</value>
 		</property>
@@ -71,7 +76,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<!-- 数据库方言 -->
-				<prop key="hibernate.dialect">${dialect}</prop>
+				<prop key="hibernate.dialect">${spring.datasource.dialect}</prop>
 				<!-- 控制台是否打印SQL -->
 				<prop key="hibernate.show_sql">false</prop>
 				<!-- 控制台是否格式化SQL语句显示样式 -->

@@ -1,6 +1,7 @@
 package com.gao.tast;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,6 +20,8 @@ import java.util.Map.Entry;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.gao.model.AcquisitionUnitData;
 import com.gao.model.AlarmShowStyle;
@@ -29,6 +32,8 @@ import com.gao.thread.calculate.ProtocolModbusTCPThread;
 import com.gao.thread.calculate.DriveServerThread;
 import com.gao.utils.AcquisitionUnitMap;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.OracleJdbcUtis;
@@ -159,7 +164,7 @@ public class EquipmentDriverServerTast {
 				unit.dirverName="必创";
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
-				unit.acquisitionData.setYxzt(0);
+				unit.acquisitionData.setRunStatus(0);
 				unit.runTimeEfficiencySource=rs.getInt(7);
 				unit.acqCycle_Discrete=60*1000*rs.getInt(8);
 				unit.saveCycle_Discrete=60*1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
@@ -345,7 +350,7 @@ public class EquipmentDriverServerTast {
 				unit.UnitId=Integer.parseInt(unit.dirverId);
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
-				unit.acquisitionData.setYxzt(0);
+				unit.acquisitionData.setRunStatus(0);
 				unit.runTimeEfficiencySource=rs.getInt(7);
 				unit.acqCycle_Discrete=1000*rs.getInt(8);
 				unit.saveCycle_Discrete=1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
@@ -643,7 +648,7 @@ public class EquipmentDriverServerTast {
 		public  String ReadTime="";//读取数据时间
 		public  String SaveTime="";//离散数据保存时间
 		public  String screwPumpSaveTime="";//螺杆泵数据保存时间
-		public int yxzt;//运行状态
+		public int runStatus;//运行状态
 		public int egklx;//电参诊断结果
 		public int acquisitionCycle;//功图采集周期
 		public int FSDiagramSetPointCount;//功图设置点数
@@ -708,11 +713,11 @@ public class EquipmentDriverServerTast {
 		public void setAcquisitionTime(String acquisitionTime) {
 			AcquisitionTime = acquisitionTime;
 		}
-		public int getYxzt() {
-			return yxzt;
+		public int getRunStatus() {
+			return runStatus;
 		}
-		public void setYxzt(int yxzt) {
-			this.yxzt = yxzt;
+		public void setRunStatus(int runStatus) {
+			this.runStatus = runStatus;
 		}
 		public float getTubingPressure() {
 			return TubingPressure;

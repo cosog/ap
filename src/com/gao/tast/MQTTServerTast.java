@@ -34,6 +34,7 @@ import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
 import com.gao.tast.MQTTServerTast.TransferDiscrete;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.JDBCUtil;
 import com.gao.utils.MQTTRecvDataMap;
 import com.gao.utils.OracleJdbcUtis;
@@ -44,7 +45,7 @@ import com.google.gson.reflect.TypeToken;
 
 @Component("MQTTServerTast")  
 public class MQTTServerTast {
-	public static final String HOST =Config.getMqttServerUrl();// "tcp://47.93.196.203:1883";
+	public static final String HOST =Config.getInstance().configFile.getMqtt().getServer();// "tcp://47.93.196.203:1883";
     public static final String[] TOPIC = {"Discrete/#","Diagram/#","Daily/#"};
     public static final int[] Qos  = {1,1,1};
     private static final String clientid = "mqttServerClient"+new Date().getTime();
@@ -55,7 +56,7 @@ public class MQTTServerTast {
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runMQTTServer() throws InstantiationException, IllegalAccessException, SQLException{
 		//将以前接收到的数据清空
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();
@@ -220,13 +221,13 @@ public class MQTTServerTast {
 				StringBuffer recJsonBuff=new StringBuffer();
 				byte recvData[]=message.getPayload();
 				Gson gson = new Gson();
-				String discreteUrl=Config.getProjectAccessPath()+"/PSToFSController/saveMQTTTransferElecDiscreteData";
-				String diagramUrl=Config.getProjectAccessPath()+"/PSToFSController/saveMQTTTransferElecDiagramData";
-				String dailyUrl=Config.getProjectAccessPath()+"/PSToFSController/saveMQTTTransferElecDailyData";
+				String discreteUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDiscreteData";
+				String diagramUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDiagramData";
+				String dailyUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDailyData";
 				
-				if(topic.contains("3b1c91d4f21c47ed")){
-					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
-				}
+//				if(topic.contains("3b1c91d4f21c47ed")){
+//					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
+//				}
 				
 				
 				int Qos=message.getQos();
@@ -271,9 +272,10 @@ public class MQTTServerTast {
 							}
 							//将数据取出后，从内存中删掉
 							map.remove(key);
-							if(topic.contains("3b1c91d4f21c47ed")){
-								System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
-							}
+							
+//							if(topic.contains("3b1c91d4f21c47ed")){
+//								System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
+//							}
 							
 							String pubTimerCorrectionTopic="TimerCorrection/"+ID;//时间校正主题
 							String pubTransferDiscreteIntervalTopic="TransferDiscreteInterval/"+ID;//离散传输周期设置主题
@@ -289,12 +291,12 @@ public class MQTTServerTast {
 									StringManagerUtils.sendPostMethod(discreteUrl, gson.toJson(transferDiscrete),"utf-8");
 									//时间校准
 									DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-									String timerCorrectionStart=StringManagerUtils.getCurrentTime()+" "+Config.getTimerCorrectionStart();
-									String timerCorrectionEnd=StringManagerUtils.getCurrentTime()+" "+Config.getTimerCorrectionEnd();
+									String timerCorrectionStart=StringManagerUtils.getCurrentTime()+" "+Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getTimerCorrectionStart();
+									String timerCorrectionEnd=StringManagerUtils.getCurrentTime()+" "+Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getImerCorrectionEnd();
 									String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 									if(format.parse(currentTime).getTime()>format.parse(timerCorrectionStart).getTime()
 											&&format.parse(currentTime).getTime()<format.parse(timerCorrectionEnd).getTime()
-											&&Math.abs(format.parse(currentTime).getTime()/1000-format.parse(transferDiscrete.getAcquisitionTime()).getTime()/1000)>StringManagerUtils.stringToInteger(Config.getTimerCorrectionLimit())){
+											&&Math.abs(format.parse(currentTime).getTime()/1000-format.parse(transferDiscrete.getAcquisitionTime()).getTime()/1000)>Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getTimerCorrectionLimit()){
 										//设置该设备时间校正标准，接收完当天日报后，进行校正
 										map.put(pubTimerCorrectionTopic, true);
 //										sendMessage(pubTimerCorrectionTopic,currentTime,false);

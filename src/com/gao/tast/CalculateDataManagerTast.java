@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +37,7 @@ public class CalculateDataManagerTast {
 //	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
-		String url=Config.getProjectAccessPath()+"/calculateDataController/getBatchCalculateTime";
+		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
 		String result="无未计算数据";
 		int count=getCount(sql);
 		closeDBConnection();
@@ -53,10 +54,10 @@ public class CalculateDataManagerTast {
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getProjectAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
-		String discreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/DiscreteDailyCalculation";
-		String rpmDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/PCPRPMDailyCalculation";
-		String PCPDiscreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation";
+		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+		String discreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/DiscreteDailyCalculation";
+		String rpmDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/PCPRPMDailyCalculation";
+		String PCPDiscreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation";
 		@SuppressWarnings("unused")
 		String result="";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8");
@@ -69,8 +70,8 @@ public class CalculateDataManagerTast {
 //	@Scheduled(cron = "0 30 0/1 * * ?")
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
-		String discreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
-		String PCPDiscreteDailyCalculationUrl=Config.getProjectAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation?date="+currentDate;
+		String discreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
+		String PCPDiscreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("unused")
 		String result="";
 		result=StringManagerUtils.sendPostMethod(discreteDailyCalculationUrl, "","utf-8");
@@ -84,16 +85,16 @@ public class CalculateDataManagerTast {
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void getOuterDataRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 //		System.out.println("取功图:"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
-		String url=Config.getProjectAccessPath()+"/graphicalUploadController/getOuterSurfaceCardData";
+		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/getOuterSurfaceCardData";
 		StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
 	
 	public static Connection getConnection(){
         try{
-            String driver=Config.getDriver();
-            String url = Config.getDriverUrl();
-            String username = Config.getUser();
-            String password = Config.getPassword();
+        	String driver=Config.getInstance().configFile.getSpring().getDatasource().getDriver();
+            String url = Config.getInstance().configFile.getSpring().getDatasource().getDriverUrl(); 
+            String username = Config.getInstance().configFile.getSpring().getDatasource().getUser();
+            String password = Config.getInstance().configFile.getSpring().getDatasource().getPassword();  
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url, username, password);
             return conn;
@@ -105,10 +106,10 @@ public class CalculateDataManagerTast {
 	
 	public static Connection getOuterConnection(){  
         try{
-            String driver=Config.getOuterDriver();
-            String url = Config.getOuterDriverUrl(); 
-            String username = Config.getOuterUser();
-            String password = Config.getOuterPassword();  
+        	String driver=Config.getInstance().configFile.getDockDataSource().get(0).getDriver();
+            String url = Config.getInstance().configFile.getDockDataSource().get(0).getDriverUrl(); 
+            String username = Config.getInstance().configFile.getDockDataSource().get(0).getUser();
+            String password = Config.getInstance().configFile.getDockDataSource().get(0).getPassword();  
             Class.forName(driver).newInstance();  
             Connection conn = DriverManager.getConnection(url, username, password);  
             return conn;  

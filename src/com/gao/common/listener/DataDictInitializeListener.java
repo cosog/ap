@@ -8,6 +8,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.gao.controller.base.BaseController;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 
 /**
  * <p>描述：程序一开始启动，就会启动该监听，执行数据字典缓存操作</p>
@@ -16,15 +17,15 @@ import com.gao.utils.Config;
  *@version 1.0
  */
 public class DataDictInitializeListener implements ServletContextListener {
-	 private String cache="true";
+	 private boolean cache=true;
 	public void contextDestroyed(ServletContextEvent event) { 
 		ServletContext context = event.getServletContext();
 		context.log("context game over ", new Throwable());
 	}
 
 	public void contextInitialized(ServletContextEvent event) {
-		cache=Config.getCache();
-		if("true".equalsIgnoreCase(cache)){
+		cache=Config.getInstance().configFile.getOthers().getCache();
+		if(cache){
 		System.out.println("数据字典缓存启动中...");
 		ServletContext context = event.getServletContext();
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(context);

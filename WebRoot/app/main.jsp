@@ -6,6 +6,7 @@
 <%
 	String path = request.getContextPath();
    String browserLang=(String)request.getAttribute("browserLang");
+   String viewProjectName=(String)session.getAttribute("viewProjectName");
    request.setAttribute("browserLang",browserLang );
    
    /*
@@ -31,9 +32,9 @@
 %>
 <html>
 <head>
-<fmt:setBundle basename="config/messages"/>
+<!--<fmt:setBundle basename="config/messages"/>-->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title><fmt:message key="login.title"/></title>
+<title><%=viewProjectName%></title>
 <link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico" />
 <link rel="icon" href="<%=path%>/images/logo/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico"
@@ -46,7 +47,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="renderer" content="webkit">
 <script> 
- var user_ = "${userLogin.userNo}";  
+ var user_ = "${userLogin.userNo}";
+ var viewInformation = ${viewInformation};
 if (user_ == null || "" == (user_)) {
 			window.location.href = "../login/toLogin";
 }
@@ -105,8 +107,8 @@ if (user_ == null || "" == (user_)) {
     var m_PagerSize = 5;
     var userSyncOrAsync=1;
     var treeInfo;
-       var nav_html="";
-       var user_Type="";
+    var nav_html="";
+    var user_Type="";
  	  //启动Extjs
 	  Ext.onReady(function(){
 			    Ext.BLANK_IMAGE_URL="<%=path%>/scripts/extjs/resources/themesimages/default/s.gif";
@@ -126,6 +128,7 @@ if (user_ == null || "" == (user_)) {
 					defaultComboxSize="${userLogin.defaultComboxSize}";
 					defaultGraghSize="${userLogin.defaultGraghSize}";
 					_clientWidth = document.body.clientWidth;
+					
 					// MsgTip.msg('消息', '设置10秒后自动隐藏',true,2000);
 				});
  	  

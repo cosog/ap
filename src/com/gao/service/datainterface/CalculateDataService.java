@@ -30,6 +30,7 @@ import com.gao.model.calculate.TotalAnalysisRequestData;
 import com.gao.model.calculate.TotalAnalysisResponseData;
 import com.gao.service.base.BaseService;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -269,8 +270,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public List<String> getFSDiagramDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String timeEffTotalUrl=Config.getTimeEfficiencyHttpServerURL();
-		String commTotalUrl=Config.getCommHttpServerURL();
+		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
+		String commTotalUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t.runtimeefficiencysource,t.driveraddr,t.driverid,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "
@@ -465,8 +466,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public List<String> getPCPRPMDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String timeEffTotalUrl=Config.getTimeEfficiencyHttpServerURL();
-		String commTotalUrl=Config.getCommHttpServerURL();
+		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
+		String commTotalUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t.runtimeefficiencysource,t.driveraddr,t.driverid,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "

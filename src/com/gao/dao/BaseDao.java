@@ -1503,8 +1503,6 @@ public class BaseDao extends HibernateDaoSupport {
 			conn = SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 			ps=conn.prepareStatement(sql);
 			result=ps.executeUpdate();
-			ps.close();
-			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

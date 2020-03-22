@@ -8,6 +8,7 @@
 	String flag="";
 	String name="";
 	String password="";
+	String viewProjectName=(String)session.getAttribute("viewProjectName");
 	try{
 		Cookie[] cookies=request.getCookies();
 		System.out.println(cookies.length);
@@ -52,7 +53,7 @@
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="cache-control" content="no-cache,must-revalidate" />
     <meta http-equiv="expires" content="0" />
-    <title><fmt:message key="login.title" /></title>
+    <title><%=viewProjectName%></title>
     <!-- 链接外部图标，如：中石油、中石化 -->
 	<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico" />
 	<link rel="icon" href="<%=path%>/images/logo/favicon.ico" type="image/x-icon" />
@@ -71,7 +72,7 @@
 	<script>
 	//document.getElementById("text111111").innerHTML=cosog.string.title;
 	//$("#text111111").html("<span>aaaa</span>");
-	
+	var viewInformation = ${viewInformation};
 	$(function () {
 		initDisplayInformation();
 		var getUserListURL="<%=path%>/userLoginManagerController/getUserList";
@@ -93,9 +94,10 @@
 	});
 	
 	function initDisplayInformation(){
+		
 		$("#login_userlogin").html(cosog.string.userlogin);
-		$("#login_loginInfo").html(cosog.string.loginInfo);
-		$("#login_title").html(cosog.string.title);
+		$("#login_loginInfo").html(viewInformation.profile);
+		$("#login_title").html(viewInformation.title);
 		$("#login_myself").html(cosog.string.myself);
 		$("#userId").attr("placeholder", cosog.string.entername);
 		$("#userPwd").attr("placeholder", cosog.string.enterpwd);
@@ -103,9 +105,9 @@
 		$("#login_forgerpassword").html(cosog.string.forgerpassword);
 		$("#login_contact").html(cosog.string.contact);
 		$("#login_loginButton").html(cosog.string.login);
-		$("#login_copy").html(cosog.string.copy);
-		$("#login_link").text(cosog.string.linkshow);
-		$('#login_link').attr('href',cosog.string.linkaddress);
+		$("#login_copy").html(viewInformation.copy);
+		$("#login_link").text(viewInformation.linkshow);
+		$('#login_link').attr('href',viewInformation.linkaddress);
 	}
 	
 	function userSelectpickerChange(obj){

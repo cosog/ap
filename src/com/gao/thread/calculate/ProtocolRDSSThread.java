@@ -16,6 +16,7 @@ import com.gao.model.calculate.TimeEffResponseData;
 import com.gao.tast.RSDDServerTast.AcquisitionData;
 import com.gao.utils.BeidouTerminalMap;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -40,7 +41,7 @@ public class ProtocolRDSSThread extends Thread{
 				PreparedStatement pstmt = null;  
 				Statement stmt = null;  
 				ResultSet rs = null;
-				String saveFSDiagramUrl=Config.getProjectAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
+				String saveFSDiagramUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
 				DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Gson gson = new Gson();
 				try{
@@ -152,7 +153,7 @@ public class ProtocolRDSSThread extends Thread{
 			        							+ "\"AcquisitionTime\":\""+acquisitionData.AcquisitionTime+"\","
 			        							+ "\"CommStatus\":1"
 			        							+ "}";
-			        					String commResponse=StringManagerUtils.sendPostMethod(Config.getCommHttpServerURL(), commRequest,"utf-8");
+			        					String commResponse=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAgileCalculate().getCommunication()[0], commRequest,"utf-8");
 			        					java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
 			        					CommResponseData commResponseData=gson.fromJson(commResponse, type);
 			        					
@@ -171,13 +172,13 @@ public class ProtocolRDSSThread extends Thread{
 			        							+ "\"CompositePowerFactor\":"+PowerFactor+""
 			        							+ "}";
 			        					String elecCalUrl="";
-			        					if(jslx>=200&&jslx<300){//抽油机
-			        						elecCalUrl=Config.getPumpingunitElecCalculateHttpServerURL();
-			        					}else if(jslx>=400&&jslx<500){//螺杆泵
-			        						elecCalUrl=Config.getScrewpumpElecCalculateHttpServerURL();
-			        					}else{//默认抽油机
-			        						elecCalUrl=Config.getPumpingunitElecCalculateHttpServerURL();
-			        					}
+//			        					if(jslx>=200&&jslx<300){//抽油机
+//			        						elecCalUrl=Config2.getPumpingunitElecCalculateHttpServerURL();
+//			        					}else if(jslx>=400&&jslx<500){//螺杆泵
+//			        						elecCalUrl=Config2.getScrewpumpElecCalculateHttpServerURL();
+//			        					}else{//默认抽油机
+//			        						elecCalUrl=Config2.getPumpingunitElecCalculateHttpServerURL();
+//			        					}
 			        					String elecCalResponse=StringManagerUtils.sendPostMethod(elecCalUrl, elecCalRequest,"utf-8");
 			        					elecCalResponse=elecCalResponse.replaceAll("'", "''");
 			        					type = new TypeToken<ElectricCalculateResponseData>() {}.getType();
@@ -199,7 +200,7 @@ public class ProtocolRDSSThread extends Thread{
 			        							+ "}";
 			        					//时率来源为DI信号或电参计算时，此时进行时率计算
 			        					if(slly==1||slly==2){
-			        						String timeEffResponse=StringManagerUtils.sendPostMethod(Config.getTimeEfficiencyHttpServerURL(), tiemEffRequest,"utf-8");
+			        						String timeEffResponse=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAgileCalculate().getRun()[0], tiemEffRequest,"utf-8");
 			            					type = new TypeToken<TimeEffResponseData>() {}.getType();
 			            					timeEffResponseData=gson.fromJson(timeEffResponse, type);
 			        					}

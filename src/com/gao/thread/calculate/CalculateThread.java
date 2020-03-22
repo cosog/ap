@@ -12,6 +12,7 @@ import com.gao.model.calculate.TimeEffResponseData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.datainterface.CalculateDataService;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -30,9 +31,9 @@ public class CalculateThread extends Thread{
 	}
 
 	public void run(){
-		String url[]=Config.getCalculateHttpServerURL().split(",");
-		String screwPumpCalUrl[]=Config.getScrewPumpCalculateHttpServerURL().split(",");
-		String totalUrl=Config.getProjectAccessPath()+"/calculateDataController/totalCalculation";
+		String url[]=Config.getInstance().configFile.getAgileCalculate().getFESDiagram();
+		String screwPumpCalUrl[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
+		String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/totalCalculation";
 		String totalDate = StringManagerUtils.getCurrentTime();
 		CommonDataService commonDataService=new CommonDataService();
 		totalUrl+="?date="+totalDate;

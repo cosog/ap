@@ -23,6 +23,7 @@ import com.gao.tast.EquipmentDriverServerTast.AcquisitionData;
 import com.gao.tast.EquipmentDriverServerTast.ClientUnit;
 import com.gao.tast.EquipmentDriverServerTast.UnitData;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -32,10 +33,10 @@ public class ProtocolModbusTCPThread extends Thread{
 
 	private int threadId;
 	private ClientUnit clientUnit;
-	private String url=Config.getProjectAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
-	private String tiemEffUrl=Config.getTimeEfficiencyHttpServerURL();
-	private String commUrl=Config.getCommHttpServerURL();
-	private String energyUrl=Config.getEnergyHttpServerURL();
+	private String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
+	private String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
+	private String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+	private String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
 	private RTUDriveConfig driveConfig;
 	private boolean isExit=false;
 	public ProtocolModbusTCPThread(int threadId, ClientUnit clientUnit,RTUDriveConfig driveConfig) {
@@ -1552,16 +1553,22 @@ public class ProtocolModbusTCPThread extends Thread{
         					String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
         					java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
         					CommResponseData commResponseData=gson.fromJson(commResponse, type);
+        					System.out.println("通信请求数据："+commRequest);
+							System.out.println("通信返回数据："+commResponse);
         					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommTimeEfficiency(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommRangeString(commResponseData.getCurrent().getCommEfficiency().getRangeString());
         						
-        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+//        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
         						clientUnit.unitDataList.get(i).lastCommStatus=commResponseData.getCurrent().getCommStatus()?1:0;
         						clientUnit.unitDataList.get(i).lastCommTime=commResponseData.getCurrent().getCommEfficiency().getTime();
         						clientUnit.unitDataList.get(i).lastCommTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
         						clientUnit.unitDataList.get(i).lastCommRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+        					}else{
+        						System.out.println("comm error");
+        						System.out.println("通信请求数据："+commRequest);
+    							System.out.println("通信返回数据："+commResponse);
         					}
         					//进行时率计算
         					TimeEffResponseData timeEffResponseData=null;
@@ -1594,26 +1601,28 @@ public class ProtocolModbusTCPThread extends Thread{
 									+ "}"
 									+ "}";
         					//时率来源为DI信号或电参计算时，此时进行时率计算
+        					String timeEffResponse="";
         					if(clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==1||clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==2){
-        						String timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
+        						timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
             					type = new TypeToken<TimeEffResponseData>() {}.getType();
             					timeEffResponseData=gson.fromJson(timeEffResponse, type);
         					}
+        					System.out.println("时率请求数据："+tiemEffRequest);
+							System.out.println("时率返回数据："+timeEffResponse);
         					if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-        						if(StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate()) ){
-        							System.out.println("时率跨天");
-        							System.out.println("时率请求数据："+tiemEffRequest);
-        							System.out.println("时率返回数据："+timeEffResponseData);
-        						}
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunTime(timeEffResponseData.getCurrent().getRunEfficiency().getTime());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunTimeEfficiency(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunRangeString(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
         						
-        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+//        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
         						clientUnit.unitDataList.get(i).lastRunStatus=timeEffResponseData.getCurrent().getRunStatus()?1:0;
         						clientUnit.unitDataList.get(i).lastRunTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
         						clientUnit.unitDataList.get(i).lastRunTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
         						clientUnit.unitDataList.get(i).lastRunRange=timeEffResponseData.getCurrent().getRunEfficiency().getRangeString();
+        					}else{
+        						System.out.println("run error");
+        						System.out.println("时率请求数据："+tiemEffRequest);
+    							System.out.println("时率返回数据："+timeEffResponse);
         					}
         					
         					//进行电量计算
@@ -1657,15 +1666,12 @@ public class ProtocolModbusTCPThread extends Thread{
 									+ "}"
 									+ "}";
         					String energyResponse=StringManagerUtils.sendPostMethod(energyUrl, energyRequest,"utf-8");
+        					System.out.println("电量请求数据："+energyRequest);
+							System.out.println("电量返回数据："+energyResponse);
         					type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
         					energyCalculateResponseData=gson.fromJson(energyResponse, type);
         					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-        						if(StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate()) ){//如果跨天
-        							System.out.println("电量跨天");
-        							System.out.println("电量请求数据："+energyRequest);
-        							System.out.println("电量返回数据："+energyResponse);
-            					}
-        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+//        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
         						clientUnit.unitDataList.get(i).lastTotalWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getWatt();
         						clientUnit.unitDataList.get(i).lastTotalPWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getPWatt();
         						clientUnit.unitDataList.get(i).lastTotalNWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getNWatt();
@@ -1681,18 +1687,30 @@ public class ProtocolModbusTCPThread extends Thread{
         						clientUnit.unitDataList.get(i).lastTodayPVarEnergy=energyCalculateResponseData.getCurrent().getToday().getPVar();
         						clientUnit.unitDataList.get(i).lastTodayNVarEnergy=energyCalculateResponseData.getCurrent().getToday().getNVar();
         						clientUnit.unitDataList.get(i).lastTodayVAEnergy=energyCalculateResponseData.getCurrent().getToday().getVA();
+        					}else{
+        						System.out.println("energy error");
+        						System.out.println("请求数据："+energyRequest);
+    							System.out.println("返回数据："+energyResponse);
         					}
-        					
+        					System.out.println("aaa");
+        					clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+        					System.out.println("bbb");
         					long hisDataInterval=0;
     						if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).getAcquisitionData().getSaveTime())){
     							hisDataInterval=format.parse(clientUnit.unitDataList.get(i).getAcquisitionData().getSaveTime()).getTime();
     						}
+    						System.out.println("RunStatus:"+RunStatus);
+    						System.out.println("clientUnit.unitDataList.get(i).acquisitionData.runStatus:"+clientUnit.unitDataList.get(i).acquisitionData.runStatus);
+    						System.out.println(format.parse(AcquisitionTime).getTime());
+    						System.out.println(hisDataInterval);
+    						System.out.println(clientUnit.unitDataList.get(i).getSaveCycle_Discrete());
+    						System.out.println(format.parse(AcquisitionTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getSaveCycle_Discrete());
     						if(commResponseData!=null&&timeEffResponseData!=null&&
-        							(RunStatus!=clientUnit.unitDataList.get(i).acquisitionData.yxzt//运行状态发生改变
+        							(RunStatus!=clientUnit.unitDataList.get(i).acquisitionData.runStatus//运行状态发生改变
         							||format.parse(AcquisitionTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getSaveCycle_Discrete()//比上次保存时间大于5分钟
         							)
         						){
-        						clientUnit.unitDataList.get(i).acquisitionData.setYxzt(RunStatus);
+        						clientUnit.unitDataList.get(i).acquisitionData.setRunStatus(RunStatus);
         						Connection conn=OracleJdbcUtis.getConnection();
         						Statement stmt=null;
             					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t007.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
@@ -1706,7 +1724,6 @@ public class ProtocolModbusTCPThread extends Thread{
         								
         							}
             					}
-        						
         						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
         							updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
         								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
@@ -1715,7 +1732,6 @@ public class ProtocolModbusTCPThread extends Thread{
         								
         							}
             					}
-        						
         						if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
         							updateDiscreteData+=",t.TotalWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getWatt()
             								+ ",t.TotalPWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPWatt()
@@ -1751,9 +1767,8 @@ public class ProtocolModbusTCPThread extends Thread{
         						if(clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==2||timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
         							updateDiscreteData+=",t.runStatus="+RunStatus;
         						}
-        						
         						updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
-        						
+        						System.out.println("离散SQL："+updateDiscreteData);
         						try {
     								stmt = conn.createStatement();
     								int result=stmt.executeUpdate(updateDiscreteData);
@@ -1764,7 +1779,7 @@ public class ProtocolModbusTCPThread extends Thread{
     								}
     								conn.close();
     								stmt.close();
-    								clientUnit.unitDataList.get(i).getAcquisitionData().setYxzt(RunStatus);
+    								clientUnit.unitDataList.get(i).getAcquisitionData().setRunStatus(RunStatus);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcquisitionTime);
     							} catch (SQLException e) {
     								e.printStackTrace();
@@ -2096,7 +2111,7 @@ public class ProtocolModbusTCPThread extends Thread{
 				clientUnit.unitDataList.get(i).runStatusControl=0;
 				clientUnit.unitDataList.get(i).FSDiagramIntervalControl=0;
 				clientUnit.unitDataList.get(i).FrequencyControl=0;
-				clientUnit.unitDataList.get(i).acquisitionData.yxzt=0;
+				clientUnit.unitDataList.get(i).acquisitionData.runStatus=0;
 				//进行通信计算
 				String commRequest="{"
 						+ "\"AKString\":\"\","

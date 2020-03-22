@@ -23,6 +23,7 @@ import com.gao.model.User;
 import com.gao.service.right.ModuleManagerService;
 import com.gao.utils.BackModuleRecursion;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.MainModuleRecursion;
 import com.gao.utils.ParamUtils;
@@ -121,8 +122,8 @@ public class ModuleMenuController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		if (user != null) {
-			String cache = Config.getCache();
-			if ("true".equalsIgnoreCase(cache)) {
+			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			if (cache) {
 				log.warn("后台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
 				if (user != null) {
@@ -187,8 +188,8 @@ public class ModuleMenuController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		
 		if (user != null) {
-			String cache = Config.getCache();
-			if ("true".equalsIgnoreCase(cache)) {
+			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			if (cache) {
 				log.warn("前台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
 				if (user != null) {
@@ -242,8 +243,8 @@ public class ModuleMenuController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String parentNodeId=ParamUtils.getParameter(request, "tid");
 		if (user != null) {
-			String cache = Config.getCache();
-			if ("true".equalsIgnoreCase(cache)) {
+			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			if (cache) {
 				log.warn("前台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
 				if (user != null) {
@@ -273,7 +274,7 @@ public class ModuleMenuController extends BaseController {
 		StringBuffer strBuf = new StringBuffer();
 		MainModuleRecursion r = new MainModuleRecursion();
 		if (user != null) {
-			int expandedAll=Config.getExpandedAll();
+			boolean expandedAll=Config.getInstance().configFile.getOthers().getExpandedAll();
 			strBuf.append("{list:[");
 			for (Module org : list) {
 				//if (r.hasChild(listAll, org)) {
@@ -294,7 +295,7 @@ public class ModuleMenuController extends BaseController {
 					strBuf.append(org.getMdControl());
 					strBuf.append("\",\"closable\":true");
 					strBuf.append(",\"iconCls\":\"" + org.getMdIcon());
-					if(expandedAll==1){//展开所有节点
+					if(expandedAll){//展开所有节点
 						strBuf.append("\",\"expanded\":true},");
 					}else{
 						strBuf.append("\",\"expanded\":false},");

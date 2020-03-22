@@ -31,6 +31,7 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.right.ModuleManagerService;
 import com.gao.service.right.OrgManagerService;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.Constants;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.OrgRecursion;
@@ -134,8 +135,8 @@ public class OrgManagerController extends BaseController {
 		PrintWriter pw = response.getWriter();
 		if (user != null) {
 			StringBuffer orgIdString = new StringBuffer();
-			String cache = Config.getCache();
-			if ("true".equalsIgnoreCase(cache)) {
+			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			if (cache) {
 				Map<String, Object> map = DataModelMap.getMapObject();
 				log.warn("用户拥有的组织启用缓存...");
 				User oldUser = (User) map.get("oldUser");
@@ -217,8 +218,8 @@ public class OrgManagerController extends BaseController {
 			user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
 			session.setAttribute("userLogin", user);
-			String cache = Config.getCache();
-			if ("true".equalsIgnoreCase(cache)) {
+			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			if (cache) {
 				Map<String, Object> map = DataModelMap.getMapObject();
 				log.warn("用户拥有的组织启用缓存...");
 				User oldUser = (User) map.get("oldUser");
@@ -244,13 +245,13 @@ public class OrgManagerController extends BaseController {
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
 		if (user != null) {
-			int expandedAll=Config.getExpandedAll();
+			boolean expandedAll=Config.getInstance().configFile.getOthers().getExpandedAll();
 			strBuf.append("{list:[");
 			for (Org org : list) {
 				//if (r.isParentNode(user.getUserParentOrgids().split(","), org.getOrgId())||r.hasChild(listAll, org)) {
 				if (r.isParentNode(user.getAllOrgPatentNodeIds().split(","), org.getOrgId())) {
 					strBuf.append("{\"text\":\"" + org.getOrgName() + "\"");
-					if(expandedAll==1){//父节点全部展开
+					if(expandedAll){//父节点全部展开
 						strBuf.append(",\"expanded\" : true");
 					}else{
 						strBuf.append(",\"leaf\" : false");
@@ -343,7 +344,7 @@ public class OrgManagerController extends BaseController {
 		String json = "";
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
-		int expandedAll=Config.getExpandedAll();
+		boolean expandedAll=Config.getInstance().configFile.getOthers().getExpandedAll();
 		String columns=	service.showTableHeadersColumns("orgManage");
 		strBuf.append("{success:true,");
 		strBuf.append("columns:"+columns+",");
@@ -352,7 +353,7 @@ public class OrgManagerController extends BaseController {
 			Object[] obj = (Object[]) org;
 			if (StringManagerUtils.isNotNull(user.getAllOrgPatentNodeIds())&& r.isParentNode(user.getAllOrgPatentNodeIds().split(","), Integer.parseInt(obj[0]+""))) {
 				strBuf.append("{\"text\":\"" + obj[2] + "\"");
-				if(expandedAll==1){//父节点全部展开
+				if(expandedAll){//父节点全部展开
 					strBuf.append(",\"expanded\" : true");
 				}else{
 					strBuf.append(",\"leaf\" : false");

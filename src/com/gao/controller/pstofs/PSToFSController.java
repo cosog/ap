@@ -37,6 +37,7 @@ import com.gao.tast.MQTTServerTast.TransferDaily;
 import com.gao.tast.MQTTServerTast.TransferDiagram;
 import com.gao.tast.MQTTServerTast.TransferDiscrete;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
@@ -189,7 +190,7 @@ public class PSToFSController extends BaseController {
 		String cjsj = ParamUtils.getParameter(request, "cjsj");
 		String data = ParamUtils.getParameter(request, "data");
 		String requestData = PSToFSService.getCalaulateResult(wellName,cjsj,data);
-		String responseData=StringManagerUtils.sendPostMethod(Config.getElectricToFSDiagramHttpServerURL(), requestData,"utf-8");
+		String responseData=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorsemiauto()[0], requestData,"utf-8");
 		if(!StringManagerUtils.isNotNull(responseData)){
 			responseData="{\"WellName\": \""+wellName+"\",";
 			responseData+="\"ResultStatus\": "+-9999+"}";
@@ -719,7 +720,7 @@ public class PSToFSController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<TransferDiagram>() {}.getType();
     	TransferDiagram transferDiagram=gson.fromJson(data, type);
     	
-    	String inversionUrl=Config.getElectricToFSDiagramHttpServerURL();
+    	String inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorsemiauto()[0];
     	
     	if(transferDiagram!=null){
 //    		transferDiagram.setAcquisitionTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
@@ -747,7 +748,8 @@ public class PSToFSController extends BaseController {
     				}
     			}
         		
-        		if("1".equals(Config.getInversionSwitch())||(!(transferDiagram.getS()!=null&&transferDiagram.getS().size()>0&&transferDiagram.getF()!=null&&transferDiagram.getF().size()>0))){//下位机未进行反演计算 由下位机计算
+        		if(Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getInversionSwitch()
+        				||(!(transferDiagram.getS()!=null&&transferDiagram.getS().size()>0&&transferDiagram.getF()!=null&&transferDiagram.getF().size()>0))){//下位机未进行反演计算 由下位机计算
         			transferDiagram.setS(new ArrayList<Float>());
         			transferDiagram.setF(new ArrayList<Float>());
         			
@@ -877,9 +879,9 @@ public class PSToFSController extends BaseController {
             			result_json.append("}");
             			
             			if((!StringManagerUtils.isNotNull(transferDiagram.getVer()))||transferDiagram.getVer().startsWith("1")){//版本判断
-            				inversionUrl=Config.getElectricToFSDiagramHttpServerURL();
+            				inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorsemiauto()[0];
             			}else{
-            				inversionUrl=Config.getElectricToFSDiagramAutoHttpServerURL();
+            				inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorauto()[0];
             			}
             			
             			String responseData=StringManagerUtils.sendPostMethod(inversionUrl, result_json.toString(),"utf-8");
@@ -975,7 +977,7 @@ public class PSToFSController extends BaseController {
 	@RequestMapping("/reInverDiagram")
 	public String reInverDiagram() throws Exception {
 		Gson gson=new Gson();
-		String inversionUrl=Config.getElectricToFSDiagramAutoHttpServerURL();
+		String inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorauto()[0];
 		String diagramIds=ParamUtils.getParameter(request, "diagramIds");
 		String wellName=ParamUtils.getParameter(request, "wellName");
 		

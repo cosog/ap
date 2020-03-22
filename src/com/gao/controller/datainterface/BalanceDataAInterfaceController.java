@@ -23,6 +23,7 @@ import com.gao.model.balance.TorqueBalanceResponseData;
 import com.gao.service.datainterface.BalanceDataAInterfaceService;
 import com.gao.thread.calculate.BalanceTorqueMethodCalculateThread;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -43,7 +44,7 @@ public class BalanceDataAInterfaceController extends BaseController{
 	
 	@RequestMapping("/getBalanceTorqueCalulate")
 	public String getBalanceTorqueCalulate() throws SQLException, IOException, ParseException, InterruptedException{
-		String url=Config.getBalanceTorqueHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getFSDiagram()[0];
 		String urlArr[]=url.split(",");
 		String json="";
 		long startTime=0;
@@ -133,7 +134,7 @@ public class BalanceDataAInterfaceController extends BaseController{
 		List<String> maxValueRequestDataList=balanceDataAInterfaceService.getTotalCalculationDataList(2);
 		List<String> netTorqueRequestDataList=balanceDataAInterfaceService.getTotalCalculationDataList(1);
 		List<String> averagePowerRequestDataList=balanceDataAInterfaceService.getTotalCalculationDataList(1);
-		String url=Config.getBalanceCycleHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getFSDiagram()[0];
 		for(int i=0;i<maxValueRequestDataList.size();i++){//TotalCalculateResponseData
 			try {
 				String responseData=StringManagerUtils.sendPostMethod(url, maxValueRequestDataList.get(i),"utf-8");
@@ -201,7 +202,7 @@ public class BalanceDataAInterfaceController extends BaseController{
 		List<String> maxValueRequestDataList=balanceDataAInterfaceService.getCycleCalculationDataList(2,jh);
 		List<String> netTorqueRequestDataList=balanceDataAInterfaceService.getCycleCalculationDataList(1,jh);
 		List<String> avgPowerRequestDataList=balanceDataAInterfaceService.getCycleCalculationDataList(3,jh);
-		String url=Config.getBalanceCycleHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getFSDiagram()[0];
 		for(int i=0;i<maxValueRequestDataList.size();i++){//TotalCalculateResponseData
 			try {
 				String responseData=StringManagerUtils.sendPostMethod(url, maxValueRequestDataList.get(i),"utf-8");

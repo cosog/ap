@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.StringManagerUtils;
 
 @Component("balanceDataManagerTast")  
@@ -26,7 +27,7 @@ public class BalanceDataManagerTast {
 //	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendBalanceCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		String sql="select count(1) from t_201_balanceanalysis t where jsbz=0";
-		String url=Config.getProjectAccessPath()+"/balanceDataAInterfaceController/getBalanceTorqueCalulate";
+		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/balanceDataAInterfaceController/getBalanceTorqueCalulate";
 		String result="无未计算数据";
 		int count=getCount(sql);
 		closeDBConnection();
@@ -43,7 +44,7 @@ public class BalanceDataManagerTast {
 //	@Scheduled(cron = "0/1 * * * * ?")
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getProjectAccessPath()+"/balanceDataAInterfaceController/balanceTotalCalculation";
+		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/balanceDataAInterfaceController/balanceTotalCalculation";
 		@SuppressWarnings("unused")
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
@@ -54,7 +55,7 @@ public class BalanceDataManagerTast {
 //	@Scheduled(cron = "0/1 * * * * ?")
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void cycleCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getProjectAccessPath()+"/balanceDataAInterfaceController/balanceCycleCalculation";
+		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/balanceDataAInterfaceController/balanceCycleCalculation";
 		@SuppressWarnings("unused")
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
@@ -63,10 +64,10 @@ public class BalanceDataManagerTast {
 	public static Connection getConnection(){  
         try{  
             
-            String driver=Config.getDriver();
-            String url = Config.getDriverUrl(); 
-            String username = Config.getUser();
-            String password = Config.getPassword();  
+            String driver=Config.getInstance().configFile.getSpring().getDatasource().getDriver();
+            String url = Config.getInstance().configFile.getSpring().getDatasource().getDriverUrl(); 
+            String username = Config.getInstance().configFile.getSpring().getDatasource().getUser();
+            String password = Config.getInstance().configFile.getSpring().getDatasource().getPassword();  
             Class.forName(driver).newInstance();  
             Connection conn = DriverManager.getConnection(url, username, password);  
             return conn;  
@@ -79,10 +80,10 @@ public class BalanceDataManagerTast {
 	public static Connection getOuterConnection(){  
         try{  
             
-            String driver=Config.getOuterDriver();
-            String url = Config.getOuterDriverUrl(); 
-            String username = Config.getOuterUser();
-            String password = Config.getOuterPassword();  
+            String driver=Config.getInstance().configFile.getDockDataSource().get(0).getDriver();
+            String url = Config.getInstance().configFile.getDockDataSource().get(0).getDriverUrl(); 
+            String username = Config.getInstance().configFile.getDockDataSource().get(0).getUser();
+            String password = Config.getInstance().configFile.getDockDataSource().get(0).getPassword();  
             Class.forName(driver).newInstance();  
             Connection conn = DriverManager.getConnection(url, username, password);  
             return conn;  

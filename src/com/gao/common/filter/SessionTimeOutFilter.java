@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.gao.model.User;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.DataModelMap;
 
 /**
@@ -56,7 +57,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 		// 国际区域
 		String browserLang = null;
 		String locale=null;
-		locale = Config.getLanguage();
+		locale = Config.getInstance().configFile.getOthers().getLanguage();
 		Locale l = Locale.getDefault(); 
 		if(locale==null){ 
 		l = new Locale("zh", "CN"); 

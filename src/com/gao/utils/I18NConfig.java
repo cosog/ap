@@ -68,7 +68,7 @@ public class I18NConfig {
 	}
 
 	static void getconfiguration() {
-		locale = Config.getLanguage();
+		locale = Config.getInstance().configFile.getOthers().getLanguage();
 		ResourceBundle resources = ResourceBundle.getBundle(I18NConfig.CONFIG_FILE + locale);
 		workStatisticsImage = resources.getString("cosog.workStatisticsImage");
 		gklx = resources.getString("cosog.gklx");

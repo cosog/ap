@@ -4,11 +4,11 @@ var cosog = {};
 cosog.string = {};    
 
 //项目名称
-cosog.string.title='AgileProduction 敏捷生产 V7.1';
+//cosog.string.title='AgileProduction 敏捷生产 V7.1';
 
 //登录信息
 cosog.string.userlogin='用户登录';
-cosog.string.loginInfo='AgileProduction 油气生产敏捷计算分析系统 V7.1主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时评价、全天评价、生产报表、图形查询等。系统应用大数据分析方法，对工况、产量、时率、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。';
+//cosog.string.loginInfo='AgileProduction 油气生产敏捷计算分析系统 V7.1主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时评价、全天评价、生产报表、图形查询等。系统应用大数据分析方法，对工况、产量、时率、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。';
 cosog.string.myself='我自己';
 cosog.string.entername='请输入用户名';
 cosog.string.enterpwd='请输入密码';
@@ -19,9 +19,9 @@ cosog.string.login='立即登录';
 cosog.string.logining='系统正在登录中...';
 
 //版权信息
-cosog.string.copy='';
-cosog.string.linkaddress='http://www.cosogoil.com';
-cosog.string.linkshow='';
+//cosog.string.copy='';
+//cosog.string.linkaddress='http://www.cosogoil.com';
+//cosog.string.linkshow='';
 
 
 //分页工具栏

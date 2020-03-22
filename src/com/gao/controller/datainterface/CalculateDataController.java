@@ -42,6 +42,7 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.datainterface.CalculateDataService;
 import com.gao.thread.calculate.CalculateThread;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.Constants;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.ParamUtils;
@@ -72,8 +73,8 @@ public class CalculateDataController extends BaseController{
 	
 	@RequestMapping("/getBatchCalculateTime")
 	public String getBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
-		String url[]=Config.getCalculateHttpServerURL().split(",");
-		String screwPumpCalUrl[]=Config.getScrewPumpCalculateHttpServerURL().split(",");
+		String url[]=Config.getInstance().configFile.getAgileCalculate().getFESDiagram();
+		String screwPumpCalUrl[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
 		String json="";
 		long startTime=0;
 		long endTime=0;
@@ -91,7 +92,7 @@ public class CalculateDataController extends BaseController{
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
 			String wellId=wellList.get(j)+"";
-			String totalUrl=Config.getProjectAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+			String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
 			totalUrl+="?date="+totalDate;
 			totalUrl+="&wellId="+wellId;
 			String sql="select * from ("
@@ -189,7 +190,7 @@ public class CalculateDataController extends BaseController{
 			tatalDate=StringManagerUtils.getCurrentTime();
 		}
 		List<String> requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
-		String url=Config.getTotalCalculateHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
 //				System.out.println(requestDataList.get(i));
@@ -239,7 +240,7 @@ public class CalculateDataController extends BaseController{
 			tatalDate=StringManagerUtils.getCurrentTime();
 		}
 		List<String> requestDataList=calculateDataService.getPCPRPMDailyCalculationRequestData(tatalDate,wellId);
-		String url=Config.getTotalCalculateHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
 //				System.out.println(requestDataList.get(i));
@@ -289,7 +290,7 @@ public class CalculateDataController extends BaseController{
 			tatalDate=StringManagerUtils.getCurrentTime();
 		}
 		List<String> requestDataList=calculateDataService.getDiscreteDailyCalculation(tatalDate,wellId);
-		String url=Config.getTotalCalculateHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){
 			try {
 				Gson gson = new Gson();
@@ -338,7 +339,7 @@ public class CalculateDataController extends BaseController{
 			tatalDate=StringManagerUtils.getCurrentTime();
 		}
 		List<String> requestDataList=calculateDataService.getPCPDiscreteDailyCalculation(tatalDate,wellId);
-		String url=Config.getTotalCalculateHttpServerURL();
+		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){
 			try {
 				Gson gson = new Gson();

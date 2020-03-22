@@ -32,6 +32,7 @@ import com.gao.service.right.ModuleManagerService;
 import com.gao.service.right.OrgManagerService;
 import com.gao.service.right.UserManagerService;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
@@ -82,10 +83,10 @@ public class UserLoginManagerController extends BaseController {
 		String code = URLDecoder.decode(imgCode, "UTF-8");
 		HttpSession session = ServletActionContext.getRequest().getSession(true);
 		// 功图图形服务内外网判断
-		String picUrl = "";
+//		String picUrl = "";
 		String ip = request.getServerName();
-		picUrl = Config.getPicUrlByClientIp(ip, Config.getUrl_filter());
-		String locale=Config.getLanguage();
+//		picUrl = Config2.getPicUrlByClientIp(ip, Config2.getUrl_filter());
+		String locale=Config.getInstance().configFile.getOthers().getLanguage();
 		Locale l = Locale.getDefault(); 
 		if(locale==null){ 
 		l = new Locale("zh", "CN"); 
@@ -110,8 +111,8 @@ public class UserLoginManagerController extends BaseController {
 			user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
 			if(user!=null){
 			if (user.getUserType() == 1 || user.getUserType() == 2||user.getUserType() == 3) {
-				user.setPicUrl(picUrl);// 通过session传到前台
-				int pageSize = Config.getPageSize();
+//				user.setPicUrl(picUrl);// 通过session传到前台
+				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
 				user.setPageSize(pageSize + "");
 				user.setOrgtreeid(findUserToOrgString(user.getUserOrgid()));
 				session.setAttribute("userLogin", user);
@@ -137,8 +138,8 @@ public class UserLoginManagerController extends BaseController {
     			if(user!=null){
     				if (user.getUserType() == 1 || user.getUserType() == 2||user.getUserType() == 3) {
     			if ( user.getUserType() == 1 || user.getUserType() == 2||user.getUserType() == 3) {
-    				user.setPicUrl(picUrl);// 通过session传到前台
-    				int pageSize = Config.getPageSize();
+//    				user.setPicUrl(picUrl);// 通过session传到前台
+    				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
     				user.setPageSize(pageSize + "");
     				user.setOrgtreeid(findUserToOrgString(user.getUserOrgid()));
     				session.setAttribute("userLogin", user);
@@ -260,11 +261,11 @@ public class UserLoginManagerController extends BaseController {
         	clientIp=request.getRemoteAddr();
         }
 		
-		picUrl = Config.getPicUrlByClientIp(ip, Config.getUrl_filter());
+//		picUrl = Config2.getPicUrlByClientIp(ip, Config2.getUrl_filter());
 		// String code = URLDecoder.decode(imgCode, "UTF-8");
 //		HttpSession session = ServletActionContext.getRequest().getSession(true);
 		HttpSession session=request.getSession();
-		String locale=Config.getLanguage();
+		String locale=Config.getInstance().configFile.getOthers().getLanguage();
 		Locale l = Locale.getDefault(); 
 		
 		if(flag!=null && flag.equals("1")){
@@ -301,10 +302,10 @@ public class UserLoginManagerController extends BaseController {
 			}
 			if (user != null) {
 				user.setPicUrl(picUrl);// 通过session传到前台
-				int pageSize = Config.getPageSize();
-				int SyncOrAsync=Config.getSyncOrAsync();
-				int defaultComboxSize=Config.getDefaultComboxSize();
-				int defaultGraghSize=Config.getDefaultGraghSize();
+				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
+				boolean SyncOrAsync=Config.getInstance().configFile.getOthers().getSyncOrAsync();
+				int defaultComboxSize=Config.getInstance().configFile.getOthers().getDefaultComboxSize();
+				int defaultGraghSize=Config.getInstance().configFile.getOthers().getDefaultGraghSize();
 				user.setPageSize(pageSize + "");
 				user.setSyncOrAsync(SyncOrAsync+"");
 				user.setDefaultComboxSize(defaultComboxSize+"");

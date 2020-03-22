@@ -3,7 +3,7 @@ package com.gao.utils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.gao.utils.Config;
+import com.gao.utils.Config2;
 
 public class PageHandler {
 	private int currentPage; 
@@ -11,7 +11,7 @@ public class PageHandler {
 	private int priviousPage; 
 	private int pageCount; 
 	private int recordCount; 
-	private int pageSize = Config.getPageSize(); 
+	private int pageSize = Config.getInstance().configFile.getOthers().getPageSize(); 
 	private ResultSet rs = null;
 
 	public PageHandler() {

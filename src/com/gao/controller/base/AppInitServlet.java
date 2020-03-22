@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.CryptUtil;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.MACAddress;
@@ -38,7 +39,7 @@ public class AppInitServlet extends HttpServlet {
 	public void init() {
 		contextPath = getServletContext().getRealPath("/");
 		try {
-			locale = Config.getLanguage();
+			locale = Config.getInstance().configFile.getOthers().getLanguage();
 			initCode();
 		} catch (DocumentException e) {
 			log.error("【ERROR：应用系统启动时出现错误，请检查代码配置文件！】");
@@ -58,7 +59,7 @@ public class AppInitServlet extends HttpServlet {
 			MACAddress address = new MACAddress();
 //			String macAddress = address.getMACAddress();
 			String macAddress=StringManagerUtils.getMacAddress();
-			String serialnumber = Config.getSerialNumber();
+			String serialnumber = Config.getInstance().configFile.getOthers().getSerialnumber();
 			String decodestr = (new CryptUtil()).decode(serialnumber);
 			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||"00:16:3E:10:39:3D".equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
 				license.put("license", "");

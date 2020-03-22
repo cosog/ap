@@ -11,7 +11,7 @@ Ext.define('AP.view.Viewport', {
         	'z-index':10
         },
 //        bodyStyle: 'background-color:#4a96d9;',
-        html: '<div id="imgTitle"><img id="logoImg" src="../images/logo/ytlogo.png" /><span id="bannertitle">' +cosog.string.title+ '</span>' +
+        html: '<div id="imgTitle"><img id="logoImg" src="../images/logo/ytlogo.png" /><span id="bannertitle">' +viewInformation.title+ '</span>' +
         		
         		"<div id='passAndExitButton'><a href='#' id='logon_a1' onclick='resetPwdFn()'><span id='logon_a1_text'>修改密码</span></a></div> " +
         		"<div id='passAndExitButton'><a href='#' id='logon_a2' onclick='userLoginOut()'><span id='logon_a2_text'>退出</span></a></div>" +
@@ -158,7 +158,7 @@ Ext.define('AP.view.Viewport', {
         border: false,
         hidden:true,
         bodyStyle: 'background-color:#FBFBFB;',
-        html: "<div id=\"footer\">" + copyright + "<a href='#' id='resetPwd_ids' style='position:absolute;right:80px;top:5px;' onclick='resetPwdFn()'><img   style=\"border:0;\"  src=\'" + context + "/images/password.png\'/></a> <a style='position:absolute;right:12px;top:5px;' onclick=\"userLoginOut();\" href='#'><img   style=\"border:0;\"  src=\'" + context + "/images/tuichu.png\'/></a></div>",
+        html: "<div id=\"footer\">" + viewInformation.copy+"&nbsp;<a href='"+viewInformation.linkaddress+"' target='_blank'>"+viewInformation.linkshow+"</a> "+"</div>",
         height: 30
    }]
 });

@@ -54,6 +54,7 @@ import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.graphicalupload.GraphicalUploadService;
 import com.gao.utils.Config;
+import com.gao.utils.Config2;
 import com.gao.utils.Constants;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.OracleJdbcUtis;
@@ -857,11 +858,11 @@ public class GraphicalUploadController extends BaseController {
 	
 	@RequestMapping("/saveRTUAcquisitionData")
 	public String saveRTUAcquisitionData() throws Exception {
-		String FSdiagramCalculateHttpServerURL[]=Config.getCalculateHttpServerURL().split(",");
-		String ScrewPumpCalculateHttpServerURL[]=Config.getScrewPumpCalculateHttpServerURL().split(",");
+		String FSdiagramCalculateHttpServerURL[]=Config.getInstance().configFile.getAgileCalculate().getFESDiagram();
+		String ScrewPumpCalculateHttpServerURL[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
 		Gson gson=new Gson();
 		String totalDate = StringManagerUtils.getCurrentTime();
-		String totalUrl=Config.getProjectAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
+		String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
 		ServletInputStream ss = request.getInputStream();
 		String data=convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<WellAcquisitionData>() {}.getType();

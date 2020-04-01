@@ -233,6 +233,29 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class Plugin
+	{
+		private String wellboreTrajectory;
+		
+		private String fa2fs;
+		
+		public String getWellboreTrajectory() {
+			return wellboreTrajectory;
+		}
+		
+		public void setWellboreTrajectory(String wellboreTrajectory) {
+			this.wellboreTrajectory = wellboreTrajectory;
+		}
+		
+		public String getFa2fs() {
+			return fa2fs;
+		}
+		
+		public void setFa2fs(String fa2fs) {
+			this.fa2fs = fa2fs;
+		}
+	}
+	
 	public static class AgileCalculate
 	{
 	    private String[] FESDiagram;
@@ -250,8 +273,16 @@ public class ConfigFile {
 	    private String[] energy;
 
 	    private TotalCalculation totalCalculation;
+	    
+	    private Plugin plugin;
 
-	    public void setFESDiagram(String[] FESDiagram){
+	    public Plugin getPlugin() {
+			return plugin;
+		}
+		public void setPlugin(Plugin plugin) {
+			this.plugin = plugin;
+		}
+		public void setFESDiagram(String[] FESDiagram){
 	        this.FESDiagram = FESDiagram;
 	    }
 	    public String[] getFESDiagram(){
@@ -372,8 +403,16 @@ public class ConfigFile {
 	    private int defaultComboxSize;
 
 	    private int defaultGraghSize;
+	    
+	    private boolean pcp;
 
-	    private String serialnumber;
+	    public boolean isPcp() {
+			return pcp;
+		}
+		public void setPcp(boolean pcp) {
+			this.pcp = pcp;
+		}
+		private String serialnumber;
 
 	    public void setCache(boolean cache){
 	        this.cache = cache;

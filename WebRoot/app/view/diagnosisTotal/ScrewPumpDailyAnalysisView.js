@@ -67,7 +67,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
             listeners: {
                 expand: function (sm, selections) {},
                 select: function (combo, record, index) {
-                	var statPanelId=getPCPSelectDailyStatType().pieDivId;
+                	var statPanelId=getPCPSelectDailyStatType().piePanelId;
                     if(combo.value==""){
                     	Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("统计数据");
                     	Ext.getCmp("ScrewPumpDailyAnalysisDate_Id").show();
@@ -164,7 +164,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                             pressed: true,
                             hidden: false,
                             handler: function (v, o) {
-                            	var statPanelId=getPCPSelectDailyStatType().pieDivId;;
+                            	var statPanelId=getPCPSelectDailyStatType().piePanelId;;
                             	Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("历史数据");
                             	Ext.getCmp("ScrewPumpDailyAnalysisDate_Id").hide();
                     			Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").show();
@@ -185,7 +185,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                             pressed: true,
                             hidden: true,
                             handler: function (v, o) {
-                            	var statPanelId=getPCPSelectDailyStatType().pieDivId;
+                            	var statPanelId=getPCPSelectDailyStatType().piePanelId;
                             	Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("统计数据");
                             	Ext.getCmp("ScrewPumpDailyAnalysisDate_Id").show();
                             	Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").hide();
@@ -874,10 +874,22 @@ function ShowScrewPumpDailyStatPieChat(title,subtitle,divid, name, data) {
 
 function loadScrewPumpDailyStatData() {
 	var selectWellName=Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').getValue();
-	var statPanelId=getPCPSelectDailyStatType().panelId;
+	var statPanelId=getPCPSelectDailyStatType().piePanelId;
 	if(selectWellName==null||selectWellName==""){
+		Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("统计数据");
+    	Ext.getCmp("ScrewPumpDailyAnalysisDate_Id").show();
+    	Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").hide();
+  	  	Ext.getCmp("ScrewPumpDailyAnalysisEndDate_Id").hide();
+        Ext.getCmp("ScrewPumpDailyAnalysisHisBtn_Id").show();
+  	  	Ext.getCmp("ScrewPumpDailyAnalysisAllBtn_Id").hide();
     	Ext.getCmp(statPanelId).expand(true);
     }else{
+    	Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("历史数据");
+    	Ext.getCmp("ScrewPumpDailyAnalysisDate_Id").hide();
+		Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").show();
+    	Ext.getCmp("ScrewPumpDailyAnalysisEndDate_Id").show();
+    	Ext.getCmp("ScrewPumpDailyAnalysisHisBtn_Id").hide();
+        Ext.getCmp("ScrewPumpDailyAnalysisAllBtn_Id").show();
     	Ext.getCmp(statPanelId).collapse();
     }
 	Ext.getCmp("ScrewPumpDailyStatSelectedValue_Id").setValue("");
@@ -966,27 +978,27 @@ initScrewPumpDailyCurveChartFn = function (get_rawData, divId) {
         ]);
 		ia.push([
             Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].currenta)
+            parseFloat(items[i].ia)
         ]);
 		ib.push([
             Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].currentb)
+            parseFloat(items[i].ib)
         ]);
 		ic.push([
             Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].currentc)
+            parseFloat(items[i].ic)
         ]);
 		va.push([
             Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].voltagea)
+            parseFloat(items[i].va)
         ]);
 		vb.push([
             Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].voltageb)
+            parseFloat(items[i].vb)
         ]);
 		vc.push([
             Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].voltagec)
+            parseFloat(items[i].vc)
         ]);
 	}
 	Highcharts.setOptions({

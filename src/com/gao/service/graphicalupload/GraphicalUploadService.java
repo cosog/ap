@@ -121,7 +121,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				for(int i=0;i<rodStringArr.length;i++){
 					if(StringManagerUtils.isNotNull(rodStringArr[i])){
 						String everyRodStringArr[]=rodStringArr[i].split(",");
-						if(StringManagerUtils.stringToFloat(everyRodStringArr[3]+"")>0){
+						if(everyRodStringArr.length>0&&StringManagerUtils.stringToFloat(everyRodStringArr[3]+"")>0){
 							String rodGrade=everyRodStringArr[0];
 							String rodOutsideDiameter=everyRodStringArr[1];
 							String rodInsideDiameter=everyRodStringArr[2];
@@ -270,7 +270,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				for(int i=0;i<rodStringArr.length;i++){
 					if(StringManagerUtils.isNotNull(rodStringArr[i])){
 						String everyRodStringArr[]=rodStringArr[i].split(",");
-						if(StringManagerUtils.stringToFloat(everyRodStringArr[3]+"")>0){
+						if(everyRodStringArr.length==4&&StringManagerUtils.stringToFloat(everyRodStringArr[3]+"")>0){
 							String rodGrade=everyRodStringArr[0];
 							String rodOutsideDiameter=everyRodStringArr[1];
 							String rodInsideDiameter=everyRodStringArr[2];

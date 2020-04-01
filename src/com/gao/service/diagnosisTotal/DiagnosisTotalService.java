@@ -322,7 +322,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}else{
 			tableName="viw_pcp_total_day";
 		}
-		sql="select "+statType+", count(*) from "+tableName+" t where  org_id in ("+orgId+") and calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
+		sql="select "+statType+", count(1) from "+tableName+" t where  org_id in ("+orgId+") and calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
 		
 		sql+=" group by rollup("+statType+")";
 		

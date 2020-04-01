@@ -2,7 +2,7 @@ server:
    accessPath: http://127.0.0.1:16100/ap
 spring:
    datasource:
-      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
+      driverUrl: jdbc:oracle:thin:@139.129.166.94:1521/orclpdb
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
       user: agile
@@ -13,45 +13,48 @@ dockDataSource:
         dialect: org.hibernate.dialect.Oracle10gDialect
         user: agile
         password: agile
+viewInformation:
+   title: AgileProduction 敏捷生产 V7.2
+   profile: AgileProduction 油气生产敏捷计算分析系统 V7.2主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时评价、全天评价、生产报表、图形查询等。系统应用大数据分析方法，对工况、产量、时率、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
+   copy: ""
+   linkaddress: http://www.cosogoil.com
+   linkshow: ""
 agileCalculate:
    FESDiagram: 
-    - http://39.98.134.121:18100/api/calc/rpc/fesdiagram/pro
+    - http://139.129.166.94:18100/api/calc/rpc/fesdiagram/pro
    FSDiagram: 
-    - http://39.98.134.121:18100/api/calc/rpc/fsdiagram/balance/back
+    - http://139.129.166.94:18100/api/calc/rpc/fsdiagram/balance/back
    ESDiagram:
       balance: 
-       - http://39.98.134.121:18100/api/calc/rpc/esdiagram/balance/back
+       - http://139.129.166.94:18100/api/calc/rpc/esdiagram/balance/back
       inversion:
          inversionSwitch: false
          url:
             motorauto: 
-             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/motorauto
+             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/motorauto
             motorsemiauto: 
-             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
+             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
             beam: 
-             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/beam
+             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/beam
          timerCorrectionStart: 06:00:00
          imerCorrectionEnd: 21:00:00
          timerCorrectionLimit: 1800
    pcpProduction: 
-    - http://39.98.134.121:18100/api/calc/pcp/rpm
+    - http://139.129.166.94:18100/api/calc/pcp/rpm
    communication: 
-    - http://39.98.134.121:18100/api/calc/comm
+    - http://139.129.166.94:18100/api/calc/comm
    run: 
-    - http://39.98.134.121:18100/api/calc/run
+    - http://139.129.166.94:18100/api/calc/run
    energy: 
-    - http://39.98.134.121:18100/api/calc/energy
+    - http://139.129.166.94:18100/api/calc/energy
    totalCalculation:
       well: 
-       - http://39.98.134.121:18100/api/analy/total/well
+       - http://139.129.166.94:18100/api/analy/total/well
+   plugin: 
+      wellboreTrajectory: http://139.129.166.94:18100/api/plugin/2xyz
+      fa2fs: http://139.129.166.94:18100/api/plugin/fa2fs
 mqtt:
    server: tcp://47.93.196.203:1883
-viewInformation:
-   title: AgileProduction 敏捷生产 V7.2
-   profile: AgileProduction 油气生产敏捷计算分析系统 V7.1主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时评价、全天评价、生产报表、图形查询等。系统应用大数据分析方法，对工况、产量、时率、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
-   copy: ""
-   linkaddress: http://www.cosogoil.com
-   linkshow: ""
 others:
    cache: false
    language: zh_CN
@@ -60,5 +63,6 @@ others:
    expandedAll: true
    defaultComboxSize: 10000
    defaultGraghSize: 60
+   pcp: true
    serialnumber: God bless you!
       

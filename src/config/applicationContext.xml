@@ -68,9 +68,7 @@
 		<property name="packagesToScan">
 			<list>
 				<value>com.gao.model</value>
-				<value>com.gao.model.cbm</value>
 				<value>com.gao.model.data</value>
-				<value>com.gao.model.alarm</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

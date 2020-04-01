@@ -60,9 +60,9 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
+		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
 		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
-		String viewProjectName=(String)session.getAttribute("viewProjectName");
 		return "Login";
 	}
 	@RequestMapping("/toTouchLogin")
@@ -71,6 +71,13 @@ public class PageTurnController extends BaseController {
 	}
 	@RequestMapping("/toMain")
 	public String toMain() throws Exception {
+		Gson gson=new Gson();
+		ConfigFile configFile=Config.getInstance().configFile;
+		response.setContentType("text/html;charset=utf-8");
+		HttpSession session=request.getSession();
+		session.setAttribute("configFile", gson.toJson(configFile));
+		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
+		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
 		return "app/main";
 	}
 	@RequestMapping("/toTouchMain")

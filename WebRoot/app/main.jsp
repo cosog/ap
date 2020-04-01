@@ -48,7 +48,8 @@
 <meta name="renderer" content="webkit">
 <script> 
  var user_ = "${userLogin.userNo}";
- var viewInformation = ${viewInformation};
+ var viewInformation = ${configFile}.viewInformation;
+ var pcpHidden = !${configFile}.others.pcp;
 if (user_ == null || "" == (user_)) {
 			window.location.href = "../login/toLogin";
 }

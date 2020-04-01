@@ -235,33 +235,13 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			result_json.append("\"netGrossRatio\":\""+obj[27]+"\",");
 			result_json.append("\"acquisitionTime\":\""+obj[28]+"\"},");
 		}
+		for(int i=1;i<=recordCount-list.size();i++){
+			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
+		}
 		if(result_json.toString().endsWith(",")){
 			result_json = result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		
-		
-		
-		
-		
-		
-		
-		
-//		if("200".equalsIgnoreCase(wellType)){
-//			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("produceOutData");
-//		}else if("400".equalsIgnoreCase(wellType)){
-//			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpProductionData");
-//		}
-//		columns = ddic.getTableHeader();
-//		sql=ddic.getSql()+" from viw_rpc_productiondata_latest t where t.org_id in("+orgId+")  and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
-//		
-//		
-//		if (StringManagerUtils.isNotNull(wellName)) {
-//			sql+= " and t.wellname like '%" + wellName + "%'";
-//		}
-//		sql+="order by t.sortnum, t.wellname";
-//		
-//		String json  = this.findPageBySqlEntity(recordCount,sql, columns, pager);
 		String json=result_json.toString().replaceAll("null", "");
 		return json;
 	}

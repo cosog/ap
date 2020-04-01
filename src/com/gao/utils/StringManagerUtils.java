@@ -2022,10 +2022,9 @@ public class StringManagerUtils {
 				dynSbf.append("[");
 				String[] wellRunRimeArr=rgzsjd.split(";");
 				for(int i=0;i<wellRunRimeArr.length;i++){
-					if("00:00-24:00".equals(wellRunRimeArr[i])){
+					if("00:00-24:00".equals(wellRunRimeArr[i])||"00:00-00:00".equals(wellRunRimeArr[i])){
 						dynSbf.append("{\"startTime\":\"00:00\",\"endTime\":\"00:00\"}");
-					}else if("00:00-00:00".equals(wellRunRimeArr[i])){
-						dynSbf.append("{\"startTime\":\"\",\"endTime\":\"\"}");
+						break;
 					}else{
 						String[] tempArr=wellRunRimeArr[i].split("-");
 						dynSbf.append("{\"startTime\":\""+tempArr[0]+"\",\"endTime\":\""+tempArr[1]+"\"}");

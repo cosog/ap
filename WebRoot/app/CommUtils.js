@@ -3432,9 +3432,9 @@ showSurfaceCard = function(result, divid) {
 	var data = "["; // 功图data
 	for (var i=0; i <= positionCurveData.length; i++) {
 		if(i<positionCurveData.length){
-			data += "[" + positionCurveData[i] + ","+loadCurveData[i]+"],";
+			data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
 		}else{
-			data += "[" + positionCurveData[1] + ","+loadCurveData[1]+"]";//将图形的第一个点拼到最后面，使图形闭合
+			data += "[" + changeTwoDecimal(positionCurveData[1]) + ","+changeTwoDecimal(loadCurveData[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
 		}
 	}
 	data+="]";
@@ -3458,26 +3458,26 @@ showFSDiagramFromPumpcard = function(result, divid) {
 	if(gt.length>0){
 		for (var i=0; i <= gt.length; i+=2) {
 			if(i<gt.length){
-				data += "[" + gt[i] + ","+gt[i+1]+"],";
+				data += "[" + changeTwoDecimal(gt[i]) + ","+changeTwoDecimal(gt[i+1])+"],";
 			}else{
-				data += "[" + gt[0] + ","+gt[1]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(gt[0]) + ","+changeTwoDecimal(gt[1])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		
 		var minPos=100,maxPos=0;
 		for (var i=0; i < gtcount; i++) {
 			if(parseFloat(gt[i*2])<parseFloat(minPos)){
-				minPos=parseFloat(gt[i*2]);
+				minPos=changeTwoDecimal(gt[i*2]);
 				minIndex=i;
 			}
 			if(parseFloat(gt[i*2])>parseFloat(maxPos)){
-				maxPos=parseFloat(gt[i*2]);
+				maxPos=changeTwoDecimal(gt[i*2]);
 				maxIndex=i;
 			}
 		}
 		if(minIndex<=maxIndex){//如果最小值索引小于最大值索引
 			for(var i=minIndex;i<=maxIndex;i++){
-				upStrokeData += "[" + gt[i*2] + ","+gt[i*2+1]+"]";
+				upStrokeData += "[" + changeTwoDecimal(gt[i*2]) + ","+changeTwoDecimal(gt[i*2+1])+"]";
 				if(i<maxIndex){
 					upStrokeData+=",";
 				}
@@ -3489,14 +3489,14 @@ showFSDiagramFromPumpcard = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				downStrokeData += "[" + gt[index*2] + ","+gt[index*2+1]+"]";
+				downStrokeData += "[" + changeTwoDecimal(gt[index*2]) + ","+changeTwoDecimal(gt[index*2+1])+"]";
 				if(i<downStrokeCount+1){
 					downStrokeData+=",";
 				}
 			}
 		}else{//如果最小值索引大于最大值索引
 			for(var i=maxIndex;i<=minIndex;i++){
-				downStrokeData += "[" + gt[i*2] + ","+gt[i*2+1]+"]";
+				downStrokeData += "[" + changeTwoDecimal(gt[i*2]) + ","+changeTwoDecimal(gt[i*2+1])+"]";
 				if(i<minIndex){
 					downStrokeData+=",";
 				}
@@ -3508,7 +3508,7 @@ showFSDiagramFromPumpcard = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				upStrokeData += "[" + gt[index*2] + ","+gt[index*2+1]+"]";
+				upStrokeData += "[" + changeTwoDecimal(gt[index*2]) + ","+(gt[index*2+1])+"]";
 				if(i<upStrokeCount+1){
 					upStrokeData+=",";
 				}
@@ -3547,9 +3547,9 @@ showFSDiagram = function(result, divid) {
 	if(positionCurveData.length>0){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
-				data += "[" + positionCurveData[i] + ","+powerCurveData[i]+"],";
+				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"],";
 			}else{
-				data += "[" + positionCurveData[0] + ","+powerCurveData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(powerCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		//获取最大位移和最小位移点数索引
@@ -3567,7 +3567,7 @@ showFSDiagram = function(result, divid) {
 		
 		if(minIndex<=maxIndex){//如果最小值索引小于最大值索引
 			for(var i=minIndex;i<=maxIndex;i++){
-				upStrokeData += "[" + positionCurveData[i] + ","+powerCurveData[i]+"]";
+				upStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"]";
 				if(i<maxIndex){
 					upStrokeData+=",";
 				}
@@ -3579,14 +3579,14 @@ showFSDiagram = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				downStrokeData += "[" + positionCurveData[index] + ","+powerCurveData[index]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(powerCurveData[index])+"]";
 				if(i<downStrokeCount+1){
 					downStrokeData+=",";
 				}
 			}
 		}else{//如果最小值索引大于最大值索引
 			for(var i=maxIndex;i<=minIndex;i++){
-				downStrokeData += "[" + positionCurveData[i] + ","+powerCurveData[i]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"]";
 				if(i<minIndex){
 					downStrokeData+=",";
 				}
@@ -3598,7 +3598,7 @@ showFSDiagram = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				upStrokeData +="[" + positionCurveData[index] + ","+powerCurveData[index]+"]";
+				upStrokeData +="[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(powerCurveData[index])+"]";
 				if(i<upStrokeCount+1){
 					upStrokeData+=",";
 				}
@@ -3636,9 +3636,9 @@ showFSDiagramWithAtrokeSPM = function(result, divid) {
 	if(positionCurveData.length>0){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
-				data += "[" + positionCurveData[i] + ","+loadCurveData[i]+"],";
+				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
 			}else{
-				data += "[" + positionCurveData[0] + ","+loadCurveData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(loadCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		//获取最大位移和最小位移点数索引
@@ -3656,7 +3656,7 @@ showFSDiagramWithAtrokeSPM = function(result, divid) {
 		
 		if(minIndex<=maxIndex){//如果最小值索引小于最大值索引
 			for(var i=minIndex;i<=maxIndex;i++){
-				upStrokeData += "[" + positionCurveData[i] + ","+loadCurveData[i]+"]";
+				upStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"]";
 				if(i<maxIndex){
 					upStrokeData+=",";
 				}
@@ -3668,14 +3668,14 @@ showFSDiagramWithAtrokeSPM = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				downStrokeData += "[" + positionCurveData[index] + ","+loadCurveData[index]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(loadCurveData[index])+"]";
 				if(i<downStrokeCount+1){
 					downStrokeData+=",";
 				}
 			}
 		}else{//如果最小值索引大于最大值索引
 			for(var i=maxIndex;i<=minIndex;i++){
-				downStrokeData += "[" + positionCurveData[i] + ","+loadCurveData[i]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"]";
 				if(i<minIndex){
 					downStrokeData+=",";
 				}
@@ -3687,7 +3687,7 @@ showFSDiagramWithAtrokeSPM = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				upStrokeData +="[" + positionCurveData[index] + ","+loadCurveData[index]+"]";
+				upStrokeData +="[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(loadCurveData[index])+"]";
 				if(i<upStrokeCount+1){
 					upStrokeData+=",";
 				}
@@ -3721,9 +3721,9 @@ showFSDiagram360WithAtrokeSPM = function(diagramData, divid) {
 		fmin=loadCurveData[0];
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
-				data += "[" + positionCurveData[i] + ","+loadCurveData[i]+"],";
+				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"],";
 			}else{
-				data += "[" + positionCurveData[0] + ","+loadCurveData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(loadCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		//获取最大位移和最小位移点数索引
@@ -3748,7 +3748,7 @@ showFSDiagram360WithAtrokeSPM = function(diagramData, divid) {
 		
 		if(minIndex<=maxIndex){//如果最小值索引小于最大值索引
 			for(var i=minIndex;i<=maxIndex;i++){
-				upStrokeData += "[" + positionCurveData[i] + ","+loadCurveData[i]+"]";
+				upStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"]";
 				if(i<maxIndex){
 					upStrokeData+=",";
 				}
@@ -3760,14 +3760,14 @@ showFSDiagram360WithAtrokeSPM = function(diagramData, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				downStrokeData += "[" + positionCurveData[index] + ","+loadCurveData[index]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(loadCurveData[index])+"]";
 				if(i<downStrokeCount+1){
 					downStrokeData+=",";
 				}
 			}
 		}else{//如果最小值索引大于最大值索引
 			for(var i=maxIndex;i<=minIndex;i++){
-				downStrokeData += "[" + positionCurveData[i] + ","+loadCurveData[i]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(loadCurveData[i])+"]";
 				if(i<minIndex){
 					downStrokeData+=",";
 				}
@@ -3779,7 +3779,7 @@ showFSDiagram360WithAtrokeSPM = function(diagramData, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				upStrokeData +="[" + positionCurveData[index] + ","+loadCurveData[index]+"]";
+				upStrokeData +="[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(loadCurveData[index])+"]";
 				if(i<upStrokeCount+1){
 					upStrokeData+=",";
 				}
@@ -3825,9 +3825,9 @@ showPSDiagram = function(result, divid) {
 	if(positionCurveData.length>0){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
-				data += "[" + positionCurveData[i] + ","+powerCurveData[i]+"],";
+				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"],";
 			}else{
-				data += "[" + positionCurveData[0] + ","+powerCurveData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(powerCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		//获取最大位移和最小位移点数索引
@@ -3845,7 +3845,7 @@ showPSDiagram = function(result, divid) {
 		
 		if(minIndex<=maxIndex){//如果最小值索引小于最大值索引
 			for(var i=minIndex;i<=maxIndex;i++){
-				upStrokeData += "[" + positionCurveData[i] + ","+powerCurveData[i]+"]";
+				upStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"]";
 				if(i<maxIndex){
 					upStrokeData+=",";
 				}
@@ -3857,14 +3857,14 @@ showPSDiagram = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				downStrokeData += "[" + positionCurveData[index] + ","+powerCurveData[index]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(powerCurveData[index])+"]";
 				if(i<downStrokeCount+1){
 					downStrokeData+=",";
 				}
 			}
 		}else{//如果最小值索引大于最大值索引
 			for(var i=maxIndex;i<=minIndex;i++){
-				downStrokeData += "[" + positionCurveData[i] + ","+powerCurveData[i]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"]";
 				if(i<minIndex){
 					downStrokeData+=",";
 				}
@@ -3876,7 +3876,7 @@ showPSDiagram = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				upStrokeData +="[" + positionCurveData[index] + ","+powerCurveData[index]+"]";
+				upStrokeData +="[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(powerCurveData[index])+"]";
 				if(i<upStrokeCount+1){
 					upStrokeData+=",";
 				}
@@ -3914,9 +3914,9 @@ showASDiagram = function(result, divid) {
 	if(positionCurveData.length>0){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
-				data += "[" + positionCurveData[i] + ","+currentCurveData[i]+"],";
+				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(currentCurveData[i])+"],";
 			}else{
-				data += "[" + positionCurveData[0] + ","+currentCurveData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(positionCurveData[0]) + ","+changeTwoDecimal(currentCurveData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		
@@ -3935,7 +3935,7 @@ showASDiagram = function(result, divid) {
 		
 		if(minIndex<=maxIndex){//如果最小值索引小于最大值索引
 			for(var i=minIndex;i<=maxIndex;i++){
-				upStrokeData += "[" + positionCurveData[i] + ","+currentCurveData[i]+"]";
+				upStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(currentCurveData[i])+"]";
 				if(i<maxIndex){
 					upStrokeData+=",";
 				}
@@ -3947,14 +3947,14 @@ showASDiagram = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				downStrokeData += "[" + positionCurveData[index] + ","+currentCurveData[index]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(currentCurveData[index])+"]";
 				if(i<downStrokeCount+1){
 					downStrokeData+=",";
 				}
 			}
 		}else{//如果最小值索引大于最大值索引
 			for(var i=maxIndex;i<=minIndex;i++){
-				downStrokeData += "[" + positionCurveData[i] + ","+currentCurveData[i]+"]";
+				downStrokeData += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(currentCurveData[i])+"]";
 				if(i<minIndex){
 					downStrokeData+=",";
 				}
@@ -3966,7 +3966,7 @@ showASDiagram = function(result, divid) {
 				if(index>(gtcount-1)){
 					index=index-gtcount;
 				}
-				upStrokeData +="[" + positionCurveData[index] + ","+currentCurveData[index]+"]";
+				upStrokeData +="[" + changeTwoDecimal(positionCurveData[index]) + ","+changeTwoDecimal(currentCurveData[index])+"]";
 				if(i<upStrokeCount+1){
 					upStrokeData+=",";
 				}
@@ -3988,7 +3988,7 @@ showPContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color, 
 	var data = "["; // 功图data
 	if(powerCurveData.length>0){
 		for (var i=0; i <= powerCurveData.length; i++) {
-			data += "[" + (i+1) + ","+powerCurveData[i]+"]";
+			data += "[" + (i+1) + ","+changeTwoDecimal(powerCurveData[i])+"]";
 			if(i<powerCurveData.length-1){
 				data += ",";
 			}
@@ -4005,7 +4005,7 @@ showAContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color, 
 	var data = "["; // 功图data
 	if(currentCurveData.length>0){
 		for (var i=0; i <= currentCurveData.length; i++) {
-			data += "[" + (i+1) + ","+currentCurveData[i]+"]";
+			data += "[" + (i+1) + ","+changeTwoDecimal(currentCurveData[i])+"]";
 			if(i<currentCurveData.length-1){
 				data += ",";
 			}
@@ -4029,17 +4029,17 @@ showAngleLoadContinuousDiagram = function(diagramData,divid) {
 	var data = "["; // 功图data
 	if(angleCurveData.length>0){
 		if(angleCurveData[0]!=0){//如果是逆时针 将最后0°的数据补充到最前端360°数据
-			data += "[360,"+loadCurveData[loadCurveData.length-1]+"],";
+			data += "[360,"+changeTwoDecimal(loadCurveData[loadCurveData.length-1])+"],";
 			XReversed=true;//X轴翻转
 		}
 		for (var i=0; i < angleCurveData.length; i++) {
-			data += "[" + angleCurveData[i] + ","+loadCurveData[i]+"]";
+			data += "[" + angleCurveData[i] + ","+changeTwoDecimal(loadCurveData[i])+"]";
 			if(i<angleCurveData.length-1){
 				data += ",";
 			}
 		}
 		if(angleCurveData[0]==0){//如果是顺时针 将最前0°数据补充到最后段360°数据
-			data += ",[360,"+loadCurveData[0]+"]";
+			data += ",[360,"+changeTwoDecimal(loadCurveData[0])+"]";
 			XReversed=false;
 		}
 	}
@@ -4054,7 +4054,7 @@ showRPMContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color
 	var data = "["; // 功图data
 	if(rpmCurveData.length>0){
 		for (var i=0; i <= rpmCurveData.length; i++) {
-			data += "[" + (i+1) + ","+rpmCurveData[i]+"]";
+			data += "[" + (i+1) + ","+changeTwoDecimal(rpmCurveData[i])+"]";
 			if(i<rpmCurveData.length-1){
 				data += ",";
 			}
@@ -4085,10 +4085,10 @@ showBalanceAnalysisCurveChart = function(store, divid1,divid2) {
         for(var i=7;i<currenttorquecurvedata.length;i++){
         	var everyData=currenttorquecurvedata[i].split(",");
         	catagories1+=everyData[0];
-        	loadData+=everyData[1];
-        	balanceData+=everyData[2];
-        	crankData+=everyData[3];
-        	netData+=everyData[4];
+        	loadData+=changeTwoDecimal(everyData[1]);
+        	balanceData+=changeTwoDecimal(everyData[2]);
+        	crankData+=changeTwoDecimal(everyData[3]);
+        	netData+=changeTwoDecimal(everyData[4]);
         	if(i<currenttorquecurvedata.length-1){
         		catagories1+=",";
             	loadData+=",";
@@ -4117,10 +4117,10 @@ showBalanceAnalysisCurveChart = function(store, divid1,divid2) {
         for(var i=7;i<optimizitiontorquecurvedata.length;i++){
         	var everyData=optimizitiontorquecurvedata[i].split(",");
         	catagories2+=everyData[0];
-        	loadData+=everyData[1];
-        	balanceData+=everyData[2];
-        	crankData+=everyData[3];
-        	netData+=everyData[4];
+        	loadData+=changeTwoDecimal(everyData[1]);
+        	balanceData+=changeTwoDecimal(everyData[2]);
+        	crankData+=changeTwoDecimal(everyData[3]);
+        	netData+=changeTwoDecimal(everyData[4]);
         	if(i<optimizitiontorquecurvedata.length-1){
         		catagories2+=",";
             	loadData+=",";
@@ -7248,9 +7248,9 @@ showSurfaceCardUploadChart = function(result, divid) {
 //    }
     for(var i=0;i<=sData.length;i++){
     	if(i<sData.length){
-    		data += "[" + sData[i] + ","+fData[i]+"],";
+    		data += "[" + changeTwoDecimal(sData[i]) + ","+changeTwoDecimal(fData[i])+"],";
     	}else{
-    		data += "[" + sData[0] + ","+fData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+    		data += "[" + changeTwoDecimal(sData[0]) + ","+changeTwoDecimal(fData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
     	}
     }
 	data+="]";

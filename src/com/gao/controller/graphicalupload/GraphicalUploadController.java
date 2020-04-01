@@ -862,7 +862,7 @@ public class GraphicalUploadController extends BaseController {
 		String ScrewPumpCalculateHttpServerURL[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
 		Gson gson=new Gson();
 		String totalDate = StringManagerUtils.getCurrentTime();
-		String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
+		String totalUrl="";
 		ServletInputStream ss = request.getInputStream();
 		String data=convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<WellAcquisitionData>() {}.getType();
@@ -870,7 +870,7 @@ public class GraphicalUploadController extends BaseController {
 		if(wellAcquisitionData!=null){
 			String requestData="";
 			String[] calculateHttpServerURL=null;
-			if(wellAcquisitionData.getLiftingType()>=400 && wellAcquisitionData.getLiftingType()<400){//螺杆泵
+			if(wellAcquisitionData.getLiftingType()>=400 && wellAcquisitionData.getLiftingType()<500){//螺杆泵
 				requestData=raphicalUploadService.getScrewPumpRPMCalculateRequestData(wellAcquisitionData);
 				calculateHttpServerURL=ScrewPumpCalculateHttpServerURL;
 			}else if(wellAcquisitionData.getLiftingType()>=200 && wellAcquisitionData.getLiftingType()<300){//抽油机
@@ -879,21 +879,22 @@ public class GraphicalUploadController extends BaseController {
 			}
 			String responseData=StringManagerUtils.sendPostMethod(calculateHttpServerURL[0], requestData,"utf-8");
 			
-			
 			PCPCalculateResponseData pcpCalculateResponseData=null;
 			RPCCalculateResponseData rpcCalculateResponseData=null;
-			if(wellAcquisitionData.getLiftingType()>=400 && wellAcquisitionData.getLiftingType()<400){//螺杆泵
+			if(wellAcquisitionData.getLiftingType()>=400 && wellAcquisitionData.getLiftingType()<500){//螺杆泵
 				type = new TypeToken<PCPCalculateResponseData>() {}.getType();
 				pcpCalculateResponseData=gson.fromJson(responseData, type);
 				raphicalUploadService.savePCPAcquisitionAndCalculateData(wellAcquisitionData,pcpCalculateResponseData);
+				totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/PCPRPMDailyCalculation?date="+totalDate;
 			}else if(wellAcquisitionData.getLiftingType()>=200 && wellAcquisitionData.getLiftingType()<300){//抽油机
 				type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 				rpcCalculateResponseData=gson.fromJson(responseData, type);
 				raphicalUploadService.saveRPCAcquisitionAndCalculateData(wellAcquisitionData,rpcCalculateResponseData);
+				totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
 			}
 			
 			if((rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1)
-					||(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1)){
+					||(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&pcpCalculateResponseData.getCalculationStatus().getResultCode()!=1232)){
 				totalUrl+="&wellId="+wellAcquisitionData.getWellId();
 				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 			}

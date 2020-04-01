@@ -41,14 +41,17 @@ Ext.define('AP.view.well.WellInfoPanel', {
                 }
             }
         });
+        var liftingTypeStoreDate=[
+        	{"boxkey":'', "boxval":"选择全部"},
+        	{"boxkey":'200', "boxval":"抽油机"}
+        ];
+        if(!pcpHidden){
+        	liftingTypeStoreDate.push({"boxkey":'400', "boxval":"螺杆泵"});
+        }
         
-        var jslxStore = new Ext.data.JsonStore({
+        var liftingTypeStore = new Ext.data.JsonStore({
             fields: ['boxkey', 'boxval'],
-            data : [
-            	{"boxkey":'', "boxval":"选择全部"},
-            	{"boxkey":'200', "boxval":"抽油机"},
-                {"boxkey":'400', "boxval":"螺杆泵"}
-            ]
+            data : liftingTypeStoreDate
         });
         
         var simpleCombo = Ext.create(
@@ -96,7 +99,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
                 }
             });
         
-        var jslxCombo = Ext.create(
+        var liftingTypeCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '举升类型',
                     id: "wellInfoPanel_jslx_Id",
@@ -104,7 +107,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
                     width: 180,
                     labelAlign: 'left',
                     queryMode: 'local',
-                    store: jslxStore,
+                    store: liftingTypeStore,
                     autoSelect: false,
                     editable: false,
                     triggerAction: 'all',
@@ -121,7 +124,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
                 });
         
         Ext.apply(this, {
-            tbar: [simpleCombo,'-',jslxCombo,'-', {
+            tbar: [simpleCombo,'-',liftingTypeCombo,'-', {
                 		id: 'ProductionWellTotalCount_Id',
                 		xtype: 'component',
                 		hidden: false,
@@ -212,9 +215,17 @@ function CreateAndLoadWellInfoTable(isNew){
 	            for(var i=0;i<result.columns.length;i++){
 	            	colHeaders+="'"+result.columns[i].header+"'";
 	            	if(result.columns[i].dataIndex==="liftingTypeName"){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
+	            		if(pcpHidden){
+	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
+	            		}else{
+	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
+	            		}
 	            	}else if(result.columns[i].dataIndex==="runtimeEfficiencySource"){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算','转速计算']}";
+	            		if(pcpHidden){
+	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算']}";
+	            		}else{
+	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算','转速计算']}";
+	            		}
 	            	}else if(result.columns[i].dataIndex==="driverName"){
 	            		var source="[";
 	            		for(var j=0;j<result.driverDropdownData.length;j++){

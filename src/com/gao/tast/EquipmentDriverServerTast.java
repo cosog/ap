@@ -67,8 +67,15 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+//		Gson gson = new Gson();
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
+//		String path=stringManagerUtils.getFilePath("test.json","data/");
+//		String json=stringManagerUtils.readFile(path,"utf-8");
+//		StringManagerUtils.sendPostMethod(url, json,"utf-8");
+		
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;
 		do{
@@ -114,10 +121,24 @@ public class EquipmentDriverServerTast {
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
-				+ " where 1=1  "
+				+ " where t.liftingType>=200 and t.liftingType<300"
+				+ " order by t.sortNum";
+		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+				+ " t.drivercode,t.unitcode,"
+				+ " to_char(t3.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as disAcquisitiontime,"
+				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
+				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
+				+ " totalwattenergy,totalpwattenergy,totalnwattenergy,totalvarenergy,totalpvarenergy,totalnvarenergy,totalvaenergy,"
+				+ " todaywattenergy,todaypwattenergy,todaynwattenergy,todayvarenergy,todaypvarenergy,todaynvarenergy,todayvaenergy,"
+				+ " t2.rpm "
+				+ " from tbl_wellinformation t "
+				+ " left outer join  tbl_pcp_rpm_latest t2 on t2.wellId=t.id"
+				+ " left outer join  tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
+				+ " where t.liftingType>=400 and t.liftingType<500"
 				+ " order by t.sortNum";
 		String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String resetCommStatus="update tbl_rpc_discrete_latest t set t.commstatus=0  ";
+		String resetPCPCommStatus="update tbl_pcp_discrete_latest t set t.commstatus=0  ";
 		if(clientUnitList!=null){
 			for(int i=0;i<clientUnitList.size();i++){
 				if(clientUnitList.get(i).thread!=null){
@@ -147,9 +168,10 @@ public class EquipmentDriverServerTast {
 		try {
 			stmt=conn.createStatement();
 			int result=stmt.executeUpdate(resetCommStatus);
+			result=stmt.executeUpdate(resetPCPCommStatus);
 			System.out.println("读取井初始化信息");
 			pstmt = conn.prepareStatement(sql); 
-			System.out.println("读取井初始化信息成功");
+			System.out.println("读取抽油机井初始化信息成功");
 			rs=pstmt.executeQuery();
 			while(rs.next()){
 				UnitData unit=new UnitData();
@@ -168,7 +190,7 @@ public class EquipmentDriverServerTast {
 				unit.runTimeEfficiencySource=rs.getInt(7);
 				unit.acqCycle_Discrete=60*1000*rs.getInt(8);
 				unit.saveCycle_Discrete=60*1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
-				unit.screwPumpDataSaveInterval=1000*60*5;//螺杆泵据保存间隔,单位毫秒
+				unit.screwPumpDataSaveInterval=1000*60*30;//螺杆泵据保存间隔,单位毫秒
 				unit.runStatusControl=0;
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
@@ -210,6 +232,74 @@ public class EquipmentDriverServerTast {
 				unit.lastTodayPVarEnergy=rs.getFloat(32);
 				unit.lastTodayNVarEnergy=rs.getFloat(33);
 				unit.lastTodayVAEnergy=rs.getFloat(34);
+				units.add(unit);
+				clientUnitList.add(clientUnit);
+				
+			}
+			
+			pstmt = conn.prepareStatement(pcpInitSql); 
+			System.out.println("读取螺杆泵井初始化信息成功");
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				UnitData unit=new UnitData();
+				ClientUnit clientUnit=new ClientUnit();
+				unit.wellName=rs.getString(1);
+				unit.liftingType=rs.getInt(2);
+				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
+				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
+				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
+				unit.diagranAcquisitionTime=rs.getString(6);
+				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
+				unit.dirverName="必创";
+				unit.commStatus=0;
+				unit.acquisitionData=new AcquisitionData();
+				unit.acquisitionData.setRunStatus(0);
+				unit.runTimeEfficiencySource=rs.getInt(7);
+				unit.acqCycle_Discrete=60*1000*rs.getInt(8);
+				unit.saveCycle_Discrete=60*1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
+				unit.screwPumpDataSaveInterval=1000*60*30;//螺杆泵据保存间隔,单位毫秒
+				unit.runStatusControl=0;
+				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
+					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+					if(driveConfig.getDriverCode().equalsIgnoreCase(rs.getString(10))){
+						unit.setRtuDriveConfig(driveConfig);
+						unit.setDirverName(driveConfig.getDriverName());
+						break;
+					}
+				}
+				
+				for(Entry<String, Object> entry:acquisitionUnitMap.entrySet()){
+					AcquisitionUnitData acquisitionUnitData=(AcquisitionUnitData)entry.getValue();
+					if(acquisitionUnitData.getAcquisitionUnitCode().equalsIgnoreCase(rs.getString(11))){
+						unit.setAcquisitionUnitData(acquisitionUnitData);
+						break;
+					}
+				}
+				unit.lastDisAcquisitionTime=rs.getString(12);
+				unit.lastCommStatus=rs.getInt(13);
+				unit.lastCommTime=rs.getFloat(14);
+				unit.lastCommTimeEfficiency=rs.getFloat(15);
+				unit.lastCommRange=rs.getString(16);
+				unit.lastRunStatus=rs.getInt(17);
+				unit.lastRunTime=rs.getFloat(18);
+				unit.lastRunTimeEfficiency=rs.getFloat(19);
+				unit.lastRunRange=rs.getString(20);
+				
+				unit.lastTotalWattEnergy=rs.getFloat(21);
+				unit.lastTotalPWattEnergy=rs.getFloat(22);
+				unit.lastTotalNWattEnergy=rs.getFloat(23);
+				unit.lastTotalVarEnergy=rs.getFloat(24);
+				unit.lastTotalPVarEnergy=rs.getFloat(25);
+				unit.lastTotalNVarEnergy=rs.getFloat(26);
+				unit.lastTotalVAEnergy=rs.getFloat(27);
+				unit.lastTodayWattEnergy=rs.getFloat(28);
+				unit.lastTodayPWattEnergy=rs.getFloat(29);
+				unit.lastTodayNWattEnergy=rs.getFloat(30);
+				unit.lastTodayVarEnergy=rs.getFloat(31);
+				unit.lastTodayPVarEnergy=rs.getFloat(32);
+				unit.lastTodayNVarEnergy=rs.getFloat(33);
+				unit.lastTodayVAEnergy=rs.getFloat(34);
+				unit.lastRPM=rs.getFloat(35);
 				units.add(unit);
 				clientUnitList.add(clientUnit);
 				
@@ -1110,6 +1200,97 @@ public class EquipmentDriverServerTast {
 		public float lastTodayPVarEnergy;
 		public float lastTodayNVarEnergy;
 		public float lastTodayVAEnergy;
+		public float lastRPM=0.0f;
+		public float getLastTotalWattEnergy() {
+			return lastTotalWattEnergy;
+		}
+		public void setLastTotalWattEnergy(float lastTotalWattEnergy) {
+			this.lastTotalWattEnergy = lastTotalWattEnergy;
+		}
+		public float getLastTotalPWattEnergy() {
+			return lastTotalPWattEnergy;
+		}
+		public void setLastTotalPWattEnergy(float lastTotalPWattEnergy) {
+			this.lastTotalPWattEnergy = lastTotalPWattEnergy;
+		}
+		public float getLastTotalNWattEnergy() {
+			return lastTotalNWattEnergy;
+		}
+		public void setLastTotalNWattEnergy(float lastTotalNWattEnergy) {
+			this.lastTotalNWattEnergy = lastTotalNWattEnergy;
+		}
+		public float getLastTotalVarEnergy() {
+			return lastTotalVarEnergy;
+		}
+		public void setLastTotalVarEnergy(float lastTotalVarEnergy) {
+			this.lastTotalVarEnergy = lastTotalVarEnergy;
+		}
+		public float getLastTotalPVarEnergy() {
+			return lastTotalPVarEnergy;
+		}
+		public void setLastTotalPVarEnergy(float lastTotalPVarEnergy) {
+			this.lastTotalPVarEnergy = lastTotalPVarEnergy;
+		}
+		public float getLastTotalNVarEnergy() {
+			return lastTotalNVarEnergy;
+		}
+		public void setLastTotalNVarEnergy(float lastTotalNVarEnergy) {
+			this.lastTotalNVarEnergy = lastTotalNVarEnergy;
+		}
+		public float getLastTotalVAEnergy() {
+			return lastTotalVAEnergy;
+		}
+		public void setLastTotalVAEnergy(float lastTotalVAEnergy) {
+			this.lastTotalVAEnergy = lastTotalVAEnergy;
+		}
+		public float getLastTodayWattEnergy() {
+			return lastTodayWattEnergy;
+		}
+		public void setLastTodayWattEnergy(float lastTodayWattEnergy) {
+			this.lastTodayWattEnergy = lastTodayWattEnergy;
+		}
+		public float getLastTodayPWattEnergy() {
+			return lastTodayPWattEnergy;
+		}
+		public void setLastTodayPWattEnergy(float lastTodayPWattEnergy) {
+			this.lastTodayPWattEnergy = lastTodayPWattEnergy;
+		}
+		public float getLastTodayNWattEnergy() {
+			return lastTodayNWattEnergy;
+		}
+		public void setLastTodayNWattEnergy(float lastTodayNWattEnergy) {
+			this.lastTodayNWattEnergy = lastTodayNWattEnergy;
+		}
+		public float getLastTodayVarEnergy() {
+			return lastTodayVarEnergy;
+		}
+		public void setLastTodayVarEnergy(float lastTodayVarEnergy) {
+			this.lastTodayVarEnergy = lastTodayVarEnergy;
+		}
+		public float getLastTodayPVarEnergy() {
+			return lastTodayPVarEnergy;
+		}
+		public void setLastTodayPVarEnergy(float lastTodayPVarEnergy) {
+			this.lastTodayPVarEnergy = lastTodayPVarEnergy;
+		}
+		public float getLastTodayNVarEnergy() {
+			return lastTodayNVarEnergy;
+		}
+		public void setLastTodayNVarEnergy(float lastTodayNVarEnergy) {
+			this.lastTodayNVarEnergy = lastTodayNVarEnergy;
+		}
+		public float getLastTodayVAEnergy() {
+			return lastTodayVAEnergy;
+		}
+		public void setLastTodayVAEnergy(float lastTodayVAEnergy) {
+			this.lastTodayVAEnergy = lastTodayVAEnergy;
+		}
+		public float getLastRPM() {
+			return lastRPM;
+		}
+		public void setLastRPM(float lastRPM) {
+			this.lastRPM = lastRPM;
+		}
 		public int runTimeEfficiencySource;
 		public  int acqCycle_Discrete=1000*60*2;//离散数据以及心跳读取周期,单位毫秒
 		public  int saveCycle_Discrete=1000*60*5;//离散数据保存间隔,单位毫秒

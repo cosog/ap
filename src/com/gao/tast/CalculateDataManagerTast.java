@@ -70,7 +70,9 @@ public class CalculateDataManagerTast {
 //	@Scheduled(cron = "0 30 0/1 * * ?")
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
+		@SuppressWarnings("static-access")
 		String discreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
+		@SuppressWarnings("static-access")
 		String PCPDiscreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("unused")
 		String result="";

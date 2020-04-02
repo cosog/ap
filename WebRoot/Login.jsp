@@ -72,7 +72,7 @@
 	<script>
 	//document.getElementById("text111111").innerHTML=cosog.string.title;
 	//$("#text111111").html("<span>aaaa</span>");
-	var viewInformation = ${viewInformation};
+	var viewInformation = ${configFile}.viewInformation;
 	$(function () {
 		initDisplayInformation();
 		var getUserListURL="<%=path%>/userLoginManagerController/getUserList";

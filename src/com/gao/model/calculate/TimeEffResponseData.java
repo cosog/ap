@@ -125,7 +125,7 @@ public  class TimeEffResponseData {
 
 	    private float Efficiency;
 
-	    private String RangeString;
+	    private String RangeString="";
 
 	    public void setRange(List<Range> Range){
 	        this.Range = Range;

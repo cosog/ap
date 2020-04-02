@@ -67,7 +67,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
             listeners: {
                 expand: function (sm, selections) {},
                 select: function (combo, record, index) {
-                	var statPanelId=getScrewPumpRealtimeWellListPanelId().replace("WellList","StatGraph");
+                	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;;
                     if(combo.value==""){
                     	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("统计数据");
                     	Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").hide();
@@ -148,7 +148,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                             pressed: true,
                             hidden: false,
                             handler: function (v, o) {
-                            	var statPanelId=getScrewPumpRealtimeWellListPanelId().replace("WellList","StatGraph");
+                            	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
                     			Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
@@ -168,7 +168,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                             pressed: true,
                             hidden: true,
                             handler: function (v, o) {
-                            	var statPanelId=getScrewPumpRealtimeWellListPanelId().replace("WellList","StatGraph");
+                            	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("统计数据");
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").hide();
                           	  	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").hide();
@@ -918,8 +918,18 @@ function loadPCPRPMAnalysisSingleStatData() {
 	var selectWellName=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
 	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;
 	if(selectWellName==null||selectWellName==""){
+		Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("统计数据");
+    	Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").hide();
+  	  	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").hide();
+        Ext.getCmp("ScrewPumpRealtimeAnalysisHisBtn_Id").show();
+  	  	Ext.getCmp("ScrewPumpRealtimeAnalysisAllBtn_Id").hide();
     	Ext.getCmp(statPanelId).expand(true);
     }else{
+    	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+		Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
+    	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
+    	Ext.getCmp("ScrewPumpRealtimeAnalysisHisBtn_Id").hide();
+        Ext.getCmp("ScrewPumpRealtimeAnalysisAllBtn_Id").show();
     	Ext.getCmp(statPanelId).collapse();
     }
 	Ext.getCmp("PCPRPMAnalysisSingleDetailsSelectedStatValue_Id").setValue("");

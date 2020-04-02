@@ -25,6 +25,7 @@ Ext.define("AP.view.productionData.ProductiondDataUIInfoView", {
         				title: cosog.string.screwPump,
         				id:'ScrewPumpProductionDataPanel',
         				layout: "fit",
+        				hidden: pcpHidden,
         				border: false
         			}],
         			listeners: {

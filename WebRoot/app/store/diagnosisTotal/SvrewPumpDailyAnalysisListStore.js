@@ -66,7 +66,7 @@ Ext.define('AP.store.diagnosisTotal.SvrewPumpDailyAnalysisListStore', {
                     			
                     			Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').setValue(record.data.wellName);
                             	Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').setRawValue(record.data.wellName);
-                            	var statPanelId=getPCPSelectDailyStatType().pieDivId;
+                            	var statPanelId=getPCPSelectDailyStatType().piePanelId;
                             	Ext.getCmp(statPanelId).collapse();
                                 
                                 Ext.getCmp('ScrewPumpDailyAnalysisWellList_Id').getStore().loadPage(1);
@@ -108,7 +108,7 @@ Ext.define('AP.store.diagnosisTotal.SvrewPumpDailyAnalysisListStore', {
         },
         beforeload: function (store, options) {
         	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-        	var jh = Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').getValue();
+        	var wellName = Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').getValue();
         	var totalDate=Ext.getCmp('ScrewPumpDailyAnalysisDate_Id').rawValue;
         	var statValue=Ext.getCmp('ScrewPumpDailyStatSelectedValue_Id').getValue();
         	var startDate=Ext.getCmp('ScrewPumpDailyAnalysisStartDate_Id').rawValue;
@@ -116,7 +116,7 @@ Ext.define('AP.store.diagnosisTotal.SvrewPumpDailyAnalysisListStore', {
         	var type=getPCPSelectDailyStatType().type;
         	var new_params = {
                     orgId: leftOrg_Id,
-                    jh: jh,
+                    wellName: wellName,
                     totalDate:totalDate,
                     startDate:startDate,
                     endDate:endDate,

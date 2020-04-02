@@ -65,12 +65,14 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                 select: function (combo, record, index) {
                 	var statPanelId=getFSDiagramAnalysisSingleStatType().piePanelId;
                 	if(combo.value==""){
+                		Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("统计数据");
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").hide();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").show();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").hide();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").hide();
                 		Ext.getCmp(statPanelId).expand(true);
                 	}else{
+                		Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
@@ -89,6 +91,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                     {
                     	region: 'center',
                     	title: '统计数据',
+                    	id: 'RPCRealtimeAnalysisWellListPanel_Id',
                     	layout: "fit",
                     	tbar: [wellComboBox,'-',{
                             xtype: 'datefield',
@@ -137,6 +140,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             hidden: false,
                             handler: function (v, o) {
                         		if(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection().length>0){
+                        			Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
                         			Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
                             		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
                             		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
@@ -157,6 +161,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                           pressed: true,
                           hidden: true,
                           handler: function (v, o) {
+                        	  Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("统计数据");
                         	  Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").hide();
                         	  Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").show();
                         	  Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").hide();
@@ -1181,8 +1186,18 @@ function loadFSDiagramAnalysisSingleStatData() {
 	var selectWellName=Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
 	var piePanelId=getFSDiagramAnalysisSingleStatType().piePanelId;
 	if(selectWellName==null||selectWellName==""){
+		Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("统计数据");
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").hide();
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").show();
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").hide();
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").hide();
     	Ext.getCmp(piePanelId).expand(true);
     }else{
+    	Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+    	Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
+		Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").show();
     	Ext.getCmp(piePanelId).collapse();
     }
 	Ext.getCmp("FSDiagramAnalysisSingleDetailsSelectedStatValue_Id").setValue('');

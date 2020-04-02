@@ -26,6 +26,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                     id:'PCPSingleDetailsInfoPanel_Id',
                     layout: "fit",
                     border: false,
+                    hidden: pcpHidden,
                     items:PCPSingleDetailsInfoView
                 }],
                 listeners: {

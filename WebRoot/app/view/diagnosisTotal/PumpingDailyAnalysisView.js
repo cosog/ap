@@ -974,11 +974,22 @@ function loadTotalStatData() {
 	var selectWellName=Ext.getCmp('FSDiagramAnalysisDailyDetailsWellCom_Id').getValue();
 	var statPanelId=getSelectTotalStatType().piePanelId;
 	if(selectWellName==null||selectWellName==""){
+		Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("统计数据");
+    	Ext.getCmp("TotalDiagnosisDate_Id").show();
+  	  	Ext.getCmp("DiagnosisTotalStartDate_Id").hide();
+  	  	Ext.getCmp("DiagnosisTotalEndDate_Id").hide();
+  	  	Ext.getCmp("DiagnosisTotalAllBtn_Id").hide();
+        Ext.getCmp("DiagnosisTotalHisBtn_Id").show();
     	Ext.getCmp(statPanelId).expand(true);
     }else{
+    	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("历史数据");
+    	Ext.getCmp("TotalDiagnosisDate_Id").hide();
+    	Ext.getCmp("DiagnosisTotalStartDate_Id").show();
+    	Ext.getCmp("DiagnosisTotalEndDate_Id").show();
+    	Ext.getCmp("DiagnosisTotalHisBtn_Id").hide();
+        Ext.getCmp("DiagnosisTotalAllBtn_Id").show();
     	Ext.getCmp(statPanelId).collapse();
     }
-	
     Ext.getCmp("PumpingDailyStatSelectedItems_Id").setValue("");
     Ext.getCmp("FSDiagramAnalysisDailyDetailsWellCom_Id").setValue("");
 	Ext.getCmp("FSDiagramAnalysisDailyDetailsWellCom_Id").setRawValue("");

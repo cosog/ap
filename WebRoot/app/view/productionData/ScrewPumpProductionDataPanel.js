@@ -126,7 +126,7 @@ function CreateAndLoadScrewPumpProTable(isNew){
 		screwPumpProHandsontableHelper=null;
 	}
 	var org_Id = Ext.getCmp('leftOrg_Id').getValue();
-    var jh_val = Ext.getCmp('screwPumpProductionDataJhCombo_Id').getValue();
+    var wellName = Ext.getCmp('screwPumpProductionDataJhCombo_Id').getValue();
     var wellType=200;
     var tabPanel = Ext.getCmp("ProductionWellProductionPanel");
 	var activeId = tabPanel.getActiveTab().id;
@@ -166,7 +166,7 @@ function CreateAndLoadScrewPumpProTable(isNew){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
-            jh: jh_val,
+			wellName: wellName,
             recordCount:50,
             orgId:org_Id,
             page:1,
@@ -344,6 +344,14 @@ var ScrewPumpProHandsontableHelper = {
 	            //插入的数据的获取
 	        	screwPumpProHandsontableHelper.insertExpressCount();
 	            if (JSON.stringify(screwPumpProHandsontableHelper.AllData) != "{}" && screwPumpProHandsontableHelper.validresult) {
+	            	var wellType=200;
+	                var tabPanel = Ext.getCmp("ProductionWellProductionPanel");
+	            	var activeId = tabPanel.getActiveTab().id;
+	            	if(activeId=="PumpingUnitProductionDataPanel"){
+	            		wellType=200;
+	            	}else if(activeId=="ScrewPumpProductionDataPanel"){
+	            		wellType=400;
+	            	}
 	            	Ext.Ajax.request({
 	            		method:'POST',
 	            		url:context + '/productionDataController/saveWellProHandsontableData',
@@ -366,7 +374,8 @@ var ScrewPumpProHandsontableHelper = {
 	                        screwPumpProHandsontableHelper.clearContainer();
 	            		},
 	            		params: {
-	                    	data: JSON.stringify(screwPumpProHandsontableHelper.AllData)
+	                    	data: JSON.stringify(screwPumpProHandsontableHelper.AllData),
+	                    	wellType:wellType
 	                    }
 	            	}); 
 	            } else {

@@ -701,7 +701,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else{
 			tableName="viw_pcp_comprehensive_latest";
 		}
-		sql="select "+statType+",count(id) from "+tableName+" t where  t.org_id in("+orgId+")";
+		sql="select "+statType+",count(1) from "+tableName+" t where  t.org_id in("+orgId+")";
 		
 		sql+=" group by "+statType;
 		
@@ -1070,12 +1070,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		float vcdownlimit=0;
 		
 		String sql="select "
-				+ " to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.ia,t.ib,t.ic,t.va,t.vb,t.vc, "
+				+ " to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,t.ia,t.ib,t.ic,t.va,t.vb,t.vc, "
 				+ " t.iauplimit,t.iadownlimit,t.ibuplimit,t.ibdownlimit,t.icuplimit,t.icdownlimit, "
 				+ " t.vauplimit,t.vadownlimit,t.vbuplimit,t.vbdownlimit,t.vcuplimit,t.vcdownlimit "
 				+ " from viw_pcp_comprehensive_hist t "
 				+ " where t.acquisitionTime between to_date(to_char(to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
 				+ " and to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.wellName='"+wellName+"'"
 				+ " order by t.acquisitionTime";
 		List<?> list=this.findCallSql(sql);
 		

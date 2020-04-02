@@ -299,7 +299,10 @@ public class CalculateDataController extends BaseController{
 				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
 				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
-				
+				if(totalAnalysisResponseData.getWellName().equals("朝45-斜122")){
+					System.out.println(requestDataList.get(i));
+					System.out.println(responseData);
+				}
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{

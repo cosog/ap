@@ -35,7 +35,7 @@ Ext.define("AP.view.diagnosisTotal.DiagnosisTotalInfoView", {
                     id:'screwPumpDailyAnalysisPanel_Id',
                     layout: "fit",
                     border: false,
-                    hidden:false,
+                    hidden: pcpHidden,
                     items:[ScrewPumpDailyAnalysisView]
                 }],
                 listeners: {

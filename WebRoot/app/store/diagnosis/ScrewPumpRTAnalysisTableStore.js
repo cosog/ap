@@ -358,7 +358,7 @@ var controlSataStr="{\"items\":[";
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.id;
         	var wellName=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
-        	var selectedWellName  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var selectedWellName  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
         	var new_params = {
         			id:id,
         			wellName:wellName,

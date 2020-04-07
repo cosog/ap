@@ -173,8 +173,7 @@ isNullVal = function(val) {
  */
 isNotVal = function(val) {
 	var result = false;
-	if (val == "" || val == "null" || val == "undefined" || val == undefined
-			|| val == null) {
+	if (val == "" || val == "null" || val == "undefined" || val == undefined || val == null) {
 		result = false;
 	} else {
 		result = true;
@@ -3616,7 +3615,10 @@ showFSDiagram = function(result, divid) {
 	return false;
 }
 
-showFSDiagramWithAtrokeSPM = function(result, divid) {
+showFSDiagramWithAtrokeSPM = function(result, divid,title) {
+	if (!isNotVal(title)){
+		title='地面功图';
+	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var loadCurveData=result.loadCurveData.split(",");
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
@@ -3701,11 +3703,14 @@ showFSDiagramWithAtrokeSPM = function(result, divid) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, result, divid,"地面功图",xtext,"载荷(kN)",['#FF6633','#009999']);
+	initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, result, divid,title,xtext,"载荷(kN)",['#FF6633','#009999']);
 	return false;
 }
 
-showFSDiagram360WithAtrokeSPM = function(diagramData, divid) {
+showFSDiagram360WithAtrokeSPM = function(diagramData, divid,title) {
+	if (!isNotVal(title)){
+		title='地面功图(360点)';
+	}
 	var positionCurveData=diagramData.position360CurveData.split(",");
 	var loadCurveData=diagramData.load360CurveData.split(",");
 	var fmax=0;
@@ -3803,11 +3808,14 @@ showFSDiagram360WithAtrokeSPM = function(diagramData, divid) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, diagramData, divid,"地面功图(360点)",xtext,"载荷(kN)",['#FF6633','#009999']);
+	initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, diagramData, divid,title,xtext,"载荷(kN)",['#FF6633','#009999']);
 	return false;
 }
 
-showPSDiagram = function(result, divid) {
+showPSDiagram = function(result, divid,title) {
+	if (!isNotVal(title)){
+		title='电功图';
+	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var powerCurveData=result.powerCurveData.split(",");
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
@@ -3890,11 +3898,14 @@ showPSDiagram = function(result, divid) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divid,"电功图",xtext,"有功功率(kW)",['#FF6633','#009999']);
+	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divid,title,xtext,"有功功率(kW)",['#FF6633','#009999']);
 	return false;
 }
 
-showASDiagram = function(result, divid) {
+showASDiagram = function(result, divid,title) {
+	if (!isNotVal(title)){
+		title='电流图';
+	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var currentCurveData=result.currentCurveData.split(",");
 	
@@ -3979,7 +3990,7 @@ showASDiagram = function(result, divid) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divid,"电流图",xtext,"电流(A)",['#CC0000','#0033FF']);
+	initPSDiagramChart(upStrokePointdata,downStrokePointdata, result, divid,title,xtext,"电流(A)",['#CC0000','#0033FF']);
 	return false;
 }
 
@@ -3987,7 +3998,7 @@ showPContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color, 
 	var powerCurveData=diagramData.split(",");
 	var data = "["; // 功图data
 	if(powerCurveData.length>0){
-		for (var i=0; i <= powerCurveData.length; i++) {
+		for (var i=0; i < powerCurveData.length; i++) {
 			data += "[" + (i+1) + ","+changeTwoDecimal(powerCurveData[i])+"]";
 			if(i<powerCurveData.length-1){
 				data += ",";
@@ -4004,7 +4015,7 @@ showAContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color, 
 	var currentCurveData=diagramData.split(",");
 	var data = "["; // 功图data
 	if(currentCurveData.length>0){
-		for (var i=0; i <= currentCurveData.length; i++) {
+		for (var i=0; i < currentCurveData.length; i++) {
 			data += "[" + (i+1) + ","+changeTwoDecimal(currentCurveData[i])+"]";
 			if(i<currentCurveData.length-1){
 				data += ",";

@@ -198,10 +198,12 @@ public class UserManagerService<T> extends BaseService<T> {
 	 * @return
 	 * @throws Exception
 	 */
-	public String loadUserType(String type) throws Exception {
+	public String loadUserType(int userRoleId) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		sql = " select t.role_id,t.role_name from tbl_role t order by t.role_id";
+		sql = " select t.role_id,t.role_name from tbl_role t,(select * from tbl_role where role_id="+userRoleId+") t2 "
+				+ " where t.role_code<>decode(t2.role_code,'sysAdmin',t.role_code||'0','sysAdmin') "
+				+ " order by t.role_id";
 		try {
 			List<?> list = this.getSQLObjects(sql);
 			result_json.append("[");

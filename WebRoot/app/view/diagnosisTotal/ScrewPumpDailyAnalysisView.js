@@ -722,64 +722,64 @@ function getPCPSelectDailyStatType() {
 	var piePanelId="PCPRPMAnalysisDailyWorkCondStatGraphPanel_Id";
 	var pieDivId="PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id";
 	var pieChartTitle="功图工况";
-	var exportExcelTitle = '抽油机全天评价-电参工况';
+	var exportExcelTitle = '螺杆泵全天评价-电参工况';
 	var activeTabId= Ext.getCmp(Ext.getCmp("ScrewPumpDailyAnalysisStatTabpanel_Id").getActiveTab().id).getActiveTab().id;
 	if(activeTabId=="PCPRPMAnalysisDailyWorkCondStatPanel_Id"){//电参工况
 		type=1;
 		panelId="PCPRPMAnalysisDailyWorkCondDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyWorkCondStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id";
-		pieChartTitle="功图工况";
-		exportExcelTitle = '抽油机全天评价-功图工况';
+		pieChartTitle="电参工况";
+		exportExcelTitle = '螺杆泵全天评价-电参工况';
 	}else if(activeTabId=="PCPRPMAnalysisDailyProdStatPanel_Id"){//产量
 		type=2;
 		panelId="PCPRPMAnalysisDailyProdDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyProdStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyProdStatGraphPieDiv_Id";
 		pieChartTitle="产量分布";
-		exportExcelTitle = '抽油机全天评价-产量分布';
+		exportExcelTitle = '螺杆泵全天评价-产量分布';
 	}else if(activeTabId=="PCPRPMAnalysisDailyRunStatusStatPanel_Id"){//运行状态
 		type=5;
 		panelId="PCPRPMAnalysisDailyRunStatusDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyRunStatusStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id";
 		pieChartTitle="运行状态";
-		exportExcelTitle = '抽油机全天评价-运行状态';
+		exportExcelTitle = '螺杆泵全天评价-运行状态';
 	}else if(activeTabId=="PCPRPMAnalysisDailyRunTimeEffStatPanel_Id"){//运行时率
 		type=6;
 		panelId="PCPRPMAnalysisDailyRunTimeEffDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyRunTimeEffStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id";
 		pieChartTitle="运行时率";
-		exportExcelTitle = '抽油机全天评价-运行时率';
+		exportExcelTitle = '螺杆泵全天评价-运行时率';
 	}else if(activeTabId=="PCPRPMAnalysisDailySysEffStatPanel_Id"){//系统效率
 		type=7;
 		panelId="PCPRPMAnalysisDailySysEffDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailySysEffStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id";
 		pieChartTitle="系统效率";
-		exportExcelTitle = '抽油机全天评价-系统效率';
+		exportExcelTitle = '螺杆泵全天评价-系统效率';
 	}else if(activeTabId=="PCPRPMAnalysisDailyTodayEnergyStatPanel_Id"){//如用电量
 		type=10;
 		panelId="PCPRPMAnalysisDailyTodayEnergyDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyTodayEnergyStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id";
 		pieChartTitle="日用电量";
-		exportExcelTitle = '抽油机全天评价-日用电量';
+		exportExcelTitle = '螺杆泵全天评价-日用电量';
 	}else if(activeTabId=="PCPRPMAnalysisDailyCommStatusStatPanel_Id"){//通信状态
 		type=11;
 		panelId="PCPRPMAnalysisDailyCommStatusDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyCommStatusStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id";
 		pieChartTitle="通信状态";
-		exportExcelTitle = '抽油机全天评价-通信状态';
+		exportExcelTitle = '螺杆泵全天评价-通信状态';
 	}else if(activeTabId=="PCPRPMAnalysisDailyCommEffStatPanel_Id"){//在线时率
 		type=12;
 		panelId="PCPRPMAnalysisDailyCommEffDataListPanel_Id";
 		piePanelId="PCPRPMAnalysisDailyCommEffStatGraphPanel_Id";
 		pieDivId="PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id";
 		pieChartTitle="在线时率";
-		exportExcelTitle = '抽油机全天评价-在线时率';
+		exportExcelTitle = '螺杆泵全天评价-在线时率';
 	}
 	var result=Ext.JSON.decode("{\"type\":"+type+",\"panelId\":\""+panelId+"\",\"piePanelId\":\""+piePanelId+"\",\"pieDivId\":\""+pieDivId+"\",\"pieChartTitle\":\""+pieChartTitle+"\",\"exportExcelTitle\":\""+exportExcelTitle+"\"}");
 	return result;

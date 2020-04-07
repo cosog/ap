@@ -28,7 +28,7 @@ import com.gao.model.AlarmShowStyle;
 import com.gao.model.calculate.FA2FSResponseData;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
-import com.gao.thread.calculate.ProtocolModbusTCPThread;
+import com.gao.thread.calculate.ProtocolModbusThread;
 import com.gao.thread.calculate.DriveServerThread;
 import com.gao.utils.AcquisitionUnitMap;
 import com.gao.utils.Config;
@@ -67,7 +67,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 //		Gson gson = new Gson();
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,7 +67,9 @@ public class ModuleManagerController extends BaseController {
 	@RequestMapping("/constructModuleTreeGridTree")
 	public String constructModuleTreeGridTree() throws IOException {
 		String moduleName = ParamUtils.getParameter(request, "moduleName");
-		List<?>list = this.moduleService.queryModules(Module.class, moduleName);
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		List<?>list = this.moduleService.queryModules(Module.class, moduleName,user);
 		String json = "";
 		BackModuleTreePanelRecursion r = new BackModuleTreePanelRecursion();
 		if (list != null) {
@@ -102,8 +105,10 @@ public class ModuleManagerController extends BaseController {
 	public String constructRightModuleTreeGridTree() throws IOException {
 		String moduleName = ParamUtils.getParameter(request, "moduleName");
 		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		BackModuleRecursion r = new BackModuleRecursion();
-		list = this.moduleService.queryRightModules(Module.class, moduleName);
+		list = this.moduleService.queryRightModules(Module.class, moduleName,user);
 		boolean flag = false;
 		for (Module module : list) {
 			if (module.getMdParentid() == 0) {

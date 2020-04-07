@@ -83,11 +83,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.anchoringStateName,t.netGrossRatio,t.resultStatus,"
 			+ "t.rodstring"
 			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
-			+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+			+ " and t.acquisitionTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
 		
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and t.liftingType>="+wellType+" and t.liftingType<("+wellType+"+100) ";
-		}
+		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}

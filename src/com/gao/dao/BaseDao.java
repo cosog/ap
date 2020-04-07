@@ -1633,7 +1633,7 @@ public class BaseDao extends HibernateDaoSupport {
 			EquipmentDriverServerTast.initDriverConfig();
 		}
 		try {
-			cs = conn.prepareCall("{call pro_save_rpc_recalculateparam(?,"
+			cs = conn.prepareCall("{call prd_save_rpc_recalculateparam(?,"
 					+ "?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,"
 					+ "?,?,?,"

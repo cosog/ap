@@ -247,11 +247,11 @@ function loadElectricInverDiagramList(page) {
                 var diagramId = diagramList[index].id;
                 divId = 'electricAnalysisRealtimeDiagramDiv' + diagramId;
                 if(diagramType=="FSDiagram"){
-                	showFSDiagramWithAtrokeSPM(diagramList[index],divId);
+                	showFSDiagramWithAtrokeSPM(diagramList[index],divId,"地面功图-反演");
                 }else if(diagramType=="PSDiagram"){
-                	showPSDiagram(diagramList[index],divId);
+                	showPSDiagram(diagramList[index],divId,"电功图-采集");
                 }else if(diagramType=="ASDiagram"){
-                	showASDiagram(diagramList[index],divId);
+                	showASDiagram(diagramList[index],divId,"电流图-采集");
                 }
                 
             });

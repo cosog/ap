@@ -2,7 +2,7 @@ server:
    accessPath: http://127.0.0.1:16100/ap
 spring:
    datasource:
-      driverUrl: jdbc:oracle:thin:@139.129.166.94:1521/orclpdb
+      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
       user: agile
@@ -21,38 +21,38 @@ viewInformation:
    linkshow: ""
 agileCalculate:
    FESDiagram: 
-    - http://139.129.166.94:18100/api/calc/rpc/fesdiagram/pro
+    - http://39.98.134.121:18100/api/calc/rpc/fesdiagram/pro
    FSDiagram: 
-    - http://139.129.166.94:18100/api/calc/rpc/fsdiagram/balance/back
+    - http://39.98.134.121:18100/api/calc/rpc/fsdiagram/balance/back
    ESDiagram:
       balance: 
-       - http://139.129.166.94:18100/api/calc/rpc/esdiagram/balance/back
+       - http://39.98.134.121:18100/api/calc/rpc/esdiagram/balance/back
       inversion:
          inversionSwitch: false
          url:
             motorauto: 
-             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/motorauto
+             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/motorauto
             motorsemiauto: 
-             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
+             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
             beam: 
-             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/beam
+             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/beam
          timerCorrectionStart: 06:00:00
          imerCorrectionEnd: 21:00:00
          timerCorrectionLimit: 1800
    pcpProduction: 
-    - http://139.129.166.94:18100/api/calc/pcp/rpm
+    - http://39.98.134.121:18100/api/calc/pcp/rpm
    communication: 
-    - http://139.129.166.94:18100/api/calc/comm
+    - http://39.98.134.121:18100/api/calc/comm
    run: 
-    - http://139.129.166.94:18100/api/calc/run
+    - http://39.98.134.121:18100/api/calc/run
    energy: 
-    - http://139.129.166.94:18100/api/calc/energy
+    - http://39.98.134.121:18100/api/calc/energy
    totalCalculation:
       well: 
-       - http://139.129.166.94:18100/api/analy/total/well
+       - http://39.98.134.121:18100/api/analy/total/well
    plugin: 
-      wellboreTrajectory: http://139.129.166.94:18100/api/plugin/2xyz
-      fa2fs: http://139.129.166.94:18100/api/plugin/fa2fs
+      wellboreTrajectory: http://39.98.134.121:18100/api/plugin/2xyz
+      fa2fs: http://39.98.134.121:18100/api/plugin/fa2fs
 mqtt:
    server: tcp://47.93.196.203:1883
 others:

@@ -810,7 +810,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图冲次数据异常,rc="+rc);
         								break;
         							}else{
-        								SPM=getFloat(recByte, driveConfig.getProtocol());
+        								SPM=getFloat(recByte,0, driveConfig.getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setSPM(SPM);
         							}
         						}
@@ -830,7 +830,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图冲程数据异常,rc="+rc);
         								break;
         							}else{
-        								Stroke=getFloat(recByte, driveConfig.getProtocol());;
+        								Stroke=getFloat(recByte,0, driveConfig.getProtocol());;
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setStroke(Stroke);
         							}
         						}
@@ -1103,7 +1103,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取油压数据异常,rc="+rc);
     								break;
     							}else{
-    								TubingPressure=getFloat(recByte, driveConfig.getProtocol());
+    								TubingPressure=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setTubingPressure(TubingPressure);
     								updateDiscreteData+=",t.TubingPressure="+TubingPressure;
     								updateProdData+=",t.tubingPressure="+TubingPressure;
@@ -1126,7 +1126,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取套压数据异常,rc="+rc);
     								break;
     							}else{
-    								CasingPressure=getFloat(recByte, driveConfig.getProtocol());
+    								CasingPressure=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCasingPressure(CasingPressure);
     								updateDiscreteData+=",t.CasingPressure="+CasingPressure;
     								updateProdData+=",t.casingPressure="+CasingPressure;
@@ -1149,7 +1149,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取回压数据异常,rc="+rc);
     								break;
     							}else{
-    								BackPressure=getFloat(recByte, driveConfig.getProtocol());
+    								BackPressure=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setBackPressure(BackPressure);
     								updateDiscreteData+=",t.BackPressure="+BackPressure;
     								updateProdData+=",t.backPressure="+BackPressure;
@@ -1172,7 +1172,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取井口油温数据异常,rc="+rc);
     								break;
     							}else{
-    								WellHeadFluidTemperature=getFloat(recByte, driveConfig.getProtocol());
+    								WellHeadFluidTemperature=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWellHeadFluidTemperature(WellHeadFluidTemperature);
     								updateDiscreteData+=",t.WellHeadFluidTemperature="+WellHeadFluidTemperature;
     								updateProdData+=",t.wellHeadFluidTemperature="+WellHeadFluidTemperature;
@@ -1195,7 +1195,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取动液面数据异常,rc="+rc);
     								break;
     							}else{
-    								ProducingfluidLevel=getFloat(recByte, driveConfig.getProtocol());
+    								ProducingfluidLevel=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setProducingfluidLevel(ProducingfluidLevel);
     								updateProdData+=",t.producingfluidLevel="+ProducingfluidLevel;
     								hasProData=true;
@@ -1217,7 +1217,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取含水率数据异常,rc="+rc);
     								break;
     							}else{
-    								WaterCut=getFloat(recByte, driveConfig.getProtocol());
+    								WaterCut=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWaterCut(WaterCut);
     								updateProdData+=",t.waterCut_W="+WaterCut;
     								hasProData=true;
@@ -1241,7 +1241,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电流数据异常,rc="+rc);
     								break;
     							}else{
-    								CurrentA=getFloat(recByte, driveConfig.getProtocol());
+    								CurrentA=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentA(CurrentA);
     								updateDiscreteData+=",t.Ia="+CurrentA;
     							}
@@ -1262,7 +1262,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电流数据异常,rc="+rc);
     								break;
     							}else{
-    								CurrentB=getFloat(recByte, driveConfig.getProtocol());
+    								CurrentB=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentB(CurrentB);
     								updateDiscreteData+=",t.Ib="+CurrentB;
     							}
@@ -1283,7 +1283,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电流数据异常,rc="+rc);
     								break;
     							}else{
-    								CurrentC=getFloat(recByte, driveConfig.getProtocol());
+    								CurrentC=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentC(CurrentC);
     								updateDiscreteData+=",t.Ic="+CurrentC;
     							}
@@ -1304,7 +1304,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电压数据异常,rc="+rc);
     								break;
     							}else{
-    								VoltageA=getFloat(recByte, driveConfig.getProtocol());
+    								VoltageA=getFloat(recByte,0, driveConfig.getProtocol());
     								if(VoltageA<0){
     									VoltageA=0;
     								}else if(VoltageA>500){
@@ -1330,7 +1330,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电压数据异常,rc="+rc);
     								break;
     							}else{
-    								VoltageB=getFloat(recByte, driveConfig.getProtocol());
+    								VoltageB=getFloat(recByte,0, driveConfig.getProtocol());
     								if(VoltageB<0){
     									VoltageB=0;
     								}else if(VoltageB>500){
@@ -1356,7 +1356,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电压数据异常,rc="+rc);
     								break;
     							}else{
-    								VoltageC=getFloat(recByte, driveConfig.getProtocol());
+    								VoltageC=getFloat(recByte,0, driveConfig.getProtocol());
     								if(VoltageC<0){
     									VoltageC=0;
     								}else if(VoltageC>500){
@@ -1382,7 +1382,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取有功功耗数据异常,rc="+rc);
     								break;
     							}else{
-    								ActivePowerConsumption=getFloat(recByte, driveConfig.getProtocol());
+    								ActivePowerConsumption=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setActivePowerConsumption(ActivePowerConsumption);
     							}
         					}
@@ -1402,7 +1402,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取无功功耗数据异常,rc="+rc);
     								break;
     							}else{
-    								ReactivePowerConsumption=getFloat(recByte, driveConfig.getProtocol());
+    								ReactivePowerConsumption=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReactivePowerConsumption(ReactivePowerConsumption);
     							}
         					}
@@ -1422,7 +1422,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取有功功率数据异常,rc="+rc);
     								break;
     							}else{
-    								ActivePower=getFloat(recByte, driveConfig.getProtocol());
+    								ActivePower=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setActivePower(ActivePower);
     								updateDiscreteData+=",t.wattSum="+ActivePower;
     							}
@@ -1443,7 +1443,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取无功功率数据异常,rc="+rc);
     								break;
     							}else{
-    								ReactivePower=getFloat(recByte, driveConfig.getProtocol());
+    								ReactivePower=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReactivePower(ReactivePower);
     								updateDiscreteData+=",t.varSum="+ReactivePower;
     							}
@@ -1464,7 +1464,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取反向功率数据异常,rc="+rc);
     								break;
     							}else{
-    								ReversePower=getFloat(recByte, driveConfig.getProtocol());
+    								ReversePower=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReversePower(ReversePower);
     								updateDiscreteData+=",t.ReversePower="+ReversePower;
     							}
@@ -1485,7 +1485,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功率因数数据异常,rc="+rc);
     								break;
     							}else{
-    								PowerFactor=getFloat(recByte, driveConfig.getProtocol());
+    								PowerFactor=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setPowerFactor(PowerFactor);
     								updateDiscreteData+=",t.pfSum="+PowerFactor;
     							}
@@ -1508,7 +1508,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
     								break;
     							}else{
-    								SetFrequency=getFloat(recByte, driveConfig.getProtocol());
+    								SetFrequency=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setSetFrequency(SetFrequency);
     								updateDiscreteData+=",t.frequencySetValue="+SetFrequency;
     							}
@@ -1529,7 +1529,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
     								break;
     							}else{
-    								RunFrequency=getFloat(recByte, driveConfig.getProtocol());
+    								RunFrequency=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setRunFrequency(RunFrequency);
     								updateDiscreteData+=",t.frequencyRunValue="+RunFrequency;
     							}
@@ -1819,7 +1819,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
         								break;
         							}else{
-        								RPM=getFloat(recByte, driveConfig.getProtocol());
+        								RPM=getFloat(recByte,0, driveConfig.getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setRPM(RPM);
         								clientUnit.unitDataList.get(i).lastRPM=RPM;
         							}
@@ -1840,7 +1840,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
         								break;
         							}else{
-        								Torque=getFloat(recByte, driveConfig.getProtocol());
+        								Torque=getFloat(recByte,0, driveConfig.getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setTorque(Torque);
         							}
             					}
@@ -2389,12 +2389,12 @@ public class ProtocolModbusThread extends Thread{
         return result;
     } 
     
-    public float getFloat(byte[] arr, int protocol) {  
+    public float getFloat(byte[] arr,int index, int protocol) {  
     	float result=0;
     	if(protocol==1){
-    		result=StringManagerUtils.getFloat(arr, 9);
+    		result=StringManagerUtils.getFloat(arr, 9+index);
     	}else if(protocol==2){
-    		result=StringManagerUtils.getFloat(arr, 3);
+    		result=StringManagerUtils.getFloat(arr, 3+index);
     	}
         return result;
     }  

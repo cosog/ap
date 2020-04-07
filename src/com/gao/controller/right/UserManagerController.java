@@ -305,9 +305,10 @@ public class UserManagerController extends BaseController {
 	 */
 	@RequestMapping("/loadUserType")
 	public String loadUserType() throws Exception {
-
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
 		String type = ParamUtils.getParameter(request, "type");
-		String json = this.userService.loadUserType(type);
+		String json = this.userService.loadUserType(user.getUserType());
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

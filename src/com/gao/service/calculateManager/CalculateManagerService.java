@@ -74,7 +74,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
 		columns = ddic.getTableHeader();
-		sql="select t.id,t.wellName,t.acquisitionTime,t.workingConditionName,t.liquidProduction,t.oilProduction,"
+		sql="select t.id,t.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.workingConditionName,t.liquidProduction,t.oilProduction,"
 			+ "t.crudeoilDensity,t.waterDensity,t.naturalGasRelativeDensity,"
 			+ "t.saturationPressure,t.reservoirDepth,t.reservoirTemperature,"
 			+ "t.tubingPressure,t.casingPressure,t.wellHeadFluidTemperature,t.waterCut,t.productionGasOilRatio,t.producingFluidLevel,"

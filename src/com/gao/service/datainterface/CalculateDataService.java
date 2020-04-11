@@ -196,18 +196,22 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[28]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
-				curveData=clobStr.split(",");
-				for(int i=0;i<curveData.length;i++){
-					Watt.add(StringManagerUtils.stringToFloat(curveData[i]));
+				if(StringManagerUtils.isNotNull(clobStr)){
+					curveData=clobStr.split(",");
+					for(int i=0;i<curveData.length;i++){
+						Watt.add(StringManagerUtils.stringToFloat(curveData[i]));
+					}
 				}
 	        }
 	        if(object[29]!=null){//电流曲线
 	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[29]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
-				curveData=clobStr.split(",");
-				for(int i=0;i<curveData.length;i++){
-					I.add(StringManagerUtils.stringToFloat(curveData[i]));
+				if(StringManagerUtils.isNotNull(clobStr)){
+					curveData=clobStr.split(",");
+					for(int i=0;i<curveData.length;i++){
+						I.add(StringManagerUtils.stringToFloat(curveData[i]));
+					}
 				}
 	        }
 	        calculateRequestData.getFESDiagram().setF(F);

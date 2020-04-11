@@ -2339,7 +2339,7 @@ function changeTwoDecimal(x) {
 		// alert('function:changeTwoDecimal->parameter error');
 		return "";
 	}
-	if (f_x == "") {
+	if (f_x === "") {
 		f_x = "";
 	} else {
 		var f_x = Math.round(x * 100) / 100;
@@ -5289,10 +5289,10 @@ function initMultiSurfaceCardChart(series, title, wellName, acquisitionTime, div
 showRodPress = function(result, divid) {
 	var wellName=result.wellName;                        // 井名
 	var acquisitionTime=result.acquisitionTime;                    // 时间
-	var rodStressRatio1=result.rodStressRatio1;              // 一级应力百分比
-	var rodStressRatio2=result.rodStressRatio2;              // 二级应力百分比
-	var rodStressRatio3=result.rodStressRatio3;              // 三级应力百分比
-	var rodStressRatio4=result.rodStressRatio4;              // 四级应力百分比
+	var rodStressRatio1=changeTwoDecimal(parseFloat(result.rodStressRatio1)*100);              // 一级应力百分比
+	var rodStressRatio2=changeTwoDecimal(parseFloat(result.rodStressRatio2)*100);              // 二级应力百分比
+	var rodStressRatio3=changeTwoDecimal(parseFloat(result.rodStressRatio3)*100);              // 三级应力百分比
+	var rodStressRatio4=changeTwoDecimal(parseFloat(result.rodStressRatio4)*100);              // 四级应力百分比
 	var yjg=cosog.string.rod1;   // 一级杆
 	var ejg=cosog.string.rod2;   // 二级杆
 	var sjg=cosog.string.rod3;   // 三级杆
@@ -5382,6 +5382,7 @@ function initRodPressChart(xdata, ydata, wellName, acquisitionTime, divid) {
 		        },                                                                                   
 		        yAxis: {    
 		        	min: 0,
+		        	max:100,
 		            title: {                                                                         
 		                text: cosog.string.rodStressRatio  // 应力百分比(%)                                                          
 		            },

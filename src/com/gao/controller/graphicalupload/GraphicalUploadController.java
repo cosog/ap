@@ -65,6 +65,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import jxl.Cell;
+import jxl.CellType;
 import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -393,15 +394,60 @@ public class GraphicalUploadController extends BaseController {
 			        	try{
 			        		StringBuffer diagramDataBuff = new StringBuffer();
 				        	String wellName= oFirstSheet.getCell(1,j).getContents().replaceAll(" ", "");
-				        	String acquisitionTimeStr=StringManagerUtils.delOutsideSpace(oFirstSheet.getCell(2,j).getContents()).replaceAll("/", "-");
-				        	String sData=oFirstSheet.getCell(3,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-				        	String fData=oFirstSheet.getCell(4,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-				        	String wattData=oFirstSheet.getCell(5,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
-				        	String iData=oFirstSheet.getCell(6,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+				        	String acquisitionTimeStr="";
+				        	Cell cell = oFirstSheet.getCell(2,j);  
+				        	if(cell.getType() == CellType.DATE){//如果是日期类型
+				        		DateCell dc = (DateCell) cell;   
+	                            Date date = dc.getDate();   
+	                            TimeZone zone = TimeZone.getTimeZone("GMT");  
+	                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+	                            sdf.setTimeZone(zone);  
+	                            acquisitionTimeStr = sdf.format(date);  
+				        	}else{
+				        		acquisitionTimeStr=cell.getContents();
+				        	}
+				        	acquisitionTimeStr=acquisitionTimeStr.replaceAll("/", "-");
+				        	String sDataString=oFirstSheet.getCell(3,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
+				        	String fDataString=oFirstSheet.getCell(4,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",").replaceAll("00\\.", "0\\.").replaceAll("01\\.", "1\\.");
+				        	String wattDataString=oFirstSheet.getCell(5,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",").replaceAll("00\\.", "0\\.").replaceAll("01\\.", "1\\.");
+				        	String iDataString=oFirstSheet.getCell(6,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",").replaceAll("00\\.", "0\\.").replaceAll("01\\.", "1\\.");
 				        	String stroke=oFirstSheet.getCell(7,j).getContents().replaceAll(" ", "");
 				        	String spm=oFirstSheet.getCell(8,j).getContents().replaceAll(" ", "");
 				        	
-				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTimeStr+"\",\"stroke\":"+stroke+","+"\"spm\":"+spm+",");
+				        	String[] sArr=sDataString.split(",");
+				        	String[] fArr=fDataString.split(",");
+				        	String[] wattArr=wattDataString.split(",");
+				        	String[] iArr=iDataString.split(",");
+				        	String sData="";
+				        	String fData="";
+				        	String wattData="";
+				        	String iData="";
+				        	for(int m=0;m<sArr.length&&StringManagerUtils.isNotNull(sDataString);m++){
+				        		sData+=StringManagerUtils.stringToFloat(sArr[m]);
+				        		if(m<sArr.length-1){
+				        			sData+=",";
+				        		}
+				        	}
+				        	for(int m=0;m<fArr.length&&StringManagerUtils.isNotNull(fDataString);m++){
+				        		fData+=StringManagerUtils.stringToFloat(fArr[m]);
+				        		if(m<sArr.length-1){
+				        			fData+=",";
+				        		}
+				        	}
+				        	for(int m=0;m<wattArr.length&&StringManagerUtils.isNotNull(wattDataString);m++){
+				        		wattData+=StringManagerUtils.stringToFloat(wattArr[m]);
+				        		if(m<sArr.length-1){
+				        			wattData+=",";
+				        		}
+				        	}
+				        	for(int m=0;m<iArr.length&&StringManagerUtils.isNotNull(iDataString);m++){
+				        		iData+=StringManagerUtils.stringToFloat(iArr[m]);
+				        		if(m<sArr.length-1){
+				        			iData+=",";
+				        		}
+				        	}
+				        	
+				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTimeStr+"\",\"stroke\":"+StringManagerUtils.stringToFloat(stroke)+","+"\"spm\":"+StringManagerUtils.stringToFloat(spm)+",");
 				        	diagramDataBuff.append("\"S\":["+sData+"],");
 				        	diagramDataBuff.append("\"F\":["+fData+"],");
 				        	diagramDataBuff.append("\"Watt\":["+wattData+"],");

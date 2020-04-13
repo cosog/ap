@@ -3830,7 +3830,7 @@ showPSDiagram = function(result, divid,title) {
 	var downStrokeData = "["; // 下冲程数据
 	var minIndex=0,maxIndex=0;
 	var gtcount=positionCurveData.length; // 功图点数
-	if(positionCurveData.length>0){
+	if(positionCurveData.length>0 && result.powerCurveData!="" && powerCurveData.length>1){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(powerCurveData[i])+"],";
@@ -3922,7 +3922,7 @@ showASDiagram = function(result, divid,title) {
 	var downStrokeData = "["; // 下冲程数据
 	var minIndex=0,maxIndex=0;
 	var gtcount=positionCurveData.length; // 功图点数
-	if(positionCurveData.length>0){
+	if(positionCurveData.length>0 && result.currentCurveData!="" && currentCurveData.length>1){
 		for (var i=0; i <= positionCurveData.length; i++) {
 			if(i<positionCurveData.length){
 				data += "[" + changeTwoDecimal(positionCurveData[i]) + ","+changeTwoDecimal(currentCurveData[i])+"],";

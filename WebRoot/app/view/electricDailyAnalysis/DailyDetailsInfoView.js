@@ -67,6 +67,7 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
             multiSelect: false,
             listeners: {
                 expand: function (sm, selections) {
+                	wellComboBox.getStore().loadPage(1);
                 },
                 select: function (combo, record, index) {
                 	if(combo.value==""){

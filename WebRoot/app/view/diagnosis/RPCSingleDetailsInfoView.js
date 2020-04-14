@@ -61,6 +61,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
             multiSelect: false,
             listeners: {
                 expand: function (sm, selections) {
+                	wellComboBox.getStore().loadPage(1);
                 },
                 select: function (combo, record, index) {
                 	var statPanelId=getFSDiagramAnalysisSingleStatType().piePanelId;

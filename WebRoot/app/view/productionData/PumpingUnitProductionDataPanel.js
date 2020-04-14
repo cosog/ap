@@ -63,7 +63,7 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
                 listeners: {
                     expand: function (sm, selections) {
 //                        simpleCombo.clearValue();
-//                        simpleCombo.getStore().loadPage(1); // 加载井下拉框的store
+                        simpleCombo.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     select: function (combo, record, index) {
                     	if(wellProHandsontableHelper!=null){

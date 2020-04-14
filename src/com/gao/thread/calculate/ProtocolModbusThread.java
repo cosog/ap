@@ -45,7 +45,6 @@ public class ProtocolModbusThread extends Thread{
 		this.clientUnit = clientUnit;
 		this.driveConfig = driveConfig;
 	}
-	@SuppressWarnings({"unused", "static-access" })
 	public void run(){
 		clientUnit.setSign(1);
         int rc=0;
@@ -115,29 +114,6 @@ public class ProtocolModbusThread extends Thread{
     							if(!StringManagerUtils.getCurrentTime().equals(clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).currentDate)){//如果跨天保存数据
     		    	    			saveCommLog(clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1));
     							}
-//    							if(clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).jslx>=200&&clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).jslx<300){//如果是抽油机
-//    								//设置功图采集周期
-//    								readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).UnitId,6, clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).cycle);
-//        							rc=this.writeSocketData(clientUnit.socket, readByte,os);
-//        							if(rc==-1){//断开连接
-//        	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"设置功图采集周期失败:"+StringManagerUtils.bytesToHexString(readByte,12));
-//        	        					this.releaseResource(is,os);
-//        	            				wellReaded=false;
-//        	            				break;
-//        	            			}
-//        							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is);
-//        	    					if(rc==-1){//断开连接
-//        	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"读取设置功图采集周期返回数据读取失败，断开连接,释放资源");
-//        	            				this.releaseResource(is,os);
-//        	            				wellReaded=false;
-//        	            				break;
-//        	            			}
-//        	    					if(recByte[7]!=0x06){
-//        	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"功图采集周期设置异常");
-//        	            				wellReaded=false;
-//        	            				continue;
-//        	    					}
-//    							}
     						}
     					}
     					if(clientUnit.unitDataList.size()==0){//未找到匹配的井
@@ -211,11 +187,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"启停控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -256,11 +227,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"功图采集周期设置异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
     					}
     					//变频频率控制
     					if(clientUnit.unitDataList.get(i).FrequencyControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency()!=null){
@@ -300,11 +266,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"变频频率控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -348,11 +309,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"平衡远程调节触发状态控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -396,11 +352,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"平衡计算方式控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -444,11 +395,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"重心远离支点每拍调节时间控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -492,11 +438,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"重心接近支点每拍调节时间控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -540,11 +481,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"参与平衡计算冲程次数控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -588,11 +524,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"平衡调节上限控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -636,11 +567,6 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
-	    					if(recByte[7]!=0x06){
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).getWellName()+"平衡调节下限控制异常");
-	            				wellReaded=false;
-	            				continue;
-	    					}
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -653,7 +579,7 @@ public class ProtocolModbusThread extends Thread{
 						//当前采集时间与上次读取时间差值大于离散数据采集周期时，读取离散数据
     					if(format.parse(AcquisitionTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcqCycle_Discrete()){
     						clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime(AcquisitionTime);
-    						short runSatus=0;
+    						int runSatus=0;
         					float TubingPressure=0;
         					float CasingPressure=0;
         					float BackPressure=0;
@@ -672,9 +598,9 @@ public class ProtocolModbusThread extends Thread{
         					float ReactivePower=0;
         					float ReversePower=0;
         					float PowerFactor=0;
-        					short acquisitionCycle=0;
-        					short point=0;
-        					short FSDiagramSetPointCount=0;
+        					int acquisitionCycle=0;
+        					int point=0;
+        					int FSDiagramSetPointCount=0;
         					float SPM=0;
         					float Stroke=0;
         					float RPM=0;
@@ -682,19 +608,19 @@ public class ProtocolModbusThread extends Thread{
         					float SetFrequency=0;
         					float RunFrequency=0;
         					
-        					short balanceAutoControl=0;
-        					short spmAutoControl=0;
-        					short balanceFrontLimit=0;
-        					short balanceAfterLimit=0;
-        					short balanceControlMode=0;
-        					short balanceCalculateMode=0;
+        					int balanceAutoControl=0;
+        					int spmAutoControl=0;
+        					int balanceFrontLimit=0;
+        					int balanceAfterLimit=0;
+        					int balanceControlMode=0;
+        					int balanceCalculateMode=0;
         					int balanceAwayTime=0;
         					int balanceCloseTime=0;
         					int balanceAwayTimePerBeat=0;
         					int balanceCloseTimePerBeat=0;
-        					short balanceStrokeCount=0;
-        					short balanceOperationUpLimit=0;
-        					short balanceOperationDownLimit=0;
+        					int balanceStrokeCount=0;
+        					int balanceOperationUpLimit=0;
+        					int balanceOperationDownLimit=0;
         					
         					String diagramAcquisitionTime="1970-01-01 08:00:00";
         					
@@ -728,7 +654,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图采集间隔数据异常,rc="+rc);
         								break;
         							}else{
-        								acquisitionCycle=getShort(recByte,0, driveConfig.getProtocol());
+        								acquisitionCycle=getUnsignedShort(recByte,0, driveConfig.getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setAcquisitionCycle(acquisitionCycle);
         								updateDiscreteData+=",t.acqCycle_Diagram="+acquisitionCycle;
         							}
@@ -749,7 +675,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数数据异常,rc="+rc);
         								break;
         							}else{
-        								FSDiagramSetPointCount=getShort(recByte,0, driveConfig.getProtocol());
+        								FSDiagramSetPointCount=getUnsignedShort(recByte,0, driveConfig.getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setFSDiagramSetPointCount(FSDiagramSetPointCount);
         							}
         						}
@@ -770,7 +696,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数数据异常,rc="+rc);
         								break;
         							}else{
-        								point=getShort(recByte,0, driveConfig.getProtocol());
+        								point=getUnsignedShort(recByte,0, driveConfig.getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setPoint(point);
         							}
         						}
@@ -853,10 +779,16 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节远程状态数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceAutoControl=(short) (0x0000 | (0x01 & recByte[10]));  
-        								spmAutoControl=(short) (0x0000 | (0x02 & recByte[10]));  
-        								balanceFrontLimit=(short) (0x0000 | (0x04 & recByte[10])>>2);  
-        								balanceAfterLimit=(short) (0x0000 | (0x08 & recByte[10])>>3);  
+        								int index=0;
+        								if(clientUnit.unitDataList.get(i).getRtuDriveConfig().getProtocol()==1){
+        									index=10;
+        								}else{
+        									index=4;
+        								}
+        								balanceAutoControl=(short) (0x0000 | (0x01 & recByte[index]));  
+        								spmAutoControl=(short) (0x0000 | (0x02 & recByte[index])>>1);  
+        								balanceFrontLimit=(short) (0x0000 | (0x04 & recByte[index])>>2);  
+        								balanceAfterLimit=(short) (0x0000 | (0x08 & recByte[index])>>3);  
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAutoControl(balanceAutoControl);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setSpmAutoControl(spmAutoControl);
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceFrontLimit(balanceFrontLimit);
@@ -884,7 +816,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节远程触发控制数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceControlMode=getShort(recByte,0, driveConfig.getProtocol());
+        								balanceControlMode=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceControlMode(balanceControlMode);
                     					updateDiscreteData+=",t.balanceControlMode="+balanceControlMode;
         							}
@@ -906,7 +838,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡计算方式数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceCalculateMode=getShort(recByte,0, driveConfig.getProtocol());
+        								balanceCalculateMode=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCalculateMode(balanceCalculateMode);
                     					updateDiscreteData+=",t.balanceCalculateMode="+balanceCalculateMode;
         							}
@@ -928,7 +860,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceAwayTime=StringManagerUtils.getUnsignedShort(recByte, 9);
+        								balanceAwayTime=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAwayTime(balanceAwayTime);
                     					updateDiscreteData+=",t.balanceAwayTime="+balanceAwayTime;
         							}
@@ -950,7 +882,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceCloseTime=StringManagerUtils.getUnsignedShort(recByte, 9);
+        								balanceCloseTime=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCloseTime(balanceCloseTime);
                     					updateDiscreteData+=",t.balanceCloseTime="+balanceCloseTime;
         							}
@@ -972,7 +904,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceAwayTimePerBeat=StringManagerUtils.getUnsignedShort(recByte, 3);
+        								balanceAwayTimePerBeat=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAwayTimePerBeat(balanceAwayTimePerBeat);
                     					updateDiscreteData+=",t.balanceAwayTimePerBeat="+balanceAwayTimePerBeat;
         							}
@@ -994,7 +926,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceCloseTimePerBeat=StringManagerUtils.getUnsignedShort(recByte, 3);
+        								balanceCloseTimePerBeat=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCloseTimePerBeat(balanceCloseTimePerBeat);
                     					updateDiscreteData+=",t.balanceCloseTimePerBeat="+balanceCloseTimePerBeat;
         							}
@@ -1016,7 +948,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取参与平衡度计算的冲程次数数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceStrokeCount=getShort(recByte,0, driveConfig.getProtocol());
+        								balanceStrokeCount=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceStrokeCount(balanceStrokeCount);
                     					updateDiscreteData+=",t.balanceStrokeCount="+balanceStrokeCount;
         							}
@@ -1038,7 +970,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节上限数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceOperationUpLimit=getShort(recByte,0, driveConfig.getProtocol());
+        								balanceOperationUpLimit=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceOperationUpLimit(balanceOperationUpLimit);
                     					updateDiscreteData+=",t.balanceOperationUpLimit="+balanceOperationUpLimit;
         							}
@@ -1060,7 +992,7 @@ public class ProtocolModbusThread extends Thread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节下限数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceOperationDownLimit=getShort(recByte,0, driveConfig.getProtocol());
+        								balanceOperationDownLimit=getUnsignedShort(recByte,0, driveConfig.getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceOperationDownLimit(balanceOperationDownLimit);
                     					updateDiscreteData+=",t.balanceOperationDownLimit="+balanceOperationDownLimit;
         							}
@@ -1083,7 +1015,7 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取运行状态数据异常,rc="+rc);
     								break;
     							}else{
-    								runSatus= getShort(recByte,0, driveConfig.getProtocol());
+    								runSatus= getUnsignedShort(recByte,0, driveConfig.getProtocol());
     							}
         					}
         					
@@ -2103,7 +2035,6 @@ public class ProtocolModbusThread extends Thread{
         }
 	}
 	
-	@SuppressWarnings("static-access")
 	public  void releaseResource(InputStream is,OutputStream os){
 		
 		try {
@@ -2388,6 +2319,16 @@ public class ProtocolModbusThread extends Thread{
     	}
         return result;
     } 
+    
+    public int getUnsignedShort(byte[] arr,int index, int protocol) {  
+    	int result=0;
+    	if(protocol==1){
+    		result=StringManagerUtils.getUnsignedShort(arr, 9+index);
+    	}else if(protocol==2){
+    		result=StringManagerUtils.getUnsignedShort(arr, 3+index);
+    	}
+        return result;
+    }
     
     public float getFloat(byte[] arr,int index, int protocol) {  
     	float result=0;

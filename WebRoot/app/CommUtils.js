@@ -4553,7 +4553,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:'class-booking-chart',    
+                    filename:wellName+'-'+acquisitionTime+'-地面功图',    
                     url:context + '/exportHighcharsPicController/export'
                },
 		        legend: {                                                                            

@@ -76,7 +76,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
                 listeners: {
                     expand: function (sm, selections) {
 //                        simpleCombo.clearValue();
-//                        simpleCombo.getStore().loadPage(1); // 加载井下拉框的store
+                        simpleCombo.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     afterRender: function (combo, o) {
                         if (jhStore.getTotalCount() > 0) {

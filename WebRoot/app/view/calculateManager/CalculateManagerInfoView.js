@@ -99,6 +99,9 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     pageSize: comboxPagingStatus,
                     minChars: 0,
                     listeners: {
+                    	expand: function (sm, selections) {
+                    		wellListComb.getStore().loadPage(1);
+                        },
                         select: function (combo, record, index) {
                         	calculateSignComb.clearValue();
                         	calculateResultStore.loadPage(1);

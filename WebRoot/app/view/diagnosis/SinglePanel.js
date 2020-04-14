@@ -63,7 +63,7 @@ Ext.define('AP.view.diagnosis.SinglePanel', {
                 listeners: {
                     expand: function (sm, selections) {
 //                        simpleCombo_A.clearValue();
-//                        simpleCombo_A.getStore().loadPage(1); // 加载井下拉框的store
+                        simpleCombo_A.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     specialkey: function (field, e) {
 //                        onEnterKeyDownFN(field, e, 'DiagnosisPumpingUnit_SingleDinagnosisAnalysis_Id');

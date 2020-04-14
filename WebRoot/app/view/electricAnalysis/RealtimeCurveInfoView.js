@@ -61,7 +61,9 @@ Ext.define('AP.view.electricAnalysis.RealtimeCurveInfoView', {//曲线分析
                 pageSize: comboxPagingStatus,
                 minChars: 0,
                 listeners: {
-                    expand: function (sm, selections) {},
+                    expand: function (sm, selections) {
+                    	wellComboBox.getStore().loadPage(1);
+                    },
                     specialkey: function (field, e) {},
                     select: function (combo, record, index) {
                     	if(combo.value==""){

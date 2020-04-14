@@ -129,8 +129,8 @@ public class ReportPumpingUnitDataController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/exportDiagnosisDailyReportExcelData")
-	public String exportDiagnosisDailyReportExcelData() throws Exception {
+	@RequestMapping("/exportRPCDailyReportData")
+	public String exportRPCDailyReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -163,7 +163,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setJssj(calculateDate);
-		json = reportProductionWellService.exportDiagnosisDailyReportExcelData(pager, orgId, wellName, calculateDate,wellType);
+		json = reportProductionWellService.exportRPCDailyReportData(pager, orgId, wellName, calculateDate,wellType);
 		
 		JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+json+"}");//解析数据
 		JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -576,8 +576,8 @@ public class ReportPumpingUnitDataController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/exportScrewPumpDailyReportExcelData")
-	public String exportScrewPumpDailyReportExcelData() throws Exception {
+	@RequestMapping("/exportPCPDailyReportData")
+	public String exportPCPDailyReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -610,7 +610,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setJssj(calculateDate);
-		json = reportProductionWellService.exportDiagnosisDailyReportExcelData(pager, orgId, wellName, calculateDate,wellType);
+		json = reportProductionWellService.exportPCPDailyReportData(pager, orgId, wellName, calculateDate,wellType);
 		
 		JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+json+"}");//解析数据
 		JSONArray jsonArray = jsonObject.getJSONArray("data");

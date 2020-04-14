@@ -70,7 +70,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
             listeners: {
                 expand: function (sm, selections) {
 //                    wellComboBox.clearValue();
-//                    wellComboBox.getStore().load();
+                    wellComboBox.getStore().loadPage(1);
                 },
                 select: function (combo, record, index) {
                     if(combo.value==""){

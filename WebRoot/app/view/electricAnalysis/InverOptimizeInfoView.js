@@ -66,7 +66,7 @@ Ext.define('AP.view.electricAnalysis.InverOptimizeInfoView', {
                 listeners: {
                     expand: function (sm, selections) {
 //                        wellComboBox.clearValue();
-//                        wellComboBox.getStore().loadPage(1); // 加载井下拉框的store
+                        wellComboBox.getStore().loadPage(1); // 加载井下拉框的store
                     },
                     afterRender: function (combo, o) {
                         if (wellComboBoxStore.getTotalCount() > 0) {

@@ -170,7 +170,7 @@ loadSurfaceCardList = function (page) {
     Ext.getCmp("SurfaceCardQuery_Id").mask(cosog.string.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;
-    if(page=1){
+    if(page==1){
     	$("#surfaceCardContainer").html(''); // 将html内容清空
     }
     var start_date = Ext.getCmp("SurfaceCard_from_date_Id").rawValue;
@@ -190,9 +190,17 @@ loadSurfaceCardList = function (page) {
             page: page
         },
         success: function (response) {
+        	if(page==1){
+        		$("#electricAnalysisRealtimeDiagramContainer").html(''); // 将html内容清空
+        	}
             Ext.getCmp("SurfaceCardQuery_Id").unmask(cosog.string.loading); // 数据加载中，请稍后
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var gtlist = get_rawData.list; // 获取功图数据
+            
+            var totals = get_rawData.totals; // 总记录数
+            var totalPages = get_rawData.totalPages; // 总页数
+            Ext.getCmp("SurfaceCardTotalPages_Id").setValue(totalPages);
+            updateTotalRecords(totals,"SurfaceCardTotalCount_Id");
             
             var startDate=Ext.getCmp('SurfaceCard_from_date_Id').rawValue;
             if(startDate==''||null==startDate){

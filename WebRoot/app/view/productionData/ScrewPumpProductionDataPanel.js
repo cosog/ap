@@ -62,6 +62,9 @@ Ext.define("AP.view.productionData.ScrewPumpProductionDataPanel", {
                 listeners: {
                     select: function (combo, record, index) {
                     	CreateAndLoadScrewPumpProTable();
+                    },
+                    expand: function (sm, selections) {
+                    	screwPumpCombo.getStore().loadPage(1);
                     }
                 }
             });

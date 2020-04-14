@@ -65,7 +65,9 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
             minChars: 0,
             multiSelect: false,
             listeners: {
-                expand: function (sm, selections) {},
+                expand: function (sm, selections) {
+                	wellComb.getStore().loadPage(1);
+                },
                 select: function (combo, record, index) {
                 	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;;
                     if(combo.value==""){

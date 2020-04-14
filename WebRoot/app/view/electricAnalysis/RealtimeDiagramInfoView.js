@@ -62,7 +62,9 @@ Ext.define("AP.view.electricAnalysis.RealtimeDiagramInfoView", { // 定义反演
                 pageSize: comboxPagingStatus,
                 minChars: 0,
                 listeners: {
-                    expand: function (sm, selections) {},
+                    expand: function (sm, selections) {
+                    	wellCombo.getStore().loadPage(1);
+                    },
                     specialkey: function (field, e) {},
                     select: function (combo, record, index) {
                     	if(combo.value==""){

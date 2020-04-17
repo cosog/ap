@@ -38,53 +38,106 @@ Ext.define('AP.store.graphicalUpload.SurfaceCardTypeListStore', {
                     store: store,
                     columns: newColumns,
                     listeners: {
-                    	itemclick:function( view , record , item , index , e , eOpts ) {
-                    		Ext.getCmp("SelectSurfaceCardFilePanel_Id").removeAll();
-                    		$("#SurfaceCardUploadShowDiv_Id").html('');
-                    		Ext.getCmp("SelectSurfaceCardFilePanelFormId").destroy();
-                    		var fieldLabel='功图文件';
-                    		var labelWidth=70;
-                    		if(record.data.gtlx==101){
-                    			fieldLabel='功图文件(<font color=red>建议一次上传文件不超过500个 </font>)';
-                    			labelWidth=230;
-                    		}
-                    		if(record.data.gtlx==121){
-                    			Ext.getCmp("loadFSdiagramModelBtn_Id").show();
-                    		}else{
-                    			Ext.getCmp("loadFSdiagramModelBtn_Id").hide();
-                    		}
-                    		var SelectSurfaceCardFilePanelFormId=Ext.create('Ext.form.Panel',{
-                        		xtype:'form',
-                        		id:'SelectSurfaceCardFilePanelFormId',
-                        	    width: "100%",
-                        	    bodyPadding: 10,
-                        	    frame: true,
-                        	    items: [{
-                        	    	xtype: 'filefield',
-                                	id:'SurfaceCardFilefieldId',
-                                    name: 'file',
-                                    fieldLabel: fieldLabel,
-                                    labelWidth: labelWidth,
-                                    width:'100%',
-                                    msgTarget: 'side',
-                                    allowBlank: false,
-                                    anchor: '100%',
-                                    draggable:true,
-                                    buttonText: '请选择功图文件',
-                                    accept:record.data.filetype,
-                                    listeners:{
-                                        afterrender:function(cmp){
-                                            cmp.fileInputEl.set({
-                                                multiple:'multiple'
-                                            });
-                                        },
-                                        change:function(cmp){
-                                        	submitSurfaceCardFile();
+//                    	itemclick:function( view , record , item , index , e , eOpts ) {
+//                    		Ext.getCmp("SelectSurfaceCardFilePanel_Id").removeAll();
+//                    		$("#SurfaceCardUploadShowDiv_Id").html('');
+//                    		Ext.getCmp("SelectSurfaceCardFilePanelFormId").destroy();
+//                    		var fieldLabel='功图文件';
+//                    		var labelWidth=70;
+//                    		if(record.data.gtlx==101){
+//                    			fieldLabel='功图文件(<font color=red>建议一次上传文件不超过500个 </font>)';
+//                    			labelWidth=230;
+//                    		}
+//                    		if(record.data.gtlx==121){
+//                    			Ext.getCmp("loadFSdiagramModelBtn_Id").show();
+//                    		}else{
+//                    			Ext.getCmp("loadFSdiagramModelBtn_Id").hide();
+//                    		}
+//                    		var SelectSurfaceCardFilePanelFormId=Ext.create('Ext.form.Panel',{
+//                        		xtype:'form',
+//                        		id:'SelectSurfaceCardFilePanelFormId',
+//                        	    width: "100%",
+//                        	    bodyPadding: 10,
+//                        	    frame: true,
+//                        	    items: [{
+//                        	    	xtype: 'filefield',
+//                                	id:'SurfaceCardFilefieldId',
+//                                    name: 'file',
+//                                    fieldLabel: fieldLabel,
+//                                    labelWidth: labelWidth,
+//                                    width:'100%',
+//                                    msgTarget: 'side',
+//                                    allowBlank: false,
+//                                    anchor: '100%',
+//                                    draggable:true,
+//                                    buttonText: '请选择功图文件',
+//                                    accept:record.data.filetype,
+//                                    listeners:{
+//                                        afterrender:function(cmp){
+//                                            cmp.fileInputEl.set({
+//                                                multiple:'multiple'
+//                                            });
+//                                        },
+//                                        change:function(cmp){
+//                                        	submitSurfaceCardFile();
+//                                        }
+//                                    }
+//                        	    }]
+//                    		});
+//                    		Ext.getCmp("SelectSurfaceCardFilePanelToolbarId").add(SelectSurfaceCardFilePanelFormId);
+//                    	},
+                    	selectionchange: function (view, selected, o) {
+                    		 if (selected.length > 0) {
+                         		Ext.getCmp("SelectSurfaceCardFilePanel_Id").removeAll();
+                        		$("#SurfaceCardUploadShowDiv_Id").html('');
+                        		Ext.getCmp("SelectSurfaceCardFilePanelFormId").destroy();
+                        		var fieldLabel='功图文件';
+                        		var labelWidth=70;
+                        		if(selected[0].data.gtlx==101){
+                        			fieldLabel='功图文件(<font color=red>建议一次上传文件不超过500个 </font>)';
+                        			labelWidth=230;
+                        		}else if(selected[0].data.gtlx==121 || selected[0].data.gtlx==100 || selected[0].data.gtlx==122){
+                        			fieldLabel='功图文件(<font color=red>建议一次上传数据不超过3000条 </font>)';
+                        			labelWidth=240;
+                        		}
+                        		if(selected[0].data.gtlx==121){
+                        			Ext.getCmp("loadFSdiagramModelBtn_Id").show();
+                        		}else{
+                        			Ext.getCmp("loadFSdiagramModelBtn_Id").hide();
+                        		}
+                        		var SelectSurfaceCardFilePanelFormId=Ext.create('Ext.form.Panel',{
+                            		xtype:'form',
+                            		id:'SelectSurfaceCardFilePanelFormId',
+                            	    width: "100%",
+                            	    bodyPadding: 10,
+                            	    frame: true,
+                            	    items: [{
+                            	    	xtype: 'filefield',
+                                    	id:'SurfaceCardFilefieldId',
+                                        name: 'file',
+                                        fieldLabel: fieldLabel,
+                                        labelWidth: labelWidth,
+                                        width:'100%',
+                                        msgTarget: 'side',
+                                        allowBlank: false,
+                                        anchor: '100%',
+                                        draggable:true,
+                                        buttonText: '请选择功图文件',
+                                        accept:selected[0].data.filetype,
+                                        listeners:{
+                                            afterrender:function(cmp){
+                                                cmp.fileInputEl.set({
+                                                    multiple:'multiple'
+                                                });
+                                            },
+                                            change:function(cmp){
+                                            	submitSurfaceCardFile();
+                                            }
                                         }
-                                    }
-                        	    }]
-                    		});
-                    		Ext.getCmp("SelectSurfaceCardFilePanelToolbarId").add(SelectSurfaceCardFilePanelFormId);
+                            	    }]
+                        		});
+                        		Ext.getCmp("SelectSurfaceCardFilePanelToolbarId").add(SelectSurfaceCardFilePanelFormId);
+                        	}
                     	}
                     }
                 });

@@ -3193,7 +3193,12 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(7,"");
 				cs.setString(8,"");
 				cs.setString(9,"");
-				cs.setString(10,"");
+				
+				if(calculateResponseData!=null){
+					cs.setInt(10,calculateResponseData.getCalculationStatus().getResultCode());
+				}else{
+					cs.setString(10,"");
+				}
 				cs.setString(11,"");
 				cs.setString(12,"");
 				cs.setString(13,"");

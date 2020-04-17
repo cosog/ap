@@ -31,13 +31,14 @@ public class CalculateThread extends Thread{
 	}
 
 	public void run(){
+		System.out.println("线程"+threadId+"开始计算"+wellNo+"井");
 		String url[]=Config.getInstance().configFile.getAgileCalculate().getFESDiagram();
 		String screwPumpCalUrl[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
-		String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/totalCalculation";
+		String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
 		String totalDate = StringManagerUtils.getCurrentTime();
 		CommonDataService commonDataService=new CommonDataService();
 		totalUrl+="?date="+totalDate;
-		String wellName="";
+		totalUrl+="&wellId="+wellNo;
 		String sql="select * from ("
 				+ "select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
@@ -50,20 +51,18 @@ public class CalculateThread extends Thread{
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 				+ " 0 as manualInterventionCode,"
-				+ " t.tresultstatus,t.id"
+				+ " t.resultstatus,t.id"
 				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
 				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
-				+ " and tresultstatus in (0,2)  "
+				+ " and t.resultstatus in (0,2)  "
 				+ " and t.wellid="+wellNo+""
 				+ " order by t.acquisitiontime "
 				+ " ) v where rownum<=100";
-		String sqlAll="select count(1) from tbl_rpc_diagram_hist t  where t.jsbz tresultstatus (0,2) and wellid="+wellNo;
 		List<?> list = calculateDataService.findCallSql(sql);
 		Gson gson = new Gson();
 		for(int i=0;i<list.size();i++){
 			try{
 				Object[] obj=(Object[])list.get(i);
-				wellName=obj[0]+"";
 				//诊断计产
 				String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
 				java.lang.reflect.Type type = new TypeToken<PCPCalculateRequestData>() {}.getType();
@@ -90,18 +89,15 @@ public class CalculateThread extends Thread{
 				continue;
 			}
 		}
-		if(list.size()>0&&StringManagerUtils.isNotNull(wellName)){
-			totalUrl+="&jh="+wellName;
-			int totals=commonDataService.getTotalCountRows(sqlAll);
-			if(totals==0){//全部计算完成  汇总
-				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
-			}
-		}else{
-			try {
-				calculateDataService.deleteInvalidData(wellNo);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		
+		String remainSql="select count(1)"
+				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+				+ " and t.resultstatus in (0,2)  "
+				+ " and t.wellid="+wellNo+"";
+		int remainTotals=calculateDataService.getTotalCountRows(remainSql);
+		if(remainTotals==0){
+			StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 		}
 	
 	}

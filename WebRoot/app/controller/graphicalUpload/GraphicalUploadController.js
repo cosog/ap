@@ -17,6 +17,7 @@ function submitSurfaceCardFile() {
     if(form.isValid()) {
         form.submit({
             url: context + '/graphicalUploadController/getUploadSurfaceCardFile?surfaceCardType='+surfaceCardType,
+            timeout: 1000*60*10,
             method:'post',
             waitMsg: '文件上传中...',
             success: function(fp, o) {
@@ -77,7 +78,10 @@ function submitSurfaceCardFile() {
                 if(result.totalCount>0){
                 	gridpanel.getSelectionModel().select(0,true);//选中第一行
                 }
-            }
+            },
+            failure : function() {
+            	Ext.Msg.alert("提示", "【<font color=red>上传失败 </font>】文件内容过大，请减少内容后重新上传！");
+			}
         });
     }
     return false;
@@ -87,24 +91,27 @@ function submitSurfaceCardFile() {
 function uploadAllSurfaceCardFile(){
 	var surfaceCardUploadGridpanel = Ext.getCmp("surfaceCardUploadGridpanelId");
 	if(isNotVal(surfaceCardUploadGridpanel)){
-		var gridPanel_model = surfaceCardUploadGridpanel.getSelectionModel();
-		gridPanel_model.selectAll();
-		var record = gridPanel_model.getSelection();
-		var uploadData = [];
-		Ext.Array.each(record, function(name, index, countriesItSelf) {
-			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
-			});
-		var uploadSurfaceCardList = "" + uploadData.join(",");
+//		var gridPanel_model = surfaceCardUploadGridpanel.getSelectionModel();
+//		gridPanel_model.selectAll();
+//		var record = gridPanel_model.getSelection();
+//		var uploadData = [];
+//		Ext.Array.each(record, function(name, index, countriesItSelf) {
+//			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
+//			});
+//		var uploadSurfaceCardList = "" + uploadData.join(",");
+		Ext.getCmp("SelectSurfaceCardFilePanel_Id").mask("数据保存中，请稍后...");
 		// AJAX提交方式
 		Ext.Ajax.request({
+			timeout: 1000*60*10,
 			url : context + '/graphicalUploadController/saveUploadSurfaceCardFile',
 			method : "POST",
 			// 提交参数
 			params : {
-				uploadSurfaceCardListStr : uploadSurfaceCardList,
+//				uploadSurfaceCardListStr : uploadSurfaceCardList,
 				uploadAll:1                                          //是否全部上传
 			},
 			success : function(response) {
+				Ext.getCmp("SelectSurfaceCardFilePanel_Id").unmask("数据保存中，请稍后...");
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.flag == true) {
 					Ext.Msg.alert('提示', "<font color=blue>上传成功</font>");
@@ -114,6 +121,7 @@ function uploadAllSurfaceCardFile(){
 				}
 			},
 			failure : function() {
+				Ext.getCmp("SelectSurfaceCardFilePanel_Id").unmask("数据保存中，请稍后...");
 				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
 			}
 		});
@@ -132,8 +140,10 @@ function uploadSelectedSurfaceCardFile(){
 			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
 			});
 		var uploadSurfaceCardList = "" + uploadData.join(",");
+		Ext.getCmp("SelectSurfaceCardFilePanel_Id").mask("数据保存中，请稍后...");
 		// AJAX提交方式
 		Ext.Ajax.request({
+			timeout: 1000*60*10,
 			url : context + '/graphicalUploadController/saveUploadSurfaceCardFile',
 			method : "POST",
 			// 提交参数
@@ -142,6 +152,7 @@ function uploadSelectedSurfaceCardFile(){
 				uploadAll:0
 			},
 			success : function(response) {
+				Ext.getCmp("SelectSurfaceCardFilePanel_Id").unmask("数据保存中，请稍后...");
 				var result = Ext.JSON.decode(response.responseText);
 				if (result.flag == true) {
 					Ext.Msg.alert('提示', "<font color=blue>上传成功</font>");
@@ -151,6 +162,7 @@ function uploadSelectedSurfaceCardFile(){
 				}
 			},
 			failure : function() {
+				Ext.getCmp("SelectSurfaceCardFilePanel_Id").unmask("数据保存中，请稍后...");
 				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
 			}
 		});

@@ -249,9 +249,9 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                         var showWellName=wellName;
                     	if(wellName == '' || wellName == null){
                     		if(wellType==200){
-                    			showWellName='全部抽油机井';
+                    			showWellName='所选组织下全部抽油机井';
                     		}else if(wellType==400){
-                    			showWellName='全部螺杆泵井';
+                    			showWellName='所选组织下全部螺杆泵井';
                     		}
                     	}else{
                     		showWellName+='井';

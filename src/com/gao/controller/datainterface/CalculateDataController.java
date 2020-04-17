@@ -91,74 +91,96 @@ public class CalculateDataController extends BaseController{
 		int calCount=0;
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
-			String wellId=wellList.get(j)+"";
-			String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
-			totalUrl+="?date="+totalDate;
-			totalUrl+="&wellId="+wellId;
-			String sql="select * from ("
-					+ "select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
-					+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
-					+ " t2.rodstring,"
-					+ " t2.tubingstringinsidediameter,"
-					+ " t2.pumptype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
-					+ " t2.casingstringinsidediameter,"
-					+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,t2.producingfluidlevel,t2.pumpsettingdepth,"
-					+ " t2.netgrossratio,"
-					+ " t.stroke,t.spm,"
-					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
-					+ " 0 as manualInterventionCode,"
-					+ " t.resultstatus,t.id"
-					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
-					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
-					+ " and t.resultstatus in (0,2)  "
-					+ " and t.wellid="+wellId+""
-					+ " order by t.acquisitiontime "
-					+ " ) v where rownum<=100";
-			List<?> list = calculateDataService.findCallSql(sql);
-			calCount+=list.size();
-			int jsbz0=0;
-			Gson gson = new Gson();
-			for(int i=0;i<list.size();i++){
-				try{
-
-					Object[] obj=(Object[])list.get(i);
-					//诊断计产
-					String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
-					java.lang.reflect.Type type = new TypeToken<PCPCalculateRequestData>() {}.getType();
-					PCPCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
-					String responseData="";
-					if(calculateRequestData!=null){
-						if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){//举升类型为螺杆泵时
-							responseData=StringManagerUtils.sendPostMethod(screwPumpCalUrl[i%(screwPumpCalUrl.length)], requestData,"utf-8");
-						}else{
-							responseData=StringManagerUtils.sendPostMethod(url[i%(url.length)], requestData,"utf-8");
-						}
-						type = new TypeToken<RPCCalculateResponseData>() {}.getType();
-						RPCCalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
-						int id=Integer.parseInt(obj[obj.length-1].toString());
-						if(calculateResponseData==null){
-							System.out.println("记录:"+id+"计算无数据返回");
-						}else{
-							calculateDataService.saveCalculateResult(id,calculateResponseData);
-						}
-						if(i==list.size()-1){//如果计算完成，汇总该井当天记录
-							StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
-						}
+			boolean isCal=false;
+			while(!isCal){
+				for(int i=0;i<calculateThreadList.length;i++){
+					if(calculateThreadList[i]==null || !(calculateThreadList[i].isAlive())){
+						calculateThreadList[i]=new CalculateThread(i,StringManagerUtils.stringToInteger(wellList.get(j)+""),calculateDataService);
+						calculateThreadList[i].start();
+						isCal=true;
+						break;
 					}
-				}catch(Exception e){
-					continue;
 				}
 			}
+			
+//			String wellId=wellList.get(j)+"";
+//			String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+//			totalUrl+="?date="+totalDate;
+//			totalUrl+="&wellId="+wellId;
+//			String sql="select * from ("
+//					+ "select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
+//					+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
+//					+ " t2.rodstring,"
+//					+ " t2.tubingstringinsidediameter,"
+//					+ " t2.pumptype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
+//					+ " t2.casingstringinsidediameter,"
+//					+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,t2.producingfluidlevel,t2.pumpsettingdepth,"
+//					+ " t2.netgrossratio,"
+//					+ " t.stroke,t.spm,"
+//					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
+//					+ " 0 as manualInterventionCode,"
+//					+ " t.resultstatus,t.id"
+//					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+//					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+//					+ " and t.resultstatus in (0,2)  "
+//					+ " and t.wellid="+wellId+""
+//					+ " order by t.acquisitiontime "
+//					+ " ) v where rownum<=100";
+//			List<?> list = calculateDataService.findCallSql(sql);
+//			calCount+=list.size();
+//			int jsbz0=0;
+//			Gson gson = new Gson();
+//			for(int i=0;i<list.size();i++){
+//				try{
+//					Object[] obj=(Object[])list.get(i);
+//					//诊断计产
+//					String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+//					java.lang.reflect.Type type = new TypeToken<PCPCalculateRequestData>() {}.getType();
+//					PCPCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
+//					String responseData="";
+//					if(calculateRequestData!=null){
+//						if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){//举升类型为螺杆泵时
+//							responseData=StringManagerUtils.sendPostMethod(screwPumpCalUrl[i%(screwPumpCalUrl.length)], requestData,"utf-8");
+//						}else{
+//							responseData=StringManagerUtils.sendPostMethod(url[i%(url.length)], requestData,"utf-8");
+//						}
+//						type = new TypeToken<RPCCalculateResponseData>() {}.getType();
+//						RPCCalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
+//						int id=Integer.parseInt(obj[obj.length-1].toString());
+//						if(calculateResponseData==null){
+//							System.out.println("记录:"+id+"计算无数据返回");
+//						}else{
+//							calculateDataService.saveCalculateResult(id,calculateResponseData);
+//						}
+//						if(i==list.size()-1){//如果计算完成，汇总该井当天记录
+//							String remainSql="select count(1)"
+//									+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+//									+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+//									+ " and t.resultstatus in (0,2)  "
+//									+ " and t.wellid="+wellId+"";
+//							int remainTotals=calculateDataService.getTotalCountRows(remainSql);
+//							if(remainTotals==0){
+//								StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
+//							}
+//							
+//						}
+//					}
+//				}catch(Exception e){
+//					continue;
+//				}
+//			}
 		}
 		
 		boolean finish=false;
 		while(!finish){
 			for(int i=0;i<calculateThreadList.length;i++){
 				if(calculateThreadList[i]!=null&&calculateThreadList[i].isAlive()){
+					finish=false;
 					break;
 				}
+				finish=true;
 			}
-			finish=true;
+			
 		}
 		
 		endTime=new Date().getTime();

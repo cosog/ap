@@ -211,9 +211,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			updateSql+=" and t.resultstatus in ("+calculateSign+")";
 		}
+		updateSql+=" and t.wellid in (select well.id from tbl_wellinformation well where well.orgid in("+orgId+")";
 		if(StringManagerUtils.isNotNull(wellName)){
-			updateSql+=" and t.wellid=(select well.id from tbl_wellinformation well where well.wellname='"+wellName+"')";
+			updateSql+=" and well.wellname='"+wellName+"'";
 		}
+		updateSql+=")";
 		return getBaseDao().executeSqlUpdate(updateSql);
 	}
 	

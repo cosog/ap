@@ -60,33 +60,33 @@ Ext.define('AP.view.graphicalUpload.SurfaceCardUploadPanel', {
                         		id:'SelectSurfaceCardFilePanelFormId',
                         	    width: "100%",
                         	    bodyPadding: 10,
-                        	    frame: true,
-                        	    items: [{
-                        	    	xtype: 'filefield',
-                                	id:'SurfaceCardFilefieldId',
-//                                	inputType:'file',
-//                                    name: 'SurfaceCardFile',
-                                    name: 'file',
-                                    fieldLabel: '功图文件(<font color=red>建议一次上传文件不超过500个 </font>)',
-                                    labelWidth: 230,
-                                    width:'100%',
-                                    msgTarget: 'side',
-                                    allowBlank: false,
-                                    anchor: '100%',
-                                    draggable:true,
-                                    buttonText: '请选择功图文件',
-                                    accept:'.t',
-                                    listeners:{
-                                        afterrender:function(cmp){
-                                            cmp.fileInputEl.set({
-                                                multiple:'multiple'
-                                            });
-                                        },
-                                        change:function(cmp){
-                                        	submitSurfaceCardFile();
-                                        }
-                                    }
-                        	    }]
+                        	    frame: true
+//                        	    items: [{
+//                        	    	xtype: 'filefield',
+//                                	id:'SurfaceCardFilefieldId',
+////                                	inputType:'file',
+////                                    name: 'SurfaceCardFile',
+//                                    name: 'file',
+//                                    fieldLabel: '功图文件',
+//                                    labelWidth: 230,
+//                                    width:'100%',
+//                                    msgTarget: 'side',
+//                                    allowBlank: false,
+//                                    anchor: '100%',
+//                                    draggable:true,
+//                                    buttonText: '请选择功图文件',
+//                                    accept:'.t',
+//                                    listeners:{
+//                                        afterrender:function(cmp){
+//                                            cmp.fileInputEl.set({
+//                                                multiple:'multiple'
+//                                            });
+//                                        },
+//                                        change:function(cmp){
+//                                        	submitSurfaceCardFile();
+//                                        }
+//                                    }
+//                        	    }]
                         }],
                     }],
                     bbar:[{

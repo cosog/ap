@@ -480,7 +480,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				iCurveData=StringManagerUtils.CLOBtoString(realClob);
 			}
 			
-			
+			String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
 			
 			if("1232".equals(obj[11]+"")){//采集异常
 				String positionCurveDataArr[]=positionCurveData.split(",");
@@ -499,25 +499,24 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		        	pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 		        	pumpFSDiagramStrBuff.append("#");
 		        }
+		        
+		        String rodDataArr[]=obj[12].toString().split(";");
+		        for(int i=1;i<rodDataArr.length;i++){
+		        	if(i==1&&rodDataArr[i].split(",").length==6){
+		        		rodStressRatio1=rodDataArr[i].split(",")[5];
+		        	}else if(i==2&&rodDataArr[i].split(",").length==6){
+		        		rodStressRatio2=rodDataArr[i].split(",")[5];
+		        	}if(i==3&&rodDataArr[i].split(",").length==6){
+		        		rodStressRatio3=rodDataArr[i].split(",")[5];
+		        	}if(i==4&&rodDataArr[i].split(",").length==6){
+		        		rodStressRatio4=rodDataArr[i].split(",")[5];
+		        	}
+		        }
 			}
 	        if(pumpFSDiagramStrBuff.toString().endsWith(",")){
 	        	pumpFSDiagramStrBuff=pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 	        }
 	        String pumpFSDiagramData = pumpFSDiagramStrBuff.toString();
-	        
-	        String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
-	        String rodDataArr[]=obj[12].toString().split(";");
-	        for(int i=1;i<rodDataArr.length;i++){
-	        	if(i==1&&rodDataArr[i].split(",").length==6){
-	        		rodStressRatio1=rodDataArr[i].split(",")[5];
-	        	}else if(i==2&&rodDataArr[i].split(",").length==6){
-	        		rodStressRatio2=rodDataArr[i].split(",")[5];
-	        	}if(i==3&&rodDataArr[i].split(",").length==6){
-	        		rodStressRatio3=rodDataArr[i].split(",")[5];
-	        	}if(i==4&&rodDataArr[i].split(",").length==6){
-	        		rodStressRatio4=rodDataArr[i].split(",")[5];
-	        	}
-	        }
 	        
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
@@ -537,10 +536,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
 	        dataSbf.append("rodStressRatio4:"+rodStressRatio4+",");           // 四级应力百分比
 	        
-	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13].toString(),1)+",");       // 冲程损失系数
-	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14].toString(),1)+",");       // 充满系数
-	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15].toString(),1)+",");           // 漏失系数
-	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16].toString(),1)+",");           // 液体收缩系数
+	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString(),1)+",");       // 冲程损失系数
+	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");       // 充满系数
+	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 漏失系数
+	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[16].toString().toString(),1)+",");           // 液体收缩系数
 	        dataSbf.append("upStrokeWattMax:\""+obj[17]+"\",");         // 工况代码
 	        dataSbf.append("downStrokeWattMax:\""+obj[18]+"\",");         // 工况代码
 	        dataSbf.append("wattDegreeBalance:\""+obj[19]+"\",");         // 工况代码

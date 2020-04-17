@@ -67,7 +67,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 //		Gson gson = new Gson();
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -167,8 +167,8 @@ public class EquipmentDriverServerTast {
 		
 		try {
 			stmt=conn.createStatement();
-//			int result=stmt.executeUpdate(resetCommStatus);
-//			result=stmt.executeUpdate(resetPCPCommStatus);
+			int result=stmt.executeUpdate(resetCommStatus);
+			result=stmt.executeUpdate(resetPCPCommStatus);
 			System.out.println("读取井初始化信息");
 			pstmt = conn.prepareStatement(sql); 
 			System.out.println("读取抽油机井初始化信息成功");

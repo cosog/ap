@@ -212,6 +212,8 @@ public class GraphicalUploadController extends BaseController {
 			getUploadSurfaceCardFile101(files);
 		}else if("121".equals(surfaceCardType)){
 			getUploadSurfaceCardFile121(files);
+		}else if("122".equals(surfaceCardType)||"100".equals(surfaceCardType)){
+			getUploadSurfaceCardFile122(files);
 		}else{
 			String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellname\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"cjsj\"}]";
 			result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+columns+",");
@@ -458,6 +460,191 @@ public class GraphicalUploadController extends BaseController {
 							result_json.append("\"wellName\":\""+wellName+"\",");
 							result_json.append("\"acquisitionTime\":\""+acquisitionTimeStr+"\",");
 							result_json.append("\"stroke\":\""+stroke+"\",");
+							result_json.append("\"spm\":\""+spm+"\"},");
+							surfaceCardFileMap.put(wellName+"@"+acquisitionTimeStr,diagramDataBuff.toString());
+			        	}catch(Exception e){
+							continue;
+						}
+			        }
+				}catch(Exception e){
+					continue;
+				}
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		json=result_json.toString();
+		
+		map.put("surfaceCardFileMap", surfaceCardFileMap);//将上传的功图文件放到内存中
+		
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	
+	/**<p>上传的长庆功图文件</p>
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings({"unchecked"})
+	@RequestMapping("/getUploadSurfaceCardFile122")
+	public String getUploadSurfaceCardFile122(CommonsMultipartFile[] files) throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> map = DataModelMap.getMapObject();
+		Map<String,String> surfaceCardFileMap=(Map<String, String>) map.get("surfaceCardFileMap");
+		if(surfaceCardFileMap!=null){
+			map.remove("surfaceCardFileMap",surfaceCardFileMap);
+		}
+		surfaceCardFileMap=new HashMap<String,String>();
+		String json = "";
+		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acquisitionTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"stroke\"},{ \"header\":\"冲次\",\"dataIndex\":\"spm\"}]";
+		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+tablecolumns+",");
+		result_json.append("\"totalCount\":"+files.length+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<files.length;i++){
+			if(!files[i].isEmpty()){
+				try{
+					Workbook rwb=Workbook.getWorkbook(files[i].getInputStream());
+					rwb.getNumberOfSheets();
+					Sheet oFirstSheet = rwb.getSheet(0);// 使用索引形式获取第一个工作表，也可以使用rwb.getSheet(sheetName);其中sheetName表示的是工作表的名称  
+			        int rows = oFirstSheet.getRows();//获取工作表中的总行数  
+			        int columns = oFirstSheet.getColumns();//获取工作表中的总列数  
+			        for (int j = 1; j < rows; j++) {
+			        	try{
+			        		StringBuffer diagramDataBuff = new StringBuffer();
+				        	String wellName= oFirstSheet.getCell(0,j).getContents().replaceAll(" ", "");
+				        	String acquisitionTimeStr="";
+				        	Cell cell = oFirstSheet.getCell(1,j);  
+				        	if(cell.getType() == CellType.DATE){//如果是日期类型
+				        		DateCell dc = (DateCell) cell;   
+	                            Date date = dc.getDate();   
+	                            TimeZone zone = TimeZone.getTimeZone("GMT");  
+	                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+	                            sdf.setTimeZone(zone);  
+	                            acquisitionTimeStr = sdf.format(date);  
+				        	}else{
+				        		acquisitionTimeStr=cell.getContents();
+				        	}
+				        	acquisitionTimeStr=acquisitionTimeStr.replaceAll("/", "-");
+				        	
+				        	String spm=oFirstSheet.getCell(2,j).getContents().replaceAll(" ", "");
+				        	
+				        	
+				        	String em_ele_param=oFirstSheet.getCell(3,j).getContents().replaceAll(" ", "");
+				        	String pr_dynm_card=oFirstSheet.getCell(4,j).getContents().replaceAll(" ", "");
+				        	if(em_ele_param.indexOf("x")>=0){
+				        		em_ele_param=em_ele_param.substring(em_ele_param.indexOf("x")+1);
+				        	}
+				        	if(pr_dynm_card.indexOf("x")>=0){
+				        		pr_dynm_card=pr_dynm_card.substring(pr_dynm_card.indexOf("x")+1);
+				        	}
+				        	
+				        	byte[] em_ele_paramByteArr=StringManagerUtils.hexStringToBytes(em_ele_param);
+				        	byte[] pr_dynm_cardByteArr=StringManagerUtils.hexStringToBytes(pr_dynm_card);
+//				        	System.out.println(StringManagerUtils.bytesToHexString(em_ele_paramByteArr, em_ele_paramByteArr.length));
+//				        	System.out.println(StringManagerUtils.bytesToHexString(pr_dynm_cardByteArr, pr_dynm_cardByteArr.length));
+				        	
+				        	//无功功率正负标志
+				        	int qMaxSign=(short) (0x0000 | (0x80 & em_ele_paramByteArr[0])>>7)==0?1:-1; 
+				        	int qMinSign=(short) (0x0000 | (0x40 & em_ele_paramByteArr[0])>>6)==0?1:-1;  
+				        	
+				        	//有功功率正负标志
+				        	int pMaxSign=(short) (0x0000 | (0x20 & em_ele_paramByteArr[0])>>5)==0?1:-1; 
+				        	int pMinSign=(short) (0x0000 | (0x10 & em_ele_paramByteArr[0])>>4)==0?1:-1; 
+				        	
+				        	//电流正负标志
+				        	int iMaxSign=(short) (0x0000 | (0x08 & em_ele_paramByteArr[0])>>3)==0?1:-1; 
+				        	int iMinSign=(short) (0x0000 | (0x04 & em_ele_paramByteArr[0])>>2)==0?1:-1; 
+				        	
+				        	//电压正负标志
+				        	int uMaxSign=(short) (0x0000 | (0x02 & em_ele_paramByteArr[0])>>1)==0?1:-1; 
+				        	int uMinSign=(short) (0x0000 | (0x01 & em_ele_paramByteArr[0])>>0)==0?1:-1; 
+				        	
+				        	//载荷正负标志
+				        	int fMaxSign=(short) (0x0000 | (0x08 & pr_dynm_cardByteArr[0])>>3)==0?1:-1; 
+				        	int fMinSign=(short) (0x0000 | (0x04 & pr_dynm_cardByteArr[0])>>2)==0?1:-1;  
+				        	
+				        	//位移正负标志
+				        	int sMaxSign=(short) (0x0000 | (0x02 & pr_dynm_cardByteArr[0])>>1)==0?1:-1; 
+				        	int sMinSign=(short) (0x0000 | (0x01 & pr_dynm_cardByteArr[0])>>0)==0?1:-1; 
+				        	
+				        	//计算各物理量最大最小值
+				        	float qMax= (StringManagerUtils.getShort(em_ele_paramByteArr[29])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 30)/65535)*qMaxSign;
+				        	float qMin= (StringManagerUtils.getShort(em_ele_paramByteArr[26])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 27)/65535)*qMinSign;
+				        	
+				        	float pMax= (StringManagerUtils.getShort(em_ele_paramByteArr[23])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 24)/65535)*pMaxSign;
+				        	float pMin= (StringManagerUtils.getShort(em_ele_paramByteArr[20])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 31)/65535)*pMinSign;
+				        	
+				        	float iMax= (StringManagerUtils.getShort(em_ele_paramByteArr[17])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 18)/65535)*iMaxSign;
+				        	float iMin= (StringManagerUtils.getShort(em_ele_paramByteArr[14])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 15)/65535)*iMinSign;
+				        	
+				        	float uMax= (StringManagerUtils.getShort(em_ele_paramByteArr[11])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 12)/65535)*uMaxSign;
+				        	float uMin= (StringManagerUtils.getShort(em_ele_paramByteArr[8])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 9)/65535)*uMinSign;
+				        	
+				        	float sMax_of_emep= (StringManagerUtils.getShort(em_ele_paramByteArr[5])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 6)/65535)*sMaxSign;
+				        	float sMin_of_emep= (StringManagerUtils.getShort(em_ele_paramByteArr[2])+(float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, 3)/65535)*sMinSign;
+				        	
+				        	float fMax= (StringManagerUtils.getShort(pr_dynm_cardByteArr[10])+(float)StringManagerUtils.getUnsignedShort(pr_dynm_cardByteArr, 11)/65535)*fMaxSign;
+				        	float fMin= (StringManagerUtils.getShort(pr_dynm_cardByteArr[7])+(float)StringManagerUtils.getUnsignedShort(pr_dynm_cardByteArr, 8)/65535)*fMinSign;
+				        	
+				        	float sMax_of_prdc= (StringManagerUtils.getShort(pr_dynm_cardByteArr[4])+(float)StringManagerUtils.getUnsignedShort(pr_dynm_cardByteArr, 5)/65535)*sMaxSign;
+				        	float sMin_of_prdc= (StringManagerUtils.getShort(pr_dynm_cardByteArr[1])+(float)StringManagerUtils.getUnsignedShort(pr_dynm_cardByteArr, 2)/65535)*sMinSign;
+				        	
+				        	float stroke=sMax_of_prdc-sMin_of_prdc;
+				        	
+				        	String qData="";
+				        	String pData="";
+				        	String iData="";
+				        	String uData="";
+				        	String sData_of_emep="";
+				        	
+				        	String fData="";
+				        	String sData_of_prdc="";
+				        	
+				        	for(int m=38;m<em_ele_paramByteArr.length;m+=10){
+				        		sData_of_emep += ((float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, m)/65535)*(stroke);
+				        		uData += ((float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, m+2)/65535)*(uMax-uMin)+uMin;
+				        		iData += ((float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, m+4)/65535)*(iMax-iMin)+iMin;
+				        		pData += ((float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, m+6)/65535)*(pMax-pMin)+pMin;
+				        		qData += ((float)StringManagerUtils.getUnsignedShort(em_ele_paramByteArr, m+8)/65535)*(qMax-qMin)+qMin;
+				        		if(m+10<em_ele_paramByteArr.length){
+				        			sData_of_emep+=",";
+				        			uData+=",";
+				        			iData+=",";
+				        			pData+=",";
+				        			qData+=",";
+				        		}
+				        	}
+				        	
+				        	for(int m=13;m<pr_dynm_cardByteArr.length;m+=4){
+				        		sData_of_prdc += ((float)StringManagerUtils.getUnsignedShort(pr_dynm_cardByteArr, m)/65535)*(stroke);
+				        		fData += ((float)StringManagerUtils.getUnsignedShort(pr_dynm_cardByteArr, m+2)/65535)*(fMax-fMin)+fMin;
+				        		if(m+4<pr_dynm_cardByteArr.length){
+				        			sData_of_prdc+=",";
+				        			fData+=",";
+				        		}
+				        	}
+				        	
+				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTimeStr+"\",\"stroke\":"+stroke+","+"\"spm\":"+StringManagerUtils.stringToFloat(spm)+",");
+				        	diagramDataBuff.append("\"S\":["+sData_of_prdc+"],");
+				        	diagramDataBuff.append("\"F\":["+fData+"],");
+				        	diagramDataBuff.append("\"Watt\":["+pData+"],");
+				        	diagramDataBuff.append("\"I\":["+iData+"]");
+				        	diagramDataBuff.append("}");
+							
+							result_json.append("{\"id\":"+j+",");
+							result_json.append("\"wellName\":\""+wellName+"\",");
+							result_json.append("\"acquisitionTime\":\""+acquisitionTimeStr+"\",");
+							result_json.append("\"stroke\":\""+sMax_of_prdc+"\",");
 							result_json.append("\"spm\":\""+spm+"\"},");
 							surfaceCardFileMap.put(wellName+"@"+acquisitionTimeStr,diagramDataBuff.toString());
 			        	}catch(Exception e){

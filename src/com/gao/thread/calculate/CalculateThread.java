@@ -34,11 +34,7 @@ public class CalculateThread extends Thread{
 		System.out.println("线程"+threadId+"开始计算"+wellNo+"井");
 		String url[]=Config.getInstance().configFile.getAgileCalculate().getFESDiagram();
 		String screwPumpCalUrl[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
-		String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
-		String totalDate = StringManagerUtils.getCurrentTime();
 		CommonDataService commonDataService=new CommonDataService();
-		totalUrl+="?date="+totalDate;
-		totalUrl+="&wellId="+wellNo;
 		String sql="select * from ("
 				+ "select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
@@ -58,7 +54,13 @@ public class CalculateThread extends Thread{
 				+ " and t.wellid="+wellNo+""
 				+ " order by t.acquisitiontime "
 				+ " ) v where rownum<=100";
+		String totalDateSql="select distinct(to_char(t.acquisitiontime,'yyyy-mm-dd'))"
+				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+				+ " and t.resultstatus in (0,2)  "
+				+ " and t.wellid="+wellNo+"";
 		List<?> list = calculateDataService.findCallSql(sql);
+		List<?> totalDateList = calculateDataService.findCallSql(totalDateSql);
 		Gson gson = new Gson();
 		for(int i=0;i<list.size();i++){
 			try{
@@ -90,16 +92,35 @@ public class CalculateThread extends Thread{
 			}
 		}
 		
-		String remainSql="select count(1)"
-				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
-				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
-				+ " and t.resultstatus in (0,2)  "
-				+ " and t.wellid="+wellNo+"";
-		int remainTotals=calculateDataService.getTotalCountRows(remainSql);
-		if(remainTotals==0){
-			StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
+		for(int i=0;i<totalDateList.size();i++){
+			String remainSql="select count(1)"
+					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+					+ " and t.resultstatus in (0,2)  "
+					+ " and to_char(t.acquisitiontime,'yyyy-mm-dd')='"+totalDateList.get(i)+"'"
+					+ " and t.wellid="+wellNo+"";
+			int remainTotals=calculateDataService.getTotalCountRows(remainSql);
+			if(remainTotals==0){
+				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+				totalUrl+="?date="+totalDateList.get(i);
+				totalUrl+="&wellId="+wellNo;
+				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
+			}
+			
+			remainSql="select count(1)"
+					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+					+ " and t.resultstatus in (0,2)  "
+					+ " and t.wellid="+wellNo+"";
+			remainTotals=calculateDataService.getTotalCountRows(remainSql);
+			if(remainTotals==0){//如果该口井全部计算完成，汇总当天数据
+				String totalDate = StringManagerUtils.getCurrentTime();
+				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+				totalUrl+="?date="+totalDate;
+				totalUrl+="&wellId="+wellNo;
+				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
+			}
 		}
-	
 	}
 
 

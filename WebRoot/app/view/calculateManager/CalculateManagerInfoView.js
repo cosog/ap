@@ -297,6 +297,17 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                             }
                         });
                     }
+                },"-",{
+                    xtype: 'button',
+                    text: '导出请求数据',
+                    pressed: true,
+                    iconCls: 'save',
+                    handler: function (v, o) {
+                    	if(calculateManagerHandsontableHelper.hot.getSelected()){
+                    		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
+                    		alert(row);
+                    	}
+                    }
                 }
                 ],
         		items: [{

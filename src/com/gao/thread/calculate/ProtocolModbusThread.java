@@ -151,7 +151,9 @@ public class ProtocolModbusThread extends Thread{
     				String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
     					//启停井控制
-    					if(clientUnit.unitDataList.get(i).runStatusControl!=0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl()!=null){
+    					if(clientUnit.unitDataList.get(i).runStatusControl!=0
+    							&&clientUnit.unitDataList.get(i).runStatusControl!=1//不执行启抽操作
+    							&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl().getAddress(), clientUnit.unitDataList.get(i).runStatusControl,driveConfig.getProtocol());
 							clientUnit.unitDataList.get(i).setRunStatusControl(0);

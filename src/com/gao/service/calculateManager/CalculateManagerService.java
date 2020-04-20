@@ -90,7 +90,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
 		if(StringManagerUtils.isNotNull(calculateSign)){
-			sql+=" and  t.resultstatus = " + calculateSign + " ";
+			if("0".equals(calculateSign)){
+				sql+=" and  t.resultstatus in(0,2) ";
+			}else{
+				sql+=" and  t.resultstatus = " + calculateSign + " ";
+			}
 		}
 		sql+=" order by t.acquisitionTime desc, t.wellName";
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -169,9 +173,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		sql="select distinct(decode(t.resultstatus,2,0,t.resultstatus)),t2.itemname "
 				+ " from "+tableName+" t,tbl_code t2,tbl_wellinformation t3 "
-				+ " where t.wellid=t3.id and t.resultstatus=t2.itemvalue and t2.itemcode='JSBZ'"
+				+ " where t.wellid=t3.id and decode(t.resultstatus,2,0,t.resultstatus)=t2.itemvalue and t2.itemcode='JSBZ'"
 				+ " and t3.orgid in("+orgId+") "
-				+ " and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+				+ " and t.acquisitionTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sql+=" and t3.liftingtype>="+wellType+" and t3.liftingtype<("+wellType+"+100) ";

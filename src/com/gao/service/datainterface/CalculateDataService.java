@@ -289,7 +289,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.powerconsumptionperthm,"
 											+" t.fullnesscoefficient,t.stroke,t.spm,"
 											+" prod.productiongasoilratio,prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,t.pumpeff,prod.pumpborediameter/1000 as pumpborediameter,"
-											+" t.idegreebalance,t.wattdegreebalance,"
+											+" t.wattdegreebalance,t.idegreebalance,"
 											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature"
 											+" from tbl_rpc_diagram_hist t ,tbl_wellinformation t007 ,tbl_rpc_productiondata_hist prod"
 											+" where t.wellid=t007.id and t.productiondataid=prod.id "
@@ -297,7 +297,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
 											+" from tbl_rpc_diagram_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
 											+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
-											+" and t.resultstatus=1 and t.workingconditioncode<>1232 and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+											+" and t.resultstatus=1 "
+//											+" and t.workingconditioncode<>1232 "
+											+" and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
 		String statusSql="select well.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "

@@ -265,7 +265,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             	            		success:function(response) {
             	            			var rdata=Ext.JSON.decode(response.responseText);
             	            			if (rdata.success) {
-            	                        	Ext.MessageBox.alert("信息","保存成功");
+            	                        	Ext.MessageBox.alert("信息","保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。");
             	                            //保存以后重置全局容器
             	                            calculateManagerHandsontableHelper.clearContainer();
             	                            var bbarId="pumpingCalculateManagerBbar";
@@ -301,11 +301,17 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     xtype: 'button',
                     text: '导出请求数据',
                     pressed: true,
+                    hidden: false,
                     iconCls: 'save',
                     handler: function (v, o) {
                     	if(calculateManagerHandsontableHelper.hot.getSelected()){
                     		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
-                    		alert(row);
+                    		var wellName=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[1];
+                    		var acquisitionTime=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[2];
+                    		var url=context + '/calculateManagerController/exportFSDiagramCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acquisitionTime='+acquisitionTime;
+                        	document.location.href = url;
+                    	}else{
+                    		Ext.MessageBox.alert("信息","未选择记录");
                     	}
                     }
                 }
@@ -418,6 +424,7 @@ var CalculateManagerHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                outsideClickDeselects: false, // 点击到表格以外，表格就失去focus
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -526,7 +533,7 @@ var CalculateManagerHandsontableHelper = {
 	            		success:function(response) {
 	            			var rdata=Ext.JSON.decode(response.responseText);
 	            			if (rdata.success) {
-	                        	Ext.MessageBox.alert("信息","保存成功");
+	                        	Ext.MessageBox.alert("信息","保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。");
 	                            //保存以后重置全局容器
 	                            calculateManagerHandsontableHelper.clearContainer();
 	                            var bbarId="pumpingCalculateManagerBbar";

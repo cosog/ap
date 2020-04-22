@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -62,6 +63,10 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 //import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.commons.logging.Log;
@@ -1454,7 +1459,73 @@ public class StringManagerUtils {
 	            }  
 	        }  
 	    } 
-	   
+	    /**
+	     * 生成.json格式文件
+	     */
+	    public static File createJsonFile(String jsonString, String filePath) {
+	        // 标记文件生成是否成功
+	        boolean flag = true;
+
+	        // 拼接文件完整路径
+	        String fullPath = filePath;
+	        File file=null;
+	        // 生成json格式文件
+	        try {
+	            // 保证创建一个新文件
+	            file = new File(fullPath);
+	            if (!file.getParentFile().exists()) { // 如果父目录不存在，创建父目录
+	                file.getParentFile().mkdirs();
+	            }
+	            if (file.exists()) { // 如果已存在,删除旧文件
+	                file.delete();
+	            }
+	            file.createNewFile();
+
+	            if(jsonString.indexOf("'")!=-1){  
+	                //将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
+	                jsonString = jsonString.replaceAll("'", "\\'");  
+	            }  
+	            if(jsonString.indexOf("\"")!=-1){  
+	                //将双引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
+	                jsonString = jsonString.replaceAll("\"", "\\\"");  
+	            }  
+	              
+	            if(jsonString.indexOf("\r\n")!=-1){  
+	                //将回车换行转换一下，因为JSON串中字符串不能出现显式的回车换行  
+	                jsonString = jsonString.replaceAll("\r\n", "\\u000d\\u000a");  
+	            }  
+	            if(jsonString.indexOf("\n")!=-1){  
+	                //将换行转换一下，因为JSON串中字符串不能出现显式的换行  
+	                jsonString = jsonString.replaceAll("\n", "\\u000a");  
+	            }  
+	            
+	            // 格式化json字符串
+	            jsonString = toPrettyFormat(jsonString);
+
+	            // 将格式化后的字符串写入文件
+	            Writer write = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+	            write.write(jsonString);
+	            write.flush();
+	            write.close();
+	        } catch (Exception e) {
+	            flag = false;
+	            e.printStackTrace();
+	        }
+
+	        // 返回是否成功的标记
+	        return file;
+	    }
+	    
+	    /**
+	     * 格式化输出JSON字符串
+	     * @return 格式化后的JSON字符串
+	     */
+	    private static String toPrettyFormat(String json) {
+	    	JsonParser jsonParser = new JsonParser();
+	    	JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+	    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	    	return gson.toJson(jsonObject);
+	    }
 	    /** 
 	     *  按长度截取字符串
 	     *@param str  源字符串

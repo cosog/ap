@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.data.DataitemsInfoService;
+import com.gao.service.datainterface.CalculateDataService;
 import com.gao.tast.EquipmentDriverServerTast;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.Page;
@@ -49,6 +51,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private CommonDataService service;
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
+	@Autowired
+	private CalculateDataService calculateDataService;
 	/**
 	 * <p>描述：采出井实时评价井列表</p>
 	 * @param orgId
@@ -221,6 +225,32 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		updateSql+=")";
 		return getBaseDao().executeSqlUpdate(updateSql);
+	}
+	
+	public String getFSDiagramCalculateRequestData(String wellName,String acquisitionTime) throws SQLException, IOException, ParseException{
+		String requestData="{}";
+		String sql="select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
+				+ " t2.rodstring,"
+				+ " t2.tubingstringinsidediameter,"
+				+ " t2.pumptype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
+				+ " t2.casingstringinsidediameter,"
+				+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,t2.producingfluidlevel,t2.pumpsettingdepth,"
+				+ " t2.netgrossratio,"
+				+ " t.stroke,t.spm,"
+				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
+				+ " 0 as manualInterventionCode,"
+				+ " t.resultstatus,t.id"
+				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
+				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
+				+ " and t3.wellname='"+wellName+"'"
+				+ " and t.acquisitiontime=to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[])list.get(0);
+			requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+		}
+		return requestData;
 	}
 	
 	public BaseDao getDao() {

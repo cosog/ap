@@ -134,7 +134,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
-		wellName = ParamUtils.getParameter(request, "wellName");
+		wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
 		String wellType = ParamUtils.getParameter(request, "wellType");
 		if (!StringUtils.isNotBlank(orgId)) {

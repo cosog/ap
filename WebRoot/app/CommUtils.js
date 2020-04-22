@@ -7370,9 +7370,8 @@ function initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,s
 
 /* 
  * 拼接叠加功图曲线数据
- * li 2015-07-23
  */
-showFSDiagramOverlayChart = function(get_rawData,divid,visible) {
+showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 	var color=new Array("#000000","#00ff00"); // 线条颜色
 	var list=get_rawData.totalRoot;
 	var upperLoadLine=null;
@@ -7387,6 +7386,11 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible) {
 		fmax=list[0].fmax;
 		fmin=list[0].fmin;
 	}
+	var title='';
+	var ytext='';
+	var color=new Array("#000000","#00ff00"); // 线条颜色
+	
+	var minValue=null;
 	var series = "[";
 	for (var i =0; i < list.length; i++){
 		upperLoadLine=list[i].upperLoadLine;
@@ -7397,14 +7401,31 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible) {
 		if(parseFloat(list[i].fmin)<fmin){
 			fmin=parseFloat(list[i].fmin);
 		}
-		var gtsj = list[i].gtsj.split(","); // 功图数据：功图点数，位移1，载荷1，位移2，载荷2...
-        var gtcount = gtsj[0];
+		var xData = list[i].positionCurveData.split(",");
+		var yData;
+		if(diagramType===0){//如果是功图
+			yData = list[i].loadCurveData.split(",");
+			title='地面功图叠加';
+			ytext='载荷(kN)';
+			color=new Array("#000000","#00ff00");
+			minValue=0;
+		}else if(diagramType===1){//电功图
+			yData = list[i].powerCurveData.split(",");
+			title= "电功图叠加";
+			ytext="有功功率(kW)"
+			color=new Array("#000000","#CC0000");
+		}else if(diagramType===2){//电流图
+			yData = list[i].currentCurveData.split(",");
+			title= "电流图叠加";
+			ytext="电流(A)"
+			color=new Array("#000000","#0033FF");
+		}
 		var data = "[";
-		for (var j=1; j <= (gtcount*2+1); j+=2) {
-			if(j<(gtcount*2+1)){
-				data += "[" + gtsj[j] + ","+gtsj[j+1]+"],";
+		for (var j=0; j <= xData.length; j++) {
+			if(j<(xData.length)){
+				data += "[" + xData[j] + ","+yData[j]+"],";
 			}else{
-				data += "[" + gtsj[1] + ","+gtsj[2]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + xData[0] + ","+yData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		data+="]";
@@ -7423,11 +7444,7 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible) {
 	series+="]";
 	
 	var pointdata = Ext.JSON.decode(series);
-//	if(csrq=="2017-12-29"){
-//		console.log(series);
-//	}
 	
-	title = '';
 	var upperlimit=parseFloat(fmax)+5;
     if(parseFloat(upperLoadLine)==0||parseFloat(fmax)==0){
     	upperlimit=null
@@ -7443,7 +7460,13 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible) {
     if(underlimit<0){
     	underlimit=0;
     }
-	initFSDiagramOverlayChart(pointdata, "地面功图叠加",get_rawData.jh, get_rawData.jssj, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
+    underlimit=0;
+    if(diagramType===0){//如果是功图
+    	initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
+	}else {
+		initPSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid);
+	}
+	
 	return false;
 }
 
@@ -7457,8 +7480,6 @@ showInverFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType)
 	var title='';
 	var ytext='';
 	var color=new Array("#000000","#00ff00"); // 线条颜色
-	
-	
 	var series = "[";
 	for (var i =0; i < list.length; i++){
 		
@@ -7568,8 +7589,8 @@ showPSDiagramOverlayChart = function(get_rawData,divid,curveType,visible) {
 	initPSDiagramOverlayChart(pointdata, title,ytext,get_rawData.jh, get_rawData.jssj, divid);
 	return false;
 }
-
-function initFSDiagramOverlayChart(series, title, wellName, acquisitionTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
+//initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
+function initFSDiagramOverlayChart(series, title,ytext, wellName, acquisitionTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -7605,7 +7626,7 @@ function initFSDiagramOverlayChart(series, title, wellName, acquisitionTime, div
 		        },                                                                                   
 		        yAxis: {                                                                             
 		            title: {                                                                         
-		                text: cosog.string.load    // 载荷（kN）                                                          
+		                text: ytext    // 载荷（kN）                                                          
 		            },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            //endOnTick: false,        //是否强制轴线在标线处结束   

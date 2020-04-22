@@ -43,14 +43,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalFSDiagramOverlayStore', {
                     	mode:'MULTI',
                     	checkOnly:true,
                     	onHdMouseDown:function(e,t){
-                    		alert("全选/全部选");
+                    		alert("全选/全不选");
                     	}
-                    },
-                    plugins: {
-                        ptype: 'bufferedrenderer',
-                        numFromEdge: 5,
-                        trailingBufferZone: 40,
-                        leadingBufferZone: 50
                     },
                     viewConfig: {
 //                    	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
@@ -64,17 +58,17 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalFSDiagramOverlayStore', {
                     				allCheck=false;
                     				var store=Ext.getCmp("DiagnosisTotalFSdiagramOverlayGrid_Id").getStore();
                     				var get_rawData = store.proxy.reader.rawData;
-                    				showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",false,0);
-                    	            showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",false,1);
-                    	            showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",false,2);
+                    				showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",false,0);
+                    				showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",false,1);
+                    				showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",false,2);
                                 	allNotCheck=true;
                     			}else{
                     				allNotCheck=false;
                     				var store=Ext.getCmp("DiagnosisTotalFSdiagramOverlayGrid_Id").getStore();
                     				var get_rawData = store.proxy.reader.rawData;
-                    				showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",true,0);
-                    				showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",true,1);
-                    	            showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",true,2);
+                    				showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",true,0);
+                    				showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",true,1);
+                    				showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",true,2);
                     	            allCheck=true;
                     			}
                     		}
@@ -123,14 +117,10 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalFSDiagramOverlayStore', {
             }
             var slectModel=Ext.getCmp("DiagnosisTotalFSdiagramOverlayGrid_Id").getSelectionModel();
             slectModel.selectAll(true);
-//            
-//            showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",true);
-//            showPSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",1,true);
-//            showPSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",2,true);
             
-            showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",true,0);
-            showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",true,1);
-            showInverFSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",true,2);
+            showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalOverlayDiv_Id",true,0);
+            showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalPowerOverlayDiv_Id",true,1);
+            showFSDiagramOverlayChart(get_rawData,"DiagnosisTotalCurrentOverlayDiv_Id",true,2);
             
         },
         beforeload: function (store, options) {

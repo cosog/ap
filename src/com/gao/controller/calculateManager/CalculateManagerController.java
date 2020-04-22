@@ -1,7 +1,15 @@
 package com.gao.controller.calculateManager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -200,6 +208,49 @@ public class CalculateManagerController extends BaseController {
 //		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	/**
+	 * <p>
+	 * 描述：导出功图诊断计产请求数据
+	 * </p>
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/exportFSDiagramCalculateRequestData")
+	public String exportFSDiagramCalculateRequestData() throws Exception{
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd_HHmmss");//设置日期格式
+		
+		String wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
+		String acquisitionTime=ParamUtils.getParameter(request, "acquisitionTime");
+		String json=calculateManagerService.getFSDiagramCalculateRequestData(wellName, acquisitionTime);
+		
+		Date date = df.parse(acquisitionTime);
+		acquisitionTime=df2.format(date);
+		
+		String fileName="请求数据-"+wellName+"-"+acquisitionTime+".json";
+		String path=stringManagerUtils.getFilePath(fileName,"download/");
+		File file=StringManagerUtils.createJsonFile(json, path);
+		try {
+        	response.setContentType("application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("content-disposition", "attachment;filename="+URLEncoder.encode(fileName, "UTF-8"));
+            InputStream in = new FileInputStream(file);
+            int len = 0;
+            byte[] buffer = new byte[1024];
+            OutputStream out = response.getOutputStream();
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer,0,len);
+            }
+            in.close();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+		StringManagerUtils.deleteFile(path);
 		return null;
 	}
 	

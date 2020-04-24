@@ -2822,7 +2822,11 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(25,"");
 				cs.setString(26,"");
 				cs.setString(27,"");
-				cs.setString(28,"");
+				if(calculateResponseData!=null){
+					cs.setInt(28,calculateResponseData.getCalculationStatus().getResultCode());
+				}else{
+					cs.setString(28,"");
+				}
 				cs.setString(29,"");
 				cs.setString(30,"");
 				cs.setString(31,"");

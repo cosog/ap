@@ -130,9 +130,9 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                         },'-',{
                             xtype: 'datefield',
                             anchor: '100%',
-                            fieldLabel: '日期',
-                            labelWidth: 30,
-                            width: 120,
+                            fieldLabel: '汇总日期',
+                            labelWidth: 60,
+                            width: 150,
                             format: 'Y-m-d ',
                             id: 'TotalDiagnosisDate_Id',
                             value: new Date(),
@@ -1118,27 +1118,27 @@ function createDiagnosisTotalColumn(columnInfo) {
         if (isNotVal(attr.width)) {
             width_ = ",width:" + attr.width;
         }
-        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' ";
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+ width_ ;
         if (attr.dataIndex.toUpperCase() == 'workingConditionName'.toUpperCase()) {
-            myColumns += width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceColor(value,o,p,e);}";
+            myColumns +=",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='workingConditionName_Elec'.toUpperCase()||attr.dataIndex.toUpperCase()=='workingConditionName_E'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
+            myColumns +=",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
         }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
-            myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+            myColumns +=",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
-            myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
+            myColumns +=",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='iDegreeBalanceName'.toUpperCase()||attr.dataIndex.toUpperCase()=='iDegreeBalanceLevel'.toUpperCase()) {
-            myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceBalanceStatusColor(value,o,p,e);}";
+            myColumns +=",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceBalanceStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='wattDegreeBalanceName'.toUpperCase()||attr.dataIndex.toUpperCase()=='wattDegreeBalanceLevel'.toUpperCase()) {
-            myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return advicePowerBalanceStatusColor(value,o,p,e);}";
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return advicePowerBalanceStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex == 'id') {
-            myColumns += ",width:" + attr.width + ",xtype: 'rownumberer',sortable : false,locked:true";
+            myColumns +=",xtype: 'rownumberer',sortable : false,locked:true";
         } else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
-            myColumns += width_ + ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            myColumns +=",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
         }else if (attr.dataIndex.toUpperCase() == 'calcateDateTime'.toUpperCase()) {
-            myColumns += width_ + ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         } else {
-            myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
         }
         myColumns += "}";
         if (i < myArr.length - 1) {

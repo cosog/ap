@@ -372,12 +372,12 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " where t.orgid in ("+orgId+") "
 				+ " and t.acquisitiontime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and t.wellname='"+wellName+"' "
-				+ " order by t.acquisitiontime";
+				+ " order by t.acquisitiontime desc";
 		
 		List<?> list=this.GetGtData(sql);
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyDiagramOverlay");
 		String columns = ddic.getTableHeader();
-		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"calculateDate\":\""+calculateDate+"\",\"columns\":"+columns+",\"totalRoot\":[");
+		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"calculateDate\":\""+startDate+"\",\"columns\":"+columns+",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
@@ -469,10 +469,10 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.runTime,runTimeEfficiency,"
 				+ " t.iDegreeBalance,t.iDegreeBalanceMax,t.iDegreeBalanceMin,t.wattDegreeBalance,t.wattDegreeBalanceMax,t.wattDegreeBalanceMin,"
-				+ " t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
-				+ " t.oilWeightProduction,t.oilWeightProductionMax,t.oilWeightProductionMin,"
-				+ " t.waterWeightProduction,t.waterWeightProductionMax,t.waterWeightProductionMin,"
-				+ " t.waterCut_w,t.waterCutMax_w,t.waterCutMin_w,"
+				+ " t.liquidVolumetricProduction,t.liquidVolumetricProductionMax,t.liquidVolumetricProductionMin,"
+				+ " t.oilVolumetricProduction,t.oilVolumetricProductionMax,t.oilVolumetricProductionMin,"
+				+ " t.waterVolumetricProduction,t.waterVolumetricProductionMax,t.waterVolumetricProductionMin,"
+				+ " t.waterCut,t.waterCutMax,t.waterCutMin,"
 				+ " t.stroke,t.strokeMax,t.strokeMin,t.SPM,t.SPMMax,t.SPMMin,t.fullnesscoEfficient,t.fullnesscoEfficientMax,t.fullnesscoEfficientMin,"
 				+ " t.pumpEff*100,t.pumpEffMax*100,t.pumpEffMin*100,"
 				+ " t.systemEfficiency*100,t.systemEfficiencyMax*100,t.systemEfficiencyMin*100,"
@@ -719,6 +719,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getPCPDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
+		if(itemCode.indexOf("WeightProduction")>=0){
+			itemCode=itemCode.replace("WeightProduction", "VolumetricProduction");
+		}
 		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
 			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)){
 				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";

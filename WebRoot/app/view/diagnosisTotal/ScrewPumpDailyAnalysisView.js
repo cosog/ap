@@ -110,9 +110,9 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                         },'-',{
                             xtype: 'datefield',
                             anchor: '100%',
-                            fieldLabel: '日期',
-                            labelWidth: 30,
-                            width: 120,
+                            fieldLabel: '汇总日期',
+                            labelWidth: 60,
+                            width: 150,
                             format: 'Y-m-d ',
                             id: 'ScrewPumpDailyAnalysisDate_Id',
                             value: new Date(),

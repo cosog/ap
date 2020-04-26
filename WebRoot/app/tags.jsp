@@ -70,10 +70,10 @@ boolean isConnection=false;
 <!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/TreeStoreBug.js"></script>-->
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=202004020825"></script>
 <script type="text/javascript" src="<%=path%>/app/app.js?timestamp=202004020825"></script>
-<script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202004020825"></script>
+<script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202004240700"></script>
 <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-2.2.0.min.js?timestamp=202004020825"></script>
 
-<script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202004020825"></script>
+<script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202004240700"></script>
 <!-- highcharts -->
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/highstock.js?timestamp=202004020825"></script>
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/grid.js?timestamp=202004020825"></script>

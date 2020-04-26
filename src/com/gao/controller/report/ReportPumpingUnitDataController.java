@@ -261,9 +261,9 @@ public class ReportPumpingUnitDataController extends BaseController {
 	       Label header6_2=new Label(10,2,"优化建议",wcf_head);
 	       
 	       Label header7=new Label(11,1,"产量",wcf_head);
-	       Label header7_1=new Label(11,2,"产液量(t/d)",wcf_head);
-	       Label header7_2=new Label(12,2,"产油量(t/d)",wcf_head);
-	       Label header7_3=new Label(13,2,"产水量(t/d)",wcf_head);
+	       Label header7_1=new Label(11,2,"产液量(m^3/d)",wcf_head);
+	       Label header7_2=new Label(12,2,"产油量(m^3/d)",wcf_head);
+	       Label header7_3=new Label(13,2,"产水量(m^3/d)",wcf_head);
 	       Label header7_4=new Label(14,2,"含水率(%)",wcf_head);
 	       Label header7_5=new Label(15,2,"充满系数",wcf_head);
 	       

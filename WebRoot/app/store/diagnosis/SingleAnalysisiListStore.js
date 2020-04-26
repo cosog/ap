@@ -56,9 +56,27 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                     listeners: {
                         selectionchange: function (view, selected, o) {
                             if (selected.length > 0) {
-                        		//请求图形数据
-                        		Ext.create("AP.store.diagnosis.SinglePumpCardStore");
-                        		Ext.create("AP.store.diagnosis.DiagnosisAnalysisTableStore");
+                            	if(isNaN(selected[0].id)){
+                            		$("#FSDiagramAnalysisSingleDetailsDiv1_id").html('');
+                                	$("#FSDiagramAnalysisSingleDetailsDiv2_id").html('');
+                                	$("#FSDiagramAnalysisSingleDetailsDiv3_id").html('');
+                                	$("#FSDiagramAnalysisSingleDetailsDiv4_id").html('');
+                                	$("#FSDiagramAnalysisSingleDetailsDiv5_id").html('');
+                                	$("#FSDiagramAnalysisSingleDetailsDiv6_id").html('');
+                            		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightRunRangeTextArea_Id").setValue("");
+                            		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightResultCodeTextArea_Id").setValue("");
+                                	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAnalysisPanel_Id").removeAll();
+                                	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAcqPanel_Id").removeAll();
+                                	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").removeAll();
+                                	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlPanel_Id").removeAll();
+                                	if($("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer")!=null){
+                                		$("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer").html('');
+                                	}
+                            	}else{
+                            		//请求图形数据
+                            		Ext.create("AP.store.diagnosis.SinglePumpCardStore");
+                            		Ext.create("AP.store.diagnosis.DiagnosisAnalysisTableStore");
+                            	}
                             }
                             
                         },

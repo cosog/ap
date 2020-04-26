@@ -7393,8 +7393,14 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 	var minValue=null;
 	var series = "[";
 	for (var i =0; i < list.length; i++){
-		upperLoadLine=list[i].upperLoadLine;
-		lowerLoadLine=list[i].lowerLoadLine;
+		if(list[i].upperLoadLine!=""){
+			upperLoadLine=list[i].upperLoadLine;
+		}
+		if(list[i].lowerLoadLine!=""){
+			lowerLoadLine=list[i].lowerLoadLine;
+		}
+		
+		
 		if(parseFloat(list[i].fmax)>fmax){
 			fmax=parseFloat(list[i].fmax);
 		}
@@ -7423,9 +7429,9 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 		var data = "[";
 		for (var j=0; j <= xData.length; j++) {
 			if(j<(xData.length)){
-				data += "[" + xData[j] + ","+yData[j]+"],";
+				data += "[" + changeTwoDecimal(xData[j]) + ","+changeTwoDecimal(yData[j])+"],";
 			}else{
-				data += "[" + xData[0] + ","+yData[0]+"]";//将图形的第一个点拼到最后面，使图形闭合
+				data += "[" + changeTwoDecimal(xData[0]) + ","+changeTwoDecimal(yData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合
 			}
 		}
 		data+="]";
@@ -7447,13 +7453,13 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 	
 	var upperlimit=parseFloat(fmax)+5;
     if(parseFloat(upperLoadLine)==0||parseFloat(fmax)==0){
-    	upperlimit=null
+    	upperlimit=null;
     }else if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
     	upperlimit=parseFloat(upperLoadLine)+5;
     }
     var underlimit=parseFloat(fmin)-5;
     if(parseFloat(lowerLoadLine)==0||parseFloat(fmin)==0){
-    	underlimit=null
+    	underlimit=null;
     }else if(parseFloat(lowerLoadLine)<=parseFloat(fmin)){
     	underlimit=parseFloat(lowerLoadLine)-5;
     }
@@ -7461,6 +7467,9 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
     	underlimit=0;
     }
     underlimit=0;
+    if(isNaN(upperlimit)){
+    	upperlimit=null;
+    }
     if(diagramType===0){//如果是功图
     	initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
 	}else {

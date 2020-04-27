@@ -17,34 +17,56 @@ Ext.define('AP.view.diagnosis.WellControlCheckPassWindow', {
     border: false,
     initComponent: function () {
         var me = this;
-        
+        var controlTypeCombo = Ext.create(
+                'Ext.form.field.ComboBox', {
+                    fieldLabel: '设置项',
+                    id: "ProductionWellControlValueCombo_Id",
+                    labelWidth: 120,
+                    labelAlign: 'left',
+                    queryMode: 'local',
+                    autoSelect: true,
+                    hidden: true,
+                    editable: false,
+//                    allowBlank: false,
+                    triggerAction: 'all',
+                    displayField: "boxval",
+                    valueField: "boxkey"
+                });
         var checkPassFrom = Ext.create('Ext.form.Panel', {
         	baseCls: 'x-plain',
             defaultType: 'textfield',
             id: "WellControlCheckPass_form_id",
             items: [{
-                id: 'ProductionWellControlWellName_Id',//选择的统计项的值
+                id: 'ProductionWellControlWellName_Id',//选择的井名
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'ProductionWellControlType_Id',//选择的统计项的值
+                id: 'ProductionWellControlShowType_Id',//显示类型 0-不显示 1-输入框 2-下拉框
+                xtype: 'textfield',
+                value: 0,
+                hidden: true
+            },{
+                id: 'ProductionWellControlType_Id',//控制项
                 xtype: 'textfield',
                 value: '',
                 hidden: true
             },{
-                id: 'ProductionWellControlValue_Id',//选择的统计项的值
+                id: 'ProductionWellControlValue_Id',//控制值
+                fieldLabel: '设置值',
                 xtype: 'textfield',
+                labelWidth: 120,
+//              allowBlank: false,
                 value: '',
                 hidden: true
-            },{
+            },controlTypeCombo,{
             	id: "checkPassFromPassword_id",
                 inputType: 'password',
                 fieldLabel: '请输入密码',
                 //vtype:"loginnum_",
                 allowBlank: false,
                 emptyText: '请输入密码',
-                labelWidth: 100,
+                labelWidth: 120,
                 msgTarget: 'side',
                 blankText: '请输入密码'
             }],
@@ -57,6 +79,11 @@ Ext.define('AP.view.diagnosis.WellControlCheckPassWindow', {
                 handler:function () {
                 	var form = Ext.getCmp("WellControlCheckPass_form_id");
                 	if (form.getForm().isValid()) {
+                		var controlValue=Ext.getCmp('ProductionWellControlValue_Id').getValue();
+                		var controlShowType=Ext.getCmp("ProductionWellControlShowType_Id").getValue();
+                		if(controlShowType==2){
+                			controlValue=Ext.getCmp('ProductionWellControlValueCombo_Id').getValue();
+                		}
                 		form.getForm().submit({
                             url: context + '/diagnosisAnalysisOnlyController/wellControlOperation',
                             method: "POST",
@@ -66,7 +93,7 @@ Ext.define('AP.view.diagnosis.WellControlCheckPassWindow', {
                             	wellName: Ext.getCmp('ProductionWellControlWellName_Id').getValue(),
                                 password: Ext.getCmp('checkPassFromPassword_id').getValue(),
                                 controlType:Ext.getCmp('ProductionWellControlType_Id').getValue(),
-                                controlValue:Ext.getCmp('ProductionWellControlValue_Id').getValue()
+                                controlValue:controlValue
                             },
                             success: function (response, action) {
                             	if (action.result.flag == false) {

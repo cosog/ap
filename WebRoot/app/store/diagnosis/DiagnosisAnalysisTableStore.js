@@ -149,45 +149,45 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		    	 }else{
     		    	 	runStatus="";
     		    	 }
-    		    	 controlSataStr+="{\"item\":\"运行状态\",\"itemcode\":\"startOrStopWell\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"运行状态\",\"itemcode\":\"startOrStopWell\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+",\"showType\":0},";
     		         break;
     		     case "SetFrequency":
-    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
-    		     case "BalanceControlMode":
-    		    	 controlSataStr+="{\"item\":\"平衡远程触发控制\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		    	 isHaveBalanceControl=true;
-    		    	 break;
-    		     case "BalanceCalculateMode":
-    		    	 controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
-    		    	 isHaveBalanceControl=true;
-    		    	 break;
+//    		     case "BalanceControlMode":
+//    		    	 controlSataStr+="{\"item\":\"平衡远程触发控制\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+//    		    	 isHaveBalanceControl=true;
+//    		    	 break;
+//    		     case "BalanceCalculateMode":
+//    		    	 controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
+//    		    	 isHaveBalanceControl=true;
+//    		    	 break;
     		     case "BalanceAwayTime":
-    		    	 controlSataStr+="{\"item\":\"重心远离支点调节时间(ms)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"重心远离支点调节距离(cm)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceCloseTime":
-    		    	 controlSataStr+="{\"item\":\"重心接近支点调节时间(ms)\",\"itemcode\":\"balanceCloseTime\",\"value\":\""+(get_rawData.balanceCloseTime==undefined?"":get_rawData.balanceCloseTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"重心接近支点调节距离(cm)\",\"itemcode\":\"balanceCloseTime\",\"value\":\""+(get_rawData.balanceCloseTime==undefined?"":get_rawData.balanceCloseTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceStrokeCount":
-    		    	 controlSataStr+="{\"item\":\"平衡计算冲程次数\",\"itemcode\":\"balanceStrokeCount\",\"value\":\""+(get_rawData.balanceStrokeCount==undefined?"":get_rawData.balanceStrokeCount)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"参与平衡计算冲程次数\",\"itemcode\":\"balanceStrokeCount\",\"value\":\""+(get_rawData.balanceStrokeCount==undefined?"":get_rawData.balanceStrokeCount)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceOperationUpLimit":
-    		    	 controlSataStr+="{\"item\":\"平衡调节上限(%)\",\"itemcode\":\"balanceOperationUpLimit\",\"value\":\""+(get_rawData.balanceOperationUpLimit==undefined?"":get_rawData.balanceOperationUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"平衡调节上限(%)\",\"itemcode\":\"balanceOperationUpLimit\",\"value\":\""+(get_rawData.balanceOperationUpLimit==undefined?"":get_rawData.balanceOperationUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceOperationDownLimit":
-    		    	 controlSataStr+="{\"item\":\"平衡调节下限(%)\",\"itemcode\":\"balanceOperationDownLimit\",\"value\":\""+(get_rawData.balanceOperationDownLimit==undefined?"":get_rawData.balanceOperationDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"平衡调节下限(%)\",\"itemcode\":\"balanceOperationDownLimit\",\"value\":\""+(get_rawData.balanceOperationDownLimit==undefined?"":get_rawData.balanceOperationDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceAwayTimePerBeat":
-    		    	 controlSataStr+="{\"item\":\"重心远离支点每拍调节时间(ms)\",\"itemcode\":\"balanceAwayTimePerBeat\",\"value\":\""+(get_rawData.balanceAwayTimePerBeat==undefined?"":get_rawData.balanceAwayTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"重心远离支点每拍调节时间(ms)\",\"itemcode\":\"balanceAwayTimePerBeat\",\"value\":\""+(get_rawData.balanceAwayTimePerBeat==undefined?"":get_rawData.balanceAwayTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceCloseTimePerBeat":
-    		    	 controlSataStr+="{\"item\":\"重心接近支点每拍调节时间(ms)\",\"itemcode\":\"balanceCloseTimePerBeat\",\"value\":\""+(get_rawData.balanceCloseTimePerBeat==undefined?"":get_rawData.balanceCloseTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"重心接近支点每拍调节时间(ms)\",\"itemcode\":\"balanceCloseTimePerBeat\",\"value\":\""+(get_rawData.balanceCloseTimePerBeat==undefined?"":get_rawData.balanceCloseTimePerBeat)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     			} 
@@ -336,7 +336,12 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     				store: controlStore,
     			    columns: [
     			        { header: '操作项',  dataIndex: 'item',align:'left',flex:3},
-    			        { header: '状态/值', dataIndex: 'value',align:'center',flex:1,editor:{allowBlank:false}},
+    			        { 
+    			        	header: '状态/值', 
+    			        	dataIndex: 'value',
+    			        	align:'center',flex:1
+//    			        	editor:{allowBlank:false}
+    			        },
     			        { 	header: '操作', 
     			        	dataIndex: 'operation',
     			        	align:'center',
@@ -395,22 +400,45 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		                                             win_Obj.destroy();
     		                                         }
     		                                         var WellControlCheckPassWindow = Ext.create("AP.view.diagnosis.WellControlCheckPassWindow", {
-    		                                             title: '停井'
+    		                                             title: '控制'
     		                                         });
-    		                                         WellControlCheckPassWindow.show();
     		                                         
-    		                                     	 var jh  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.wellName;
-    		                                     	 Ext.getCmp("ProductionWellControlWellName_Id").setValue(jh);
+    		                                         
+    		                                     	 var wellName  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.wellName;
+    		                                     	 Ext.getCmp("ProductionWellControlWellName_Id").setValue(wellName);
     		                                         Ext.getCmp("ProductionWellControlType_Id").setValue(o.data.itemcode);
+    		                                         Ext.getCmp("ProductionWellControlShowType_Id").setValue(o.data.showType);
     		                                         if(o.data.itemcode=="startOrStopWell"){
     		                                        	 if(o.data.value=="运行"){
     		                                        		 Ext.getCmp("ProductionWellControlValue_Id").setValue(2);
     		                                        	 }else if(o.data.value=="停抽" ||o.data.value=="停止"){
     		                                        		 Ext.getCmp("ProductionWellControlValue_Id").setValue(1);
     		             			        			 }
+    		                                        	 Ext.getCmp("ProductionWellControlValue_Id").hide();
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").hide();
+    		                                         }else if(o.data.itemcode=="balanceCalculateMode"){
+    		                                        	 Ext.getCmp("ProductionWellControlValue_Id").hide();
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").setFieldLabel(o.data.item);
+    		                                        	 var data=[];
+    		                                        	 if(o.data.itemcode=="balanceCalculateMode"){
+    		                                        		 data=[['1', '下行程最大值/上行程最大值'], ['2', '上行程最大值/下行程最大值']];
+    		                                        	 }
+    		                                        	 var controlTypeStore = new Ext.data.SimpleStore({
+    		                                             	autoLoad : false,
+    		                                                 fields: ['boxkey', 'boxval'],
+    		                                                 data: data
+    		                                             });
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").setStore(controlTypeStore);
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").setRawValue(o.data.value);
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").show();
     		                                         }else{
+    		                                        	 Ext.getCmp("ProductionWellControlValue_Id").show();
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").hide();
+    		                                        	 Ext.getCmp("ProductionWellControlValue_Id").setFieldLabel(o.data.item);
     		                                        	 Ext.getCmp("ProductionWellControlValue_Id").setValue(o.data.value);
     		                                         }
+    		                                         
+    		                                         WellControlCheckPassWindow.show();
     		                                     }
     		                                 });
     		                            }

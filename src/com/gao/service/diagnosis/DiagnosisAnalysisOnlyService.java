@@ -852,8 +852,15 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			
 			result_json.append("\"balanceControlMode\":\""+obj[66]+"\",");
 			result_json.append("\"balanceCalculateMode\":\""+obj[67]+"\",");
-			result_json.append("\"balanceAwayTime\":\""+obj[68]+"\",");
-			result_json.append("\"balanceCloseTime\":\""+obj[69]+"\",");
+			
+			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[68]+"");
+			int deltaRadius1=(int)(balanceAwayTime/1000*3.6/10+0.5);
+			
+			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[67]+"");
+			int deltaRadius2=(int)(balanceCloseTime/1000*3.6/10+0.5);
+			
+			result_json.append("\"balanceAwayTime\":\""+deltaRadius1+"\",");
+			result_json.append("\"balanceCloseTime\":\""+deltaRadius2+"\",");
 			
 			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[70]+"\",");
 			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[71]+"\",");

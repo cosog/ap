@@ -1238,12 +1238,15 @@ public class ProtocolModbusThread extends Thread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电压数据异常,rc="+rc);
     								break;
     							}else{
+    								
     								VoltageA=getFloat(recByte,0, driveConfig.getProtocol());
     								if(VoltageA<0){
     									VoltageA=0;
     								}else if(VoltageA>500){
     									VoltageA=500;
     								}
+//    								System.out.println(clientUnit.unitDataList.get(i).getWellName()+"井读取A相电压返回数据："+StringManagerUtils.bytesToHexString(recByte,recByte.length));
+//    								System.out.println(clientUnit.unitDataList.get(i).getWellName()+"井读取A相电压："+VoltageA);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setVoltageA(VoltageA);
     								updateDiscreteData+=",t.Va="+VoltageA;
     							}
@@ -2332,12 +2335,21 @@ public class ProtocolModbusThread extends Thread{
         return result;
     }
     
-    public float getFloat(byte[] arr,int index, int protocol) {  
+    public float getFloat(byte[] arr,int index, int protocol){  
     	float result=0;
     	if(protocol==1){
-    		result=StringManagerUtils.getFloat(arr, 9+index);
+    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    			result=StringManagerUtils.getFloatLittle(arr, 9+index);
+    		}else{
+    			result=StringManagerUtils.getFloat(arr, 9+index);
+    		}
     	}else if(protocol==2){
-    		result=StringManagerUtils.getFloat(arr, 3+index);
+    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    			result=StringManagerUtils.getFloatLittle(arr, 3+index);
+    		}else{
+    			result=StringManagerUtils.getFloat(arr, 3+index);
+    		}
+    		
     	}
         return result;
     }  

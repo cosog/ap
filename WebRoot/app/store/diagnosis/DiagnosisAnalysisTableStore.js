@@ -21,9 +21,16 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         	var get_rawData = store.proxy.reader.rawData;
         	var isControl=get_rawData.isControl;
     		var dataStr="{\"items\":[";
-    		dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"产油量(m^3/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    		if(productionUnit==0){
+    			dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+	        }else{
+	        	dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidVolumetricProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"产油量(m^3/d)\",\"itemCode\":\"oilVolumetricProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+	        }
+    		
     		dataStr+="{\"item\":\"理论排量(m^3/d)\",\"itemCode\":\"theoreticalProduction\",\"value\":\""+get_rawData.theoreticalProduction+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"柱塞冲程(m)\",\"itemCode\":\"plungerStroke\",\"value\":\""+get_rawData.plungerStroke+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"柱塞有效冲程(m)\",\"itemCode\":\"availablePlungerStroke\",\"value\":\""+get_rawData.availablePlungerStroke+"\",\"curve\":\"\"},";
@@ -36,11 +43,20 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		dataStr+="{\"item\":\"油管伸缩量(m)\",\"itemCode\":\"tubingFlexLength\",\"value\":\""+get_rawData.tubingFlexLength+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"惯性增量(m)\",\"itemCode\":\"inertiaLength\",\"value\":\""+get_rawData.inertiaLength+"\",\"curve\":\"\"},";
     		
-    		dataStr+="{\"item\":\"有效冲程计算产量(m^3/d)\",\"itemCode\":\"availablePlungerstrokeProd\",\"value\":\""+get_rawData.availablePlungerstrokeProd+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"间隙漏失量(m^3/d)\",\"itemCode\":\"pumpClearanceLeakProd\",\"value\":\""+get_rawData.pumpClearanceLeakProd+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"游动凡尔漏失量(m^3/d)\",\"itemCode\":\"tvleakWeightProduction\",\"value\":\""+get_rawData.tvleakWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"固定凡尔漏失量(m^3/d)\",\"itemCode\":\"svleakWeightProduction\",\"value\":\""+get_rawData.svleakWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"气影响(m^3/d)\",\"itemCode\":\"gasInfluenceProd\",\"value\":\""+get_rawData.gasInfluenceProd+"\",\"curve\":\"\"},";
+    		if(productionUnit==0){
+    			dataStr+="{\"item\":\"有效冲程计算产量(t/d)\",\"itemCode\":\"availablePlungerstrokeProd_W\",\"value\":\""+get_rawData.availablePlungerstrokeProd+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"间隙漏失量(t/d)\",\"itemCode\":\"pumpClearanceLeakProd_W\",\"value\":\""+get_rawData.pumpClearanceLeakProd+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"游动凡尔漏失量(t/d)\",\"itemCode\":\"tvleakWeightProduction\",\"value\":\""+get_rawData.tvleakProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"固定凡尔漏失量(t/d)\",\"itemCode\":\"svleakWeightProduction\",\"value\":\""+get_rawData.svleakProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"气影响(t/d)\",\"itemCode\":\"gasInfluenceProd_W\",\"value\":\""+get_rawData.gasInfluenceProd+"\",\"curve\":\"\"},";
+	        }else{
+	        	dataStr+="{\"item\":\"有效冲程计算产量(m^3/d)\",\"itemCode\":\"availablePlungerstrokeProd_V\",\"value\":\""+get_rawData.availablePlungerstrokeProd+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"间隙漏失量(m^3/d)\",\"itemCode\":\"pumpClearanceLeakProd_V\",\"value\":\""+get_rawData.pumpClearanceLeakProd+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"游动凡尔漏失量(m^3/d)\",\"itemCode\":\"tvleakVolumetricProduction\",\"value\":\""+get_rawData.tvleakProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"固定凡尔漏失量(m^3/d)\",\"itemCode\":\"svleakVolumetricProduction\",\"value\":\""+get_rawData.svleakProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"气影响(m^3/d)\",\"itemCode\":\"gasInfluenceProd_V\",\"value\":\""+get_rawData.gasInfluenceProd+"\",\"curve\":\"\"},";
+	        }
+    		
     		dataStr+="{\"item\":\"泵径(mm)\",\"itemCode\":\"pumpBoreDiameter\",\"value\":\""+get_rawData.pumpBoreDiameter+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵挂(m)\",\"itemCode\":\"pumpSettingDepth\",\"value\":\""+get_rawData.pumpSettingDepth+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"动液面(m)\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";

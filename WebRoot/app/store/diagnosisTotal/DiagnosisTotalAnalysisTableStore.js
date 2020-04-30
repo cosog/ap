@@ -25,10 +25,19 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		dataStr+="{\"item\":\"运行时率(小数)\",\"itemCode\":\"runTimeEfficiency\",\"value\":"+get_rawData.runTimeEfficiency+",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalanceMax+"/"+get_rawData.iDegreeBalanceMin+"/"+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalanceMax+"/"+get_rawData.wattDegreeBalanceMin+"/"+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidWeightProductionMax+"/"+get_rawData.liquidWeightProductionMin+"/"+get_rawData.liquidWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"产油量(m^3/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilWeightProductionMax+"/"+get_rawData.oilWeightProductionMin+"/"+get_rawData.oilWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"产水量(m^3/d)\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterWeightProductionMax+"/"+get_rawData.waterWeightProductionMin+"/"+get_rawData.waterWeightProduction+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    		
+    		if(productionUnit==0){
+    			dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProductionMax+"/"+get_rawData.liquidProductionMin+"/"+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProductionMax+"/"+get_rawData.oilProductionMin+"/"+get_rawData.oilProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"产水量(t/d)\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterProductionMax+"/"+get_rawData.waterProductionMin+"/"+get_rawData.waterProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+	        }else{
+	        	dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidVolumetricProduction\",\"value\":\""+get_rawData.liquidProductionMax+"/"+get_rawData.liquidProductionMin+"/"+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"产油量(m^3/d)\",\"itemCode\":\"oilVolumetricProduction\",\"value\":\""+get_rawData.oilProductionMax+"/"+get_rawData.oilProductionMin+"/"+get_rawData.oilProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"产水量(m^3/d)\",\"itemCode\":\"waterVolumetricProduction\",\"value\":\""+get_rawData.waterProductionMax+"/"+get_rawData.waterProductionMin+"/"+get_rawData.waterProduction+"\",\"curve\":\"\"},";
+        		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+	        }
+    		
     		dataStr+="{\"item\":\"功图冲程(m)\",\"itemCode\":\"stroke\",\"value\":\""+get_rawData.strokeMax+"/"+get_rawData.strokeMin+"/"+get_rawData.stroke+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"功图冲次(1/min)\",\"itemCode\":\"SPM\",\"value\":\""+get_rawData.SPMMax+"/"+get_rawData.SPMMin+"/"+get_rawData.SPM+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"功图充满系数\",\"itemCode\":\"fullnesscoEfficient\",\"value\":\""+get_rawData.fullnesscoEfficientMax+"/"+get_rawData.fullnesscoEfficientMin+"/"+get_rawData.fullnesscoEfficient+"\",\"curve\":\"\"},";

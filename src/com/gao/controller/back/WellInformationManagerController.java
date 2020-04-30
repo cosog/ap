@@ -357,7 +357,7 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String orgids=user.getUserorgids();
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "");
 		System.out.println(data);
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		Gson gson = new Gson();

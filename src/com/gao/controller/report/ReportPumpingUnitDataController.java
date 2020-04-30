@@ -24,6 +24,8 @@ import com.gao.controller.base.BaseController;
 import com.gao.model.User;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.report.ReportProductionWellService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
@@ -240,6 +242,13 @@ public class ReportPumpingUnitDataController extends BaseController {
 	   
 	        //在Label对象的构造子中指名单元格位置是第一列第一行(0,0)     
 	        //以及单元格内容为test
+	        ConfigFile configFile=Config.getInstance().configFile;
+	        String productionUnit="t/d"; 
+	        if(configFile.getOthers().getProductionUnit()==0){
+	        	productionUnit="t/d"; 
+			}else{
+				productionUnit="m^3/d"; 
+			}
 	        Label title=new Label(0,0,"抽油机生产报表",wcf_title);
 	        
 	        Label header1=new Label(0,1,"序号",wcf_head);
@@ -261,9 +270,9 @@ public class ReportPumpingUnitDataController extends BaseController {
 	       Label header6_2=new Label(10,2,"优化建议",wcf_head);
 	       
 	       Label header7=new Label(11,1,"产量",wcf_head);
-	       Label header7_1=new Label(11,2,"产液量(m^3/d)",wcf_head);
-	       Label header7_2=new Label(12,2,"产油量(m^3/d)",wcf_head);
-	       Label header7_3=new Label(13,2,"产水量(m^3/d)",wcf_head);
+	       Label header7_1=new Label(11,2,"产液量("+productionUnit+")",wcf_head);
+	       Label header7_2=new Label(12,2,"产油量("+productionUnit+")",wcf_head);
+	       Label header7_3=new Label(13,2,"产水量("+productionUnit+")",wcf_head);
 	       Label header7_4=new Label(14,2,"含水率(%)",wcf_head);
 	       Label header7_5=new Label(15,2,"充满系数",wcf_head);
 	       
@@ -338,15 +347,15 @@ public class ReportPumpingUnitDataController extends BaseController {
            /*动态数据   */ 
            float sumCommTime=0;
            float sumRunTime=0;
-           float sumLiquidWeightProduction=0;
-           float sumOilWeightProduction=0;
-           float sumWaterWeightProduction=0;
+           float sumLiquidProduction=0;
+           float sumOilProduction=0;
+           float sumWaterProduction=0;
            
            int commTimeRecords=0;
            int runTimeRecords=0;
-           int liquidWeightProductionRecords=0;
-           int oilWeightProductionRecords=0;
-           int waterWeightProductionRecords=0;
+           int liquidProductionRecords=0;
+           int oilProductionRecords=0;
+           int waterProductionRecords=0;
            for(int i=0;i<=jsonArray.size()+1;i++){
         	   Label content1=null;
         	   Label content2=null;
@@ -379,9 +388,9 @@ public class ReportPumpingUnitDataController extends BaseController {
         		   JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
         		   sumCommTime+=StringManagerUtils.stringToFloat(everydata.getString("commTime"));
         		   sumRunTime+=StringManagerUtils.stringToFloat(everydata.getString("runTime"));
-        		   sumLiquidWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("liquidWeightProduction"));
-        		   sumOilWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("oilWeightProduction"));
-        		   sumWaterWeightProduction+=StringManagerUtils.stringToFloat(everydata.getString("waterWeightProduction"));
+        		   sumLiquidProduction+=StringManagerUtils.stringToFloat(everydata.getString("liquidProduction"));
+        		   sumOilProduction+=StringManagerUtils.stringToFloat(everydata.getString("oilProduction"));
+        		   sumWaterProduction+=StringManagerUtils.stringToFloat(everydata.getString("waterProduction"));
             	   
             	   if(StringManagerUtils.stringToFloat(everydata.getString("commTime"))>0){
             		   commTimeRecords+=1;
@@ -389,14 +398,14 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   if(StringManagerUtils.stringToFloat(everydata.getString("runTime"))>0){
             		   runTimeRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("liquidWeightProduction"))>0){
-            		   liquidWeightProductionRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("liquidProduction"))>0){
+            		   liquidProductionRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("oilWeightProduction"))>0){
-            		   oilWeightProductionRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("oilProduction"))>0){
+            		   oilProductionRecords+=1;
             	   }
-            	   if(StringManagerUtils.stringToFloat(everydata.getString("waterWeightProduction"))>0){
-            		   waterWeightProductionRecords+=1;
+            	   if(StringManagerUtils.stringToFloat(everydata.getString("waterProduction"))>0){
+            		   waterProductionRecords+=1;
             	   }
             	   
             	   
@@ -416,9 +425,9 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content11=new Label(10,i+3,everydata.getString("optimizationSuggestion"),wcf_table);
             	   
             	   
-            	   content12=new Label(11,i+3,everydata.getString("liquidWeightProduction"),wcf_table);
-            	   content13=new Label(12,i+3,everydata.getString("oilWeightProduction"),wcf_table);
-            	   content14=new Label(13,i+3,everydata.getString("waterWeightProduction"),wcf_table);
+            	   content12=new Label(11,i+3,everydata.getString("liquidProduction"),wcf_table);
+            	   content13=new Label(12,i+3,everydata.getString("oilProduction"),wcf_table);
+            	   content14=new Label(13,i+3,everydata.getString("waterProduction"),wcf_table);
             	   content15=new Label(14,i+3,everydata.getString("waterCut"),wcf_table);
             	   content16=new Label(15,i+3,everydata.getString("fullnesscoEfficient"),wcf_table);
             	   
@@ -438,9 +447,9 @@ public class ReportPumpingUnitDataController extends BaseController {
         	   }else if(i==jsonArray.size()){
         		   sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
         		   sumRunTime=StringManagerUtils.stringToFloat(sumRunTime+"",2);
-        		   sumLiquidWeightProduction=StringManagerUtils.stringToFloat(sumLiquidWeightProduction+"",2);
-        		   sumOilWeightProduction=StringManagerUtils.stringToFloat(sumOilWeightProduction+"",2);
-        		   sumWaterWeightProduction=StringManagerUtils.stringToFloat(sumWaterWeightProduction+"",2);
+        		   sumLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction+"",2);
+        		   sumOilProduction=StringManagerUtils.stringToFloat(sumOilProduction+"",2);
+        		   sumWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction+"",2);
             	   content1=new Label(0,i+3,"合计",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
             	   content3=new Label(2,i+3,"",wcf_table);
@@ -457,9 +466,9 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content11=new Label(10,i+3,"",wcf_table);
             	   
             	   
-            	   content12=new Label(11,i+3,sumLiquidWeightProduction+"",wcf_table);
-            	   content13=new Label(12,i+3,sumOilWeightProduction+"",wcf_table);
-            	   content14=new Label(13,i+3,sumWaterWeightProduction+"",wcf_table);
+            	   content12=new Label(11,i+3,sumLiquidProduction+"",wcf_table);
+            	   content13=new Label(12,i+3,sumOilProduction+"",wcf_table);
+            	   content14=new Label(13,i+3,sumWaterProduction+"",wcf_table);
             	   content15=new Label(14,i+3,"",wcf_table);
             	   content16=new Label(15,i+3,"",wcf_table);
             	   
@@ -479,23 +488,23 @@ public class ReportPumpingUnitDataController extends BaseController {
         	   }else{
         		   float averageCommTime=0;
                    float averageRunTime=0;
-                   float averageLiquidWeightProduction=0;
-                   float averageOilWeightProduction=0;
-                   float averageWaterWeightProduction=0;
+                   float averageLiquidProduction=0;
+                   float averageOilProduction=0;
+                   float averageWaterProduction=0;
         		   if(commTimeRecords>0){
         			   averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
         		   }
         		   if(runTimeRecords>0){
         			   averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
         		   }
-        		   if(liquidWeightProductionRecords>0){
-        			   averageLiquidWeightProduction=StringManagerUtils.stringToFloat(sumLiquidWeightProduction/liquidWeightProductionRecords+"",2);
+        		   if(liquidProductionRecords>0){
+        			   averageLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction/liquidProductionRecords+"",2);
         		   }
-        		   if(oilWeightProductionRecords>0){
-        			   averageOilWeightProduction=StringManagerUtils.stringToFloat(sumOilWeightProduction/oilWeightProductionRecords+"",2);
+        		   if(oilProductionRecords>0){
+        			   averageOilProduction=StringManagerUtils.stringToFloat(sumOilProduction/oilProductionRecords+"",2);
         		   }
-        		   if(waterWeightProductionRecords>0){
-        			   averageWaterWeightProduction=StringManagerUtils.stringToFloat(sumWaterWeightProduction/waterWeightProductionRecords+"",2);
+        		   if(waterProductionRecords>0){
+        			   averageWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction/waterProductionRecords+"",2);
         		   }
             	   content1=new Label(0,i+3,"平均",wcf_table);
             	   content2=new Label(1,i+3,"",wcf_table);
@@ -513,9 +522,9 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content11=new Label(10,i+3,"",wcf_table);
             	   
             	   
-            	   content12=new Label(11,i+3,averageLiquidWeightProduction+"",wcf_table);
-            	   content13=new Label(12,i+3,averageOilWeightProduction+"",wcf_table);
-            	   content14=new Label(13,i+3,averageWaterWeightProduction+"",wcf_table);
+            	   content12=new Label(11,i+3,averageLiquidProduction+"",wcf_table);
+            	   content13=new Label(12,i+3,averageOilProduction+"",wcf_table);
+            	   content14=new Label(13,i+3,averageWaterProduction+"",wcf_table);
             	   content15=new Label(14,i+3,"",wcf_table);
             	   content16=new Label(15,i+3,"",wcf_table);
             	   

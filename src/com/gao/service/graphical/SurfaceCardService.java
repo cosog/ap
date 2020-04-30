@@ -14,6 +14,8 @@ import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.stereotype.Service;
 
 import com.gao.service.base.BaseService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.Page;
 import com.gao.utils.PageHandler;
 import com.gao.utils.StringManagerUtils;
@@ -31,6 +33,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 	 * */
 	public String querySurfaceCard(Page pager,String orgId,String wellName,String startDate,String endDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		int intPage = pager.getPage();
 		int limit = pager.getLimit();
 		int start = pager.getStart();
@@ -40,11 +43,14 @@ public class SurfaceCardService <T> extends BaseService<T>{
 		if(StringManagerUtils.isNotNull(wellName)){
 			tableName="viw_rpc_diagramquery_hist";
 		}
-		
+		String prodCol=" liquidWeightProduction";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction";
+		}
 		
 		allsql="select id, wellName, to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
 				+ " position_curve,load_curve,"
-				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, liquidWeightProduction, workingConditionName "
+				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, "+prodCol+", workingConditionName "
 				+ " from  "+tableName+""
 				+ " where orgid in(" + orgId + ")";
 		if(StringManagerUtils.isNotNull(wellName)){
@@ -60,7 +66,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 		List<?> list=this.GetGtData(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
-		dynSbf.append("{success:true,totals:\"" + totals + "\",totalPages:\"" + totalPages + "\",start_date:\""+startDate+"\",end_date:\""+endDate+"\",list:[");
+		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+startDate+"\",\"end_date\":\""+endDate+"\",\"list\":[");
 		
 		for (int i = 0; i < list.size(); i++) {
 			Object[] obj = (Object[]) list.get(i);
@@ -80,24 +86,25 @@ public class SurfaceCardService <T> extends BaseService<T>{
 				DiagramYData=StringManagerUtils.CLOBtoString(realClob);
 			}
 	        
-			dynSbf.append("{ id:" + obj[0] + ",");
-			dynSbf.append("wellName:\"" + obj[1] + "\",");
-			dynSbf.append("acquisitionTime:\"" + obj[2] + "\",");
-			dynSbf.append("upperLoadLine:\"" + obj[5] + "\",");
-			dynSbf.append("lowerLoadLine:\"" + obj[6] + "\",");
-			dynSbf.append("fmax:\""+obj[7]+"\",");
-			dynSbf.append("fmin:\""+obj[8]+"\",");
-			dynSbf.append("stroke:\""+obj[9]+"\",");
-			dynSbf.append("spm:\""+obj[10]+"\",");
-			dynSbf.append("liquidWeightProduction:\""+obj[11]+"\",");
-			dynSbf.append("workingConditionName:\""+obj[12]+"\",");
-			dynSbf.append("positionCurveData:\""+DiagramXData+"\",");         // 工况代码
-			dynSbf.append("loadCurveData:\""+DiagramYData+"\"},");         // 工况代码
+			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
+			dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
+			dynSbf.append("\"acquisitionTime\":\"" + obj[2] + "\",");
+			dynSbf.append("\"upperLoadLine\":\"" + obj[5] + "\",");
+			dynSbf.append("\"lowerLoadLine\":\"" + obj[6] + "\",");
+			dynSbf.append("\"fmax\":\""+obj[7]+"\",");
+			dynSbf.append("\"fmin\":\""+obj[8]+"\",");
+			dynSbf.append("\"stroke\":\""+obj[9]+"\",");
+			dynSbf.append("\"spm\":\""+obj[10]+"\",");
+			dynSbf.append("\"liquidProduction\":\""+obj[11]+"\",");
+			dynSbf.append("\"workingConditionName\":\""+obj[12]+"\",");
+			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");         // 工况代码
+			dynSbf.append("\"loadCurveData\":\""+DiagramYData+"\"},");         // 工况代码
 		}
 		if(dynSbf.toString().endsWith(",")){
 			dynSbf.deleteCharAt(dynSbf.length() - 1);
 		}
 		dynSbf.append("]}");
+		System.out.println(dynSbf.toString().replaceAll("null", ""));
 		return dynSbf.toString().replaceAll("null", "");
 	}
 }

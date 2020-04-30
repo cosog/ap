@@ -183,11 +183,14 @@ var DiagnoseDailyReportHelper = {
 	        diagnoseDailyReportHelper.editable = 0;
 	        diagnoseDailyReportHelper.sum = 0;
 	        diagnoseDailyReportHelper.editRecords = [];
-	        
+	        var productionUnitStr='t/d';
+	        if(productionUnit!=0){
+	        	productionUnitStr='m^3/d';
+	        }
 	        diagnoseDailyReportHelper.my_data = [
 	    ['抽油机井生产报表', '', '', '', '', '', '', '', '', '',  '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
 	    ['序号', '井名', '日期','通信','','', '时率', '','', '工况','', '产量', '','','','','平衡','','','','','效率', '', '','','日用电量(kW·h)', '备注'],
-	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','功图工况','优化建议','产液量（m^3/d）', '产油量（m^3/d）','产水量（m^3/d）', '含水率(%)','充满系数(小数)','功率平衡状态','功率平衡度(%)','电流平衡状态','电流平衡度(%)','移动距离', '系统效率(%)', '地面效率(%)', '井下效率(%)','吨液百米耗电量(kW·h/100·t)','',''],
+	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','功图工况','优化建议','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','充满系数(小数)','功率平衡状态','功率平衡度(%)','电流平衡状态','电流平衡度(%)','移动距离', '系统效率(%)', '地面效率(%)', '井下效率(%)','吨液百米耗电量(kW·h/100·t)','',''],
 	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
 	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 	  ];
@@ -457,9 +460,9 @@ var DiagnoseDailyReportHelper = {
 	                diagnoseDailyReportHelper.my_data[index + 3][9] = _day.workingConditionName;
 	                diagnoseDailyReportHelper.my_data[index + 3][10] = _day.optimizationSuggestion;
 	                
-	                diagnoseDailyReportHelper.my_data[index + 3][11] = _day.liquidWeightProduction;
-					diagnoseDailyReportHelper.my_data[index + 3][12] = _day.oilWeightProduction;
-	                diagnoseDailyReportHelper.my_data[index + 3][13] = _day.waterWeightProduction;
+	                diagnoseDailyReportHelper.my_data[index + 3][11] = _day.liquidProduction;
+					diagnoseDailyReportHelper.my_data[index + 3][12] = _day.oilProduction;
+	                diagnoseDailyReportHelper.my_data[index + 3][13] = _day.waterProduction;
 	                diagnoseDailyReportHelper.my_data[index + 3][14] = _day.waterCut;
 	                diagnoseDailyReportHelper.my_data[index + 3][15] = _day.fullnesscoEfficient;
 	                

@@ -21,6 +21,8 @@ import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.data.DataitemsInfoService;
 import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
@@ -68,7 +70,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="workingConditionName";
-		
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
@@ -83,6 +85,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				ddicName="realtimeProdDist";
 			}
 			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
 		}else if("3".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
@@ -219,7 +224,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="workingConditionName";
-		
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
@@ -234,6 +239,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				ddicName="realtimeProdDist";
 			}
 			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
 		}else if("3".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
@@ -417,6 +425,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	 * */
 	public String queryPumpCard(int id,String wellName,String selectedWellName) throws SQLException, IOException{
 		byte[] bytes; 
+		ConfigFile configFile=Config.getInstance().configFile;
 		BufferedInputStream bis = null;
         StringBuffer dataSbf = new StringBuffer();
         StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
@@ -426,9 +435,15 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         }else{
         	tableName="tbl_rpc_diagram_latest";
         }
+        String prodCol=" liquidweightproduction";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction";
+		}
         String sql="select well.wellName as wellName, to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
         		+ " t.pumpfsdiagram,"
-        		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, t.liquidweightproduction,status.workingconditionname,status.workingconditioncode, "
+        		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
+        		+ " t."+prodCol+","
+        		+ " status.workingconditionname,status.workingconditioncode, "
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,t.upstrokeimax,t.downstrokeimax,t.idegreebalance,"
@@ -527,7 +542,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("fmin:\""+obj[6]+"\",");         // 最小载荷
 	        dataSbf.append("stroke:\""+obj[7]+"\",");         // 冲程
 	        dataSbf.append("spm:\""+obj[8]+"\",");         // 冲次
-	        dataSbf.append("liquidWeightProduction:\""+obj[9]+"\",");         // 日产液量
+	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日产液量
 	        dataSbf.append("workingConditionName:\""+obj[10]+"\",");         // 工况类型
 	        dataSbf.append("workingConditionCode:\""+obj[11]+"\",");         // 工况代码
 	        
@@ -663,6 +678,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	
 	public String statisticsData(String orgId,String type,String wellType){
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="";
 		String statType="workingConditionName";
 		String tableName="viw_rpc_comprehensive_latest";
@@ -674,6 +690,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}
 		}else if("2".equalsIgnoreCase(type)){
 			statType="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				statType="liquidVolumeProductionlevel";
+			}
+			
 		}else if("3".equalsIgnoreCase(type)){
 			statType="wattDegreeBalanceName";
 		}else if("4".equalsIgnoreCase(type)){
@@ -724,6 +744,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	
 	public String getAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" liquidWeightProduction,oilWeightProduction,waterCut_W,"
+				+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterCut,"
+					+ " availablePlungerstrokeProd_V,pumpClearanceLeakProd_V,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_V,";;
+		}
 		String tableName="viw_rpc_comprehensive_latest";
 		if(StringManagerUtils.isNotNull(wellName)){
 			tableName="viw_rpc_comprehensive_hist";
@@ -735,10 +762,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
 				+ " order by t3.seq";
 		String sql="select wattDegreeBalance,iDegreeBalance,"
-				+ " liquidWeightProduction,oilWeightProduction,waterCut,"
+				+ prodCol
 				+ " theoreticalProduction,"
 				+ " plungerstroke,availableplungerstroke,"
-				+ " availablePlungerstrokeProd,pumpClearanceLeakProd,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd,"
 				+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
 				+ " stroke,spm,motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
 				+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
@@ -780,17 +806,20 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			Object[] obj=(Object[]) list.get(0);
 			result_json.append("\"wattDegreeBalance\":\""+obj[0]+"\",");
 			result_json.append("\"iDegreeBalance\":\""+obj[1]+"\",");
-			result_json.append("\"liquidWeightProduction\":\""+obj[2]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[3]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[2]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[3]+"\",");
 			result_json.append("\"waterCut\":\""+obj[4]+"\",");
-			result_json.append("\"theoreticalProduction\":\""+obj[5]+"\",");
-			result_json.append("\"plungerStroke\":\""+obj[6]+"\",");
-			result_json.append("\"availablePlungerStroke\":\""+obj[7]+"\",");
-			result_json.append("\"availablePlungerstrokeProd\":\""+obj[8]+"\",");
-			result_json.append("\"pumpClearanceLeakProd\":\""+obj[9]+"\",");
-			result_json.append("\"tvleakWeightProduction\":\""+obj[10]+"\",");
-			result_json.append("\"svleakWeightProduction\":\""+obj[11]+"\",");
-			result_json.append("\"gasInfluenceProd\":\""+obj[12]+"\",");
+			
+			result_json.append("\"availablePlungerstrokeProd\":\""+obj[5]+"\",");
+			result_json.append("\"pumpClearanceLeakProd\":\""+obj[6]+"\",");
+			result_json.append("\"tvleakProduction\":\""+obj[7]+"\",");
+			result_json.append("\"svleakProduction\":\""+obj[8]+"\",");
+			result_json.append("\"gasInfluenceProd\":\""+obj[9]+"\",");
+			
+			result_json.append("\"theoreticalProduction\":\""+obj[10]+"\",");
+			result_json.append("\"plungerStroke\":\""+obj[11]+"\",");
+			result_json.append("\"availablePlungerStroke\":\""+obj[12]+"\",");
+			
 			result_json.append("\"pumpBoreDiameter\":\""+obj[13]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[14]+"\",");
 			result_json.append("\"producingFluidLevel\":\""+obj[15]+"\",");

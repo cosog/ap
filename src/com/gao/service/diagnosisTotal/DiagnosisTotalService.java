@@ -18,6 +18,8 @@ import com.gao.model.data.DataDictionary;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.data.DataitemsInfoService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.Page;
 import com.gao.utils.PageHandler;
 import com.gao.utils.StringManagerUtils;
@@ -51,6 +53,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String ddicName="";
 		String tableName="viw_rpc_total_day";
 		String typeColumnName="workingConditionName";
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyETValue";
@@ -65,6 +68,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				ddicName="dailyProdDist";
 			}
 			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
 		}else if("3".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyETValue";
@@ -174,6 +180,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String ddicName="";
 		String tableName="viw_rpc_total_day";
 		String typeColumnName="workingConditionName";
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyETValue";
@@ -188,6 +195,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				ddicName="dailyProdDist";
 			}
 			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
 		}else if("3".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyETValue";
@@ -289,6 +299,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String GetDiagnosisTotalStatistics(String orgId,String type,String wellType,String totalDate){
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="";
 		String tableName="viw_rpc_total_day";
 		String statType="workingConditionName";
@@ -296,6 +307,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			statType="workingConditionName";
 		}else if("2".equalsIgnoreCase(type)){
 			statType="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				statType="liquidVolumeProductionlevel";
+			}
 		}else if("3".equalsIgnoreCase(type)){
 			statType="wattdegreebalanceLevel";
 		}else if("4".equalsIgnoreCase(type)){
@@ -351,6 +365,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	@SuppressWarnings("deprecation")
 	public String getFSDiagramOverlayData(Page pager,String orgId,String wellName,String calculateDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
 		String startDate=calculateDate;
 		String startDateSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd') "
@@ -362,8 +377,14 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			startDate=startDateList.get(0)+"";
 		}
 		
+		
+		String prodCol="liquidWeightProduction";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol="liquidVolumetricProduction";
+		}
+		
 		String sql="select t.id,t.wellname,to_char(t.acquisitiontime,'hh24:mi:ss'),"
-				+ " t.workingConditionName,t.workingConditionAlarmLevel,t.liquidweightproduction,"
+				+ " t.workingConditionName,t.workingConditionAlarmLevel,t."+prodCol+","
 				+ " t.stroke,t.spm,t.fmax,t.fmin,t.upperloadline,t.lowerloadline,"
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
@@ -409,7 +430,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				dynSbf.append("\"calculateDate\":\"" + obj[2] + "\",");
 				dynSbf.append("\"workingConditionName\":\""+obj[3]+"\",");
 				dynSbf.append("\"workingConditionAlarmLevel\":\""+obj[4]+"\",");
-				dynSbf.append("\"liquidweightproduction\":\""+obj[5]+"\",");
+				dynSbf.append("\""+prodCol+"\":\""+obj[5]+"\",");
 				dynSbf.append("\"stroke\":\""+obj[6]+"\",");
 				dynSbf.append("\"spm\":\""+obj[7]+"\",");
 				dynSbf.append("\"fmax\":\""+obj[8]+"\",");
@@ -467,12 +488,20 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getAnalysisAndAcqAndControlData(String id)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
+				+ " t.oilWeightProduction,t.oilWeightProductionMax,t.oilWeightProductionMin,"
+				+ " t.waterWeightProduction,t.waterWeightProductionMax,t.waterWeightProductionMin,"
+				+ " t.waterCut_W,t.waterCutMax_W,t.waterCutMin_W,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" t.liquidVolumetricProduction,t.liquidVolumetricProductionMax,t.liquidVolumetricProductionMin,"
+					+ " t.oilVolumetricProduction,t.oilVolumetricProductionMax,t.oilVolumetricProductionMin,"
+					+ " t.waterVolumetricProduction,t.waterVolumetricProductionMax,t.waterVolumetricProductionMin,"
+					+ " t.waterCut,t.waterCutMax,t.waterCutMin,";
+		}
 		String sql="select t.runTime,runTimeEfficiency,"
 				+ " t.iDegreeBalance,t.iDegreeBalanceMax,t.iDegreeBalanceMin,t.wattDegreeBalance,t.wattDegreeBalanceMax,t.wattDegreeBalanceMin,"
-				+ " t.liquidVolumetricProduction,t.liquidVolumetricProductionMax,t.liquidVolumetricProductionMin,"
-				+ " t.oilVolumetricProduction,t.oilVolumetricProductionMax,t.oilVolumetricProductionMin,"
-				+ " t.waterVolumetricProduction,t.waterVolumetricProductionMax,t.waterVolumetricProductionMin,"
-				+ " t.waterCut,t.waterCutMax,t.waterCutMin,"
+				+ prodCol
 				+ " t.stroke,t.strokeMax,t.strokeMin,t.SPM,t.SPMMax,t.SPMMin,t.fullnesscoEfficient,t.fullnesscoEfficientMax,t.fullnesscoEfficientMin,"
 				+ " t.pumpEff*100,t.pumpEffMax*100,t.pumpEffMin*100,"
 				+ " t.systemEfficiency*100,t.systemEfficiencyMax*100,t.systemEfficiencyMin*100,"
@@ -500,15 +529,15 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"wattDegreeBalance\":\""+obj[5]+"\",");
 			result_json.append("\"wattDegreeBalanceMax\":\""+obj[6]+"\",");
 			result_json.append("\"wattDegreeBalanceMin\":\""+obj[7]+"\",");
-			result_json.append("\"liquidWeightProduction\":\""+obj[8]+"\",");
-			result_json.append("\"liquidWeightProductionMax\":\""+obj[9]+"\",");
-			result_json.append("\"liquidWeightProductionMin\":\""+obj[10]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[11]+"\",");
-			result_json.append("\"oilWeightProductionMax\":\""+obj[12]+"\",");
-			result_json.append("\"oilWeightProductionMin\":\""+obj[13]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[14]+"\",");
-			result_json.append("\"waterWeightProductionMax\":\""+obj[15]+"\",");
-			result_json.append("\"waterWeightProductionMin\":\""+obj[16]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[8]+"\",");
+			result_json.append("\"liquidProductionMax\":\""+obj[9]+"\",");
+			result_json.append("\"liquidProductionMin\":\""+obj[10]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[11]+"\",");
+			result_json.append("\"oilProductionMax\":\""+obj[12]+"\",");
+			result_json.append("\"oilProductionMin\":\""+obj[13]+"\",");
+			result_json.append("\"waterProduction\":\""+obj[14]+"\",");
+			result_json.append("\"waterProductionMax\":\""+obj[15]+"\",");
+			result_json.append("\"waterProductionMin\":\""+obj[16]+"\",");
 			result_json.append("\"waterCut\":\""+obj[17]+"\",");
 			result_json.append("\"waterCutMax\":\""+obj[18]+"\",");
 			result_json.append("\"waterCutMin\":\""+obj[19]+"\",");

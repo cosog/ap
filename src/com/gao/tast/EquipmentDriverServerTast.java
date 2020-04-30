@@ -67,8 +67,10 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+//		byte[] bb={0x01, 0x03,0x04, 0x66, (byte) 0xE6, 0x4F, 0x43,0x70,(byte) 0x8D}; 
+//		float ff=StringManagerUtils.getFloatLittle(bb, 3);
 //		Gson gson = new Gson();
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 //		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";

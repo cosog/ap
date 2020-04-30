@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -1830,6 +1831,18 @@ public class StringManagerUtils {
 	    // 从byte数组的index处的连续4个字节获得一个float  
 	    public static float getFloat(byte[] arr, int index) {  
 	        return Float.intBitsToFloat(getInt(arr, index));  
+	    }  
+	 // 从byte数组的index处的连续4个字节获得一个float 低字节在前 
+	    public static float getFloatLittle(byte[] arr, int index) {  
+	    	byte [] bytes=new byte[4];
+	    	for(int i=3;i>=0;i--){
+	    		bytes[3-i]=arr[index+i];
+	    	}
+//	    	ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+//	    	DataInputStream dis=new DataInputStream(bais);
+//	        float flt=dis.readFloat();
+//	        return flt;  
+	    	return Float.intBitsToFloat(getInt(bytes, 0));  
 	    }  
 	    // long转换为byte[8]数组  
 	    public static byte[] getByteArray(long l) {  

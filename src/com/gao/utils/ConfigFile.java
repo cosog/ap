@@ -404,6 +404,8 @@ public class ConfigFile {
 
 	    private int defaultGraghSize;
 	    
+	    private int productionUnit;
+	    
 	    private boolean pcp;
 
 	    public boolean isPcp() {
@@ -462,5 +464,11 @@ public class ConfigFile {
 	    public String getSerialnumber(){
 	        return this.serialnumber;
 	    }
+		public int getProductionUnit() {
+			return productionUnit;
+		}
+		public void setProductionUnit(int productionUnit) {
+			this.productionUnit = productionUnit;
+		}
 	}
 }

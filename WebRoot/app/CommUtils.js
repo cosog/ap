@@ -4467,10 +4467,14 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 	var fmin=gtdata.fmin;     // 最小载荷
 	var stroke=gtdata.stroke;       // 冲程
 	var spm=gtdata.spm;       // 冲次
-	var liquidWeightProduction=gtdata.liquidWeightProduction;     // 日产液量
+	var liquidProduction=gtdata.liquidProduction;     // 日产液量
 	var workingConditionName=gtdata.workingConditionName;     // 工况类型
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
-    xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidWeightProduction + 't/d<br />';
+	var productionUnitStr='t/d';
+    if(productionUnit!=0){
+    	productionUnitStr='m^3/d';
+    }
+    xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidProduction + productionUnitStr+ '<br />';
     xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + workingConditionName + '<br /></span>';
     var upperlimit=parseFloat(fmax)+10;
     if(parseFloat(upperLoadLine)==0||upperLoadLine==""||parseFloat(fmax)==0||fmax==""){

@@ -63,6 +63,7 @@ others:
    expandedAll: true
    defaultComboxSize: 10000
    defaultGraghSize: 60
+   productionUnit: 1
    pcp: true
    serialnumber: God bless you!
       

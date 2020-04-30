@@ -416,8 +416,8 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		if (null != userInfo) {
 			String getUpwd = userInfo.getUserPwd();
 			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
-			if (getOld.equals(getUpwd)&&(int)StringManagerUtils.stringToFloat(controlValue)>0) {
-				for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
+			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
+				for(int i=0;EquipmentDriverServerTast.units!=null&&i<EquipmentDriverServerTast.units.size();i++){
 					if(wellName.equals(EquipmentDriverServerTast.units.get(i).getWellName())){
 						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
 							EquipmentDriverServerTast.units.get(i).setRunStatusControl(StringManagerUtils.stringToInteger(controlValue));
@@ -433,10 +433,14 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 							EquipmentDriverServerTast.units.get(i).setBalanceCalculateModeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceAwayTime".equalsIgnoreCase(controlType)){//设置平衡远离支点调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimeControl(StringManagerUtils.stringToInteger(controlValue));
+							int value=StringManagerUtils.stringToInteger(controlValue);
+							int deltaRadius=(int)(value*10/3.6*1000+0.5);
+							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimeControl(deltaRadius);
 						}
 						else if("balanceCloseTime".equalsIgnoreCase(controlType)){//设置平衡接近支点调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimeControl(StringManagerUtils.stringToInteger(controlValue));
+							int value=StringManagerUtils.stringToInteger(controlValue);
+							int deltaRadius=(int)(value*10/3.6*1000+0.5);
+							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimeControl(deltaRadius);
 						}
 						else if("balanceAwayTimePerBeat".equalsIgnoreCase(controlType)){//设置平衡远离支点每拍调节时间
 							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
@@ -457,7 +461,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 					}
 				}
 				jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
-			}else if(!((int)StringManagerUtils.stringToFloat(controlValue)>0)){
+			}else if(getOld.equals(getUpwd) && !StringManagerUtils.isNumber(controlValue)){
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>数据有误，请检查输入数据！</font>'}";
 			} else {
 				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>您输入的密码有误！</font>'}";

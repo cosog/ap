@@ -10,6 +10,8 @@ import com.gao.model.DistreteAlarmLimit;
 import com.gao.model.WellInformation;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
 
@@ -170,8 +172,14 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 	public String doStatItemsSetShow(Page pager,String type,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
 		String statType="CYL";
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("prodDist".equalsIgnoreCase(type)){
-			statType="CYL";
+			if(configFile.getOthers().getProductionUnit()==0){
+				statType="CYL";
+			}else{
+				statType="CYLF";
+			}
+			
 		}else if("prodFluc".equalsIgnoreCase(type)){
 			statType="CYLBD";
 		}
@@ -225,8 +233,13 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 	
 	public void doStatItemsSetSave(String type,String data) throws SQLException {
 		String statType="CYL";
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("prodDist".equalsIgnoreCase(type)){
-			statType="CYL";
+			if(configFile.getOthers().getProductionUnit()==0){
+				statType="CYL";
+			}else{
+				statType="CYLF";
+			}
 		}else if("prodFluc".equalsIgnoreCase(type)){
 			statType="CYLBD";
 		}

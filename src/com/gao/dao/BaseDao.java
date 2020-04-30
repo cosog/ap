@@ -1860,7 +1860,7 @@ public class BaseDao extends HibernateDaoSupport {
 				String statitem=everydata.getString("statitem");
 				String downlimit=everydata.getString("downlimit");
 				String uplimit=everydata.getString("uplimit");
-				String sql="insert into tbl_rpc_statistics_conf(s_level,s_min,s_max,s_type) values('"+statitem+"',"+downlimit+","+uplimit+",'"+statType+"')";
+				String sql="insert into tbl_rpc_statistics_conf(s_level,s_min,s_max,s_type,s_code) values('"+statitem+"',"+downlimit+","+uplimit+",'"+statType+"',"+(i+1)+")";
 				if("GLPHD".equalsIgnoreCase(statType)||"PHD".equalsIgnoreCase(statType)){
 					sql="update tbl_rpc_statistics_conf set s_min="+downlimit+",s_max="+uplimit+" where s_type='"+statType+"' and s_level='"+statitem+"'";
 				}

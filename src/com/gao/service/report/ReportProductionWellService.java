@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.gao.service.base.BaseService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
 
@@ -79,16 +81,24 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	
 	public String showRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
-				+ " t.workingConditionName,t.optimizationSuggestion,"
-				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.fullnesscoEfficient,"
-				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
-				+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
-				+ " t.todayWattEnergy,"
-				+ " remark"
-				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " t.workingConditionName,t.optimizationSuggestion,";
+		if(configFile.getOthers().getProductionUnit()==0){
+			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
+		}else{
+			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";
+		}
+		
+		
+		sql+= " t.fullnesscoEfficient,"
+			+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
+			+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
+			+ " t.todayWattEnergy,"
+			+ " remark"
+			+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
@@ -112,9 +122,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ "{ \"header\":\"运行时率(%)\",\"dataIndex\":\"runTimeEfficiency\"},"
 				+ "{ \"header\":\"功图工况\",\"dataIndex\":\"workingConditionName\"},"
 				+ "{ \"header\":\"优化建议\",\"dataIndex\":\"optimizationSuggestion\",width:120},"
-				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidWeightProduction\"},"
-				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilWeightProduction\"},"
-				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterWeightProduction\"},"
+				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidProduction\"},"
+				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilProduction\"},"
+				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterProduction\"},"
 				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\"},"
 				+ "{ \"header\":\"充满系数\",\"dataIndex\":\"fullnesscoEfficient\"},"
 				+ "{ \"header\":\"功率平衡状态\",\"dataIndex\":\"wattDegreeBalanceLevel\"},"
@@ -146,9 +156,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 			
 			result_json.append("\"optimizationSuggestion\":\""+obj[10]+"\",");
-			result_json.append("\"liquidWeightProduction\":\""+obj[11]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[12]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[13]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[11]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[12]+"\",");
+			result_json.append("\"waterProduction\":\""+obj[13]+"\",");
 			result_json.append("\"waterCut\":\""+obj[14]+"\",");
 			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
 			result_json.append("\"powerConsumptionPerthm\":\""+obj[24]+"\",");
@@ -174,16 +184,24 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	
 	public String exportRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
-				+ " t.workingConditionName,t.optimizationSuggestion,"
-				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.fullnesscoEfficient,"
-				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
-				+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
-				+ " t.todayWattEnergy,"
-				+ " remark"
-				+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " t.workingConditionName,t.optimizationSuggestion,";
+		if(configFile.getOthers().getProductionUnit()==0){
+			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
+		}else{
+			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";
+		}
+		
+		
+		sql+= " t.fullnesscoEfficient,"
+			+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
+			+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
+			+ " t.todayWattEnergy,"
+			+ " remark"
+			+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
@@ -208,9 +226,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 			
 			result_json.append("\"optimizationSuggestion\":\""+obj[10]+"\",");
-			result_json.append("\"liquidWeightProduction\":\""+obj[11]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[12]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[13]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[11]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[12]+"\",");
+			result_json.append("\"waterProduction\":\""+obj[13]+"\",");
 			result_json.append("\"waterCut\":\""+obj[14]+"\",");
 			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
 			result_json.append("\"powerConsumptionPerthm\":\""+obj[24]+"\",");

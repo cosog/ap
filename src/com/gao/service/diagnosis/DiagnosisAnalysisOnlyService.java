@@ -911,6 +911,11 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	
 	public String getPCPAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" liquidWeightProduction,oilWeightProduction,waterCut_W,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterCut,";
+		}
 		String tableName="viw_pcp_comprehensive_latest";
 		if(StringManagerUtils.isNotNull(wellName)){
 			tableName="viw_pcp_comprehensive_hist";
@@ -921,7 +926,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
 				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
 				+ " order by t3.seq";
-		String sql="select liquidWeightProduction,oilWeightProduction,waterCut,"
+		String sql="select "+prodCol
 				+ " qpr,"
 				+ " motorInputActivePower,waterPower,systemEfficiency,powerConsumptionPerthm,"
 				+ " pumpEff1,pumpEff2,pumpEff,"
@@ -953,8 +958,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		result_json.append("],");
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
-			result_json.append("\"liquidWeightProduction\":\""+obj[0]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[1]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[0]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[1]+"\",");
 			result_json.append("\"waterCut\":\""+obj[2]+"\",");
 			result_json.append("\"qpr\":\""+obj[3]+"\",");
 			

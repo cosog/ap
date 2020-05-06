@@ -177,11 +177,14 @@ var ScrewPumpDailyReportHelper = {
 	        screwPumpDailyReportHelper.editable = 0;
 	        screwPumpDailyReportHelper.sum = 0;
 	        screwPumpDailyReportHelper.editRecords = [];
-	        
+	        var productionUnitStr='t/d';
+	        if(productionUnit!=0){
+	        	productionUnitStr='m^3/d';
+	        }
 	        screwPumpDailyReportHelper.my_data = [
 	    ['螺杆泵井生产报表', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
 	    ['序号', '井名', '日期','通信','','', '时率', '','', '产量', '','','','','','','','效率','','日用电量(kW·h)', '备注'],
-	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','产液量（t/d）', '产油量（t/d）','产水量（t/d）', '含水率(%)','转速(r/min)','泵挂(m)','动液面(m)','沉没度(m)','系统效率(%)','吨液百米耗电量(kW·h/100·t)','',''],
+	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','转速(r/min)','泵挂(m)','动液面(m)','沉没度(m)','系统效率(%)','吨液百米耗电量(kW·h/100·t)','',''],
 	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
 	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 	  ];
@@ -440,9 +443,9 @@ var ScrewPumpDailyReportHelper = {
 	                screwPumpDailyReportHelper.my_data[index + 3][8] = _day.runTimeEfficiency;
 	                
 	                
-	                screwPumpDailyReportHelper.my_data[index + 3][9] = _day.liquidWeightProduction;
-					screwPumpDailyReportHelper.my_data[index + 3][10] = _day.oilWeightProduction;
-	                screwPumpDailyReportHelper.my_data[index + 3][11] = _day.waterWeightProduction;
+	                screwPumpDailyReportHelper.my_data[index + 3][9] = _day.liquidProduction;
+					screwPumpDailyReportHelper.my_data[index + 3][10] = _day.oilProduction;
+	                screwPumpDailyReportHelper.my_data[index + 3][11] = _day.waterProduction;
 	                screwPumpDailyReportHelper.my_data[index + 3][12] = _day.waterCut;
 	                screwPumpDailyReportHelper.my_data[index + 3][13] = _day.rpm;
 	                screwPumpDailyReportHelper.my_data[index + 3][14] = _day.pumpSettingDepth;

@@ -616,11 +616,19 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getPCPAnalysisAndAcqAndControlData(String id)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.runTime,runTimeEfficiency,"
-				+ " t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
 				+ " t.oilWeightProduction,t.oilWeightProductionMax,t.oilWeightProductionMin,"
 				+ " t.waterWeightProduction,t.waterWeightProductionMax,t.waterWeightProductionMin,"
-				+ " t.waterCut_w,t.waterCutMax_w,t.waterCutMin_w,"
+				+ " t.waterCut_W,t.waterCutMax_W,t.waterCutMin_W,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" t.liquidVolumetricProduction,t.liquidVolumetricProductionMax,t.liquidVolumetricProductionMin,"
+					+ " t.oilVolumetricProduction,t.oilVolumetricProductionMax,t.oilVolumetricProductionMin,"
+					+ " t.waterVolumetricProduction,t.waterVolumetricProductionMax,t.waterVolumetricProductionMin,"
+					+ " t.waterCut,t.waterCutMax,t.waterCutMin,";
+		}
+		String sql="select t.runTime,runTimeEfficiency,"
+				+ prodCol
 				+ " t.pumpEff*100,t.pumpEffMax*100,t.pumpEffMin*100,"
 				+ " t.systemEfficiency*100,t.systemEfficiencyMax*100,t.systemEfficiencyMin*100,"
 				+ " t.producingFluidLevel,t.producingFluidLevelMax,t.producingFluidLevelMin,"
@@ -641,15 +649,15 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			Object[] obj=(Object[]) list.get(0);
 			result_json.append("\"runTime\":\""+obj[0]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[1]+"\",");
-			result_json.append("\"liquidWeightProduction\":\""+obj[2]+"\",");
-			result_json.append("\"liquidWeightProductionMax\":\""+obj[3]+"\",");
-			result_json.append("\"liquidWeightProductionMin\":\""+obj[4]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[5]+"\",");
-			result_json.append("\"oilWeightProductionMax\":\""+obj[6]+"\",");
-			result_json.append("\"oilWeightProductionMin\":\""+obj[7]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[8]+"\",");
-			result_json.append("\"waterWeightProductionMax\":\""+obj[9]+"\",");
-			result_json.append("\"waterWeightProductionMin\":\""+obj[10]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[2]+"\",");
+			result_json.append("\"liquidProductionMax\":\""+obj[3]+"\",");
+			result_json.append("\"liquidProductionMin\":\""+obj[4]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[5]+"\",");
+			result_json.append("\"oilProductionMax\":\""+obj[6]+"\",");
+			result_json.append("\"oilProductionMin\":\""+obj[7]+"\",");
+			result_json.append("\"waterProduction\":\""+obj[8]+"\",");
+			result_json.append("\"waterProductionMax\":\""+obj[9]+"\",");
+			result_json.append("\"waterProductionMin\":\""+obj[10]+"\",");
 			result_json.append("\"waterCut\":\""+obj[11]+"\",");
 			result_json.append("\"waterCutMax\":\""+obj[12]+"\",");
 			result_json.append("\"waterCutMin\":\""+obj[13]+"\",");

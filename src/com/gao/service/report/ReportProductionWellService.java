@@ -254,15 +254,25 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	
 	public String showPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
-				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
-				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.rpm,"
+				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
+		if(configFile.getOthers().getProductionUnit()==0){
+			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
+		}else{
+			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";
+		}
+		sql+= " t.rpm,"
 				+ " t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
 				+ " t.todayWattEnergy,"
 				+ " remark"
 				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+		
+		
+		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
@@ -282,9 +292,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ "{ \"header\":\"运行区间\",\"dataIndex\":\"runRange\"},"
 				+ "{ \"header\":\"运行时率(%)\",\"dataIndex\":\"runTimeEfficiency\"},"
 				
-				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidWeightProduction\"},"
-				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilWeightProduction\"},"
-				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterWeightProduction\"},"
+				+ "{ \"header\":\"产液量(t/d)\",\"dataIndex\":\"liquidProduction\"},"
+				+ "{ \"header\":\"产油量(t/d)\",\"dataIndex\":\"oilProduction\"},"
+				+ "{ \"header\":\"产水量(t/d)\",\"dataIndex\":\"waterProduction\"},"
 				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\"},"
 				+ "{ \"header\":\"转速(r/min)\",\"dataIndex\":\"rpm\"},"
 				+ "{ \"header\":\"泵挂(m)\",\"dataIndex\":\"pumpSettingDepth\"},"
@@ -312,9 +322,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"runRange\":\""+obj[7]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 		
-			result_json.append("\"liquidWeightProduction\":\""+obj[9]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[10]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[11]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[9]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[10]+"\",");
+			result_json.append("\"waterProduction\":\""+obj[11]+"\",");
 			result_json.append("\"waterCut\":\""+obj[12]+"\",");
 			result_json.append("\"rpm\":\""+obj[13]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[14]+"\",");
@@ -335,15 +345,25 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	
 	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
+ConfigFile configFile=Config.getInstance().configFile;
+		
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
-				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
-				+ " t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut,t.rpm,"
+				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
+		if(configFile.getOthers().getProductionUnit()==0){
+			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
+		}else{
+			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";
+		}
+		sql+= " t.rpm,"
 				+ " t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
 				+ " t.todayWattEnergy,"
 				+ " remark"
 				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+		
+		
+		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
@@ -363,9 +383,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"runRange\":\""+obj[7]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 		
-			result_json.append("\"liquidWeightProduction\":\""+obj[9]+"\",");
-			result_json.append("\"oilWeightProduction\":\""+obj[10]+"\",");
-			result_json.append("\"waterWeightProduction\":\""+obj[11]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[9]+"\",");
+			result_json.append("\"oilProduction\":\""+obj[10]+"\",");
+			result_json.append("\"waterProduction\":\""+obj[11]+"\",");
 			result_json.append("\"waterCut\":\""+obj[12]+"\",");
 			result_json.append("\"rpm\":\""+obj[13]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[14]+"\",");

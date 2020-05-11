@@ -79,7 +79,7 @@ Ext.define('AP.view.diagnosis.SinglePanel', {
                             Ext.getCmp("DiagnosisAnalysisHisBtn_Id").show();
                         	Ext.getCmp(statPanelId).expand(true);
                         }else{
-                        	Ext.getCmp("SingleWellList_Id").setTitle("历史数据");
+                        	Ext.getCmp("SingleWellList_Id").setTitle("单井历史");
                         	
                         	Ext.getCmp("DiagnosisAnalysisStartDate_Id").show();
                         	Ext.getCmp("DiagnosisAnalysisEndDate_Id").show();
@@ -155,13 +155,13 @@ Ext.define('AP.view.diagnosis.SinglePanel', {
                     }
                 }, '->', {
                     xtype: 'button',
-                    text:'查看历史',
+                    text:'单井历史',
                     tooltip:'点击按钮或者双击表格，查看单井历史数据',
                     id:'DiagnosisAnalysisHisBtn_Id',
                     pressed: true,
                     hidden: false,
                     handler: function (v, o) {
-                    	Ext.getCmp("SingleWellList_Id").setTitle("历史数据");
+                    	Ext.getCmp("SingleWellList_Id").setTitle("单井历史");
                     	Ext.getCmp("DiagnosisAnalysisStartDate_Id").show();
                     	Ext.getCmp("DiagnosisAnalysisEndDate_Id").show();
                     	

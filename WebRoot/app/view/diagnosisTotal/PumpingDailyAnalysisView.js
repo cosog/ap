@@ -83,7 +83,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                     	var statPanelId=getSelectTotalStatType().piePanelId;
                     	Ext.getCmp(statPanelId).expand(true);
                     }else{
-                    	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("历史数据");
+                    	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("单井历史");
                     	Ext.getCmp("TotalDiagnosisDate_Id").hide();
                     	Ext.getCmp("DiagnosisTotalStartDate_Id").show();
                     	Ext.getCmp("DiagnosisTotalEndDate_Id").show();
@@ -180,13 +180,13 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                             }
                         }, '->', {
                             xtype: 'button',
-                            text:'查看历史',
+                            text:'单井历史',
                             tooltip:'点击按钮或者双击表格，查看单井历史数据',
                             id:'DiagnosisTotalHisBtn_Id',
                             pressed: true,
                             hidden: false,
                             handler: function (v, o) {
-                            	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("历史数据");
+                            	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("单井历史");
                             	Ext.getCmp("TotalDiagnosisDate_Id").hide();
                             	Ext.getCmp("DiagnosisTotalStartDate_Id").show();
                             	Ext.getCmp("DiagnosisTotalEndDate_Id").show();
@@ -761,7 +761,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                         region: 'east',
                         id: 'DiagnosisTotalAnalysisDataPanel_Id',
                         width: '65%',
-                        title: '单井数据',
+                        title: '单井详情',
                         collapsible: true, // 是否折叠
                         split: true, // 竖折叠条
                         border: false,
@@ -982,7 +982,7 @@ function loadTotalStatData() {
         Ext.getCmp("DiagnosisTotalHisBtn_Id").show();
     	Ext.getCmp(statPanelId).expand(true);
     }else{
-    	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("历史数据");
+    	Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("单井历史");
     	Ext.getCmp("TotalDiagnosisDate_Id").hide();
     	Ext.getCmp("DiagnosisTotalStartDate_Id").show();
     	Ext.getCmp("DiagnosisTotalEndDate_Id").show();

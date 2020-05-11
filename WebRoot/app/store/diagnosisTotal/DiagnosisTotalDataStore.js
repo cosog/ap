@@ -62,7 +62,7 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalDataStore', {
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     		var wellName=Ext.getCmp('FSDiagramAnalysisDailyDetailsWellCom_Id').getValue();
                     		if(wellName==null||wellName==""){
-                    			Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("历史数据");
+                    			Ext.getCmp("DiagnosisTotalWellListPanel_Id").setTitle("单井历史");
                     			Ext.getCmp("TotalDiagnosisDate_Id").hide();
                             	Ext.getCmp("DiagnosisTotalStartDate_Id").show();
                             	Ext.getCmp("DiagnosisTotalEndDate_Id").show();

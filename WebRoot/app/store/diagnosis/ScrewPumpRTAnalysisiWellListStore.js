@@ -64,6 +64,7 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisiWellListStore', {
                         itemdblclick: function (view,record,item,index,e,eOpts) {
                         	var wellName=Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
                     		if(wellName==null||wellName==""){
+                    			Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
                     			Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
                             	

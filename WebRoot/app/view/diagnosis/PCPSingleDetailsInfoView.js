@@ -78,7 +78,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                   	  	Ext.getCmp("ScrewPumpRealtimeAnalysisAllBtn_Id").hide();
                     	Ext.getCmp(statPanelId).expand(true);
                     }else{
-                    	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+                    	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
             			Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
                     	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
                     	Ext.getCmp("ScrewPumpRealtimeAnalysisHisBtn_Id").hide();
@@ -144,14 +144,14 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                             }
                         }, '->', {
                             xtype: 'button',
-                            text: '查看历史',
+                            text: '单井历史',
                             tooltip: '点击按钮或者双击表格，查看单井历史数据',
                             id: 'ScrewPumpRealtimeAnalysisHisBtn_Id',
                             pressed: true,
                             hidden: false,
                             handler: function (v, o) {
                             	var statPanelId=getPCPRPMAnalysisSingleStatType().piePanelId;
-                            	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+                            	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
                     			Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
                             	Ext.getCmp("ScrewPumpRealtimeAnalysisHisBtn_Id").hide();
@@ -192,7 +192,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                         items: {
                             xtype: 'tabpanel',
                             id: 'PCPRPMAnalysisSingleDetailsStatTabpanel_Id',
-                            activeTab: 0,
+                            activeTab: 1,
                             border: true,
                             header: false,
                             collapsible: true, // 是否折叠
@@ -202,7 +202,8 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '工况',
-                                    iconCls: 'select',
+//                                    iconCls: 'select',
+                                    hidden:true,
                                     id: 'PCPRPMAnalysisSingleWorkCondStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
@@ -250,6 +251,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
                                     title: '产量',
+                                    iconCls: 'select',
                                     id: 'PCPRPMAnalysisSingleProdStatTabpanel_Id',
                                     tabRotation: 1,
                                     items: [{
@@ -576,7 +578,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                         region: 'east',
                         id: 'ScrewPumpRealtimeAnalysisDataPanel_Id',
                         width: '65%',
-                        title: '单井数据',
+                        title: '单井详情',
                         collapsible: true, // 是否折叠
                         split: true, // 竖折叠条
                         border: false,
@@ -927,7 +929,7 @@ function loadPCPRPMAnalysisSingleStatData() {
   	  	Ext.getCmp("ScrewPumpRealtimeAnalysisAllBtn_Id").hide();
     	Ext.getCmp(statPanelId).expand(true);
     }else{
-    	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+    	Ext.getCmp("ScrewPumpRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
 		Ext.getCmp("ScrewPumpRealtimeAnalysisStartDate_Id").show();
     	Ext.getCmp("ScrewPumpRealtimeAnalysisEndDate_Id").show();
     	Ext.getCmp("ScrewPumpRealtimeAnalysisHisBtn_Id").hide();

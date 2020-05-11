@@ -83,7 +83,7 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                         itemdblclick: function (view,record,item,index,e,eOpts) {
                         	var wellName=Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
                     		if(wellName==null||wellName==""){
-                    			Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+                    			Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
                     			Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
                             	Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").show();
                             	

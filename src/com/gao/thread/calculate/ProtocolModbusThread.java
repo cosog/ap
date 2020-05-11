@@ -107,6 +107,21 @@ public class ProtocolModbusThread extends Thread{
     					for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
     						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr)){
     							System.out.println(beeTechDriverServerTast.units.get(i).wellName+"上线");
+    							
+    							for(int j=0;j<EquipmentDriverServerTast.clientUnitList.size();j++){//遍历已连接的客户端
+    								if(EquipmentDriverServerTast.clientUnitList.get(j).socket!=null){//如果已连接
+    									for(int k=0;k<EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.size();k++){
+    										if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
+    											if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
+    												EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
+    												break;
+    											}
+    										}
+    									}
+    								}
+    							}
+    							
+    							
     							clientUnit.unitDataList.add(beeTechDriverServerTast.units.get(i));
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).setCommStatus(1);
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).recvPackageCount+=1;
@@ -149,6 +164,12 @@ public class ProtocolModbusThread extends Thread{
     			}else{
     				//循环读取功图点数、采集时间、冲次、冲程数据 
     				String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//    				if(isConnectionClose(clientUnit.socket)){
+//    					System.out.println("线程"+this.threadId+"通信关闭断开连接");
+//    					this.releaseResource(is,os);
+//        				wellReaded=false;
+//        				break;
+//    				}
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
     					//启停井控制
     					if(clientUnit.unitDataList.get(i).runStatusControl!=0
@@ -237,6 +258,7 @@ public class ProtocolModbusThread extends Thread{
 							clientUnit.unitDataList.get(i).setFrequencyControl(0);
 							
 							//写操作口令验证
+							System.out.println("变频控制密码："+StringManagerUtils.bytesToHexString(writeCommand,writeCommand.length));
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
 							if(rc==-1){//断开连接
 	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"写操作口令验证发送失败:"+StringManagerUtils.bytesToHexString(readByte,12));
@@ -245,13 +267,14 @@ public class ProtocolModbusThread extends Thread{
 	            				break;
 	            			}
 							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
+							System.out.println("变频控制密码回应："+StringManagerUtils.bytesToHexString(recByte,recByte.length));
 	    					if(rc==-1){//断开连接
 	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"写操作口令验证返回数据读取失败，断开连接,释放资源");
 	            				this.releaseResource(is,os);
 	            				wellReaded=false;
 	            				break;
 	            			}
-							
+							System.out.println("发送变频控制指令："+StringManagerUtils.bytesToHexString(readByte,readByte.length));
 							rc=this.writeSocketData(clientUnit.socket, readByte,os,clientUnit.unitDataList.get(i));
 							if(rc==-1){//断开连接
 	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"变频频率控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
@@ -268,6 +291,7 @@ public class ProtocolModbusThread extends Thread{
 	            				wellReaded=false;
 	            				break;
 	            			}
+	    					System.out.println("发送变频控制指令回应："+StringManagerUtils.bytesToHexString(recByte,recByte.length));
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
@@ -2027,6 +2051,7 @@ public class ProtocolModbusThread extends Thread{
     				}
     			}
     			if(this.interrupted()){
+    				System.out.println("线程"+this.threadId+"退出！");
             		throw new InterruptedException();
             	}else{
             		Thread.sleep(1000);
@@ -2041,7 +2066,7 @@ public class ProtocolModbusThread extends Thread{
 	}
 	
 	public  void releaseResource(InputStream is,OutputStream os){
-		
+		System.out.println("releaseResource");
 		try {
 			isExit=true;
 			Connection conn=OracleJdbcUtis.getConnection();
@@ -2204,10 +2229,18 @@ public class ProtocolModbusThread extends Thread{
 			readByte[10]=0x00;
 			readByte[11]=0x02;
 			readByte[12]=0x04;
-			readByte[13]=dataArr[0];
-			readByte[14]=dataArr[1];
-			readByte[15]=dataArr[2];
-			readByte[16]=dataArr[3];
+			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+				readByte[13]=dataArr[3];
+				readByte[14]=dataArr[2];
+				readByte[15]=dataArr[1];
+				readByte[16]=dataArr[0];
+    		}else{
+    			readByte[13]=dataArr[0];
+    			readByte[14]=dataArr[1];
+    			readByte[15]=dataArr[2];
+    			readByte[16]=dataArr[3];
+    		}
+			
 		}else if(protocol==2){
 			byte[] dataByte=new byte[11];
 			dataByte[0]=(byte)id;
@@ -2217,10 +2250,18 @@ public class ProtocolModbusThread extends Thread{
 			dataByte[4]=0x00;
 			dataByte[5]=0x02;
 			dataByte[6]=0x04;
-			dataByte[7]=dataArr[0];
-			dataByte[8]=dataArr[1];
-			dataByte[9]=dataArr[2];
-			dataByte[10]=dataArr[3];
+			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+				dataByte[7]=dataArr[3];
+				dataByte[8]=dataArr[2];
+				dataByte[9]=dataArr[1];
+				dataByte[10]=dataArr[0];
+    		}else{
+    			dataByte[7]=dataArr[0];
+    			dataByte[8]=dataArr[1];
+    			dataByte[9]=dataArr[2];
+    			dataByte[10]=dataArr[3];
+    		}
+			
 			byte[] CRC16=StringManagerUtils.getCRC16(dataByte);
 			readByte=StringManagerUtils.linlByteArray(dataByte,CRC16);
 		}
@@ -2314,6 +2355,20 @@ public class ProtocolModbusThread extends Thread{
     	
     	return rc;
     }
+    
+    /**
+    * 判断是否断开连接，断开返回true,没有返回false
+    * @param socket
+    * @return
+    */ 
+    public Boolean isConnectionClose(Socket socket){ 
+       try{ 
+        socket.sendUrgentData(0xFF);//发送1个字节的紧急数据，默认情况下，服务器端没有开启紧急数据处理，不影响正常通信 
+        return false; 
+       }catch(Exception se){ 
+        return true; 
+       } 
+    } 
     
     public short getShort(byte[] arr,int index, int protocol) {  
     	short result=0;

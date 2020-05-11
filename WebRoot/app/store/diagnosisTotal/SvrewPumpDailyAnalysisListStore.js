@@ -57,7 +57,7 @@ Ext.define('AP.store.diagnosisTotal.SvrewPumpDailyAnalysisListStore', {
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     		var wellName=Ext.getCmp('ScrewPumpDailyAnalysisWellCom_Id').getValue();
                     		if(wellName==null||wellName==""){
-                    			Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("历史数据");
+                    			Ext.getCmp("ScrewPumpDailyAnalysisWellListPanel_Id").setTitle("单井历史");
                     			Ext.getCmp("ScrewPumpDailyAnalysisDate_Id").hide();
                     			Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").show();
                             	Ext.getCmp("ScrewPumpDailyAnalysisEndDate_Id").show();

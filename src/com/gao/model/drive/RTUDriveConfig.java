@@ -1,5 +1,6 @@
 package com.gao.model.drive;
 
+import java.util.Comparator;
 
 public class RTUDriveConfig {
 	private String DriverName;
@@ -9,9 +10,11 @@ public class RTUDriveConfig {
     private int Port;
 
     private int Protocol;
+    
+    private int Sort;
 
     private DataConfig DataConfig;
-
+    
     public void setDriverName(String DriverName){
         this.DriverName = DriverName;
     }
@@ -30,6 +33,12 @@ public class RTUDriveConfig {
     public int getProtocol(){
         return this.Protocol;
     }
+	public int getSort() {
+		return Sort;
+	}
+	public void setSort(int sort) {
+		Sort = sort;
+	}
     public void setDataConfig(DataConfig DataConfig){
         this.DataConfig = DataConfig;
     }

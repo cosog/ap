@@ -3,6 +3,7 @@ package com.gao.service.back;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -363,7 +364,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		unitDropdownData.append("]");
 		
 		driverDropdownData.append("[");
+		
+		Map<Integer,RTUDriveConfig> equipmentDriveSortMap=new TreeMap<Integer,RTUDriveConfig>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
+			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+			equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+//			driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
+		}
+		for(Entry<Integer, RTUDriveConfig> entry:equipmentDriveSortMap.entrySet()){
 			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
 			driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
 		}

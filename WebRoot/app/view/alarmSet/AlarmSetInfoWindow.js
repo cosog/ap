@@ -59,7 +59,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									autoSelect : false,
 									allowBlank : true,
 									triggerAction : 'all',
-									editable : true,
+									editable : false,
 									displayField : "boxval",
 									valueField : "boxkey",
 									listeners : {
@@ -112,7 +112,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									autoSelect : false,
 									allowBlank : true,
 									triggerAction : 'all',
-									editable : true,
+									editable : false,
 									displayField : "boxval",
 									valueField : "boxkey",
 									listeners : {
@@ -165,7 +165,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									autoSelect : false,
 									allowBlank : true,
 									triggerAction : 'all',
-									editable : true,
+									editable : false,
 									displayField : "boxval",
 									valueField : "boxkey",
 									listeners : {
@@ -196,6 +196,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									    forceSelection : true,
 									    value:'0',
 										allowBlank : true,
+										editable : false,
 										store : new Ext.data.SimpleStore({
 													fields : ['value', 'text'],
 													data : [['1', '开'],['0', '关']]

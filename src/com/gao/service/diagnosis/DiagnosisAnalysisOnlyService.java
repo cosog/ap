@@ -885,7 +885,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[68]+"");
 			int deltaRadius1=(int)(balanceAwayTime/1000*3.6/10+0.5);
 			
-			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[67]+"");
+			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[69]+"");
 			int deltaRadius2=(int)(balanceCloseTime/1000*3.6/10+0.5);
 			
 			result_json.append("\"balanceAwayTime\":\""+deltaRadius1+"\",");

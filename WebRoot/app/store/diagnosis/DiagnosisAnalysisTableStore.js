@@ -148,8 +148,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		acqSataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"无功功率(kVar)\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"反向功率(kW)\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"变频运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"}";
+    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"}";
     		acqSataStr+="]}";
     		
     		var controlSataStr="{\"items\":[";

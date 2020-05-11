@@ -61,7 +61,7 @@ function UpdateSinglewellSubmitBtnForm() {
         .getCmp("singlewellWindow_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     if (UpdateSinglewellgWindowDataSubmitBtnFormId.getForm().isValid()) {
-        Ext.getCmp("singlewellWindow_Id").el.mask('正在更新数据，请稍后...').show();
+        Ext.getCmp("singlewellWindow_Id").el.mask('正在发送，请稍后...').show();
         UpdateSinglewellgWindowDataSubmitBtnFormId.getForm().submit({
             url: context + '/outputwellproductionController/updateOutputwellproduction',
             clientValidation: true, // 进行客户端验证

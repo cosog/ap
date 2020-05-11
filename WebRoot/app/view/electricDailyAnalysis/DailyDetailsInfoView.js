@@ -151,7 +151,7 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
                             }
                         }, '->', {
                             xtype: 'button',
-                            text:'查看历史',
+                            text:'单井历史',
                             tooltip:'点击按钮或者双击表格，查看单井历史数据',
                             id:'ElectricAnalysisDailyDetailsHisBtn_Id',
                             pressed: true,
@@ -205,7 +205,7 @@ Ext.define("AP.view.electricDailyAnalysis.DailyDetailsInfoView", {
                         region: 'east',
                         id: 'ElectricAnalysisDailyDetailsDataPanel_Id',
                         width: '65%',
-                        title: '单井数据',
+                        title: '单井详情',
                         collapsible: true, // 是否折叠
                         split: true, // 竖折叠条
                         border: false,

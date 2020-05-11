@@ -73,7 +73,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").hide();
                 		Ext.getCmp(statPanelId).expand(true);
                 	}else{
-                		Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+                		Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
                 		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
@@ -134,14 +134,14 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             }
                         }, '->', {
                             xtype: 'button',
-                            text:'查看历史',
+                            text:'单井历史',
                             tooltip:'点击按钮或者双击表格，查看单井历史数据',
                             id:'FSDiagramAnalysisSingleDetailsHisBtn_Id',
                             pressed: true,
                             hidden: false,
                             handler: function (v, o) {
                         		if(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection().length>0){
-                        			Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+                        			Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
                         			Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
                             		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
                             		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
@@ -740,7 +740,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                       }
                 }, {
                 	region: 'east',
-                	title:'数据详情',
+                	title:'单井详情',
                     width: '65%',
                     border: false,
                     collapsible: true, // 是否可折叠
@@ -1194,7 +1194,7 @@ function loadFSDiagramAnalysisSingleStatData() {
 		Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").hide();
     	Ext.getCmp(piePanelId).expand(true);
     }else{
-    	Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("历史数据");
+    	Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
     	Ext.getCmp("FSDiagramAnalysisSingleDetailsAllBtn_Id").show();
 		Ext.getCmp("FSDiagramAnalysisSingleDetailsHisBtn_Id").hide();
 		Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();

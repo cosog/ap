@@ -36,6 +36,7 @@ import com.gao.utils.Config2;
 import com.gao.utils.ConfigFile;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
+import com.gao.utils.MapSortUtil;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.SerialPortUtils;
 import com.gao.utils.StringManagerUtils;
@@ -67,7 +68,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 //		byte[] bb={0x01, 0x03,0x04, 0x66, (byte) 0xE6, 0x4F, 0x43,0x70,(byte) 0x8D}; 
 //		float ff=StringManagerUtils.getFloatLittle(bb, 3);
@@ -511,41 +512,55 @@ public class EquipmentDriverServerTast {
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
-		//添加必创驱动配置
-		String path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","data/");
+		
+		//添加安控驱动配置
+		String path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","data/");
 		String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(EtrolRTUDrive.getDriverCode(), EtrolRTUDrive);
+		
+		//添加必创驱动配置
+		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
-		if(BeeTechRTUDrive.getPort()>0){
-			equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
-		}
-		
-		//添加A11驱动配置
-		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
-		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
-		if(CNPCStandardDriver.getPort()>0){
-			equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
-		}
-		
-		//添加四化驱动配置
-		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
-		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
-		if(SinoepcStandardDriver.getPort()>0){
-			equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
-		}
+		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
 		
 		//添加蚌埠日月驱动配置
 		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
-		if(SunMoonStandardDriver.getPort()>0){
-			equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
-		}
+		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
+		
+		//添加中科奥维驱动配置
+		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
+		
+//		//添加A11驱动配置
+//		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
+//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+//		type = new TypeToken<RTUDriveConfig>() {}.getType();
+//		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
+//		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
+//		
+		//添加四化驱动配置
+		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
+		
+		//添加MQTT驱动配置
+		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
 	}
 	
 	@SuppressWarnings("static-access")

@@ -350,7 +350,11 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     				forceFit: false,
     				store: controlStore,
     			    columns: [
-    			        { header: '操作项',  dataIndex: 'item',align:'left',flex:3},
+    			        { 
+    			        	header: '操作项',  
+    			        	dataIndex: 'item',
+    			        	align:'left',flex:3
+    			        },
     			        { 
     			        	header: '状态/值', 
     			        	dataIndex: 'value',

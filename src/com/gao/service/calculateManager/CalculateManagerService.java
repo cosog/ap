@@ -25,6 +25,8 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.data.DataitemsInfoService;
 import com.gao.service.datainterface.CalculateDataService;
 import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
@@ -70,6 +72,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sqlAll="";
 		String ddicName="calculateManager";
 		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
 		if("200".equals(wellType)){
 			ddicName="calculateManager";
 		}else if("400".equals(wellType)){
@@ -77,8 +80,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
+		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		}
 		columns = ddic.getTableHeader();
-		sql="select t.id,t.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.workingConditionName,t.liquidProduction,t.oilProduction,"
+		sql="select t.id,t.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.workingConditionName,"
+			+ prodCol
 			+ "t.crudeoilDensity,t.waterDensity,t.naturalGasRelativeDensity,"
 			+ "t.saturationPressure,t.reservoirDepth,t.reservoirTemperature,"
 			+ "t.tubingPressure,t.casingPressure,t.wellHeadFluidTemperature,t.waterCut,t.productionGasOilRatio,t.producingFluidLevel,"
@@ -119,8 +127,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"acquisitionTime\":\""+obj[2]+"\",");
 			result_json.append("\"workingConditionName\":\""+obj[3]+"\",");
-			result_json.append("\"liquidProduction\":\""+obj[4]+"\",");
-			result_json.append("\"oilProduction\":\""+obj[5]+"\",");
+			if(configFile.getOthers().getProductionUnit()==0){
+				result_json.append("\"liquidWeightProduction\":\""+obj[4]+"\",");
+				result_json.append("\"oilWeightProduction\":\""+obj[5]+"\",");
+			}else{
+				result_json.append("\"liquidVolumetricProduction\":\""+obj[4]+"\",");
+				result_json.append("\"oilVolumetricProduction\":\""+obj[5]+"\",");
+			}
 			result_json.append("\"crudeoilDensity\":\""+obj[6]+"\",");
 			result_json.append("\"waterDensity\":\""+obj[7]+"\",");
 			result_json.append("\"naturalGasRelativeDensity\":\""+obj[8]+"\",");

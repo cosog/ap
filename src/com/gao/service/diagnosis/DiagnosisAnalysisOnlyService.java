@@ -80,7 +80,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			typeColumnName="workingConditionName";
 		}else if("2".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
-				ddicName="screwPumpRealtimePeodDist";
+				ddicName="screwPumpRealtimeProdDist";
 			}else{//默认为抽油机
 				ddicName="realtimeProdDist";
 			}
@@ -234,7 +234,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			typeColumnName="workingConditionName";
 		}else if("2".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
-				ddicName="screwPumpRealtimePeodDist";
+				ddicName="screwPumpRealtimeProdDist";
 			}else{//默认为抽油机
 				ddicName="realtimeProdDist";
 			}

@@ -258,12 +258,12 @@ public class ReportPumpingUnitDataController extends BaseController {
 	        Label header4=new Label(3,1,"通信",wcf_head);
 	        Label header4_1=new Label(3,2,"在线时间(h)",wcf_head);
 	        Label header4_2=new Label(4,2,"在线区间",wcf_head);
-	        Label header4_3=new Label(5,2,"在线时率(%)",wcf_head);
+	        Label header4_3=new Label(5,2,"在线时率(小数)",wcf_head);
 	        
 	        Label header5=new Label(6,1,"时率",wcf_head);
 	        Label header5_1=new Label(6,2,"运行时间(h)",wcf_head);
 	        Label header5_2=new Label(7,2,"运行区间",wcf_head);
-	        Label header5_3=new Label(8,2,"运行时率(%)",wcf_head);
+	        Label header5_3=new Label(8,2,"运行时率(小数)",wcf_head);
 	           
 	       Label header6=new Label(9,1,"工况",wcf_head);
 	       Label header6_1=new Label(9,2,"功图工况",wcf_head);
@@ -274,14 +274,14 @@ public class ReportPumpingUnitDataController extends BaseController {
 	       Label header7_2=new Label(12,2,"产油量("+productionUnit+")",wcf_head);
 	       Label header7_3=new Label(13,2,"产水量("+productionUnit+")",wcf_head);
 	       Label header7_4=new Label(14,2,"含水率(%)",wcf_head);
-	       Label header7_5=new Label(15,2,"充满系数",wcf_head);
+	       Label header7_5=new Label(15,2,"充满系数(小数)",wcf_head);
 	       
 	       Label header8=new Label(16,1,"平衡",wcf_head);
 	       Label header8_1=new Label(16,2,"功率平衡状态",wcf_head);
 	       Label header8_2=new Label(17,2,"功率平衡度(%)",wcf_head);
 	       Label header8_3=new Label(18,2,"电流平衡状态",wcf_head);
 	       Label header8_4=new Label(19,2,"电流平衡度(%)",wcf_head);
-	       Label header8_5=new Label(20,2,"移动距离(m)",wcf_head);
+	       Label header8_5=new Label(20,2,"移动距离(cm)",wcf_head);
 	       
 	       Label header9=new Label(21,1,"效率",wcf_head);
 	       Label header9_1=new Label(21,2,"系统效率(%)",wcf_head);
@@ -705,12 +705,12 @@ public class ReportPumpingUnitDataController extends BaseController {
 	        Label header4=new Label(3,1,"通信",wcf_head);
 	        Label header4_1=new Label(3,2,"在线时间(h)",wcf_head);
 	        Label header4_2=new Label(4,2,"在线区间",wcf_head);
-	        Label header4_3=new Label(5,2,"在线时率(%)",wcf_head);
+	        Label header4_3=new Label(5,2,"在线时率(小数)",wcf_head);
 	        
 	        Label header5=new Label(6,1,"时率",wcf_head);
 	        Label header5_1=new Label(6,2,"运行时间(h)",wcf_head);
 	        Label header5_2=new Label(7,2,"运行区间",wcf_head);
-	        Label header5_3=new Label(8,2,"运行时率(%)",wcf_head);
+	        Label header5_3=new Label(8,2,"运行时率(小数)",wcf_head);
 	       
 	       Label header6=new Label(9,1,"产量",wcf_head);
 	       Label header6_1=new Label(9,2,"产液量("+productionUnit+")",wcf_head);

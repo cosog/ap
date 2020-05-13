@@ -136,11 +136,22 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                         xtype: 'checkbox',
                         cls: 'x-grid-checkheader-editor'
                     },
+//                    disabled:true,
+//                    renderer:function(val, m, rec) {
+//                    	
+//                    	if (rec.data.ename.toUpperCase()=="ID"){
+//                    		this.disabled(true);
+//                    	}
+//                    },
                     listeners: {
                         checkchange: function (sm, e, ival, o, n) {
                             var items_ = appEditDataItesmStore.data.items;
                             if (items_.length > 0) {
-                                if (ival) {
+//                                if(items_[e].data.ename.toUpperCase()=="ID"&&(!ival)){
+//                                	alert("该项为必选");
+//                                }
+                            	
+                            	if (ival) {
                                     ival = 1;
                                 } else {
                                     ival = 0;
@@ -152,31 +163,14 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                                         var status_ = items_[index].data.status;
                                         var obj_id = items_[index].data.dataitemid;
                                         var resultstring = obj_id + ":" + ival + ",";
-//                                        if (ival != status_) {
-                                            if (null != hide_val_ && hide_val_ != "") {
-                                                hide_obj_.setValue(hide_val_ + resultstring);
-                                            } else {
-                                                hide_obj_.setValue(resultstring);
-                                            }
-//                                        } else {
-//                                            if (status_ == 1) {
-//                                                status_ = 0;
-//                                            } else {
-//                                                status_ = 1;
-//                                            }
-//                                            var resultstring_old = obj_id + ":" + status_ + ",";
-//                                            var xxstval = hide_val_.indexOf(resultstring_old);
-//                                            if (xxstval > -1) {
-//                                                resultstring_old = hide_val_.replace(resultstring_old, "");
-//                                            }
-//                                            hide_obj_.setValue(resultstring_old);
-//
-//                                        }
-
+                                        if (null != hide_val_ && hide_val_ != "") {
+                                        	hide_obj_.setValue(hide_val_ + resultstring);
+                                        } else {
+                                        	hide_obj_.setValue(resultstring);
+                                        }
                                     }
                                 });
                             }
-                            //hideSysDataValName_Id 
                         }
                     }
            }

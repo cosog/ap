@@ -149,21 +149,19 @@ Ext.define('AP.view.electricAnalysis.RealtimeDetailsInfoView', {
                         pressed: true,
                         hidden: false,
                         handler: function (v, o) {
-                        	if(Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetails_Id").getSelectionModel().getSelection().length>0){
+                        	var tabPanel = Ext.getCmp("electricAnalysisRealtimeDetailsTabpanel_Id");
+                    		var activeId = tabPanel.getActiveTab().id;
+                    		var gridPanelId="ElectricAnalysisRealtimeDiscreteDetails_Id";
+                        	if(activeId=="electricAnalysisRealtimeDetailsDiscretePanel_Id"){
+                        		gridPanelId="ElectricAnalysisRealtimeDiscreteDetails_Id";
+                        	}else if(activeId=="electricAnalysisRealtimeDetailsDiagramPanel_Id"){
+                        		gridPanelId='ElectricAnalysisRealtimeDiagramDetails_Id';
+                        	}
+                        	if(Ext.getCmp(gridPanelId).getSelectionModel().getSelection().length>0){
                     			Ext.getCmp("electricAnalysisRealtimeDetailsRTBtn_Id").show();
                             	Ext.getCmp("electricAnalysisRealtimeDetailsHisBtn_Id").hide();
                                 Ext.getCmp("electricAnalysisRealtimeDetailsStartDate_Id").show();
                         		Ext.getCmp("electricAnalysisRealtimeDetailsEndDate_Id").show();
-                        		
-                        		var tabPanel = Ext.getCmp("electricAnalysisRealtimeDetailsTabpanel_Id");
-                        		var activeId = tabPanel.getActiveTab().id;
-                        		var gridPanelId="ElectricAnalysisRealtimeDiscreteDetails_Id";
-                            	if(activeId=="electricAnalysisRealtimeDetailsDiscretePanel_Id"){
-                            		gridPanelId="ElectricAnalysisRealtimeDiscreteDetails_Id";
-                            	}else if(activeId=="electricAnalysisRealtimeDetailsDiagramPanel_Id"){
-                            		gridPanelId='ElectricAnalysisRealtimeDiagramDetails_Id';
-                            	}
-                        		
                     			var record  = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0];
                         		Ext.getCmp('electricAnalysisRealtimeDetailsWellCom_Id').setValue(record.data.wellName);
                             	Ext.getCmp('electricAnalysisRealtimeDetailsWellCom_Id').setRawValue(record.data.wellName);

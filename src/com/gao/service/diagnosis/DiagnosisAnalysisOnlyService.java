@@ -577,7 +577,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("fmin:\"\",");
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("spm:\"\","); 
-	        dataSbf.append("liquidWeightProduction:\"\",");  
+	        dataSbf.append("liquidProduction:\"\",");  
 	        dataSbf.append("workingConditionName:\"\",");
 	        dataSbf.append("workingConditionCode:\"\",");  
 	        dataSbf.append("rodStressRatio1:\"\","); 

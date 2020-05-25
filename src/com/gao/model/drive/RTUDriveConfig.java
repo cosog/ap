@@ -90,6 +90,8 @@ public class RTUDriveConfig {
 	
 	public static class DataConfig
 	{
+		private Item DiscreteAcquisitionInterval;
+		
 	    private Item RunStatus;
 	    private Item RunControl;
 	    
@@ -131,6 +133,11 @@ public class RTUDriveConfig {
 	    private Item ADiagram;
 	    private Item PDiagram;
 	    
+	    private Item IaDiagram;
+	    private Item IbDiagram;
+	    private Item IcDiagram;
+	    
+	    
 	    private Item BalaceControlStatus;
 	    private Item BalanceControlMode;
 	    private Item BalanceCalculateMode;
@@ -141,6 +148,26 @@ public class RTUDriveConfig {
 	    private Item BalanceOperationDownLimit;
 	    private Item BalanceAwayTimePerBeat;
 	    private Item BalanceCloseTimePerBeat;
+	    
+	    private Item CurrentUpLimit;
+	    private Item CurrentDownLimit;
+	    private Item PowerUpLimit;
+	    private Item PowerDownLimit;
+	    private Item ImmediatelyAcquisition;
+	    
+	    private Item UpStrokeIMax;
+	    private Item DownStrokeIMax;
+	    private Item IDegreeBalance;
+	    private Item UpStrokeWattMax;
+	    private Item DownStrokeWattMax;
+	    private Item WattDegreeBalance;
+	    private Item CurrentAMax;
+	    private Item CurrentAMin;
+	    private Item CurrentBMax;
+	    private Item CurrentBMin;
+	    private Item CurrentCMax;
+	    private Item CurrentCMin;
+	    private Item ElectricDiagnosisResult;
 
 	    public void setRunStatus(Item RunStatus){
 	        this.RunStatus = RunStatus;
@@ -405,6 +432,138 @@ public class RTUDriveConfig {
 		}
 		public void setBalanceCloseTimePerBeat(Item balanceCloseTimePerBeat) {
 			BalanceCloseTimePerBeat = balanceCloseTimePerBeat;
+		}
+		public Item getDiscreteAcquisitionInterval() {
+			return DiscreteAcquisitionInterval;
+		}
+		public void setDiscreteAcquisitionInterval(Item discreteAcquisitionInterval) {
+			DiscreteAcquisitionInterval = discreteAcquisitionInterval;
+		}
+		public Item getIaDiagram() {
+			return IaDiagram;
+		}
+		public void setIaDiagram(Item iaDiagram) {
+			IaDiagram = iaDiagram;
+		}
+		public Item getIbDiagram() {
+			return IbDiagram;
+		}
+		public void setIbDiagram(Item ibDiagram) {
+			IbDiagram = ibDiagram;
+		}
+		public Item getIcDiagram() {
+			return IcDiagram;
+		}
+		public void setIcDiagram(Item icDiagram) {
+			IcDiagram = icDiagram;
+		}
+		public Item getCurrentUpLimit() {
+			return CurrentUpLimit;
+		}
+		public void setCurrentUpLimit(Item currentUpLimit) {
+			CurrentUpLimit = currentUpLimit;
+		}
+		public Item getCurrentDownLimit() {
+			return CurrentDownLimit;
+		}
+		public void setCurrentDownLimit(Item currentDownLimit) {
+			CurrentDownLimit = currentDownLimit;
+		}
+		public Item getPowerUpLimit() {
+			return PowerUpLimit;
+		}
+		public void setPowerUpLimit(Item powerUpLimit) {
+			PowerUpLimit = powerUpLimit;
+		}
+		public Item getPowerDownLimit() {
+			return PowerDownLimit;
+		}
+		public void setPowerDownLimit(Item powerDownLimit) {
+			PowerDownLimit = powerDownLimit;
+		}
+		public Item getImmediatelyAcquisition() {
+			return ImmediatelyAcquisition;
+		}
+		public void setImmediatelyAcquisition(Item immediatelyAcquisition) {
+			ImmediatelyAcquisition = immediatelyAcquisition;
+		}
+		public Item getUpStrokeIMax() {
+			return UpStrokeIMax;
+		}
+		public void setUpStrokeIMax(Item upStrokeIMax) {
+			UpStrokeIMax = upStrokeIMax;
+		}
+		public Item getDownStrokeIMax() {
+			return DownStrokeIMax;
+		}
+		public void setDownStrokeIMax(Item downStrokeIMax) {
+			DownStrokeIMax = downStrokeIMax;
+		}
+		public Item getIDegreeBalance() {
+			return IDegreeBalance;
+		}
+		public void setIDegreeBalance(Item iDegreeBalance) {
+			IDegreeBalance = iDegreeBalance;
+		}
+		public Item getUpStrokeWattMax() {
+			return UpStrokeWattMax;
+		}
+		public void setUpStrokeWattMax(Item upStrokeWattMax) {
+			UpStrokeWattMax = upStrokeWattMax;
+		}
+		public Item getDownStrokeWattMax() {
+			return DownStrokeWattMax;
+		}
+		public void setDownStrokeWattMax(Item downStrokeWattMax) {
+			DownStrokeWattMax = downStrokeWattMax;
+		}
+		public Item getWattDegreeBalance() {
+			return WattDegreeBalance;
+		}
+		public void setWattDegreeBalance(Item wattDegreeBalance) {
+			WattDegreeBalance = wattDegreeBalance;
+		}
+		public Item getCurrentAMax() {
+			return CurrentAMax;
+		}
+		public void setCurrentAMax(Item currentAMax) {
+			CurrentAMax = currentAMax;
+		}
+		public Item getCurrentAMin() {
+			return CurrentAMin;
+		}
+		public void setCurrentAMin(Item currentAMin) {
+			CurrentAMin = currentAMin;
+		}
+		public Item getCurrentBMax() {
+			return CurrentBMax;
+		}
+		public void setCurrentBMax(Item currentBMax) {
+			CurrentBMax = currentBMax;
+		}
+		public Item getCurrentBMin() {
+			return CurrentBMin;
+		}
+		public void setCurrentBMin(Item currentBMin) {
+			CurrentBMin = currentBMin;
+		}
+		public Item getCurrentCMax() {
+			return CurrentCMax;
+		}
+		public void setCurrentCMax(Item currentCMax) {
+			CurrentCMax = currentCMax;
+		}
+		public Item getCurrentCMin() {
+			return CurrentCMin;
+		}
+		public void setCurrentCMin(Item currentCMin) {
+			CurrentCMin = currentCMin;
+		}
+		public Item getElectricDiagnosisResult() {
+			return ElectricDiagnosisResult;
+		}
+		public void setElectricDiagnosisResult(Item electricDiagnosisResult) {
+			ElectricDiagnosisResult = electricDiagnosisResult;
 		}
 	}
 

@@ -37,10 +37,11 @@ public class DriveServerThread extends Thread{
 //								if(driveConfig.getProtocol()==1){//通讯协议为Modbus-TCP
 //									EquipmentDriverServerTast.clientUnitList.get(i).thread=new ProtocolModbusTCPThread(i,EquipmentDriverServerTast.clientUnitList.get(i),driveConfig);
 //								}
-//								if(driveConfig.getProtocol()==2){//通讯协议为Modbus-RTU
-//									EquipmentDriverServerTast.clientUnitList.get(i).thread=new ProtocolModbusRTUThread(i,EquipmentDriverServerTast.clientUnitList.get(i),driveConfig);
-//								}
-								EquipmentDriverServerTast.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTast.clientUnitList.get(i),driveConfig);
+								if(driveConfig.getDriverCode().equals("SunMoonStandardDrive")){//蚌埠日月
+									EquipmentDriverServerTast.clientUnitList.get(i).thread=new IntelligentPumpingUnitThread(i,EquipmentDriverServerTast.clientUnitList.get(i),driveConfig);
+								}else{
+									EquipmentDriverServerTast.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTast.clientUnitList.get(i),driveConfig);
+								}
 								if(EquipmentDriverServerTast.clientUnitList.get(i).thread!=null){
 									EquipmentDriverServerTast.clientUnitList.get(i).thread.start();
 									break;

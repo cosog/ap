@@ -1526,6 +1526,9 @@ public class ProtocolModbusThread extends Thread{
         							System.out.println("通信返回数据："+commResponse);
         							commResponseData.getCurrent().getCommEfficiency().setRangeString(commResponseData.getCurrent().getCommEfficiency().getRangeString().replaceAll("-;", ""));
         						}
+        						if(commResponseData.getCurrent().getCommEfficiency().getRangeString().length()>2000){
+        							commResponseData.getCurrent().getCommEfficiency().setRangeString("");
+        						}
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommTimeEfficiency(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommRangeString(commResponseData.getCurrent().getCommEfficiency().getRangeString());
@@ -1683,7 +1686,7 @@ public class ProtocolModbusThread extends Thread{
         						clientUnit.unitDataList.get(i).acquisitionData.setRunStatus(RunStatus);
         						Connection conn=OracleJdbcUtis.getConnection();
         						Statement stmt=null;
-            					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t007.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+            					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
             					
                 						
         						if(commResponseData!=null&&commResponseData.getResultStatus()==1){

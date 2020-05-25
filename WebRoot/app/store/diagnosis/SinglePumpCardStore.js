@@ -42,7 +42,9 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
                 showPumpEfficiency(get_rawData, "FSDiagramAnalysisSingleDetailsDiv6_id");    // 调用画泵效组成的函数
         	}
         	
-        	
+        	showPContinuousDiagram(get_rawData.IaCurveData,"A相电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">点数<br />',"A相电流(A)",'#e3cc19',"FSDiagramAnalysisSingleDetailsDiv7_id");
+        	showPContinuousDiagram(get_rawData.IbCurveData,"B相电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">点数<br />',"B相电流(A)",'#FF6633',"FSDiagramAnalysisSingleDetailsDiv8_id");
+        	showPContinuousDiagram(get_rawData.IcCurveData,"C相电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">点数<br />',"C相电流(A)",'#CC0000',"FSDiagramAnalysisSingleDetailsDiv9_id");
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.id;// 获取图形数据id

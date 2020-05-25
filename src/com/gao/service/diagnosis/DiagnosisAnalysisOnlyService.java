@@ -158,6 +158,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				ddicName="realtimeCommDist";
 			}
 			typeColumnName="commtimeefficiencyLevel";
+		}else if("13".equalsIgnoreCase(type)){
+			if("400".equals(wellType)){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeETValue";
+			}
+			typeColumnName="workingConditionName_E";
 		}else{
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
@@ -312,6 +319,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				ddicName="realtimeCommDist";
 			}
 			typeColumnName="commtimeefficiencyLevel";
+		}else if("13".equalsIgnoreCase(type)){
+			if("400".equals(wellType)){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeETValue";
+			}
+			typeColumnName="workingConditionName_E";
 		}else{
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
@@ -447,7 +461,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,t.upstrokeimax,t.downstrokeimax,t.idegreebalance,"
-        		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve "
+        		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
+        		+ " t.ia_curve,t.ib_curve,t.ic_curve "
         		+ " from "+tableName+" t, tbl_rpc_worktype status,tbl_wellinformation well  "
         		+ " where t.wellid=well.id and t.workingconditioncode=status.workingconditioncode ";
         if(StringManagerUtils.isNotNull(selectedWellName)){
@@ -462,6 +477,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			String loadCurveData="";
 			String wattCurveData="";
 			String iCurveData="";
+			String IaCurveData="";
+			String IbCurveData="";
+			String IcCurveData="";
 			String pumpFSDiagram="";
 			SerializableClobProxy   proxy=null;
 			CLOB realClob=null;
@@ -493,6 +511,22 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[26]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				iCurveData=StringManagerUtils.CLOBtoString(realClob);
+			}
+			
+			if(obj[27]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[27]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				IaCurveData=StringManagerUtils.CLOBtoString(realClob);
+			}
+			if(obj[28]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[27]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				IbCurveData=StringManagerUtils.CLOBtoString(realClob);
+			}
+			if(obj[29]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[27]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				IcCurveData=StringManagerUtils.CLOBtoString(realClob);
 			}
 			
 			String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
@@ -565,7 +599,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("positionCurveData:\""+positionCurveData+"\",");         // 工况代码
 	        dataSbf.append("loadCurveData:\""+loadCurveData+"\",");         // 工况代码
 	        dataSbf.append("powerCurveData:\""+wattCurveData+"\",");         // 工况代码
-	        dataSbf.append("currentCurveData:\""+iCurveData+"\"");         // 工况代码
+	        dataSbf.append("currentCurveData:\""+iCurveData+"\",");         // 工况代码
+	        dataSbf.append("IaCurveData:\""+IaCurveData+"\","); 
+	        dataSbf.append("IbCurveData:\""+IbCurveData+"\","); 
+	        dataSbf.append("IcCurveData:\""+IcCurveData+"\""); 
 	        dataSbf.append("}");
 		}else{
 			dataSbf.append("{success:true,");
@@ -598,7 +635,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("positionCurveData:\"\",");
 	        dataSbf.append("loadCurveData:\"\",");
 	        dataSbf.append("powerCurveData:\"\",");
-	        dataSbf.append("currentCurveData:\"\"");
+	        dataSbf.append("currentCurveData:\"\",");
+	        dataSbf.append("IaCurveData:\"\",");
+	        dataSbf.append("IbCurveData:\"\",");
+	        dataSbf.append("IcCurveData:\"\"");
 	        dataSbf.append("}");
 		}
 		return dataSbf.toString().replaceAll("null", "");
@@ -714,6 +754,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			statType="commStatusName";
 		}else if("12".equalsIgnoreCase(type)){
 			statType="commtimeefficiencyLevel";
+		}else if("13".equalsIgnoreCase(type)){
+			statType="workingConditionName_E";
 		}
 		if("200".equals(wellType)){
 			tableName="viw_rpc_comprehensive_latest";
@@ -778,6 +820,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalWattEnergy,totalVarEnergy,wattSum,varSum,reversePower,pfSum,"
+				+ " IaUpLimit,IaDownLimit,wattUpLimit,wattDownLimit,"
+				+ " IaMax,IaMin,IbMax,IbMin,IcMax,IcMin,"
 				+ " frequencySetValue,frequencyRunValue,"
 				+ " balanceControlMode,balanceCalculateMode,"
 				+ " balanceAwayTime,balanceCloseTime,"
@@ -785,6 +829,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " balanceStrokeCount,"
 				+ " balanceOperationUpLimit,balanceOperationDownLimit,"
 				+ " balanceAutoControl,spmAutoControl,balanceFrontLimit,balanceAfterLimit,"
+				+ " acqcycle_diagram,acqcycle_discrete,"
 				+ " videourl,"
 				+ " runRange"
 				+ " from "+tableName+" t where id="+recordId;
@@ -876,34 +921,49 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"varSum\":\""+obj[61]+"\",");
 			result_json.append("\"reversePower\":\""+obj[62]+"\",");
 			result_json.append("\"pfSum\":\""+obj[63]+"\",");
-			result_json.append("\"frequencySetValue\":\""+obj[64]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[65]+"\",");
 			
-			result_json.append("\"balanceControlMode\":\""+obj[66]+"\",");
-			result_json.append("\"balanceCalculateMode\":\""+obj[67]+"\",");
+			result_json.append("\"IaUpLimit\":\""+obj[64]+"\",");
+			result_json.append("\"IaDownLimit\":\""+obj[65]+"\",");
+			result_json.append("\"wattUpLimit\":\""+obj[66]+"\",");
+			result_json.append("\"wattDownLimit\":\""+obj[67]+"\",");
+			result_json.append("\"IaMax\":\""+obj[68]+"\",");
+			result_json.append("\"IaMin\":\""+obj[69]+"\",");
+			result_json.append("\"IbMax\":\""+obj[70]+"\",");
+			result_json.append("\"IbMin\":\""+obj[71]+"\",");
+			result_json.append("\"IcMax\":\""+obj[72]+"\",");
+			result_json.append("\"IcMin\":\""+obj[73]+"\",");
 			
-			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[68]+"");
+			result_json.append("\"frequencySetValue\":\""+obj[74]+"\",");
+			result_json.append("\"frequencyRunValue\":\""+obj[75]+"\",");
+			
+			result_json.append("\"balanceControlMode\":\""+obj[76]+"\",");
+			result_json.append("\"balanceCalculateMode\":\""+obj[77]+"\",");
+			
+			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[78]+"");
 			int deltaRadius1=(int)(balanceAwayTime/1000*3.6/10+0.5);
 			
-			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[69]+"");
+			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[79]+"");
 			int deltaRadius2=(int)(balanceCloseTime/1000*3.6/10+0.5);
 			
 			result_json.append("\"balanceAwayTime\":\""+deltaRadius1+"\",");
 			result_json.append("\"balanceCloseTime\":\""+deltaRadius2+"\",");
 			
-			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[70]+"\",");
-			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[71]+"\",");
+			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[80]+"\",");
+			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[81]+"\",");
 			
-			result_json.append("\"balanceStrokeCount\":\""+obj[72]+"\",");
-			result_json.append("\"balanceOperationUpLimit\":\""+obj[73]+"\",");
-			result_json.append("\"balanceOperationDownLimit\":\""+obj[74]+"\",");
-			result_json.append("\"balanceAutoControl\":\""+obj[75]+"\",");
-			result_json.append("\"spmAutoControl\":\""+obj[76]+"\",");
-			result_json.append("\"balanceFrontLimit\":\""+obj[77]+"\",");
-			result_json.append("\"balanceAfterLimit\":\""+obj[78]+"\",");
+			result_json.append("\"balanceStrokeCount\":\""+obj[82]+"\",");
+			result_json.append("\"balanceOperationUpLimit\":\""+obj[83]+"\",");
+			result_json.append("\"balanceOperationDownLimit\":\""+obj[84]+"\",");
+			result_json.append("\"balanceAutoControl\":\""+obj[85]+"\",");
+			result_json.append("\"spmAutoControl\":\""+obj[86]+"\",");
+			result_json.append("\"balanceFrontLimit\":\""+obj[87]+"\",");
+			result_json.append("\"balanceAfterLimit\":\""+obj[88]+"\",");
 			
-			result_json.append("\"videourl\":\""+obj[79]+"\",");
-			result_json.append("\"runRange\":\""+obj[80]+"\"");
+			result_json.append("\"acqcycle_diagram\":\""+obj[89]+"\",");
+			result_json.append("\"acqcycle_discrete\":\""+obj[90]+"\",");
+			
+			result_json.append("\"videourl\":\""+obj[91]+"\",");
+			result_json.append("\"runRange\":\""+obj[92]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");

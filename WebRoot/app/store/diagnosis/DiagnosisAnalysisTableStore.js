@@ -21,6 +21,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         	var get_rawData = store.proxy.reader.rawData;
         	var isControl=get_rawData.isControl;
     		var dataStr="{\"items\":[";
+    		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
     		if(productionUnit==0){
     			dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
         		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
@@ -56,7 +58,6 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         		dataStr+="{\"item\":\"固定凡尔漏失量(m^3/d)\",\"itemCode\":\"svleakVolumetricProduction\",\"value\":\""+get_rawData.svleakProduction+"\",\"curve\":\"\"},";
         		dataStr+="{\"item\":\"气影响(m^3/d)\",\"itemCode\":\"gasInfluenceProd_V\",\"value\":\""+get_rawData.gasInfluenceProd+"\",\"curve\":\"\"},";
 	        }
-    		
     		dataStr+="{\"item\":\"泵径(mm)\",\"itemCode\":\"pumpBoreDiameter\",\"value\":\""+get_rawData.pumpBoreDiameter+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵挂(m)\",\"itemCode\":\"pumpSettingDepth\",\"value\":\""+get_rawData.pumpSettingDepth+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"动液面(m)\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
@@ -72,8 +73,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		dataStr+="{\"item\":\"系统效率(%)\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"吨液百米耗电量(kW·h/100m·t)\",\"itemCode\":\"powerConsumptionPerthm\",\"value\":\""+get_rawData.powerConsumptionPerthm+"\",\"curve\":\"\"},";
     		
-    		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
+    		
     		
     		dataStr+="{\"item\":\"泵入口压力(MPa)\",\"itemCode\":\"pumpintakep\",\"value\":\""+get_rawData.pumpintakep+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵入口温度(℃)\",\"itemCode\":\"pumpintaket\",\"value\":\""+get_rawData.pumpintaket+"\",\"curve\":\"\"},";
@@ -134,12 +134,21 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		acqSataStr+="{\"item\":\"通信状态\",\"itemCode\":\"commStatus\",\"value\":\""+commStatus+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"运行状态\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"油压(MPa)\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"套压(MPa)\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressure+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"井口油温(℃)\",\"itemCode\":\"wellheadFluidTemperature\",\"value\":\""+get_rawData.wellheadFluidTemperature+"\",\"curve\":\"\"},";
+//    		acqSataStr+="{\"item\":\"油压(MPa)\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
+//    		acqSataStr+="{\"item\":\"套压(MPa)\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressure+"\",\"curve\":\"\"},";
+//    		acqSataStr+="{\"item\":\"井口油温(℃)\",\"itemCode\":\"wellheadFluidTemperature\",\"value\":\""+get_rawData.wellheadFluidTemperature+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"A相电流(A)\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.Ia+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"A相电流最大值(A)\",\"itemCode\":\"IaMax\",\"value\":\""+get_rawData.IaMax+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"A相电流最小值(A)\",\"itemCode\":\"IaMin\",\"value\":\""+get_rawData.IaMin+"\",\"curve\":\"\"},";
+    		
     		acqSataStr+="{\"item\":\"B相电流(A)\",\"itemCode\":\"Ib\",\"value\":\""+get_rawData.Ib+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"B相电流最大值(A)\",\"itemCode\":\"IbMax\",\"value\":\""+get_rawData.IbMax+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"B相电流最小值(A)\",\"itemCode\":\"IbMin\",\"value\":\""+get_rawData.IbMin+"\",\"curve\":\"\"},";
+    		
     		acqSataStr+="{\"item\":\"C相电流(A)\",\"itemCode\":\"Ic\",\"value\":\""+get_rawData.Ic+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"C相电流最大值(A)\",\"itemCode\":\"IcMax\",\"value\":\""+get_rawData.IcMax+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"C相电流最小值(A)\",\"itemCode\":\"IcMin\",\"value\":\""+get_rawData.IcMin+"\",\"curve\":\"\"},";
+    		
     		acqSataStr+="{\"item\":\"A相电压(V)\",\"itemCode\":\"Va\",\"value\":\""+get_rawData.Va+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"B相电压(V)\",\"itemCode\":\"Vb\",\"value\":\""+get_rawData.Vb+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"C相电压(V)\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.Vc+"\",\"curve\":\"\"},";
@@ -155,7 +164,10 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		var isHaveBalanceControl=false;
     		for(var i=0;i<get_rawData.controlItems.length;i++){
     			switch(get_rawData.controlItems[i].tiem) {
-    		     case "RunControl":
+    			case "ImmediatelyAcquisition":
+   		    	 controlSataStr+="{\"item\":\"即时采集\",\"itemcode\":\"ImmediatelyAcquisition\",\"value\":\"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+   		    	 break; 
+    			case "RunControl":
     		    	 var runStatus="停抽";
     		    	 if(get_rawData.commStatus==1){
     		    		 if(get_rawData.runStatus==1){
@@ -169,6 +181,24 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		     case "SetFrequency":
     		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
+    		     case "FSDiagramInterval":
+    		    	 controlSataStr+="{\"item\":\"功图数据采集间隔(min)\",\"itemcode\":\"acqcycle_diagram\",\"value\":\""+(get_rawData.acqcycle_diagram==undefined?"":get_rawData.acqcycle_diagram)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break;
+    		     case "DiscreteInterval":
+    		    	 controlSataStr+="{\"item\":\"离散数据采集间隔(s)\",\"itemcode\":\"acqcycle_discrete\",\"value\":\""+(get_rawData.acqcycle_discrete==undefined?"":get_rawData.acqcycle_discrete)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break;
+    		     case "iUpLimit":
+    		    	 controlSataStr+="{\"item\":\"电流上限(A)\",\"itemcode\":\"IaUpLimit\",\"value\":\""+(get_rawData.IaUpLimit==undefined?"":get_rawData.IaUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break;
+    		     case "iDownLimit":
+    		    	 controlSataStr+="{\"item\":\"电流下限(A)\",\"itemcode\":\"IaDownLimit\",\"value\":\""+(get_rawData.IaDownLimit==undefined?"":get_rawData.IaDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break;
+    		     case "wattUpLimit":
+    		    	 controlSataStr+="{\"item\":\"功率上限(kW)\",\"itemcode\":\"wattUpLimit\",\"value\":\""+(get_rawData.wattUpLimit==undefined?"":get_rawData.wattUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break;
+    		     case "wattDownLimit":
+    		    	 controlSataStr+="{\"item\":\"功率下限(kW)\",\"itemcode\":\"wattDownLimit\",\"value\":\""+(get_rawData.wattDownLimit==undefined?"":get_rawData.wattDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break; 
 //    		     case "BalanceControlMode":
 //    		    	 controlSataStr+="{\"item\":\"平衡远程触发控制\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
 //    		    	 isHaveBalanceControl=true;
@@ -353,18 +383,20 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        { 
     			        	header: '操作项',  
     			        	dataIndex: 'item',
-    			        	align:'left',flex:3
+    			        	align:'left',
+    			        	flex:9
     			        },
     			        { 
     			        	header: '状态/值', 
     			        	dataIndex: 'value',
-    			        	align:'center',flex:1
+    			        	align:'center',
+    			        	flex:3
 //    			        	editor:{allowBlank:false}
     			        },
     			        { 	header: '操作', 
     			        	dataIndex: 'operation',
     			        	align:'center',
-    			        	flex:1,
+    			        	flex:4,
     			        	renderer :function(value,e,o){
 //    			        		return iconDiagnoseAnalysisCurve(value,e,o)
     			        		var id = e.record.id;
@@ -392,6 +424,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        			}else{
     			        				text="不可用";
     			        			}
+    			        		}else if(itemcode==="ImmediatelyAcquisition"){
+    			        			text="即时采集";
     			        		}else{
     			        			text="设置";
     			        		}
@@ -399,13 +433,13 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		                        Ext.widget('button', {
     		                            renderTo: id,
     		                            height: 18,
-    		                            width: 50,
+    		                            width: 60,
     		                            text: text,
     		                            disabled:hand,
     		                            hidden:hidden,
     		                            handler: function () {
     		                            	var operaName="";
-    		                            	if(text=="停抽"||text=="启抽"){
+    		                            	if(text=="停抽"||text=="启抽"||text=="即时采集"||text=="即时刷新"){
     		                            		operaName="是否执行"+text+"操作";
     		                            	}else{
     		                            		operaName="是否执行"+text+item.split("(")[0]+"操作";
@@ -433,6 +467,10 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		                                        	 }else if(o.data.value=="停抽" ||o.data.value=="停止"){
     		                                        		 Ext.getCmp("ProductionWellControlValue_Id").setValue(1);
     		             			        			 }
+    		                                        	 Ext.getCmp("ProductionWellControlValue_Id").hide();
+    		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").hide();
+    		                                         }else if(o.data.itemcode=="ImmediatelyAcquisition"){//即时采集
+    		                                        	 Ext.getCmp("ProductionWellControlValue_Id").setValue(1);
     		                                        	 Ext.getCmp("ProductionWellControlValue_Id").hide();
     		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").hide();
     		                                         }else if(o.data.itemcode=="balanceCalculateMode"){

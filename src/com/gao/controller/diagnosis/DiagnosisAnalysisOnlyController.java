@@ -419,12 +419,30 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
 				for(int i=0;EquipmentDriverServerTast.units!=null&&i<EquipmentDriverServerTast.units.size();i++){
 					if(wellName.equals(EquipmentDriverServerTast.units.get(i).getWellName())){
-						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
+						if("ImmediatelyAcquisition".equalsIgnoreCase(controlType)){//即时采集
+							EquipmentDriverServerTast.units.get(i).setImmediatelyAcquisitionControl(StringManagerUtils.stringToInteger(controlValue));
+						}else if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
 							EquipmentDriverServerTast.units.get(i).setRunStatusControl(StringManagerUtils.stringToInteger(controlValue));
 						}else if("frequencySetValue".equalsIgnoreCase(controlType)){//设置变频频率
 							EquipmentDriverServerTast.units.get(i).setFrequencyControl(StringManagerUtils.stringToFloat(controlValue));
-						}else if("setGTCycle".equalsIgnoreCase(controlType)){//设置功图采集周期
+						}
+						
+						else if("IaUpLimit".equalsIgnoreCase(controlType)){//设置电流上限
+							EquipmentDriverServerTast.units.get(i).setCurrentUpLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+						}else if("IaDownLimit".equalsIgnoreCase(controlType)){//设置电流下限
+							EquipmentDriverServerTast.units.get(i).setCurrentDownLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+						}else if("wattUpLimit".equalsIgnoreCase(controlType)){//设置功率上限
+							EquipmentDriverServerTast.units.get(i).setPowerUpLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+						}else if("wattDownLimit".equalsIgnoreCase(controlType)){//设置功率下限
+							EquipmentDriverServerTast.units.get(i).setPowerDownLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+						}
+						
+						
+						else if("acqcycle_diagram".equalsIgnoreCase(controlType)){//设置功图采集周期
 							EquipmentDriverServerTast.units.get(i).setFSDiagramIntervalControl(StringManagerUtils.stringToInteger(controlValue));
+						}
+						else if("acqcycle_discrete".equalsIgnoreCase(controlType)){//设置离散数据采集周期
+							EquipmentDriverServerTast.units.get(i).setDiscreteIntervalControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceControlMode".equalsIgnoreCase(controlType)){//设置平衡调节远程触发控制
 							EquipmentDriverServerTast.units.get(i).setBalanceControlModeControl(StringManagerUtils.stringToInteger(controlValue));

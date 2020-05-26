@@ -5,8 +5,20 @@
     "Protocol": 2,
     "Sort":3,
     "DataConfig": {
+        "DiscreteAcquisitionInterval": {
+            "Address": 40327,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
         "RunStatus": {
             "Address": 40317,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "RunControl": {
+            "Address": 40320,
             "DataType": 1,
             "Length": 1,
             "Zoom": 1
@@ -71,10 +83,46 @@
             "Length": 1,
             "Zoom": 1
         },
-        "RunControl": {
-            "Address": 40320,
+        "CurrentUpLimit": {
+            "Address": 40129,
             "DataType": 1,
             "Length": 1,
+            "Zoom": 1
+        },
+        "CurrentDownLimit": {
+            "Address": 40130,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "PowerUpLimit": {
+            "Address": 40131,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "PowerDownLimit": {
+            "Address": 40132,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "ImmediatelyAcquisition": {
+            "Address": 40133,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
+        "SetFrequency": {
+            "Address": 40402,
+            "DataType": 2,
+            "Length": 2,
+            "Zoom": 1
+        },
+        "RunFrequency": {
+            "Address": 40404,
+            "DataType": 2,
+            "Length": 2,
             "Zoom": 1
         },
         "CurrentA": {
@@ -149,6 +197,84 @@
             "Length": 2,
             "Zoom": 1
         },
+        "UpStrokeIMax": {
+            "Address": 40375,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "DownStrokeIMax": {
+            "Address": 40376,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "IDegreeBalance": {
+            "Address": 40377,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.1
+        },
+        "UpStrokeWattMax": {
+            "Address": 40378,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "DownStrokeWattMax": {
+            "Address": 40379,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "WattDegreeBalance": {
+            "Address": 40380,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.1
+        },
+        "CurrentAMax": {
+            "Address": 40381,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "CurrentAMin": {
+            "Address": 40382,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "CurrentBMax": {
+            "Address": 40383,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "CurrentBMin": {
+            "Address": 40384,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "CurrentCMax": {
+            "Address": 40385,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "CurrentCMin": {
+            "Address": 40386,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 0.01
+        },
+        "ElectricDiagnosisResult": {
+            "Address": 40449,
+            "DataType": 1,
+            "Length": 1,
+            "Zoom": 1
+        },
         "TubingPressure": {
             "Address": 40300,
             "DataType": 2,
@@ -181,18 +307,6 @@
         },
         "WaterCut": {
             "Address": 0,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "SetFrequency": {
-            "Address": 40402,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "RunFrequency": {
-            "Address": 40404,
             "DataType": 2,
             "Length": 2,
             "Zoom": 1
@@ -265,6 +379,24 @@
         },
         "PDiagram": {
             "Address": 41751,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        },
+        "IaDiagram": {
+            "Address": 42001,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        },
+        "IbDiagram": {
+            "Address": 42251,
+            "DataType": 1,
+            "Length": 250,
+            "Zoom": 0.01
+        },
+        "IcDiagram": {
+            "Address": 42501,
             "DataType": 1,
             "Length": 250,
             "Zoom": 0.01

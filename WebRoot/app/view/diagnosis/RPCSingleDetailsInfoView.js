@@ -204,6 +204,21 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                           xtype: 'textfield',
                           value: '',
                           hidden: true
+                      }, {
+                          id: 'FSDiagramMaxAcquisitionTime_Id',//功图最新采集时间
+                          xtype: 'textfield',
+                          value: '',
+                          hidden: true
+                      }, {
+                          id: 'DiscreteMaxAcquisitionTime_Id',//功图最新采集时间
+                          xtype: 'textfield',
+                          value: '',
+                          hidden: true
+                      }, {
+                          id: 'FSDiagramAnalysisSingleDetailsSelectRow_Id',//功图最新采集时间
+                          xtype: 'textfield',
+                          value: 0,
+                          hidden: true
                       }],
                       items: {
                     	  xtype: 'tabpanel',
@@ -217,7 +232,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                           items: [{
                           	xtype: 'tabpanel',
                           	tabPosition: 'right',
-                          	title:'工况',
+                          	title:'功图工况',
                           	iconCls: 'select',
                           	id: 'FSDiagramAnalysisSingleWorkCondStatTabpanel_Id',
                           	tabRotation:1,
@@ -263,6 +278,53 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                   }
                               }
                           },{
+                            	xtype: 'tabpanel',
+                              	tabPosition: 'right',
+                              	title:'电参工况',
+                              	id: 'FSDiagramAnalysisSingleElecWorkCondStatTabpanel_Id',
+                              	tabRotation:1,
+                              	items: [{
+                                      title:'电参工况',
+                                      border: false,
+                                      iconCls: 'dtgreen',
+                                      layout: 'border',
+                                      id: 'FSDiagramAnalysisSingleElecWorkCondStatPanel_Id',
+                                      items:[{
+                                      	  region: 'center',
+                                      	  id:'FSDiagramAnalysisSingleElecWorkCondDataListPanel_Id',
+                                      	  header: false,
+                                      	  layout: 'fit'
+                                      },{
+                                      	  region: 'south',
+                                      	  id:'FSDiagramAnalysisSingleElecWorkCondStatGraphPanel_Id',
+                                          height: '50%',
+                                          border: true,
+                                          header: false,
+                                          collapsible: true, // 是否折叠
+                                          split: true, // 竖折叠条
+                                          html: '<div id="FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                          listeners: {
+                                              resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                              	if ($("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                      $("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  }else{
+                                                  	Ext.create('Ext.tip.ToolTip', {
+                                                          target: 'FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id',
+                                                          html: '点击饼图不同区域或标签，查看相应统计数据'
+                                                      });
+                                                  }
+                                              }
+                                          }
+                                      }]
+                                  }],
+                              	listeners: {
+                                  	tabchange: function (tabPanel, newCard, oldCard,obj) {
+                                  		newCard.setIconCls("dtgreen");
+                                  		oldCard.setIconCls("");
+                                  		loadFSDiagramAnalysisSingleStatData();
+                                      }
+                                  }
+                         },{
                           	xtype: 'tabpanel',
                           	tabPosition: 'right',
                           	title:'产量',
@@ -718,6 +780,9 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                       		Ext.getCmp("FSDiagramAnalysisSingleWorkCondStatTabpanel_Id").getTabBar().insert(0, {
                     		      	xtype: 'tbfill'
                       		});
+                      		Ext.getCmp("FSDiagramAnalysisSingleElecWorkCondStatTabpanel_Id").getTabBar().insert(0, {
+                		      	xtype: 'tbfill'
+                      		});
                       		Ext.getCmp("FSDiagramAnalysisSingleProdStatTabpanel_Id").getTabBar().insert(0, {
                     		      	xtype: 'tbfill'
                       		});
@@ -754,125 +819,190 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                     items: [{
                     	border: false,
                         flex: 2,
-                        margin: '0 0 0 0',
-                        padding: 0,
-                        autoScroll:true,
-                        scrollable: true,
-                        layout: {
-                            type: 'vbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
-                        items: [
-                        	{
-                        		border: false,
-                        		margin: '0 0 0 0',
-//                        		flex: 1,
-                        		layout: {
-                        	        type: 'hbox',
-                        	        pack: 'start',
-                        	        align: 'stretch'
-                        	    },
-                        	    items:[{
-                        	    	border: true,
-                        	    	margin: '0 0 0 0',
-                                    flex: 1,
-                                    height:300,
-                                    html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                        	if($("#FSDiagramAnalysisSingleDetailsDiv1_id").highcharts()!=undefined){
-                                    			$("#FSDiagramAnalysisSingleDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv1_id").offsetHeight,true);
-                                    		}
+                        xtype: 'tabpanel',
+                        activeTab: 0,
+                        tabPosition: 'top',
+                        id: 'FSDiagramAnalysisSingleDetailsCenterTabPanel_Id',
+                        items: [{
+                        	title: '功图分析',
+                        	margin: '0 0 0 0',
+                            padding: 0,
+                            autoScroll:true,
+                            scrollable: true,
+                            id: 'FSDiagramAnalysisSingleDetailsCenterPanel1_Id',
+                            layout: {
+                                type: 'vbox',
+                                pack: 'start',
+                                align: 'stretch'
+                            },
+                            items: [
+                            	{
+                            		border: false,
+                            		margin: '0 0 0 0',
+//                            		flex: 1,
+                            		layout: {
+                            	        type: 'hbox',
+                            	        pack: 'start',
+                            	        align: 'stretch'
+                            	    },
+                            	    items:[{
+                            	    	border: true,
+                            	    	margin: '0 0 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleDetailsDiv1_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv1_id").offsetHeight,true);
+                                        		}
+                                            }
                                         }
-                                    }
-                        	    },{
-                        	    	border: true,
-                        	    	margin: '0 1 0 0',
-                                    flex: 1,
-                                    height:300,
-                                    html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                        	if($("#FSDiagramAnalysisSingleDetailsDiv2_id").highcharts()!=undefined){
-                                    			$("#FSDiagramAnalysisSingleDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv2_id").offsetHeight,true);
-                                    		}
+                            	    },{
+                            	    	border: true,
+                            	    	margin: '0 1 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleDetailsDiv2_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv2_id").offsetHeight,true);
+                                        		}
+                                            }
                                         }
-                                    }
-                        	    }]
-                        	},{
-                        		border: false,
-//                        		flex: 1,
-                        		margin: '1 0 0 0',
-                        		layout: {
-                        	        type: 'hbox',
-                        	        pack: 'start',
-                        	        align: 'stretch'
-                        	    },
-                        	    items:[{
-                        	    	border: true,
-                        	    	margin: '0 1 0 0',
-                                    flex: 1,
-                                    height:300,
-                                    html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                        	if($("#FSDiagramAnalysisSingleDetailsDiv3_id").highcharts()!=undefined){
-                                    			$("#FSDiagramAnalysisSingleDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv3_id").offsetHeight,true);
-                                    		}
+                            	    }]
+                            	},{
+                            		border: false,
+//                            		flex: 1,
+                            		margin: '1 0 0 0',
+                            		layout: {
+                            	        type: 'hbox',
+                            	        pack: 'start',
+                            	        align: 'stretch'
+                            	    },
+                            	    items:[{
+                            	    	border: true,
+                            	    	margin: '0 1 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleDetailsDiv3_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv3_id").offsetHeight,true);
+                                        		}
+                                            }
                                         }
-                                    }
-                        	    },{
-                        	    	border: true,
-                        	    	margin: '0 1 0 0',
-                                    flex: 1,
-                                    height:300,
-                                    html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                        	if($("#FSDiagramAnalysisSingleDetailsDiv4_id").highcharts()!=undefined){
-                                    			$("#FSDiagramAnalysisSingleDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv4_id").offsetHeight,true);
-                                    		}
+                            	    },{
+                            	    	border: true,
+                            	    	margin: '0 1 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleDetailsDiv4_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv4_id").offsetHeight,true);
+                                        		}
+                                            }
                                         }
-                                    }
-                        	    }]
-                        	},{
-                        		border: false,
-//                        		flex: 1,
-                        		margin: '1 0 0 0',
-                        		layout: {
-                        	        type: 'hbox',
-                        	        pack: 'start',
-                        	        align: 'stretch'
-                        	    },
-                        	    items:[{
-                        	    	border: true,
-                        	    	margin: '0 1 0 0',
-                                    flex: 1,
-                                    height:300,
-                                    html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                        	if($("#FSDiagramAnalysisSingleDetailsDiv5_id").highcharts()!=undefined){
-                                    			$("#FSDiagramAnalysisSingleDetailsDiv5_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv5_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv5_id").offsetHeight,true);
-                                    		}
+                            	    }]
+                            	},{
+                            		border: false,
+//                            		flex: 1,
+                            		margin: '1 0 0 0',
+                            		layout: {
+                            	        type: 'hbox',
+                            	        pack: 'start',
+                            	        align: 'stretch'
+                            	    },
+                            	    items:[{
+                            	    	border: true,
+                            	    	margin: '0 1 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleDetailsDiv5_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleDetailsDiv5_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv5_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv5_id").offsetHeight,true);
+                                        		}
+                                            }
                                         }
-                                    }
-                        	    },{
-                        	    	border: true,
-                                    flex: 1,
-                                    height:300,
-                                    html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
-                                    listeners: {
-                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                        	if($("#FSDiagramAnalysisSingleDetailsDiv6_id").highcharts()!=undefined){
-                                    			$("#FSDiagramAnalysisSingleDetailsDiv6_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv6_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv6_id").offsetHeight,true);
-                                    		}
+                            	    },{
+                            	    	border: true,
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleDetailsDiv6_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleDetailsDiv6_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv6_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv6_id").offsetHeight,true);
+                                        		}
+                                            }
                                         }
+                            	    }]
+                            	}
+                            ]
+                        },{
+                        	title: '电流曲线',
+                        	margin: '0 0 0 0',
+                        	id: 'FSDiagramAnalysisSingleDetailsCenterPanel2_Id',
+                            padding: 0,
+                            autoScroll:true,
+                            scrollable: true,
+                            layout: {
+                                type: 'vbox',
+                                pack: 'start',
+                                align: 'stretch'
+                            },
+                            items:[{
+                    	    	border: true,
+                    	    	margin: '0 0 0 0',
+                                flex: 1,
+                                height:300,
+                                html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv7_id\" style="width:100%;height:100%;"></div>',
+                                listeners: {
+                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    	if($("#FSDiagramAnalysisSingleDetailsDiv7_id").highcharts()!=undefined){
+                                			$("#FSDiagramAnalysisSingleDetailsDiv7_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv7_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv7_id").offsetHeight,true);
+                                		}
                                     }
-                        	    }]
-                        	}
-                        ]
+                                }
+                    	    },{
+                    	    	border: true,
+                    	    	margin: '0 0 0 0',
+                                flex: 1,
+                                height:300,
+                                html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv8_id\" style="width:100%;height:100%;"></div>',
+                                listeners: {
+                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    	if($("#FSDiagramAnalysisSingleDetailsDiv8_id").highcharts()!=undefined){
+                                			$("#FSDiagramAnalysisSingleDetailsDiv8_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv8_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv8_id").offsetHeight,true);
+                                		}
+                                    }
+                                }
+                    	    },{
+                    	    	border: true,
+                    	    	margin: '0 0 0 0',
+                                flex: 1,
+                                height:300,
+                                html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv9_id\" style="width:100%;height:100%;"></div>',
+                                listeners: {
+                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    	if($("#FSDiagramAnalysisSingleDetailsDiv9_id").highcharts()!=undefined){
+                                			$("#FSDiagramAnalysisSingleDetailsDiv9_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv9_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv9_id").offsetHeight,true);
+                                		}
+                                    }
+                                }
+                    	    }]
+                        }],
+                        listeners: {
+                        	tabchange: function (tabPanel, newCard, oldCard,obj) {
+                            	Ext.create("AP.store.diagnosis.SinglePumpCardStore");
+                            }
+                        }
                     },{
                     	xtype: 'tabpanel',
                         id: 'FSDiagramAnalysisSingleDetailsRightTabPanel_Id',
@@ -1178,6 +1308,13 @@ function getFSDiagramAnalysisSingleStatType() {
 		pieDivId="FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id";
 		pieChartTitle="在线时率";
 		exportExcelTitle='抽油机实时评价-在线时率';
+	}else if(activeTabId=="FSDiagramAnalysisSingleElecWorkCondStatPanel_Id"){//功图工况
+		type=13;
+		panelId="FSDiagramAnalysisSingleElecWorkCondDataListPanel_Id";
+		piePanelId="FSDiagramAnalysisSingleElecWorkCondStatGraphPanel_Id";
+		pieDivId="FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id";
+		pieChartTitle="电参工况";
+		exportExcelTitle='抽油机实时评价-电参工况';
 	}
 	var result=Ext.JSON.decode("{\"type\":"+type+",\"panelId\":\""+panelId+"\",\"piePanelId\":\""+piePanelId+"\",\"pieDivId\":\""+pieDivId+"\",\"pieChartTitle\":\""+pieChartTitle+"\",\"exportExcelTitle\":\""+exportExcelTitle+"\"}");
 	return result;
@@ -1556,3 +1693,43 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
         series: series
     });
 };
+
+var FSDiagramAnalysisRealtimeRefreshTask = {
+	    run: function() {
+	    	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
+			if (activeId == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
+				if (isNotVal(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id"))) {
+					var FSDiagramMaxAcquisitionTime=Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").getValue();
+					var DiscreteMaxAcquisitionTime=Ext.getCmp("DiscreteMaxAcquisitionTime_Id").getValue();
+					var orgId = Ext.getCmp('leftOrg_Id').getValue();
+					Ext.Ajax.request({
+			    		method:'POST',
+			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcquisitionTime',
+			    		success:function(response) {
+			    			var result = Ext.decode(response.responseText);
+			    			if(result.diagramRecords>0 || result.discreteRecords>0){
+			    				if(result.diagramRecords>0){
+			    					Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").setValue(result.newestFSDiagramAcquisitionTime);
+			    				}
+			    				if(result.discreteRecords>0){
+			    					Ext.getCmp("DiscreteMaxAcquisitionTime_Id").setValue(result.newestDiscreteAcquisitionTime);
+			    				}
+			    				Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
+			    			}
+			    		},
+			    		failure:function(){
+			    			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			    		},
+			    		params: {
+			    			orgId: orgId,
+			    			FSDiagramMaxAcquisitionTime: FSDiagramMaxAcquisitionTime,
+			    			DiscreteMaxAcquisitionTime:DiscreteMaxAcquisitionTime
+			            }
+			    	});
+		    	}
+			}
+	    },
+	    interval: 5000
+};
+
+Ext.TaskManager.start(FSDiagramAnalysisRealtimeRefreshTask);

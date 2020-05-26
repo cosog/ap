@@ -70,14 +70,6 @@ public class EquipmentDriverServerTast {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-//		byte[] bb={0x01, 0x03,0x04, 0x66, (byte) 0xE6, 0x4F, 0x43,0x70,(byte) 0x8D}; 
-//		float ff=StringManagerUtils.getFloatLittle(bb, 3);
-//		Gson gson = new Gson();
-//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
-//		String path=stringManagerUtils.getFilePath("test.json","data/");
-//		String json=stringManagerUtils.readFile(path,"utf-8");
-//		StringManagerUtils.sendPostMethod(url, json,"utf-8");
 		
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;
@@ -1188,6 +1180,14 @@ public class EquipmentDriverServerTast {
 		public int balanceAwayTimePerBeatControl=0;//设置重心远离支点每拍调节时间
 		public int balanceCloseTimePerBeatControl=0;//设置重心接近支点每拍调节时间
 		
+		public int DiscreteIntervalControl=0;//离散数据采集间隔设置
+		
+		public int CurrentUpLimitControl=0;//电流上限设置
+		public int CurrentDownLimitControl=0;//电流下限设置
+		public int PowerUpLimitControl=0;//功率上限设置
+		public int PowerDownLimitControl=0;//功率下限设置
+		public int ImmediatelyAcquisitionControl=0;//离散数据即时采集设置
+		
 		public  String driverAddr;
 		public  String dirverId;
 		public  String dirverName;
@@ -1572,6 +1572,42 @@ public class EquipmentDriverServerTast {
 		}
 		public void setLastCommStatus(int lastCommStatus) {
 			this.lastCommStatus = lastCommStatus;
+		}
+		public int getDiscreteIntervalControl() {
+			return DiscreteIntervalControl;
+		}
+		public void setDiscreteIntervalControl(int discreteIntervalControl) {
+			DiscreteIntervalControl = discreteIntervalControl;
+		}
+		public int getCurrentUpLimitControl() {
+			return CurrentUpLimitControl;
+		}
+		public void setCurrentUpLimitControl(int currentUpLimitControl) {
+			CurrentUpLimitControl = currentUpLimitControl;
+		}
+		public int getCurrentDownLimitControl() {
+			return CurrentDownLimitControl;
+		}
+		public void setCurrentDownLimitControl(int currentDownLimitControl) {
+			CurrentDownLimitControl = currentDownLimitControl;
+		}
+		public int getPowerUpLimitControl() {
+			return PowerUpLimitControl;
+		}
+		public void setPowerUpLimitControl(int powerUpLimitControl) {
+			PowerUpLimitControl = powerUpLimitControl;
+		}
+		public int getPowerDownLimitControl() {
+			return PowerDownLimitControl;
+		}
+		public void setPowerDownLimitControl(int powerDownLimitControl) {
+			PowerDownLimitControl = powerDownLimitControl;
+		}
+		public int getImmediatelyAcquisitionControl() {
+			return ImmediatelyAcquisitionControl;
+		}
+		public void setImmediatelyAcquisitionControl(int immediatelyAcquisitionControl) {
+			ImmediatelyAcquisitionControl = immediatelyAcquisitionControl;
 		}
 		
 		

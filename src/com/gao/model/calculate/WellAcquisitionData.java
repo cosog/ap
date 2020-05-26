@@ -237,6 +237,20 @@ public class WellAcquisitionData {
 	    private float SPM;
 
 	    private float Stroke;
+	    
+	    private float HaveBalanceData=0;
+	    
+	    private float UpStrokeIMax;
+	    
+	    private float DownStrokeIMax;
+	    
+	    private float IDegreeBalance;
+	    
+	    private float UpStrokeWattMax;
+	    
+	    private float DownStrokeWattMax;
+	    
+	    private float WattDegreeBalance;
 
 	    private List<Float> F;
 
@@ -245,6 +259,12 @@ public class WellAcquisitionData {
 	    private List<Float> A;
 
 	    private List<Float> P;
+	    
+	    private List<Float> Ia;
+	    
+	    private List<Float> Ib;
+	    
+	    private List<Float> Ic;
 
 	    public void setAcquisitionTime(String AcquisitionTime){
 	        this.AcquisitionTime = AcquisitionTime;
@@ -293,6 +313,66 @@ public class WellAcquisitionData {
 		}
 		public void setAcquisitionCycle(int acquisitionCycle) {
 			AcquisitionCycle = acquisitionCycle;
+		}
+		public float getUpStrokeIMax() {
+			return UpStrokeIMax;
+		}
+		public void setUpStrokeIMax(float upStrokeIMax) {
+			UpStrokeIMax = upStrokeIMax;
+		}
+		public float getDownStrokeIMax() {
+			return DownStrokeIMax;
+		}
+		public void setDownStrokeIMax(float downStrokeIMax) {
+			DownStrokeIMax = downStrokeIMax;
+		}
+		public float getIDegreeBalance() {
+			return IDegreeBalance;
+		}
+		public void setIDegreeBalance(float iDegreeBalance) {
+			IDegreeBalance = iDegreeBalance;
+		}
+		public float getUpStrokeWattMax() {
+			return UpStrokeWattMax;
+		}
+		public void setUpStrokeWattMax(float upStrokeWattMax) {
+			UpStrokeWattMax = upStrokeWattMax;
+		}
+		public float getDownStrokeWattMax() {
+			return DownStrokeWattMax;
+		}
+		public void setDownStrokeWattMax(float downStrokeWattMax) {
+			DownStrokeWattMax = downStrokeWattMax;
+		}
+		public float getWattDegreeBalance() {
+			return WattDegreeBalance;
+		}
+		public void setWattDegreeBalance(float wattDegreeBalance) {
+			WattDegreeBalance = wattDegreeBalance;
+		}
+		public List<Float> getIa() {
+			return Ia;
+		}
+		public void setIa(List<Float> ia) {
+			Ia = ia;
+		}
+		public List<Float> getIb() {
+			return Ib;
+		}
+		public void setIb(List<Float> ib) {
+			Ib = ib;
+		}
+		public List<Float> getIc() {
+			return Ic;
+		}
+		public void setIc(List<Float> ic) {
+			Ic = ic;
+		}
+		public float getHaveBalanceData() {
+			return HaveBalanceData;
+		}
+		public void setHaveBalanceData(float haveBalanceData) {
+			HaveBalanceData = haveBalanceData;
 		}
 	}
 

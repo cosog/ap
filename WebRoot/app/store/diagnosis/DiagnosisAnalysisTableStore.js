@@ -185,7 +185,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		    	 controlSataStr+="{\"item\":\"功图数据采集间隔(min)\",\"itemcode\":\"acqcycle_diagram\",\"value\":\""+(get_rawData.acqcycle_diagram==undefined?"":get_rawData.acqcycle_diagram)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
     		     case "DiscreteInterval":
-    		    	 controlSataStr+="{\"item\":\"离散数据采集间隔(s)\",\"itemcode\":\"acqcycle_discrete\",\"value\":\""+(get_rawData.acqcycle_discrete==undefined?"":get_rawData.acqcycle_discrete)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 controlSataStr+="{\"item\":\"离散数据采集间隔(min)\",\"itemcode\":\"acqcycle_discrete\",\"value\":\""+(get_rawData.acqcycle_discrete==undefined?"":get_rawData.acqcycle_discrete)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
     		     case "iUpLimit":
     		    	 controlSataStr+="{\"item\":\"电流上限(A)\",\"itemcode\":\"IaUpLimit\",\"value\":\""+(get_rawData.IaUpLimit==undefined?"":get_rawData.IaUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
@@ -199,20 +199,20 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		     case "wattDownLimit":
     		    	 controlSataStr+="{\"item\":\"功率下限(kW)\",\"itemcode\":\"wattDownLimit\",\"value\":\""+(get_rawData.wattDownLimit==undefined?"":get_rawData.wattDownLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break; 
-//    		     case "BalanceControlMode":
-//    		    	 controlSataStr+="{\"item\":\"平衡远程触发控制\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
-//    		    	 isHaveBalanceControl=true;
-//    		    	 break;
+    		     case "BalanceControlMode":
+    		    	 controlSataStr+="{\"item\":\"远程调节手自动模式\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
+    		    	 isHaveBalanceControl=true;
+    		    	 break;
 //    		     case "BalanceCalculateMode":
 //    		    	 controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
 //    		    	 isHaveBalanceControl=true;
 //    		    	 break;
     		     case "BalanceAwayTime":
-    		    	 controlSataStr+="{\"item\":\"重心远离支点调节距离(cm)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 controlSataStr+="{\"item\":\"向远离驴头方向调节距离(cm)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceCloseTime":
-    		    	 controlSataStr+="{\"item\":\"重心接近支点调节距离(cm)\",\"itemcode\":\"balanceCloseTime\",\"value\":\""+(get_rawData.balanceCloseTime==undefined?"":get_rawData.balanceCloseTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 controlSataStr+="{\"item\":\"向接近驴头方向调节距离(cm)\",\"itemcode\":\"balanceCloseTime\",\"value\":\""+(get_rawData.balanceCloseTime==undefined?"":get_rawData.balanceCloseTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
     		     case "BalanceStrokeCount":
@@ -238,6 +238,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			} 
     		}
     		if(isHaveBalanceControl){
+    			controlSataStr+="{\"item\":\"平衡度判别方式\",\"itemcode\":\"balanceCalculateType\",\"value\":\"电流法\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
         		controlSataStr+="{\"item\":\"平衡远程自动调节\",\"itemcode\":\"balanceAutoControl\",\"value\":\""+(get_rawData.balanceAutoControl==undefined?"":get_rawData.balanceAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
         		controlSataStr+="{\"item\":\"冲次远程自动调节\",\"itemcode\":\"spmAutoControl\",\"value\":\""+(get_rawData.spmAutoControl==undefined?"":get_rawData.spmAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
         		controlSataStr+="{\"item\":\"平衡前限位\",\"itemcode\":\"balanceFrontLimit\",\"value\":\""+(get_rawData.balanceFrontLimit==undefined?"":get_rawData.balanceFrontLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
@@ -473,12 +474,16 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		                                        	 Ext.getCmp("ProductionWellControlValue_Id").setValue(1);
     		                                        	 Ext.getCmp("ProductionWellControlValue_Id").hide();
     		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").hide();
-    		                                         }else if(o.data.itemcode=="balanceCalculateMode"){
+    		                                         }else if(o.data.itemcode=="balanceCalculateMode" || o.data.itemcode=="balanceCalculateType" || o.data.itemcode=="balanceControlMode"){
     		                                        	 Ext.getCmp("ProductionWellControlValue_Id").hide();
     		                                        	 Ext.getCmp("ProductionWellControlValueCombo_Id").setFieldLabel(o.data.item);
     		                                        	 var data=[];
     		                                        	 if(o.data.itemcode=="balanceCalculateMode"){
     		                                        		 data=[['1', '下行程最大值/上行程最大值'], ['2', '上行程最大值/下行程最大值']];
+    		                                        	 }else if(o.data.itemcode=="balanceCalculateType"){
+    		                                        		 data=[['1', '电流法'], ['2', '功率法']];
+    		                                        	 }else if(o.data.itemcode=="balanceControlMode"){
+    		                                        		 data=[['0', '手动'], ['1', '自动']];
     		                                        	 }
     		                                        	 var controlTypeStore = new Ext.data.SimpleStore({
     		                                             	autoLoad : false,

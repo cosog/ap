@@ -960,7 +960,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"balanceAfterLimit\":\""+obj[88]+"\",");
 			
 			result_json.append("\"acqcycle_diagram\":\""+obj[89]+"\",");
-			result_json.append("\"acqcycle_discrete\":\""+obj[90]+"\",");
+			
+			int acqcycle_discrete1=StringManagerUtils.stringToInteger(obj[78]+"");
+			int acqcycle_discrete=(int)(acqcycle_discrete1/60+0.5);
+			result_json.append("\"acqcycle_discrete\":\""+acqcycle_discrete+"\",");
 			
 			result_json.append("\"videourl\":\""+obj[91]+"\",");
 			result_json.append("\"runRange\":\""+obj[92]+"\"");
@@ -1089,7 +1092,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellheadfluidtemperature".equalsIgnoreCase(itemCode)
 				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
-				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
+				||"frequencyRunValue".equalsIgnoreCase(itemCode)
+				||"IaMax".equalsIgnoreCase(itemCode)
+				||"IaMin".equalsIgnoreCase(itemCode)
+				||"IbMax".equalsIgnoreCase(itemCode)
+				||"IbMin".equalsIgnoreCase(itemCode)
+				||"IcMax".equalsIgnoreCase(itemCode)
+				||"IcMin".equalsIgnoreCase(itemCode)){
 			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_rpc_discrete_hist t "
 					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 		}
@@ -1218,6 +1227,53 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		dynSbf.append("\"vcuplimit\":"+vcuplimit+",\"vcdownlimit\":"+vcdownlimit+"");
 		dynSbf.append("}");
 		return dynSbf.toString();
+	}
+	
+	public String getNewestAcquisitionTime(String orgId,String FSDiagramMaxAcquisitionTime,String DiscreteMaxAcquisitionTime){
+		StringBuffer result_json = new StringBuffer();
+		String newestFSDiagramAcquisitionTime="";
+		String newestDiscreteAcquisitionTime="";
+		int diagramRecords=0;
+		int discreteRecords=0;
+		String diagramSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd hh24:mi:ss'),count(1) from TBL_RPC_DIAGRAM_HIST t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
+		String discreteSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd hh24:mi:ss'),count(1) from tbl_rpc_discrete_hist t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
+		
+		if(StringManagerUtils.isNotNull(FSDiagramMaxAcquisitionTime)){
+			diagramSql+="and t.acquisitiontime>to_date('"+FSDiagramMaxAcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		}
+		if(StringManagerUtils.isNotNull(DiscreteMaxAcquisitionTime)){
+			discreteSql+="and t.acquisitiontime>to_date('"+DiscreteMaxAcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		}
+		
+		List<?> diagramList=this.findCallSql(diagramSql);
+		List<?> discreteList=this.findCallSql(discreteSql);
+		
+		if(diagramList.size()>0){
+			Object[] obj = (Object[]) diagramList.get(0);
+			if(obj[0]!=null){
+				newestFSDiagramAcquisitionTime=obj[0]+"";
+			}
+			if(obj[1]!=null){
+				diagramRecords=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+		}
+		
+		if(discreteList.size()>0){
+			Object[] obj = (Object[]) discreteList.get(0);
+			if(obj[0]!=null){
+				newestDiscreteAcquisitionTime=obj[0]+"";
+			}
+			if(obj[1]!=null){
+				discreteRecords=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+		}
+		result_json.append("{");
+		result_json.append("\"newestFSDiagramAcquisitionTime\":\""+newestFSDiagramAcquisitionTime+"\",");
+		result_json.append("\"diagramRecords\":"+diagramRecords+",");
+		result_json.append("\"newestDiscreteAcquisitionTime\":\""+newestDiscreteAcquisitionTime+"\",");
+		result_json.append("\"discreteRecords\":"+discreteRecords+"");
+		result_json.append("}");
+		return result_json.toString();
 	}
 	
 	public BaseDao getDao() {

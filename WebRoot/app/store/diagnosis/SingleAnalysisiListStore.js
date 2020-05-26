@@ -98,7 +98,10 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                             	Ext.getCmp('FSDiagramAnalysisSingleDetails_Id').getStore().loadPage(1);
                             	
                     		}
-                        }
+                        },
+                        select: function(grid, record, index, eOpts) {
+                        	Ext.getCmp('FSDiagramAnalysisSingleDetailsSelectRow_Id').setValue(index);
+                       }
                     }
                 });
             	var panelId=getFSDiagramAnalysisSingleStatType().panelId;
@@ -128,7 +131,15 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
             	var SingleAnalysisGridPanel = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id");
                 if (isNotVal(SingleAnalysisGridPanel)) {
                 	SingleAnalysisGridPanel.getSelectionModel().deselectAll(true);
-                	SingleAnalysisGridPanel.getSelectionModel().select(0, true);
+                	
+                	
+                	var FSDiagramAnalysisSingleDetailsSelectRow=Ext.getCmp('FSDiagramAnalysisSingleDetailsSelectRow_Id').getValue();
+                	var wellName = Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
+                	if(wellName==null||wellName==""){
+                		SingleAnalysisGridPanel.getSelectionModel().select(parseInt(FSDiagramAnalysisSingleDetailsSelectRow), true);
+                	}else{
+                		SingleAnalysisGridPanel.getSelectionModel().select(0, true);
+                	}
                 }
             }else{
             	$("#FSDiagramAnalysisSingleDetailsDiv1_id").html('');

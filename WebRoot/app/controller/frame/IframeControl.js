@@ -318,6 +318,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="RPCSingleDetailsInfoPanel_Id"){
 			Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue("");
+			Ext.getCmp('FSDiagramAnalysisSingleDetailsSelectRow_Id').setValue(0);
 			loadFSDiagramAnalysisSingleStatData();
 		}else if(activeId=="PCPSingleDetailsInfoPanel_Id"){
 			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue("");

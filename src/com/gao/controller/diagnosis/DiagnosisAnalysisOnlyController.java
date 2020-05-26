@@ -428,13 +428,21 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 						}
 						
 						else if("IaUpLimit".equalsIgnoreCase(controlType)){//设置电流上限
-							EquipmentDriverServerTast.units.get(i).setCurrentUpLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+							float value=StringManagerUtils.stringToFloat(controlValue);
+							int setValue=(int)(value*100+0.5);
+							EquipmentDriverServerTast.units.get(i).setCurrentUpLimitControl(setValue);
 						}else if("IaDownLimit".equalsIgnoreCase(controlType)){//设置电流下限
-							EquipmentDriverServerTast.units.get(i).setCurrentDownLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+							float value=StringManagerUtils.stringToFloat(controlValue);
+							int setValue=(int)(value*100+0.5);
+							EquipmentDriverServerTast.units.get(i).setCurrentDownLimitControl(setValue);
 						}else if("wattUpLimit".equalsIgnoreCase(controlType)){//设置功率上限
-							EquipmentDriverServerTast.units.get(i).setPowerUpLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+							float value=StringManagerUtils.stringToFloat(controlValue);
+							int setValue=(int)(value*100+0.5);
+							EquipmentDriverServerTast.units.get(i).setPowerUpLimitControl(setValue);
 						}else if("wattDownLimit".equalsIgnoreCase(controlType)){//设置功率下限
-							EquipmentDriverServerTast.units.get(i).setPowerDownLimitControl((int)(StringManagerUtils.stringToFloat(controlValue)*100));
+							float value=StringManagerUtils.stringToFloat(controlValue);
+							int setValue=(int)(value*100+0.5);
+							EquipmentDriverServerTast.units.get(i).setPowerDownLimitControl(setValue);
 						}
 						
 						
@@ -442,7 +450,14 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 							EquipmentDriverServerTast.units.get(i).setFSDiagramIntervalControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("acqcycle_discrete".equalsIgnoreCase(controlType)){//设置离散数据采集周期
-							EquipmentDriverServerTast.units.get(i).setDiscreteIntervalControl(StringManagerUtils.stringToInteger(controlValue));
+							float value=StringManagerUtils.stringToFloat(controlValue);
+							int acqcycle_discrete=(int)(value*60+0.5);
+							if(acqcycle_discrete<1){
+								acqcycle_discrete=1;
+							}else if(acqcycle_discrete>1800){
+								acqcycle_discrete=1800;
+							}
+							EquipmentDriverServerTast.units.get(i).setDiscreteIntervalControl(acqcycle_discrete);
 						}
 						else if("balanceControlMode".equalsIgnoreCase(controlType)){//设置平衡调节远程触发控制
 							EquipmentDriverServerTast.units.get(i).setBalanceControlModeControl(StringManagerUtils.stringToInteger(controlValue));
@@ -509,6 +524,32 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getNewestAcquisitionTime")
+	public String getNewestAcquisitionTime() throws Exception {
+
+		orgId = ParamUtils.getParameter(request, "orgId");
+		orgId = findCurrentUserOrgIdInfo(orgId);
+		
+		String FSDiagramMaxAcquisitionTime = ParamUtils.getParameter(request, "FSDiagramMaxAcquisitionTime");
+		String DiscreteMaxAcquisitionTime = ParamUtils.getParameter(request, "DiscreteMaxAcquisitionTime");
+		this.pager = new Page("pagerForm", request);
+		
+		String json =diagnosisAnalysisOnlyService.getNewestAcquisitionTime(orgId,FSDiagramMaxAcquisitionTime,DiscreteMaxAcquisitionTime);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	

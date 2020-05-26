@@ -204,6 +204,21 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                           xtype: 'textfield',
                           value: '',
                           hidden: true
+                      }, {
+                          id: 'FSDiagramMaxAcquisitionTime_Id',//功图最新采集时间
+                          xtype: 'textfield',
+                          value: '',
+                          hidden: true
+                      }, {
+                          id: 'DiscreteMaxAcquisitionTime_Id',//功图最新采集时间
+                          xtype: 'textfield',
+                          value: '',
+                          hidden: true
+                      }, {
+                          id: 'FSDiagramAnalysisSingleDetailsSelectRow_Id',//功图最新采集时间
+                          xtype: 'textfield',
+                          value: 0,
+                          hidden: true
                       }],
                       items: {
                     	  xtype: 'tabpanel',
@@ -807,12 +822,14 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                         xtype: 'tabpanel',
                         activeTab: 0,
                         tabPosition: 'top',
+                        id: 'FSDiagramAnalysisSingleDetailsCenterTabPanel_Id',
                         items: [{
                         	title: '功图分析',
                         	margin: '0 0 0 0',
                             padding: 0,
                             autoScroll:true,
                             scrollable: true,
+                            id: 'FSDiagramAnalysisSingleDetailsCenterPanel1_Id',
                             layout: {
                                 type: 'vbox',
                                 pack: 'start',
@@ -931,6 +948,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                         },{
                         	title: '电流曲线',
                         	margin: '0 0 0 0',
+                        	id: 'FSDiagramAnalysisSingleDetailsCenterPanel2_Id',
                             padding: 0,
                             autoScroll:true,
                             scrollable: true,
@@ -1675,3 +1693,43 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
         series: series
     });
 };
+
+var FSDiagramAnalysisRealtimeRefreshTask = {
+	    run: function() {
+	    	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
+			if (activeId == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
+				if (isNotVal(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id"))) {
+					var FSDiagramMaxAcquisitionTime=Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").getValue();
+					var DiscreteMaxAcquisitionTime=Ext.getCmp("DiscreteMaxAcquisitionTime_Id").getValue();
+					var orgId = Ext.getCmp('leftOrg_Id').getValue();
+					Ext.Ajax.request({
+			    		method:'POST',
+			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcquisitionTime',
+			    		success:function(response) {
+			    			var result = Ext.decode(response.responseText);
+			    			if(result.diagramRecords>0 || result.discreteRecords>0){
+			    				if(result.diagramRecords>0){
+			    					Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").setValue(result.newestFSDiagramAcquisitionTime);
+			    				}
+			    				if(result.discreteRecords>0){
+			    					Ext.getCmp("DiscreteMaxAcquisitionTime_Id").setValue(result.newestDiscreteAcquisitionTime);
+			    				}
+			    				Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
+			    			}
+			    		},
+			    		failure:function(){
+			    			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			    		},
+			    		params: {
+			    			orgId: orgId,
+			    			FSDiagramMaxAcquisitionTime: FSDiagramMaxAcquisitionTime,
+			    			DiscreteMaxAcquisitionTime:DiscreteMaxAcquisitionTime
+			            }
+			    	});
+		    	}
+			}
+	    },
+	    interval: 5000
+};
+
+Ext.TaskManager.start(FSDiagramAnalysisRealtimeRefreshTask);

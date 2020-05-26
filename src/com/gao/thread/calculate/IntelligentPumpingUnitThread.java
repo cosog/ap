@@ -349,7 +349,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
     					}
     					
-    					//平衡调节远程触发控制
+    					//平衡调节手自动控制
     					if(clientUnit.unitDataList.get(i).balanceControlModeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceControlModeControl(),driveConfig.getProtocol());
@@ -865,7 +865,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
 	    					
-	    					Thread.sleep(1000*60*2);
+//	    					Thread.sleep(1000*60*2);
     					}
     					
     					

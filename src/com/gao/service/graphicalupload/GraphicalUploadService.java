@@ -91,7 +91,15 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
 					+ " where t.wellid=t2.wellid and t.acquisitiontime=t2.acquisitiontime and t.wellid=t3.id"
 					+ " and t3.wellName='"+wellAcquisitionData.getWellName()+"'";
+			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
+					+ " t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,"
+					+ " t2.structuralunbalance,"
+					+ " t2.balanceposition,t2.balanceweight,t2.prtf"
+					+ " from  tbl_wellinformation t,tbl_rpcinformation t2"
+					+ " where t.id=t2.wellid"
+					+ " and t.wellname='"+wellAcquisitionData.getWellName()+"'";
 			List<?> prodDataList = this.findCallSql(prodDataSql);
+			List<?> rpcInformationList = this.findCallSql(rpcInformationSql);
 			if(prodDataList.size()>0){
 				calculateRequestData=new RPCCalculateRequestData();
 				Object[] object=(Object[])prodDataList.get(0);
@@ -159,6 +167,29 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				calculateRequestData.setCasingString(new RPCCalculateRequestData.CasingString());
 				calculateRequestData.getCasingString().setEveryCasing(new ArrayList<RPCCalculateRequestData.EveryCasing>());
 				calculateRequestData.getCasingString().getEveryCasing().add(everyCasing);
+				
+				//抽油机数据
+				if(rpcInformationList.size()>0){
+					Object[] rpcObject=(Object[])rpcInformationList.get(0);
+					calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
+					calculateRequestData.getPumpingUnit().setManufacturer(rpcObject[0]+"");
+					calculateRequestData.getPumpingUnit().setModel(rpcObject[1]+"");
+					calculateRequestData.getPumpingUnit().setCrankRotationDirection(rpcObject[2]+"");
+					calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(rpcObject[3]+""));
+					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(rpcObject[4]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(rpcObject[5]+""));
+					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+					
+					String[] BalancePositionArr=(rpcObject[7]+"").split(",");
+    				String[] BalanceWeightArr=(rpcObject[8]+"").split(",");
+    				calculateRequestData.getPumpingUnit().setBalance(new RPCCalculateRequestData.Balance());
+    				calculateRequestData.getPumpingUnit().getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
+    				for(int j=0;BalanceWeightArr!=null&&j<BalanceWeightArr.length;j++){
+    					RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
+    					everyBalance.setWeight(StringManagerUtils.stringToFloat(BalanceWeightArr[j]));
+    					calculateRequestData.getPumpingUnit().getBalance().getEveryBalance().add(everyBalance);
+    				}
+				}
 				
 				//生产数据
 				calculateRequestData.setProduction(new RPCCalculateRequestData.Production());

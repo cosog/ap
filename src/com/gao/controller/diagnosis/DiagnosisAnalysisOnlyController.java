@@ -429,19 +429,35 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 						
 						else if("IaUpLimit".equalsIgnoreCase(controlType)){//设置电流上限
 							float value=StringManagerUtils.stringToFloat(controlValue);
-							int setValue=(int)(value*100+0.5);
+							float f=0.5f;
+							if(value<0){
+								f=-0.5f;
+							}
+							int setValue=(int)(value*100+f);
 							EquipmentDriverServerTast.units.get(i).setCurrentUpLimitControl(setValue);
 						}else if("IaDownLimit".equalsIgnoreCase(controlType)){//设置电流下限
 							float value=StringManagerUtils.stringToFloat(controlValue);
-							int setValue=(int)(value*100+0.5);
+							float f=0.5f;
+							if(value<0){
+								f=-0.5f;
+							}
+							int setValue=(int)(value*100+f);
 							EquipmentDriverServerTast.units.get(i).setCurrentDownLimitControl(setValue);
 						}else if("wattUpLimit".equalsIgnoreCase(controlType)){//设置功率上限
 							float value=StringManagerUtils.stringToFloat(controlValue);
-							int setValue=(int)(value*100+0.5);
+							float f=0.5f;
+							if(value<0){
+								f=-0.5f;
+							}
+							int setValue=(int)(value*100+f);
 							EquipmentDriverServerTast.units.get(i).setPowerUpLimitControl(setValue);
 						}else if("wattDownLimit".equalsIgnoreCase(controlType)){//设置功率下限
 							float value=StringManagerUtils.stringToFloat(controlValue);
-							int setValue=(int)(value*100+0.5);
+							float f=0.5f;
+							if(value<0){
+								f=-0.5f;
+							}
+							int setValue=(int)(value*100+f);
 							EquipmentDriverServerTast.units.get(i).setPowerDownLimitControl(setValue);
 						}
 						

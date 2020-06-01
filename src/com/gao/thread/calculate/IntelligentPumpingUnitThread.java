@@ -350,10 +350,10 @@ public class IntelligentPumpingUnitThread extends Thread{
     					}
     					
     					//平衡调节手自动控制
-    					if(clientUnit.unitDataList.get(i).balanceControlModeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode()!=null){
+    					if(clientUnit.unitDataList.get(i).balanceControlModeControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceControlModeControl(),driveConfig.getProtocol());
-							clientUnit.unitDataList.get(i).setBalanceControlModeControl(0);
+							clientUnit.unitDataList.get(i).setBalanceControlModeControl(-999999999);
 							
 							//写操作口令验证
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
@@ -393,10 +393,10 @@ public class IntelligentPumpingUnitThread extends Thread{
     					}
     					
     					//平衡调节计算方式控制
-    					if(clientUnit.unitDataList.get(i).balanceCalculateModeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode()!=null){
+    					if(clientUnit.unitDataList.get(i).balanceCalculateModeControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceCalculateModeControl(),driveConfig.getProtocol());
-							clientUnit.unitDataList.get(i).setBalanceCalculateModeControl(0);
+							clientUnit.unitDataList.get(i).setBalanceCalculateModeControl(-999999999);
 							
 							//写操作口令验证
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
@@ -435,7 +435,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
     					}
     					
-    					//重心远离支点每拍调节时间控制
+    					//重心远离支点调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceAwayTimeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimeControl(),driveConfig.getProtocol());
@@ -459,7 +459,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 							
 							rc=this.writeSocketData(clientUnit.socket, readByte,os,clientUnit.unitDataList.get(i));
 							if(rc==-1){//断开连接
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"重心远离支点每拍调节时间控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"重心远离支点调节时间控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
 	        					this.releaseResource(is,os);
 	            				wellReaded=false;
 	            				break;
@@ -468,7 +468,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 							clientUnit.unitDataList.get(i).sendPackageSize+=17;
 							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
 	    					if(rc==-1){//断开连接
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间控制返回数据读取失败，断开连接,释放资源");
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点调节时间控制返回数据读取失败，断开连接,释放资源");
 	            				this.releaseResource(is,os);
 	            				wellReaded=false;
 	            				break;
@@ -478,7 +478,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
     					}
     					
-    					//重心接近支点每拍调节时间控制
+    					//重心接近支点调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceCloseTimeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimeControl(),driveConfig.getProtocol());
@@ -502,7 +502,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 							
 							rc=this.writeSocketData(clientUnit.socket, readByte,os,clientUnit.unitDataList.get(i));
 							if(rc==-1){//断开连接
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"重心接近支点每拍调节时间控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"重心接近支点调节时间控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
 	        					this.releaseResource(is,os);
 	            				wellReaded=false;
 	            				break;
@@ -511,7 +511,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 							clientUnit.unitDataList.get(i).sendPackageSize+=17;
 							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
 	    					if(rc==-1){//断开连接
-	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间控制返回数据读取失败，断开连接,释放资源");
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点调节时间控制返回数据读取失败，断开连接,释放资源");
 	            				this.releaseResource(is,os);
 	            				wellReaded=false;
 	            				break;
@@ -652,10 +652,10 @@ public class IntelligentPumpingUnitThread extends Thread{
     					
     					
     					//电流上限控制
-    					if(clientUnit.unitDataList.get(i).CurrentUpLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentUpLimit()!=null){
+    					if(clientUnit.unitDataList.get(i).CurrentUpLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentUpLimit()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentUpLimit().getAddress(), clientUnit.unitDataList.get(i).CurrentUpLimitControl,driveConfig.getProtocol());
-							clientUnit.unitDataList.get(i).setCurrentUpLimitControl(0);
+							clientUnit.unitDataList.get(i).setCurrentUpLimitControl(-999999999);
 							
 							//写操作口令验证
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
@@ -695,10 +695,10 @@ public class IntelligentPumpingUnitThread extends Thread{
     					}
     					
     					//电流下限控制
-    					if(clientUnit.unitDataList.get(i).CurrentDownLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentDownLimit()!=null){
+    					if(clientUnit.unitDataList.get(i).CurrentDownLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentDownLimit()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentDownLimit().getAddress(), clientUnit.unitDataList.get(i).CurrentDownLimitControl,driveConfig.getProtocol());
-							clientUnit.unitDataList.get(i).setCurrentDownLimitControl(0);
+							clientUnit.unitDataList.get(i).setCurrentDownLimitControl(-999999999);
 							
 							//写操作口令验证
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
@@ -738,10 +738,10 @@ public class IntelligentPumpingUnitThread extends Thread{
     					}
     					
     					//功率上限控制
-    					if(clientUnit.unitDataList.get(i).PowerUpLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerUpLimit()!=null){
+    					if(clientUnit.unitDataList.get(i).PowerUpLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerUpLimit()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerUpLimit().getAddress(), clientUnit.unitDataList.get(i).PowerUpLimitControl,driveConfig.getProtocol());
-							clientUnit.unitDataList.get(i).setPowerUpLimitControl(0);
+							clientUnit.unitDataList.get(i).setPowerUpLimitControl(-999999999);
 							
 							//写操作口令验证
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
@@ -781,10 +781,10 @@ public class IntelligentPumpingUnitThread extends Thread{
     					}
     					
     					//功率下限控制
-    					if(clientUnit.unitDataList.get(i).PowerDownLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerDownLimit()!=null){
+    					if(clientUnit.unitDataList.get(i).PowerDownLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerDownLimit()!=null){
     						wellReaded=true;
 							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerDownLimit().getAddress(), clientUnit.unitDataList.get(i).PowerDownLimitControl,driveConfig.getProtocol());
-							clientUnit.unitDataList.get(i).setPowerDownLimitControl(0);
+							clientUnit.unitDataList.get(i).setPowerDownLimitControl(-999999999);
 							
 							//写操作口令验证
 							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
@@ -1049,10 +1049,10 @@ public class IntelligentPumpingUnitThread extends Thread{
             					updateDiscreteData+=",t.balanceCloseTime="+balanceCloseTime;
             					
             					CurrentUpLimit=(float) (getShort(recByte,18, driveConfig.getProtocol())*0.01);
-            					updateDiscreteData+=",t.IaUpLimit="+CurrentUpLimit;
+            					updateDiscreteData+=",t.IaUpLimit="+CurrentUpLimit+",t.IbUpLimit="+CurrentUpLimit+",t.IcUpLimit="+CurrentUpLimit;
             					
             					CurrentDownLimit=(float) (getShort(recByte,20, driveConfig.getProtocol())*0.01);
-            					updateDiscreteData+=",t.IaDownLimit="+CurrentDownLimit;
+            					updateDiscreteData+=",t.IaDownLimit="+CurrentDownLimit+",t.IbDownLimit="+CurrentDownLimit+",t.IcDownLimit="+CurrentDownLimit;
             					
             					PowerUpLimit=(float) (getShort(recByte,22, driveConfig.getProtocol())*0.01);
             					updateDiscreteData+=",t.wattUpLimit="+PowerUpLimit;

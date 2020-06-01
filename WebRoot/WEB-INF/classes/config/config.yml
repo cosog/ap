@@ -21,7 +21,7 @@ viewInformation:
    linkshow: ""
 agileCalculate:
    FESDiagram: 
-    - http://39.98.134.121:18100/api/calc/rpc/fesdiagram/classic
+    - http://39.98.134.121:18100/api/calc/rpc/fesdiagram/pro
    FSDiagram: 
     - http://39.98.134.121:18100/api/calc/rpc/fsdiagram/balance/back
    ESDiagram:

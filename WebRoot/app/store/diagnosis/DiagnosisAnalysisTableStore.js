@@ -23,6 +23,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		var dataStr="{\"items\":[";
     		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"曲柄平衡移动距离(cm)\",\"itemCode\":\"deltaRadius\",\"value\":\""+get_rawData.deltaRadius+"\",\"curve\":\"\"},";
     		if(productionUnit==0){
     			dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
         		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
@@ -203,10 +204,10 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		    	 controlSataStr+="{\"item\":\"远程调节手自动模式\",\"itemcode\":\"balanceControlMode\",\"value\":\""+(get_rawData.balanceControlMode==undefined?"":get_rawData.balanceControlMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
     		    	 isHaveBalanceControl=true;
     		    	 break;
-//    		     case "BalanceCalculateMode":
-//    		    	 controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
-//    		    	 isHaveBalanceControl=true;
-//    		    	 break;
+    		     case "BalanceCalculateMode":
+    		    	 controlSataStr+="{\"item\":\"平衡计算方式\",\"itemcode\":\"balanceCalculateMode\",\"value\":\""+(get_rawData.balanceCalculateMode==undefined?"":get_rawData.balanceCalculateMode)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
+    		    	 isHaveBalanceControl=true;
+    		    	 break;
     		     case "BalanceAwayTime":
     		    	 controlSataStr+="{\"item\":\"向远离驴头方向调节距离(cm)\",\"itemcode\":\"balanceAwayTime\",\"value\":\""+(get_rawData.balanceAwayTime==undefined?"":get_rawData.balanceAwayTime)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 isHaveBalanceControl=true;
@@ -240,7 +241,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		if(isHaveBalanceControl){
     			controlSataStr+="{\"item\":\"平衡度判别方式\",\"itemcode\":\"balanceCalculateType\",\"value\":\"电流法\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":2},";
         		controlSataStr+="{\"item\":\"平衡远程自动调节\",\"itemcode\":\"balanceAutoControl\",\"value\":\""+(get_rawData.balanceAutoControl==undefined?"":get_rawData.balanceAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
-        		controlSataStr+="{\"item\":\"冲次远程自动调节\",\"itemcode\":\"spmAutoControl\",\"value\":\""+(get_rawData.spmAutoControl==undefined?"":get_rawData.spmAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
+//        		controlSataStr+="{\"item\":\"冲次远程自动调节\",\"itemcode\":\"spmAutoControl\",\"value\":\""+(get_rawData.spmAutoControl==undefined?"":get_rawData.spmAutoControl)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
         		controlSataStr+="{\"item\":\"平衡前限位\",\"itemcode\":\"balanceFrontLimit\",\"value\":\""+(get_rawData.balanceFrontLimit==undefined?"":get_rawData.balanceFrontLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
         		controlSataStr+="{\"item\":\"平衡后限位\",\"itemcode\":\"balanceAfterLimit\",\"value\":\""+(get_rawData.balanceAfterLimit==undefined?"":get_rawData.balanceAfterLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":false,\"isControl\":"+isControl+"},";
     		}

@@ -70,7 +70,6 @@ public class EquipmentDriverServerTast {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-		
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;
 		do{
@@ -437,8 +436,8 @@ public class EquipmentDriverServerTast {
 				unit.acquisitionData=new AcquisitionData();
 				unit.acquisitionData.setRunStatus(0);
 				unit.runTimeEfficiencySource=rs.getInt(7);
-				unit.acqCycle_Discrete=1000*rs.getInt(8);
-				unit.saveCycle_Discrete=1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
+				unit.acqCycle_Discrete=60*1000*rs.getInt(8);
+				unit.saveCycle_Discrete=60*1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
 				unit.screwPumpDataSaveInterval=1000*60*5;//螺杆泵据保存间隔,单位毫秒
 				unit.runStatusControl=0;
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
@@ -1170,8 +1169,8 @@ public class EquipmentDriverServerTast {
 		public int FSDiagramIntervalControl=0;//设置功图采集控制
 		public float FrequencyControl=0;//变频频率控制
 		
-		public int balanceControlModeControl=0;//设置平衡调节远程触发状态
-		public int balanceCalculateModeControl=0;//设置平衡计算方式
+		public int balanceControlModeControl=-999999999;//设置平衡调节远程触发状态
+		public int balanceCalculateModeControl=-999999999;//设置平衡计算方式
 		public int balanceAwayTimeControl=0;//设置重心远离支点调节时间
 		public int balanceCloseTimeControl=0;//设置重心接近支点调节时间
 		public int balanceStrokeCountControl=0;//设置功图采集控制
@@ -1182,11 +1181,11 @@ public class EquipmentDriverServerTast {
 		
 		public int DiscreteIntervalControl=0;//离散数据采集间隔设置
 		
-		public int CurrentUpLimitControl=0;//电流上限设置
-		public int CurrentDownLimitControl=0;//电流下限设置
-		public int PowerUpLimitControl=0;//功率上限设置
-		public int PowerDownLimitControl=0;//功率下限设置
-		public int ImmediatelyAcquisitionControl=0;//离散数据即时采集设置
+		public int CurrentUpLimitControl=-999999999;//电流上限设置
+		public int CurrentDownLimitControl=-999999999;//电流下限设置
+		public int PowerUpLimitControl=-999999999;//功率上限设置
+		public int PowerDownLimitControl=-999999999;//功率下限设置
+		public int ImmediatelyAcquisitionControl=-999999999;//离散数据即时采集设置
 		
 		public  String driverAddr;
 		public  String dirverId;

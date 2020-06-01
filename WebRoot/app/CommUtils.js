@@ -4477,9 +4477,10 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidProduction + productionUnitStr+ '<br />';
     xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + workingConditionName + '<br /></span>';
     var upperlimit=parseFloat(fmax)+10;
-    if(parseFloat(upperLoadLine)==0||upperLoadLine==""||parseFloat(fmax)==0||fmax==""){
-    	upperlimit=null
-    }else if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
+//    if(parseFloat(upperLoadLine)==0||upperLoadLine==""||parseFloat(fmax)==0||fmax==""){
+//    	upperlimit=null
+//    }else 
+    if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
     	upperlimit=parseFloat(upperLoadLine)+10;
     }
 	mychart = new Highcharts.Chart({

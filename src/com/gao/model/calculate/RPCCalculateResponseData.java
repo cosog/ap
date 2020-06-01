@@ -1126,177 +1126,6 @@ public class RPCCalculateResponseData {
 	    }
 	}
 	
-	public static class BlackOil
-	{
-	    private float P;
-
-	    private float T;
-
-	    private float Rs;
-
-	    private float Bo;
-
-	    private float Bg;
-
-	    private float VISo;
-
-	    private float DENo;
-
-	    private float TENo;
-
-	    private float VISw;
-
-	    private float TENw;
-
-	    private float Bw;
-
-	    private float Z;
-
-	    private float DENg;
-
-	    private float VISg;
-
-	    private float DENl;
-
-	    private float VISl;
-
-	    private float TENl;
-
-	    private float GLRis;
-
-	    private float LGR;
-
-	    private float Vg;
-
-	    private float Vl;
-
-	    public void setP(float P){
-	        this.P = P;
-	    }
-	    public float getP(){
-	        return this.P;
-	    }
-	    public void setT(float T){
-	        this.T = T;
-	    }
-	    public float getT(){
-	        return this.T;
-	    }
-	    public void setRs(float Rs){
-	        this.Rs = Rs;
-	    }
-	    public float getRs(){
-	        return this.Rs;
-	    }
-	    public void setBo(float Bo){
-	        this.Bo = Bo;
-	    }
-	    public float getBo(){
-	        return this.Bo;
-	    }
-	    public void setBg(float Bg){
-	        this.Bg = Bg;
-	    }
-	    public float getBg(){
-	        return this.Bg;
-	    }
-	    public void setVISo(float VISo){
-	        this.VISo = VISo;
-	    }
-	    public float getVISo(){
-	        return this.VISo;
-	    }
-	    public void setDENo(float DENo){
-	        this.DENo = DENo;
-	    }
-	    public float getDENo(){
-	        return this.DENo;
-	    }
-	    public void setTENo(float TENo){
-	        this.TENo = TENo;
-	    }
-	    public float getTENo(){
-	        return this.TENo;
-	    }
-	    public void setVISw(float VISw){
-	        this.VISw = VISw;
-	    }
-	    public float getVISw(){
-	        return this.VISw;
-	    }
-	    public void setTENw(float TENw){
-	        this.TENw = TENw;
-	    }
-	    public float getTENw(){
-	        return this.TENw;
-	    }
-	    public void setBw(float Bw){
-	        this.Bw = Bw;
-	    }
-	    public float getBw(){
-	        return this.Bw;
-	    }
-	    public void setZ(float Z){
-	        this.Z = Z;
-	    }
-	    public float getZ(){
-	        return this.Z;
-	    }
-	    public void setDENg(float DENg){
-	        this.DENg = DENg;
-	    }
-	    public float getDENg(){
-	        return this.DENg;
-	    }
-	    public void setVISg(float VISg){
-	        this.VISg = VISg;
-	    }
-	    public float getVISg(){
-	        return this.VISg;
-	    }
-	    public void setDENl(float DENl){
-	        this.DENl = DENl;
-	    }
-	    public float getDENl(){
-	        return this.DENl;
-	    }
-	    public void setVISl(float VISl){
-	        this.VISl = VISl;
-	    }
-	    public float getVISl(){
-	        return this.VISl;
-	    }
-	    public void setTENl(float TENl){
-	        this.TENl = TENl;
-	    }
-	    public float getTENl(){
-	        return this.TENl;
-	    }
-	    public void setGLRis(float GLRis){
-	        this.GLRis = GLRis;
-	    }
-	    public float getGLRis(){
-	        return this.GLRis;
-	    }
-	    public void setLGR(float LGR){
-	        this.LGR = LGR;
-	    }
-	    public float getLGR(){
-	        return this.LGR;
-	    }
-	    public void setVg(float Vg){
-	        this.Vg = Vg;
-	    }
-	    public float getVg(){
-	        return this.Vg;
-	    }
-	    public void setVl(float Vl){
-	        this.Vl = Vl;
-	    }
-	    public float getVl(){
-	        return this.Vl;
-	    }
-	}
 
 	public static class WellboreSlice
 	{
@@ -1310,7 +1139,11 @@ public class RPCCalculateResponseData {
 
 	    private List<Float> Z;
 
-	    private List<BlackOil> BlackOilSlice;
+	    private List<Float> P;
+
+	    private List<Float> Bo;
+
+	    private List<Float> GLRis;
 
 	    public void setCNT(int CNT){
 	        this.CNT = CNT;
@@ -1342,12 +1175,24 @@ public class RPCCalculateResponseData {
 	    public List<Float> getZ(){
 	        return this.Z;
 	    }
-	    public void setBlackOilSlice(List<BlackOil> BlackOilSlice){
-	        this.BlackOilSlice = BlackOilSlice;
-	    }
-	    public List<BlackOil> getBlackOilSlice(){
-	        return this.BlackOilSlice;
-	    }
+		public List<Float> getP() {
+			return P;
+		}
+		public void setP(List<Float> p) {
+			P = p;
+		}
+		public List<Float> getBo() {
+			return Bo;
+		}
+		public void setBo(List<Float> bo) {
+			Bo = bo;
+		}
+		public List<Float> getGLRis() {
+			return GLRis;
+		}
+		public void setGLRis(List<Float> gLRis) {
+			GLRis = gLRis;
+		}
 	}
 	
 	public static class SystemEfficiency

@@ -56,7 +56,7 @@ public class MQTTServerTast {
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runMQTTServer() throws InstantiationException, IllegalAccessException, SQLException{
 		//将以前接收到的数据清空
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();
@@ -225,9 +225,9 @@ public class MQTTServerTast {
 				String diagramUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDiagramData";
 				String dailyUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDailyData";
 				
-//				if(topic.contains("3b1c91d4f21c47ed")){
-//					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
-//				}
+				if(topic.contains("173871d4f21c4715")){
+					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
+				}
 				
 				
 				int Qos=message.getQos();
@@ -273,10 +273,10 @@ public class MQTTServerTast {
 							//将数据取出后，从内存中删掉
 							map.remove(key);
 							
-//							if(topic.contains("3b1c91d4f21c47ed")){
+//							if(topic.contains("173871d4f21c4715")){
 //								System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
 //							}
-							
+//							System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
 							String pubTimerCorrectionTopic="TimerCorrection/"+ID;//时间校正主题
 							String pubTransferDiscreteIntervalTopic="TransferDiscreteInterval/"+ID;//离散传输周期设置主题
 							String pubTransferDiagramIntervalTopic="TransferDiagramInterval/"+ID;//曲线传输周期设置主题

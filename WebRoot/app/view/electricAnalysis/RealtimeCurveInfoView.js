@@ -462,7 +462,7 @@ function getAndInitInverDiagram(recordId,wellName){
 //			
 			var positionCurveData=result.positionCurveData.split(",");
 			if(result.positionCurveData!=undefined && result.positionCurveData!="" && result.positionCurveData.split(",").length>0){
-				showFSDiagramWithAtrokeSPM(result,"electricAnalysisRealtimeCurveInverDiv1_id","地面功图-反演");
+				showFSDiagramWithAtrokeSPM(result,"electricAnalysisRealtimeCurveInverDiv1_id","光杆功图-反演");
     			showPSDiagram(result,"electricAnalysisRealtimeCurveInverDiv4_id","电功图-采集");
     			showASDiagram(result,"electricAnalysisRealtimeCurveInverDiv7_id","电流图-采集");
 			}else{

@@ -120,7 +120,7 @@ Ext.define("AP.view.electricAnalysis.RealtimeDiagramInfoView", { // 定义反演
                     columns: 3,
                     vertical: true,
                     items: [
-                    	{ boxLabel: '地面功图',width:70, name: 'electricAnalysisRealtimeDiagramType', inputValue: 'FSDiagram',checked:true },
+                    	{ boxLabel: '光杆功图',width:70, name: 'electricAnalysisRealtimeDiagramType', inputValue: 'FSDiagram',checked:true },
                     	{ boxLabel: '电功图',width:58, name: 'electricAnalysisRealtimeDiagramType', inputValue: 'PSDiagram' },
                     	{ boxLabel: '电流图',width:58, name: 'electricAnalysisRealtimeDiagramType', inputValue: 'ASDiagram' }
                     ],
@@ -249,7 +249,7 @@ function loadElectricInverDiagramList(page) {
                 var diagramId = diagramList[index].id;
                 divId = 'electricAnalysisRealtimeDiagramDiv' + diagramId;
                 if(diagramType=="FSDiagram"){
-                	showFSDiagramWithAtrokeSPM(diagramList[index],divId,"地面功图-反演");
+                	showFSDiagramWithAtrokeSPM(diagramList[index],divId,"光杆功图-反演");
                 }else if(diagramType=="PSDiagram"){
                 	showPSDiagram(diagramList[index],divId,"电功图-采集");
                 }else if(diagramType=="ASDiagram"){

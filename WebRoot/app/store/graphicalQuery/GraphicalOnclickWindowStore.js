@@ -24,7 +24,7 @@ Ext.define('AP.store.graphicalQuery.GraphicalOnclickWindowStore', {
         	// 图形类型+数据id作为打开窗口div的id
         	var divid = type + id;
         	if (type=="gtsj"){
-        		showSurfaceCard(get_rawData,divid);    // 调用画地面功图的函数
+        		showSurfaceCard(get_rawData,divid);    // 调用画光杆功图的函数
         	}else if (type=="bgt"){
         		showPumpCard(get_rawData,divid);    // 调用画泵功图的函数
         	}else if (type=="dlqx"){

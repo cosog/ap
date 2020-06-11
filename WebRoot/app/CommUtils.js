@@ -534,7 +534,8 @@ iconDiagnoseAnalysisCurve = function(value, e, o) {
 	var index=o.internalId%2;
 	var resultstring='';
 	if(itemCode.toUpperCase() == 'acquisitionTime_d'.toUpperCase()){
-		resultstring=o.data.value;
+//		resultstring=o.data.value;
+		resultstring='';
 	}else{
 		resultstring = "<img src='"
 			+ context
@@ -3423,7 +3424,7 @@ function URLencode(sStr){
    } 
 
 /* 
- * 拼接地面功图曲线数据
+ * 拼接光杆功图曲线数据
  */
 showSurfaceCard = function(result, divid) {
     var positionCurveData=result.positionCurveData.split(","); 
@@ -3444,7 +3445,7 @@ showSurfaceCard = function(result, divid) {
 }
 
 /* 
- * 在泵功图中提取地面功图
+ * 在泵功图中提取光杆功图
  */
 showFSDiagramFromPumpcard = function(result, divid) {
 	var pumpFSDiagramData=result.pumpFSDiagramData.split("#")[0];
@@ -3611,13 +3612,13 @@ showFSDiagram = function(result, divid) {
 	var pointdata = Ext.JSON.decode(data);
 	var upStrokePointdata = Ext.JSON.decode(upStrokeData);
 	var downStrokePointdata = Ext.JSON.decode(downStrokeData);
-	initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, result, divid,"地面功图",xtext,"载荷(kN)",['#FF6633','#009999']);
+	initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, result, divid,"光杆功图",xtext,"载荷(kN)",['#FF6633','#009999']);
 	return false;
 }
 
 showFSDiagramWithAtrokeSPM = function(result, divid,title) {
 	if (!isNotVal(title)){
-		title='地面功图';
+		title='光杆功图';
 	}
 	var positionCurveData=result.positionCurveData.split(",");
 	var loadCurveData=result.loadCurveData.split(",");
@@ -3709,7 +3710,7 @@ showFSDiagramWithAtrokeSPM = function(result, divid,title) {
 
 showFSDiagram360WithAtrokeSPM = function(diagramData, divid,title) {
 	if (!isNotVal(title)){
-		title='地面功图(360点)';
+		title='光杆功图(360点)';
 	}
 	var positionCurveData=diagramData.position360CurveData.split(",");
 	var loadCurveData=diagramData.load360CurveData.split(",");
@@ -4011,6 +4012,158 @@ showPContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color, 
 	return false;
 }
 
+showPowerByAngleContinuousDiagram = function(diagramData,angleData,title,subtitle,xtext,ytext,color, divid) {
+	var powerCurveData=diagramData.split(",");
+	var angleCurveData=angleData.split(",");
+	var data = "["; // 功图data
+	var catagories = "[";
+	if(powerCurveData.length>0){
+		for (var i=0; i < powerCurveData.length; i++) {
+			catagories+=angleCurveData[i];
+			data+=changeTwoDecimal(powerCurveData[i]);
+			if(i<powerCurveData.length-1){
+				catagories += ",";
+				data += ",";
+			}
+		}
+	}
+	data+="]";
+	catagories+="]";
+	var pointdata = Ext.JSON.decode(data);
+	var cat = Ext.JSON.decode(catagories);
+	initAngleContinuousDiagramChart(pointdata,cat, divid,title,subtitle,xtext,ytext,color);
+	return false;
+}
+
+showThreeTermsContinuousDiagram = function(angle,dataA,dataB,dataC,title,subtitle,xtext,ytext,color, divid) {
+	var legendName = ['A相','B相','C相'];
+	var catagories1 = "[";
+    var series1 = "[";
+    var angleArr=angle.split(",");
+    var dataAArr=dataA.split(",");
+    var dataBArr=dataB.split(",");
+    var dataCArr=dataC.split(",");
+    if(dataAArr.length>0 && angleArr.length>0){
+    	var ATermsData="{\"name\":\"A相\",\"data\":[";
+    	var BTermsData="{\"name\":\"B相\",\"data\":[";
+    	var CTermsData="{\"name\":\"C相\",\"data\":[";
+        for(var i=0;i<dataAArr.length;i++){
+        	catagories1+=angleArr[i];
+        	ATermsData+=changeTwoDecimal(dataAArr[i]);
+        	BTermsData+=changeTwoDecimal(dataAArr[i]);
+        	CTermsData+=changeTwoDecimal(dataAArr[i]);
+        	if(i<dataAArr.length-1){
+        		catagories1+=",";
+        		ATermsData+=",";
+        		BTermsData+=",";
+        		CTermsData+=",";
+        	}
+        }
+        ATermsData+="]}";
+        BTermsData+="]}";
+        CTermsData+="]}";
+    	series1+=ATermsData+","+BTermsData+","+CTermsData;
+    }
+    catagories1+="]";
+    series1+="]";
+    
+    var cat1 = Ext.JSON.decode(catagories1);
+	var ser1 = Ext.JSON.decode(series1);
+	initThreeTermsContinuousDiagram(cat1,ser1,divid,title,subtitle,xtext,ytext,color)
+	return false;
+}
+
+function initThreeTermsContinuousDiagram(catagories,series,divId,title,subtitle,xtext,ytext,color) {
+	$('#'+divId).highcharts({
+				chart : {
+//					renderTo : divId,
+					type : 'spline',
+					shadow : false,
+					borderWidth : 0,
+					zoomType : 'xy'
+				},
+				credits : {
+					enabled : false
+				},
+				title : {
+					text : title
+					// center
+				},
+				subtitle: {
+		        	text:subtitle                                                  
+		        },
+				colors :color,
+				xAxis : {
+					categories : catagories,
+					tickInterval : 40,
+					title : {
+						text :xtext
+					}
+				},
+				yAxis : {
+//					min: 0,
+					lineWidth : 1,
+					title : {
+						text :ytext,
+						style : {
+							color : '#000000',
+							fontWeight : 'bold'
+						}
+					},
+					labels : {
+						formatter : function() {
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
+						}
+					},
+					plotLines : [{
+								value : 0,
+								width : 1,
+								zIndex:2,
+								color : '#808080'
+							}]
+				},
+				tooltip : {
+					crosshairs : true,
+					enabled : true,
+					style : {
+						color : '#333333',
+						fontSize : '12px',
+						padding : '8px'
+					},
+					formatter : function() {
+						return '<b>' + this.series.name + '</b><br/>' + this.x
+								+ ': ' + this.y;
+					},
+					valueSuffix : ''
+				},
+				plotOptions : {
+					 spline: {  
+				            lineWidth: 3,  
+				            fillOpacity: 0.3,  
+				             marker: {  
+				             enabled: true,  
+				              radius: 0,  //曲线点半径，默认是4
+                             //symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+				                states: {  
+				                   hover: {  
+				                        enabled: true,  
+				                        radius: 6
+				                    }  
+				                }  
+			            },  
+			            shadow: true  
+			        } 
+				},
+				legend : {
+					align : 'center',
+					verticalAlign : 'bottom',
+					layout : 'horizontal' //vertical 竖直 horizontal-水平
+				},
+				series : series
+			});
+}
+
 showAContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color, divid) {
 	var currentCurveData=diagramData.split(",");
 	var data = "["; // 功图data
@@ -4078,29 +4231,28 @@ showRPMContinuousDiagram = function(diagramData,title,subtitle,xtext,ytext,color
 }
 
 
-showBalanceAnalysisCurveChart = function(store, divid1,divid2) {
-	var currenttorquecurveArr=store.proxy.reader.rawData.currenttorquecurve;
-	var optimizitiontorquecurveArr=store.proxy.reader.rawData.optimizitiontorquecurve;
+showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balanceTorque,netTorque,title,subtitle,divId) {
+	var crankAngleArr=crankAngle.split(",");
+	var loadRorqueArr=loadRorque.split(",");
+	var crankTorqueArr=crankTorque.split(",");
+	var balanceTorqueArr=balanceTorque.split(",");
+	var netTorqueArr=netTorque.split(",");
+	
 	var legendName = ['载荷扭矩','平衡块扭矩','曲柄扭矩','净扭矩'];
 	var catagories1 = "[";
     var series1 = "[";
-    var catagories2 = "[";
-    var series2 = "[";
-    if(currenttorquecurveArr.length>0){
+    if(crankAngleArr.length>0){
     	var loadData="{\"name\":\"载荷扭矩\",\"data\":[";
     	var balanceData="{\"name\":\"平衡块扭矩\",\"data\":[";
     	var crankData="{\"name\":\"曲柄扭矩\",\"data\":[";
     	var netData="{\"name\":\"净扭矩\",\"data\":[";
-    	var currenttorquecurve=currenttorquecurveArr[0];
-        var currenttorquecurvedata=currenttorquecurve.curvedata.split(";"); // 功图数据：功图点数， 冲次，冲程 位移1，载荷1，位移2，载荷2...
-        for(var i=7;i<currenttorquecurvedata.length;i++){
-        	var everyData=currenttorquecurvedata[i].split(",");
-        	catagories1+=everyData[0];
-        	loadData+=changeTwoDecimal(everyData[1]);
-        	balanceData+=changeTwoDecimal(everyData[2]);
-        	crankData+=changeTwoDecimal(everyData[3]);
-        	netData+=changeTwoDecimal(everyData[4]);
-        	if(i<currenttorquecurvedata.length-1){
+        for(var i=0;i<crankAngleArr.length;i++){
+        	catagories1+=crankAngleArr[i];
+        	loadData+=changeTwoDecimal(loadRorqueArr[i]);
+        	balanceData+=changeTwoDecimal(crankTorqueArr[i]);
+        	crankData+=changeTwoDecimal(balanceTorqueArr[i]);
+        	netData+=changeTwoDecimal(netTorqueArr[i]);
+        	if(i<crankAngleArr.length-1){
         		catagories1+=",";
             	loadData+=",";
             	balanceData+=",";
@@ -4118,119 +4270,64 @@ showBalanceAnalysisCurveChart = function(store, divid1,divid2) {
     catagories1+="]";
     series1+="]";
     
-    if(optimizitiontorquecurveArr.length>0){
-    	var loadData="{\"name\":\"载荷扭矩\",\"data\":[";
-    	var balanceData="{\"name\":\"平衡块扭矩\",\"data\":[";
-    	var crankData="{\"name\":\"曲柄扭矩\",\"data\":[";
-    	var netData="{\"name\":\"净扭矩\",\"data\":[";
-    	var optimizitiontorquecurve=optimizitiontorquecurveArr[0];
-        var optimizitiontorquecurvedata=optimizitiontorquecurve.curvedata.split(";"); // 功图数据：功图点数， 冲次，冲程 位移1，载荷1，位移2，载荷2...
-        for(var i=7;i<optimizitiontorquecurvedata.length;i++){
-        	var everyData=optimizitiontorquecurvedata[i].split(",");
-        	catagories2+=everyData[0];
-        	loadData+=changeTwoDecimal(everyData[1]);
-        	balanceData+=changeTwoDecimal(everyData[2]);
-        	crankData+=changeTwoDecimal(everyData[3]);
-        	netData+=changeTwoDecimal(everyData[4]);
-        	if(i<optimizitiontorquecurvedata.length-1){
-        		catagories2+=",";
-            	loadData+=",";
-            	balanceData+=",";
-            	crankData+=",";
-            	netData+=",";
-        	}
-        }
-    	loadData+="]}";
-    	balanceData+="]}";
-    	crankData+="]}";
-    	netData+="]}";
-    	series2+=loadData+","+balanceData+","+crankData+","+netData;
-    }
-    
-    catagories2+="]";
-    series2+="]";
     var cat1 = Ext.JSON.decode(catagories1);
 	var ser1 = Ext.JSON.decode(series1);
-	var cat2 = Ext.JSON.decode(catagories2);
-	var ser2 = Ext.JSON.decode(series2);
-	initBalanceCurveChart(cat1,ser1, divid1,"目前扭矩曲线","扭矩(kN*m)","曲柄转角(度)");
-	initBalanceCurveChart(cat2,ser2, divid2,"预期扭矩曲线","扭矩(kN*m)","曲柄转角(度)");
+	initBalanceCurveChart(cat1,ser1, divId,title,subtitle,"扭矩(kN*m)","曲柄转角(度)");
 	return false;
 }
 //抽油机运动特性曲线和光杆位置扭矩因数表
-showBalanceAnalysisMotionCurveChart = function(store, panelid,gridid,divid) {
-	var get_rawData = store.proxy.reader.rawData;
-	var motioncurveArr=get_rawData.motioncurve;
-	var arrColumns = get_rawData.columns2;
-	var column = createBalanceMinitorListColumn(arrColumns)
-    var newColumns = Ext.JSON.decode(column);
-	var list=get_rawData.list;
-	
-	var MonitorTorqueMaxValueMotionCurveGrid = Ext.getCmp(gridid);
-    if (isNotVal(MonitorTorqueMaxValueMotionCurveGrid)) {
-    	Ext.getCmp(panelid).remove(MonitorTorqueMaxValueMotionCurveGrid);
-    }
-	
-	Ext.create('Ext.data.Store', {
-	    storeId: 'torqueMaxValuePRAndTFStore',
-	    fields:[ 'crankAngle', 'PR', 'TF'],
-	    data:list
-	});
-	
-	MonitorTorqueMaxValueMotionCurveGrid = Ext.create('Ext.grid.Panel', {
-        id: gridid,
-        border: false,
-        autoLoad: false,
-        columnLines: true,
-        forceFit: true,
-        viewConfig: {
-        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
-        },
-        store: Ext.data.StoreManager.lookup('torqueMaxValuePRAndTFStore'),
-        columns: newColumns
-    });
-    Ext.getCmp(panelid).add(MonitorTorqueMaxValueMotionCurveGrid);
-	
+showBalanceAnalysisMotionCurveChart = function(crankAngle,position,polishrodV,polishrodA,title,subtitle,divId,type) {
+	var crankAngleArr=crankAngle.split(","); 
+    var positionArr=position.split(","); 
+    var polishrodVArr=polishrodV.split(","); 
+    var polishrodAArr=polishrodA.split(","); 
 	var catagories = "[";
     var series = "[";
-    if(motioncurveArr.length>0){
-    	var sData="{\"name\":\"位移\",\"yAxis\":0,\"data\":[";
-    	var vData="{\"name\":\"速度\",\"yAxis\":1,\"data\":[";
-    	var aData="{\"name\":\"加速度\",\"yAxis\":2,\"data\":[";
-    	var motioncurve=motioncurveArr[0];
-        var motioncurvedata=motioncurve.curvedata.split(";"); // 功图数据：功图点数， 冲次，冲程 位移1，载荷1，位移2，载荷2...
-        for(var i=0;i<motioncurvedata.length;i++){
-        	var everyData=motioncurvedata[i].split(",");
-        	catagories+=everyData[0];
-        	sData+=everyData[1];
-        	vData+=everyData[2];
-        	aData+=everyData[3];
-        	if(i<motioncurvedata.length-1){
+    var sData="{\"name\":\"位移\",\"yAxis\":0,\"data\":[";
+	var vData="{\"name\":\"速度\",\"yAxis\":1,\"data\":[";
+	var aData="{\"name\":\"加速度\",\"yAxis\":2,\"data\":[";
+    if(crankAngleArr.length>0){
+        for(var i=0;i<crankAngleArr.length;i++){
+        	catagories+=crankAngleArr[i];
+        	sData+=changeTwoDecimal(positionArr[i]);
+        	vData+=changeTwoDecimal(polishrodVArr[i]);
+        	aData+=changeTwoDecimal(polishrodAArr[i]);
+        	if(i<crankAngleArr.length-1){
         		catagories+=",";
         		sData+=",";
         		vData+=",";
         		aData+=",";
         	}
         }
-        sData+="]}";
-    	vData+="]}";
-    	aData+="]}";
-    	series+=sData+","+vData+","+aData;
     }
+    sData+="]}";
+	vData+="]}";
+	aData+="]}";
+	if(type===1){
+		series+=sData+","+vData+","+aData;
+	}else{
+		series+=sData+","+vData;
+	}
     catagories+="]";
     series+="]";
     var cat = Ext.JSON.decode(catagories);
 	var ser = Ext.JSON.decode(series);
-	initBalanceCurveChartThreeY(cat,ser, divid,"抽油机运动特性曲线","值","曲柄转角(度)");
+	if(type===1){
+		initBalanceCurveChartThreeY(cat,ser, divId,title,subtitle,"值","曲柄转角(度)");
+	}else{
+		initBalanceCurveChartTowY(cat,ser, divId,title,subtitle,"值","曲柄转角(度)");
+	}
+	
 	return false;
 }
 
-function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xtext) {
+
+function initBalanceCurveChartThreeY(catagories,series,divId,titletext,subtitle,ytext,xtext) {
 	$('#'+divId).highcharts({
 				chart : {
 //					renderTo : divId,
 					type : 'spline',
-					shadow : true,
+					shadow : false,
 					borderWidth : 0,
 					zoomType : 'xy'
 				},
@@ -4238,10 +4335,12 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 					enabled : false
 				},
 				title : {
-					text : titletext,
-					x : -20
+					text : titletext
 					// center
 				},
+				subtitle: {
+		        	text: subtitle                                                   
+		        },
 				colors : ['#000000',// 黑
 						'#0000FF',// 蓝
 						'#008C00',// 绿
@@ -4251,7 +4350,7 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 				],
 				xAxis : {
 					categories : catagories,
-//					tickInterval : tickInterval,
+					tickInterval : 100,
 					title : {
 						text :xtext
 					}
@@ -4259,6 +4358,7 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 				yAxis : [{
 //					min: 0,
 					lineWidth : 1,
+					tickPosition:'inside',
 					title : {
 						text :'位移(m)',
 						style : {
@@ -4268,7 +4368,8 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 					},
 					labels : {
 						formatter : function() {
-							return Highcharts.numberFormat(this.value, 2);
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
 						}
 					},
 					plotLines : [{
@@ -4280,6 +4381,7 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 				},{
 //					min: 0,
 					lineWidth : 1,
+					tickPosition:'inside',
 					title : {
 						text :'速度(m/s)',
 						style : {
@@ -4289,7 +4391,8 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 					},
 					labels : {
 						formatter : function() {
-							return Highcharts.numberFormat(this.value, 2);
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
 						}
 					},
 					plotLines : [{
@@ -4301,6 +4404,7 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 				},{
 //					min: 0,
 					lineWidth : 1,
+					tickPosition:'inside',
 					title : {
 						text :'加速度(m/s²)',
 						style : {
@@ -4310,7 +4414,8 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 					},
 					labels : {
 						formatter : function() {
-							return Highcharts.numberFormat(this.value, 2);
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
 						}
 					},
 					plotLines : [{
@@ -4352,23 +4457,27 @@ function initBalanceCurveChartThreeY(catagories,series,divId,titletext,ytext,xte
 			            shadow: true  
 			        } 
 				},
+//				legend : {
+//					layout : 'vertical',
+//					align : 'right',
+//					verticalAlign : 'middle',
+//					borderWidth : 1
+//				},
 				legend : {
-					layout : 'vertical',
-					align : 'right',
-					verticalAlign : 'middle',
-					borderWidth : 1
+					align : 'center',
+					verticalAlign : 'bottom',
+					layout : 'horizontal' //vertical 竖直 horizontal-水平
 				},
 				series : series
 			});
 }
 
-
-function initBalanceCurveChart(catagories,series,divId,titletext,ytext,xtext) {
+function initBalanceCurveChartTowY(catagories,series,divId,titletext,subtitle,ytext,xtext) {
 	$('#'+divId).highcharts({
 				chart : {
 //					renderTo : divId,
 					type : 'spline',
-					shadow : true,
+					shadow : false,
 					borderWidth : 0,
 					zoomType : 'xy'
 				},
@@ -4376,10 +4485,12 @@ function initBalanceCurveChart(catagories,series,divId,titletext,ytext,xtext) {
 					enabled : false
 				},
 				title : {
-					text : titletext,
-					x : -20
+					text : titletext
 					// center
 				},
+				subtitle: {
+		        	text: subtitle                                                   
+		        },
 				colors : ['#000000',// 黑
 						'#0000FF',// 蓝
 						'#008C00',// 绿
@@ -4389,16 +4500,17 @@ function initBalanceCurveChart(catagories,series,divId,titletext,ytext,xtext) {
 				],
 				xAxis : {
 					categories : catagories,
-//					tickInterval : tickInterval,
+					tickInterval : 100,
 					title : {
 						text :xtext
 					}
 				},
-				yAxis : {
+				yAxis : [{
 //					min: 0,
 					lineWidth : 1,
+//					tickPosition:'inside',
 					title : {
-						text :ytext,
+						text :'位移(m)',
 						style : {
 							color : '#000000',
 							fontWeight : 'bold'
@@ -4406,7 +4518,8 @@ function initBalanceCurveChart(catagories,series,divId,titletext,ytext,xtext) {
 					},
 					labels : {
 						formatter : function() {
-							return Highcharts.numberFormat(this.value, 2);
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
 						}
 					},
 					plotLines : [{
@@ -4415,7 +4528,31 @@ function initBalanceCurveChart(catagories,series,divId,titletext,ytext,xtext) {
 								zIndex:2,
 								color : '#808080'
 							}]
-				},
+				},{
+//					min: 0,
+					lineWidth : 1,
+//					tickPosition:'inside',
+					opposite:true,
+					title : {
+						text :'速度(m/s)',
+						style : {
+							color : '#000000',
+							fontWeight : 'bold'
+						}
+					},
+					labels : {
+						formatter : function() {
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
+						}
+					},
+					plotLines : [{
+								value : 0,
+								width : 1,
+								zIndex:2,
+								color : '#808080'
+							}]
+				}],
 				tooltip : {
 					crosshairs : true,
 					enabled : true,
@@ -4448,11 +4585,119 @@ function initBalanceCurveChart(catagories,series,divId,titletext,ytext,xtext) {
 			            shadow: true  
 			        } 
 				},
+//				legend : {
+//					layout : 'vertical',
+//					align : 'right',
+//					verticalAlign : 'middle',
+//					borderWidth : 1
+//				},
 				legend : {
-					layout : 'vertical',
-					align : 'right',
-					verticalAlign : 'middle',
-					borderWidth : 1
+					align : 'center',
+					verticalAlign : 'bottom',
+					layout : 'horizontal' //vertical 竖直 horizontal-水平
+				},
+				series : series
+			});
+}
+
+
+function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtext) {
+	$('#'+divId).highcharts({
+				chart : {
+//					renderTo : divId,
+					type : 'spline',
+					shadow : false,
+					borderWidth : 0,
+					zoomType : 'xy'
+				},
+				credits : {
+					enabled : false
+				},
+				title : {
+					text : title
+				},
+				subtitle: {
+		        	text: subtitle                                                      
+		        },
+				colors : ['#000000',// 黑
+						'#0000FF',// 蓝
+						'#008C00',// 绿
+						'#800000',// 红
+						'#F4BD82',// 黄
+						'#FF00FF'// 紫
+				],
+				xAxis : {
+					categories : catagories,
+					tickInterval : 40,
+					title : {
+						text :xtext
+					}
+				},
+				yAxis : {
+//					min: 0,
+					lineWidth : 1,
+					title : {
+						text :ytext,
+						style : {
+							color : '#000000',
+							fontWeight : 'bold'
+						}
+					},
+					labels : {
+						formatter : function() {
+//							return Highcharts.numberFormat(this.value, 2);
+							return this.value;
+						}
+					},
+					plotLines : [{
+								value : 0,
+								width : 1,
+								zIndex:2,
+								color : '#808080'
+							}]
+				},
+				tooltip : {
+					crosshairs : true,
+					enabled : true,
+					style : {
+						color : '#333333',
+						fontSize : '12px',
+						padding : '8px'
+					},
+					formatter : function() {
+						return '<b>' + this.series.name + '</b><br/>' + this.x
+								+ ': ' + this.y;
+					},
+					valueSuffix : ''
+				},
+				plotOptions : {
+					 spline: {
+						 lineWidth: 3,  
+				         fillOpacity: 0.3,  
+				         marker: {
+				        	 enabled: true,
+				        	 radius: 0,  //曲线点半径，默认是4
+				            //symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+				             states: {
+				            	 hover: {
+				            		 enabled: true,  
+				                     radius: 6
+				                }  
+				            }  
+				        },  
+				        shadow: true  
+			        } 
+				},
+//				legend : {
+//					layout : 'vertical',
+//					align : 'right',
+//					verticalAlign : 'middle',
+//					borderWidth : 1
+//				},
+				legend : {
+					align : 'center',
+					verticalAlign : 'bottom',
+					layout : 'horizontal' //vertical 竖直 horizontal-水平
 				},
 				series : series
 			});
@@ -4488,10 +4733,11 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		            type: 'scatter',     // 散点图   
 		            renderTo : divid,
 		            zoomType: 'xy',
-		            reflow: true
+		            borderWidth : 0,
+		            reflow: false
 		        },                                                                                   
 		        title: {
-		        	text: cosog.string.FSDiagram  // 地面功图                        
+		        	text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {
 		        	text: wellName+' ['+acquisitionTime+']'                                                      
@@ -4558,7 +4804,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:wellName+'-'+acquisitionTime+'-地面功图',    
+                    filename:wellName+'-'+acquisitionTime+'-光杆功图',    
                     url:context + '/exportHighcharsPicController/export'
                },
 		        legend: {                                                                            
@@ -4633,7 +4879,7 @@ function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtd
 		            reflow: true
 		        },                                                                                   
 		        title: {
-		        	text: cosog.string.FSDiagram  // 地面功图                        
+		        	text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {
 		        	text:wellName+' ['+acquisitionTime+']'                                                
@@ -4713,7 +4959,7 @@ function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtd
 		            backgroundColor: '#FFFFFF',                                                      
 		            borderWidth: 1  ,
 		            enabled: false
-		        },                                                                                   
+		        },                                                                               
 		        plotOptions: {                                                                       
 		            scatter: {                                                                       
 		                marker: {                                                                    
@@ -4759,6 +5005,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
 		            renderTo : divid,
+		            borderWidth : 0,
 		            zoomType: 'xy',
 		            reflow: true
 		        },                                                                                   
@@ -4856,6 +5103,7 @@ function initContinuousDiagramChart(pointdata, divid,title,subtitle,xtext,ytext,
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
 		            renderTo : divid,
+		            borderWidth : 0,
 		            zoomType: 'xy',
 		            reflow: true
 		        },                                                                                   
@@ -4936,6 +5184,119 @@ function initContinuousDiagramChart(pointdata, divid,title,subtitle,xtext,ytext,
 		        },
 		        series: [{                                                                           
 		            name: '',                                                                  
+		            color: color,   
+		            lineWidth:3,
+		            data:  pointdata                                                                                  
+		        }]
+	});
+}
+
+function initAngleContinuousDiagramChart(pointdata,catagories, divid,title,subtitle,xtext,ytext,color) {
+	mychart = new Highcharts.Chart({
+				chart: {                                                                             
+		            type: 'spline',     // 散点图   
+		            renderTo : divid,
+		            borderWidth : 0,
+		            zoomType: 'xy',
+		            reflow: true
+		        },                                                                                   
+		        title: {
+		        	text: title          
+		        },                                                                                   
+		        subtitle: {
+		        	text: subtitle                                                      
+		        },
+		        credits: {
+		            enabled: false
+		        },
+		        xAxis: {                                                                             
+		            title: {                                                                         
+		                text: xtext,    // 坐标+显示文字
+		                useHTML: false,
+		                margin:5,
+                        style: {
+                        	fontSize: '12px',
+                            padding: '5px'
+                        }
+		            }, 
+		            tickInterval : 40,
+		            categories : catagories,
+		            startOnTick: false,      //是否强制轴线在标线处开始
+		            endOnTick: false,        //是否强制轴线在标线处结束                                                        
+		            showLastLabel: true,
+		            allowDecimals: false,    // 刻度值是否为小数
+//		            min:0,
+		            minorTickInterval: ''    // 最小刻度间隔
+		        },                                                                                   
+		        yAxis: {                                                                             
+		            title: {                                                                         
+		                text: ytext   // 载荷（kN） 
+                    },
+		            allowDecimals: false,    // 刻度值是否为小数
+		            minorTickInterval: ''   // 不显示次刻度线
+//		            min: 0                  // 最小值
+		        },
+		        exporting:{
+                    enabled:true,    
+                    filename:'class-booking-chart',    
+                    url:context + '/exportHighcharsPicController/export'
+               },
+		        legend: {
+		        	itemStyle:{
+		        		fontSize: '8px'
+		        	},
+		            enabled: false,
+		            layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'top',
+					x: 0,
+					y: 55,
+					floating: true
+		        },        
+//		        tooltip: {
+//					headerFormat: '<b>{series.name}</b><br/>',
+//					pointFormat: '曲柄转角:{point.x}, {series.name}:{point.y}'
+//				},
+		        tooltip : {
+					crosshairs : true,
+					enabled : true,
+					style : {
+						color : '#333333',
+						fontSize : '12px',
+						padding : '8px'
+					},
+					formatter : function() {
+						return '<b>' + this.series.name + '</b><br/>' + this.x
+								+ ': ' + this.y;
+					},
+					valueSuffix : ''
+				},
+		        plotOptions: {                                                                       
+		        	spline: {
+		            	marker: {                                                                    
+		                    radius: 0,                                                               
+		                    states: {                                                                
+		                        hover: {                                                             
+		                            enabled: true,                                                   
+		                            lineColor: '#646464'                                    
+		                        }                                                                    
+		                    }                                                                        
+		                },                                                                           
+		                states: {                                                                    
+		                    hover: {                                                                 
+		                        marker: {                                                            
+		                            enabled: false                                                   
+		                        }                                                                    
+		                    }                                                                        
+		                },                                                                           
+		                tooltip: {                                                                   
+		                    headerFormat: '',                                
+		                    pointFormat: '{point.x},{point.y}'                                
+		                }                                                                            
+		            }                                                                                
+		        },
+		        series: [{                                                                           
+		            name: ytext,                                                                  
 		            color: color,   
 		            lineWidth:3,
 		            data:  pointdata                                                                                  
@@ -5183,6 +5544,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acquisitionTime, div
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
 		            renderTo : divid,
+		            borderWidth : 0,
 		            zoomType: 'xy'
 		        },                                                                                   
 		        title: {  
@@ -5338,6 +5700,7 @@ function initRodPressChart(xdata, ydata, wellName, acquisitionTime, divid) {
 		            type: 'column',                      // 柱状图
 		            renderTo : divid,                    // 图形放置的位置
 		            zoomType: 'xy',                    // 沿xy轴放大
+		            borderWidth : 0,
 		            options3d: {                         // 3D效果
 		                enabled: false,                   // 是否显示3D效果
 		                alpha: 0,                        // 内旋角度
@@ -5460,6 +5823,7 @@ function initPumpEfficiencyChart(ydata, wellName, acquisitionTime, divid, title,
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
 //		            renderTo : divid,                    // 图形放置的位置
+		            borderWidth : 0,
 		            zoomType: 'xy'                      // 沿xy轴放大
 		        },                                                                                   
 		        title: {                                 // 标题                                                                      
@@ -6980,7 +7344,7 @@ function exportGridExcelData(gridId,url,fileName,title){
     openExcelWindow(url+'?flag=true&' + param);
 };
 /* 
- * 拼接华北油田通信公司地面功图曲线数据
+ * 拼接华北油田通信公司光杆功图曲线数据
  */
 showHYTXSurfaceCard = function(selectedData, divid) {
     var gt=selectedData.load_data.split(";");
@@ -7242,7 +7606,7 @@ function initSingleYCurveChartFn(catagories, series, tickInterval, divId, title,
 }
 
 /* 
- * 拼接地面功图曲线数据
+ * 拼接光杆功图曲线数据
  */
 showSurfaceCardUploadChart = function(result, divid) {
     var acquisitionTime=result.acquisitionTime;
@@ -7291,7 +7655,7 @@ function initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,s
 		            reflow: true
 		        },                                                                                   
 		        title: {                                                                             
-		            text: cosog.string.FSDiagram  // 地面功图                        
+		            text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {                                                                          
 		        	text:wellName+' ['+acquisitionTime+']'                                               
@@ -7416,7 +7780,7 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 		var yData;
 		if(diagramType===0){//如果是功图
 			yData = list[i].loadCurveData.split(",");
-			title='地面功图叠加';
+			title='光杆功图叠加';
 			ytext='载荷(kN)';
 			color=new Array("#000000","#00ff00");
 			minValue=0;
@@ -7501,7 +7865,7 @@ showInverFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType)
 		var yData;
 		if(diagramType===0){//如果是功图
 			yData = list[i].loadCurveData.split(",");
-			title='地面功图叠加';
+			title='光杆功图叠加';
 			ytext='载荷(kN)';
 			color=new Array("#000000","#00ff00");
 		}else if(diagramType===1){//电功图

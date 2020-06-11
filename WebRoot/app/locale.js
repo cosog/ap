@@ -247,7 +247,7 @@ cosog.string.index='首页';
 cosog.string.startDate='开始日期';
 cosog.string.endDate='结束日期';
 //功图类型
-cosog.string.FSDiagram='地面功图';
+cosog.string.FSDiagram='光杆功图';
 cosog.string.pumpFSDiagram='泵功图';
 cosog.string.IDiagram='电流曲线';
 //图形查询

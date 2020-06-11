@@ -121,7 +121,7 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     			        	}
     			        },
     			        { 
-    			        	header: '值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:2,
@@ -156,7 +156,7 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     			        	}
     			        },
     			        { 
-    			        	header: '值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:2,

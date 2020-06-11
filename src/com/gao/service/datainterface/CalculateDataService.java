@@ -95,8 +95,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 					+ " from  tbl_wellinformation t,tbl_rpcinformation t2"
 					+ " where t.id=t2.wellid"
 					+ " and t.wellname='"+object[0]+"'";
+			String wellboretrajectorySql="select t2.measuringdepth,t2.deviationangle,t2.azimuthangle"
+					+ " from  tbl_wellinformation t,tbl_wellboretrajectory t2"
+					+ " where t.id=t2.wellid"
+					+ " and t.wellname='"+object[0]+"'";
 			List<?> rpcInformationList = this.findCallSql(rpcInformationSql);
-			
+			List<?> wellboretrajectoryList = this.findCallSql(wellboretrajectorySql);
 			calculateRequestData.setWellName(object[0]+"");
 			//流体PVT物性
 			calculateRequestData.setFluidPVT(new RPCCalculateRequestData.FluidPVT());
@@ -110,8 +114,58 @@ public class CalculateDataService<T> extends BaseService<T> {
 			calculateRequestData.getReservoir().setDepth(StringManagerUtils.stringToFloat(object[7]+""));
 			calculateRequestData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(object[8]+""));
 			
-			//井深轨迹
-			calculateRequestData.setWellboreTrajectory(new RPCCalculateRequestData.WellboreTrajectory());
+			//井身轨迹
+			if(wellboretrajectoryList.size()>0){
+				Object[] wellboretrajectoryObject=(Object[])wellboretrajectoryList.get(0);
+				calculateRequestData.setWellboreTrajectory(new RPCCalculateRequestData.WellboreTrajectory());
+				String measuringDepthStr="";
+				String deviationAngleStr="";
+				String azimuthAngleStr="";
+				List<Float> measuringDepth=new ArrayList<Float>();
+		        List<Float> deviationAngle=new ArrayList<Float>();
+		        List<Float> azimuthAngle=new ArrayList<Float>();
+		        
+		        SerializableClobProxy   proxy = null;
+				CLOB realClob = null;
+				
+		        if(wellboretrajectoryObject[0]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(wellboretrajectoryObject[0]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					measuringDepthStr=StringManagerUtils.CLOBtoString(realClob);
+				}
+				if(wellboretrajectoryObject[1]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(wellboretrajectoryObject[1]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					deviationAngleStr=StringManagerUtils.CLOBtoString(realClob);
+				}
+				if(wellboretrajectoryObject[2]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(wellboretrajectoryObject[2]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					azimuthAngleStr=StringManagerUtils.CLOBtoString(realClob);
+				}
+				
+				if(StringManagerUtils.isNotNull(measuringDepthStr)){
+					String measuringDepthArr[]=measuringDepthStr.split(",");
+					for(int i=0;i<measuringDepthArr.length;i++){
+						measuringDepth.add(StringManagerUtils.stringToFloat(measuringDepthArr[i]));
+					}
+				}
+				if(StringManagerUtils.isNotNull(deviationAngleStr)){
+					String deviationAngleArr[]=deviationAngleStr.split(",");
+					for(int i=0;i<deviationAngleArr.length;i++){
+						deviationAngle.add(StringManagerUtils.stringToFloat(deviationAngleArr[i]));
+					}
+				}
+				if(StringManagerUtils.isNotNull(azimuthAngleStr)){
+					String azimuthAngleArr[]=azimuthAngleStr.split(",");
+					for(int i=0;i<azimuthAngleArr.length;i++){
+						azimuthAngle.add(StringManagerUtils.stringToFloat(azimuthAngleArr[i]));
+					}
+				}
+				calculateRequestData.getWellboreTrajectory().setMeasuringDepth(measuringDepth);
+				calculateRequestData.getWellboreTrajectory().setDeviationAngle(deviationAngle);
+				calculateRequestData.getWellboreTrajectory().setAzimuthAngle(azimuthAngle);
+			}
 			
 			//抽油杆参数
 			calculateRequestData.setRodString(new RPCCalculateRequestData.RodString());
@@ -696,7 +750,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " where t.liftingType between 200 and 299 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
@@ -724,12 +778,13 @@ public class CalculateDataService<T> extends BaseService<T> {
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(wellObj[0].toString().equals(resuleObj[0].toString())){
 						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
-						dataSbf.append("\"IA\":"+resuleObj[2]+",");
-						dataSbf.append("\"IB\":"+resuleObj[3]+",");
-						dataSbf.append("\"IC\":"+resuleObj[4]+",");
-						dataSbf.append("\"VA\":"+resuleObj[5]+",");
-						dataSbf.append("\"VB\":"+resuleObj[6]+",");
-						dataSbf.append("\"VC\":"+resuleObj[7]+",");
+						dataSbf.append("\"ETResultCode\":"+resuleObj[2]+",");
+						dataSbf.append("\"IA\":"+resuleObj[3]+",");
+						dataSbf.append("\"IB\":"+resuleObj[4]+",");
+						dataSbf.append("\"IC\":"+resuleObj[5]+",");
+						dataSbf.append("\"VA\":"+resuleObj[6]+",");
+						dataSbf.append("\"VB\":"+resuleObj[7]+",");
+						dataSbf.append("\"VC\":"+resuleObj[8]+",");
 						dataSbf.append("\"RunFrequency\":"+StringManagerUtils.stringToFloat(resuleObj[8]+"")+"},");
 					}
 				}

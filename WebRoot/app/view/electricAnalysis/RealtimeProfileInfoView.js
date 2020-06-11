@@ -1,4 +1,4 @@
-Ext.define("AP.view.electricAnalysis.RealtimeProfileInfoView", { // 定义地面功图查询panel
+Ext.define("AP.view.electricAnalysis.RealtimeProfileInfoView", { // 定义光杆功图查询panel
     extend: 'Ext.panel.Panel', // 继承
     alias: 'widget.electricAnalysisRealtimeProfileInfoView', // 定义别名
     id: 'ElectricAnalysisRealtimeProfileInfoView_Id', //模块编号

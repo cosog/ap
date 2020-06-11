@@ -12,7 +12,7 @@ Ext.define('AP.view.graphicalUpload.GraphicalUploadInfoView', {
                 items: [
                     {
                         id: 'graphicalUploadPanelId',
-                        title: '地面功图上传',
+                        title: '光杆功图上传',
                         layout: 'fit',
                         border: false,
                         items:SurfaceCardUploadPanel

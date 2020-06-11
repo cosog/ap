@@ -97,6 +97,7 @@ import com.gao.model.calculate.TotalAnalysisResponseData;
 import com.gao.model.calculate.TotalCalculateRequestData;
 import com.gao.model.calculate.TotalCalculateResponseData;
 import com.gao.model.calculate.WellAcquisitionData;
+import com.gao.model.calculate.WellboreTrajectoryResponseData;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
@@ -1506,6 +1507,7 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println(sql);
 		} finally{
 			if(ps!=null){
 				ps.close();
@@ -2530,17 +2532,20 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_rpc_diagram("
 					+ "?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,?,"
+					+ "?,?,?,"
 					+ "?,?,?,?,"
 					+ "?,?,"
-					+ "?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,"
 					+ "?,"
 					+ "?,"
-					+ "?,?,?,?,?,"
+					+ "?,?,"
+					+ "?,?,?,"
 					+ "?,"
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,"
 					+ "?,?,?,?,?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,?,?,?,?,?,"
 					+ "?,?,?,"
 					+ "?)}");
 			cs.setString(1, wellname);
@@ -2559,36 +2564,37 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(13,diagramClob_P_RAW);
 			cs.setClob(14,diagramClob_I_RAW);
 			cs.setClob(15,diagramClob_RPM_RAW);
+        
+            cs.setClob(16,nullClob);
+			cs.setClob(17,nullClob);
+			cs.setClob(18,nullClob);
 			
-			cs.setInt(16,1);//功图来源 0-采集 1-电参反演 2-人工上传
-			cs.setInt(17,0);//生产数据Id
-			cs.setInt(18,0);//计算标志
-			cs.setInt(19, ResultStatus);
+			cs.setInt(19,1);//功图来源 0-采集 1-电参反演 2-人工上传
+			cs.setInt(20,0);//生产数据Id
+			cs.setInt(21,0);//计算标志
+			cs.setInt(22, ResultStatus);
 			
 			//最大最小载荷
-			cs.setFloat(20,F_Max);
-			cs.setFloat(21,F_Min);
+			cs.setFloat(23,F_Max);
+			cs.setFloat(24,F_Min);
 			//平衡
-			cs.setFloat(22,UpstrokeIMax);
-			cs.setFloat(23,DownstrokeIMax);
-			cs.setFloat(24,UpstrokeWattMax);
-			cs.setFloat(25,DownstrokeWattMax);
-			cs.setFloat(26,IDegreeBalance);
-			cs.setFloat(27,WattDegreeBalance);
+			cs.setFloat(25,UpstrokeIMax);
+			cs.setFloat(26,DownstrokeIMax);
+			cs.setFloat(27,UpstrokeWattMax);
+			cs.setFloat(28,DownstrokeWattMax);
+			cs.setFloat(29,IDegreeBalance);
+			cs.setFloat(30,WattDegreeBalance);
 			
-			cs.setString(28,"");
-			cs.setString(29,"");
-			cs.setString(30,"");
 			cs.setString(31,"");
 			cs.setString(32,"");
 			cs.setString(33,"");
 			cs.setString(34,"");
-			cs.setClob(35,nullClob);//泵功图
-			//产量
+			cs.setString(35,"");
 			cs.setString(36,"");
 			cs.setString(37,"");
-			cs.setString(38,"");
-			cs.setString(39,"");
+            cs.setString(38,"");
+			cs.setClob(39,nullClob);//泵功图
+			//产量
 			cs.setString(40,"");
 			cs.setString(41,"");
 			cs.setString(42,"");
@@ -2602,43 +2608,60 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(50,"");
 			cs.setString(51,"");
 			cs.setString(52,"");
-			//系统效率
-			cs.setString(53,"");
+            cs.setString(53,"");
 			cs.setString(54,"");
 			cs.setString(55,"");
 			cs.setString(56,"");
+			//系统效率
 			cs.setString(57,"");
 			cs.setString(58,"");
 			cs.setString(59,"");
 			cs.setString(60,"");
-			//泵效
-			cs.setString(61,"");
+            cs.setString(61,"");
 			cs.setString(62,"");
 			cs.setString(63,"");
 			cs.setString(64,"");
+			//泵效
 			cs.setString(65,"");
 			cs.setString(66,"");
 			cs.setString(67,"");
 			cs.setString(68,"");
-			//泵入口出口参数
-			cs.setString(69,"");
+            cs.setString(69,"");
 			cs.setString(70,"");
 			cs.setString(71,"");
 			cs.setString(72,"");
+			//泵入口出口参数
 			cs.setString(73,"");
 			cs.setString(74,"");
 			cs.setString(75,"");
 			cs.setString(76,"");
 			cs.setString(77,"");
 			cs.setString(78,"");
+            cs.setString(79,"");
+            cs.setString(80,"");
+            cs.setString(81,"");
+            cs.setString(82,"");
 			//杆参数
-			cs.setString(79,"");
-			
-			cs.setFloat(80,Signal);
-			cs.setInt(81,Interval);
-			cs.setString(82,Ver);
-			
-			
+			cs.setString(83,"");
+            //平衡曲线
+            cs.setClob(84,nullClob);
+			cs.setClob(85,nullClob);
+			cs.setClob(86,nullClob);
+			cs.setClob(87,nullClob);
+			cs.setClob(88,nullClob);
+			cs.setClob(89,nullClob);
+			cs.setClob(90,nullClob);
+			cs.setClob(91,nullClob);
+			cs.setClob(92,nullClob);
+			cs.setClob(93,nullClob);
+			cs.setClob(94,nullClob);
+			//井深切片
+			cs.setClob(95,nullClob);
+        
+			cs.setFloat(96,Signal);
+			cs.setInt(97,Interval);
+			cs.setString(98,Ver);
+        
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -2870,6 +2893,12 @@ public class BaseDao extends HibernateDaoSupport {
 					cs.setFloat(29,calculateResponseData.getFESDiagram().getIDegreeBalance());
 					cs.setFloat(30,calculateResponseData.getFESDiagram().getWattDegreeBalance());
 				}
+//				cs.setFloat(25,calculateResponseData.getFESDiagram().getUpStrokeIMax());
+//				cs.setFloat(26,calculateResponseData.getFESDiagram().getDownStrokeIMax());
+//				cs.setFloat(27,calculateResponseData.getFESDiagram().getUpStrokeWattMax());
+//				cs.setFloat(28,calculateResponseData.getFESDiagram().getDownStrokeWattMax());
+//				cs.setFloat(29,calculateResponseData.getFESDiagram().getIDegreeBalance());
+//				cs.setFloat(30,calculateResponseData.getFESDiagram().getWattDegreeBalance());
 				//移动距离
 				cs.setFloat(31,calculateResponseData.getFESDiagram().getDeltaRadius());
 				
@@ -4042,32 +4071,35 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,"                                                           //3
 					+ "?)}");                                                            //1
 			cs.setString(1, totalAnalysisRequestData.getWellName());//井名
+			//电参工况
+			cs.setInt(2, totalAnalysisResponseData.getETResultCode());
+			cs.setString(3, totalAnalysisResponseData.getETResultString());
 			//三相电流、三相电压
-			cs.setFloat(2, totalAnalysisResponseData.getIA().getValue());
-			cs.setFloat(3, totalAnalysisResponseData.getIA().getMax());
-			cs.setFloat(4, totalAnalysisResponseData.getIA().getMin());
-			cs.setFloat(5, totalAnalysisResponseData.getIB().getValue());
-			cs.setFloat(6, totalAnalysisResponseData.getIB().getMax());
-			cs.setFloat(7, totalAnalysisResponseData.getIB().getMin());
-			cs.setFloat(8, totalAnalysisResponseData.getIC().getValue());
-			cs.setFloat(9, totalAnalysisResponseData.getIC().getMax());
-			cs.setFloat(10, totalAnalysisResponseData.getIC().getMin());
+			cs.setFloat(4, totalAnalysisResponseData.getIA().getValue());
+			cs.setFloat(5, totalAnalysisResponseData.getIA().getMax());
+			cs.setFloat(6, totalAnalysisResponseData.getIA().getMin());
+			cs.setFloat(7, totalAnalysisResponseData.getIB().getValue());
+			cs.setFloat(8, totalAnalysisResponseData.getIB().getMax());
+			cs.setFloat(9, totalAnalysisResponseData.getIB().getMin());
+			cs.setFloat(10, totalAnalysisResponseData.getIC().getValue());
+			cs.setFloat(11, totalAnalysisResponseData.getIC().getMax());
+			cs.setFloat(12, totalAnalysisResponseData.getIC().getMin());
 			
-			cs.setFloat(11, totalAnalysisResponseData.getVA().getValue());
-			cs.setFloat(12, totalAnalysisResponseData.getVA().getMax());
-			cs.setFloat(13, totalAnalysisResponseData.getVA().getMin());
-			cs.setFloat(14, totalAnalysisResponseData.getVB().getValue());
-			cs.setFloat(15, totalAnalysisResponseData.getVB().getMax());
-			cs.setFloat(16, totalAnalysisResponseData.getVB().getMin());
-			cs.setFloat(17, totalAnalysisResponseData.getVC().getValue());
-			cs.setFloat(18, totalAnalysisResponseData.getVC().getMax());
-			cs.setFloat(19, totalAnalysisResponseData.getVC().getMin());
+			cs.setFloat(13, totalAnalysisResponseData.getVA().getValue());
+			cs.setFloat(14, totalAnalysisResponseData.getVA().getMax());
+			cs.setFloat(15, totalAnalysisResponseData.getVA().getMin());
+			cs.setFloat(16, totalAnalysisResponseData.getVB().getValue());
+			cs.setFloat(17, totalAnalysisResponseData.getVB().getMax());
+			cs.setFloat(18, totalAnalysisResponseData.getVB().getMin());
+			cs.setFloat(19, totalAnalysisResponseData.getVC().getValue());
+			cs.setFloat(20, totalAnalysisResponseData.getVC().getMax());
+			cs.setFloat(21, totalAnalysisResponseData.getVC().getMin());
 			
-			cs.setFloat(20, totalAnalysisResponseData.getRunFrequency().getValue());
-			cs.setFloat(21, totalAnalysisResponseData.getRunFrequency().getMax());
-			cs.setFloat(22, totalAnalysisResponseData.getRunFrequency().getMin());
+			cs.setFloat(22, totalAnalysisResponseData.getRunFrequency().getValue());
+			cs.setFloat(23, totalAnalysisResponseData.getRunFrequency().getMax());
+			cs.setFloat(24, totalAnalysisResponseData.getRunFrequency().getMin());
 			
-			cs.setString(23, tatalDate);//汇总日期
+			cs.setString(25, tatalDate);//汇总日期
 			cs.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -4995,4 +5027,79 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return true;
 	}
+	
+	public Boolean saveWellboreTrajectoryData(String wellName,WellboreTrajectoryResponseData wellboreTrajectoryResponseData,String measuringDepth,String deviationAngle,String azimuthAngle) throws SQLException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		Statement st=null; 
+		CallableStatement cs=null;
+		
+		CLOB measuringDepthClob=new CLOB((OracleConnection) conn);
+		measuringDepthClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB verticalDepthClob=new CLOB((OracleConnection) conn);
+		verticalDepthClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB deviationAngleClob=new CLOB((OracleConnection) conn);
+		deviationAngleClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB azimuthAngleClob=new CLOB((OracleConnection) conn);
+		azimuthAngleClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB XClob=new CLOB((OracleConnection) conn);
+		XClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB YClob=new CLOB((OracleConnection) conn);
+		YClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB ZClob=new CLOB((OracleConnection) conn);
+		ZClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		String verticalDepth="";
+		String X="";
+		String Y="";
+		String Z="";
+		
+		if(wellboreTrajectoryResponseData!=null && wellboreTrajectoryResponseData.getCalculationStatus().getResultStatus()==1 && StringManagerUtils.isNotNull(measuringDepth)){
+//			measuringDepth=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getMeasuringDepth(), ",");
+			verticalDepth=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getVerticalDepth(), ",");
+//			deviationAngle=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getDeviationAngle(), ",");
+//			azimuthAngle=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getAzimuthAngle(), ",");
+			X=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getX(), ",");
+			Y=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getY(), ",");
+			Z=StringUtils.join(wellboreTrajectoryResponseData.getWellboreTrajectory().getZ(), ",");
+		}
+		measuringDepthClob.putString(1, measuringDepth);
+		verticalDepthClob.putString(1, verticalDepth);
+		deviationAngleClob.putString(1, deviationAngle);
+		azimuthAngleClob.putString(1, azimuthAngle);
+		XClob.putString(1, X);
+		YClob.putString(1, Y);
+		ZClob.putString(1, Z);
+		
+		
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_WellboreTrajectory(?,?,?,?,?,?,?,?,?)}");
+			cs.setString(1, wellName);
+			cs.setInt(2, wellboreTrajectoryResponseData==null?0:wellboreTrajectoryResponseData.getCalculationStatus().getResultStatus());
+			cs.setClob(3, measuringDepthClob);
+			cs.setClob(4, verticalDepthClob);
+			cs.setClob(5, deviationAngleClob);
+			cs.setClob(6, azimuthAngleClob);
+			cs.setClob(7, XClob);
+			cs.setClob(8, YClob);
+			cs.setClob(9, ZClob);
+			cs.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
+	
 }

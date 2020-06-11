@@ -366,6 +366,31 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 	}
 	
 	/**
+	 * 描述：查询功图分析详情数据
+	 */
+	@RequestMapping("/querySingleDetailsChartsData")
+	public String querySingleDetailsChartsData()throws Exception{
+		id = Integer.parseInt(ParamUtils.getParameter(request, "id"));
+		wellName = ParamUtils.getParameter(request, "wellName");
+		String selectedWellName = ParamUtils.getParameter(request, "selectedWellName");
+		String type = ParamUtils.getParameter(request, "type");
+		String json = "";
+		if("1".equals(type)){
+			json = this.diagnosisAnalysisOnlyService.querySingleDetailsWellBoreChartsData(id,wellName,selectedWellName);
+		}else if("2".equals(type)){
+			json = this.diagnosisAnalysisOnlyService.querySingleDetailsSurfaceData(id,wellName,selectedWellName);
+		}
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	/**
 	 * 描述：查询单井工况诊断的杆柱应力
 	 */
 	@RequestMapping("/querySingleRodPress")

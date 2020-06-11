@@ -98,8 +98,13 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " from  tbl_wellinformation t,tbl_rpcinformation t2"
 					+ " where t.id=t2.wellid"
 					+ " and t.wellname='"+wellAcquisitionData.getWellName()+"'";
+			String wellboretrajectorySql="select t2.measuringdepth,t2.deviationangle,t2.azimuthangle"
+					+ " from  tbl_wellinformation t,tbl_wellboretrajectory t2"
+					+ " where t.id=t2.wellid"
+					+ " and t.wellname='"+wellAcquisitionData.getWellName()+"'";
 			List<?> prodDataList = this.findCallSql(prodDataSql);
 			List<?> rpcInformationList = this.findCallSql(rpcInformationSql);
+			List<?> wellboretrajectoryList = this.findCallSql(wellboretrajectorySql);
 			if(prodDataList.size()>0){
 				calculateRequestData=new RPCCalculateRequestData();
 				Object[] object=(Object[])prodDataList.get(0);
@@ -118,6 +123,59 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				calculateRequestData.setReservoir(new RPCCalculateRequestData.Reservoir());
 				calculateRequestData.getReservoir().setDepth(StringManagerUtils.stringToFloat(object[5]+""));
 				calculateRequestData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(object[6]+""));
+				
+				//井身轨迹
+				if(wellboretrajectoryList.size()>0){
+					Object[] wellboretrajectoryObject=(Object[])wellboretrajectoryList.get(0);
+					calculateRequestData.setWellboreTrajectory(new RPCCalculateRequestData.WellboreTrajectory());
+					String measuringDepthStr="";
+					String deviationAngleStr="";
+					String azimuthAngleStr="";
+					List<Float> measuringDepth=new ArrayList<Float>();
+			        List<Float> deviationAngle=new ArrayList<Float>();
+			        List<Float> azimuthAngle=new ArrayList<Float>();
+			        
+			        SerializableClobProxy   proxy = null;
+					CLOB realClob = null;
+					
+			        if(wellboretrajectoryObject[0]!=null){
+						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(wellboretrajectoryObject[0]);
+						realClob = (CLOB) proxy.getWrappedClob(); 
+						measuringDepthStr=StringManagerUtils.CLOBtoString(realClob);
+					}
+					if(wellboretrajectoryObject[1]!=null){
+						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(wellboretrajectoryObject[1]);
+						realClob = (CLOB) proxy.getWrappedClob(); 
+						deviationAngleStr=StringManagerUtils.CLOBtoString(realClob);
+					}
+					if(wellboretrajectoryObject[2]!=null){
+						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(wellboretrajectoryObject[2]);
+						realClob = (CLOB) proxy.getWrappedClob(); 
+						azimuthAngleStr=StringManagerUtils.CLOBtoString(realClob);
+					}
+					
+					if(StringManagerUtils.isNotNull(measuringDepthStr)){
+						String measuringDepthArr[]=measuringDepthStr.split(",");
+						for(int i=0;i<measuringDepthArr.length;i++){
+							measuringDepth.add(StringManagerUtils.stringToFloat(measuringDepthArr[i]));
+						}
+					}
+					if(StringManagerUtils.isNotNull(deviationAngleStr)){
+						String deviationAngleArr[]=deviationAngleStr.split(",");
+						for(int i=0;i<deviationAngleArr.length;i++){
+							deviationAngle.add(StringManagerUtils.stringToFloat(deviationAngleArr[i]));
+						}
+					}
+					if(StringManagerUtils.isNotNull(azimuthAngleStr)){
+						String azimuthAngleArr[]=azimuthAngleStr.split(",");
+						for(int i=0;i<azimuthAngleArr.length;i++){
+							azimuthAngle.add(StringManagerUtils.stringToFloat(azimuthAngleArr[i]));
+						}
+					}
+					calculateRequestData.getWellboreTrajectory().setMeasuringDepth(measuringDepth);
+					calculateRequestData.getWellboreTrajectory().setDeviationAngle(deviationAngle);
+					calculateRequestData.getWellboreTrajectory().setAzimuthAngle(azimuthAngle);
+				}
 				
 				//井深轨迹
 //				calculateRequestData.setWellboreTrajectory(new RPCCalculateRequestData.WellboreTrajectory());

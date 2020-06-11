@@ -131,7 +131,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			commStatus="离线";
     			runStatus=""
     		}
-    		acqSataStr+="{\"item\":\"采集时间:"+get_rawData.acquisitionTime_d+"\",\"itemCode\":\"acquisitionTime_d\",\"value\":\"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"采集时间\",\"itemCode\":\"acquisitionTime_d\",\"value\":\""+get_rawData.acquisitionTime_d+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"通信状态\",\"itemCode\":\"commStatus\",\"value\":\""+commStatus+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"运行状态\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";
@@ -186,7 +186,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		    	 controlSataStr+="{\"item\":\"功图数据采集间隔(min)\",\"itemcode\":\"acqcycle_diagram\",\"value\":\""+(get_rawData.acqcycle_diagram==undefined?"":get_rawData.acqcycle_diagram)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
     		     case "DiscreteInterval":
-    		    	 controlSataStr+="{\"item\":\"离散数据采集间隔(min)\",\"itemcode\":\"acqcycle_discrete\",\"value\":\""+(get_rawData.acqcycle_discrete==undefined?"":get_rawData.acqcycle_discrete)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 controlSataStr+="{\"item\":\"离散数据采集间隔(min)\",\"itemcode\":\"acqcycle_discrete\",\"value\":\""+(get_rawData.acqcycle_discrete==undefined||get_rawData.acqcycle_discrete==""?"":parseFloat(get_rawData.acqcycle_discrete).toFixed(2))+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
     		     case "iUpLimit":
     		    	 controlSataStr+="{\"item\":\"电流上限(A)\",\"itemcode\":\"IaUpLimit\",\"value\":\""+(get_rawData.IaUpLimit==undefined?"":get_rawData.IaUpLimit)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
@@ -310,7 +310,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        	}
     			        },
     			        { 
-    			        	header: '值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:1,
@@ -339,21 +339,21 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        	header: '名称',  
     			        	dataIndex: 'item',
     			        	align:'left',
-    			        	flex:3,
+    			        	flex:9,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
     			        },
     			        { 
-    			        	header: '值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
-    			        	flex:1,
+    			        	flex:10,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
     			        },
-    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:1,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
+    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:4,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
     			    ]
     			});
     			Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAcqPanel_Id").add(acqGridPanel);
@@ -386,13 +386,19 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        	header: '操作项',  
     			        	dataIndex: 'item',
     			        	align:'left',
-    			        	flex:9
+    			        	flex:9,
+    			        	renderer:function(value){
+    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        	}
     			        },
     			        { 
-    			        	header: '状态/值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
-    			        	flex:3
+    			        	flex:3,
+    			        	renderer:function(value){
+    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        	}
 //    			        	editor:{allowBlank:false}
     			        },
     			        { 	header: '操作', 

@@ -1,5 +1,5 @@
 var diagramPage=1;
-Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查询panel
+Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查询panel
     extend: 'Ext.panel.Panel', // 继承
     alias: 'widget.SurfaceCardPanel', // 定义别名
     id: 'SurfaceCardQuery_Id', //模块编号
@@ -141,7 +141,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义地面功图查
                             if (diagramPage < totalPages) {
                                 var surfaceCardContent = Ext.getCmp("surfaceCardContent");
                                 var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                                if (hRatio > 0.75) {
+                                if (hRatio > 0.5) {
                                     if (diagramPage < 2) {
                                         diagramPage++;
                                         loadSurfaceCardList(diagramPage);

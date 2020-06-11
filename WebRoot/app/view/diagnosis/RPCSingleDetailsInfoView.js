@@ -824,7 +824,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                         tabPosition: 'top',
                         id: 'FSDiagramAnalysisSingleDetailsCenterTabPanel_Id',
                         items: [{
-                        	title: '功图分析',
+                        	title: '井筒分析',
                         	margin: '0 0 0 0',
                             padding: 0,
                             autoScroll:true,
@@ -850,24 +850,24 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
-                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleDetailsDiv1_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv1_id").offsetHeight,true);
+                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").offsetHeight,true);
                                         		}
                                             }
                                         }
                             	    },{
                             	    	border: true,
-                            	    	margin: '0 1 0 0',
+                            	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
-                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleDetailsDiv2_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv2_id").offsetHeight,true);
+                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").offsetHeight,true);
                                         		}
                                             }
                                         }
@@ -875,7 +875,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	},{
                             		border: false,
 //                            		flex: 1,
-                            		margin: '1 0 0 0',
+                            		margin: '0 0 0 0',
                             		layout: {
                             	        type: 'hbox',
                             	        pack: 'start',
@@ -883,27 +883,27 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
-                            	    	margin: '0 1 0 0',
+                            	    	margin: '1 0 0 0',
                                         flex: 1,
                                         height:300,
-                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleDetailsDiv3_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv3_id").offsetHeight,true);
+                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").offsetHeight,true);
                                         		}
                                             }
                                         }
                             	    },{
                             	    	border: true,
-                            	    	margin: '0 1 0 0',
+                            	    	margin: '1 0 0 1',
                                         flex: 1,
                                         height:300,
-                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleDetailsDiv4_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv4_id").offsetHeight,true);
+                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").offsetHeight,true);
                                         		}
                                             }
                                         }
@@ -911,7 +911,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	},{
                             		border: false,
 //                            		flex: 1,
-                            		margin: '1 0 0 0',
+                            		margin: '0 0 0 0',
                             		layout: {
                             	        type: 'hbox',
                             	        pack: 'start',
@@ -919,84 +919,160 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
-                            	    	margin: '0 1 0 0',
+                            	    	margin: '1 0 0 0',
                                         flex: 1,
                                         height:300,
-                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
+                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleDetailsDiv5_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleDetailsDiv5_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv5_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv5_id").offsetHeight,true);
+                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").offsetHeight,true);
                                         		}
                                             }
                                         }
                             	    },{
                             	    	border: true,
+                            	    	margin: '1 0 0 1',
                                         flex: 1,
                                         height:300,
-                                        html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
+                                        html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	if($("#FSDiagramAnalysisSingleDetailsDiv6_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleDetailsDiv6_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv6_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv6_id").offsetHeight,true);
-                                        		}
+                                            	var myChart = echarts.getInstanceByDom(document.getElementById("FSDiagramAnalysisSingleWellboreDetailsDiv6_id"));
+                                            	if(myChart!=undefined){
+                                            		myChart.resize({
+                                            			width: $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetWidth,
+                                            			height: $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetHeight,
+                                            		});
+                                            	}
                                             }
                                         }
                             	    }]
                             	}
                             ]
                         },{
-                        	title: '电流曲线',
+                        	title: '地面分析',
                         	margin: '0 0 0 0',
-                        	id: 'FSDiagramAnalysisSingleDetailsCenterPanel2_Id',
                             padding: 0,
                             autoScroll:true,
                             scrollable: true,
+                            id: 'FSDiagramAnalysisSingleDetailsCenterPanel2_Id',
                             layout: {
                                 type: 'vbox',
                                 pack: 'start',
                                 align: 'stretch'
                             },
-                            items:[{
-                    	    	border: true,
-                    	    	margin: '0 0 0 0',
-                                flex: 1,
-                                height:300,
-                                html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv7_id\" style="width:100%;height:100%;"></div>',
-                                listeners: {
-                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                    	if($("#FSDiagramAnalysisSingleDetailsDiv7_id").highcharts()!=undefined){
-                                			$("#FSDiagramAnalysisSingleDetailsDiv7_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv7_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv7_id").offsetHeight,true);
-                                		}
-                                    }
-                                }
-                    	    },{
-                    	    	border: true,
-                    	    	margin: '0 0 0 0',
-                                flex: 1,
-                                height:300,
-                                html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv8_id\" style="width:100%;height:100%;"></div>',
-                                listeners: {
-                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                    	if($("#FSDiagramAnalysisSingleDetailsDiv8_id").highcharts()!=undefined){
-                                			$("#FSDiagramAnalysisSingleDetailsDiv8_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv8_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv8_id").offsetHeight,true);
-                                		}
-                                    }
-                                }
-                    	    },{
-                    	    	border: true,
-                    	    	margin: '0 0 0 0',
-                                flex: 1,
-                                height:300,
-                                html: '<div id=\"FSDiagramAnalysisSingleDetailsDiv9_id\" style="width:100%;height:100%;"></div>',
-                                listeners: {
-                                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                    	if($("#FSDiagramAnalysisSingleDetailsDiv9_id").highcharts()!=undefined){
-                                			$("#FSDiagramAnalysisSingleDetailsDiv9_id").highcharts().setSize($("#FSDiagramAnalysisSingleDetailsDiv9_id").offsetWidth, $("#FSDiagramAnalysisSingleDetailsDiv9_id").offsetHeight,true);
-                                		}
-                                    }
-                                }
-                    	    }]
+                            items: [
+                            	{
+                            		border: false,
+                            		margin: '0 0 0 0',
+//                            		flex: 1,
+                            		layout: {
+                            	        type: 'hbox',
+                            	        pack: 'start',
+                            	        align: 'stretch'
+                            	    },
+                            	    items:[{
+                            	    	border: true,
+                            	    	margin: '0 0 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").offsetHeight,true);
+                                        		}
+                                            }
+                                        }
+                            	    },{
+                            	    	border: true,
+                            	    	margin: '0 0 0 1',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").offsetHeight,true);
+                                        		}
+                                            }
+                                        }
+                            	    }]
+                            	},{
+                            		border: false,
+//                            		flex: 1,
+                            		margin: '0 0 0 0',
+                            		layout: {
+                            	        type: 'hbox',
+                            	        pack: 'start',
+                            	        align: 'stretch'
+                            	    },
+                            	    items:[{
+                            	    	border: true,
+                            	    	margin: '1 0 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").offsetHeight,true);
+                                        		}
+                                            }
+                                        }
+                            	    },{
+                            	    	border: true,
+                            	    	margin: '1 0 0 1',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").offsetHeight,true);
+                                        		}
+                                            }
+                                        }
+                            	    }]
+                            	},{
+                            		border: false,
+//                            		flex: 1,
+                            		margin: '0 0 0 0',
+                            		layout: {
+                            	        type: 'hbox',
+                            	        pack: 'start',
+                            	        align: 'stretch'
+                            	    },
+                            	    items:[{
+                            	    	border: true,
+                            	    	margin: '1 0 0 0',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").offsetHeight,true);
+                                        		}
+                                            }
+                                        }
+                            	    },{
+                            	    	border: true,
+                            	    	margin: '1 0 0 1',
+                                        flex: 1,
+                                        height:300,
+                                        html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv6_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv6_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv6_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv6_id").offsetHeight,true);
+                                        		}
+                                            }
+                                        }
+                            	    }]
+                            	}
+                            ]
                         }],
                         listeners: {
                         	tabchange: function (tabPanel, newCard, oldCard,obj) {
@@ -1142,20 +1218,20 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                     }],
                     listeners: {
                         beforeCollapse: function (panel, eOpts) {
-                        	$("#FSDiagramAnalysisSingleDetailsDiv1_id").hide();
-                            $("#FSDiagramAnalysisSingleDetailsDiv2_id").hide();
-                            $("#FSDiagramAnalysisSingleDetailsDiv3_id").hide();
-                            $("#FSDiagramAnalysisSingleDetailsDiv4_id").hide();
-                            $("#FSDiagramAnalysisSingleDetailsDiv5_id").hide();
-                            $("#FSDiagramAnalysisSingleDetailsDiv6_id").hide();
+                        	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").hide();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").hide();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").hide();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").hide();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").hide();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").hide();
                         },
                         expand: function (panel, eOpts) {
-                        	$("#FSDiagramAnalysisSingleDetailsDiv1_id").show();
-                            $("#FSDiagramAnalysisSingleDetailsDiv2_id").show();
-                            $("#FSDiagramAnalysisSingleDetailsDiv3_id").show();
-                            $("#FSDiagramAnalysisSingleDetailsDiv4_id").show();
-                            $("#FSDiagramAnalysisSingleDetailsDiv5_id").show();
-                            $("#FSDiagramAnalysisSingleDetailsDiv6_id").show();
+                        	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").show();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").show();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").show();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").show();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").show();
+                            $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").show();
                         }
                     }
                 }]
@@ -1692,6 +1768,224 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
         },
         series: series
     });
+};
+
+function initWellboreSliceCharts(result,divId){
+	var measuringDepth=result.wellboreSlice_MeasuringDepth.split(",");
+	var P=result.wellboreSlice_P.split(",");
+	var Bo=result.wellboreSlice_Bo.split(",");
+	var GLRis=result.wellboreSlice_GLRis.split(",");
+	var tickInterval = Math.floor(measuringDepth.length / 10) + 1;
+	var title='物性剖面';
+	var legendName = ['压力','就地气液比'];
+	var series = "[";
+	var PData="{\"name\":\"压力\",\"yAxis\":0,\"data\":[";
+	var GLRisData="{\"name\":\"就地气液比\",\"yAxis\":1,\"data\":[";
+	var color=['#800000',
+		'#0000FF'
+	];
+	var maxMeasuringDepth=0;
+	var xMaxValue=null;
+    if(measuringDepth.length>0){
+        for(var i=0;i<measuringDepth.length;i++){
+        	PData += "[" + changeTwoDecimal(measuringDepth[i]) + ","+changeTwoDecimal(P[i])+"]";
+        	GLRisData += "[" + changeTwoDecimal(measuringDepth[i]) + ","+changeTwoDecimal(GLRis[i])+"]";
+        	maxMeasuringDepth=parseFloat(measuringDepth[i]);
+        	if(i<measuringDepth.length-1){
+        		PData+=",";
+        		GLRisData+=",";
+        	}
+        }
+    }
+    PData+="]}";
+    GLRisData+="]}";
+	series+=PData+","+GLRisData;
+	series+="]";
+	
+	if(maxMeasuringDepth!=0){
+		xMaxValue=Math.ceil(maxMeasuringDepth/100)*100;
+		tickInterval = 100;
+	}
+	
+	var ser1 = Ext.JSON.decode(series);
+	
+	var chart = new Highcharts.Chart({
+		chart: {
+			renderTo : divId,
+			type: 'spline',
+			zoomType: 'xy',
+			shadow : false,
+			borderWidth : 0,
+			inverted: true
+		},
+		credits : {
+			enabled : false
+		},
+		title: {
+			text: title
+		},
+		subtitle: {
+        	text: result.wellName+' ['+result.acquisitionTime+']'                                                      
+        },
+		colors: color,
+		xAxis: {
+			reversed: true,
+			tickInterval : tickInterval,
+			title: {
+				enabled: true,
+				text: '深度(m)'
+			},
+			labels: {
+				formatter: function () {
+					return this.value;
+				}
+			},
+			maxPadding: 0.05,
+			max:xMaxValue,
+			showLastLabel: true
+		},
+		yAxis: [{
+			title: {
+				text: '压力(Mpa)'
+			},
+			labels: {
+				formatter: function () {
+					return this.value;
+				}
+			},
+			lineWidth: 2
+		},{
+			title: {
+				text: '就地气液比'
+			},
+			opposite:true,
+			labels: {
+				formatter: function () {
+					return this.value;
+				}
+			},
+			lineWidth: 2
+		}],
+		legend: {
+			enabled: false
+		},
+		tooltip: {
+			headerFormat: '<b>{series.name}</b><br/>',
+			pointFormat: '深度:{point.x} m, {series.name}:{point.y}'
+		},
+		plotOptions : {
+			 spline: {
+				 lineWidth: 3,  
+		         fillOpacity: 0.3,  
+		         marker: {
+		        	 enabled: true,
+		        	 radius: 0,  //曲线点半径，默认是4
+		            //symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+		             states: {
+		            	 hover: {
+		            		 enabled: true,  
+		                     radius: 6
+		                }  
+		            }  
+		        },  
+		        shadow: true  
+	        } 
+		},
+		series: ser1
+	});
+}
+
+function initSingleDetailsWellboreTrajectoryCharts(result,divId){
+	var data = [];
+	var zMaxValue=0;
+	var zMin=null,zMax=null,xMin=null,xMax=null,yMin=null,yMax=null;
+	
+	var wellboreTrajectoryX=result.wellboreTrajectoryX.split(",");
+	var wellboreTrajectoryY=result.wellboreTrajectoryY.split(",");
+	var wellboreTrajectoryZ=result.wellboreTrajectoryZ.split(",");
+	
+	var reservoirDepth=result.reservoirDepth;
+	
+	if(result.wellboreTrajectoryX!=""&&result.wellboreTrajectoryX!="null"&&result.wellboreTrajectoryX!=null){
+		for(var i=0;i<wellboreTrajectoryX.length;i++){
+			data.push([parseFloat(wellboreTrajectoryX[i]),parseFloat(wellboreTrajectoryY[i]),0-parseFloat(wellboreTrajectoryZ[i])]);
+			zMaxValue=parseFloat(wellboreTrajectoryZ[i]);
+		}
+	}else{
+		data.push([0,0,0]);
+		data.push([0,0,0-parseFloat(reservoirDepth)]);
+		zMaxValue=parseFloat(reservoirDepth);
+	}
+	
+	if(zMaxValue!=0 && zMaxValue!=undefined){
+		zMax=Math.ceil(zMaxValue/100)*100;
+		xMin=yMin=0-zMax/2;
+		xMax=yMax=zMax/2;
+		zMin=0-zMax;
+	}
+	var myChart = echarts.init(document.getElementById(divId),'macarons');
+	var option = {
+		    tooltip: {},
+		    backgroundColor: '#fff',
+		    title: {
+		        left: 'center',
+		        text: '井身轨迹',
+		    },
+		    visualMap: {
+		        show: false,
+		        dimension: 2,
+		        min: 0,
+		        max: 30,
+		        inRange: {
+		            color: ['#0000FF']
+//		    		color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+		        }
+		    },
+		    toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {}   //保存为图片
+                }
+            },
+		    xAxis3D: {
+		        type: 'value',
+		        min:xMin,
+		        max:xMax
+		    },
+		    yAxis3D: {
+		        type: 'value',
+		        min:yMin,
+		        max:yMax
+		    },
+		    zAxis3D: {
+		        type: 'value',
+		        min:zMin,
+		        max:0,
+		        inverse: true //反转坐标轴
+		    },
+		    grid3D: {
+		        viewControl: {
+		            projection: 'orthographic',
+		            autoRotate: false
+		        },
+		        boxWidth: 70, //图件宽
+		        boxHeight: 70, //图件高
+		        boxDepth: 70 //图件长
+		    },
+		    series: [{
+		        type: 'line3D',
+		        data: data,
+		        zoom: 0.5, //当前视角的缩放比例
+		        roam: true, //是否开启平游或缩放
+		        lineStyle: {
+		            width: 4
+		        }
+		    }]
+		};
+	// 使用刚指定的配置项和数据显示图表。
+	myChart.clear();
+    myChart.setOption(option);
+
 };
 
 var FSDiagramAnalysisRealtimeRefreshTask = {

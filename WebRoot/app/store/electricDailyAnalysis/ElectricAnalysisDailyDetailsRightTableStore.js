@@ -98,7 +98,7 @@ Ext.define('AP.store.electricDailyAnalysis.ElectricAnalysisDailyDetailsRightTabl
     			        	}
     			        },
     			        { 
-    			        	header: '数值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:5,
@@ -136,7 +136,7 @@ Ext.define('AP.store.electricDailyAnalysis.ElectricAnalysisDailyDetailsRightTabl
     			        	}
     			        },
     			        { 
-    			        	header: '数值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:3,

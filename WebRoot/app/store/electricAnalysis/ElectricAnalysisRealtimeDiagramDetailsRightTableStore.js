@@ -24,11 +24,11 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDiagramDetailsRigh
 //    		dataStr+="{\"item\":\"上冲程最大电流(A)\",\"itemCode\":\"upStrokeIMax\",\"value\":"+get_rawData.upStrokeIMax+",\"curve\":\"\"},";
 //    		dataStr+="{\"item\":\"下冲程最大电流(A)\",\"itemCode\":\"downStrokeIMax\",\"value\":"+get_rawData.downStrokeIMax+",\"curve\":\"\"},";
         	dataStr+="{\"item\":\"电流比\",\"itemCode\":\"downAndUpStrokeIMax\",\"value\":\""+get_rawData.downStrokeIMax+"/"+get_rawData.upStrokeIMax+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":"+get_rawData.iDegreeBalance+",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
 //    		dataStr+="{\"item\":\"上冲程最大功率(kW)\",\"itemCode\":\"upStrokeWattMax\",\"value\":"+get_rawData.upStrokeWattMax+",\"curve\":\"\"},";
 //    		dataStr+="{\"item\":\"下冲程最大功率(kW)\",\"itemCode\":\"downStrokeWattMax\",\"value\":"+get_rawData.downStrokeWattMax+",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"功率比\",\"itemCode\":\"downAndUpStrokeWattMax\",\"value\":\""+get_rawData.downStrokeWattMax+"/"+get_rawData.upStrokeWattMax+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":"+get_rawData.wattDegreeBalance+",\"curve\":\"\"}";
+    		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"}";
     		dataStr+="]}";
     		
     		var acqSataStr="{\"items\":[";
@@ -89,7 +89,7 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDiagramDetailsRigh
     			        	}
     			        },
     			        { 
-    			        	header: '数值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:2,
@@ -127,7 +127,7 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDiagramDetailsRigh
     			        	}
     			        },
     			        { 
-    			        	header: '数值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:2,

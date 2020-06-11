@@ -121,7 +121,7 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDiscreteDetailsRig
     			        	}
     			        },
     			        { 
-    			        	header: '数值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:2,
@@ -159,7 +159,7 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDiscreteDetailsRig
     			        	}
     			        },
     			        { 
-    			        	header: '数值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:2,

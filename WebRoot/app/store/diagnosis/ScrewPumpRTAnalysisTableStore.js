@@ -175,7 +175,7 @@ var controlSataStr="{\"items\":[";
     			        	}
     			        },
     			        { 
-    			        	header: '值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:1,
@@ -210,7 +210,7 @@ var controlSataStr="{\"items\":[";
     			        	}
     			        },
     			        { 
-    			        	header: '值', 
+    			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
     			        	flex:1,
@@ -248,7 +248,7 @@ var controlSataStr="{\"items\":[";
     				store: controlStore,
     			    columns: [
     			        { header: '操作项',  dataIndex: 'item',align:'left',flex:3},
-    			        { header: '状态/值', dataIndex: 'value',align:'center',flex:1,editor:{allowBlank:false}},
+    			        { header: '变量', dataIndex: 'value',align:'center',flex:1,editor:{allowBlank:false}},
     			        { 	header: '操作', 
     			        	dataIndex: 'operation',
     			        	align:'center',

@@ -57,12 +57,12 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                         selectionchange: function (view, selected, o) {
                             if (selected.length > 0) {
                             	if(isNaN(selected[0].id)){
-                            		$("#FSDiagramAnalysisSingleDetailsDiv1_id").html('');
-                                	$("#FSDiagramAnalysisSingleDetailsDiv2_id").html('');
-                                	$("#FSDiagramAnalysisSingleDetailsDiv3_id").html('');
-                                	$("#FSDiagramAnalysisSingleDetailsDiv4_id").html('');
-                                	$("#FSDiagramAnalysisSingleDetailsDiv5_id").html('');
-                                	$("#FSDiagramAnalysisSingleDetailsDiv6_id").html('');
+                            		$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
+                                	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');
+                                	$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").html('');
+                                	$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").html('');
+                                	$("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").html('');
+                                	$("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").html('');
                             		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightRunRangeTextArea_Id").setValue("");
                             		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightResultCodeTextArea_Id").setValue("");
                                 	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAnalysisPanel_Id").removeAll();
@@ -142,12 +142,12 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                 	}
                 }
             }else{
-            	$("#FSDiagramAnalysisSingleDetailsDiv1_id").html('');
-            	$("#FSDiagramAnalysisSingleDetailsDiv2_id").html('');
-            	$("#FSDiagramAnalysisSingleDetailsDiv3_id").html('');
-            	$("#FSDiagramAnalysisSingleDetailsDiv4_id").html('');
-            	$("#FSDiagramAnalysisSingleDetailsDiv5_id").html('');
-            	$("#FSDiagramAnalysisSingleDetailsDiv6_id").html('');
+            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
+            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');
+            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").html('');
+            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").html('');
+            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").html('');
+            	$("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").html('');
         		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightRunRangeTextArea_Id").setValue("");
         		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightResultCodeTextArea_Id").setValue("");
             	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAnalysisPanel_Id").removeAll();

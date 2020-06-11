@@ -166,6 +166,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "report_DiagnosisDayReport"
 		&& module_Code != "outWellProduce_ProductionOutInfoGridPanel"
 		&& module_Code != "well_wellPanel"
+		&& module_Code != "well_WellboreTrajectory"
 		&& module_Code != "blockdata_Ids"
 		&& module_Code != "balance_BalanceMonitor"
 		&& module_Code != "balance_BalanceTotal"
@@ -311,7 +312,10 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}else if(module_Code == "well_wellPanel"){
 		CreateAndLoadWellInfoTable(true);
-	}else if(module_Code == "blockdata_Ids"){
+	}else if(module_Code == "well_WellboreTrajectory"){
+		CreateAndLoadWellboreTrajectoryTable(true);
+	}
+	else if(module_Code == "blockdata_Ids"){
 		CreateAndLoadReservoirPropertyTable(true);
 	}else if(module_Code == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails"){
 		var tabPanel = Ext.getCmp("ProductionWellRealtimeAnalisisPanel");

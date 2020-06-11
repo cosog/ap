@@ -337,8 +337,8 @@ function getAndInitInverDiagramCheck(recordId,wellName){
 //			
 			var positionCurveData=result.positionCurveData.split(",");
 			if(result.positionCurveData!=undefined && result.positionCurveData!="" && result.positionCurveData.split(",").length>0){
-				showFSDiagramWithAtrokeSPM(result,"electricAnalysisRealtimeCurveCheckInverDiv1_id","地面功图-反演");
-				showFSDiagram360WithAtrokeSPM(result,"electricAnalysisRealtimeCurveCheckInverDiv2_id","地面功图(360点)-反演");
+				showFSDiagramWithAtrokeSPM(result,"electricAnalysisRealtimeCurveCheckInverDiv1_id","光杆功图-反演");
+				showFSDiagram360WithAtrokeSPM(result,"electricAnalysisRealtimeCurveCheckInverDiv2_id","光杆功图(360点)-反演");
 				showAngleLoadContinuousDiagram(result,"electricAnalysisRealtimeCurveCheckInverDiv3_id");
 			}else{
             	$("#electricAnalysisRealtimeCurveCheckInverDiv1_id").html('');

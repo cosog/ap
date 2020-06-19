@@ -83,7 +83,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 
 	public List<T> loadWellInformationID(Class<T> clazz) {
 		String queryString = "SELECT u.jlbh,u.jh FROM WellInformation u order by u.jlbh ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public boolean judgeWellExistsOrNot(String jh) {
@@ -91,7 +91,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if (StringUtils.isNotBlank(jh)) {
 			String queryString = "SELECT u.jh FROM WellInformation u where u.jh='"
 					+ jh + "' order by u.jlbh ";
-			List<WellInformation> list = getBaseDao().getObjects(queryString);
+			List<WellInformation> list = getBaseDao().find(queryString);
 			if (list.size() > 0) {
 				flag = true;
 			}
@@ -101,7 +101,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 
 	public List<T> loadWellOrgInfo() {
 		String queryString = "SELECT distinct(o.orgName) as orgName ,o.orgCode FROM WellInformation u ,Org o where u.dwbh=o.org_code  order by o.orgCode";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public String showWellTypeTree() throws Exception {
@@ -256,7 +256,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql = "";
 		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='SSJW'";
 		try {
-			List<?> list = this.getfindByIdList(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";
@@ -293,7 +293,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql = "";
 		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='SSZCDY'";
 		try {
-			List<?> list = this.getfindByIdList(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";
@@ -319,7 +319,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 
 	public List<T> fingWellByJhList() throws Exception {
 		String sql = " select  distinct (wellName) from tbl_wellinformation w  order by sortNum ";
-		return this.getBaseDao().getfindByIdList(sql);
+		return this.getBaseDao().find(sql);
 	}
 
 	@SuppressWarnings("rawtypes")

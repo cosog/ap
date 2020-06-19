@@ -164,68 +164,6 @@ public class BaseDao extends HibernateDaoSupport {
 		this.save(clazz);
 	}
 
-	public boolean addOrUpdateWellTrajectoryByJbh(WellTrajectory wtvo, String jh) throws Exception {
-		ByteArrayInputStream bais = null;
-		boolean flag = false;
-		String jsgj = null;
-		int count = -1;
-		int ok = -1;
-		int jbh = 1;
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		String sql1 = "", sql2 = "", sql3 = "", sql4 = "";
-		conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		sql1 = "select count(*) num from t_welltrajectory j,tbl_wellinformation w where j.jbh=w.jlbh and w.jh= ?";
-		sql2 = "update t_welltrajectory  set jsgj=? where jbh=(select w.jlbh from  tbl_wellinformation w where w.jh=?) ";
-		sql3 = "insert into t_welltrajectory(jbh,jsgj) values(?,?)";
-		sql4 = "select w.jlbh  from tbl_wellinformation w where  w.jh= ?";
-		jsgj = wtvo.getClsd() + "," + wtvo.getCzsd() + "," + wtvo.getJxj() + "," + wtvo.getFwj() + ";";
-		ps = conn.prepareStatement(sql4, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		ps.setString(1, jh);
-		rs = ps.executeQuery();
-		while (rs.next()) {
-			jbh = rs.getInt("jlbh");
-		}
-		try {
-			ps = conn.prepareStatement(sql1, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			ps.setString(1, jh);
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				count = rs.getInt(1);
-				if (count > 0) {
-					byte[] buffer = (wtvo.getJsgj() + jsgj).getBytes();
-					bais = new ByteArrayInputStream(buffer);
-					ps = conn.prepareStatement(sql2, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-					ps.setBinaryStream(1, bais, bais.available()); // 第二个参数为文件的内容
-					ps.setString(2, jh);
-					ok = ps.executeUpdate();
-					if (ok > 0) {
-						flag = true;
-					}
-				} else {
-					ps = conn.prepareStatement(sql3, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-					ps.setInt(1, jbh);
-					byte[] buffer = jsgj.getBytes();
-					bais = new ByteArrayInputStream(buffer);
-					ps.setBinaryStream(2, bais, bais.available()); // 第二个参数为文件的内容
-					ok = ps.executeUpdate();
-					if (ok > 0) {
-						flag = true;
-					}
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			// 关闭所打开的对像//
-			ps.close();
-			bais.close();
-		}
-		return flag;
-	}
-
 
 	/**
 	 * <p>
@@ -319,49 +257,6 @@ public class BaseDao extends HibernateDaoSupport {
 		return query;
 	}
 
-	public boolean deleteWellTrajectoryInfoById(String track, int line, int jbh) throws SQLException {
-		boolean flag = false;
-		int ok = -1;
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		String sql = "update t_welltrajectory set jsgj=? where jbh=?";
-		StringBuffer sb = new StringBuffer();
-		ByteArrayInputStream bais = null;
-		try {
-			String[] tracks = track.split(";");
-			for (int i = 0; i < tracks.length; i++) {
-				if ((i + 1) == line) {
-					continue;
-				} else {
-					sb.append(tracks[i] + ";");
-				}
-			}
-			ps = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			byte[] buffer = (sb.toString()).getBytes();
-			bais = new ByteArrayInputStream(buffer);
-			ps.setBinaryStream(1, bais, bais.available()); // 第二个参数为文件的内容
-			ps.setInt(2, jbh);
-			ok = ps.executeUpdate();
-			if (ok > 0) {
-				flag = true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-
-			try {
-				bais.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-
-		return flag;
-	}
-
 	/**
 	 * 修改一个对象
 	 * 
@@ -414,6 +309,21 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return query.list();
 	}
+	
+	/**
+	 * <p>
+	 * 描述：根据传入的hql语句返回一个List数据集合
+	 * </p>
+	 * 
+	 * @author gao 2014-06-04
+	 * @param hql
+	 *            传入的hql语句
+	 * @return List<T>
+	 */
+//	public <T> List<T> getObjects(String hql) {
+//		Session session=getSessionFactory().getCurrentSession();
+//		return (List<T>) this.getHibernateTemplate().find(hql);
+//	}
 
 	/**
 	 * sql调用查询
@@ -433,61 +343,10 @@ public class BaseDao extends HibernateDaoSupport {
 				}
 				return query.list();
 	}
-	
-	/*
-	 * 查询曲线数据
-	 * */
-	public List<?> findGtData(final String sql){
-		Session session=getSessionFactory().getCurrentSession();
-				SQLQuery query = session.createSQLQuery(sql);
-				return query.list();
-	}
-	 
-	public <T> List<T> findgObjectByIdSql(final String sql ){
-		Session session=getSessionFactory().getCurrentSession();
-				Query query = session.createSQLQuery(sql);
-				List listQuery = query.list();
-				return listQuery;
-	}
-	
-	public <T> List<T> findChartsList(final String hql) throws Exception {
-		Session session=getSessionFactory().getCurrentSession();
-					Query query = session.createQuery(hql);
-					List<T> list = query.list();
-					return list;
-	}
 
 	public List<Org> findChildOrg(Integer parentId) {
 		String queryString = "SELECT u FROM Org u where u.orgParent=" + parentId + " order by u.orgId ";
-		return getObjects(queryString);
-	}
-
-	/**
-	 * SQL查询
-	 * 
-	 * @param queryString
-	 *            HQL语句
-	 * @param values
-	 *            HQL参数
-	 * @author qiands
-	 * @return list
-	 */
-
-	public List<?> findSql(final String sql, final Object... values) {
-		Session session=getSessionFactory().getCurrentSession();
-				SQLQuery query = session.createSQLQuery(sql);
-				for (int i = 0; i < values.length; i++) {
-					query.setParameter(i, values[i]);
-				}
-				return query.list();
-	}
-	public <T> List<T> findLeakageSql(final String sql, final Object... values) {
-		Session session=getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery(sql);
-		for (int i = 0; i < values.length; i++) {
-			query.setParameter(i, values[i]);
-		}
-		return query.list();
+		return find(queryString);
 	}
 
 	/**
@@ -676,12 +535,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return obj.intValue();
 	}
 
-	public <T> List<T> getfindByIdList(final String hql) throws Exception {
-		Session session=getSessionFactory().getCurrentSession();
-					Query query = session.createQuery(hql);
-					List<T> list = query.list();
-					return list;
-	}
+	
 
 	public <T> List<T> getListAndTotalCountForPage(final Page pager, final String hql, final String allhql) throws Exception {
 		Session session=getSessionFactory().getCurrentSession();
@@ -828,37 +682,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return this.getHibernateTemplate().get(clazz, id);
 	}
 
-	public List<Wells> getObjectList(String sql) {
-		Session session = this.getHibernateTemplate().getSessionFactory().openSession();
-		List<Wells> list = null;
-		try {
-			Transaction tran = session.beginTransaction();
-			SQLQuery query = session.createSQLQuery(sql);
-			list = query.list();
-			tran.commit();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
-		return list;
-	}
-
-	/**
-	 * <p>
-	 * 描述：根据传入的hql语句返回一个List数据集合
-	 * </p>
-	 * 
-	 * @author gao 2014-06-04
-	 * @param hql
-	 *            传入的hql语句
-	 * @return List<T>
-	 */
-	public <T> List<T> getObjects(String hql) {
-		Session session=getSessionFactory().getCurrentSession();
-		return (List<T>) this.getHibernateTemplate().find(hql);
-	}
+	
 	
 	public <T> List<T> getSqlToHqlOrgObjects(String sql) {
 		Session session=getSessionFactory().getCurrentSession();
@@ -1150,71 +974,6 @@ public class BaseDao extends HibernateDaoSupport {
 		return list;
 	}
 
-	/**
-	 * @param sql
-	 * @return list 采出井生产数据
-	 * @throws SQLException 
-	 */
-	public List<ProductionOutWellInfo> queryProductionOutDatas(String sql) throws SQLException {
-		List<ProductionOutWellInfo> list = new ArrayList<ProductionOutWellInfo>();
-		ResultSet rs = null;
-		ProductionOutWellInfo well = null;
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{ call PRO_QUERY_OBJECTDATA(?,?) }");
-			cs.setString(1, sql);
-			cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-			cs.execute();
-			rs = (ResultSet) cs.getObject(2);
-			while (rs.next()) {
-				well = new ProductionOutWellInfo();
-				well.setJlbh(rs.getInt("jlbh"));
-				well.setJbh(rs.getInt("jbh"));
-				well.setJh(rs.getString("jh"));
-				well.setJslx(rs.getInt("jslx"));
-				well.setQtlx(rs.getInt("qtlx"));
-				well.setSfpfcl(rs.getInt("sfpfcl"));
-				well.setCcjzt(rs.getInt("ccjzt"));
-				well.setHsl(rs.getDouble("hsl"));
-				well.setYy(rs.getDouble("yy"));
-				well.setTy(rs.getDouble("ty"));
-				well.setHy(rs.getDouble("hy"));
-				well.setDym(rs.getDouble("dym"));
-				well.setBg(rs.getDouble("bg"));
-				well.setJklw(rs.getDouble("jklw"));
-				well.setScqyb(rs.getDouble("scqyb"));
-				well.setSccj(rs.getString("sccj"));
-				well.setCybxh(rs.getString("cybxh"));
-				well.setBj(rs.getInt("bj"));
-				well.setBjb(rs.getInt("bjb"));
-				well.setZsc(rs.getDouble("zsc"));
-				well.setYgnj(rs.getDouble("ygnj"));
-				well.setYctgnj(rs.getDouble("yctgnj"));
-				well.setYjgj(rs.getDouble("yjgj"));
-				well.setYjgjb(rs.getString("yjgjb"));
-				well.setYjgcd(rs.getDouble("yjgcd"));
-				well.setEjgj(rs.getDouble("ejgj"));
-				well.setEjgjb(rs.getString("ejgjb"));
-				well.setEjgcd(rs.getDouble("ejgcd"));
-				well.setSjgj(rs.getDouble("sjgj"));
-				well.setSjgjb(rs.getString("sjgjb"));
-				well.setSjgcd(rs.getDouble("sjgcd"));
-				well.setRcql(rs.getDouble("rcql"));
-				well.setMdzt(rs.getInt("mdzt"));
-				well.setJmb(rs.getDouble("jmb"));
-				well.setBzgtbh(rs.getInt("bzgtbh"));
-				well.setBzdntbh(rs.getInt("bzdntbh"));
-				list.add(well);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			conn.close();
-		}
-		return list;
-	}
-
 	public Integer queryProObjectTotals(String sql) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
@@ -1231,96 +990,6 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return total;
 	}
-
-	public List<ReservoirProperty> queryProReservoirPropertyDatas(String sql) throws SQLException {
-		List<ReservoirProperty> list = new ArrayList<ReservoirProperty>();
-		ResultSet rs = null;
-		ReservoirProperty o = null;
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{ call PRO_QUERY_OBJECTDATA(?,?) }");
-			cs.setString(1, sql);
-			cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-			cs.execute();
-			rs = (ResultSet) cs.getObject(2);
-			while (rs.next()) {
-				o = new ReservoirProperty();
-				o.setJlbh(rs.getInt(1));
-				o.setYymd(rs.getDouble(2));
-				o.setSmd(rs.getDouble(3));
-				o.setTrqxdmd(rs.getDouble(4));
-				o.setBhyl(rs.getDouble(5));
-				o.setYqcyl(rs.getDouble(6));
-				o.setYqczbsd(rs.getDouble(7));
-				o.setYqczbwd(rs.getDouble(8));
-				o.setResName(rs.getString(9));
-				list.add(o);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			rs.close();
-			conn.close();
-		}
-		return list;
-	}
-
-	public <T> List<T> queryProReservoirPropertyDatasHql(int offset, int pageSize, String sql) {
-		List<T> list = null;
-		try {
-			Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-			SQLQuery query = session.createSQLQuery("{call PRO_QUERY_OBJECTDATA(?,?) }");
-			query.setFirstResult(offset);
-			query.setMaxResults(pageSize);
-			query.setString(1, sql);
-			query.setParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-			query.executeUpdate();
-			list = query.list();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
-	public List<WellInformation> queryWellInformationDatas(String sql) throws SQLException {
-		List<WellInformation> list = new ArrayList<WellInformation>();
-		ResultSet rs = null;
-		WellInformation well = null;
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
-		try {
-			cs = conn.prepareCall("{ call PRO_QUERY_OBJECTDATA(?,?) }");
-			cs.setString(1, sql);
-			cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-			cs.execute();
-			rs = (ResultSet) cs.getObject(2);
-			while (rs.next()) {
-				well = new WellInformation();
-				well.setJlbh(rs.getInt(1));
-				well.setDwbh(rs.getString(2));
-				well.setJc(rs.getString(3));
-				well.setJhh(rs.getString(4));
-				well.setJh(rs.getString(5));
-				well.setJlx(rs.getInt(6));
-				well.setSsjw(rs.getInt(7));
-				well.setSszcdy(rs.getInt(8));
-				well.setRgzsjd(rs.getString(9));
-				well.setOrgName(rs.getString(10));
-				well.setResName(rs.getString(11));
-				well.setYqcbh(rs.getString(12));
-				well.setRgzsj(rs.getDouble("rgzsj"));
-				list.add(well);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			rs.close();
-			conn.close();
-		}
-		return list;
-	}
-
 
 	/**
 	 * 新增一个对象
@@ -1729,41 +1398,6 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveOrUpdateorDeletePump(Pump p, String ids, String comandType) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_T_023_UPDATE_ADD_DELETE(?,?,?,?,?,?,?,?)}");
-			cs.setString(1, p.getSccj());
-			cs.setString(2, p.getCybxh());
-			cs.setInt(3, p.getBlx());
-			cs.setInt(4, p.getBlx());
-			cs.setDouble(5, p.getBj());
-			cs.setDouble(6, p.getZsc());
-			if (comandType.equalsIgnoreCase("add")) {
-				ids = "no";
-				cs.setInt(7, 0);
-				cs.setString(8, ids);
-			} else if (comandType.equalsIgnoreCase("modify")) {
-				ids = "no";
-				cs.setInt(7, p.getJlbh());
-				cs.setString(8, ids);
-			} else if (comandType.equalsIgnoreCase("delete")) {
-				cs.setInt(7, 0);
-				cs.setString(8, ids);
-			}
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
-	
 	public Boolean savePumpEditerGridData(PumpGridPanelData p, String ids, String comandType) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
@@ -1776,62 +1410,6 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(5, p.getBtlxName());
 			cs.setDouble(6, p.getBj());
 			cs.setDouble(7, p.getZsc());
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
-	
-	public Boolean savePumpingUnitEditerGridData(JSONObject jsonObject) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_savepumpingunitdata(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-			cs.setInt(1, StringManagerUtils.getJSONObjectInt(jsonObject,"id"));
-			cs.setString(2, StringManagerUtils.getJSONObjectString(jsonObject, "sccj"));
-			cs.setString(3, StringManagerUtils.getJSONObjectString(jsonObject, "cyjxh"));
-			cs.setDouble(4, StringManagerUtils.getJSONObjectDouble(jsonObject, "xdedzh"));
-			cs.setDouble(5, StringManagerUtils.getJSONObjectDouble(jsonObject, "jsqednj"));
-			cs.setDouble(6, StringManagerUtils.getJSONObjectDouble(jsonObject, "dkqbzl"));
-			cs.setDouble(7, StringManagerUtils.getJSONObjectDouble(jsonObject, "qbzxbj"));
-			cs.setDouble(8, StringManagerUtils.getJSONObjectDouble(jsonObject, "jgbphz"));
-			cs.setString(9, StringManagerUtils.getJSONObjectString(jsonObject, "dkphkzl"));
-			cs.setDouble(10, StringManagerUtils.getJSONObjectDouble(jsonObject, "qbpzj"));
-			cs.setString(11, StringManagerUtils.getJSONObjectString(jsonObject, "xzfxmc"));
-			cs.setDouble(12, StringManagerUtils.getJSONObjectDouble(jsonObject, "zdtzjl"));
-			cs.setInt(13, StringManagerUtils.getJSONObjectInt(jsonObject,"bpphks"));
-			cs.setString(14, StringManagerUtils.getJSONObjectString(jsonObject, "cyjlxmc"));
-			cs.setDouble(15, StringManagerUtils.getJSONObjectDouble(jsonObject, "pdxl"));
-			cs.setDouble(16, StringManagerUtils.getJSONObjectDouble(jsonObject, "jsxxl"));
-			cs.setDouble(17, StringManagerUtils.getJSONObjectDouble(jsonObject, "slgxl"));
-			cs.setDouble(18, StringManagerUtils.getJSONObjectDouble(jsonObject, "djxl"));
-			cs.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null){
-				cs.close();
-			}
-			conn.close();
-		}
-		return true;
-	}
-	
-	
-	public Boolean saveBalanceAlarmStatusGridData(JSONObject jsonObject) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{call PRO_T_205_SAVEBALANCELIMITDATA(?,?,?)}");
-			cs.setInt(1, StringManagerUtils.getJSONObjectInt(jsonObject,"id"));
-			cs.setDouble(2, StringManagerUtils.getJSONObjectDouble(jsonObject, "minvalue"));
-			cs.setDouble(3, StringManagerUtils.getJSONObjectDouble(jsonObject, "maxvalue"));
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1876,85 +1454,6 @@ public class BaseDao extends HibernateDaoSupport {
 			conn.close();
 		}
 		return true;
-	}
-
-	/******************************************
-	 * **********************
-	 * 
-	 * 井身轨迹操作方法/ /** 向数据库中插入一个新的BLOB对象(图片)
-	 * 
-	 * @param infile
-	 *            - 要输入的数据文件
-	 * @throws SQLException 
-	 * @throws java.lang.Exception
-	 * 
-	 */
-	public List<WellTrajectory> scanWellTrajectoryInfo(String orgCode, String resCode, String jh) throws SQLException {
-		List<WellTrajectory> trackList = new ArrayList<WellTrajectory>();
-		WellTrajectory wtvo = null;
-		String alltrack = "";
-		int id = 1;
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Blob blob = null;
-		String jh_Str = "";
-		String orgCode_Str = "";
-		if (StringUtils.isNotBlank(orgCode)) {
-			orgCode_Str = " and w.dwbh like ?";
-		}
-		String resCode_Str = "";
-		if (StringUtils.isNotBlank(resCode)) {
-			resCode_Str = " and w.yqcbh like ?";
-		}
-		String sql = "select j.jlbh,j.jbh ,j.jsgj  from  t_welltrajectory j  where j.jbh in (select w.jlbh from tbl_wellinformation  w where w.jh=? ";
-		if (orgCode_Str != "") {
-			sql += orgCode_Str;
-		}
-		if (resCode_Str != "") {
-			sql += resCode_Str;
-		}
-		sql += ") order by j.jlbh";
-		conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		try {
-			ps = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			ps.setString(1, jh);
-			if (StringUtils.isNotBlank(orgCode)) {
-				ps.setString(2, orgCode);
-			}
-			if (StringUtils.isNotBlank(resCode)) {
-				ps.setString(2, resCode);
-			}
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				blob = rs.getBlob("jsgj");
-				if (blob != null) {
-					alltrack = ConvertBLOBtoString(blob);
-				}
-				String[] tracks = alltrack.split(";");
-				for (String track : tracks) {
-					wtvo = new WellTrajectory();
-					String[] trackInfo = track.split(",");
-					if (trackInfo.length == 4) {
-						wtvo.setJlbh(id++);
-						wtvo.setJbh(rs.getInt("jbh"));
-						wtvo.setJh(jh);
-						wtvo.setJsgj(track);
-						wtvo.setClsd(trackInfo[0]);
-						wtvo.setCzsd(trackInfo[1]);
-						wtvo.setJxj(trackInfo[2]);
-						wtvo.setFwj(trackInfo[3]);
-						trackList.add(wtvo);
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally{
-			conn.close();
-		}
-
-		return trackList;
 	}
 
 	/**
@@ -2870,10 +2369,11 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(18,diagramClob_Ic);
 			
 			cs.setInt(19,0);//功图来源 0-采集 1-电参反演 2-人工上传
-			cs.setInt(20,wellAcquisitionData.getProdDataId());//生产数据Id
+			cs.setInt(20,wellAcquisitionData.getProdDataId()==null?0:wellAcquisitionData.getProdDataId());//生产数据Id
 			cs.setInt(21,calculateResponseData==null?0:calculateResponseData.getCalculationStatus().getResultStatus());//计算标志
 			cs.setInt(22, 0);//功图反演标志
-			if(calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1){//如果计算成功
+			
+			if(calculateResponseData!=null&&(calculateResponseData.getCalculationStatus().getResultStatus()==1||calculateResponseData.getCalculationStatus().getResultStatus()==-99)){//如果计算成功
 				//最大最小载荷
 				cs.setFloat(23,calculateResponseData.getFESDiagram().getFMax().get(0));
 				cs.setFloat(24,calculateResponseData.getFESDiagram().getFMin().get(0));
@@ -2893,12 +2393,6 @@ public class BaseDao extends HibernateDaoSupport {
 					cs.setFloat(29,calculateResponseData.getFESDiagram().getIDegreeBalance());
 					cs.setFloat(30,calculateResponseData.getFESDiagram().getWattDegreeBalance());
 				}
-//				cs.setFloat(25,calculateResponseData.getFESDiagram().getUpStrokeIMax());
-//				cs.setFloat(26,calculateResponseData.getFESDiagram().getDownStrokeIMax());
-//				cs.setFloat(27,calculateResponseData.getFESDiagram().getUpStrokeWattMax());
-//				cs.setFloat(28,calculateResponseData.getFESDiagram().getDownStrokeWattMax());
-//				cs.setFloat(29,calculateResponseData.getFESDiagram().getIDegreeBalance());
-//				cs.setFloat(30,calculateResponseData.getFESDiagram().getWattDegreeBalance());
 				//移动距离
 				cs.setFloat(31,calculateResponseData.getFESDiagram().getDeltaRadius());
 				
@@ -3362,7 +2856,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_rpc_diagramresult("
 					+ "?,"
 					+ "?,?,"
-					+ "?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,"
 					+ "?,"
 					+ "?,"
 					+ "?,?,"
@@ -3377,10 +2871,18 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?)}");
 			
 			cs.setInt(1,calculateResponseData==null?0:calculateResponseData.getCalculationStatus().getResultStatus());//计算标志
-			if(calculateResponseData!=null&&calculateResponseData.getCalculationStatus().getResultStatus()==1){//如果计算成功
+			if(calculateResponseData!=null){//如果计算成功
 				//最大最小载荷
-				cs.setFloat(2,calculateResponseData.getFESDiagram().getFMax().get(0));
-				cs.setFloat(3,calculateResponseData.getFESDiagram().getFMin().get(0));
+				if(calculateResponseData.getFESDiagram().getFMax()!=null&&calculateResponseData.getFESDiagram().getFMax().size()>0){
+					cs.setFloat(2,calculateResponseData.getFESDiagram().getFMax().get(0));
+				}else{
+					cs.setString(2,"");
+				}
+				if(calculateResponseData.getFESDiagram().getFMin()!=null&&calculateResponseData.getFESDiagram().getFMin().size()>0){
+					cs.setFloat(3,calculateResponseData.getFESDiagram().getFMin().get(0));
+				}else{
+					cs.setString(3,"");
+				}
 				//平衡
 				cs.setFloat(4,calculateResponseData.getFESDiagram().getUpStrokeIMax());
 				cs.setFloat(5,calculateResponseData.getFESDiagram().getDownStrokeIMax());
@@ -3388,83 +2890,84 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setFloat(7,calculateResponseData.getFESDiagram().getDownStrokeWattMax());
 				cs.setFloat(8,calculateResponseData.getFESDiagram().getIDegreeBalance());
 				cs.setFloat(9,calculateResponseData.getFESDiagram().getWattDegreeBalance());
+				cs.setFloat(10,calculateResponseData.getFESDiagram().getDeltaRadius());
 				//工况代码
-				cs.setInt(10,calculateResponseData.getCalculationStatus().getResultCode());
+				cs.setInt(11,calculateResponseData.getCalculationStatus().getResultCode());
 				//充满系数
-				cs.setFloat(11,calculateResponseData.getFESDiagram().getFullnessCoefficient());
+				cs.setFloat(12,calculateResponseData.getFESDiagram().getFullnessCoefficient());
 				//柱塞冲程、柱塞有效冲程
-				cs.setFloat(12,calculateResponseData.getFESDiagram().getPlungerStroke());
-				cs.setFloat(13,calculateResponseData.getFESDiagram().getAvailablePlungerStroke());
+				cs.setFloat(13,calculateResponseData.getFESDiagram().getPlungerStroke());
+				cs.setFloat(14,calculateResponseData.getFESDiagram().getAvailablePlungerStroke());
 				//上下理论载荷线
-				cs.setFloat(14,calculateResponseData.getFESDiagram().getUpperLoadLine());
-				cs.setFloat(15,calculateResponseData.getFESDiagram().getUpperLoadLineOfExact());
-				cs.setFloat(16,calculateResponseData.getFESDiagram().getLowerLoadLine());
+				cs.setFloat(15,calculateResponseData.getFESDiagram().getUpperLoadLine());
+				cs.setFloat(16,calculateResponseData.getFESDiagram().getUpperLoadLineOfExact());
+				cs.setFloat(17,calculateResponseData.getFESDiagram().getLowerLoadLine());
 				//泵功图
-				cs.setClob(17,pumpFSDiagramClob);
+				cs.setClob(18,pumpFSDiagramClob);
 				//产量
-				cs.setFloat(18,calculateResponseData.getProduction().getTheoreticalProduction());
-				cs.setFloat(19,calculateResponseData.getProduction().getLiquidVolumetricProduction());
-				cs.setFloat(20,calculateResponseData.getProduction().getOilVolumetricProduction());
-				cs.setFloat(21,calculateResponseData.getProduction().getWaterVolumetricProduction());
-				cs.setFloat(22,calculateResponseData.getProduction().getAvailablePlungerStrokeVolumetricProduction());
-				cs.setFloat(23,calculateResponseData.getProduction().getPumpClearanceLeakVolumetricProduction());
-				cs.setFloat(24,calculateResponseData.getProduction().getTVLeakVolumetricProduction());
-				cs.setFloat(25,calculateResponseData.getProduction().getSVLeakVolumetricProduction());
-				cs.setFloat(26,calculateResponseData.getProduction().getGasInfluenceVolumetricProduction());
-				cs.setFloat(27,calculateResponseData.getProduction().getLiquidWeightProduction());
-				cs.setFloat(28,calculateResponseData.getProduction().getOilWeightProduction());
-				cs.setFloat(29,calculateResponseData.getProduction().getWaterWeightProduction());
-				cs.setFloat(30,calculateResponseData.getProduction().getAvailablePlungerStrokeWeightProduction());
-				cs.setFloat(31,calculateResponseData.getProduction().getPumpClearanceLeakWeightProduction());
-				cs.setFloat(32,calculateResponseData.getProduction().getTVLeakWeightProduction());
-				cs.setFloat(33,calculateResponseData.getProduction().getSVLeakWeightProduction());
-				cs.setFloat(34,calculateResponseData.getProduction().getGasInfluenceWeightProduction());
+				cs.setFloat(19,calculateResponseData.getProduction().getTheoreticalProduction());
+				cs.setFloat(20,calculateResponseData.getProduction().getLiquidVolumetricProduction());
+				cs.setFloat(21,calculateResponseData.getProduction().getOilVolumetricProduction());
+				cs.setFloat(22,calculateResponseData.getProduction().getWaterVolumetricProduction());
+				cs.setFloat(23,calculateResponseData.getProduction().getAvailablePlungerStrokeVolumetricProduction());
+				cs.setFloat(24,calculateResponseData.getProduction().getPumpClearanceLeakVolumetricProduction());
+				cs.setFloat(25,calculateResponseData.getProduction().getTVLeakVolumetricProduction());
+				cs.setFloat(26,calculateResponseData.getProduction().getSVLeakVolumetricProduction());
+				cs.setFloat(27,calculateResponseData.getProduction().getGasInfluenceVolumetricProduction());
+				cs.setFloat(28,calculateResponseData.getProduction().getLiquidWeightProduction());
+				cs.setFloat(29,calculateResponseData.getProduction().getOilWeightProduction());
+				cs.setFloat(30,calculateResponseData.getProduction().getWaterWeightProduction());
+				cs.setFloat(31,calculateResponseData.getProduction().getAvailablePlungerStrokeWeightProduction());
+				cs.setFloat(32,calculateResponseData.getProduction().getPumpClearanceLeakWeightProduction());
+				cs.setFloat(33,calculateResponseData.getProduction().getTVLeakWeightProduction());
+				cs.setFloat(34,calculateResponseData.getProduction().getSVLeakWeightProduction());
+				cs.setFloat(35,calculateResponseData.getProduction().getGasInfluenceWeightProduction());
 				//系统效率
-				cs.setFloat(35,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
-				cs.setFloat(36,calculateResponseData.getSystemEfficiency().getPolishRodPower());
-				cs.setFloat(37,calculateResponseData.getSystemEfficiency().getWaterPower());
-				cs.setFloat(38,calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency());
-				cs.setFloat(39,calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency());
-				cs.setFloat(40,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
-				cs.setFloat(41,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
-				cs.setFloat(42,calculateResponseData.getFESDiagram().getArea());
+				cs.setFloat(36,calculateResponseData.getSystemEfficiency().getMotorInputWatt());
+				cs.setFloat(37,calculateResponseData.getSystemEfficiency().getPolishRodPower());
+				cs.setFloat(38,calculateResponseData.getSystemEfficiency().getWaterPower());
+				cs.setFloat(39,calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency());
+				cs.setFloat(40,calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency());
+				cs.setFloat(41,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
+				cs.setFloat(42,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
+				cs.setFloat(43,calculateResponseData.getFESDiagram().getArea());
 				//泵效
-				cs.setFloat(43,calculateResponseData.getPumpEfficiency().getRodFlexLength());
-				cs.setFloat(44,calculateResponseData.getPumpEfficiency().getTubingFlexLength());
-				cs.setFloat(45,calculateResponseData.getPumpEfficiency().getInertiaLength());
-				cs.setFloat(46,calculateResponseData.getPumpEfficiency().getPumpEff1());
-				cs.setFloat(47,calculateResponseData.getPumpEfficiency().getPumpEff2());
-				cs.setFloat(48,calculateResponseData.getPumpEfficiency().getPumpEff3());
-				cs.setFloat(49,calculateResponseData.getPumpEfficiency().getPumpEff4());
-				cs.setFloat(50,calculateResponseData.getPumpEfficiency().getPumpEff());
+				cs.setFloat(44,calculateResponseData.getPumpEfficiency().getRodFlexLength());
+				cs.setFloat(45,calculateResponseData.getPumpEfficiency().getTubingFlexLength());
+				cs.setFloat(46,calculateResponseData.getPumpEfficiency().getInertiaLength());
+				cs.setFloat(47,calculateResponseData.getPumpEfficiency().getPumpEff1());
+				cs.setFloat(48,calculateResponseData.getPumpEfficiency().getPumpEff2());
+				cs.setFloat(49,calculateResponseData.getPumpEfficiency().getPumpEff3());
+				cs.setFloat(50,calculateResponseData.getPumpEfficiency().getPumpEff4());
+				cs.setFloat(51,calculateResponseData.getPumpEfficiency().getPumpEff());
 				//泵入口出口参数
-				cs.setFloat(51,calculateResponseData.getProduction().getPumpIntakeP());
-				cs.setFloat(52,calculateResponseData.getProduction().getPumpIntakeT());
-				cs.setFloat(53,calculateResponseData.getProduction().getPumpIntakeGOL());
-				cs.setFloat(54,calculateResponseData.getProduction().getPumpIntakeVisl());
-				cs.setFloat(55,calculateResponseData.getProduction().getPumpIntakeBo());
-				cs.setFloat(56,calculateResponseData.getProduction().getPumpOutletP());
-				cs.setFloat(57,calculateResponseData.getProduction().getPumpOutletT());
-				cs.setFloat(58,calculateResponseData.getProduction().getPumpOutletGOL());
-				cs.setFloat(59,calculateResponseData.getProduction().getPumpOutletVisl());
-				cs.setFloat(60,calculateResponseData.getProduction().getPumpOutletBo());
+				cs.setFloat(52,calculateResponseData.getProduction().getPumpIntakeP());
+				cs.setFloat(53,calculateResponseData.getProduction().getPumpIntakeT());
+				cs.setFloat(54,calculateResponseData.getProduction().getPumpIntakeGOL());
+				cs.setFloat(55,calculateResponseData.getProduction().getPumpIntakeVisl());
+				cs.setFloat(56,calculateResponseData.getProduction().getPumpIntakeBo());
+				cs.setFloat(57,calculateResponseData.getProduction().getPumpOutletP());
+				cs.setFloat(58,calculateResponseData.getProduction().getPumpOutletT());
+				cs.setFloat(59,calculateResponseData.getProduction().getPumpOutletGOL());
+				cs.setFloat(60,calculateResponseData.getProduction().getPumpOutletVisl());
+				cs.setFloat(61,calculateResponseData.getProduction().getPumpOutletBo());
 				//杆参数
-				cs.setString(61,calculateResponseData.getRodCalData());
+				cs.setString(62,calculateResponseData.getRodCalData());
 				
 				//平衡曲线
-				cs.setClob(62,crankAngleClob);
-				cs.setClob(63,polishRodVClob);
-				cs.setClob(64,polishRodAClob);
-				cs.setClob(65,PRClob);
-				cs.setClob(66,TFClob);
-				cs.setClob(67,loadTorqueClob);
-				cs.setClob(68,crankTorqueClob);
-				cs.setClob(69,currentBalanceTorqueClob);
-				cs.setClob(70,currentNetTorqueClob);
-				cs.setClob(71,expectedBalanceTorqueClob);
-				cs.setClob(72,expectedNetTorqueClob);
+				cs.setClob(63,crankAngleClob);
+				cs.setClob(64,polishRodVClob);
+				cs.setClob(65,polishRodAClob);
+				cs.setClob(66,PRClob);
+				cs.setClob(67,TFClob);
+				cs.setClob(68,loadTorqueClob);
+				cs.setClob(69,crankTorqueClob);
+				cs.setClob(70,currentBalanceTorqueClob);
+				cs.setClob(71,currentNetTorqueClob);
+				cs.setClob(72,expectedBalanceTorqueClob);
+				cs.setClob(73,expectedNetTorqueClob);
 				//井深切片
-				cs.setClob(73,wellboreSliceClob);
+				cs.setClob(74,wellboreSliceClob);
 			}else{
 				cs.setString(2,"");
 				cs.setString(3,"");
@@ -3474,21 +2977,21 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(7,"");
 				cs.setString(8,"");
 				cs.setString(9,"");
+				cs.setString(10,"");
 				
 				if(calculateResponseData!=null){
-					cs.setInt(10,calculateResponseData.getCalculationStatus().getResultCode());
+					cs.setInt(11,calculateResponseData.getCalculationStatus().getResultCode());
 				}else{
-					cs.setString(10,"");
+					cs.setString(11,"");
 				}
-				cs.setString(11,"");
 				cs.setString(12,"");
 				cs.setString(13,"");
 				cs.setString(14,"");
 				cs.setString(15,"");
 				cs.setString(16,"");
-				cs.setClob(17,nullClob);//泵功图
+				cs.setString(17,"");
+				cs.setClob(18,nullClob);//泵功图
 				//产量
-				cs.setString(18,"");
 				cs.setString(19,"");
 				cs.setString(20,"");
 				cs.setString(21,"");
@@ -3505,8 +3008,8 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(32,"");
 				cs.setString(33,"");
 				cs.setString(34,"");
-				//系统效率
 				cs.setString(35,"");
+				//系统效率
 				cs.setString(36,"");
 				cs.setString(37,"");
 				cs.setString(38,"");
@@ -3514,8 +3017,8 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(40,"");
 				cs.setString(41,"");
 				cs.setString(42,"");
-				//泵效、
 				cs.setString(43,"");
+				//泵效、
 				cs.setString(44,"");
 				cs.setString(45,"");
 				cs.setString(46,"");
@@ -3523,8 +3026,8 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(48,"");
 				cs.setString(49,"");
 				cs.setString(50,"");
-				//泵入口出口参数
 				cs.setString(51,"");
+				//泵入口出口参数
 				cs.setString(52,"");
 				cs.setString(53,"");
 				cs.setString(54,"");
@@ -3534,10 +3037,10 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(58,"");
 				cs.setString(59,"");
 				cs.setString(60,"");
-				//杆参数
 				cs.setString(61,"");
+				//杆参数
+				cs.setString(62,"");
 				//平衡曲线
-				cs.setClob(62,nullClob);
 				cs.setClob(63,nullClob);
 				cs.setClob(64,nullClob);
 				cs.setClob(65,nullClob);
@@ -3548,10 +3051,11 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setClob(70,nullClob);
 				cs.setClob(71,nullClob);
 				cs.setClob(72,nullClob);
-				//井深切片
 				cs.setClob(73,nullClob);
+				//井深切片
+				cs.setClob(74,nullClob);
 			}
-			cs.setInt(74,id);
+			cs.setInt(75,id);
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -4065,7 +3569,8 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs = null;
 		try{
-			cs = conn.prepareCall("{call prd_save_rpc_discretedaily(?,"          //1
+			cs = conn.prepareCall("{call prd_save_rpc_discretedaily(?,"                  //1
+					+ "?,?,"                                                             //2
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,"                                                           //3
@@ -4171,7 +3676,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"                                   //15
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
-					+ "?,?,?,?,?,?,"                                                     //6
+					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,?,"                                                         //4
 					+ "?,?,?,?,"                                                         //4
 					+ "?)}");                                                            //1
@@ -4274,18 +3779,21 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(81, totalAnalysisResponseData.getWattDegreeBalance().getValue());
 			cs.setFloat(82, totalAnalysisResponseData.getWattDegreeBalance().getMax());
 			cs.setFloat(83, totalAnalysisResponseData.getWattDegreeBalance().getMin());
+			cs.setFloat(84, totalAnalysisResponseData.getDeltaRadius().getValue());
+			cs.setFloat(85, totalAnalysisResponseData.getDeltaRadius().getMax());
+			cs.setFloat(86, totalAnalysisResponseData.getDeltaRadius().getMin());
 			
-			cs.setInt(84, totalAnalysisResponseData.getCommStatus());//通信状态
-			cs.setFloat(85, totalAnalysisResponseData.getCommTime());//在线时间
-			cs.setFloat(86, totalAnalysisResponseData.getCommTimeEfficiency());//在线时率
-			cs.setString(87, totalAnalysisResponseData.getCommRange());//在线区间
+			cs.setInt(87, totalAnalysisResponseData.getCommStatus());//通信状态
+			cs.setFloat(88, totalAnalysisResponseData.getCommTime());//在线时间
+			cs.setFloat(89, totalAnalysisResponseData.getCommTimeEfficiency());//在线时率
+			cs.setString(90, totalAnalysisResponseData.getCommRange());//在线区间
 			
-			cs.setInt(88, totalAnalysisResponseData.getRunStatus());//运行状态
-			cs.setFloat(89, totalAnalysisResponseData.getRunTime());//运行时间
-			cs.setFloat(90, totalAnalysisResponseData.getRunTimeEfficiency());//运行时率
-			cs.setString(91, totalAnalysisResponseData.getRunRange());//运行区间
+			cs.setInt(91, totalAnalysisResponseData.getRunStatus());//运行状态
+			cs.setFloat(92, totalAnalysisResponseData.getRunTime());//运行时间
+			cs.setFloat(93, totalAnalysisResponseData.getRunTimeEfficiency());//运行时率
+			cs.setString(94, totalAnalysisResponseData.getRunRange());//运行区间
 			
-			cs.setString(92, tatalDate);//汇总日期
+			cs.setString(95, tatalDate);//汇总日期
 			cs.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -4864,45 +4372,6 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setClob(13, PTFClob);
 				cs.executeUpdate();
 			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			if(cs!=null)
-				cs.close();
-			conn.close();
-		}
-		return true;
-	}
-	
-	
-	public Boolean savePSToFSCalaulateResult(String wellName,String cjsj,String ElectricData,
-			String StartPoint,String EndPoint,String FSDiagramId,
-			String Stroke,String SPM,String CNT,String FSDiagram) throws SQLException {
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		
-		
-		CLOB ElectricDataClob=new CLOB((OracleConnection) conn);
-		ElectricDataClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		ElectricDataClob.putString(1, ElectricData);
-		
-		CLOB FSDiagramClob=new CLOB((OracleConnection) conn);
-		FSDiagramClob = oracle.sql.CLOB.createTemporary(conn,false,1);
-		FSDiagramClob.putString(1, FSDiagram);
-		try {
-			cs = conn.prepareCall("{call SAVE_T303InversionData(?,?,?,?,?,?,?,?,?,?)}");
-			cs.setString(1, wellName);
-			cs.setString(2, cjsj);
-			cs.setClob(3, ElectricDataClob);
-			cs.setString(4, StartPoint);
-			cs.setString(5, EndPoint);
-			cs.setString(6, FSDiagramId);
-			cs.setString(7, Stroke);
-			cs.setString(8, SPM);
-			cs.setString(9, CNT);
-			cs.setClob(10, FSDiagramClob);
-			cs.executeUpdate();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

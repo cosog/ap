@@ -46,7 +46,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 
 	public List<T> queryModule(int parentId, Class<T> clazz) {
 		String queryString = "SELECT u FROM Module u WHERE u.parent_id=" + parentId;
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	/**
@@ -56,8 +56,9 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	 * @param clazz
 	 * @param user 当前用户对象
 	 * @return List<T>
+	 * @throws Exception 
 	 */
-	public List<T> queryModuleList(Class<T> clazz, User user) {
+	public List<T> queryModuleList(Class<T> clazz, User user) throws Exception {
 		String queryString = "";
 //		if (user.getUserType() == 1) {
 //			queryString = "SELECT  m FROM Module m where 1=1  and m.mdId in " + "( select distinct m.mdId from  Module m  " + " where  m.mdType=1 ) order by m.mdSeq, m.mdId";
@@ -71,7 +72,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				+ "where  role.roleId =rm.rmRoleId   " 
 				+ " and role.roleId = u.userType   and u.userNo="
 				+ user.getUserNo() + ") order by m.mdSeq, m.mdId";
-		return this.getObjects(queryString);
+		return this.find(queryString);
 	}
 
 
@@ -83,18 +84,19 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	 * @param clazz
 	 * @param user 当前用户对象
 	 * @return
+	 * @throws Exception 
 	 */
-	public List<T> queryFunctionModuleList(Class<T> clazz, User user) {
+	public List<T> queryFunctionModuleList(Class<T> clazz, User user) throws Exception {
 		String queryString = "";
 		queryString = "SELECT  m FROM Module m where 1=1 and m.mdType=0  and m.mdId in " 
 					+ "( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "
 					+ "where  role.roleId =rm.rmRoleId   " 
 					+ " and role.roleId = u.userType   and u.userNo="
 					+ user.getUserNo() + ") order by m.mdSeq, m.mdId";
-		return this.getObjects(queryString);
+		return this.find(queryString);
 	}
 	
-	public List<T> queryFunctionModuleList2(Class<T> clazz, User user,String parentId) {
+	public List<T> queryFunctionModuleList2(Class<T> clazz, User user,String parentId) throws Exception {
 		String queryString = "";
 		if (user.getUserType() == 1) {
 			queryString = " select  m from Module m where  m.mdType=0 and m.mdParentid="+parentId+"  order by m.mdSeq, m.mdId";
@@ -103,7 +105,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 					+" and rm.rmModuleid = m.mdId  and m.mdType=0 and m.mdParentid="+parentId+" and u.userNo="+ user.getUserNo() 
 					+ " order by m.mdSeq, m.mdId";
 		}
-		return this.getObjects(queryString);
+		return this.find(queryString);
 	}
 	
 	//查询模块表中所有父节点
@@ -112,7 +114,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		StringBuffer modIdString = new StringBuffer();
 		List<?> list;
 		String queryString="select md_id from tbl_module where md_id in (select distinct md_parentid from tbl_module)";
-		list=getBaseDao().findSql(queryString);
+		list=getBaseDao().findCallSql(queryString);
 		if(list.size()>0){
 			for(int i=0;i<list.size();i++){
 				modIdString.append(list.get(i)+",");
@@ -134,14 +136,14 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	public List<T> queryAddModuleList(Class<T> clazz, User user) {
 		String queryString = "";
 		queryString = "SELECT  m FROM Module m";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryMainModuleList(Class<T> clazz, int userNo) {
 		String queryString = "SELECT  m FROM Module m where 1=1  and m.mdId in " + "( select distinct m.mdId from User u ,Role role, Right rt,RoleModule rm "
 				+ "where   u.userNo = rt.rtUserNo and rt.rtRolecode = role.roleCode and role.roleCode =rm.rmRoleCode   " + " and rm.rmModuleid = m.mdId  and m.mdType=0 and u.userNo=" + userNo
 				+ " )   " + "order by m.mdSeq, m.mdId";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public Integer getTotalRows(int parentId) {
@@ -163,18 +165,18 @@ public class ModuleManagerService<T> extends BaseService<T> {
 
 	public List<T> loadModules(Class<T> clazz) {
 		String queryString = "SELECT u FROM Module u order by u.mdSeq ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	
 	public List<T> loadRightModules(Class<T> clazz) {
 		String queryString = "SELECT u FROM Module u where u.mdType in (0,1) order by u.mdSeq ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> loadRoleModules(Class<T> clazz) {
 		String queryString = "SELECT distinct rm.rmModuleid FROM Role r ,RoleModule rm where  rm.rmRoleId=r.roleId  order by rm.rmModuleid asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryCurrentRoleModules(Class<T> clazz, String roleId) {
@@ -184,12 +186,12 @@ public class ModuleManagerService<T> extends BaseService<T> {
 			queryString+=" and rm.rmRoleId="+roleId;
 		}
 		queryString+=" order by rm.rmModuleid asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryCurrentRoleMatrixModules(Class<T> clazz, String roleId) {
 		String queryString = "select    rm.rmMatrix  From " + "Role r ,RoleModule rm where  rm.rmRoleId=r.roleId and rm.rmRoleId=" + roleId + " order by rm.rmMatrix asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public void deleteCurrentModule(final Integer mdId) throws Exception {
@@ -232,9 +234,10 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	 * @author  gao 2014-05-09
 	 * @param clazz
 	 * @return
+	 * @throws Exception 
 	 * 
 	 */
-	public List<T> queryRightModules(Class<T> clazz, String moduleName,User user) {
+	public List<T> queryRightModules(Class<T> clazz, String moduleName,User user) throws Exception {
 		String roleCodeSql="select role_code from tbl_role where role_id="+user.getUserType();
 		List<?> list = this.findCallSql(roleCodeSql);
 		String roleCode="";
@@ -249,7 +252,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				+ "where  role.roleId =rm.rmRoleId   " 
 				+ " and role.roleId = u.userType   and u.userNo="
 				+ user.getUserNo() + ") order by m.mdSeq, m.mdId";
-		return getObjects(queryString);
+		return find(queryString);
 	}
 	
 	

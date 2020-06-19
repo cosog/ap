@@ -62,7 +62,7 @@ private CommonDataService service;
 
 	public List<T> loadRoles(Class<T> clazz) {
 		String queryString = "SELECT u FROM Role u order by u.roleId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryRoles(Class<T> clazz, String roleName) {
@@ -71,7 +71,7 @@ private CommonDataService service;
 
 		String queryString = "SELECT u FROM Role u WHERE u.roleName like '%"
 				+ roleName + "%' order by u.roleId asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryCurrentUserRoles(Class<T> clazz, Integer userNo) {
@@ -80,7 +80,7 @@ private CommonDataService service;
 		String queryString = "select  distinct r.roleCode  From "
 				+ "Role r ,Right rg where  rg.rtRolecode=r.roleCode and rg.rtUserNo="
 				+ userNo + " order by r.roleCode asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	

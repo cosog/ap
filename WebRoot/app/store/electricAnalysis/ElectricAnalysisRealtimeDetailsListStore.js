@@ -1,6 +1,6 @@
 Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDetailsListStore', {
     extend: 'Ext.data.Store',
-    fields: ['id','wellName', 'acquisitionTime','commStatusName','runStatusName', 'workingConditionName_Elec','runTime','runTimeEfficiency','runRange',
+    fields: ['id','wellName', 'acquisitionTime','commStatusName','runStatusName', 'workingConditionName','runTime','runTimeEfficiency','runRange',
     	'Ia', 'Ib', 'Ic','IAvg','IStr','Va', 'Vb', 'Vc', 'VAvg','VStr',
     	'WattA','WattB','WattC','WattSum','WattStr',
     	'VarA','VarB','VarC','VarSum','VarStr',

@@ -98,11 +98,11 @@ public class ModuleManagerController extends BaseController {
 	 * 
 	 * @author gao 2014-05-09
 	 * @return
-	 * @throws IOException
+	 * @throws Exception 
 	 *          
 	 */
 	@RequestMapping("/constructRightModuleTreeGridTree")
-	public String constructRightModuleTreeGridTree() throws IOException {
+	public String constructRightModuleTreeGridTree() throws Exception {
 		String moduleName = ParamUtils.getParameter(request, "moduleName");
 		String json = "";
 		HttpSession session=request.getSession();

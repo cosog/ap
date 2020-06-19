@@ -39,7 +39,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			return null;
 		String queryString = "SELECT u FROM User u WHERE u.userId = '"
 				+ userName + "' AND u.userPwd = '" + password + "'";
-		List<T> users = getBaseDao().getObjects(queryString);
+		List<T> users = getBaseDao().find(queryString);
 		if (users.size() > 0) {
 			return users.get(0);
 		} else {
@@ -53,21 +53,21 @@ public class UserManagerService<T> extends BaseService<T> {
 			return this.getBaseDao().getAllObjects(clazz);
 		String queryString = "SELECT u FROM User u WHERE u.uname like '"
 				+ uname + "%'";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> queryUsersByOrgId(String orgId, Class<T> clazz) {
 		if (orgId == null || "".equals(orgId))
 			return this.getBaseDao().getAllObjects(clazz);
 		String queryString = "SELECT u FROM User u WHERE u.userOrgid  in  (" + orgId+")";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> loadUsers(Class<T> clazz) {
 		return this.getBaseDao().getAllObjects(clazz);
 		// String queryString = "SELECT u FROM User u WHERE u.uname like '"+
 		// uname + "%'";
-		// return this.getBaseDao().getObjects(queryString);
+		// return this.getBaseDao().find(queryString);
 	}
 
 	/** 
@@ -233,7 +233,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		if (StringManagerUtils.isNotNull(userId)) {
 			String queryString = "SELECT u.userId FROM User u where u.userId='"
 					+ userId + "' order by u.userNo ";
-			List<User> list = getBaseDao().getObjects(queryString);
+			List<User> list = getBaseDao().find(queryString);
 			if (list.size() > 0) {
 				flag = true;
 			}
@@ -246,7 +246,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		String sql = "";
 		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='USER_TITLE' and t.itemvalue not in(0,4)";
 		try {
-			List<?> list = this.getfindByIdList(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";

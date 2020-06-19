@@ -237,7 +237,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                             items: [{
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
-                                    title: '工况',
+                                    title: '功图工况',
                                     iconCls:'select',
                                     id: 'FSDiagramAnalysisDailyWorkCondStatTabpanel_Id',
                                     tabRotation: 1,
@@ -282,6 +282,54 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             loadTotalStatData();
                                         }
                                     }
+                            },{
+
+                                xtype: 'tabpanel',
+                                tabPosition: 'right',
+                                title: '电参工况',
+                                id: 'FSDiagramAnalysisDailyElecWorkCondStatTabpanel_Id',
+                                tabRotation: 1,
+                                items: [{
+                                    title: '电参工况',
+                                    border: false,
+                                    iconCls: 'dtgreen',
+                                    layout: 'border',
+                                    id: 'FSDiagramAnalysisDailyElecWorkCondStatPanel_Id',
+                                    items:[{
+                                    	region: 'center',
+                                        id:'FSDiagramAnalysisDailyElecWorkCondDataListPanel_Id',
+                                        header: false,
+                                        layout: 'fit'
+                                    },{
+                                    	region: 'south',
+                                    	id:'FSDiagramAnalysisDailyElecWorkCondStatGraphPanel_Id',
+                                        height: '50%',
+                                        border: true,
+                                        header: false,
+                                        collapsible: true, // 是否折叠
+                                        split: true, // 竖折叠条
+                                        html: '<div id="FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id" style="width:100%;height:100%;"></div>',
+                                        listeners: {
+                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                                if ($("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
+                                                    $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                }else{
+                                                	Ext.create('Ext.tip.ToolTip', {
+                                                        target: 'FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id',
+                                                        html: '点击饼图不同区域或标签，查看相应统计数据'
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }]
+                            }],
+                                listeners: {
+                                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                                    	newCard.setIconCls("dtgreen");
+                                		oldCard.setIconCls("");
+                                        loadTotalStatData();
+                                    }
+                                }
                             }, {
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
@@ -736,6 +784,9 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                      		Ext.getCmp("FSDiagramAnalysisDailyWorkCondStatTabpanel_Id").getTabBar().insert(0, {
                    		      	xtype: 'tbfill'
                      		});
+                     		Ext.getCmp("FSDiagramAnalysisDailyElecWorkCondStatTabpanel_Id").getTabBar().insert(0, {
+                   		      	xtype: 'tbfill'
+                     		});
                      		Ext.getCmp("FSDiagramAnalysisDailyProdStatTabpanel_Id").getTabBar().insert(0, {
                    		      	xtype: 'tbfill'
                      		});
@@ -1018,6 +1069,13 @@ function getSelectTotalStatType() {
 		pieDivId="FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id";
 		pieChartTitle="功图工况";
 		exportExcelTitle = '抽油机全天评价-功图工况';
+	}else if(activeTabId=="FSDiagramAnalysisDailyElecWorkCondStatPanel_Id"){//电参工况
+		type=13;
+		panelId="FSDiagramAnalysisDailyElecWorkCondDataListPanel_Id";
+		piePanelId="FSDiagramAnalysisDailyElecWorkCondStatGraphPanel_Id";
+		pieDivId="FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id";
+		pieChartTitle="电参工况";
+		exportExcelTitle = '抽油机全天评价-电参工况';
 	}else if(activeTabId=="FSDiagramAnalysisDailyProdStatPanel_Id"){//产量
 		type=2;
 		panelId="FSDiagramAnalysisDailyProdDataListPanel_Id";

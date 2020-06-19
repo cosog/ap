@@ -338,7 +338,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		String sql = "";
 		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='" + type + "'";
 		try {
-			List<?> list = this.getfindByIdList(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";
@@ -376,7 +376,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		String sql = "";
 		sql = " select t.itemvalue,t.itemname from tbl_code t where   sjbdm='tbl_rpc_productiondata_hist' and itemcode='QTLX'";
 		try {
-			List<?> list = this.getfindByIdList(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";
@@ -556,12 +556,12 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			sql += " and h.dwbh like '%" + orgCode + "%'";
 		}
 		sql += " order by h.jh";
-		return this.getBaseDao().getfindByIdList(sql);
+		return this.getBaseDao().find(sql);
 	}
 
 	public List<T> loadproductionOutWellID(Class<T> clazz) {
 		String queryString = "SELECT u.jlbh,u.jh FROM WellInformation u where u.jlx like '1%' order by u.jh ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	/**
@@ -576,7 +576,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		boolean flag = false;
 		if (StringUtils.isNotBlank(jbh)) {
 			String queryString = "SELECT u.jbh FROM Outputwellproduction u  where  u.jbh='" + jbh + "' order by u.jbh ";
-			List<WellInformation> list = getBaseDao().getObjects(queryString);
+			List<WellInformation> list = getBaseDao().find(queryString);
 			if (list.size() > 0) {
 				flag = true;
 			}

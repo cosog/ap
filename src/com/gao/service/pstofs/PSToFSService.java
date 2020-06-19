@@ -481,12 +481,6 @@ public class PSToFSService<T> extends BaseService<T> {
 		return this.getBaseDao().savePSToFSPumpingUnitData(PumpingUnitData,PumpingUnitPTRData,wellName);
 	}
 	
-	public boolean saveCalaulateResult(String wellName,String cjsj,String ElectricData,
-			String StartPoint,String EndPoint,String FSDiagramId,
-			String Stroke,String SPM,String CNT,String FSDiagram) throws SQLException, ParseException{
-		return this.getBaseDao().savePSToFSCalaulateResult(wellName,cjsj,ElectricData,StartPoint,EndPoint,FSDiagramId,Stroke,SPM,CNT,FSDiagram);
-	}
-	
 	public boolean saveMotorData(String MotorData,String MotorPerformanceCurverData,String wellName) throws SQLException, ParseException{
 		return this.getBaseDao().savePSToFSMotorData(MotorData,MotorPerformanceCurverData,wellName);
 	}
@@ -580,7 +574,7 @@ public class PSToFSService<T> extends BaseService<T> {
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,t.rpm_curve "
         		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellid=well.id  and t.id="+id;
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		String positionCurveData="";
         String loadCurveData="";
         String powerCurveData="";
@@ -675,7 +669,7 @@ public class PSToFSService<T> extends BaseService<T> {
         		+ " t.rawpower_curve,t.rawcurrent_curve,t.rawrpm_curve "
         		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellid=well.id  and t.id="+id;
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 	        dataSbf.append("{success:true,");
@@ -802,7 +796,7 @@ public class PSToFSService<T> extends BaseService<T> {
         		+ " t.position360_curve,t.angle360_curve,t.load360_curve"
         		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellId=well.id  and t.id="+recordId;
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			SerializableClobProxy proxy=null;
@@ -965,7 +959,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}
 		sql="select b.* from (select a.*,rownum as rn from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn > "+ start +"";
 		int totals = getTotalCountRows(allsql);//获取总记录数
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dataSbf.append("{success:true,totals:\"" + totals + "\",totalPages:\"" + totalPages + "\",startDate:\"" + startDate + "\",endDate:\"" + endDate + "\",list:[");
@@ -1221,7 +1215,7 @@ public class PSToFSService<T> extends BaseService<T> {
         		+ " and length(t.driveraddr)=16"
         		+ " and t.org_id in("+orgId+")  group by t."+type+""
         		+ " order by t."+type;
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		String columns =  "["
 		+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
 		+ "{ \"header\":\"统计项\",\"dataIndex\":\"item\"},"
@@ -1282,7 +1276,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " id,wellName,to_char(t.acquisitionTime@'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
 				+ "	commStatus,commStatusName,commAlarmLevel,"
 				+ "	runStatus,runStatusName,runAlarmLevel,"
-				+ " workingConditionCode_Elec,workingConditionName_Elec,workingConditionAlarmLevel as workingConditionAlarmLevel_E,"
+				+ " workingConditionCode,workingConditionName,workingConditionAlarmLevel as workingConditionAlarmLevel_E,"
 				+ " runTime,runTimeEfficiency,t.runRange,"
 				+ " Ia,Ib,Ic,IAvg,IStr,Va,Vb,Vc,VAvg,VStr,"
 				+ " WattA,WattB,WattC,WattSum,WattStr,"
@@ -1301,7 +1295,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		sqlHis=sourcesql.replace("viw_rpc_discrete_latest", "viw_rpc_discrete_hist");
 		
 		if(StringManagerUtils.isNotNull(egkmc)){
-			sql+=" and workingConditionName_Elec='"+egkmc+"' ";
+			sql+=" and workingConditionName='"+egkmc+"' ";
 		}
 		if(StringManagerUtils.isNotNull(timeEff)){
 			sql+=" and runtimeefficiencyLevel='"+timeEff+"' ";
@@ -1353,7 +1347,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " totalWattEnergy,totalPWattEnergy,totalNWattEnergy,totalVarEnergy,totalPVarEnergy,totalNVarEnergy,totalVAEnergy,"
 				+ " todayWattEnergy,todayPWattEnergy,todayNWattEnergy,todayVarEnergy,todayPVarEnergy,todayNVarEnergy,todayVAEnergy,"
 				+ " frequencyRunValue,signal,interval,"
-				+ " runrange,workingconditionstring_elec "
+				+ " runrange,workingconditionstring "
 				+ " from "+tableName+" t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
@@ -1399,7 +1393,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"signal\":\""+obj[37]+"\",");
 			result_json.append("\"interval\":\""+obj[38]+"\",");
 			result_json.append("\"runRange\":\""+obj[39]+"\",");
-			result_json.append("\"workingConditionString_Elec\":\""+obj[40]+"\"");
+			result_json.append("\"workingConditionString\":\""+obj[40]+"\"");
 			
 		}
 		result_json.append("}");
@@ -1522,7 +1516,7 @@ public class PSToFSService<T> extends BaseService<T> {
         		+ " and t.org_id in("+orgId+") "
         		+ " and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')"
         		+ " group by t."+type+"";
-        List<?> list=this.GetGtData(sql);
+        List<?> list=this.findCallSql(sql);
 		String columns =  "["
 		+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
 		+ "{ \"header\":\"统计项\",\"dataIndex\":\"item\"},"
@@ -1606,7 +1600,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " and t.wellname='"+wellName+"' "
 				+ " order by t.acquisitiontime";
 		
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"

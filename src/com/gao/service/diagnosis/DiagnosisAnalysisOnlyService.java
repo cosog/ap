@@ -419,7 +419,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tempHql += "  and  v.jh like  '%" + jh + "%' ";
 		}
 		String hql = tempHql;
-		return this.getBaseDao().getObjects(hql);
+		return this.getBaseDao().find(hql);
 
 	}
 
@@ -472,7 +472,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         }else{
         	sql+=" and well.wellName='"+wellName+"'";
         }
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			String positionCurveData="";
@@ -672,7 +672,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         }else{
         	sql+=" and well.wellName='"+wellName+"'";
         }
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			String positionCurveData="";
@@ -861,7 +861,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         }else{
         	sql+=" and well.wellName='"+wellName+"'";
         }
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			String positionCurveData="";
@@ -1046,7 +1046,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String sql="select t.wellName as wellName, to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
 				  + "t.rodstring from "
 		          +"viw_rpc_diagram_hist t where t.id in (" + id + ") ";
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			wellName=obj[0].toString();
@@ -1086,7 +1086,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String sql="select t.wellName as wellName, to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
 				  + "t.pumpeff1*100, t.pumpeff2*100, t.pumpeff3*100, t.pumpeff4*100 from "
 		          +"viw_rpc_diagram_hist t where t.id in (" + id + ") ";
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			wellName=obj[0].toString();

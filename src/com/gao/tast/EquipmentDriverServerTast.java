@@ -68,8 +68,15 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+		Gson gson = new Gson();
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
+//		String path=stringManagerUtils.getFilePath("test.json","data/");
+//		String json=stringManagerUtils.readFile(path,"utf-8");
+//		StringManagerUtils.sendPostMethod(url, json,"utf-8");
+		
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;
 		do{
@@ -552,6 +559,13 @@ public class EquipmentDriverServerTast {
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
+		
+		//添加Kafka
+		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig KafkaDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(KafkaDriver.getDriverCode(), KafkaDriver);
 	}
 	
 	@SuppressWarnings("static-access")

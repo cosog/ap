@@ -271,10 +271,6 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 		this.getBaseDao().doStatItemsSetSave(statType,data);
 	}
 	
-	public void saveBalanceAlarmStatusGridData(JSONObject jsonObject) throws SQLException {
-		this.getBaseDao().saveBalanceAlarmStatusGridData(jsonObject);
-	}
-	
 	public void saveOrUpdateorDeleteDiscreteAlarmSet(DistreteAlarmLimit w,
 			String ids, String comandType) throws Exception {
 		getBaseDao().saveOrUpdateorDeleteDiscreteAlarmSet(w, ids, comandType);

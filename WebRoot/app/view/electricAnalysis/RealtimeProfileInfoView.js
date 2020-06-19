@@ -626,7 +626,7 @@ function getElectricAnalysisRealtimeProfileType() {
 	}else if(activeId=="electricAanlysisRealtimeRuntimeEfficiencyProfilePanel_Id"){
 		type="runtimeefficiencyLevel";
 	}else if(activeId=="electricAanlysisRealtimeWorkingConditionProfilePanel_Id"){
-		type="workingConditionName_Elec";
+		type="workingConditionName";
 	}else if(activeId=="electricAanlysisRealtimeWattDegreeBalanceProfilePanel_Id"){
 		type="wattdegreebalanceName";
 	}else if(activeId=="electricAanlysisRealtimeIDegreeBalanceProfilePanel_Id"){
@@ -684,7 +684,7 @@ function getElectricAnalysisRealtimeProfileData(type,divId,title){
 	
 	getElectricAnalysisRealtimeProfilePieData("runStatusName","electricAnalysisRealtimeProfileDiv1_id","运行状态");
 	getElectricAnalysisRealtimeProfilePieData("runtimeefficiencyLevel","electricAnalysisRealtimeProfileDiv2_id","运行时率");
-	getElectricAnalysisRealtimeProfilePieData("workingConditionName_Elec","electricAnalysisRealtimeProfileDiv3_id","电参工况");
+	getElectricAnalysisRealtimeProfilePieData("workingConditionName","electricAnalysisRealtimeProfileDiv3_id","电参工况");
 	getElectricAnalysisRealtimeProfilePieData("wattdegreebalanceName","electricAnalysisRealtimeProfileDiv4_id","功率平衡");
 	getElectricAnalysisRealtimeProfilePieData("idegreebalanceName","electricAnalysisRealtimeProfileDiv5_id","电流平衡");
 	getElectricAnalysisRealtimeProfilePieData("todayWattEnergyLevel","electricAnalysisRealtimeProfileDiv6_id","日用电量");

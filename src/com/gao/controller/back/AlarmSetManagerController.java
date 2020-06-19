@@ -179,30 +179,6 @@ public class AlarmSetManagerController extends BaseController {
 		
 		return null;
 	}
-
-	/*
-	 * 保存平衡状态限值
-	 * */
-	@RequestMapping("/saveBalanceAlarmStatusGridData")
-	public String saveBalanceAlarmStatusGridData() throws Exception {
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
-		JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+data+"}");//解析数据
-		JSONArray jsonArray = jsonObject.getJSONArray("data");
-		for(int i=0;i<jsonArray.size();i++){
-			JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-			this.alarmSetManagerService.saveBalanceAlarmStatusGridData(everydata);
-		}
-		String json ="";
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-//		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
 	
 	/**<p>描述：显示报警设置下拉菜单数据信息</p>
 	 * @return

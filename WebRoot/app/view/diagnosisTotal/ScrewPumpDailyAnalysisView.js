@@ -219,7 +219,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                             items: [{
                                     xtype: 'tabpanel',
                                     tabPosition: 'right',
-                                    title: '工况',
+                                    title: '电参工况',
 //                                    iconCls: 'select',
                                     hidden:true,
                                     id: 'PCPRPMAnalysisDailyWorkCondStatTabpanel_Id',

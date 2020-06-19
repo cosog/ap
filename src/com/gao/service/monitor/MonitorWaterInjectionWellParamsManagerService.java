@@ -39,7 +39,7 @@ public class MonitorWaterInjectionWellParamsManagerService<T> extends BaseServic
 			sql += " order by v.bjlx desc";
 		}
 		try {
-			List<?> list = this.getObjects(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";

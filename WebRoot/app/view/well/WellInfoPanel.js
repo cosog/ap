@@ -213,7 +213,11 @@ function CreateAndLoadWellInfoTable(isNew){
 				var colHeaders="[";
 		        var columns="[";
 	            for(var i=0;i<result.columns.length;i++){
-	            	colHeaders+="'"+result.columns[i].header+"'";
+	            	if(result.columns[i].header==='驱动名称'){
+	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
+	            	}else{
+	            		colHeaders+="'"+result.columns[i].header+"'";
+	            	}
 	            	if(result.columns[i].dataIndex==="liftingTypeName"){
 	            		if(pcpHidden){
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
@@ -308,6 +312,8 @@ var WellInfoHandsontableHelper = {
 	                rowHeaders: true,//显示行头
 	                colHeaders:wellInfoHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
+//	                colWidths:[50,90,75, 80,100,70, 80,100,70, 140,120, 80,80,80,80,80, 80,80,80,80,80,  80,80,80,120, 80, 75],
+//	                colWidths:50,
 	                contextMenu: {
 	                	items: {
 	                	    "row_above": {

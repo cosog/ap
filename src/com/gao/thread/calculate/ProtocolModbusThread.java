@@ -104,24 +104,27 @@ public class ProtocolModbusThread extends Thread{
     				}
     				
     				if(StringManagerUtils.isNotNull(revMacStr)){//接收到注册包
+    					boolean isRun=false;
+						for(int j=0;j<EquipmentDriverServerTast.clientUnitList.size();j++){//遍历已连接的客户端
+							if(EquipmentDriverServerTast.clientUnitList.get(j).socket!=null){//如果已连接
+								for(int k=0;k<EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.size();k++){
+									if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
+										if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
+											EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
+											isRun=true;
+											break;
+										}
+									}
+								}
+							}
+							if(isRun){
+								break;
+							}
+						}
+    					
     					for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
     						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr)){
     							System.out.println(beeTechDriverServerTast.units.get(i).wellName+"上线");
-    							
-    							for(int j=0;j<EquipmentDriverServerTast.clientUnitList.size();j++){//遍历已连接的客户端
-    								if(EquipmentDriverServerTast.clientUnitList.get(j).socket!=null){//如果已连接
-    									for(int k=0;k<EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.size();k++){
-    										if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
-    											if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
-    												EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
-    												break;
-    											}
-    										}
-    									}
-    								}
-    							}
-    							
-    							
     							clientUnit.unitDataList.add(beeTechDriverServerTast.units.get(i));
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).setCommStatus(1);
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).recvPackageCount+=1;
@@ -163,7 +166,7 @@ public class ProtocolModbusThread extends Thread{
     				continue;
     			}else{
     				//循环读取功图点数、采集时间、冲次、冲程数据 
-    				String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+    				
 //    				if(isConnectionClose(clientUnit.socket)){
 //    					System.out.println("线程"+this.threadId+"通信关闭断开连接");
 //    					this.releaseResource(is,os);
@@ -171,6 +174,7 @@ public class ProtocolModbusThread extends Thread{
 //        				break;
 //    				}
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
+    					String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
     					//启停井控制
     					if(clientUnit.unitDataList.get(i).runStatusControl!=0
     							&&clientUnit.unitDataList.get(i).runStatusControl!=1//不执行启抽操作

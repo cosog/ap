@@ -1124,9 +1124,9 @@ public class CommonDataService extends BaseService {
 		}
 
 		if (StringManagerUtils.isNotNull(params)) {
-			datas = this.findExecuteSqlQuery(sql, o);
+			datas = this.findCallSql(sql, o);
 		} else {
-			datas = this.findExecuteSqlQuery(sql);
+			datas = this.findCallSql(sql);
 		}
 		WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
 		WritableCellFormat wcfFC = new WritableCellFormat(wfont);
@@ -1259,9 +1259,9 @@ public class CommonDataService extends BaseService {
 		sql = this.getSqlReplace(sql);
 		if (StringManagerUtils.isNotNull(params)) {
 
-			datas = this.findExecuteSqlQuery(sql, o);
+			datas = this.findCallSql(sql, o);
 		} else {
-			datas = this.findExecuteSqlQuery(sql);
+			datas = this.findCallSql(sql);
 		}
 		WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
 		WritableCellFormat wcfFC = new WritableCellFormat(wfont);
@@ -1387,9 +1387,9 @@ public class CommonDataService extends BaseService {
 			Object[] o = params.split(",");
 			List<?> datas = null;
 			if (StringManagerUtils.isNotNull(params)) {
-				datas = this.findExecuteSqlQuery(sql, o);
+				datas = this.findCallSql(sql, o);
 			} else {
-				datas = this.findExecuteSqlQuery(sql);
+				datas = this.findCallSql(sql);
 			}
 			WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
 			WritableCellFormat wcfFC = new WritableCellFormat(wfont);
@@ -1701,14 +1701,14 @@ public class CommonDataService extends BaseService {
 			String params2 = nvalueWhere.toString();
 			Object[] o2 = params2.split(",");
 			if (StringManagerUtils.isNotNull(params)) {
-				list1 = this.findExecuteSqlQuery(sql, o);
+				list1 = this.findCallSql(sql, o);
 			} else {
-				list1 = this.findExecuteSqlQuery(sql);
+				list1 = this.findCallSql(sql);
 			}
 			if (StringManagerUtils.isNotNull(params2)) {
-				list2 = this.findExecuteSqlQuery(nsqlwhere.toString(), o2);
+				list2 = this.findCallSql(nsqlwhere.toString(), o2);
 			} else {
-				list2 = this.findExecuteSqlQuery(nsqlwhere.toString());
+				list2 = this.findCallSql(nsqlwhere.toString());
 			}
 			WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
 			WritableCellFormat wcfFC = new WritableCellFormat(wfont);
@@ -2094,7 +2094,7 @@ public class CommonDataService extends BaseService {
 		String sql = "";
 		sql = " select t.itemvalue,t.itemname from tbl_code t where  itemcode='" + type + "'";
 		try {
-			List<?> list = this.getfindByIdList(sql);
+			List<?> list = this.find(sql);
 			result_json.append("[");
 			String get_key = "";
 			String get_val = "";
@@ -2336,11 +2336,11 @@ public class CommonDataService extends BaseService {
 		sqlAvg = sqlAvg.substring(0, sqlAvg.length()-1);
 		sqlAvg += " from (" + sql + ")";
 		if (StringManagerUtils.isNotNull(params)) {
-			datas = this.findLeakageSqlQuery(sql, o);
-			avgs = this.findLeakageSqlQuery(sqlAvg, o);
+			datas = this.findCallSql(sql, o);
+			avgs = this.findCallSql(sqlAvg, o);
 		} else {
-			datas = this.findLeakageSqlQuery(sql);
-			avgs = this.findLeakageSqlQuery(sqlAvg, o);
+			datas = this.findCallSql(sql);
+			avgs = this.findCallSql(sqlAvg, o);
 		}
 		if (null != avgs && avgs.size() > 0) {
 			datas.add(avgs.get(0));
@@ -2519,11 +2519,11 @@ public class CommonDataService extends BaseService {
 		sqlAvg = sqlAvg.substring(0, sqlAvg.length()-1);
 		sqlAvg += " from (" + sql + ")";
 		if (StringManagerUtils.isNotNull(params)) {
-			datas = this.findLeakageSqlQuery(sql, o);
-			avgs = this.findLeakageSqlQuery(sqlAvg, o);
+			datas = this.findCallSql(sql, o);
+			avgs = this.findCallSql(sqlAvg, o);
 		} else {
-			datas = this.findLeakageSqlQuery(sql);
-			avgs = this.findLeakageSqlQuery(sqlAvg, o);
+			datas = this.findCallSql(sql);
+			avgs = this.findCallSql(sqlAvg, o);
 		}
 		if (null != avgs && avgs.size() > 0) {
 			datas.add(avgs.get(0));

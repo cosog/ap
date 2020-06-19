@@ -376,7 +376,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.powerconsumptionperthm,"
 											+" t.fullnesscoefficient,t.stroke,t.spm,"
 											+" prod.productiongasoilratio,prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,t.pumpeff,prod.pumpborediameter/1000 as pumpborediameter,"
-											+" t.wattdegreebalance,t.idegreebalance,"
+											+" t.wattdegreebalance,t.idegreebalance,t.deltaRadius,"
 											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature"
 											+" from tbl_rpc_diagram_hist t ,tbl_wellinformation t007 ,tbl_rpc_productiondata_hist prod"
 											+" where t.wellid=t007.id and t.productiondataid=prod.id "
@@ -536,9 +536,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 						dataSbf.append("\"PumpBoreDiameter\":"+resuleObj[23]+",");
 						dataSbf.append("\"WattDegreeBalance\":"+resuleObj[24]+",");
 						dataSbf.append("\"IDegreeBalance\":"+resuleObj[25]+",");
-						dataSbf.append("\"TubingPressure\":"+resuleObj[26]+",");
-						dataSbf.append("\"CasingPressure\":"+resuleObj[27]+",");
-						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[28]+"},");
+						dataSbf.append("\"DeltaRadius\":"+resuleObj[26]+",");
+						dataSbf.append("\"TubingPressure\":"+resuleObj[27]+",");
+						dataSbf.append("\"CasingPressure\":"+resuleObj[28]+",");
+						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[29]+"},");
 					}
 				}
 				if(dataSbf.toString().endsWith(",")){

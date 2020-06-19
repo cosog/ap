@@ -215,7 +215,7 @@ public class CalculateDataController extends BaseController{
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
-				System.out.println(requestDataList.get(i));
+//				System.out.println(requestDataList.get(i));
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
@@ -383,6 +383,69 @@ public class CalculateDataController extends BaseController{
 		
 		System.out.println("汇总完成");
 		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/pubSubModelCommCalculation")
+	public String PubSubModelCommCalculation() throws ParseException{
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		Gson gson = new Gson();
+		String sql="select t.wellid,"
+				+ " comm.wellName,comm.commstatus,"
+				+ " to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as lastAcquisitiontime,"
+				+ " t.commstatus as lastcCommstatus,t.commtime as lastCommtime,t.commtimeefficiency as lastCommtimeefficiency,t.commrange as lastCommrange"
+				+ " from tbl_rpc_discrete_latest t,viw_commstatus comm"
+				+ " where t.wellid=comm.id";
+		List<?> list = calculateDataService.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String commRequest="{"
+					+ "\"AKString\":\"\","
+					+ "\"WellName\":\""+obj[1]+"\",";
+			if(StringManagerUtils.isNotNull(obj[3]+"")&&StringManagerUtils.isNotNull(obj[7]+"")){
+				commRequest+= "\"Last\":{"
+						+ "\"AcquisitionTime\": \""+obj[3]+"\","
+						+ "\"CommStatus\": "+(("1".equals(obj[4]+""))?true:false)+","
+						+ "\"CommEfficiency\": {"
+						+ "\"Efficiency\": "+obj[6]+","
+						+ "\"Time\": "+obj[5]+","
+						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[7]+"")+""
+						+ "}"
+						+ "},";
+			}	
+			commRequest+= "\"Current\": {"
+					+ "\"AcquisitionTime\":\""+AcquisitionTime+"\","
+					+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
+					+ "}"
+					+ "}";
+			
+			String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+			java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
+			CommResponseData commResponseData=gson.fromJson(commResponse, type);
+			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+				String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
+						+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
+						+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","
+						+ "t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'"
+						+ " where t.wellid="+obj[0];
+				int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
+			}
+			
+		}
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

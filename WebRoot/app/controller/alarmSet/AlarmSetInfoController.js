@@ -428,38 +428,3 @@ SelectAlarmSet = function () {
 	        }
 	    });
  };
-//保存平衡状态限值
- function setbalanceStatusAlarmLimit() {
- 	var gridpanel = Ext.getCmp("balanceAlarmStatusGrid_Id");
- 	var store=Ext.getCmp("balanceAlarmStatusGrid_Id").getStore();
- 	var m = store.getUpdatedRecords();
- 	var total=store.getCount();
- 	var jsonArray = [];
- 	for(var i=0;i<total;i++){
- 		var model=store.getAt(i);
- 		if(model.dirty){
- 			jsonArray.push(model.data);
- 		}
- 	}
-     if (jsonArray.length>0) {
-     	Ext.Ajax.request({
-     		method:'POST',
-     		url:context + '/alarmSetManagerController/saveBalanceAlarmStatusGridData',
-     		success:function(response) {
-     			Ext.MessageBox.alert("信息","更新成功",function(){
-     				gridpanel.getStore().load();
-     				gridpanel.getStore().modified = []; 
-     			});
-     		},
-     		failure:function(){
-     			Ext.MessageBox.alert("错误","保存失败");
-     		},
-     		params: {
-             	data: JSON.stringify(jsonArray)
-             }
-     	});   
-     }else {
-         //Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.noDataChange);
-     }
-     return false;
- };

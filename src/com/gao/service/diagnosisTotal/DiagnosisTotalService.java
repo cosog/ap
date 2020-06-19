@@ -141,11 +141,17 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				ddicName="dailyCommDist";
 			}
 			typeColumnName="commtimeefficiencyLevel";
+		}else if("13".equalsIgnoreCase(type)){
+			if("400".equals(wellType)){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyETValue";
+			}
+			typeColumnName="workingConditionName_E";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",workingConditionString,"
-				+ " workingConditionAlarmLevel,"
+		String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		if("200".equals(wellType)){
 			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
@@ -268,6 +274,13 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				ddicName="dailyCommDist";
 			}
 			typeColumnName="commtimeefficiencyLevel";
+		}else if("13".equalsIgnoreCase(type)){
+			if("400".equals(wellType)){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyETValue";
+			}
+			typeColumnName="workingConditionName_E";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
@@ -330,6 +343,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			statType="commStatusName";
 		}else if("12".equalsIgnoreCase(type)){
 			statType="commtimeefficiencyLevel";
+		}else if("13".equalsIgnoreCase(type)){
+			statType="workingConditionName_E";
 		}
 		if("200".equals(wellType)){
 			tableName="viw_rpc_total_day";
@@ -395,7 +410,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " and t.wellname='"+wellName+"' "
 				+ " order by t.acquisitiontime desc";
 		
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyDiagramOverlay");
 		String columns = ddic.getTableHeader();
 		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"calculateDate\":\""+startDate+"\",\"columns\":"+columns+",\"totalRoot\":[");
@@ -465,7 +480,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " order by t.jssj";
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		
 		
 		

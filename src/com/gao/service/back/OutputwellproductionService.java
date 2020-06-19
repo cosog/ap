@@ -34,7 +34,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 
 	public List<T> loadWellInformationID(Class<T> clazz) {
 		String queryString = "SELECT u.jlbh,u.jh FROM WellInformation u order by u.jlbh ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	@SuppressWarnings("null")
@@ -169,7 +169,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 
 	public List<T> fingWellByJCList() throws Exception {
 		String sql = " select  distinct (w.jc) from tbl_wellinformation w,tbl_rpc_productiondata_hist o where o.jbh=w.jlbh order by w.jc ";
-		return this.getBaseDao().getfindByIdList(sql);
+		return this.getBaseDao().find(sql);
 	}
 
 	public List<T> fingWellByJhhList(String jc) throws Exception {
@@ -178,7 +178,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 			sql += "  and w.jc like '%" + jc + "%' ";
 		}
 		String hql = sql + " order by w.jhh ";
-		return this.getBaseDao().getfindByIdList(hql);
+		return this.getBaseDao().find(hql);
 	}
 
 	public List<T> fingWellByJhList(String jc, String jhh) throws Exception {
@@ -190,7 +190,7 @@ public class OutputwellproductionService<T> extends BaseService<T> {
 			sql += "  and w.jhh like '%" + jhh + "%' ";
 		}
 		String hql = sql + " order by w.jh ";
-		return this.getBaseDao().getfindByIdList(hql);
+		return this.getBaseDao().find(hql);
 	}
 
 	public List<T> findAllList(int offset, int pageSize, String jc, String jhh, String jh) throws Exception {

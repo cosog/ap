@@ -20,7 +20,7 @@ public class RightManagerService<T> extends BaseService<T> {
 
 	public List<T> loadRights(Class<T> clazz) {
 		String queryString = "SELECT u FROM Right u order by u.RightId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryRights(Class<T> clazz, String RightName) {
@@ -28,14 +28,14 @@ public class RightManagerService<T> extends BaseService<T> {
 			return loadRights(clazz);
 
 		String queryString = "SELECT u FROM Right u WHERE u.RightName like '%" + RightName + "%' order by u.RightId asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryCurrentUserRights(Class<T> clazz, Integer userNo) {
 		if (userNo == null || "".equals(userNo))
 			return loadRights(clazz);
 		String queryString = "select  r From " + "Right r ,Right rg where  rg.rtRightcode=r.RightCode and rg.rtUserNo=" + userNo + " order by r.RightCode asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public void addRight(T Right) throws Exception {

@@ -221,7 +221,7 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 				result_json.append("\"azimuthAngle\":"+wellboreTrajectoryResponseData.getWellboreTrajectory().getAzimuthAngle().get(i)+",");
 				result_json.append("\"X\":"+wellboreTrajectoryResponseData.getWellboreTrajectory().getX().get(i)+",");
 				result_json.append("\"Y\":"+wellboreTrajectoryResponseData.getWellboreTrajectory().getY().get(i)+",");
-				result_json.append("\"Z\":"+wellboreTrajectoryResponseData.getWellboreTrajectory().getY().get(i)+"},");
+				result_json.append("\"Z\":"+wellboreTrajectoryResponseData.getWellboreTrajectory().getZ().get(i)+"},");
 			}
 		}
 		

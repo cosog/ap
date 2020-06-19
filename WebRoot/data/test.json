@@ -1,12 +1,12 @@
 {
-	"WellName": "测试井",
+	"WellName": "朝134-杨58",
 	"LiftingType": 200,
-	"AcquisitionTime": "2020-04-14 09:22:44",
+	"AcquisitionTime": "2020-03-30 17:22:44",
 	"ProductionParameter": {
-		"TubingPressure": 0.0,
-		"CasingPressure": 0.0,
-		"BackPressure": 0.0,
-		"WellHeadFluidTemperature": 0.0,
+		"TubingPressure": 0.009555205,
+		"CasingPressure": 4.81,
+		"BackPressure": 4.81,
+		"WellHeadFluidTemperature": 4.81,
 		"bpszpl": 4.81,
 		"bpyxpl": 4.81
 	},
@@ -25,7 +25,7 @@
 		"PowerFactor": 0.70710677
 	},
 	"Diagram": {
-		"AcquisitionTime": "2020-04-14 09:22:44",
+		"AcquisitionTime": "2020-03-30 17:22:44",
 		"AcquisitionCycle": 30,
 		"SPM": 5.791506,
 		"Stroke": 4.81,

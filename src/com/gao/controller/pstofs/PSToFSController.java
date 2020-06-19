@@ -205,32 +205,6 @@ public class PSToFSController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/saveCalaulateResult")
-	public String saveCalaulateResult() throws Exception {
-		HttpSession session=request.getSession();
-		String wellName = ParamUtils.getParameter(request, "wellName");
-		String cjsj = ParamUtils.getParameter(request, "cjsj");
-		String ElectricData = ParamUtils.getParameter(request, "ElectricData");
-		String StartPoint = ParamUtils.getParameter(request, "StartPoint");
-		String EndPoint = ParamUtils.getParameter(request, "EndPoint");
-		String FSDiagramId = ParamUtils.getParameter(request, "FSDiagramId");
-		String Stroke = ParamUtils.getParameter(request, "Stroke");
-		String SPM = ParamUtils.getParameter(request, "SPM");
-		String CNT = ParamUtils.getParameter(request, "CNT");
-		String FSDiagram = ParamUtils.getParameter(request, "FSDiagram");
-		this.PSToFSService.saveCalaulateResult(wellName,cjsj,ElectricData,StartPoint,EndPoint,FSDiagramId,Stroke,SPM,CNT,FSDiagram);
-		String json ="{success:true}";
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-//		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/savePumpingUnitData")
 	public String savePumpingUnitData() throws Exception {
 

@@ -31,7 +31,7 @@ public class ResManagerService<T> extends BaseService<T> {
 	public List<Res> findByPrimary(Integer parentId) {
 		String queryString = "SELECT u.resLevel FROM Res u where u.resParent="
 				+ parentId + " order by u.resId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	/**
@@ -41,29 +41,29 @@ public class ResManagerService<T> extends BaseService<T> {
 	public List<T> findChildRes(Integer parentId) {
 		String queryString = "SELECT u FROM Res u where u.resParent="
 				+ parentId + " order by u.ResId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> findResChildrenByparentId(Integer parentId) {
 		String queryString = "SELECT u FROM Res u where u.resParent="
 				+ parentId + " order by u.resId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> findCurrentResCodeByparentId(Integer parentId) {
 		String queryString = "SELECT u FROM Res u where u.resId=" + parentId
 				+ " order by u.resId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> loadRess(Class<T> clazz) {
 		String queryString = "SELECT u FROM Res u order by u.resId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> loadWellInfoRess(Class<T> clazz) {
 		String queryString = "SELECT u.resCode,u.resName FROM Res u order by u.resId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> loadResTreeRess(Class<T> clazz, Integer orgId, int userType) {
@@ -75,12 +75,12 @@ public class ResManagerService<T> extends BaseService<T> {
 		} else {
 			queryString = "SELECT u FROM Res u";
 		}
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> loadParentRess(Class<T> clazz) {
 		String queryString = "SELECT resId,resName FROM Res u order by u.resId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> queryRess(Class<T> clazz, String ResName) {
@@ -88,7 +88,7 @@ public class ResManagerService<T> extends BaseService<T> {
 			return loadRess(clazz);
 
 		String queryString = "SELECT u FROM Res u where u.resName like '%" + ResName + "%' order by u.resSeq asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	@SuppressWarnings("rawtypes")

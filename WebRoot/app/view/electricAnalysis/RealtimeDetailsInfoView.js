@@ -560,7 +560,7 @@ function createElecAnalysisRealtimeDetailsTableColumn(columnInfo) {
             width_ = ",width:" + attr.width;
         }
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' ";
-        if (attr.dataIndex.toUpperCase()=='workingConditionName_Elec'.toUpperCase()) {
+        if (attr.dataIndex.toUpperCase()=='workingConditionName_Elec'.toUpperCase()||attr.dataIndex.toUpperCase()=='workingConditionName_E'.toUpperCase()||attr.dataIndex.toUpperCase()=='workingConditionName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
             myColumns += ",width:" + attr.width + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";

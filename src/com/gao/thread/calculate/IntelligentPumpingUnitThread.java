@@ -104,24 +104,26 @@ public class IntelligentPumpingUnitThread extends Thread{
     				}
     				
     				if(StringManagerUtils.isNotNull(revMacStr)){//接收到注册包
+    					boolean isRun=false;
+						for(int j=0;j<EquipmentDriverServerTast.clientUnitList.size();j++){//遍历已连接的客户端
+							if(EquipmentDriverServerTast.clientUnitList.get(j).socket!=null){//如果已连接
+								for(int k=0;k<EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.size();k++){
+									if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
+										if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
+											EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
+											isRun=true;
+											break;
+										}
+									}
+								}
+							}
+							if(isRun){
+								break;
+							}
+						}
     					for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
     						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr)){
     							System.out.println(beeTechDriverServerTast.units.get(i).wellName+"上线");
-    							
-    							for(int j=0;j<EquipmentDriverServerTast.clientUnitList.size();j++){//遍历已连接的客户端
-    								if(EquipmentDriverServerTast.clientUnitList.get(j).socket!=null){//如果已连接
-    									for(int k=0;k<EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.size();k++){
-    										if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
-    											if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
-    												EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
-    												break;
-    											}
-    										}
-    									}
-    								}
-    							}
-    							
-    							
     							clientUnit.unitDataList.add(beeTechDriverServerTast.units.get(i));
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).setCommStatus(1);
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).recvPackageCount+=1;
@@ -163,8 +165,8 @@ public class IntelligentPumpingUnitThread extends Thread{
     				continue;
     			}else{
     				//循环读取数据 
-    				String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
+    					String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
     					//接收工况报警信息
     					rc=this.readElectricAlarmInfo(clientUnit.socket, 5000, recByte,is);
     					if(rc!=-1){

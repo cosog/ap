@@ -4728,6 +4728,9 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
     	upperlimit=parseFloat(upperLoadLine)+10;
     }
+    if(isNaN(upperlimit)){
+    	upperlimit=null;
+    }
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
@@ -7762,10 +7765,10 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 	var minValue=null;
 	var series = "[";
 	for (var i =0; i < list.length; i++){
-		if(list[i].upperLoadLine!=""){
+		if(list[i].upperLoadLine!="" && parseFloat(list[i].upperLoadLine)>0){
 			upperLoadLine=list[i].upperLoadLine;
 		}
-		if(list[i].lowerLoadLine!=""){
+		if(list[i].lowerLoadLine!="" && parseFloat(list[i].lowerLoadLine)>0){
 			lowerLoadLine=list[i].lowerLoadLine;
 		}
 		

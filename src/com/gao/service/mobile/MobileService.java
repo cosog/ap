@@ -487,7 +487,7 @@ public class MobileService<T> extends BaseService<T> {
         		+ " where t.jh='"+wellName+"'";
 		List<?> list=null;
 		if(StringManagerUtils.isNotNull(wellName)){
-			list=this.GetGtData(sql);
+			list=this.findCallSql(sql);
 		}
 		if(list!=null&&list.size()>0){
 			Object[] obj=(Object[])list.get(0);

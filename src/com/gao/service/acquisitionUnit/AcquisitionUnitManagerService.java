@@ -60,7 +60,7 @@ private CommonDataService service;
 	
 	public List<T> queryAcquisitionItemsData(Class<AcquisitionItem> class1) {
 		String queryString = "SELECT u FROM AcquisitionItem u  order by u.seq ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 	
 	public List<T> showAcquisitionUnitOwnItems(Class<AcquisitionUnitItem> class1, String unitId) {
@@ -68,7 +68,7 @@ private CommonDataService service;
 			unitId="0";
 		}
 		String queryString = "select u FROM AcquisitionUnitItem u where   u.unitId=" + unitId + " order by u.id asc";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 	
 	public void deleteCurrentAcquisitionUnitOwnItems(final String unitId) throws Exception {

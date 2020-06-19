@@ -69,27 +69,27 @@ public class OrgManagerService<T> extends BaseService<T> {
 
 	public List<Org> findByPrimary(Integer parentId) {
 		String queryString = "SELECT u.orgLevel FROM Org u where u.orgParent=" + parentId + " order by u.orgId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<Org> findCurrentOrgCodeIsNotExist(String orgCode) {
 		String queryString = "SELECT u.orgCode FROM Org u where u.orgCode='" + orgCode + "' order by u.orgId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> findChildOrg(Integer parentId) {
 		String queryString = "SELECT u FROM Org u where u.orgParent=" + parentId + " order by u.orgId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> findOrgChildrenByparentId(Integer parentId) {
 		String queryString = "SELECT u FROM Org u where u.orgParent=" + parentId + " order by u.orgId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> findCurrentOrgCodeByparentId(Integer parentId) {
 		String queryString = "SELECT u FROM Org u where u.orgId=" + parentId + " order by u.orgId ";
-		return this.getBaseDao().getObjects(queryString);
+		return this.getBaseDao().find(queryString);
 	}
 
 	public List<T> loadOrgs(Class<T> clazz,String orgName,String orgId) {
@@ -99,13 +99,13 @@ public class OrgManagerService<T> extends BaseService<T> {
 			sqlBuffer.append(" and u.orgId in ("+orgId+")");
 		}
 		sqlBuffer.append(" order by u.orgId ");
-		return getBaseDao().getObjects(sqlBuffer.toString());
+		return getBaseDao().find(sqlBuffer.toString());
 		
 	}
 
 	public List<T> loadWellInfoOrgs(Class<T> clazz) {
 		String queryString = "SELECT u.orgCode,u.orgName FROM Org u order by u.orgId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<T> loadOrgTreeOrgs(Class<T> clazz, Integer orgId, int userType) {
@@ -116,7 +116,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		} else {
 			queryString = "SELECT u FROM Org u";
 		}
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 	public List<T> findloadOrgTreeListById(Class<T> clazz, String orgTreeId) {
 //		String queryString = "SELECT u FROM Org u  where u.orgCode like  '" + orgTreeId + "%'  order by u.orgCode  ";
 		String queryString = "SELECT u FROM Org u  where u.orgId in  (" + orgTreeId + ")  order by u.orgCode  ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 	
 	
@@ -171,7 +171,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		if(orgid==0){
 			queryString="select org_parent from tbl_org t ";
 		}
-		list=getBaseDao().findSql(queryString);
+		list=getBaseDao().findCallSql(queryString);
 		if(list.size()>0){
 			for(int i=0;i<list.size();i++){
 				orgIdString.append(list.get(i)+",");
@@ -192,7 +192,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 			if(orgid==0){
 				queryString="select org_id from tbl_org t ";
 			}
-			list=getBaseDao().findSql(queryString);
+			list=getBaseDao().findCallSql(queryString);
 			if(list.size()>0){
 				for(int i=0;i<list.size();i++){
 					orgIdString.append(list.get(i)+",");
@@ -212,7 +212,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 			if(orgid==0){
 				queryString="select org_name from tbl_org t ";
 			}
-			list=getBaseDao().findSql(queryString);
+			list=getBaseDao().findCallSql(queryString);
 			if(list.size()>0){
 				for(int i=0;i<list.size();i++){
 					orgNameString.append("'"+list.get(i)+"',");
@@ -229,7 +229,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		StringBuffer orgIdString = new StringBuffer();
 		List<?> list;
 		String queryString="select org_id from tbl_org where org_id in(select distinct org_parent from tbl_org)";
-		list=getBaseDao().findSql(queryString);
+		list=getBaseDao().findCallSql(queryString);
 		if(list.size()>0){
 			for(int i=0;i<list.size();i++){
 				orgIdString.append(list.get(i)+",");
@@ -242,7 +242,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 
 	public List<T> loadParentOrgs(Class<T> clazz) {
 		String queryString = "SELECT orgId,orgName FROM Org u order by u.orgId ";
-		return getBaseDao().getObjects(queryString);
+		return getBaseDao().find(queryString);
 	}
 
 	public List<?> queryOrgs(Class<T> clazz, String orgName,String orgId) {
@@ -292,7 +292,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 			selectsql+=","+childNodeIds;
 		}
 		selectsql+=")  order by u.orgId  ";
-		return getBaseDao().getObjects(selectsql);
+		return getBaseDao().find(selectsql);
 	}
 
 	@SuppressWarnings("rawtypes")

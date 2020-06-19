@@ -72,7 +72,7 @@ public class StrokefrequencyService<T> extends BaseService<T> {
 	
 	public List<T> findBysccj() throws Exception {
 		String sql = " select distinct(p.sccj) from  T_STROKEFREQUENCY s ,t_pumpingunit p  where 1=1  and s.cyjbh=p.jlbh  ";
-		return this.getBaseDao().getfindByIdList(sql);
+		return this.getBaseDao().find(sql);
 	}
 
 	public List<T> findByLiIdst(String sccj) throws Exception {
@@ -80,7 +80,7 @@ public class StrokefrequencyService<T> extends BaseService<T> {
 		if (sccj != null && !sccj.equals("")) {
 			sql += " and p.sccj like '%" + sccj + "%' ";
 		}
-		return this.getBaseDao().getfindByIdList(sql);
+		return this.getBaseDao().find(sql);
 	}
 
 	public List<T> findAllLIst(int offset, int pageSize, String sccj,

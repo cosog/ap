@@ -86,7 +86,7 @@ public class WellInfoDeployService<T> extends BaseService<T> {
 			tempsql += " and t.jqzmc = '" + jqzmc + "'";
 		};
 		String sql = tempsql + " order by jh ";
-		return getBaseDao().getfindByIdList(sql);
+		return getBaseDao().find(sql);
 	}
 
 	public List<T> findByWell_JqzmcList(String gqmc) throws Exception {
@@ -95,12 +95,12 @@ public class WellInfoDeployService<T> extends BaseService<T> {
 			tempsql += " and t.gqmc = '" + gqmc + "'";
 		};
 		String sql = tempsql+ " order by jqzmc ";
-		return getBaseDao().getfindByIdList(sql);
+		return getBaseDao().find(sql);
 	}
 
 	public List<T> findByWell_GqmcList() throws Exception {
 		String sql = " select distinct( t.gqmc) as gqmc from V_CBM_000_ORG t order by gqmc  ";
-		return getBaseDao().getfindByIdList(sql);
+		return getBaseDao().find(sql);
 	}
 
 	public List<T> findByWell_JqzmcAllList(String gqmc) throws Exception {
@@ -109,7 +109,7 @@ public class WellInfoDeployService<T> extends BaseService<T> {
 			tempsql += " and gqmc like '%" + gqmc + "%'";
 		}
 		String sql = tempsql+" order by jqzmc ";
-		return getBaseDao().getfindByIdList(sql);
+		return getBaseDao().find(sql);
 	}
 
 	public List<T> findByWell_JHAllList(String gqmc, String jqzmc)
@@ -122,7 +122,7 @@ public class WellInfoDeployService<T> extends BaseService<T> {
 			tempsql += " and jqzmc = '" + jqzmc + "'";
 		}
 		String sql = tempsql +" order by jh ";
-		return getBaseDao().getfindByIdList(sql);
+		return getBaseDao().find(sql);
 	}
 
 	

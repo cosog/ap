@@ -175,7 +175,7 @@ Ext.define('AP.store.electricAnalysis.ElectricAnalysisRealtimeDiscreteDetailsRig
     			acqGridPanel.reconfigure(acqStore);
     		}
     		Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetailsRightRunRangeTextArea_Id").setValue(get_rawData.runRange);
-    		Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetailsRightResultCodeTextArea_Id").setValue(get_rawData.workingConditionString_Elec);
+    		Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetailsRightResultCodeTextArea_Id").setValue(get_rawData.workingConditionString);
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("ElectricAnalysisRealtimeDiscreteDetails_Id").getSelectionModel().getSelection()[0].data.id;

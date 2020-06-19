@@ -222,26 +222,6 @@ public class BaseService<T> {
 		return baseDao.findCallSql(callSql, values);
 	}
 
-	public List<?> GetGtData(final String sql){
-		return baseDao.findGtData(sql);
-	}
-	/**
-	 * 检索SQL 标准语法
-	 * 
-	 * @param queryString
-	 * @param values
-	 * @return
-	 * @throws Exception
-	 */
-	public List<?> findExecuteSqlQuery(String queryString, Object... values) throws Exception {
-		return baseDao.findSql(queryString, values);
-
-	}
-	public List<T> findLeakageSqlQuery(String queryString, Object... values) throws Exception {
-		return baseDao.findLeakageSql(queryString, values);
-
-	}
-
 	public String findPageBySqlEntity(String sql, Page pager, Object... values) {
 		List<?> pageList = baseDao.getAllPageBySql(sql.toString(), pager, values);
 		// sql 转化为json格式
@@ -484,18 +464,11 @@ public class BaseService<T> {
 		return baseDao;
 	}
 
-	/**
-	 * @param hql
-	 * @return SQL语句
-	 * @throws Exception
-	 */
-	public <T> List<T> getfindByIdList(final String sql) throws Exception {
-		return this.baseDao.getfindByIdList(sql);
-	}
+	
 
-	public <T> List<T> getObjects(String queryString) {
-		return this.baseDao.getObjects(queryString);
-	}
+//	public <T> List<T> getObjects(String queryString) {
+//		return this.baseDao.getObjects(queryString);
+//	}
 
 	public <T> List<T> getSQLObjects(String queryString) {
 		return this.baseDao.getSQLObjects(queryString);

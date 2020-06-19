@@ -63,7 +63,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 		
 		sql="select b.* from (select a.*,rownum as rn from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn > "+ start +"";
 		int totals = getTotalCountRows(allsql);//获取总记录数
-		List<?> list=this.GetGtData(sql);
+		List<?> list=this.findCallSql(sql);
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+startDate+"\",\"end_date\":\""+endDate+"\",\"list\":[");

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.gao.model.calculate.PCPCalculateRequestData;
 import com.gao.model.calculate.PCPCalculateResponseData;
+import com.gao.model.calculate.RPCCalculateRequestData;
 import com.gao.model.calculate.RPCCalculateResponseData;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
@@ -46,6 +47,7 @@ public class CalculateThread extends Thread{
 				+ " t2.netgrossratio,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
+				+ " decode(t.datasource,1,1,0) as datasource,"
 				+ " 0 as manualInterventionCode,"
 				+ " t.resultstatus,t.id"
 				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
@@ -67,11 +69,11 @@ public class CalculateThread extends Thread{
 				Object[] obj=(Object[])list.get(i);
 				//诊断计产
 				String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
-				java.lang.reflect.Type type = new TypeToken<PCPCalculateRequestData>() {}.getType();
-				PCPCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
+				java.lang.reflect.Type type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+				RPCCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
 				String responseData="";
 				if(calculateRequestData!=null){
-					if(calculateRequestData.getLiftingType()>=400&&calculateRequestData.getLiftingType()<500){//举升类型为螺杆泵时
+					if(StringManagerUtils.stringToInteger(obj[1]+"")>=400&&StringManagerUtils.stringToInteger(obj[1]+"")<500){//举升类型为螺杆泵时
 						responseData=StringManagerUtils.sendPostMethod(screwPumpCalUrl[i%(screwPumpCalUrl.length)], requestData,"utf-8");
 					}else{
 						responseData=StringManagerUtils.sendPostMethod(url[i%(url.length)], requestData,"utf-8");
@@ -79,13 +81,11 @@ public class CalculateThread extends Thread{
 					type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 					RPCCalculateResponseData calculateResponseData=gson.fromJson(responseData, type);
 					
+					int jlbh=Integer.parseInt(obj[obj.length-1].toString());
 					if(calculateResponseData==null){
-						int jlbh=Integer.parseInt(obj[obj.length-1].toString());
 						System.out.println("记录:"+jlbh+"计算无数据返回");
-					}else{
-						int jlbh=Integer.parseInt(obj[obj.length-1].toString());
-						calculateDataService.saveCalculateResult(jlbh,calculateResponseData);
 					}
+					calculateDataService.saveCalculateResult(jlbh,calculateResponseData);
 				}
 			}catch(Exception e){
 				continue;

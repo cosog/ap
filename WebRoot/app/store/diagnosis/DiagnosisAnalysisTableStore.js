@@ -22,8 +22,19 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         	var isControl=get_rawData.isControl;
     		var dataStr="{\"items\":[";
     		dataStr+="{\"item\":\"功率平衡度(%)\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"功率比\",\"itemCode\":\"wattRatio\",\"value\":\""+get_rawData.wattRatio+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"电流平衡度(%)\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"电流比\",\"itemCode\":\"iRatio\",\"value\":\""+get_rawData.iRatio+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"曲柄平衡移动距离(cm)\",\"itemCode\":\"deltaRadius\",\"value\":\""+get_rawData.deltaRadius+"\",\"curve\":\"\"},";
+    		
+    		dataStr+="{\"item\":\"冲程(m)\",\"itemCode\":\"stroke\",\"value\":\""+get_rawData.stroke+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"冲次(1/min)\",\"itemCode\":\"spm\",\"value\":\""+get_rawData.spm+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"最大载荷(kN)\",\"itemCode\":\"fmax\",\"value\":\""+get_rawData.fmax+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"最小载荷(kN)\",\"itemCode\":\"fmin\",\"value\":\""+get_rawData.fmin+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"载荷差(kN)\",\"itemCode\":\"fDifference\",\"value\":\""+get_rawData.fDifference+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"理论液柱载荷(kN)\",\"itemCode\":\"expectedFDifference\",\"value\":\""+get_rawData.expectedFDifference+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"功图面积(kN·m)\",\"itemCode\":\"fsDiagramArea\",\"value\":\""+get_rawData.fsDiagramArea+"\",\"curve\":\"\"},";
+    		
     		if(productionUnit==0){
     			dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
         		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
@@ -63,8 +74,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		dataStr+="{\"item\":\"泵挂(m)\",\"itemCode\":\"pumpSettingDepth\",\"value\":\""+get_rawData.pumpSettingDepth+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"动液面(m)\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"沉没度(m)\",\"itemCode\":\"submergence\",\"value\":\""+get_rawData.submergence+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"功图冲程(m)\",\"itemCode\":\"stroke\",\"value\":\""+get_rawData.stroke+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"功图冲次(1/min)\",\"itemCode\":\"spm\",\"value\":\""+get_rawData.spm+"\",\"curve\":\"\"},";
+    		
     		dataStr+="{\"item\":\"上载荷(kN)\",\"itemCode\":\"upperLoadLineOfExact\",\"value\":\""+get_rawData.upperLoadLineOfExact+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"motorInputActivePower\",\"value\":\""+get_rawData.motorInputActivePower+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"光杆功率(kW)\",\"itemCode\":\"polishrodPower\",\"value\":\""+get_rawData.polishrodPower+"\",\"curve\":\"\"},";
@@ -153,12 +163,23 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		acqSataStr+="{\"item\":\"A相电压(V)\",\"itemCode\":\"Va\",\"value\":\""+get_rawData.Va+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"B相电压(V)\",\"itemCode\":\"Vb\",\"value\":\""+get_rawData.Vb+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"C相电压(V)\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.Vc+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"有功功耗(kW·h)\",\"itemCode\":\"totalWattEnergy\",\"value\":\""+get_rawData.totalWattEnergy+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"无功功耗(kVar·h)\",\"itemCode\":\"totalVarEnergy\",\"value\":\""+get_rawData.totalVarEnergy+"\",\"curve\":\"\"},";
+    		
     		acqSataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"无功功率(kVar)\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"反向功率(kW)\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"}";
+    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
+    		
+    		acqSataStr+="{\"item\":\"有功功耗(kW·h)\",\"itemCode\":\"totalWattEnergy\",\"value\":\""+get_rawData.totalWattEnergy+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"无功功耗(kVar·h)\",\"itemCode\":\"totalVarEnergy\",\"value\":\""+get_rawData.totalVarEnergy+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"视在功耗(kVA·h)\",\"itemCode\":\"totalVAEnergy\",\"value\":\""+get_rawData.totalVAEnergy+"\",\"curve\":\"\"},";
+    		
+    		acqSataStr+="{\"item\":\"日有功功耗(kW·h)\",\"itemCode\":\"todayWattEnergy\",\"value\":\""+get_rawData.todayWattEnergy+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"日无功功耗(kVar·h)\",\"itemCode\":\"todayVarEnergy\",\"value\":\""+get_rawData.todayVarEnergy+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"日视在功耗(kVA·h)\",\"itemCode\":\"todayVAEnergy\",\"value\":\""+get_rawData.todayVAEnergy+"\",\"curve\":\"\"},";
+    		
+    		acqSataStr+="{\"item\":\"信号强度\",\"itemCode\":\"signal\",\"value\":\""+get_rawData.signal+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"设备版本\",\"itemCode\":\"deviceVer\",\"value\":\""+get_rawData.deviceVer+"\",\"curve\":\"\"},";
+    		
     		acqSataStr+="]}";
     		
     		var controlSataStr="{\"items\":[";
@@ -304,7 +325,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        	header: '名称',  
     			        	dataIndex: 'item',
     			        	align:'left',
-    			        	flex:3,
+    			        	flex:5,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
@@ -313,12 +334,12 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
-    			        	flex:1,
+    			        	flex:3,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
     			        },
-    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:1,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
+    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:2,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
     			    ]
     			});
     			Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAnalysisPanel_Id").add(GridPanel);

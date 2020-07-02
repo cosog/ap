@@ -32,12 +32,25 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
             	initWellboreSliceCharts(get_rawData,"FSDiagramAnalysisSingleWellboreDetailsDiv5_id");//剖面曲线
             	initSingleDetailsWellboreTrajectoryCharts(get_rawData,"FSDiagramAnalysisSingleWellboreDetailsDiv6_id");//井身轨迹
             }else if(activeId=="FSDiagramAnalysisSingleDetailsCenterPanel2_Id"){
+            	var deltaRadius=parseFloat(get_rawData.deltaRadius);
+            	var expectedTorqueChartTitle="扭矩曲线";
+            	if(Math.abs(deltaRadius)>0){
+            		if(deltaRadius>0){
+            			expectedTorqueChartTitle="外移"+deltaRadius+"cm"+expectedTorqueChartTitle;
+            		}else{
+            			expectedTorqueChartTitle="內移"+Math.abs(deltaRadius)+"cm"+expectedTorqueChartTitle;
+            		}
+            	}else {
+            		expectedTorqueChartTitle="预期扭矩曲线";
+            	}
+            	
+            	
             	showPSDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
             	showASDiagram(get_rawData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
 //            	showPowerByAngleContinuousDiagram(get_rawData.powerCurveData,get_rawData.crankAngle,"功率曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">曲柄转角(度)<br />',"功率(kW)",'#f70b0b',"FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
             	
             	if(get_rawData.IaCurveData==""){
-            		showPowerByAngleContinuousDiagram(get_rawData.currentCurveData,get_rawData.crankAngle,"电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">曲柄转角(度)<br />',"电流(A)",'#e3cc19',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
+            		showPowerByAngleContinuousDiagram(get_rawData.currentCurveData,get_rawData.crankAngle,"电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">曲柄转角(°)<br />',"电流(A)",'#e3cc19',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
 //            		showPowerByAngleContinuousDiagram(get_rawData.currentCurveData,"电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']','<span style="text-align:center;">曲柄转角(度)<br />',"电流(A)",'#FF6633',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
             	}else{
             		var color=['#e3cc19',
@@ -47,12 +60,12 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
             		showThreeTermsContinuousDiagram(get_rawData.crankAngle,
             				get_rawData.IaCurveData,get_rawData.IbCurveData,get_rawData.IcCurveData,
             				"三相电流曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']',
-            				'<span style="text-align:center;">曲柄转角(度)<br />',"电流(A)",color, "FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
+            				'<span style="text-align:center;">曲柄转角(°)<br />',"电流(A)",color, "FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
             	}
             	showBalanceAnalysisCurveChart(get_rawData.crankAngle,get_rawData.loadRorque,get_rawData.crankTorque,get_rawData.currentBalanceTorque,get_rawData.currentNetTorque,
             			"目前扭矩曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
             	showBalanceAnalysisCurveChart(get_rawData.crankAngle,get_rawData.loadRorque,get_rawData.crankTorque,get_rawData.expectedBalanceTorque,get_rawData.expectedNetTorque,
-            			"预期扭矩曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
+            			expectedTorqueChartTitle,get_rawData.wellName+' ['+get_rawData.acquisitionTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
             	showBalanceAnalysisMotionCurveChart(get_rawData.crankAngle,get_rawData.positionCurveData,get_rawData.polishrodV,get_rawData.polishrodA,
             			"运动特性曲线",get_rawData.wellName+' ['+get_rawData.acquisitionTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv6_id",2);
             }

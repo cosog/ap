@@ -262,6 +262,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				//功图数据
 				if(wellAcquisitionData.getDiagram()!=null){
 			        calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
+			        calculateRequestData.getFESDiagram().setSrc(0);
 			        calculateRequestData.getFESDiagram().setAcquisitionTime(wellAcquisitionData.getAcquisitionTime());
 			        calculateRequestData.getFESDiagram().setStroke(wellAcquisitionData.getDiagram().getStroke());
 			        calculateRequestData.getFESDiagram().setSPM(wellAcquisitionData.getDiagram().getSPM());

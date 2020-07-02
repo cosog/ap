@@ -667,7 +667,9 @@ public class RPCCalculateRequestData {
 	
 	public static class FESDiagram
 	{
-	    private String AcquisitionTime;
+	    private int Src;
+		
+		private String AcquisitionTime;
 
 	    private float Stroke;
 
@@ -723,6 +725,12 @@ public class RPCCalculateRequestData {
 	    public List<Float> getI(){
 	        return this.I;
 	    }
+		public int getSrc() {
+			return Src;
+		}
+		public void setSrc(int src) {
+			Src = src;
+		}
 	}
 	
 	public static class FeatureDB

@@ -252,6 +252,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " t2.netgrossratio,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
+				+ " decode(t.datasource,1,1,0) as datasource,"
 				+ " 0 as manualInterventionCode,"
 				+ " t.resultstatus,t.id"
 				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"

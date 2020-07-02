@@ -40,6 +40,7 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		
     		dataStr+="{\"item\":\"功图冲程(m)\",\"itemCode\":\"stroke\",\"value\":\""+get_rawData.strokeMax+"/"+get_rawData.strokeMin+"/"+get_rawData.stroke+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"功图冲次(1/min)\",\"itemCode\":\"SPM\",\"value\":\""+get_rawData.SPMMax+"/"+get_rawData.SPMMin+"/"+get_rawData.SPM+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"载荷(kN)\",\"itemCode\":\"F\",\"value\":\""+get_rawData.FMax+"/"+get_rawData.FMin+"/"+get_rawData.F+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"功图充满系数\",\"itemCode\":\"fullnesscoEfficient\",\"value\":\""+get_rawData.fullnesscoEfficientMax+"/"+get_rawData.fullnesscoEfficientMin+"/"+get_rawData.fullnesscoEfficient+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"总泵效(%)\",\"itemCode\":\"pumpEff\",\"value\":\""+get_rawData.pumpEffMax+"/"+get_rawData.pumpEffMin+"/"+get_rawData.pumpEff+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"地面效率(%)\",\"itemCode\":\"surfaceSystemEfficiency\",\"value\":\""+get_rawData.surfaceSystemEfficiencyMax+"/"+get_rawData.surfaceSystemEfficiencyMin+"/"+get_rawData.surfaceSystemEfficiency+"\",\"curve\":\"\"},";
@@ -48,7 +49,10 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		dataStr+="{\"item\":\"动液面(m)\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevelMax+"/"+get_rawData.producingFluidLevelMin+"/"+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"泵挂(m)\",\"itemCode\":\"pumpSettingDepth\",\"value\":\""+get_rawData.pumpSettingDepthMax+"/"+get_rawData.pumpSettingDepthMin+"/"+get_rawData.pumpSettingDepth+"\",\"curve\":\"\"},";
     		dataStr+="{\"item\":\"沉没度(m)\",\"itemCode\":\"submergence\",\"value\":\""+get_rawData.submergenceMax+"/"+get_rawData.submergenceMin+"/"+get_rawData.submergence+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"生产气油比(m^3/t)\",\"itemCode\":\"productionGasOilRatio\",\"value\":\""+get_rawData.productionGasOilRatioMax+"/"+get_rawData.productionGasOilRatioMin+"/"+get_rawData.productionGasOilRatio+"\",\"curve\":\"\"}";
+    		dataStr+="{\"item\":\"生产气油比(m^3/t)\",\"itemCode\":\"productionGasOilRatio\",\"value\":\""+get_rawData.productionGasOilRatioMax+"/"+get_rawData.productionGasOilRatioMin+"/"+get_rawData.productionGasOilRatio+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"日有功功耗(kW·h)\",\"itemCode\":\"todayWattEnergy\",\"value\":\""+get_rawData.todayWattEnergy+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"日无功功耗(kVar·h)\",\"itemCode\":\"todayVarEnergy\",\"value\":\""+get_rawData.todayVarEnergy+"\",\"curve\":\"\"},";
+    		dataStr+="{\"item\":\"日视在功耗(kVA·h)\",\"itemCode\":\"todayVAEnergy\",\"value\":\""+get_rawData.todayVAEnergy+"\",\"curve\":\"\"}";
     		dataStr+="]}";
     		
     		var acqSataStr="{\"items\":[";
@@ -58,7 +62,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		acqSataStr+="{\"item\":\"A相电压(V)\",\"itemCode\":\"Va\",\"value\":\""+get_rawData.VaMax+"/"+get_rawData.VaMin+"/"+get_rawData.Va+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"B相电压(V)\",\"itemCode\":\"Vb\",\"value\":\""+get_rawData.VbMax+"/"+get_rawData.VbMin+"/"+get_rawData.Vb+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"C相电压(V)\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.VcMax+"/"+get_rawData.VcMin+"/"+get_rawData.Vc+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"日用电量(kW·h)\",\"itemCode\":\"todayWattEnergy\",\"value\":\""+get_rawData.todayWattEnergy+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"信号强度\",\"itemCode\":\"signal\",\"value\":\""+get_rawData.signalMax+"/"+get_rawData.signalMin+"/"+get_rawData.signal+"\",\"curve\":\"\"}";
+    		
 //    		acqSataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSumMax+"/"+get_rawData.wattSumMin+"/"+get_rawData.wattSum+"\",\"curve\":\"\"},";
 //    		acqSataStr+="{\"item\":\"无功功率(kVar)\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSumMax+"/"+get_rawData.varSumMin+"/"+get_rawData.varSum+"\",\"curve\":\"\"},";
 //    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"PFSum\",\"value\":\""+get_rawData.PFSumMax+"/"+get_rawData.PFSumMin+"/"+get_rawData.PFSum+"\",\"curve\":\"\"}";

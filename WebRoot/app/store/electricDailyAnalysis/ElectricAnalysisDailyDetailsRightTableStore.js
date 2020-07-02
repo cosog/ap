@@ -38,7 +38,7 @@ Ext.define('AP.store.electricDailyAnalysis.ElectricAnalysisDailyDetailsRightTabl
     		
     		var acqSataStr="{\"items\":[";
     		acqSataStr+="{\"item\":\"冲次(1/min)\",\"itemCode\":\"SPM\",\"value\":\""+get_rawData.SPMMax+"/"+get_rawData.SPMMin+"/"+get_rawData.SPM+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"载荷(kN)\",\"itemCode\":\"SPM\",\"value\":\""+get_rawData.FMax+"/"+get_rawData.FMin+"/"+get_rawData.F+"\",\"curve\":\"\"},";
+    		acqSataStr+="{\"item\":\"载荷(kN)\",\"itemCode\":\"F\",\"value\":\""+get_rawData.FMax+"/"+get_rawData.FMin+"/"+get_rawData.F+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"A相电流(A)\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.IaMax+"/"+get_rawData.IaMin+"/"+get_rawData.Ia+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"B相电流(A)\",\"itemCode\":\"Ib\",\"value\":\""+get_rawData.IbMax+"/"+get_rawData.IbMin+"/"+get_rawData.Ib+"\",\"curve\":\"\"},";
     		acqSataStr+="{\"item\":\"C相电流(A)\",\"itemCode\":\"Ic\",\"value\":\""+get_rawData.IcMax+"/"+get_rawData.IcMin+"/"+get_rawData.Ic+"\",\"curve\":\"\"},";

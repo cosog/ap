@@ -1694,7 +1694,7 @@ DiagnosisTotalDataCurveChartFn = function (get_rawData, itemName, divId) {
     catagories += "]";
     var legendName = [itemName.split("(")[0]];
     if (get_rawData.itemNum > 1) {
-        legendName = [itemName.split("(")[0], itemName.split("(")[0] + "最大值", itemName.split("(")[0] + "最小值"];
+    	legendName = ["最大值","最小值","平均值"];
     }
     var series = "[";
     for (var i = 0; i < legendName.length; i++) {
@@ -1705,14 +1705,11 @@ DiagnosisTotalDataCurveChartFn = function (get_rawData, itemName, divId) {
             var month = parseInt(data[j].calculateDate.split(" ")[0].split("-")[1]);
             var day = parseInt(data[j].calculateDate.split(" ")[0].split("-")[2]);
             if (i == 0) {
-//                series += "[" + Date.UTC(year, month - 1, day) + "," + data[j].value + "]";
-            	series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].value + "]";
+            	series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].minValue + "]";
             } else if (i == 1) {
-//            	series += "[" + Date.UTC(year, month - 1, day) + "," + data[j].maxValue + "]";
                 series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].maxValue + "]";
             } else if (i == 2) {
-//            	series += "[" + Date.UTC(year, month - 1, day) + "," + data[j].minValue + "]";
-                series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].minValue + "]";
+                series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].value + "]";
             }
 
 

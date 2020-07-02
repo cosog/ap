@@ -4238,33 +4238,33 @@ showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balan
 	var balanceTorqueArr=balanceTorque.split(",");
 	var netTorqueArr=netTorque.split(",");
 	
-	var legendName = ['载荷扭矩','平衡块扭矩','曲柄扭矩','净扭矩'];
+	var legendName = ['载荷','曲柄','平衡块','净扭矩'];
 	var catagories1 = "[";
     var series1 = "[";
     if(crankAngleArr.length>0){
-    	var loadData="{\"name\":\"载荷扭矩\",\"data\":[";
-    	var balanceData="{\"name\":\"平衡块扭矩\",\"data\":[";
-    	var crankData="{\"name\":\"曲柄扭矩\",\"data\":[";
+    	var loadData="{\"name\":\"载荷\",\"data\":[";
+    	var crankData="{\"name\":\"曲柄\",\"data\":[";
+    	var balanceData="{\"name\":\"平衡块\",\"data\":[";
     	var netData="{\"name\":\"净扭矩\",\"data\":[";
         for(var i=0;i<crankAngleArr.length;i++){
         	catagories1+=crankAngleArr[i];
         	loadData+=changeTwoDecimal(loadRorqueArr[i]);
-        	balanceData+=changeTwoDecimal(crankTorqueArr[i]);
-        	crankData+=changeTwoDecimal(balanceTorqueArr[i]);
+        	crankData+=changeTwoDecimal(crankTorqueArr[i]);
+        	balanceData+=changeTwoDecimal(balanceTorqueArr[i]);
         	netData+=changeTwoDecimal(netTorqueArr[i]);
         	if(i<crankAngleArr.length-1){
         		catagories1+=",";
             	loadData+=",";
-            	balanceData+=",";
             	crankData+=",";
+            	balanceData+=",";
             	netData+=",";
         	}
         }
     	loadData+="]}";
-    	balanceData+="]}";
     	crankData+="]}";
+    	balanceData+="]}";
     	netData+="]}";
-    	series1+=loadData+","+balanceData+","+crankData+","+netData;
+    	series1+=loadData+","+crankData+","+balanceData+","+netData;
     }
     
     catagories1+="]";
@@ -4272,7 +4272,7 @@ showBalanceAnalysisCurveChart = function(crankAngle,loadRorque,crankTorque,balan
     
     var cat1 = Ext.JSON.decode(catagories1);
 	var ser1 = Ext.JSON.decode(series1);
-	initBalanceCurveChart(cat1,ser1, divId,title,subtitle,"扭矩(kN*m)","曲柄转角(度)");
+	initBalanceCurveChart(cat1,ser1, divId,title,subtitle,"扭矩(kN*m)","曲柄转角(°)");
 	return false;
 }
 //抽油机运动特性曲线和光杆位置扭矩因数表
@@ -4313,9 +4313,9 @@ showBalanceAnalysisMotionCurveChart = function(crankAngle,position,polishrodV,po
     var cat = Ext.JSON.decode(catagories);
 	var ser = Ext.JSON.decode(series);
 	if(type===1){
-		initBalanceCurveChartThreeY(cat,ser, divId,title,subtitle,"值","曲柄转角(度)");
+		initBalanceCurveChartThreeY(cat,ser, divId,title,subtitle,"值","曲柄转角(°)");
 	}else{
-		initBalanceCurveChartTowY(cat,ser, divId,title,subtitle,"值","曲柄转角(度)");
+		initBalanceCurveChartTowY(cat,ser, divId,title,subtitle,"值","曲柄转角(°)");
 	}
 	
 	return false;
@@ -4665,7 +4665,11 @@ function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtex
 						padding : '8px'
 					},
 					formatter : function() {
-						return '<b>' + this.series.name + '</b><br/>' + this.x
+						var seriesName=this.series.name;
+						if(seriesName.indexOf("扭矩")==-1){
+							seriesName=seriesName+"扭矩";
+						}
+						return '<b>' + seriesName + '</b><br/>' + this.x
 								+ ': ' + this.y;
 					},
 					valueSuffix : ''
@@ -4694,11 +4698,25 @@ function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtex
 //					verticalAlign : 'middle',
 //					borderWidth : 1
 //				},
+				
 				legend : {
+					itemDistance:10,
 					align : 'center',
 					verticalAlign : 'bottom',
 					layout : 'horizontal' //vertical 竖直 horizontal-水平
 				},
+//				legend: {
+//		        	itemStyle:{
+//		        		fontSize: '8px'
+//		        	},
+//		            enabled: true,
+//		            layout: 'vertical',
+//					align: 'right',
+//					verticalAlign: 'top',
+//					x: 0,
+//					y: 55,
+//					floating: true
+//		        },  
 				series : series
 			});
 }

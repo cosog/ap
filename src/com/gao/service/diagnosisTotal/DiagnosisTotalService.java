@@ -517,7 +517,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String sql="select t.runTime,runTimeEfficiency,"
 				+ " t.iDegreeBalance,t.iDegreeBalanceMax,t.iDegreeBalanceMin,t.wattDegreeBalance,t.wattDegreeBalanceMax,t.wattDegreeBalanceMin,"
 				+ prodCol
-				+ " t.stroke,t.strokeMax,t.strokeMin,t.SPM,t.SPMMax,t.SPMMin,t.fullnesscoEfficient,t.fullnesscoEfficientMax,t.fullnesscoEfficientMin,"
+				+ " t.stroke,t.strokeMax,t.strokeMin,t.SPM,t.SPMMax,t.SPMMin,"
+				+ " t.f,t.fmax,t.fmin,"
+				+ " t.fullnesscoEfficient,t.fullnesscoEfficientMax,t.fullnesscoEfficientMin,"
 				+ " t.pumpEff*100,t.pumpEffMax*100,t.pumpEffMin*100,"
 				+ " t.systemEfficiency*100,t.systemEfficiencyMax*100,t.systemEfficiencyMin*100,"
 				+ " t.surfaceSystemEfficiency*100,t.surfaceSystemEfficiencyMax*100,t.surfaceSystemEfficiencyMin*100,"
@@ -526,10 +528,11 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.productionGasOilRatio,t.productionGasOilRatioMax,t.productionGasOilRatioMin,"
 				+ " t.Ia,t.IaMax,t.IaMin,t.Ib,t.IbMax,t.IbMin,t.Ic,t.IcMax,t.IcMin,"
 				+ " t.Va,t.VaMax,t.VaMin,t.Vb,t.VbMax,t.VbMin,t.Vc,t.VcMax,t.VcMin,"
-				+ " t.todayWattEnergy,"
+				+ " t.todayWattEnergy,t.todayvarenergy,t.todayvaenergy,"//加2
 				+ " t.wattSum,t.wattSumMax,t.wattSumMin,t.varSum,t.varSumMax,t.varSumMin,"
 				+ " t.PFSum,t.PFSumMax,t.PFSumMin,"
 				+ " t.rpm,t.rpmMax,t.rpMmin,"
+				+ " t.signal,t.signalmax,t.signalmin,"//加3
 				+ " t.runrange,t.workingconditionstring"
 				+ " from tbl_rpc_total_day t where id="+id;
 		List<?> list = this.findCallSql(sql);
@@ -562,67 +565,79 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"SPM\":\""+obj[23]+"\",");
 			result_json.append("\"SPMMax\":\""+obj[24]+"\",");
 			result_json.append("\"SPMMin\":\""+obj[25]+"\",");
-			result_json.append("\"fullnesscoEfficient\":\""+obj[26]+"\",");
-			result_json.append("\"fullnesscoEfficientMax\":\""+obj[27]+"\",");
-			result_json.append("\"fullnesscoEfficientMin\":\""+obj[28]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[29]+"\",");
-			result_json.append("\"pumpEffMax\":\""+obj[30]+"\",");
-			result_json.append("\"pumpEffMin\":\""+obj[31]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[32]+"\",");
-			result_json.append("\"systemEfficiencyMax\":\""+obj[33]+"\",");
-			result_json.append("\"systemEfficiencyMin\":\""+obj[34]+"\",");
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[35]+"\",");
-			result_json.append("\"surfaceSystemEfficiencyMax\":\""+obj[36]+"\",");
-			result_json.append("\"surfaceSystemEfficiencyMin\":\""+obj[37]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[38]+"\",");
-			result_json.append("\"welldownSystemEfficiencyMax\":\""+obj[39]+"\",");
-			result_json.append("\"welldownSystemEfficiencyMin\":\""+obj[40]+"\",");
-			result_json.append("\"producingFluidLevel\":\""+obj[41]+"\",");
-			result_json.append("\"producingFluidLevelMax\":\""+obj[42]+"\",");
-			result_json.append("\"producingFluidLevelMin\":\""+obj[43]+"\",");
-			result_json.append("\"pumpSettingDepth\":\""+obj[44]+"\",");
-			result_json.append("\"pumpSettingDepthMax\":\""+obj[45]+"\",");
-			result_json.append("\"pumpSettingDepthMin\":\""+obj[46]+"\",");
-			result_json.append("\"submergence\":\""+obj[47]+"\",");
-			result_json.append("\"submergenceMax\":\""+obj[48]+"\",");
-			result_json.append("\"submergenceMin\":\""+obj[49]+"\",");
-			result_json.append("\"productionGasOilRatio\":\""+obj[50]+"\",");
-			result_json.append("\"productionGasOilRatioMax\":\""+obj[51]+"\",");
-			result_json.append("\"productionGasOilRatioMin\":\""+obj[52]+"\",");
+			result_json.append("\"F\":\""+obj[26]+"\",");
+			result_json.append("\"FMax\":\""+obj[27]+"\",");
+			result_json.append("\"FMin\":\""+obj[28]+"\",");
+			result_json.append("\"fullnesscoEfficient\":\""+obj[29]+"\",");
+			result_json.append("\"fullnesscoEfficientMax\":\""+obj[30]+"\",");
+			result_json.append("\"fullnesscoEfficientMin\":\""+obj[31]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[32]+"\",");
+			result_json.append("\"pumpEffMax\":\""+obj[33]+"\",");
+			result_json.append("\"pumpEffMin\":\""+obj[34]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[35]+"\",");
+			result_json.append("\"systemEfficiencyMax\":\""+obj[36]+"\",");
+			result_json.append("\"systemEfficiencyMin\":\""+obj[37]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[38]+"\",");
+			result_json.append("\"surfaceSystemEfficiencyMax\":\""+obj[39]+"\",");
+			result_json.append("\"surfaceSystemEfficiencyMin\":\""+obj[40]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[41]+"\",");
+			result_json.append("\"welldownSystemEfficiencyMax\":\""+obj[42]+"\",");
+			result_json.append("\"welldownSystemEfficiencyMin\":\""+obj[43]+"\",");
+			result_json.append("\"producingFluidLevel\":\""+obj[44]+"\",");
+			result_json.append("\"producingFluidLevelMax\":\""+obj[45]+"\",");
+			result_json.append("\"producingFluidLevelMin\":\""+obj[46]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[47]+"\",");
+			result_json.append("\"pumpSettingDepthMax\":\""+obj[48]+"\",");
+			result_json.append("\"pumpSettingDepthMin\":\""+obj[49]+"\",");
+			result_json.append("\"submergence\":\""+obj[50]+"\",");
+			result_json.append("\"submergenceMax\":\""+obj[51]+"\",");
+			result_json.append("\"submergenceMin\":\""+obj[52]+"\",");
+			result_json.append("\"productionGasOilRatio\":\""+obj[53]+"\",");
+			result_json.append("\"productionGasOilRatioMax\":\""+obj[54]+"\",");
+			result_json.append("\"productionGasOilRatioMin\":\""+obj[55]+"\",");
 			
-			result_json.append("\"Ia\":\""+obj[53]+"\",");
-			result_json.append("\"IaMax\":\""+obj[54]+"\",");
-			result_json.append("\"IaMin\":\""+obj[55]+"\",");
-			result_json.append("\"Ib\":\""+obj[56]+"\",");
-			result_json.append("\"IbMax\":\""+obj[57]+"\",");
-			result_json.append("\"IbMin\":\""+obj[58]+"\",");
-			result_json.append("\"Ic\":\""+obj[59]+"\",");
-			result_json.append("\"IcMax\":\""+obj[60]+"\",");
-			result_json.append("\"IcMin\":\""+obj[61]+"\",");
-			result_json.append("\"Va\":\""+obj[62]+"\",");
-			result_json.append("\"VaMax\":\""+obj[63]+"\",");
-			result_json.append("\"VaMin\":\""+obj[64]+"\",");
-			result_json.append("\"Vb\":\""+obj[65]+"\",");
-			result_json.append("\"VbMax\":\""+obj[66]+"\",");
-			result_json.append("\"VbMin\":\""+obj[67]+"\",");
-			result_json.append("\"Vc\":\""+obj[68]+"\",");
-			result_json.append("\"VcMax\":\""+obj[69]+"\",");
-			result_json.append("\"VcMin\":\""+obj[70]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[71]+"\",");
-			result_json.append("\"wattSum\":\""+obj[72]+"\",");
-			result_json.append("\"wattSumMax\":\""+obj[73]+"\",");
-			result_json.append("\"wattSumMin\":\""+obj[74]+"\",");
-			result_json.append("\"varSum\":\""+obj[75]+"\",");
-			result_json.append("\"varSumMax\":\""+obj[76]+"\",");
-			result_json.append("\"varSumMin\":\""+obj[77]+"\",");
-			result_json.append("\"PFSum\":\""+obj[78]+"\",");
-			result_json.append("\"PFSumMax\":\""+obj[79]+"\",");
-			result_json.append("\"PFSumMin\":\""+obj[80]+"\",");
-			result_json.append("\"rpm\":\""+obj[81]+"\",");
-			result_json.append("\"rpmMax\":\""+obj[82]+"\",");
-			result_json.append("\"rpMmin\":\""+obj[83]+"\",");
-			result_json.append("\"runRange\":\""+obj[84]+"\",");
-			result_json.append("\"workingConditionString\":\""+(obj[85]+"").replaceAll("<br/>", ";")+"\"");
+			result_json.append("\"Ia\":\""+obj[56]+"\",");
+			result_json.append("\"IaMax\":\""+obj[57]+"\",");
+			result_json.append("\"IaMin\":\""+obj[58]+"\",");
+			result_json.append("\"Ib\":\""+obj[59]+"\",");
+			result_json.append("\"IbMax\":\""+obj[60]+"\",");
+			result_json.append("\"IbMin\":\""+obj[61]+"\",");
+			result_json.append("\"Ic\":\""+obj[62]+"\",");
+			result_json.append("\"IcMax\":\""+obj[63]+"\",");
+			result_json.append("\"IcMin\":\""+obj[64]+"\",");
+			result_json.append("\"Va\":\""+obj[65]+"\",");
+			result_json.append("\"VaMax\":\""+obj[66]+"\",");
+			result_json.append("\"VaMin\":\""+obj[67]+"\",");
+			result_json.append("\"Vb\":\""+obj[68]+"\",");
+			result_json.append("\"VbMax\":\""+obj[69]+"\",");
+			result_json.append("\"VbMin\":\""+obj[70]+"\",");
+			result_json.append("\"Vc\":\""+obj[71]+"\",");
+			result_json.append("\"VcMax\":\""+obj[72]+"\",");
+			result_json.append("\"VcMin\":\""+obj[73]+"\",");
+			
+			result_json.append("\"todayWattEnergy\":\""+obj[74]+"\",");
+			result_json.append("\"todayVarEnergy\":\""+obj[75]+"\",");
+			result_json.append("\"todayVAEnergy\":\""+obj[76]+"\",");
+			
+			result_json.append("\"wattSum\":\""+obj[77]+"\",");
+			result_json.append("\"wattSumMax\":\""+obj[78]+"\",");
+			result_json.append("\"wattSumMin\":\""+obj[79]+"\",");
+			result_json.append("\"varSum\":\""+obj[80]+"\",");
+			result_json.append("\"varSumMax\":\""+obj[81]+"\",");
+			result_json.append("\"varSumMin\":\""+obj[82]+"\",");
+			result_json.append("\"PFSum\":\""+obj[83]+"\",");
+			result_json.append("\"PFSumMax\":\""+obj[84]+"\",");
+			result_json.append("\"PFSumMin\":\""+obj[85]+"\",");
+			result_json.append("\"rpm\":\""+obj[86]+"\",");
+			result_json.append("\"rpmMax\":\""+obj[87]+"\",");
+			result_json.append("\"rpMmin\":\""+obj[88]+"\",");
+			
+			result_json.append("\"signal\":\""+obj[89]+"\",");
+			result_json.append("\"signalMax\":\""+obj[90]+"\",");
+			result_json.append("\"signalMin\":\""+obj[91]+"\",");
+			
+			result_json.append("\"runRange\":\""+obj[92]+"\",");
+			result_json.append("\"workingConditionString\":\""+(obj[93]+"").replaceAll("<br/>", ";")+"\"");
 			
 		}
 		result_json.append("}");
@@ -736,9 +751,14 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getRPCDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
+		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)
+				&&!"todayWattEnergy".equalsIgnoreCase(itemCode)
+				&&!"todayVarEnergy".equalsIgnoreCase(itemCode)
+				&&!"todayVAEnergy".equalsIgnoreCase(itemCode)){
 			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)){
 				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
+			}else if("WATERCUT_W".equalsIgnoreCase(itemCode)){
+				itemCode="t."+itemCode+",t.waterCutMax_w,t.waterCutMin_w";
 			}else{
 				itemCode="t."+itemCode+",t."+itemCode+"Max,t."+itemCode+"Min";
 			}

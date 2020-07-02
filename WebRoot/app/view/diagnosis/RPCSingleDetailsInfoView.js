@@ -1566,21 +1566,43 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
     var data = get_rawData.totalRoot;
     tickInterval = Math.floor(data.length / 10) + 1;
     var upline = 0,
-        downline = 0;
+    	downline = 0,
+    	zeroline = 0;
     var uplineName = '',
-        downlineName = '';
+    	downlineName = '',
+    	zerolineName='';
     var limitlinewidth = 0;
-    if (itemCode == 'currenta' || itemCode == 'currentb' || itemCode == 'currentc' || itemCode == 'voltagea' || itemCode == 'voltageb' || itemCode == 'voltagec') {
+    var legend=false;
+    if (data.length>0 && (itemCode.toUpperCase()=='Ia'.toUpperCase() || itemCode.toUpperCase()=='Ib'.toUpperCase() || itemCode.toUpperCase()=='Ic'.toUpperCase() || itemCode.toUpperCase()=='Va'.toUpperCase() || itemCode.toUpperCase()=='Vb'.toUpperCase() || itemCode.toUpperCase()=='Vc'.toUpperCase())) {
         upline = parseFloat(get_rawData.uplimit);
         downline = parseFloat(get_rawData.downlimit);
-        uplineName = '上限:' + upline;
-        downlineName = '下限:' + downline;
+        zeroline= parseFloat(get_rawData.zero);
+        if(isNaN(upline)){
+        	upline=0;
+        }
+        if(isNaN(downline)){
+        	downline=0;
+        }
+        if(isNaN(zeroline)){
+        	zeroline=0;
+        }
+        if (itemCode.toUpperCase()=='Ia'.toUpperCase() || itemCode.toUpperCase()=='Ib'.toUpperCase() || itemCode.toUpperCase()=='Ic'.toUpperCase()){
+        	uplineName = '过载限值:' + upline;
+            downlineName = '空载限值:' + downline;
+            zerolineName = '零点限值:' + zeroline;
+        }else if(itemCode.toUpperCase()=='Va'.toUpperCase() || itemCode.toUpperCase()=='Vb'.toUpperCase() || itemCode.toUpperCase()=='Vc'.toUpperCase()){
+        	uplineName = '过电压限值:' + upline;
+            downlineName = '欠电压限值:' + downline;
+            zerolineName = '零点限值:' + zeroline;
+        }
         limitlinewidth = 3;
     } else {
         upline = 0;
         downline = 0;
+        zeroline = 0;
         uplineName = '';
         downlineName = '';
+        zerolineName='';
         limitlinewidth = 0;
     }
 
@@ -1594,6 +1616,16 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
     }
     catagories += "]";
     var legendName = [itemName];
+    if(itemCode.toUpperCase()=='iRatio'.toUpperCase() || itemCode.toUpperCase()=='wattRatio'.toUpperCase()){
+    	legendName = ["下冲程最大值","上冲程最大值"];
+    	legend=true;
+    	if(itemCode.toUpperCase()=='iRatio'.toUpperCase()){
+        	ytitle='电流(A)';
+        }else if(itemCode.toUpperCase()=='wattRatio'.toUpperCase()){
+        	legendName = ["下冲程最大值","上冲程最大值"];
+        	ytitle='功率(kW)';
+        }
+    }
     var series = "[";
     for (var i = 0; i < legendName.length; i++) {
         series += "{\"name\":\"" + legendName[i] + "\",";
@@ -1606,7 +1638,12 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
             var minute = parseInt(data[j].acquisitionTime.split(" ")[1].split(":")[1]);
             var second = parseInt(data[j].acquisitionTime.split(" ")[1].split(":")[2]);
 //            series += "[" + Date.UTC(year, month - 1, day, hour, minute, second) + "," + data[j].value + "]";
-            series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+//            series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+            if (i == 0) {
+            	series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+            }else if(i == 1){
+            	series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value2 + "]";
+            }
             if (j != data.length - 1) {
                 series += ",";
             }
@@ -1627,12 +1664,12 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
        '#FF00FF' // 紫
      ];
 
-    initDiagnosisDataCurveChartFn(cat, ser, tickInterval, divId, title, "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "时间", itemName, color, upline, downline, uplineName, downlineName, limitlinewidth);
+    initDiagnosisDataCurveChartFn(cat, ser, tickInterval, divId, title, "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "时间", itemName, color, upline, downline,zeroline, uplineName, downlineName,zerolineName, limitlinewidth,legend);
 
     return false;
 };
 
-function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, title, subtitle, xtitle, ytitle, color, upline, downline, uplineName, downlineName, limitlinewidth) {
+function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, title, subtitle, xtitle, ytitle, color, upline, downline,zeroline, uplineName, downlineName,zerolineName, limitlinewidth,legend) {
     var max = null;
     var min = null;
     if (upline != 0) {
@@ -1640,6 +1677,9 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
     }
     if (downline != 0) {
         min = downline - 10;
+    }
+    if (zeroline >= 0) {
+        min = zeroline - 1;
     }
     Highcharts.setOptions({
         global: {
@@ -1705,7 +1745,7 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
                 width: limitlinewidth,
                 zIndex:10,
                 value: upline //y轴显示位置
-                   }, {
+           }, {
                 color: 'green',
                 dashStyle: 'shortdash',
                 label: {
@@ -1716,7 +1756,18 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
                 width: limitlinewidth,
                 zIndex:10,
                 value: downline //y轴显示位置
-                   }]
+          }, {
+        	  color: 'blue',
+              dashStyle: 'shortdash',
+              label: {
+                  text: zerolineName,
+                  align: 'right',
+                  x: -10
+              },
+              width: limitlinewidth,
+              zIndex:10,
+              value: zeroline //y轴显示位置
+        }]
       }],
         tooltip: {
             crosshairs: true, //十字准线
@@ -1763,7 +1814,7 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
             layout: 'vertical',
             align: 'right',
             verticalAlign: 'middle',
-            enabled: false,
+            enabled: legend,
             borderWidth: 0
         },
         series: series
@@ -1788,8 +1839,8 @@ function initWellboreSliceCharts(result,divId){
 	var xMaxValue=null;
     if(measuringDepth.length>0){
         for(var i=0;i<measuringDepth.length;i++){
-        	PData += "[" + changeTwoDecimal(measuringDepth[i]) + ","+changeTwoDecimal(P[i])+"]";
-        	GLRisData += "[" + changeTwoDecimal(measuringDepth[i]) + ","+changeTwoDecimal(GLRis[i])+"]";
+        	PData += "[" + (0-changeTwoDecimal(measuringDepth[i])) + ","+changeTwoDecimal(P[i])+"]";
+        	GLRisData += "[" + (0-changeTwoDecimal(measuringDepth[i])) + ","+changeTwoDecimal(GLRis[i])+"]";
         	maxMeasuringDepth=parseFloat(measuringDepth[i]);
         	if(i<measuringDepth.length-1){
         		PData+=",";
@@ -1829,7 +1880,7 @@ function initWellboreSliceCharts(result,divId){
         },
 		colors: color,
 		xAxis: {
-			reversed: true,
+			reversed: false,
 			tickInterval : tickInterval,
 			title: {
 				enabled: true,
@@ -1841,7 +1892,8 @@ function initWellboreSliceCharts(result,divId){
 				}
 			},
 			maxPadding: 0.05,
-			max:xMaxValue,
+			max: 0,
+			min:0-xMaxValue,
 			showLastLabel: true
 		},
 		yAxis: [{

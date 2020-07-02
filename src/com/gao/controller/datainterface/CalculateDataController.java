@@ -118,6 +118,7 @@ public class CalculateDataController extends BaseController{
 //					+ " t2.netgrossratio,"
 //					+ " t.stroke,t.spm,"
 //					+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
+//					+ " decode(t.datasource,1,1,0) as datasource,"
 //					+ " 0 as manualInterventionCode,"
 //					+ " t.resultstatus,t.id"
 //					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
@@ -206,11 +207,6 @@ public class CalculateDataController extends BaseController{
 	public String FSDiagramDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
-		if(StringManagerUtils.isNotNull(tatalDate)){
-			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
-		}else{
-			tatalDate=StringManagerUtils.getCurrentTime();
-		}
 		List<String> requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
@@ -306,11 +302,6 @@ public class CalculateDataController extends BaseController{
 	public String DiscreteDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
-		if(StringManagerUtils.isNotNull(tatalDate)){
-			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
-		}else{
-			tatalDate=StringManagerUtils.getCurrentTime();
-		}
 		List<String> requestDataList=calculateDataService.getDiscreteDailyCalculation(tatalDate,wellId);
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){

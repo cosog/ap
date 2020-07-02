@@ -249,6 +249,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
+			calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[30]+""));
 	        calculateRequestData.getFESDiagram().setAcquisitionTime(object[2]+"");
 	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[24]+""));
 	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[25]+""));
@@ -311,7 +312,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        
 	        //人工干预
 	        calculateRequestData.setManualIntervention(new RPCCalculateRequestData.ManualIntervention());
-	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[30]+""));
+	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[31]+""));
 	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[23]+""));
 		}catch(Exception e){
 			e.printStackTrace();
@@ -359,6 +360,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	
 	public List<String> getFSDiagramDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
+		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
 		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
@@ -371,13 +378,27 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " left outer join tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType between 200 and 299 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
+											+ "t.TheoreticalProduction,"
 											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
+											+ "t.availableplungerstrokeprod_v,t.pumpclearanceleakprod_v,t.tvleakvolumetricproduction,t.svleakvolumetricproduction,t.gasinfluenceprod_v,"
 											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
+											+ "t.availableplungerstrokeprod_W,t.pumpclearanceleakprod_W,t.tvleakweightproduction,t.svleakweightproduction,t.gasinfluenceprod_W,"
 											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.powerconsumptionperthm,"
-											+" t.fullnesscoefficient,t.stroke,t.spm,"
-											+" prod.productiongasoilratio,prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,t.pumpeff,prod.pumpborediameter/1000 as pumpborediameter,"
-											+" t.wattdegreebalance,t.idegreebalance,t.deltaRadius,"
-											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature"
+											+ "t.motorInputActivePower,t.polishrodPower,t.waterPower,"
+											+ "t.stroke,t.spm,"
+											+ "t.UpperLoadLine,t.LowerLoadLine,t.UpperLoadLineOfExact,"
+											+ "t.UpperLoadLine-t.LowerLoadLine as DeltaLoadLine,t.UpperLoadLineOfExact-t.LowerLoadLine as DeltaLoadLineOfExact,"
+											+ "t.FMax,t.FMin,t.FMax-t.FMin as DeltaF,t.fsdiagramarea,"
+											+" t.PlungerStroke,t.AvailablePlungerStroke,t.fullnesscoefficient,"
+											+ "prod.pumpborediameter/1000 as pumpborediameter,"
+											+" prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,"
+											+ "t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpinletvisl,t.pumpinletbo,"
+											+ "t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo,"
+											+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.RodFlexLength,t.TubingFlexLength,t.InertiaLength,"
+											+" t.wattdegreebalance,t.upstrokewattmax,t.downstrokewattmax,"
+											+ "t.idegreebalance,t.upstrokeimax,t.downstrokeimax,"
+											+ "t.deltaRadius,"
+											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio,"
 											+" from tbl_rpc_diagram_hist t ,tbl_wellinformation t007 ,tbl_rpc_productiondata_hist prod"
 											+" where t.wellid=t007.id and t.productiondataid=prod.id "
 											+" and  t.acquisitiontime > "
@@ -477,6 +498,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
+				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"EveryTime\": [");
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
@@ -513,33 +535,91 @@ public class CalculateDataService<T> extends BaseService<T> {
 							}
 						}
 						dataSbf.append("\"FSResultCode\":"+resuleObj[2]+",");
-						dataSbf.append("\"LiquidVolumetricProduction\":"+resuleObj[3]+",");
-						dataSbf.append("\"OilVolumetricProduction\":"+resuleObj[4]+",");
-						dataSbf.append("\"WaterVolumetricProduction\":"+resuleObj[5]+",");
-						dataSbf.append("\"VolumeWaterCut\":"+resuleObj[6]+",");
-						dataSbf.append("\"LiquidWeightProduction\":"+resuleObj[7]+",");
-						dataSbf.append("\"OilWeightProduction\":"+resuleObj[8]+",");
-						dataSbf.append("\"WaterWeightProduction\":"+resuleObj[9]+",");
-						dataSbf.append("\"WeightWaterCut\":"+resuleObj[10]+",");
-						dataSbf.append("\"SurfaceSystemEfficiency\":"+resuleObj[11]+",");
-						dataSbf.append("\"WellDownSystemEfficiency\":"+resuleObj[12]+",");
-						dataSbf.append("\"SystemEfficiency\":"+resuleObj[13]+",");
-						dataSbf.append("\"PowerConsumptionPerTHM\":"+resuleObj[14]+",");
-						dataSbf.append("\"FullnessCoefficient\":"+resuleObj[15]+",");
-						dataSbf.append("\"Stroke\":"+resuleObj[16]+",");
-						dataSbf.append("\"SPM\":"+resuleObj[17]+",");
-						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[18]+",");
-						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[19]+",");
-						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[20]+",");
-						dataSbf.append("\"Submergence\":"+resuleObj[21]+",");
-						dataSbf.append("\"PumpEff\":"+resuleObj[22]+",");
-						dataSbf.append("\"PumpBoreDiameter\":"+resuleObj[23]+",");
-						dataSbf.append("\"WattDegreeBalance\":"+resuleObj[24]+",");
-						dataSbf.append("\"IDegreeBalance\":"+resuleObj[25]+",");
-						dataSbf.append("\"DeltaRadius\":"+resuleObj[26]+",");
-						dataSbf.append("\"TubingPressure\":"+resuleObj[27]+",");
-						dataSbf.append("\"CasingPressure\":"+resuleObj[28]+",");
-						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[29]+"},");
+						dataSbf.append("\"TheoreticalProduction\":"+resuleObj[3]+",");
+						
+						dataSbf.append("\"LiquidVolumetricProduction\":"+resuleObj[4]+",");
+						dataSbf.append("\"OilVolumetricProduction\":"+resuleObj[5]+",");
+						dataSbf.append("\"WaterVolumetricProduction\":"+resuleObj[6]+",");
+						dataSbf.append("\"VolumeWaterCut\":"+resuleObj[7]+",");
+						dataSbf.append("\"AvailablePlungerStrokeVolumetricProduction\":"+resuleObj[8]+",");
+						dataSbf.append("\"PumpClearanceLeakVolumetricProduction\":"+resuleObj[9]+",");
+						dataSbf.append("\"TVLeakVolumetricProduction\":"+resuleObj[10]+",");
+						dataSbf.append("\"SVLeakVolumetricProduction\":"+resuleObj[11]+",");
+						dataSbf.append("\"GasInfluenceVolumetricProduction\":"+resuleObj[12]+",");
+						
+						dataSbf.append("\"LiquidWeightProduction\":"+resuleObj[13]+",");
+						dataSbf.append("\"OilWeightProduction\":"+resuleObj[14]+",");
+						dataSbf.append("\"WaterWeightProduction\":"+resuleObj[15]+",");
+						dataSbf.append("\"WeightWaterCut\":"+resuleObj[16]+",");
+						dataSbf.append("\"AvailablePlungerStrokeWeightProduction\":"+resuleObj[17]+",");
+						dataSbf.append("\"PumpClearanceLeakWeightProduction\":"+resuleObj[18]+",");
+						dataSbf.append("\"TVLeakWeightProduction\":"+resuleObj[19]+",");
+						dataSbf.append("\"SVLeakWeightProduction\":"+resuleObj[20]+",");
+						dataSbf.append("\"GasInfluenceWeightProduction\":"+resuleObj[21]+",");
+						
+						dataSbf.append("\"SurfaceSystemEfficiency\":"+resuleObj[22]+",");
+						dataSbf.append("\"WellDownSystemEfficiency\":"+resuleObj[23]+",");
+						dataSbf.append("\"SystemEfficiency\":"+resuleObj[24]+",");
+						dataSbf.append("\"PowerConsumptionPerTHM\":"+resuleObj[25]+",");
+						dataSbf.append("\"AvgWatt\":"+resuleObj[26]+",");
+						dataSbf.append("\"PolishRodPower\":"+resuleObj[27]+",");
+						dataSbf.append("\"WaterPower\":"+resuleObj[28]+",");
+						
+						dataSbf.append("\"Stroke\":"+resuleObj[29]+",");
+						dataSbf.append("\"SPM\":"+resuleObj[30]+",");
+						dataSbf.append("\"UpperLoadLine\":"+resuleObj[31]+",");
+						dataSbf.append("\"LowerLoadLine\":"+resuleObj[32]+",");
+						dataSbf.append("\"UpperLoadLineOfExact\":"+resuleObj[33]+",");
+						dataSbf.append("\"DeltaLoadLine\":"+resuleObj[34]+",");
+						dataSbf.append("\"DeltaLoadLineOfExact\":"+resuleObj[35]+",");
+						dataSbf.append("\"FMax\":"+resuleObj[36]+",");
+						dataSbf.append("\"FMin\":"+resuleObj[37]+",");
+						dataSbf.append("\"DeltaF\":"+resuleObj[38]+",");
+						dataSbf.append("\"Area\":"+resuleObj[39]+",");
+						dataSbf.append("\"PlungerStroke\":"+resuleObj[40]+",");
+						dataSbf.append("\"AvailablePlungerStroke\":"+resuleObj[41]+",");
+						dataSbf.append("\"FullnessCoefficient\":"+resuleObj[42]+",");
+						
+						dataSbf.append("\"PumpBoreDiameter\":"+resuleObj[43]+",");
+						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[44]+",");
+						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[45]+",");
+						dataSbf.append("\"Submergence\":"+resuleObj[46]+",");
+						
+						dataSbf.append("\"PumpIntakeP\":"+resuleObj[47]+",");
+						dataSbf.append("\"PumpIntakeT\":"+resuleObj[48]+",");
+						dataSbf.append("\"PumpIntakeGOL\":"+resuleObj[49]+",");
+						dataSbf.append("\"PumpIntakeVisl\":"+resuleObj[50]+",");
+						dataSbf.append("\"PumpIntakeBo\":"+resuleObj[51]+",");
+						dataSbf.append("\"PumpOutletP\":"+resuleObj[52]+",");
+						dataSbf.append("\"PumpOutletT\":"+resuleObj[53]+",");
+						dataSbf.append("\"PumpOutletGOL\":"+resuleObj[54]+",");
+						dataSbf.append("\"PumpOutletVisl\":"+resuleObj[55]+",");
+						dataSbf.append("\"PumpOutletBo\":"+resuleObj[56]+",");
+						
+						dataSbf.append("\"PumpEff\":"+resuleObj[57]+",");
+						dataSbf.append("\"PumpEff1\":"+resuleObj[58]+",");
+						dataSbf.append("\"PumpEff2\":"+resuleObj[59]+",");
+						dataSbf.append("\"PumpEff3\":"+resuleObj[60]+",");
+						dataSbf.append("\"PumpEff4\":"+resuleObj[61]+",");
+						dataSbf.append("\"RodFlexLength\":"+resuleObj[62]+",");
+						dataSbf.append("\"TubingFlexLength\":"+resuleObj[63]+",");
+						dataSbf.append("\"InertiaLength\":"+resuleObj[64]+",");
+						
+						dataSbf.append("\"WattDegreeBalance\":"+resuleObj[65]+",");
+						dataSbf.append("\"UpStrokeWattMax\":"+resuleObj[66]+",");
+						dataSbf.append("\"DownStrokeWattMax\":"+resuleObj[67]+",");
+						
+						dataSbf.append("\"IDegreeBalance\":"+resuleObj[68]+",");
+						dataSbf.append("\"UpStrokeIMax\":"+resuleObj[69]+",");
+						dataSbf.append("\"DownStrokeIMax\":"+resuleObj[70]+",");
+						
+						dataSbf.append("\"DeltaRadius\":"+resuleObj[71]+",");
+						
+						
+						dataSbf.append("\"TubingPressure\":"+resuleObj[72]+",");
+						dataSbf.append("\"CasingPressure\":"+resuleObj[73]+",");
+						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[74]+",");
+						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[75]+"},");
 					}
 				}
 				if(dataSbf.toString().endsWith(",")){
@@ -745,6 +825,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	
 	public List<String> getDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
+		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
 		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid "
@@ -753,7 +839,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.liftingType between 200 and 299 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
-				+" t.frequencyrunvalue"
+				+" t.frequencyrunvalue,"
+				+ "t.Signal,t.WattSum,t.VarSum,t.VASum,t.PFSum"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+ " and t.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
@@ -773,6 +860,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
+				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"EveryTime\": [");
 				String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
 				for(int j=0;j<singleresultlist.size();j++){
@@ -786,7 +874,12 @@ public class CalculateDataService<T> extends BaseService<T> {
 						dataSbf.append("\"VA\":"+resuleObj[6]+",");
 						dataSbf.append("\"VB\":"+resuleObj[7]+",");
 						dataSbf.append("\"VC\":"+resuleObj[8]+",");
-						dataSbf.append("\"RunFrequency\":"+StringManagerUtils.stringToFloat(resuleObj[8]+"")+"},");
+						dataSbf.append("\"RunFrequency\":"+resuleObj[9]+",");
+						dataSbf.append("\"Signal\":"+resuleObj[10]+",");
+						dataSbf.append("\"WattSum\":"+resuleObj[11]+",");
+						dataSbf.append("\"VarSum\":"+resuleObj[12]+",");
+						dataSbf.append("\"VASum\":"+resuleObj[13]+",");
+						dataSbf.append("\"PFSum\":"+StringManagerUtils.stringToFloat(resuleObj[14]+"")+"},");
 					}
 				}
 				if(dataSbf.toString().endsWith(",")){

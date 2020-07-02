@@ -91,8 +91,13 @@ public class RPCCalculateResponseData {
 				result.append(this.getRodString().CNT+","+this.getRodString().getLengthAll()+","+this.getRodString().getWeightAll()+","+this.getRodString().getBuoyancyForceAll());
 				for(int i=0;i<this.getRodString().getEveryRod().size();i++){
 					result.append(";");
-					result.append(this.getFESDiagram().getFMax().get(i)+",");
-					result.append(this.getFESDiagram().getFMin().get(i)+",");
+					if(this.getFESDiagram().getFMax()!=null&&this.getFESDiagram().getFMax().size()>0){
+						result.append(this.getFESDiagram().getFMax().get(i)+",");
+						result.append(this.getFESDiagram().getFMin().get(i)+",");
+					}else{
+						result.append(0+",");
+						result.append(0+",");
+					}
 					result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
 					result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
 					result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
@@ -751,6 +756,10 @@ public class RPCCalculateResponseData {
 	    private float LowerLoadLine;
 
 	    private float UpperLoadLineOfExact;
+	    
+	    private float DeltaLoadLine;
+	    
+	    private float DeltaLoadLineOfExact;
 
 	    private float FullnessCoefficient;
 
@@ -769,6 +778,8 @@ public class RPCCalculateResponseData {
 	    private List<Float> FMax;
 
 	    private List<Float> FMin;
+	    
+	    private List<Float> DeltaF;
 
 	    private int SMaxIndex;
 
@@ -782,7 +793,7 @@ public class RPCCalculateResponseData {
 
 	    private String WattMaxRatioString;
 
-	    private float AverageWatt;
+	    private float AvgWatt;
 
 	    private float UpStrokeIMax;
 
@@ -954,11 +965,11 @@ public class RPCCalculateResponseData {
 	    public String getWattMaxRatioString(){
 	        return this.WattMaxRatioString;
 	    }
-	    public void setAverageWatt(float AverageWatt){
-	        this.AverageWatt = AverageWatt;
+	    public void setAvgWatt(float AvgWatt){
+	        this.AvgWatt = AvgWatt;
 	    }
-	    public float getAverageWatt(){
-	        return this.AverageWatt;
+	    public float getAvgWatt(){
+	        return this.AvgWatt;
 	    }
 	    public void setUpStrokeIMax(float UpStrokeIMax){
 	        this.UpStrokeIMax = UpStrokeIMax;
@@ -1056,6 +1067,24 @@ public class RPCCalculateResponseData {
 	    public float getDeltaRadius(){
 	        return this.DeltaRadius;
 	    }
+		public float getDeltaLoadLine() {
+			return DeltaLoadLine;
+		}
+		public void setDeltaLoadLine(float deltaLoadLine) {
+			DeltaLoadLine = deltaLoadLine;
+		}
+		public float getDeltaLoadLineOfExact() {
+			return DeltaLoadLineOfExact;
+		}
+		public void setDeltaLoadLineOfExact(float deltaLoadLineOfExact) {
+			DeltaLoadLineOfExact = deltaLoadLineOfExact;
+		}
+		public List<Float> getDeltaF() {
+			return DeltaF;
+		}
+		public void setDeltaF(List<Float> deltaF) {
+			DeltaF = deltaF;
+		}
 	}
 
 	public static class PumpEfficiency
@@ -1213,7 +1242,7 @@ public class RPCCalculateResponseData {
 
 	    private float EnergyPer100mLift;
 
-	    private float MotorInputWatt;
+//	    private float MotorInputWatt;
 
 	    private float PolishRodPower;
 
@@ -1267,12 +1296,12 @@ public class RPCCalculateResponseData {
 	    public float getEnergyPer100mLift(){
 	        return this.EnergyPer100mLift;
 	    }
-	    public void setMotorInputWatt(float MotorInputWatt){
-	        this.MotorInputWatt = MotorInputWatt;
-	    }
-	    public float getMotorInputWatt(){
-	        return this.MotorInputWatt;
-	    }
+//	    public void setMotorInputWatt(float MotorInputWatt){
+//	        this.MotorInputWatt = MotorInputWatt;
+//	    }
+//	    public float getMotorInputWatt(){
+//	        return this.MotorInputWatt;
+//	    }
 	    public void setPolishRodPower(float PolishRodPower){
 	        this.PolishRodPower = PolishRodPower;
 	    }

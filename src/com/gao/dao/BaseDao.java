@@ -3620,27 +3620,27 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(23, totalAnalysisResponseData.getRunFrequency().getMax());
 			cs.setFloat(24, totalAnalysisResponseData.getRunFrequency().getMin());
 			
-			cs.setFloat(22, totalAnalysisResponseData.getSignal().getValue());
-			cs.setFloat(23, totalAnalysisResponseData.getSignal().getMax());
-			cs.setFloat(24, totalAnalysisResponseData.getSignal().getMin());
+			cs.setFloat(25, totalAnalysisResponseData.getSignal().getValue());
+			cs.setFloat(26, totalAnalysisResponseData.getSignal().getMax());
+			cs.setFloat(27, totalAnalysisResponseData.getSignal().getMin());
 			
-			cs.setFloat(22, totalAnalysisResponseData.getWattSum().getValue());
-			cs.setFloat(23, totalAnalysisResponseData.getWattSum().getMax());
-			cs.setFloat(24, totalAnalysisResponseData.getWattSum().getMin());
+			cs.setFloat(28, totalAnalysisResponseData.getWattSum().getValue());
+			cs.setFloat(29, totalAnalysisResponseData.getWattSum().getMax());
+			cs.setFloat(30, totalAnalysisResponseData.getWattSum().getMin());
 			
-			cs.setFloat(22, totalAnalysisResponseData.getVarSum().getValue());
-			cs.setFloat(23, totalAnalysisResponseData.getVarSum().getMax());
-			cs.setFloat(24, totalAnalysisResponseData.getVarSum().getMin());
+			cs.setFloat(31, totalAnalysisResponseData.getVarSum().getValue());
+			cs.setFloat(32, totalAnalysisResponseData.getVarSum().getMax());
+			cs.setFloat(33, totalAnalysisResponseData.getVarSum().getMin());
 			
-			cs.setFloat(22, totalAnalysisResponseData.getVASum().getValue());
-			cs.setFloat(23, totalAnalysisResponseData.getVASum().getMax());
-			cs.setFloat(24, totalAnalysisResponseData.getVASum().getMin());
+			cs.setFloat(34, totalAnalysisResponseData.getVASum().getValue());
+			cs.setFloat(35, totalAnalysisResponseData.getVASum().getMax());
+			cs.setFloat(36, totalAnalysisResponseData.getVASum().getMin());
 			
-			cs.setFloat(22, totalAnalysisResponseData.getPFSum().getValue());
-			cs.setFloat(23, totalAnalysisResponseData.getPFSum().getMax());
-			cs.setFloat(24, totalAnalysisResponseData.getPFSum().getMin());
+			cs.setFloat(37, totalAnalysisResponseData.getPFSum().getValue());
+			cs.setFloat(38, totalAnalysisResponseData.getPFSum().getMax());
+			cs.setFloat(39, totalAnalysisResponseData.getPFSum().getMin());
 			
-			cs.setString(25, tatalDate);//汇总日期
+			cs.setString(40, tatalDate);//汇总日期
 			cs.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3660,6 +3660,10 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_pcp_discretedaily(?,"          //1
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,?,?,?,?,?,?,"                                               //9
+					+ "?,?,?,"                                                           //3
+					+ "?,?,?,"                                                           //3
+					+ "?,?,?,"                                                           //3
+					+ "?,?,?,"                                                           //3
 					+ "?,?,?,"                                                           //3
 					+ "?)}");                                                            //1
 			cs.setString(1, totalAnalysisRequestData.getWellName());//井名
@@ -3688,7 +3692,23 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(21, totalAnalysisResponseData.getRunFrequency().getMax());
 			cs.setFloat(22, totalAnalysisResponseData.getRunFrequency().getMin());
 			
-			cs.setString(23, tatalDate);//汇总日期
+			cs.setFloat(23, totalAnalysisResponseData.getWattSum().getValue());
+			cs.setFloat(24, totalAnalysisResponseData.getWattSum().getMax());
+			cs.setFloat(25, totalAnalysisResponseData.getWattSum().getMin());
+			
+			cs.setFloat(26, totalAnalysisResponseData.getVarSum().getValue());
+			cs.setFloat(27, totalAnalysisResponseData.getVarSum().getMax());
+			cs.setFloat(28, totalAnalysisResponseData.getVarSum().getMin());
+			
+			cs.setFloat(29, totalAnalysisResponseData.getVASum().getValue());
+			cs.setFloat(30, totalAnalysisResponseData.getVASum().getMax());
+			cs.setFloat(31, totalAnalysisResponseData.getVASum().getMin());
+			
+			cs.setFloat(32, totalAnalysisResponseData.getPFSum().getValue());
+			cs.setFloat(33, totalAnalysisResponseData.getPFSum().getMax());
+			cs.setFloat(34, totalAnalysisResponseData.getPFSum().getMin());
+			
+			cs.setString(35, tatalDate);//汇总日期
 			cs.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3872,7 +3892,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(133, totalAnalysisResponseData.getRodFlexLength().getMax());
 			cs.setFloat(134, totalAnalysisResponseData.getRodFlexLength().getMin());
 			cs.setFloat(135, totalAnalysisResponseData.getTubingFlexLength().getValue());
-			cs.setFloat(135, totalAnalysisResponseData.getTubingFlexLength().getMax());
+			cs.setFloat(136, totalAnalysisResponseData.getTubingFlexLength().getMax());
 			cs.setFloat(137, totalAnalysisResponseData.getTubingFlexLength().getMin());
 			cs.setFloat(138, totalAnalysisResponseData.getInertiaLength().getValue());
 			cs.setFloat(139, totalAnalysisResponseData.getInertiaLength().getMax());
@@ -4000,10 +4020,12 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_pcp_rpmdaily(?,?,"          //2
 					+ "?,?,?,"                                                           //3
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
+					+ "?,?,?,"                                                           //3
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
+					+ "?,?,?,?,?,?,?,?,?,"                                               //9
+					+ "?,?,?,?,?,?,?,?,?,"                                               //9
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,"                                         //12
-					+ "?,?,?,?,?,?,"                                                     //6
 					+ "?,?,?,?,"                                                         //4
 					+ "?,?,?,?,"                                                         //4
 					+ "?)}");                                                            //1
@@ -4028,67 +4050,86 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(16, totalAnalysisResponseData.getProductionGasOilRatio().getMax());
 			cs.setFloat(17, totalAnalysisResponseData.getProductionGasOilRatio().getMin());
 			
+			//理论排量
+			cs.setFloat(18, totalAnalysisResponseData.getTheoreticalProduction().getValue());
+			cs.setFloat(19, totalAnalysisResponseData.getTheoreticalProduction().getMax());
+			cs.setFloat(20, totalAnalysisResponseData.getTheoreticalProduction().getMin());
+			
 			//体积-产液、产油、产水、含水
-			cs.setFloat(18, totalAnalysisResponseData.getLiquidVolumetricProduction().getValue());
-			cs.setFloat(19, totalAnalysisResponseData.getLiquidVolumetricProduction().getMax());
-			cs.setFloat(20, totalAnalysisResponseData.getLiquidVolumetricProduction().getMin());
-			cs.setFloat(21, totalAnalysisResponseData.getOilVolumetricProduction().getValue());
-			cs.setFloat(22, totalAnalysisResponseData.getOilVolumetricProduction().getMax());
-			cs.setFloat(23, totalAnalysisResponseData.getOilVolumetricProduction().getMin());
-			cs.setFloat(24, totalAnalysisResponseData.getWaterVolumetricProduction().getValue());
-			cs.setFloat(25, totalAnalysisResponseData.getWaterVolumetricProduction().getMax());
-			cs.setFloat(26, totalAnalysisResponseData.getWaterVolumetricProduction().getMin());
-			cs.setFloat(27, totalAnalysisResponseData.getVolumeWaterCut().getValue());
-			cs.setFloat(28, totalAnalysisResponseData.getVolumeWaterCut().getMax());
-			cs.setFloat(29, totalAnalysisResponseData.getVolumeWaterCut().getMin());
+			cs.setFloat(21, totalAnalysisResponseData.getLiquidVolumetricProduction().getValue());
+			cs.setFloat(22, totalAnalysisResponseData.getLiquidVolumetricProduction().getMax());
+			cs.setFloat(23, totalAnalysisResponseData.getLiquidVolumetricProduction().getMin());
+			cs.setFloat(24, totalAnalysisResponseData.getOilVolumetricProduction().getValue());
+			cs.setFloat(25, totalAnalysisResponseData.getOilVolumetricProduction().getMax());
+			cs.setFloat(26, totalAnalysisResponseData.getOilVolumetricProduction().getMin());
+			cs.setFloat(27, totalAnalysisResponseData.getWaterVolumetricProduction().getValue());
+			cs.setFloat(28, totalAnalysisResponseData.getWaterVolumetricProduction().getMax());
+			cs.setFloat(29, totalAnalysisResponseData.getWaterVolumetricProduction().getMin());
+			cs.setFloat(30, totalAnalysisResponseData.getVolumeWaterCut().getValue());
+			cs.setFloat(31, totalAnalysisResponseData.getVolumeWaterCut().getMax());
+			cs.setFloat(32, totalAnalysisResponseData.getVolumeWaterCut().getMin());
 			
 			//重量-产液、产油、产水、含水
-			cs.setFloat(30, totalAnalysisResponseData.getLiquidWeightProduction().getValue());
-			cs.setFloat(31, totalAnalysisResponseData.getLiquidWeightProduction().getMax());
-			cs.setFloat(32, totalAnalysisResponseData.getLiquidWeightProduction().getMin());
-			cs.setFloat(33, totalAnalysisResponseData.getOilWeightProduction().getValue());
-			cs.setFloat(34, totalAnalysisResponseData.getOilWeightProduction().getMax());
-			cs.setFloat(35, totalAnalysisResponseData.getOilWeightProduction().getMin());
-			cs.setFloat(36, totalAnalysisResponseData.getWaterWeightProduction().getValue());
-			cs.setFloat(37, totalAnalysisResponseData.getWaterWeightProduction().getMax());
-			cs.setFloat(38, totalAnalysisResponseData.getWaterWeightProduction().getMin());
-			cs.setFloat(39, totalAnalysisResponseData.getWeightWaterCut().getValue());
-			cs.setFloat(40, totalAnalysisResponseData.getWeightWaterCut().getMax());
-			cs.setFloat(41, totalAnalysisResponseData.getWeightWaterCut().getMin());
+			cs.setFloat(33, totalAnalysisResponseData.getLiquidWeightProduction().getValue());
+			cs.setFloat(34, totalAnalysisResponseData.getLiquidWeightProduction().getMax());
+			cs.setFloat(35, totalAnalysisResponseData.getLiquidWeightProduction().getMin());
+			cs.setFloat(36, totalAnalysisResponseData.getOilWeightProduction().getValue());
+			cs.setFloat(37, totalAnalysisResponseData.getOilWeightProduction().getMax());
+			cs.setFloat(38, totalAnalysisResponseData.getOilWeightProduction().getMin());
+			cs.setFloat(39, totalAnalysisResponseData.getWaterWeightProduction().getValue());
+			cs.setFloat(40, totalAnalysisResponseData.getWaterWeightProduction().getMax());
+			cs.setFloat(41, totalAnalysisResponseData.getWaterWeightProduction().getMin());
+			cs.setFloat(42, totalAnalysisResponseData.getWeightWaterCut().getValue());
+			cs.setFloat(43, totalAnalysisResponseData.getWeightWaterCut().getMax());
+			cs.setFloat(44, totalAnalysisResponseData.getWeightWaterCut().getMin());
 			
-			//泵效、泵挂、动液面、沉没度
-			cs.setFloat(42, totalAnalysisResponseData.getPumpEff().getValue());
-			cs.setFloat(43, totalAnalysisResponseData.getPumpEff().getMax());
-			cs.setFloat(44, totalAnalysisResponseData.getPumpEff().getMin());
-			cs.setFloat(45, totalAnalysisResponseData.getPumpSettingDepth().getValue());
-			cs.setFloat(46, totalAnalysisResponseData.getPumpSettingDepth().getMax());
-			cs.setFloat(47, totalAnalysisResponseData.getPumpSettingDepth().getMin());
-			cs.setFloat(48, totalAnalysisResponseData.getProducingfluidLevel().getValue());
-			cs.setFloat(49, totalAnalysisResponseData.getProducingfluidLevel().getMax());
-			cs.setFloat(50, totalAnalysisResponseData.getProducingfluidLevel().getMin());
-			cs.setFloat(51, totalAnalysisResponseData.getSubmergence().getValue());
-			cs.setFloat(52, totalAnalysisResponseData.getSubmergence().getMax());
-			cs.setFloat(53, totalAnalysisResponseData.getSubmergence().getMin());
+			//泵效
+			cs.setFloat(45, totalAnalysisResponseData.getPumpEff().getValue());
+			cs.setFloat(46, totalAnalysisResponseData.getPumpEff().getMax());
+			cs.setFloat(47, totalAnalysisResponseData.getPumpEff().getMin());
+			cs.setFloat(48, totalAnalysisResponseData.getPumpEff1().getValue());
+			cs.setFloat(49, totalAnalysisResponseData.getPumpEff1().getMax());
+			cs.setFloat(50, totalAnalysisResponseData.getPumpEff1().getMin());
+			cs.setFloat(51, totalAnalysisResponseData.getPumpEff2().getValue());
+			cs.setFloat(52, totalAnalysisResponseData.getPumpEff2().getMax());
+			cs.setFloat(53, totalAnalysisResponseData.getPumpEff2().getMin());
+			
+			//泵挂、动液面、沉没度
+			cs.setFloat(54, totalAnalysisResponseData.getPumpSettingDepth().getValue());
+			cs.setFloat(55, totalAnalysisResponseData.getPumpSettingDepth().getMax());
+			cs.setFloat(56, totalAnalysisResponseData.getPumpSettingDepth().getMin());
+			cs.setFloat(57, totalAnalysisResponseData.getProducingfluidLevel().getValue());
+			cs.setFloat(58, totalAnalysisResponseData.getProducingfluidLevel().getMax());
+			cs.setFloat(59, totalAnalysisResponseData.getProducingfluidLevel().getMin());
+			cs.setFloat(60, totalAnalysisResponseData.getSubmergence().getValue());
+			cs.setFloat(61, totalAnalysisResponseData.getSubmergence().getMax());
+			cs.setFloat(62, totalAnalysisResponseData.getSubmergence().getMin());
 			
 			//系统效率、吨液百米耗电量
-			cs.setFloat(54, totalAnalysisResponseData.getSystemEfficiency().getValue());
-			cs.setFloat(55, totalAnalysisResponseData.getSystemEfficiency().getMax());
-			cs.setFloat(56, totalAnalysisResponseData.getSystemEfficiency().getMin());
-			cs.setFloat(57, totalAnalysisResponseData.getPowerConsumptionPerTHM().getValue());
-			cs.setFloat(58, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMax());
-			cs.setFloat(59, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMin());
+			cs.setFloat(63, totalAnalysisResponseData.getSystemEfficiency().getValue());
+			cs.setFloat(64, totalAnalysisResponseData.getSystemEfficiency().getMax());
+			cs.setFloat(65, totalAnalysisResponseData.getSystemEfficiency().getMin());
+			cs.setFloat(66, totalAnalysisResponseData.getPowerConsumptionPerTHM().getValue());
+			cs.setFloat(67, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMax());
+			cs.setFloat(68, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMin());
+			cs.setFloat(69, totalAnalysisResponseData.getAvgWatt().getValue());
+			cs.setFloat(70, totalAnalysisResponseData.getAvgWatt().getMax());
+			cs.setFloat(71, totalAnalysisResponseData.getAvgWatt().getMin());
+			cs.setFloat(72, totalAnalysisResponseData.getWaterPower().getValue());
+			cs.setFloat(73, totalAnalysisResponseData.getWaterPower().getMax());
+			cs.setFloat(74, totalAnalysisResponseData.getWaterPower().getMin());
 			
-			cs.setInt(60, totalAnalysisResponseData.getCommStatus());//通信状态
-			cs.setFloat(61, totalAnalysisResponseData.getCommTime());//在线时间
-			cs.setFloat(62, totalAnalysisResponseData.getCommTimeEfficiency());//在线时率
-			cs.setString(63, totalAnalysisResponseData.getCommRange());//在线区间
+			cs.setInt(75, totalAnalysisResponseData.getCommStatus());//通信状态
+			cs.setFloat(76, totalAnalysisResponseData.getCommTime());//在线时间
+			cs.setFloat(77, totalAnalysisResponseData.getCommTimeEfficiency());//在线时率
+			cs.setString(78, totalAnalysisResponseData.getCommRange());//在线区间
 			
-			cs.setInt(64, totalAnalysisResponseData.getRunStatus());//运行状态
-			cs.setFloat(65, totalAnalysisResponseData.getRunTime());//运行时间
-			cs.setFloat(66, totalAnalysisResponseData.getRunTimeEfficiency());//运行时率
-			cs.setString(67, totalAnalysisResponseData.getRunRange());//运行区间
+			cs.setInt(79, totalAnalysisResponseData.getRunStatus());//运行状态
+			cs.setFloat(80, totalAnalysisResponseData.getRunTime());//运行时间
+			cs.setFloat(81, totalAnalysisResponseData.getRunTimeEfficiency());//运行时率
+			cs.setString(82, totalAnalysisResponseData.getRunRange());//运行区间
 			
-			cs.setString(68, tatalDate);//汇总日期
+			cs.setString(83, tatalDate);//汇总日期
 			cs.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();

@@ -360,11 +360,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	
 	public List<String> getFSDiagramDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
-		if(StringManagerUtils.isNotNull(tatalDate)){
-			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
-		}else{
-			tatalDate=StringManagerUtils.getCurrentTime();
-		}
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
@@ -398,7 +393,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" t.wattdegreebalance,t.upstrokewattmax,t.downstrokewattmax,"
 											+ "t.idegreebalance,t.upstrokeimax,t.downstrokeimax,"
 											+ "t.deltaRadius,"
-											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio,"
+											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio"
 											+" from tbl_rpc_diagram_hist t ,tbl_wellinformation t007 ,tbl_rpc_productiondata_hist prod"
 											+" where t.wellid=t007.id and t.productiondataid=prod.id "
 											+" and  t.acquisitiontime > "
@@ -418,6 +413,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
 			statusSql+=" and t.wellid in("+wellId+")";
 		}
+//		wellinformationSql+=" and t.id =707";
+//		singleCalculateResuleSql+=" and t007.id =707";
+//		statusSql+=" and t.wellid =707";
 //		wellinformationSql+=" and t.jh='龙1-斜09'";
 //		singleCalculateResuleSql+=" and t007.jh='龙1-斜09'";
 		
@@ -638,6 +636,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public List<String> getPCPRPMDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
+		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
 		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
@@ -649,19 +648,23 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " left outer join tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType between 400 and 499 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.rpm,"
-											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
-											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
-											+" t.systemefficiency,t.powerconsumptionperthm,"
-											+" prod.productiongasoilratio,prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,t.pumpeff,"
-											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature"
-											+" from tbl_pcp_rpm_hist t ,tbl_wellinformation t007 ,tbl_pcp_productiondata_hist prod"
-											+" where t.wellid=t007.id and t.productiondataid=prod.id "
-											+" and  t.acquisitiontime > "
-											+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
-											+" from tbl_pcp_rpm_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
-											+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
-											+" and t.resultstatus=1 and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+				+ "t.rpm,"
+				+ "t.TheoreticalProduction,"							
+				+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
+				+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
+				+" t.systemefficiency,t.powerconsumptionperthm,"
+				+ "t.motorInputActivePower,t.waterPower,"
+				+" prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,"
+				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,"
+				+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio"
+				+" from tbl_pcp_rpm_hist t ,tbl_wellinformation t007 ,tbl_pcp_productiondata_hist prod"
+				+" where t.wellid=t007.id and t.productiondataid=prod.id "
+				+" and  t.acquisitiontime > "
+				+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
+				+" from tbl_pcp_rpm_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
+				+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
+				+" and t.resultstatus=1 and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
 		String statusSql="select well.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
@@ -752,6 +755,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
+				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"EveryTime\": [");
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
@@ -788,24 +792,37 @@ public class CalculateDataService<T> extends BaseService<T> {
 							}
 						}
 						dataSbf.append("\"RPM\":"+resuleObj[2]+",");
-						dataSbf.append("\"LiquidVolumetricProduction\":"+resuleObj[3]+",");
-						dataSbf.append("\"OilVolumetricProduction\":"+resuleObj[4]+",");
-						dataSbf.append("\"WaterVolumetricProduction\":"+resuleObj[5]+",");
-						dataSbf.append("\"VolumeWaterCut\":"+resuleObj[6]+",");
-						dataSbf.append("\"LiquidWeightProduction\":"+resuleObj[7]+",");
-						dataSbf.append("\"OilWeightProduction\":"+resuleObj[8]+",");
-						dataSbf.append("\"WaterWeightProduction\":"+resuleObj[9]+",");
-						dataSbf.append("\"WeightWaterCut\":"+resuleObj[10]+",");
-						dataSbf.append("\"SystemEfficiency\":"+resuleObj[11]+",");
-						dataSbf.append("\"PowerConsumptionPerTHM\":"+resuleObj[12]+",");
-						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[13]+",");
-						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[14]+",");
-						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[15]+",");
-						dataSbf.append("\"Submergence\":"+resuleObj[16]+",");
-						dataSbf.append("\"PumpEff\":"+resuleObj[17]+",");
-						dataSbf.append("\"TubingPressure\":"+resuleObj[18]+",");
-						dataSbf.append("\"CasingPressure\":"+resuleObj[19]+",");
-						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[20]+"},");
+						
+						dataSbf.append("\"TheoreticalProduction\":"+resuleObj[3]+",");
+						
+						dataSbf.append("\"LiquidVolumetricProduction\":"+resuleObj[4]+",");
+						dataSbf.append("\"OilVolumetricProduction\":"+resuleObj[5]+",");
+						dataSbf.append("\"WaterVolumetricProduction\":"+resuleObj[6]+",");
+						dataSbf.append("\"VolumeWaterCut\":"+resuleObj[7]+",");
+						
+						dataSbf.append("\"LiquidWeightProduction\":"+resuleObj[8]+",");
+						dataSbf.append("\"OilWeightProduction\":"+resuleObj[9]+",");
+						dataSbf.append("\"WaterWeightProduction\":"+resuleObj[10]+",");
+						dataSbf.append("\"WeightWaterCut\":"+resuleObj[11]+",");
+						
+						dataSbf.append("\"SystemEfficiency\":"+resuleObj[12]+",");
+						dataSbf.append("\"PowerConsumptionPerTHM\":"+resuleObj[13]+",");
+						dataSbf.append("\"AvgWatt\":"+resuleObj[14]+",");
+						dataSbf.append("\"WaterPower\":"+resuleObj[15]+",");
+						
+						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[16]+",");
+						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[17]+",");
+						dataSbf.append("\"Submergence\":"+resuleObj[18]+",");
+						
+						dataSbf.append("\"PumpEff\":"+resuleObj[19]+",");
+						dataSbf.append("\"PumpEff1\":"+resuleObj[20]+",");
+						dataSbf.append("\"PumpEff2\":"+resuleObj[21]+",");
+						
+						
+						dataSbf.append("\"TubingPressure\":"+resuleObj[22]+",");
+						dataSbf.append("\"CasingPressure\":"+resuleObj[23]+",");
+						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[24]+",");
+						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[25]+"},");
 					}
 				}
 				if(dataSbf.toString().endsWith(",")){
@@ -825,11 +842,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	
 	public List<String> getDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
-		if(StringManagerUtils.isNotNull(tatalDate)){
-			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
-		}else{
-			tatalDate=StringManagerUtils.getCurrentTime();
-		}
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
@@ -900,13 +912,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public List<String> getPCPDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
+		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		String wellinformationSql="select t.wellname,t2.runtime,t.runtimeefficiencysource,t.driveraddr,t.driverid "
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " where t.liftingType between 400 and 499 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
-				+" t.frequencyrunvalue"
+				+" t.frequencyrunvalue,"
+				+ "t.WattSum,t.VarSum,t.VASum,t.PFSum"
 				+" from tbl_pcp_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+" and t.acquisitiontime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
@@ -926,6 +940,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf = new StringBuffer();
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
+				dataSbf.append("\"Date\":\""+date+"\",");
 				dataSbf.append("\"EveryTime\": [");
 				String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
 				for(int j=0;j<singleresultlist.size();j++){
@@ -938,7 +953,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 						dataSbf.append("\"VA\":"+resuleObj[5]+",");
 						dataSbf.append("\"VB\":"+resuleObj[6]+",");
 						dataSbf.append("\"VC\":"+resuleObj[7]+",");
-						dataSbf.append("\"RunFrequency\":"+StringManagerUtils.stringToFloat(resuleObj[8]+"")+"},");
+						dataSbf.append("\"RunFrequency\":"+resuleObj[9]+",");
+						dataSbf.append("\"WattSum\":"+resuleObj[10]+",");
+						dataSbf.append("\"VarSum\":"+resuleObj[11]+",");
+						dataSbf.append("\"VASum\":"+resuleObj[12]+",");
+						dataSbf.append("\"PFSum\":"+StringManagerUtils.stringToFloat(resuleObj[13]+"")+"},");
 					}
 				}
 				if(dataSbf.toString().endsWith(",")){

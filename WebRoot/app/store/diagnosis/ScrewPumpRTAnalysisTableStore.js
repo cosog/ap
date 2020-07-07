@@ -20,41 +20,121 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
         load: function (store, record, f, op, o) {
         	var get_rawData = store.proxy.reader.rawData;
         	var isControl=get_rawData.isControl;
+        	var analysisDataList=get_rawData.analysisDataList;
+        	var acquisitionDataList=get_rawData.acquisitionDataList;
     		var dataStr="{\"items\":[";
-    		
-    		if(productionUnit==0){
-    			dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
-        		dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
-        		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
-	        }else{
-	        	dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidVolumetricProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
-        		dataStr+="{\"item\":\"产油量(m^3/d)\",\"itemCode\":\"oilVolumetricProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
-        		dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
-	        }
-    		
-    		dataStr+="{\"item\":\"公称排量(ml/r)\",\"itemCode\":\"qpr\",\"value\":\""+get_rawData.qpr+"\",\"curve\":\"\"},";
-    		
-    		dataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"motorInputActivePower\",\"value\":\""+get_rawData.motorInputActivePower+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"水功率(kW)\",\"itemCode\":\"waterPower\",\"value\":\""+get_rawData.waterPower+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"系统效率(%)\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"吨液百米耗电量(kW·h/100m·t)\",\"itemCode\":\"powerConsumptionPerthm\",\"value\":\""+get_rawData.powerConsumptionPerthm+"\",\"curve\":\"\"},";
-    		
-    		dataStr+="{\"item\":\"容积效率(%)\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"液体收缩系数(%)\",\"itemCode\":\"pumpEff2\",\"value\":\""+get_rawData.pumpEff2+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"总泵效(%)\",\"itemCode\":\"pumpEff\",\"value\":\""+get_rawData.pumpEff+"\",\"curve\":\"\"},";
-    		
-    		dataStr+="{\"item\":\"泵入口压力(MPa)\",\"itemCode\":\"pumpintakep\",\"value\":\""+get_rawData.pumpintakep+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵入口温度(℃)\",\"itemCode\":\"pumpintaket\",\"value\":\""+get_rawData.pumpintaket+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵入口就地气液比(m^3/m^3)\",\"itemCode\":\"pumpintakegol\",\"value\":\""+get_rawData.pumpintakegol+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵入口液体粘度(mPa·s)\",\"itemCode\":\"pumpinletvisl\",\"value\":\""+get_rawData.pumpinletvisl+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵入口原油体积系数\",\"itemCode\":\"pumpinletbo\",\"value\":\""+get_rawData.pumpinletbo+"\",\"curve\":\"\"},";
-    		
-    		dataStr+="{\"item\":\"泵出口压力(MPa)\",\"itemCode\":\"pumpoutletp\",\"value\":\""+get_rawData.pumpoutletp+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵出口温度(℃)\",\"itemCode\":\"pumpoutlett\",\"value\":\""+get_rawData.pumpoutlett+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵出口就地气液比(m^3/m^3)\",\"itemCode\":\"pumpOutletGol\",\"value\":\""+get_rawData.pumpOutletGol+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵出口液体粘度(mPa·s)\",\"itemCode\":\"pumpoutletvisl\",\"value\":\""+get_rawData.pumpoutletvisl+"\",\"curve\":\"\"},";
-    		dataStr+="{\"item\":\"泵出口原油体积系数\",\"itemCode\":\"pumpoutletbo\",\"value\":\""+get_rawData.pumpoutletbo+"\",\"curve\":\"\"}";
-    		
+    		for(var i=0;i<analysisDataList.length;i++){
+    			switch(analysisDataList[i].dataIndex.toUpperCase()) {
+    			case "liquidWeightProduction".toUpperCase():
+    				dataStr+="{\"item\":\"产液量(t/d)\",\"itemCode\":\"liquidWeightProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
+        			break;
+    			case "oilWeightProduction".toUpperCase():
+    				dataStr+="{\"item\":\"产油量(t/d)\",\"itemCode\":\"oilWeightProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterWeightProduction".toUpperCase():
+    				dataStr+="{\"item\":\"产水量(t/d)\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterProduction+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterCut_W".toUpperCase():
+    				dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    	        	break;
+    			case "liquidVolumetricProduction".toUpperCase():
+    				dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidVolumetricProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
+        			break;
+    			case "oilVolumetricProduction".toUpperCase():
+    				dataStr+="{\"item\":\"产油量(m^3/d)\",\"itemCode\":\"oilVolumetricProduction\",\"value\":\""+get_rawData.oilProduction+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterVolumetricProduction".toUpperCase():
+    				dataStr+="{\"item\":\"产水量(m^3/d)\",\"itemCode\":\"waterVolumetricProduction\",\"value\":\""+get_rawData.waterProduction+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterCut".toUpperCase():
+    				dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    	        	break;
+    			case "qpr".toUpperCase():
+    				dataStr+="{\"item\":\"公称排量(ml/r)\",\"itemCode\":\"qpr\",\"value\":\""+get_rawData.qpr+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpEff1".toUpperCase():
+    				dataStr+="{\"item\":\"容积效率(%)\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpEff2".toUpperCase():
+    				dataStr+="{\"item\":\"液体收缩系数(%)\",\"itemCode\":\"pumpEff2\",\"value\":\""+get_rawData.pumpEff2+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpEff".toUpperCase():
+    				dataStr+="{\"item\":\"总泵效(%)\",\"itemCode\":\"pumpEff\",\"value\":\""+get_rawData.pumpEff+"\",\"curve\":\"\"},";
+        			break;
+    			case "systemEfficiency".toUpperCase():
+    				dataStr+="{\"item\":\"系统效率(%)\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
+        			break;
+    			case "powerConsumptionPerthm".toUpperCase():
+    				dataStr+="{\"item\":\"吨液百米耗电量(kW·h/100m·t)\",\"itemCode\":\"powerConsumptionPerthm\",\"value\":\""+get_rawData.powerConsumptionPerthm+"\",\"curve\":\"\"},";
+        			break;
+    			case "motorInputActivePower".toUpperCase():
+    				dataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"motorInputActivePower\",\"value\":\""+get_rawData.motorInputActivePower+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterPower".toUpperCase():
+    				dataStr+="{\"item\":\"水功率(kW)\",\"itemCode\":\"waterPower\",\"value\":\""+get_rawData.waterPower+"\",\"curve\":\"\"},";
+    				break;
+    			case "waterPower".toUpperCase():
+    				dataStr+="{\"item\":\"水功率(kW)\",\"itemCode\":\"waterPower\",\"value\":\""+get_rawData.waterPower+"\",\"curve\":\"\"},";
+    				break;
+    			case "pumpIntakeP".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpIntakeP\",\"value\":\""+get_rawData.pumpIntakeP+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpIntakeT".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpIntakeT\",\"value\":\""+get_rawData.pumpIntakeT+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpIntakeGOL".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpIntakeGOL\",\"value\":\""+get_rawData.pumpIntakeGOL+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpIntakeVisl".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpIntakeVisl\",\"value\":\""+get_rawData.pumpIntakeVisl+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpIntakeBo".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpIntakeBo\",\"value\":\""+get_rawData.pumpIntakeBo+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpOutletP".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpOutletP\",\"value\":\""+get_rawData.pumpOutletP+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpOutletT".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpOutletT\",\"value\":\""+get_rawData.pumpOutletT+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpOutletGOL".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpOutletGOL\",\"value\":\""+get_rawData.pumpOutletGOL+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpOutletVisl".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpOutletVisl\",\"value\":\""+get_rawData.pumpOutletVisl+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpOutletBo".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpOutletBo\",\"value\":\""+get_rawData.pumpOutletBo+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpBoreDiameter".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpBoreDiameter\",\"value\":\""+get_rawData.pumpBoreDiameter+"\",\"curve\":\"\"},";
+        			break;
+    			case "pumpSettingDepth".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpSettingDepth\",\"value\":\""+get_rawData.pumpSettingDepth+"\",\"curve\":\"\"},";
+        			break;
+    			case "producingFluidLevel".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
+        			break;
+    			case "submergence".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"submergence\",\"value\":\""+get_rawData.submergence+"\",\"curve\":\"\"},";
+        			break;
+    			case "productionGasOilRatio".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"productionGasOilRatio\",\"value\":\""+get_rawData.productionGasOilRatio+"\",\"curve\":\"\"},";
+        			break;
+    			case "todayWattEnergy".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayWattEnergy\",\"value\":\""+get_rawData.todayWattEnergy+"\",\"curve\":\"\"},";
+        			break;
+    			case "todayVarEnergy".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayVarEnergy\",\"value\":\""+get_rawData.todayVarEnergy+"\",\"curve\":\"\"},";
+        			break;
+    			case "todayVAEnergy".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayVAEnergy\",\"value\":\""+get_rawData.todayVAEnergy+"\",\"curve\":\"\"},";
+        			break;
+    			}
+    		}
+    		if(stringEndWith(dataStr,",")){
+        		dataStr = dataStr.substring(0, dataStr.length - 1);
+    		}
     		dataStr+="]}";
     		
     		var acqSataStr="{\"items\":[";
@@ -70,26 +150,68 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			commStatus="离线";
     			runStatus=""
     		}
-    		acqSataStr+="{\"item\":\"采集时间:"+get_rawData.acquisitionTime_d+"\",\"itemCode\":\"acquisitionTime_d\",\"value\":\"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"通信状态\",\"itemCode\":\"commStatus\",\"value\":\""+commStatus+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"运行状态\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"油压(MPa)\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"套压(MPa)\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressure+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"井口油温(℃)\",\"itemCode\":\"wellheadFluidTemperature\",\"value\":\""+get_rawData.wellheadFluidTemperature+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"A相电流(A)\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.Ia+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"B相电流(A)\",\"itemCode\":\"Ib\",\"value\":\""+get_rawData.Ib+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"C相电流(A)\",\"itemCode\":\"Ic\",\"value\":\""+get_rawData.Ic+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"A相电压(V)\",\"itemCode\":\"Va\",\"value\":\""+get_rawData.Va+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"B相电压(V)\",\"itemCode\":\"Vb\",\"value\":\""+get_rawData.Vb+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"C相电压(V)\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.Vc+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"有功功耗(kW·h)\",\"itemCode\":\"totalWattEnergy\",\"value\":\""+get_rawData.totalWattEnergy+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"无功功耗(kVar·h)\",\"itemCode\":\"totalVarEnergy\",\"value\":\""+get_rawData.totalVarEnergy+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"无功功率(kVar)\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"反向功率(kW)\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
-    		acqSataStr+="{\"item\":\"变频运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"}";
+    		for(var i=0;i<acquisitionDataList.length;i++){
+    			switch(acquisitionDataList[i].dataIndex.toUpperCase()) {
+    			case "acquisitionTime_d".toUpperCase():
+    				acqSataStr+="{\"item\":\"采集时间\",\"itemCode\":\"acquisitionTime_d\",\"value\":\""+get_rawData.acquisitionTime_d+"\",\"curve\":\"\"},";
+        			break;
+    			case "commStatus".toUpperCase():
+    				acqSataStr+="{\"item\":\"通信状态\",\"itemCode\":\"commStatus\",\"value\":\""+commStatus+"\",\"curve\":\"\"},";
+        			break;
+    			case "runStatus".toUpperCase():
+    				acqSataStr+="{\"item\":\"运行状态\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
+        			break;
+    			case "frequencyRunValue".toUpperCase():
+    				acqSataStr+="{\"item\":\"运行频率(Hz)\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";
+        			break;
+    			case "Ia".toUpperCase():
+    				acqSataStr+="{\"item\":\"A相电流(A)\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.Ia+"\",\"curve\":\"\"},";
+        			break;
+    			case "Ib".toUpperCase():
+    				acqSataStr+="{\"item\":\"B相电流(A)\",\"itemCode\":\"Ib\",\"value\":\""+get_rawData.Ib+"\",\"curve\":\"\"},";
+        			break;
+    			case "Ic".toUpperCase():
+    				acqSataStr+="{\"item\":\"C相电流(A)\",\"itemCode\":\"Ic\",\"value\":\""+get_rawData.Ic+"\",\"curve\":\"\"},";
+        			break;
+    			case "Va".toUpperCase():
+    				acqSataStr+="{\"item\":\"A相电压(V)\",\"itemCode\":\"Va\",\"value\":\""+get_rawData.Va+"\",\"curve\":\"\"},";
+        			break;
+    			case "Vb".toUpperCase():
+    				acqSataStr+="{\"item\":\"B相电压(V)\",\"itemCode\":\"Vb\",\"value\":\""+get_rawData.Vb+"\",\"curve\":\"\"},";
+        			break;
+    			case "Vc".toUpperCase():
+    				acqSataStr+="{\"item\":\"C相电压(V)\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.Vc+"\",\"curve\":\"\"},";
+        			break;
+    			case "wattSum".toUpperCase():
+    				acqSataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
+        			break;
+    			case "varSum".toUpperCase():
+    				acqSataStr+="{\"item\":\"无功功率(kVar)\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
+        			break;
+    			case "reversePower".toUpperCase():
+    				acqSataStr+="{\"item\":\"反向功率(kW)\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
+        			break;
+    			case "pfSum".toUpperCase():
+    				acqSataStr+="{\"item\":\"功率因数\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
+        			break;
+        			
+    			case "totalWattEnergy".toUpperCase():
+    				acqSataStr+="{\"item\":\"有功功耗(kW·h)\",\"itemCode\":\"totalWattEnergy\",\"value\":\""+get_rawData.totalWattEnergy+"\",\"curve\":\"\"},";
+        			break;
+    			case "totalVarEnergy".toUpperCase():
+    				acqSataStr+="{\"item\":\"无功功耗(kVar·h)\",\"itemCode\":\"totalVarEnergy\",\"value\":\""+get_rawData.totalVarEnergy+"\",\"curve\":\"\"},";
+        			break;
+    			case "totalVAEnergy".toUpperCase():
+    				acqSataStr+="{\"item\":\"视在功耗(kVA·h)\",\"itemCode\":\"totalVAEnergy\",\"value\":\""+get_rawData.totalVAEnergy+"\",\"curve\":\"\"},";
+        			break;
+    			}
+    		}
+//    		acqSataStr+="{\"item\":\"油压(MPa)\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
+//    		acqSataStr+="{\"item\":\"套压(MPa)\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressure+"\",\"curve\":\"\"},";
+//    		acqSataStr+="{\"item\":\"井口油温(℃)\",\"itemCode\":\"wellheadFluidTemperature\",\"value\":\""+get_rawData.wellheadFluidTemperature+"\",\"curve\":\"\"},";
+    		if(stringEndWith(acqSataStr,",")){
+    			acqSataStr = acqSataStr.substring(0, dataStr.length - 1);
+    		}
     		acqSataStr+="]}";
     		
 var controlSataStr="{\"items\":[";

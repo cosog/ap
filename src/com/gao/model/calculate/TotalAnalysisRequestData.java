@@ -7,6 +7,8 @@ public class TotalAnalysisRequestData {
 	private String AKString;
 
     private String WellName;
+    
+    private String Date;
 
     private List<EveryTime> EveryTime;
 
@@ -921,5 +923,12 @@ public class TotalAnalysisRequestData {
 		public void setPFSum(float pFSum) {
 			PFSum = pFSum;
 		}
+	}
+
+	public String getDate() {
+		return Date;
+	}
+	public void setDate(String date) {
+		Date = date;
 	}
 }

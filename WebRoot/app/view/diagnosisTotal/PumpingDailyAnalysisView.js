@@ -1705,9 +1705,9 @@ DiagnosisTotalDataCurveChartFn = function (get_rawData, itemName, divId) {
             var month = parseInt(data[j].calculateDate.split(" ")[0].split("-")[1]);
             var day = parseInt(data[j].calculateDate.split(" ")[0].split("-")[2]);
             if (i == 0) {
-            	series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].minValue + "]";
+            	series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].maxValue + "]";
             } else if (i == 1) {
-                series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].maxValue + "]";
+                series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].minValue + "]";
             } else if (i == 2) {
                 series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].value + "]";
             }

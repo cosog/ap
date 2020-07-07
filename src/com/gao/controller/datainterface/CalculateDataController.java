@@ -207,6 +207,11 @@ public class CalculateDataController extends BaseController{
 	public String FSDiagramDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
 		List<String> requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
@@ -222,7 +227,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
-					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
+					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -230,7 +235,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("汇总完成");
+		System.out.println("抽油机曲线数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -272,7 +277,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.savePCPRPMDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
-					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
+					System.out.println("螺杆泵转速数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -280,7 +285,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("汇总完成");
+		System.out.println("螺杆泵转速数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -302,10 +307,16 @@ public class CalculateDataController extends BaseController{
 	public String DiscreteDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
 		List<String> requestDataList=calculateDataService.getDiscreteDailyCalculation(tatalDate,wellId);
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){
 			try {
+				System.out.println(requestDataList.get(i));
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
@@ -315,7 +326,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
-					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
+					System.out.println("抽油机离散数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -323,7 +334,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("汇总完成");
+		System.out.println("抽油机离散数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -364,7 +375,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.savePCPDiscreteDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
-					System.out.println("诊断计算汇总error:"+requestDataList.get(i));
+					System.out.println("螺杆泵离散数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -372,7 +383,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("汇总完成");
+		System.out.println("螺杆泵离散数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

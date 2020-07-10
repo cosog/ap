@@ -34,7 +34,9 @@ public class TotalAnalysisResponseData {
     private Item Area; //功图面积					kN·m
     private Item PlungerStroke; //柱塞冲程					m
     private Item AvailablePlungerStroke; //柱塞有效冲程
+    private Item NoLiquidAvailablePlungerStroke; //柱塞有效冲程
     private Item FullnessCoefficient;
+    private Item NoLiquidFullnessCoefficient ;
     private Item TheoreticalProduction; //理论排量
     private Item LiquidVolumetricProduction;
     private Item OilVolumetricProduction;
@@ -66,6 +68,7 @@ public class TotalAnalysisResponseData {
     private Item PumpSettingDepth;
     private Item ProducingfluidLevel;
     private Item Submergence;
+    private Item LevelCorrectValue;
     private Item PumpIntakeP; //泵入口压力				MPa
     private Item PumpIntakeT; //泵入口温度				℃
     private Item PumpIntakeGOL; //泵入口就地气液比
@@ -1052,5 +1055,29 @@ public class TotalAnalysisResponseData {
 
 	public void setPFSum(Item pFSum) {
 		PFSum = pFSum;
+	}
+
+	public Item getNoLiquidAvailablePlungerStroke() {
+		return NoLiquidAvailablePlungerStroke;
+	}
+
+	public void setNoLiquidAvailablePlungerStroke(Item noLiquidAvailablePlungerStroke) {
+		NoLiquidAvailablePlungerStroke = noLiquidAvailablePlungerStroke;
+	}
+
+	public Item getNoLiquidFullnessCoefficient() {
+		return NoLiquidFullnessCoefficient;
+	}
+
+	public void setNoLiquidFullnessCoefficient(Item noLiquidFullnessCoefficient) {
+		NoLiquidFullnessCoefficient = noLiquidFullnessCoefficient;
+	}
+
+	public Item getLevelCorrectValue() {
+		return LevelCorrectValue;
+	}
+
+	public void setLevelCorrectValue(Item levelCorrectValue) {
+		LevelCorrectValue = levelCorrectValue;
 	}
 }

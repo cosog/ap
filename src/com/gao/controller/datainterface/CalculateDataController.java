@@ -41,6 +41,7 @@ import com.gao.model.calculate.TotalCalculateResponseData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.datainterface.CalculateDataService;
 import com.gao.thread.calculate.CalculateThread;
+import com.gao.thread.calculate.TotalCalculateThread;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.Constants;
@@ -203,6 +204,76 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
+	@RequestMapping("/dailyCalculation")
+	public String DailyCalculation() throws ParseException{
+		String tatalDate=ParamUtils.getParameter(request, "date");
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
+		TotalCalculateThread totalCalculateThreadList[]=new TotalCalculateThread[20];
+		for(int i=0;i<20;i++){
+			totalCalculateThreadList[i]=null;
+		}
+		
+		String wellListSql="select t.id,t.liftingtype from TBL_WELLINFORMATION t where 1=1";
+		if(StringManagerUtils.isNotNull(wellId)){
+			wellListSql+=" and t.id="+wellId;
+		}
+		wellListSql+= " order by t.sortnum ";
+		
+		long startTime=0;
+		long endTime=0;
+		long allTime=0;
+		startTime=new Date().getTime();
+		List<?> wellList = calculateDataService.findCallSql(wellListSql);
+		int calCount=0;
+		for(int i=0;i<wellList.size();i++){
+			Object[] wellObj=(Object[]) wellList.get(i);
+			boolean isCal=false;
+			while(!isCal){
+				for(int j=0;j<totalCalculateThreadList.length;j++){
+					if(totalCalculateThreadList[j]==null || !(totalCalculateThreadList[j].isAlive())){
+						totalCalculateThreadList[j]=new TotalCalculateThread(j,StringManagerUtils.stringToInteger(wellObj[0]+""),StringManagerUtils.stringToInteger(wellObj[1]+""),tatalDate,calculateDataService);
+						totalCalculateThreadList[j].start();
+						isCal=true;
+						break;
+					}
+				}
+			}
+		}
+		
+		boolean finish=false;
+		while(!finish){
+			for(int i=0;i<totalCalculateThreadList.length;i++){
+				if(totalCalculateThreadList[i]!=null&&totalCalculateThreadList[i].isAlive()){
+					finish=false;
+					break;
+				}
+				finish=true;
+			}
+		}
+		endTime=new Date().getTime();
+		allTime=endTime-startTime;
+		String json =wellList.size()+"口井汇总完成，共用时:"+allTime+"毫秒";
+		System.out.println(json);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@RequestMapping("/FSDiagramDailyCalculation")
 	public String FSDiagramDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
@@ -316,7 +387,7 @@ public class CalculateDataController extends BaseController{
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){
 			try {
-				System.out.println(requestDataList.get(i));
+//				System.out.println(requestDataList.get(i));
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);

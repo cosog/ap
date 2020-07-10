@@ -464,6 +464,8 @@ public class RPCCalculateResponseData {
 	    private float ProducingfluidLevel;
 
 	    private float PumpSettingDepth;
+	    
+	    private float LevelCorrectValue;
 
 	    private float Submergence;
 
@@ -737,6 +739,12 @@ public class RPCCalculateResponseData {
 	    public float getGasInfluenceWeightProduction(){
 	        return this.GasInfluenceWeightProduction;
 	    }
+		public float getLevelCorrectValue() {
+			return LevelCorrectValue;
+		}
+		public void setLevelCorrectValue(float levelCorrectValue) {
+			LevelCorrectValue = levelCorrectValue;
+		}
 	}
 
 	public static class FESDiagram
@@ -762,10 +770,14 @@ public class RPCCalculateResponseData {
 	    private float DeltaLoadLineOfExact;
 
 	    private float FullnessCoefficient;
+	    
+	    private float NoLiquidFullnessCoefficient;
 
 	    private float PlungerStroke;
 
 	    private float AvailablePlungerStroke;
+	    
+	    private float NoLiquidAvailablePlungerStroke;
 
 	    private List<List<Float>> S;
 
@@ -1084,6 +1096,18 @@ public class RPCCalculateResponseData {
 		}
 		public void setDeltaF(List<Float> deltaF) {
 			DeltaF = deltaF;
+		}
+		public float getNoLiquidFullnessCoefficient() {
+			return NoLiquidFullnessCoefficient;
+		}
+		public void setNoLiquidFullnessCoefficient(float noLiquidFullnessCoefficient) {
+			NoLiquidFullnessCoefficient = noLiquidFullnessCoefficient;
+		}
+		public float getNoLiquidAvailablePlungerStroke() {
+			return NoLiquidAvailablePlungerStroke;
+		}
+		public void setNoLiquidAvailablePlungerStroke(float noLiquidAvailablePlungerStroke) {
+			NoLiquidAvailablePlungerStroke = noLiquidAvailablePlungerStroke;
 		}
 	}
 

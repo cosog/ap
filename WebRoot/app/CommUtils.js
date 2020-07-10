@@ -533,7 +533,7 @@ iconDiagnoseAnalysisCurve = function(value, e, o) {
 	var item=o.data.item;
 	var index=o.internalId%2;
 	var resultstring='';
-	if(itemCode.toUpperCase() == 'acquisitionTime_d'.toUpperCase()){
+	if(itemCode.toUpperCase() == 'acquisitionTime_d'.toUpperCase()||itemCode.toUpperCase() == 'deviceVer'.toUpperCase()){
 //		resultstring=o.data.value;
 		resultstring='';
 	}else{

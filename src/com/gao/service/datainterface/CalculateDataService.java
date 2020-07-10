@@ -384,10 +384,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+ "t.UpperLoadLine,t.LowerLoadLine,t.UpperLoadLineOfExact,"
 											+ "t.UpperLoadLine-t.LowerLoadLine as DeltaLoadLine,t.UpperLoadLineOfExact-t.LowerLoadLine as DeltaLoadLineOfExact,"
 											+ "t.FMax,t.FMin,t.FMax-t.FMin as DeltaF,t.fsdiagramarea,"
-											+" t.PlungerStroke,t.AvailablePlungerStroke,t.fullnesscoefficient,"
+											+" t.PlungerStroke,t.AvailablePlungerStroke,"
+											+ "t.noLiquidAvailablePlungerStroke,"//加1
+											+ "t.fullnesscoefficient,"
+											+ "t.noLiquidFullnessCoefficient,"//加1
 											+ "prod.pumpborediameter/1000 as pumpborediameter,"
-											+" prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,"
-											+ "t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpinletvisl,t.pumpinletbo,"
+											+" case when prod.producingfluidlevel>=0 then prod.producingfluidlevel else t.inverProducingfluidlevel end as producingfluidlevel,"
+											+ "prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,"
+											+ "t.levelCorrectValue,"//加1
+											+ "t.pumpintakep,t.pumpintaket,t.pumpintakegol,t.pumpintakevisl,t.pumpintakebo,"
 											+ "t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo,"
 											+ "t.pumpeff,t.pumpeff1,t.pumpeff2,t.pumpeff3,t.pumpeff4,t.RodFlexLength,t.TubingFlexLength,t.InertiaLength,"
 											+" t.wattdegreebalance,t.upstrokewattmax,t.downstrokewattmax,"
@@ -532,6 +537,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 								dataSbf.append("\"RunRange\":\""+wellObj[12]+"\",");
 							}
 						}
+						
 						dataSbf.append("\"FSResultCode\":"+resuleObj[2]+",");
 						dataSbf.append("\"TheoreticalProduction\":"+resuleObj[3]+",");
 						
@@ -576,48 +582,51 @@ public class CalculateDataService<T> extends BaseService<T> {
 						dataSbf.append("\"Area\":"+resuleObj[39]+",");
 						dataSbf.append("\"PlungerStroke\":"+resuleObj[40]+",");
 						dataSbf.append("\"AvailablePlungerStroke\":"+resuleObj[41]+",");
-						dataSbf.append("\"FullnessCoefficient\":"+resuleObj[42]+",");
+						dataSbf.append("\"NoLiquidAvailablePlungerStroke\":"+resuleObj[42]+",");
+						dataSbf.append("\"FullnessCoefficient\":"+resuleObj[43]+",");
+						dataSbf.append("\"NoLiquidFullnessCoefficient\":"+resuleObj[44]+",");
 						
-						dataSbf.append("\"PumpBoreDiameter\":"+resuleObj[43]+",");
-						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[44]+",");
-						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[45]+",");
-						dataSbf.append("\"Submergence\":"+resuleObj[46]+",");
+						dataSbf.append("\"PumpBoreDiameter\":"+resuleObj[45]+",");
+						dataSbf.append("\"ProducingfluidLevel\":"+resuleObj[46]+",");
+						dataSbf.append("\"PumpSettingDepth\":"+resuleObj[47]+",");
+						dataSbf.append("\"Submergence\":"+resuleObj[48]+",");
+						dataSbf.append("\"LevelCorrectValue\":"+resuleObj[49]+",");
 						
-						dataSbf.append("\"PumpIntakeP\":"+resuleObj[47]+",");
-						dataSbf.append("\"PumpIntakeT\":"+resuleObj[48]+",");
-						dataSbf.append("\"PumpIntakeGOL\":"+resuleObj[49]+",");
-						dataSbf.append("\"PumpIntakeVisl\":"+resuleObj[50]+",");
-						dataSbf.append("\"PumpIntakeBo\":"+resuleObj[51]+",");
-						dataSbf.append("\"PumpOutletP\":"+resuleObj[52]+",");
-						dataSbf.append("\"PumpOutletT\":"+resuleObj[53]+",");
-						dataSbf.append("\"PumpOutletGOL\":"+resuleObj[54]+",");
-						dataSbf.append("\"PumpOutletVisl\":"+resuleObj[55]+",");
-						dataSbf.append("\"PumpOutletBo\":"+resuleObj[56]+",");
+						dataSbf.append("\"PumpIntakeP\":"+resuleObj[50]+",");
+						dataSbf.append("\"PumpIntakeT\":"+resuleObj[51]+",");
+						dataSbf.append("\"PumpIntakeGOL\":"+resuleObj[52]+",");
+						dataSbf.append("\"PumpIntakeVisl\":"+resuleObj[53]+",");
+						dataSbf.append("\"PumpIntakeBo\":"+resuleObj[54]+",");
+						dataSbf.append("\"PumpOutletP\":"+resuleObj[55]+",");
+						dataSbf.append("\"PumpOutletT\":"+resuleObj[56]+",");
+						dataSbf.append("\"PumpOutletGOL\":"+resuleObj[57]+",");
+						dataSbf.append("\"PumpOutletVisl\":"+resuleObj[58]+",");
+						dataSbf.append("\"PumpOutletBo\":"+resuleObj[59]+",");
 						
-						dataSbf.append("\"PumpEff\":"+resuleObj[57]+",");
-						dataSbf.append("\"PumpEff1\":"+resuleObj[58]+",");
-						dataSbf.append("\"PumpEff2\":"+resuleObj[59]+",");
-						dataSbf.append("\"PumpEff3\":"+resuleObj[60]+",");
-						dataSbf.append("\"PumpEff4\":"+resuleObj[61]+",");
-						dataSbf.append("\"RodFlexLength\":"+resuleObj[62]+",");
-						dataSbf.append("\"TubingFlexLength\":"+resuleObj[63]+",");
-						dataSbf.append("\"InertiaLength\":"+resuleObj[64]+",");
+						dataSbf.append("\"PumpEff\":"+resuleObj[60]+",");
+						dataSbf.append("\"PumpEff1\":"+resuleObj[61]+",");
+						dataSbf.append("\"PumpEff2\":"+resuleObj[62]+",");
+						dataSbf.append("\"PumpEff3\":"+resuleObj[63]+",");
+						dataSbf.append("\"PumpEff4\":"+resuleObj[64]+",");
+						dataSbf.append("\"RodFlexLength\":"+resuleObj[65]+",");
+						dataSbf.append("\"TubingFlexLength\":"+resuleObj[66]+",");
+						dataSbf.append("\"InertiaLength\":"+resuleObj[67]+",");
 						
-						dataSbf.append("\"WattDegreeBalance\":"+resuleObj[65]+",");
-						dataSbf.append("\"UpStrokeWattMax\":"+resuleObj[66]+",");
-						dataSbf.append("\"DownStrokeWattMax\":"+resuleObj[67]+",");
+						dataSbf.append("\"WattDegreeBalance\":"+resuleObj[68]+",");
+						dataSbf.append("\"UpStrokeWattMax\":"+resuleObj[69]+",");
+						dataSbf.append("\"DownStrokeWattMax\":"+resuleObj[70]+",");
 						
-						dataSbf.append("\"IDegreeBalance\":"+resuleObj[68]+",");
-						dataSbf.append("\"UpStrokeIMax\":"+resuleObj[69]+",");
-						dataSbf.append("\"DownStrokeIMax\":"+resuleObj[70]+",");
+						dataSbf.append("\"IDegreeBalance\":"+resuleObj[71]+",");
+						dataSbf.append("\"UpStrokeIMax\":"+resuleObj[72]+",");
+						dataSbf.append("\"DownStrokeIMax\":"+resuleObj[73]+",");
 						
-						dataSbf.append("\"DeltaRadius\":"+resuleObj[71]+",");
+						dataSbf.append("\"DeltaRadius\":"+resuleObj[74]+",");
 						
 						
-						dataSbf.append("\"TubingPressure\":"+resuleObj[72]+",");
-						dataSbf.append("\"CasingPressure\":"+resuleObj[73]+",");
-						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[74]+",");
-						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[75]+"},");
+						dataSbf.append("\"TubingPressure\":"+resuleObj[75]+",");
+						dataSbf.append("\"CasingPressure\":"+resuleObj[76]+",");
+						dataSbf.append("\"WellHeadFluidTemperature\":"+resuleObj[77]+",");
+						dataSbf.append("\"ProductionGasOilRatio\":"+resuleObj[78]+"},");
 					}
 				}
 				if(dataSbf.toString().endsWith(",")){

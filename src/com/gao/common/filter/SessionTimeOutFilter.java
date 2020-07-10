@@ -105,6 +105,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("getUserList")||urlString.equals("userLogin")
 						||urlString.equals("getBatchCalculateTime")
 						||urlString.equals("totalCalculation")
+						||urlString.equals("dailyCalculation")
 						||urlString.indexOf("FSDiagramDailyCalculation")>=0
 						||urlString.indexOf("DiscreteDailyCalculation")>=0
 						||urlString.indexOf("PCPRPMDailyCalculation")>=0

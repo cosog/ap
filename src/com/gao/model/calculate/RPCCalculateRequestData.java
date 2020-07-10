@@ -620,6 +620,8 @@ public class RPCCalculateRequestData {
 	    private float ProducingfluidLevel;
 
 	    private float PumpSettingDepth;
+	    
+	    private float LevelCorrectValue;
 
 	    public void setWaterCut(float WaterCut){
 	        this.WaterCut = WaterCut;
@@ -663,6 +665,12 @@ public class RPCCalculateRequestData {
 	    public float getPumpSettingDepth(){
 	        return this.PumpSettingDepth;
 	    }
+		public float getLevelCorrectValue() {
+			return LevelCorrectValue;
+		}
+		public void setLevelCorrectValue(float levelCorrectValue) {
+			LevelCorrectValue = levelCorrectValue;
+		}
 	}
 	
 	public static class FESDiagram

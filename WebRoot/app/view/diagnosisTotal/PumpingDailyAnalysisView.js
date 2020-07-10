@@ -1686,7 +1686,7 @@ DiagnosisTotalDataCurveChartFn = function (get_rawData, itemName, divId) {
     var catagories = "[";
     var title = get_rawData.wellName + "井" + itemName.split("(")[0] + "曲线";
     for (var i = 0; i < data.length; i++) {
-        catagories += "\"" + data[i].cjsj + "\"";
+        catagories += "\"" + data[i].calculateDate + "\"";
         if (i < data.length - 1) {
             catagories += ",";
         }
@@ -1705,7 +1705,12 @@ DiagnosisTotalDataCurveChartFn = function (get_rawData, itemName, divId) {
             var month = parseInt(data[j].calculateDate.split(" ")[0].split("-")[1]);
             var day = parseInt(data[j].calculateDate.split(" ")[0].split("-")[2]);
             if (i == 0) {
-            	series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].maxValue + "]";
+            	if(get_rawData.itemNum > 1){
+            		series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].maxValue + "]";
+            	}else{
+            		series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].value + "]";
+            	}
+            	
             } else if (i == 1) {
                 series += "[" + Date.parse(data[j].calculateDate.replace(/-/g, '/')) + "," + data[j].minValue + "]";
             } else if (i == 2) {

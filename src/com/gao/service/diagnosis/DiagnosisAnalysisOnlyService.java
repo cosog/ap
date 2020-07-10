@@ -1205,17 +1205,17 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
 				+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
 				+ " rodFlexLength,tubingFlexLength,inertiaLength,"
-				+ " pumpintakep,pumpintaket,pumpintakegol,pumpinletvisl,pumpinletbo,"
+				+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
 				+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo,"
 				+ " rodString,"
 				+ " upperLoadLineOfExact,"
-				+ " tubingPressure,casingPressure,wellheadFluidTemperature,productionGasOilRatio,"
+				+ " tubingPressure,casingPressure,wellHeadFluidTemperature,productionGasOilRatio,"
 				+ " to_char(acquisitionTime_d,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalWattEnergy,totalVarEnergy,totalVAEnergy,"
 				+ " todayWattEnergy,todayVarEnergy,todayVAEnergy,"
-				+ " wattSum,varSum,reversePower,pfSum,"
+				+ " wattSum,varSum,reversePower,vaSum,pfSum,"
 				+ " IaUpLimit,IaDownLimit,wattUpLimit,wattDownLimit,"
 				+ " IaMax,IaMin,IbMax,IbMin,IcMax,IcMin,"
 				+ " frequencySetValue,frequencyRunValue,"
@@ -1320,7 +1320,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			
 			result_json.append("\"tubingPressure\":\""+obj[55]+"\",");
 			result_json.append("\"casingPressure\":\""+obj[56]+"\",");
-			result_json.append("\"wellheadFluidTemperature\":\""+obj[57]+"\",");
+			result_json.append("\"wellHeadFluidTemperature\":\""+obj[57]+"\",");
 			result_json.append("\"productionGasOilRatio\":\""+obj[58]+"\",");
 			
 			result_json.append("\"acquisitionTime_d\":\""+obj[59]+"\",");
@@ -1342,56 +1342,57 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"wattSum\":\""+obj[74]+"\",");
 			result_json.append("\"varSum\":\""+obj[75]+"\",");
 			result_json.append("\"reversePower\":\""+obj[76]+"\",");
-			result_json.append("\"pfSum\":\""+obj[77]+"\",");
+			result_json.append("\"vaSum\":\""+obj[77]+"\",");
+			result_json.append("\"pfSum\":\""+obj[78]+"\",");
 			
-			result_json.append("\"IaUpLimit\":\""+obj[78]+"\",");
-			result_json.append("\"IaDownLimit\":\""+obj[79]+"\",");
-			result_json.append("\"wattUpLimit\":\""+obj[80]+"\",");
-			result_json.append("\"wattDownLimit\":\""+obj[81]+"\",");
-			result_json.append("\"IaMax\":\""+obj[82]+"\",");
-			result_json.append("\"IaMin\":\""+obj[83]+"\",");
-			result_json.append("\"IbMax\":\""+obj[84]+"\",");
-			result_json.append("\"IbMin\":\""+obj[85]+"\",");
-			result_json.append("\"IcMax\":\""+obj[86]+"\",");
-			result_json.append("\"IcMin\":\""+obj[87]+"\",");
+			result_json.append("\"IaUpLimit\":\""+obj[79]+"\",");
+			result_json.append("\"IaDownLimit\":\""+obj[80]+"\",");
+			result_json.append("\"wattUpLimit\":\""+obj[81]+"\",");
+			result_json.append("\"wattDownLimit\":\""+obj[82]+"\",");
+			result_json.append("\"IaMax\":\""+obj[83]+"\",");
+			result_json.append("\"IaMin\":\""+obj[84]+"\",");
+			result_json.append("\"IbMax\":\""+obj[85]+"\",");
+			result_json.append("\"IbMin\":\""+obj[86]+"\",");
+			result_json.append("\"IcMax\":\""+obj[87]+"\",");
+			result_json.append("\"IcMin\":\""+obj[88]+"\",");
 			
-			result_json.append("\"frequencySetValue\":\""+obj[88]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[89]+"\",");
+			result_json.append("\"frequencySetValue\":\""+obj[89]+"\",");
+			result_json.append("\"frequencyRunValue\":\""+obj[90]+"\",");
 			
-			result_json.append("\"balanceControlMode\":\""+obj[90]+"\",");
-			result_json.append("\"balanceCalculateMode\":\""+obj[91]+"\",");
+			result_json.append("\"balanceControlMode\":\""+obj[91]+"\",");
+			result_json.append("\"balanceCalculateMode\":\""+obj[92]+"\",");
 			
-			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[92]+"");
+			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[93]+"");
 			int deltaRadius1=(int)(balanceAwayTime/1000*3.6/10+0.5);
 			
-			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[93]+"");
+			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[94]+"");
 			int deltaRadius2=(int)(balanceCloseTime/1000*3.6/10+0.5);
 			
 			result_json.append("\"balanceAwayTime\":\""+deltaRadius1+"\",");
 			result_json.append("\"balanceCloseTime\":\""+deltaRadius2+"\",");
 			
-			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[94]+"\",");
-			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[95]+"\",");
+			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[95]+"\",");
+			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[96]+"\",");
 			
-			result_json.append("\"balanceStrokeCount\":\""+obj[96]+"\",");
-			result_json.append("\"balanceOperationUpLimit\":\""+obj[97]+"\",");
-			result_json.append("\"balanceOperationDownLimit\":\""+obj[98]+"\",");
-			result_json.append("\"balanceAutoControl\":\""+obj[99]+"\",");
-			result_json.append("\"spmAutoControl\":\""+obj[100]+"\",");
-			result_json.append("\"balanceFrontLimit\":\""+obj[101]+"\",");
-			result_json.append("\"balanceAfterLimit\":\""+obj[102]+"\",");
+			result_json.append("\"balanceStrokeCount\":\""+obj[97]+"\",");
+			result_json.append("\"balanceOperationUpLimit\":\""+obj[98]+"\",");
+			result_json.append("\"balanceOperationDownLimit\":\""+obj[99]+"\",");
+			result_json.append("\"balanceAutoControl\":\""+obj[100]+"\",");
+			result_json.append("\"spmAutoControl\":\""+obj[101]+"\",");
+			result_json.append("\"balanceFrontLimit\":\""+obj[102]+"\",");
+			result_json.append("\"balanceAfterLimit\":\""+obj[103]+"\",");
 			
-			result_json.append("\"acqcycle_diagram\":\""+obj[103]+"\",");
+			result_json.append("\"acqcycle_diagram\":\""+obj[104]+"\",");
 			
-			int acqcycle_discrete1=StringManagerUtils.stringToInteger(obj[104]+"");
+			int acqcycle_discrete1=StringManagerUtils.stringToInteger(obj[105]+"");
 			float acqcycle_discrete=(float)acqcycle_discrete1/60;
 			result_json.append("\"acqcycle_discrete\":\""+acqcycle_discrete+"\",");
 			
-			result_json.append("\"signal\":\""+obj[105]+"\",");
-			result_json.append("\"deviceVer\":\""+obj[106]+"\",");
+			result_json.append("\"signal\":\""+obj[106]+"\",");
+			result_json.append("\"deviceVer\":\""+obj[107]+"\",");
 			
-			result_json.append("\"videourl\":\""+obj[107]+"\",");
-			result_json.append("\"runRange\":\""+obj[108]+"\"");
+			result_json.append("\"videourl\":\""+obj[108]+"\",");
+			result_json.append("\"runRange\":\""+obj[109]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
@@ -1418,17 +1419,17 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " qpr,"
 				+ " motorInputActivePower,waterPower,systemEfficiency,powerConsumptionPerthm,"
 				+ " pumpEff1,pumpEff2,pumpEff,"
-				+ " pumpintakep,pumpintaket,pumpintakegol,pumpinletvisl,pumpinletbo,"
+				+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
 				+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo,"
 				+ " rodString,"
-				+ " tubingPressure,casingPressure,wellheadFluidTemperature,productionGasOilRatio,"
+				+ " tubingPressure,casingPressure,wellHeadFluidTemperature,productionGasOilRatio,"
 				+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
 				+ " to_char(acquisitionTime_d,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalWattEnergy,totalVarEnergy,totalVAEnergy,"
 				+ " todayWattEnergy,todayVarEnergy,todayVAEnergy,"
-				+ " wattSum,varSum,reversePower,pfSum,"
+				+ " wattSum,varSum,reversePower,vaSum,pfSum,"
 				+ " frequencySetValue,frequencyRunValue,"
 				+ " videourl,"
 				+ " runRange"
@@ -1488,7 +1489,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			
 			result_json.append("\"tubingPressure\":\""+obj[23]+"\",");
 			result_json.append("\"casingPressure\":\""+obj[24]+"\",");
-			result_json.append("\"wellheadFluidTemperature\":\""+obj[25]+"\",");
+			result_json.append("\"wellHeadFluidTemperature\":\""+obj[25]+"\",");
 			result_json.append("\"productionGasOilRatio\":\""+obj[26]+"\",");
 			
 			result_json.append("\"pumpBoreDiameter\":\""+obj[27]+"\",");
@@ -1516,13 +1517,14 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			
 			result_json.append("\"wattSum\":\""+obj[46]+"\",");
 			result_json.append("\"varSum\":\""+obj[47]+"\",");
-			result_json.append("\"reversePower\":\""+obj[48]+"\",");
-			result_json.append("\"pfSum\":\""+obj[49]+"\",");
-			result_json.append("\"frequencySetValue\":\""+obj[50]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[51]+"\",");
+			result_json.append("\"vaSum\":\""+obj[48]+"\",");
+			result_json.append("\"reversePower\":\""+obj[49]+"\",");
+			result_json.append("\"pfSum\":\""+obj[50]+"\",");
+			result_json.append("\"frequencySetValue\":\""+obj[51]+"\",");
+			result_json.append("\"frequencyRunValue\":\""+obj[52]+"\",");
 			
-			result_json.append("\"videourl\":\""+obj[52]+"\",");
-			result_json.append("\"runRange\":\""+obj[53]+"\"");
+			result_json.append("\"videourl\":\""+obj[53]+"\",");
+			result_json.append("\"runRange\":\""+obj[54]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
@@ -1541,7 +1543,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			item=itemCode+","+itemCode+"uplimit,"+itemCode+"downlimit,"+itemCode+"Zero ";
 			tableName="viw_rpc_discrete_hist";
 		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
-				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellheadfluidtemperature".equalsIgnoreCase(itemCode)
+				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)||"totalVAEnergy".equalsIgnoreCase(itemCode)
 				||"todayWattEnergy".equalsIgnoreCase(itemCode)||"todayVarEnergy".equalsIgnoreCase(itemCode)||"todayVAEnergy".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
@@ -1603,7 +1605,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
 					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
-				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellheadfluidtemperature".equalsIgnoreCase(itemCode)
+				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 				||"frequencyRunValue".equalsIgnoreCase(itemCode)){

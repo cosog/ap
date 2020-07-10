@@ -48,6 +48,9 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         		case "downStrokeIMax".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"downStrokeIMax\",\"value\":\""+get_rawData.downStrokeIMax_Max+"/"+get_rawData.downStrokeIMax_Min+"/"+get_rawData.downStrokeIMax_Avg+"\",\"curve\":\"\"},";
             		break;
+        		case "deltaRadius".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"deltaRadius\",\"value\":\""+get_rawData.deltaRadiusMax+"/"+get_rawData.deltaRadiusMin+"/"+get_rawData.deltaRadius+"\",\"curve\":\"\"},";
+            		break;
         		case "theoreticalProduction".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"theoreticalProduction\",\"value\":\""+get_rawData.theoreticalProductionMax+"/"+get_rawData.theoreticalProductionMin+"/"+get_rawData.theoreticalProduction+"\",\"curve\":\"\"},";
             		break;
@@ -273,6 +276,15 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         			break;
     			case "PFSum".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"PFSum\",\"value\":\""+get_rawData.PFSumMax+"/"+get_rawData.PFSumMin+"/"+get_rawData.PFSum+"\",\"curve\":\"\"},";
+        			break;
+    			case "tubingPressure".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressureMax+"/"+get_rawData.tubingPressureMin+"/"+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
+        			break;
+    			case "casingPressure".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressureMax+"/"+get_rawData.casingPressureMin+"/"+get_rawData.casingPressure+"\",\"curve\":\"\"},";
+        			break;
+    			case "wellHeadFluidTemperature".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wellHeadFluidTemperature\",\"value\":\""+get_rawData.wellHeadFluidTemperatureMax+"/"+get_rawData.wellHeadFluidTemperatureMin+"/"+get_rawData.wellHeadFluidTemperature+"\",\"curve\":\"\"},";
         			break;
     			case "signal".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"signal\",\"value\":\""+get_rawData.signalMax+"/"+get_rawData.signalMin+"/"+get_rawData.signal+"\",\"curve\":\"\"},";

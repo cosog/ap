@@ -589,7 +589,10 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.todayWattEnergy,t.todayvarenergy,t.todayvaenergy,"//加2
 				+ " t.signal,t.signalmax,t.signalmin,"//加3
 				+ " t.frequency,t.frequencymax,t.frequencymin,"//加3
-				+ " t.runrange,t.workingconditionstring"
+				+ " t.runrange,t.workingconditionstring,"
+				+ " t.levelCorrectValue,t.levelCorrectValueMax,t.levelCorrectValueMin,"
+				+ " t.noLiquidAvailableStroke,t.noLiquidAvailableStrokeMax,t.noLiquidAvailableStrokeMin,"
+				+ " t.noLiquidFullnessCoefficient,t.noLiquidFullnessCoefficientMax,t.noLiquidFullnessCoefficientMin"
 				+ " from tbl_rpc_total_day t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyAnalysis");
@@ -855,7 +858,20 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"frequencyMin\":\""+obj[232]+"\",");
 			
 			result_json.append("\"runRange\":\""+obj[233]+"\",");
-			result_json.append("\"workingConditionString\":\""+(obj[234]+"").replaceAll("<br/>", ";")+"\"");
+			result_json.append("\"workingConditionString\":\""+(obj[234]+"").replaceAll("<br/>", ";")+"\",");
+			
+			result_json.append("\"levelCorrectValue\":\""+obj[235]+"\",");
+			result_json.append("\"levelCorrectValueMax\":\""+obj[236]+"\",");
+			result_json.append("\"levelCorrectValueMin\":\""+obj[237]+"\",");
+			
+			result_json.append("\"noLiquidAvailableStroke\":\""+obj[238]+"\",");
+			result_json.append("\"noLiquidAvailableStrokeMax\":\""+obj[239]+"\",");
+			result_json.append("\"noLiquidAvailableStrokeMin\":\""+obj[240]+"\",");
+			
+			result_json.append("\"noLiquidFullnessCoefficient\":\""+obj[241]+"\",");
+			result_json.append("\"noLiquidFullnessCoefficientMax\":\""+obj[242]+"\",");
+			result_json.append("\"noLiquidFullnessCoefficientMin\":\""+obj[243]+"\"");
+			
 			
 		}
 		result_json.append("}");

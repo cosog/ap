@@ -484,7 +484,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}";
 							Gson gson = new Gson();
 							java.lang.reflect.Type type=null;
-							if(wellObj[3]!=null&&wellObj[4]!=null){
+//							if(wellObj[3]!=null&&wellObj[4]!=null){
+							if(!"0".equals(wellObj[2]+"")){
 								String commTotalResponse=StringManagerUtils.sendPostMethod(commTotalUrl, commTotalRequestData,"utf-8");
 								type = new TypeToken<CommResponseData>() {}.getType();
 								commResponseData = gson.fromJson(commTotalResponse, type);

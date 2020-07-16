@@ -219,6 +219,7 @@ public class CalculateDataController extends BaseController{
 		}
 		
 		String wellListSql="select t.id,t.liftingtype from TBL_WELLINFORMATION t where 1=1";
+//		wellListSql+=" and t.id=106";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellListSql+=" and t.id="+wellId;
 		}
@@ -499,7 +500,13 @@ public class CalculateDataController extends BaseController{
 						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[7]+"")+""
 						+ "}"
 						+ "},";
+				String currentDate=AcquisitionTime.split(" ")[0];
+				String lastDate=(obj[3]+"").split(" ")[0];
+				if(!currentDate.equals(lastDate)){//如果跨天
+					AcquisitionTime=obj[3]+"";
+				}
 			}	
+			
 			commRequest+= "\"Current\": {"
 					+ "\"AcquisitionTime\":\""+AcquisitionTime+"\","
 					+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
@@ -513,8 +520,11 @@ public class CalculateDataController extends BaseController{
 				String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
 						+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
 						+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","
-						+ "t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'"
-						+ " where t.wellid="+obj[0];
+						+ "t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+				if(!(obj[4]+"").equals(obj[2]+"")){
+					updateSql+=",t.AcquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+				}
+				updateSql+= " where t.wellid="+obj[0];
 				int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
 			}
 			

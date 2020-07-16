@@ -135,6 +135,12 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         		case "availablePlungerStroke".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"availablePlungerStroke\",\"value\":\""+get_rawData.availablePlungerStrokeMax+"/"+get_rawData.availablePlungerStrokeMin+"/"+get_rawData.availablePlungerStroke+"\",\"curve\":\"\"},";
             		break;
+        		case "noLiquidAvailableStroke".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"noLiquidAvailableStroke\",\"value\":\""+get_rawData.noLiquidAvailableStrokeMax+"/"+get_rawData.noLiquidAvailableStrokeMin+"/"+get_rawData.noLiquidAvailableStroke+"\",\"curve\":\"\"},";
+            		break;
+        		case "noLiquidFullnessCoefficient".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"noLiquidFullnessCoefficient\",\"value\":\""+get_rawData.noLiquidFullnessCoefficientMax+"/"+get_rawData.noLiquidFullnessCoefficientMin+"/"+get_rawData.noLiquidFullnessCoefficient+"\",\"curve\":\"\"},";
+            		break;
         		case "pumpEff1".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1Max+"/"+get_rawData.pumpEff1Min+"/"+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
             		break;
@@ -218,6 +224,9 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
             		break;
         		case "producingFluidLevel".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevelMax+"/"+get_rawData.producingFluidLevelMin+"/"+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
+            		break;
+        		case "levelCorrectValue".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"levelCorrectValue\",\"value\":\""+get_rawData.levelCorrectValueMax+"/"+get_rawData.levelCorrectValueMin+"/"+get_rawData.levelCorrectValue+"\",\"curve\":\"\"},";
             		break;
         		case "submergence".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"submergence\",\"value\":\""+get_rawData.submergenceMax+"/"+get_rawData.submergenceMin+"/"+get_rawData.submergence+"\",\"curve\":\"\"},";

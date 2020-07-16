@@ -127,6 +127,12 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "availablePlungerStroke".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"availablePlungerStroke\",\"value\":\""+get_rawData.availablePlungerStroke+"\",\"curve\":\"\"},";
         			break;
+    			case "noLiquidAvailablePlungerStroke".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"noLiquidAvailablePlungerStroke\",\"value\":\""+get_rawData.noLiquidAvailablePlungerStroke+"\",\"curve\":\"\"},";
+        			break;
+    			case "noLiquidFullnessCoefficient".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"noLiquidFullnessCoefficient\",\"value\":\""+get_rawData.noLiquidFullnessCoefficient+"\",\"curve\":\"\"},";
+        			break;
     			case "pumpEff1".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
         			break;
@@ -210,6 +216,9 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         			break;
     			case "producingFluidLevel".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
+        			break;
+    			case "levelCorrectValue".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"levelCorrectValue\",\"value\":\""+get_rawData.levelCorrectValue+"\",\"curve\":\"\"},";
         			break;
     			case "submergence".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"submergence\",\"value\":\""+get_rawData.submergence+"\",\"curve\":\"\"},";

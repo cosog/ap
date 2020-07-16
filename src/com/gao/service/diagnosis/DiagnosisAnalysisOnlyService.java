@@ -1228,7 +1228,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " acqcycle_diagram,acqcycle_discrete,"
 				+ " signal,deviceVer,"
 				+ " videourl,"
-				+ " runRange"
+				+ " runRange,"
+				+ " levelCorrectValue,noLiquidAvailablePlungerStroke,noLiquidFullnessCoefficient"
 				+ " from "+tableName+" t where id="+recordId;
 		List<?> isControlList = this.findCallSql(isControlSql);
 		List<?> controlItemsList = this.findCallSql(controlItemSql);
@@ -1392,7 +1393,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"deviceVer\":\""+obj[107]+"\",");
 			
 			result_json.append("\"videourl\":\""+obj[108]+"\",");
-			result_json.append("\"runRange\":\""+obj[109]+"\"");
+			result_json.append("\"runRange\":\""+obj[109]+"\",");
+			result_json.append("\"levelCorrectValue\":\""+obj[110]+"\",");
+			result_json.append("\"noLiquidAvailablePlungerStroke\":\""+obj[111]+"\",");
+			result_json.append("\"noLiquidFullnessCoefficient\":\""+obj[112]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");

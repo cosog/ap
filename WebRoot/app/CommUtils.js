@@ -539,7 +539,7 @@ iconDiagnoseAnalysisCurve = function(value, e, o) {
 	}else{
 		resultstring = "<img src='"
 			+ context
-			+ "/images/icon/curvetest"+index+".png' style='cursor:pointer' onclick=callBackHistoryData(\""+item+"\",\""+itemCode+"\") />";
+			+ "/images/icon/curvetest"+index+".png' style='cursor:pointer;display: inline-block; vertical-align: middle;' onclick=callBackHistoryData(\""+item+"\",\""+itemCode+"\") />";
 	}
 	
 	return resultstring;

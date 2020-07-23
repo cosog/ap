@@ -1042,8 +1042,8 @@ function loadTotalStatData() {
     	Ext.getCmp(statPanelId).collapse();
     }
     Ext.getCmp("PumpingDailyStatSelectedItems_Id").setValue("");
-    Ext.getCmp("FSDiagramAnalysisDailyDetailsWellCom_Id").setValue("");
-	Ext.getCmp("FSDiagramAnalysisDailyDetailsWellCom_Id").setRawValue("");
+//    Ext.getCmp("FSDiagramAnalysisDailyDetailsWellCom_Id").setValue("");
+//	Ext.getCmp("FSDiagramAnalysisDailyDetailsWellCom_Id").setRawValue("");
     if(Ext.getCmp("DiagnosisTotalData_Id")!=undefined&&Ext.getCmp("DiagnosisTotalData_Id")!=null){
     	Ext.getCmp("DiagnosisTotalData_Id").destroy();
     }

@@ -302,7 +302,7 @@ var controlSataStr="{\"items\":[";
     			        	header: '名称',  
     			        	dataIndex: 'item',
     			        	align:'left',
-    			        	flex:3,
+    			        	flex:5,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
@@ -311,12 +311,12 @@ var controlSataStr="{\"items\":[";
     			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
-    			        	flex:1,
+    			        	flex:3,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
     			        },
-    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:1,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
+    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:2,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
     			    ]
     			});
     			Ext.getCmp("ScrewPumpRTAnalysisTableCalDataPanel_Id").add(GridPanel);
@@ -337,7 +337,7 @@ var controlSataStr="{\"items\":[";
     			        	header: '名称',  
     			        	dataIndex: 'item',
     			        	align:'left',
-    			        	flex:3,
+    			        	flex:9,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
@@ -346,12 +346,12 @@ var controlSataStr="{\"items\":[";
     			        	header: '变量', 
     			        	dataIndex: 'value',
     			        	align:'center',
-    			        	flex:1,
+    			        	flex:10,
     			        	renderer:function(value){
     			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
     			        	}
     			        },
-    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:1,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
+    			        { header: '曲线', dataIndex: 'curve',align:'center',flex:4,renderer :function(value,e,o){return iconDiagnoseAnalysisCurve(value,e,o)} }
     			    ]
     			});
     			Ext.getCmp("ScrewPumpRTAnalysisTableAcqDataPanel_Id").add(acqGridPanel);
@@ -380,12 +380,12 @@ var controlSataStr="{\"items\":[";
     				forceFit: false,
     				store: controlStore,
     			    columns: [
-    			        { header: '操作项',  dataIndex: 'item',align:'left',flex:3},
-    			        { header: '变量', dataIndex: 'value',align:'center',flex:1,editor:{allowBlank:false}},
+    			        { header: '操作项',  dataIndex: 'item',align:'left',flex:9},
+    			        { header: '变量', dataIndex: 'value',align:'center',flex:3,editor:{allowBlank:false}},
     			        { 	header: '操作', 
     			        	dataIndex: 'operation',
     			        	align:'center',
-    			        	flex:1,
+    			        	flex:4,
     			        	renderer :function(value,e,o){
     			        		var id = e.record.id;
     			        		var item=o.data.item;

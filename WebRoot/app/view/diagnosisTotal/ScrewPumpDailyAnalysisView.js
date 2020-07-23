@@ -175,9 +175,9 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                 Ext.getCmp("ScrewPumpDailyAnalysisAllBtn_Id").show();
                             	Ext.getCmp(statPanelId).collapse();
                                 
-                                var jh  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.jh;
-                                Ext.getCmp("ScrewPumpDailyAnalysisWellCom_Id").setValue(jh);
-                                Ext.getCmp("ScrewPumpDailyAnalysisWellCom_Id").setRawValue(jh);
+                                var wellName  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
+                                Ext.getCmp("ScrewPumpDailyAnalysisWellCom_Id").setValue(wellName);
+                                Ext.getCmp("ScrewPumpDailyAnalysisWellCom_Id").setRawValue(wellName);
                                 Ext.getCmp('ScrewPumpDailyAnalysisWellList_Id').getStore().loadPage(1);
                             }
                       }, {

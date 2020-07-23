@@ -95,7 +95,7 @@ Ext.define('AP.store.diagnosisTotal.SvrewPumpDailyAnalysisListStore', {
             }
             var startDate=Ext.getCmp('ScrewPumpDailyAnalysisStartDate_Id').rawValue;
             if(startDate==''||null==startDate){
-            	Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").setValue(get_rawData.startDate);
+            	Ext.getCmp("ScrewPumpDailyAnalysisStartDate_Id").setValue(get_rawData.start_date);
             }
             if(get_rawData.totalCount>0){
             	DiagnosisTotalData.getSelectionModel().select(0,true);//选中第一行

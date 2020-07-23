@@ -2383,14 +2383,14 @@ public class BaseDao extends HibernateDaoSupport {
 			if(calculateResponseData!=null&&(calculateResponseData.getCalculationStatus().getResultStatus()==1||calculateResponseData.getCalculationStatus().getResultStatus()==-99)){//如果计算成功
 				//最大最小载荷
 				if(calculateResponseData.getFESDiagram().getFMax()!=null&&calculateResponseData.getFESDiagram().getFMax().size()>0){
-					cs.setFloat(2,calculateResponseData.getFESDiagram().getFMax().get(0));
+					cs.setFloat(23,calculateResponseData.getFESDiagram().getFMax().get(0));
 				}else{
-					cs.setString(2,"");
+					cs.setString(23,"");
 				}
 				if(calculateResponseData.getFESDiagram().getFMin()!=null&&calculateResponseData.getFESDiagram().getFMin().size()>0){
-					cs.setFloat(3,calculateResponseData.getFESDiagram().getFMin().get(0));
+					cs.setFloat(24,calculateResponseData.getFESDiagram().getFMin().get(0));
 				}else{
-					cs.setString(3,"");
+					cs.setString(24,"");
 				}
 				
 				//平衡

@@ -1095,12 +1095,35 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getPCPDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		if(itemCode.indexOf("WeightProduction")>=0){
-			itemCode=itemCode.replace("WeightProduction", "VolumetricProduction");
-		}
-		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
-			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)){
+//		if(itemCode.indexOf("WeightProduction")>=0){
+//			itemCode=itemCode.replace("WeightProduction", "VolumetricProduction");
+//		}
+//		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
+//			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)){
+//				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
+//			}else{
+//				itemCode="t."+itemCode+",t."+itemCode+"Max,t."+itemCode+"Min";
+//			}
+//		}else{
+//			itemCode="t."+itemCode;
+//		}
+//		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_pcp_total_day t,tbl_wellinformation t007 "
+//				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
+//		
+		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)
+				&&!"todayWattEnergy".equalsIgnoreCase(itemCode)
+				&&!"todayVarEnergy".equalsIgnoreCase(itemCode)
+				&&!"todayVAEnergy".equalsIgnoreCase(itemCode)){
+			if("pumpEff".equalsIgnoreCase(itemCode)||"pumpEff1".equalsIgnoreCase(itemCode)||"pumpEff2".equalsIgnoreCase(itemCode)||"pumpEff3".equalsIgnoreCase(itemCode)||"pumpEff4".equalsIgnoreCase(itemCode)
+				||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)
+				||"deltaRadius".equalsIgnoreCase(itemCode)){
 				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
+			}else if("WATERCUT_W".equalsIgnoreCase(itemCode)){
+				itemCode="t."+itemCode+",t.waterCutMax_w,t.waterCutMin_w";
+			}else if(itemCode.toUpperCase().endsWith("MAX")||itemCode.toUpperCase().endsWith("MIN")){
+				itemCode="t."+itemCode+"_Avg,t."+itemCode+"_Max,t."+itemCode+"_Min";
+			}else if(itemCode.toUpperCase().endsWith("_V")||itemCode.toUpperCase().endsWith("_W")){
+				itemCode="t."+itemCode+",t."+itemCode+"_Max,t."+itemCode+"_Min";
 			}else{
 				itemCode="t."+itemCode+",t."+itemCode+"Max,t."+itemCode+"Min";
 			}
@@ -1109,6 +1132,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}
 		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_pcp_total_day t,tbl_wellinformation t007 "
 				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
+		
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);

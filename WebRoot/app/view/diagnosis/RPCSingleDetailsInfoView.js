@@ -1678,7 +1678,7 @@ function initDiagnosisDataCurveChartFn(catagories, series, tickInterval, divId, 
     if (downline != 0) {
         min = downline - 10;
     }
-    if (zeroline >= 0) {
+    if (zeroline != 0) {
         min = zeroline - 1;
     }
     Highcharts.setOptions({

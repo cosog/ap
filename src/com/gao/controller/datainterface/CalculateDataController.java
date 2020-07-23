@@ -483,6 +483,7 @@ public class CalculateDataController extends BaseController{
 				+ " t.commstatus as lastcCommstatus,t.commtime as lastCommtime,t.commtimeefficiency as lastCommtimeefficiency,t.commrange as lastCommrange"
 				+ " from tbl_rpc_discrete_latest t,viw_commstatus comm"
 				+ " where t.wellid=comm.id";
+//		sql+=" and t.wellid=106";
 		List<?> list = calculateDataService.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -500,11 +501,6 @@ public class CalculateDataController extends BaseController{
 						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[7]+"")+""
 						+ "}"
 						+ "},";
-				String currentDate=AcquisitionTime.split(" ")[0];
-				String lastDate=(obj[3]+"").split(" ")[0];
-				if(!currentDate.equals(lastDate)){//如果跨天
-					AcquisitionTime=obj[3]+"";
-				}
 			}	
 			
 			commRequest+= "\"Current\": {"
@@ -517,10 +513,18 @@ public class CalculateDataController extends BaseController{
 			java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
 			CommResponseData commResponseData=gson.fromJson(commResponse, type);
 			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+				String currentDate=AcquisitionTime.split(" ")[0];
+				String lastDate=(obj[3]+"").split(" ")[0];
 				String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
 						+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
 						+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","
 						+ "t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+				if(!currentDate.equals(lastDate)){//如果跨天
+					updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getDaily().getCommStatus()?1:0)+","
+							+ "t.commtime="+commResponseData.getDaily().getCommEfficiency().getTime()+","
+							+ "t.commtimeefficiency="+commResponseData.getDaily().getCommEfficiency().getEfficiency()+","
+							+ "t.commrange='"+commResponseData.getDaily().getCommEfficiency().getRangeString()+"'";
+				}
 				if(!(obj[4]+"").equals(obj[2]+"")){
 					updateSql+=",t.AcquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
 				}

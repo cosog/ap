@@ -1550,7 +1550,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)||"totalVAEnergy".equalsIgnoreCase(itemCode)
 				||"todayWattEnergy".equalsIgnoreCase(itemCode)||"todayVarEnergy".equalsIgnoreCase(itemCode)||"todayVAEnergy".equalsIgnoreCase(itemCode)
-				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
+				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
+				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 				||"frequencyRunValue".equalsIgnoreCase(itemCode)
 				||"IaMax".equalsIgnoreCase(itemCode)
 				||"IaMin".equalsIgnoreCase(itemCode)
@@ -1601,21 +1602,58 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		StringBuffer dynSbf = new StringBuffer();
 		String uplimit="";
 		String downlimit="";
-		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_rpm_hist t "
-				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		String zero="";
+		String tableName="";
+		String sql="";
+		String item=itemCode;
+		
 		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
 				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
-			itemCode="t."+itemCode+",t."+itemCode+"uplimit,t."+itemCode+"downlimit";
-			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
-					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+			item=itemCode+","+itemCode+"uplimit,"+itemCode+"downlimit,"+itemCode+"Zero ";
+			tableName="viw_pcp_discrete_hist";
 		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
-				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
-				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
-				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
-			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_discrete_hist t "
-					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)||"totalVAEnergy".equalsIgnoreCase(itemCode)
+				||"todayWattEnergy".equalsIgnoreCase(itemCode)||"todayVarEnergy".equalsIgnoreCase(itemCode)||"todayVAEnergy".equalsIgnoreCase(itemCode)
+				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
+				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
+				||"frequencyRunValue".equalsIgnoreCase(itemCode)
+				||"IaMax".equalsIgnoreCase(itemCode)
+				||"IaMin".equalsIgnoreCase(itemCode)
+				||"IbMax".equalsIgnoreCase(itemCode)
+				||"IbMin".equalsIgnoreCase(itemCode)
+				||"IcMax".equalsIgnoreCase(itemCode)
+				||"IcMin".equalsIgnoreCase(itemCode)
+				||"signal".equalsIgnoreCase(itemCode)
+				||"deviceVer".equalsIgnoreCase(itemCode)
+				){
+			tableName="viw_pcp_discrete_hist";
+		}else{
+			tableName="viw_pcp_rpm_hist";
 		}
+		
+		
+		
+//		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_rpm_hist t "
+//				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+//		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
+//				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
+//			itemCode="t."+itemCode+",t."+itemCode+"uplimit,t."+itemCode+"downlimit";
+//			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
+//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+//		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
+//				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
+//				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
+//				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
+//				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
+//				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
+//			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_discrete_hist t "
+//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+//		}
+		
+		sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" from "+tableName+" t "
+				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);

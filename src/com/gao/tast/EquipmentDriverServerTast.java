@@ -68,7 +68,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -168,8 +168,8 @@ public class EquipmentDriverServerTast {
 		
 		try {
 			stmt=conn.createStatement();
-			int result=stmt.executeUpdate(resetCommStatus);
-			result=stmt.executeUpdate(resetPCPCommStatus);
+//			int result=stmt.executeUpdate(resetCommStatus);
+//			result=stmt.executeUpdate(resetPCPCommStatus);
 			System.out.println("读取井初始化信息");
 			pstmt = conn.prepareStatement(sql); 
 			System.out.println("读取抽油机井初始化信息成功");
@@ -507,6 +507,7 @@ public class EquipmentDriverServerTast {
 	
 	@SuppressWarnings("static-access")
 	public static void initDriverConfig(){
+		System.out.println("驱动初始化开始");
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
@@ -566,10 +567,13 @@ public class EquipmentDriverServerTast {
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig KafkaDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(KafkaDriver.getDriverCode(), KafkaDriver);
+		
+		System.out.println("驱动初始化结束");
 	}
 	
 	@SuppressWarnings("static-access")
 	public static boolean  initAcquisitionUnit(){
+		System.out.println("采集单元初始化开始");
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
 		String sql="select t.unit_code,t.unit_name from tbl_acq_group_conf t order by id";
 		conn=OracleJdbcUtis.getConnection();
@@ -706,6 +710,7 @@ public class EquipmentDriverServerTast {
 		} 
 		
 		OracleJdbcUtis.closeDBConnection(conn, stmt, pstmt, rs);
+		System.out.println("采集单元初始化结束");
 		return true;
 	}
 	

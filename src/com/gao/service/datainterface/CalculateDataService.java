@@ -246,13 +246,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 			calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[20]+""));
 			calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[21]+""));
 			calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[22]+""));
+			calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[23]+""));
 			
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
-			calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[30]+""));
+			calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[31]+""));
 	        calculateRequestData.getFESDiagram().setAcquisitionTime(object[2]+"");
-	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[24]+""));
-	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[25]+""));
+	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[25]+""));
+	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[26]+""));
 			
 	        List<Float> F=new ArrayList<Float>();
 	        List<Float> S=new ArrayList<Float>();
@@ -262,8 +263,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        CLOB realClob =null;
 	        String clobStr="";
 	        String[] curveData=null;
-	        if(object[26]!=null){//位移曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[26]);
+	        if(object[27]!=null){//位移曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[27]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				curveData=clobStr.split(",");
@@ -271,8 +272,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					S.add(StringManagerUtils.stringToFloat(curveData[i]));
 				}
 	        }
-	        if(object[27]!=null){//载荷曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[27]);
+	        if(object[28]!=null){//载荷曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[28]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				curveData=clobStr.split(",");
@@ -280,8 +281,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					F.add(StringManagerUtils.stringToFloat(curveData[i]));
 				}
 	        }
-	        if(object[28]!=null){//功率曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[28]);
+	        if(object[29]!=null){//功率曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[29]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(clobStr)){
@@ -291,8 +292,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					}
 				}
 	        }
-	        if(object[29]!=null){//电流曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[29]);
+	        if(object[30]!=null){//电流曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[30]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(clobStr)){
@@ -312,8 +313,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        
 	        //人工干预
 	        calculateRequestData.setManualIntervention(new RPCCalculateRequestData.ManualIntervention());
-	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[31]+""));
-	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[23]+""));
+	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[32]+""));
+	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[24]+""));
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";

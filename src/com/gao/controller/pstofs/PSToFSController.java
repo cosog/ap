@@ -761,7 +761,7 @@ public class PSToFSController extends BaseController {
         				
         				//功率曲线
         				String Watt ="[";
-            			for(int i=0;i<transferDiagram.getWatt().size();i++){
+            			for(int i=0;transferDiagram.getWatt()!=null&&i<transferDiagram.getWatt().size();i++){
             				Watt +=transferDiagram.getWatt().get(i);
             				if(i<transferDiagram.getWatt().size()-1){
             					Watt +=",";
@@ -771,9 +771,9 @@ public class PSToFSController extends BaseController {
             			result_json.append("\"Watt\":"+Watt+",");
             			
             			//电流和转速曲线
-            			if(StringManagerUtils.isNotNull(transferDiagram.getVer())&&transferDiagram.getVer().startsWith("2")){//如果2.0版本
+            			if(StringManagerUtils.isNotNull(transferDiagram.getVer())&& !(transferDiagram.getVer().startsWith("1"))){//如果2.0版本
             				String I ="[";
-                			for(int i=0;i<transferDiagram.getI().size();i++){
+                			for(int i=0;transferDiagram.getI()!=null&&i<transferDiagram.getI().size();i++){
                 				I +=transferDiagram.getI().get(i);
                 				if(i<transferDiagram.getI().size()-1){
                 					I +=",";
@@ -783,7 +783,7 @@ public class PSToFSController extends BaseController {
                 			result_json.append("\"I\":"+I+",");
             				
             				String RPM="[";
-            				for(int i=0;i<transferDiagram.getRPM().size();i++){
+            				for(int i=0;transferDiagram.getRPM()!=null&&i<transferDiagram.getRPM().size();i++){
             					RPM +=transferDiagram.getRPM().get(i);
                 				if(i<transferDiagram.getRPM().size()-1){
                 					RPM +=",";

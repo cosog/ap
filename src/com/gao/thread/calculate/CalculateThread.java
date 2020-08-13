@@ -43,7 +43,9 @@ public class CalculateThread extends Thread{
 				+ " t2.tubingstringinsidediameter,"
 				+ " t2.pumptype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
 				+ " t2.casingstringinsidediameter,"
-				+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,t2.producingfluidlevel,t2.pumpsettingdepth,"
+				+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,"
+				+ " t2.producingfluidlevel,t2.pumpsettingdepth,"
+				+ " decode(t.resultstatus,2,t.levelcorrectvalue,t3.levelcorrectvalue) as levelcorrectvalue,"
 				+ " t2.netgrossratio,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
@@ -69,6 +71,7 @@ public class CalculateThread extends Thread{
 				Object[] obj=(Object[])list.get(i);
 				//诊断计产
 				String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
+				System.out.println(requestData);
 				java.lang.reflect.Type type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
 				String responseData="";

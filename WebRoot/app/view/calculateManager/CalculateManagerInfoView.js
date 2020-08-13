@@ -366,6 +366,10 @@ function CreateAndLoadCalculateManagerTable(isNew,result,divid){
         for(var i=0;i<result.columns.length;i++){
         	colHeaders+="'"+result.columns[i].header+"'";
         	columns+="{data:'"+result.columns[i].dataIndex+"'}";
+        	if(result.columns[i].dataIndex.toUpperCase()=="id".toUpperCase()){
+        		columns+=",type: 'checkbox'";
+        	}
+        	columns+="}";
         	if(i<result.columns.length-1){
         		colHeaders+=",";
             	columns+=",";

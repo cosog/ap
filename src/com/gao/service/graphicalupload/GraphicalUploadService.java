@@ -87,6 +87,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t.casingstringinsidediameter,"
 					+ " t.watercut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,t.producingfluidlevel,t.pumpsettingdepth,"
 					+ " t.netgrossratio,"
+					+ " t3.levelcorrectvalue,"
 					+ " t.wellid "
 					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
 					+ " where t.wellid=t2.wellid and t.acquisitiontime=t2.acquisitiontime and t.wellid=t3.id"
@@ -257,6 +258,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[17]+""));
 				calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[18]+""));
 				calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[19]+""));
+				calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[22]+""));
 				calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[20]+""));
 				
 				//功图数据

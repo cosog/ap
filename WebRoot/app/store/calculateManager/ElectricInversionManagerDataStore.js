@@ -1,6 +1,6 @@
-Ext.define('AP.store.calculateManager.CalculateManagerDataStore', {
+Ext.define('AP.store.calculateManager.ElectricInversionManagerDataStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.calculateManagerDataStore',
+    alias: 'widget.electricInversionManagerDataStore',
     remoteSort: true,
     autoLoad: true,
     pageSize: defaultPageSize,

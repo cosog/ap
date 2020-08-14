@@ -1860,6 +1860,9 @@ public class ProtocolModbusThread extends Thread{
             						currentTimelong = format.parse(clientUnit.unitDataList.get(i).getDiagranAcquisitionTime()).getTime();//数据库中最新功图采集时间
             					}
             					long newTimelong = format.parse(diagramAcquisitionTime).getTime();
+            					
+            					System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"RTU中功图采集时间："+diagramAcquisitionTime+",当前功图采集时间："+clientUnit.unitDataList.get(i).getDiagranAcquisitionTime());
+            					
             					if(newTimelong>currentTimelong){//发现新功图
             						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"发现新功图");
             						clientUnit.unitDataList.get(i).setDiagranAcquisitionTime(diagramAcquisitionTime);

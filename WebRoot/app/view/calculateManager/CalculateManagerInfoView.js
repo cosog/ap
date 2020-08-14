@@ -331,6 +331,22 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         				border: false,
         				bbar: screwPumpBbar,
         				html:'<div class=ScrewPumpCalculateManagerContainer" style="width:100%;height:100%;"><div class="con" id="ScrewPumpCalculateManagerDiv_id"></div></div>',
+        			},{
+        				title: '全天评价',
+        				id:'PumpingUnitDailyCalculateManagerPanel',
+        				layout: "fit",
+        				hidden:true,
+        				border: false,
+        				bbar: screwPumpBbar,
+        				html:'<div class=PumpingUnitDailyCalculateManagerContainer" style="width:100%;height:100%;"><div class="con" id="PumpingUnitDailyCalculateManagerDiv_id"></div></div>',
+        			},{
+        				title: '电参反演',
+        				id:'ElectricInversionCalculateManagerPanel',
+        				layout: "fit",
+        				hidden:true,
+        				border: false,
+        				bbar: screwPumpBbar,
+        				html:'<div class=ElectricInversionCalculateManagerContainer" style="width:100%;height:100%;"><div class="con" id="ElectricInversionCalculateManagerDiv_id"></div></div>',
         			}],
         			listeners: {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {

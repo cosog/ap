@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -1742,19 +1743,27 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	}
 	
 	public String getNewestAcquisitionTime(String orgId,String FSDiagramMaxAcquisitionTime,String DiscreteMaxAcquisitionTime){
+		long startTime=new Date().getTime();
 		StringBuffer result_json = new StringBuffer();
 		String newestFSDiagramAcquisitionTime="";
 		String newestDiscreteAcquisitionTime="";
 		int diagramRecords=0;
 		int discreteRecords=0;
+		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String diagramSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd hh24:mi:ss'),count(1) from TBL_RPC_DIAGRAM_HIST t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
 		String discreteSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd hh24:mi:ss'),count(1) from tbl_rpc_discrete_hist t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
 		
 		if(StringManagerUtils.isNotNull(FSDiagramMaxAcquisitionTime)){
 			diagramSql+="and t.acquisitiontime>to_date('"+FSDiagramMaxAcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		}else{
+			diagramSql+="and t.acquisitiontime>to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+			newestFSDiagramAcquisitionTime=currentTime;
 		}
 		if(StringManagerUtils.isNotNull(DiscreteMaxAcquisitionTime)){
 			discreteSql+="and t.acquisitiontime>to_date('"+DiscreteMaxAcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		}else{
+			discreteSql+="and t.acquisitiontime>to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+			newestDiscreteAcquisitionTime=currentTime;
 		}
 		
 		List<?> diagramList=this.findCallSql(diagramSql);
@@ -1762,21 +1771,25 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		
 		if(diagramList.size()>0){
 			Object[] obj = (Object[]) diagramList.get(0);
-			if(obj[0]!=null){
-				newestFSDiagramAcquisitionTime=obj[0]+"";
-			}
 			if(obj[1]!=null){
 				diagramRecords=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+			if(diagramRecords>0){
+				if(obj[0]!=null){
+					newestFSDiagramAcquisitionTime=obj[0]+"";
+				}
 			}
 		}
 		
 		if(discreteList.size()>0){
 			Object[] obj = (Object[]) discreteList.get(0);
-			if(obj[0]!=null){
-				newestDiscreteAcquisitionTime=obj[0]+"";
-			}
 			if(obj[1]!=null){
 				discreteRecords=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+			if(discreteRecords>0){
+				if(obj[0]!=null){
+					newestDiscreteAcquisitionTime=obj[0]+"";
+				}
 			}
 		}
 		result_json.append("{");
@@ -1785,6 +1798,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		result_json.append("\"newestDiscreteAcquisitionTime\":\""+newestDiscreteAcquisitionTime+"\",");
 		result_json.append("\"discreteRecords\":"+discreteRecords+"");
 		result_json.append("}");
+		long endTime=new Date().getTime();
+		String json="用时:"+(endTime-startTime)+"毫秒";
+//		System.out.println(json);
 		return result_json.toString();
 	}
 	

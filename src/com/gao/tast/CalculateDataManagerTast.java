@@ -83,6 +83,7 @@ public class CalculateDataManagerTast {
 	}
 	
 	//订阅发布模式通信计算
+	@SuppressWarnings({ "static-access", "unused" })
 //	@Scheduled(cron = "0 0/5 * * * ?")
 	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/pubSubModelCommCalculation";

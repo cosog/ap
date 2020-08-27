@@ -59,6 +59,9 @@
 		<property name="simultaneousBuildThrottle">
 			<value>30</value>
 		</property>
+		<property name="maximumActiveTime">
+			<value>900000</value>
+		</property>
 	</bean>
 	<!-- 配置sessionFactory，把数据源注入给session工厂-->
 	<bean id="sessionFactory"

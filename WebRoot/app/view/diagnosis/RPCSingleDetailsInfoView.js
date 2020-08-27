@@ -2053,6 +2053,15 @@ var FSDiagramAnalysisRealtimeRefreshTask = {
 			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcquisitionTime',
 			    		success:function(response) {
 			    			var result = Ext.decode(response.responseText);
+			    			if(Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").getValue()==''){
+			    				Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").setValue(result.newestFSDiagramAcquisitionTime);
+			    			}
+			    			
+			    			if(Ext.getCmp("DiscreteMaxAcquisitionTime_Id").getValue()==''){
+			    				Ext.getCmp("DiscreteMaxAcquisitionTime_Id").setValue(result.newestDiscreteAcquisitionTime);
+			    			}
+			    			
+			    			
 			    			if(result.diagramRecords>0 || result.discreteRecords>0){
 			    				if(result.diagramRecords>0){
 			    					Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").setValue(result.newestFSDiagramAcquisitionTime);

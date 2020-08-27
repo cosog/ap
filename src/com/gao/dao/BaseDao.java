@@ -64,6 +64,7 @@ import com.gao.model.ProductionOutWellInfo;
 import com.gao.model.Pump;
 import com.gao.model.ReservoirProperty;
 import com.gao.model.gridmodel.CalculateManagerHandsontableChangedData;
+import com.gao.model.gridmodel.ElecInverCalculateManagerHandsontableChangedData;
 import com.gao.model.gridmodel.InverOptimizeHandsontableChangedData;
 import com.gao.model.gridmodel.ProductionOutGridPanelData;
 import com.gao.model.gridmodel.PumpGridPanelData;
@@ -276,15 +277,27 @@ public class BaseDao extends HibernateDaoSupport {
 	public int executeSqlUpdate(String sql) {
 		int n = 0;
 		Statement stat = null;
+		Connection conn=null;
+		PreparedStatement ps=null;
 		try {
-			stat=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection().createStatement();
-			n = stat.executeUpdate(sql);
+			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+//			stat=conn.createStatement();
+//			n = stat.executeUpdate(sql);
+			
+			ps=conn.prepareStatement(sql);
+			n=ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				if (stat != null) {
 					stat.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -835,7 +848,20 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(ps!=null){
+					ps.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return trackList;
@@ -889,7 +915,20 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(ps!=null){
+					ps.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return trackList;
@@ -951,7 +990,7 @@ public class BaseDao extends HibernateDaoSupport {
 		ResultSet rs = null;
 		Outputwellproduction well = null;
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
+		CallableStatement cs=null;
 		try {
 			cs = conn.prepareCall("{ call PRO_QUERY_OBJECTDATA(?,?) }");
 			cs.setString(1, sql);
@@ -969,7 +1008,20 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
-			conn.close();
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(cs!=null){
+					cs.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
@@ -987,6 +1039,21 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(ps!=null){
+					ps.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return total;
 	}
@@ -1007,7 +1074,7 @@ public class BaseDao extends HibernateDaoSupport {
 
 	public Boolean saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData,String wellType, String ids) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs;
+		CallableStatement cs=null;
 		PreparedStatement ps=null;
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String tableName="tbl_rpc_productiondata_latest";
@@ -1158,9 +1225,20 @@ public class BaseDao extends HibernateDaoSupport {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
-			if(ps!=null)
-				ps.close();
-			conn.close();
+			try {
+				if(cs!=null){
+					cs.close();
+				}
+				if(ps!=null){
+					ps.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -1378,6 +1456,85 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
+	
+	public Boolean saveElecInverPumpingUnitData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData) throws SQLException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		Statement st=null; 
+		CallableStatement cs=null;
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_rpcinformationNoPTF(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			for(int i=0;i<elecInverCalculateManagerHandsontableChangedData.getUpdatelist().size();i++){
+				
+				cs.setString(1, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellName());
+				cs.setString(2, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
+				cs.setString(3, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getModel());
+				cs.setString(4, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getStroke());
+				cs.setString(5, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection());
+				cs.setString(6, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
+				cs.setString(7, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
+				cs.setString(8, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
+				cs.setString(9, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
+				cs.setString(10, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getBalancePosition());
+				cs.setString(11, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight());
+				cs.executeUpdate();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
+	public Boolean saveElecInverOptimizeHandsontableData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData,String orgId) throws SQLException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		PreparedStatement ps=null;
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+		}
+		try {
+			cs = conn.prepareCall("{call prd_save_rpc_inver_opt(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			if(elecInverCalculateManagerHandsontableChangedData.getUpdatelist()!=null){
+				for(int i=0;i<elecInverCalculateManagerHandsontableChangedData.getUpdatelist().size();i++){
+					if(StringManagerUtils.isNotNull(elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+						
+						cs.setString(1, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellName());
+						cs.setString(2, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrankPS());
+						cs.setString(3, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getSurfaceSystemEfficiency());
+						cs.setString(4, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFS_LeftPercent());
+						cs.setString(5, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFS_RightPercent());
+						cs.setString(6, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getWattAngle());
+						cs.setString(7, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_Watt());
+						cs.setString(8, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_I());
+						cs.setString(9, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_RPM());
+						cs.setString(10, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram());
+						cs.setString(11,elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram_L());
+						cs.setString(12, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram_R());
+						cs.setString(13, orgId);
+						cs.executeUpdate();
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			if(ps!=null){
+				ps.close();
+			}
+			if(cs!=null){
+				cs.close();
+			}
+			conn.close();
+		}
+		return true;
+	}
+	
 	public Boolean editWellName(String oldWellName,String newWellName,String orgid) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
@@ -1574,6 +1731,15 @@ public class BaseDao extends HibernateDaoSupport {
 				e.printStackTrace();
 			} finally {
 				try {
+					if(rs!=null){
+						rs.close();
+					}
+					if(ps!=null){
+						ps.close();
+					}
+					if(conn!=null){
+						conn.close();
+					}
 					bais.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -1588,8 +1754,10 @@ public class BaseDao extends HibernateDaoSupport {
 		String callName = "{Call proc_test(?,?)}";
 		ResultSet rs = null;
 		CallableStatement call=null;
+		Connection conn=null;
 		try {
-			call=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection().prepareCall(callName);
+			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+			call=conn.prepareCall(callName);
 			call.setString(1, "");
 			call.registerOutParameter(2, Types.VARCHAR);
 			rs = call.executeQuery();
@@ -1597,6 +1765,21 @@ public class BaseDao extends HibernateDaoSupport {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(call!=null){
+					call.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -1604,13 +1787,27 @@ public class BaseDao extends HibernateDaoSupport {
 	public boolean deleteByCallPro(String procinstid) throws SQLException {
 		String procdure = "{Call sp_deleteInstByRootID(?)}";
 		CallableStatement cs = null;
+		Connection conn=null;
 		try {
-			cs = SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection().prepareCall(procdure);
+			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+			cs = conn.prepareCall(procdure);
 			cs.setString(1, procinstid);
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			try {
+				if(cs!=null){
+					cs.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return cs.execute();
 	}

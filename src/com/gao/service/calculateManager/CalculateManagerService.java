@@ -17,8 +17,10 @@ import org.springframework.stereotype.Component;
 import com.gao.dao.BaseDao;
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.DiagnosisAnalysisStatistics;
+import com.gao.model.calculate.InversioneFSdiagramResponseData;
 import com.gao.model.data.DataDictionary;
 import com.gao.model.gridmodel.CalculateManagerHandsontableChangedData;
+import com.gao.model.gridmodel.ElecInverCalculateManagerHandsontableChangedData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
@@ -55,15 +57,19 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	private DataitemsInfoService dataitemsInfoService;
 	@Autowired
 	private CalculateDataService calculateDataService;
-	/**
-	 * <p>描述：采出井实时评价井列表</p>
-	 * @param orgId
-	 * @param jh
-	 * @param pager
-	 * @return
-	 * @throws Exception
-	 */
-	public String getCalculateResultData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign)
+	public String getCalculateResultData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+			throws Exception {
+		String json="";
+		if("1".equals(calculateType)||"2".equals(calculateType)){
+			json=this.getDiagnoseAndProdCalculateResultData(orgId, wellName, pager, wellType, startDate, endDate, calculateSign, calculateType);
+		}else if("5".equals(calculateType)){//电参反演地面功图
+			json=this.getElecInverCalculateResultData(orgId, wellName, pager, wellType, startDate, endDate, calculateSign, calculateType);
+		}
+		
+		return json;
+	}
+	
+	public String getDiagnoseAndProdCalculateResultData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
 			throws Exception {
 		DataDictionary ddic = null;
 		String columns= "";
@@ -73,18 +79,20 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String ddicName="calculateManager";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		if("200".equals(wellType)){
+		
+		if("1".equals(calculateType)){
 			ddicName="calculateManager";
-		}else if("400".equals(wellType)){
+		}else if("2".equals(calculateType)){
 			ddicName="screwPumpCalculateManager";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		columns = ddic.getTableHeader();
 		
 		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
 		}
-		columns = ddic.getTableHeader();
+		
 		sql="select t.id,t.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.workingConditionName,"
 			+ prodCol
 			+ "t.crudeoilDensity,t.waterDensity,t.naturalGasRelativeDensity,"
@@ -176,11 +184,163 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
+	public String getElecInverCalculateResultData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+			throws Exception {
+		
+		String sql="";
+		String finalSql="";
+		String sqlAll="";
+		
+		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		
+		
+		
+		sql="select t.id,t.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
+			+ "t.manufacturer,t.model,t.stroke,"
+			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
+			+ "t.singleCrankWeight,t.structuralUnbalance,t.balancePosition,t.balanceWeight,"
+			
+			+ "t.offsetAngleOfCrankPS,t.surfaceSystemEfficiency,t.FS_LeftPercent,t.FS_RightPercent,wattAngle,"
+			+ "t.filterTime_Watt,t.filterTime_I,filterTime_RPM,"
+			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
+			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") "
+			+ " and t.acquisitionTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+		
+		
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+		}
+		if(StringManagerUtils.isNotNull(calculateSign)){
+			if("0".equals(calculateSign)){
+				sql+=" and  t.resultstatus in(0,2) ";
+			}else{
+				sql+=" and  t.resultstatus = " + calculateSign + " ";
+			}
+		}
+		sql+=" order by t.acquisitionTime desc, t.wellName";
+		int maxvalue=pager.getLimit()+pager.getStart();
+		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(finalSql);
+		
+		
+		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
+				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acquisitionTime\" ,children:[] },"
+				+ "{ \"header\":\"计算状态\",\"dataIndex\":\"resultStatus\" ,children:[] },"
+				
+				+ "{ \"header\":\"抽油机厂家\",\"dataIndex\":\"manufacturer\" ,children:[] },"
+				+ "{ \"header\":\"抽油机型号\",\"dataIndex\":\"model\" ,children:[] },"
+				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\" ,children:[] },"
+				+ "{ \"header\":\"旋转方向\",\"dataIndex\":\"crankRotationDirection\" ,children:[] },"
+				+ "{ \"header\":\"曲柄偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrank\" ,children:[] },"
+				+ "{ \"header\":\"曲柄重心半径(m)\",\"dataIndex\":\"crankGravityRadius\" ,children:[] },"
+				+ "{ \"header\":\"单块曲柄重量(kN)\",\"dataIndex\":\"singleCrankWeight\" ,children:[] },"
+				+ "{ \"header\":\"结构不平衡重(kN)\",\"dataIndex\":\"structuralUnbalance\" ,children:[] },"
+				+ "{ \"header\":\"平衡块位置(m)\",\"dataIndex\":\"balancePosition\" ,children:[] },"
+				+ "{ \"header\":\"平衡块重量(kN)\",\"dataIndex\":\"balanceWeight\" ,children:[] },"
+				
+				+ "{ \"header\":\"曲柄位置开关偏置角(°)\",\"dataIndex\":\"offsetAngleOfCrankPS\" ,children:[] },"
+				+ "{ \"header\":\"地面效率\",\"dataIndex\":\"surfaceSystemEfficiency\" ,children:[] },"
+				+ "{ \"header\":\"左侧截取百分比\",\"dataIndex\":\"FS_LeftPercent\" ,children:[] },"
+				+ "{ \"header\":\"右侧截取百分比\",\"dataIndex\":\"FS_RightPercent\" ,children:[] },"
+				+ "{ \"header\":\"功率滤波角度(°)\",\"dataIndex\":\"wattAngle\" ,children:[] },"
+				+ "{ \"header\":\"功率滤波次数\",\"dataIndex\":\"filterTime_Watt\" ,children:[] },"
+				+ "{ \"header\":\"电流滤波次数\",\"dataIndex\":\"filterTime_I\" ,children:[] },"
+				+ "{ \"header\":\"转速滤波次数\",\"dataIndex\":\"filterTime_RPM\" ,children:[] },"
+				+ "{ \"header\":\"功图滤波次数\",\"dataIndex\":\"filterTime_FSDiagram\" ,children:[] },"
+				+ "{ \"header\":\"功图左侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_L\" ,children:[] },"
+				+ "{ \"header\":\"功图右侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_R\" ,children:[] }"
+				
+				+ "]";
+		
+		
+		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{\"id\":\""+obj[0]+"\",");
+			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"acquisitionTime\":\""+obj[2]+"\",");
+			result_json.append("\"resultStatus\":\""+obj[3]+"\",");
+			
+			result_json.append("\"manufacturer\":\""+obj[4]+"\",");
+			result_json.append("\"model\":\""+obj[5]+"\",");
+			result_json.append("\"stroke\":\""+obj[6]+"\",");
+			result_json.append("\"crankRotationDirection\":\""+obj[7]+"\",");
+			result_json.append("\"offsetAngleOfCrank\":\""+obj[8]+"\",");
+			result_json.append("\"crankGravityRadius\":\""+obj[9]+"\",");
+			result_json.append("\"singleCrankWeight\":\""+obj[10]+"\",");
+			result_json.append("\"structuralUnbalance\":\""+obj[11]+"\",");
+			result_json.append("\"balancePosition\":\""+obj[12]+"\",");
+			result_json.append("\"balanceWeight\":\""+obj[13]+"\",");
+			
+			result_json.append("\"offsetAngleOfCrankPS\":\""+obj[14]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[15]+"\",");
+			result_json.append("\"FS_LeftPercent\":\""+obj[16]+"\",");
+			result_json.append("\"FS_RightPercent\":\""+obj[17]+"\",");
+			result_json.append("\"wattAngle\":\""+obj[18]+"\",");
+			result_json.append("\"filterTime_Watt\":\""+obj[19]+"\",");
+			result_json.append("\"filterTime_I\":\""+obj[20]+"\",");
+			result_json.append("\"filterTime_RPM\":\""+obj[21]+"\",");
+			result_json.append("\"filterTime_FSDiagram\":\""+obj[22]+"\",");
+			result_json.append("\"filterTime_FSDiagram_R\":\""+obj[23]+"\",");
+			result_json.append("\"filterTime_FSDiagram_R\":\""+obj[24]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json = result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+//		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
+		String json=result_json.toString().replaceAll("null", "");
+		return json;
+	}
+	
 	public void saveRecalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData) throws Exception {
 		getBaseDao().saveRecalculateData(calculateManagerHandsontableChangedData);
 	}
 	
-	
+	public void saveElecInverPumpingUnitData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData) throws Exception {
+		getBaseDao().saveElecInverPumpingUnitData(elecInverCalculateManagerHandsontableChangedData);
+	}
+	public void saveElecInverOptimizeHandsontableData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData,String orgid) throws Exception {
+		getBaseDao().saveElecInverOptimizeHandsontableData(elecInverCalculateManagerHandsontableChangedData,orgid);
+	}
+	public boolean reInverDiagram(String recordId,InversioneFSdiagramResponseData inversioneFSdiagramResponseData) throws SQLException, ParseException{
+		String SStr="",FStr="",PStr="",AStr="",RPMStr="";
+		String F360Str="",S360Str="",A360Str="";
+		if(inversioneFSdiagramResponseData.getResultStatus()==1){
+			SStr=StringUtils.join(inversioneFSdiagramResponseData.getS(), ",");
+			FStr=StringUtils.join(inversioneFSdiagramResponseData.getF(), ",");
+		}
+		PStr=StringUtils.join(inversioneFSdiagramResponseData.getWatt(), ",");
+		AStr=StringUtils.join(inversioneFSdiagramResponseData.getI(), ",");
+		RPMStr=StringUtils.join(inversioneFSdiagramResponseData.getRPM(), ",");
+		
+		
+		if(inversioneFSdiagramResponseData.getF360()!=null){
+			F360Str=StringUtils.join(inversioneFSdiagramResponseData.getF360(), ",");
+		}
+		if(inversioneFSdiagramResponseData.getS360()!=null){
+			S360Str=StringUtils.join(inversioneFSdiagramResponseData.getS360(), ",");
+		}
+		if(inversioneFSdiagramResponseData.getA360()!=null){
+			A360Str=StringUtils.join(inversioneFSdiagramResponseData.getA360(), ",");
+		}
+		
+		return this.getBaseDao().reInverDiagram(recordId,inversioneFSdiagramResponseData.getAcquisitionTime(),
+				inversioneFSdiagramResponseData.getCNT(),inversioneFSdiagramResponseData.getStroke(),inversioneFSdiagramResponseData.getSPM(),
+				inversioneFSdiagramResponseData.getMaxF(),inversioneFSdiagramResponseData.getMinF(),
+				SStr,FStr,
+				S360Str,A360Str,F360Str,
+				AStr,PStr,RPMStr,
+				inversioneFSdiagramResponseData.getUpstrokeIMax(),inversioneFSdiagramResponseData.getDownstrokeIMax(),
+				inversioneFSdiagramResponseData.getUpstrokeWattMax(),inversioneFSdiagramResponseData.getDownstrokeWattMax(),
+				inversioneFSdiagramResponseData.getIDegreeBalance(),inversioneFSdiagramResponseData.getWattDegreeBalance(),
+				inversioneFSdiagramResponseData.getResultStatus());
+	}
 	public String getCalculateStatusList(String orgId, String wellName, String wellType,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql="";

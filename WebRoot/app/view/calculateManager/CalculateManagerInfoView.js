@@ -37,6 +37,21 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             beforePageText: "当前页",
             afterPageText: "共{0}页"
         });
+        var elecInverBbar = new Ext.toolbar.Paging({
+        	id:'elecInverCalculateManagerBbar',
+        	store: calculateResultStore,
+            pageSize: defaultPageSize,
+            displayInfo: true,
+            displayMsg: '当前 {0}~{1}条  共 {2} 条',
+            emptyMsg: "没有记录可显示",
+            prevText: "上一页",
+            nextText: "下一页",
+            refreshText: "刷新",
+            lastText: "最后页",
+            firstText: "第一页",
+            beforePageText: "当前页",
+            afterPageText: "共{0}页"
+        });
         var wellListStore = new Ext.data.JsonStore({
             pageSize: defaultWellComboxSize,
             fields: [{
@@ -274,7 +289,10 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             	                            	bbarId="pumpingCalculateManagerBbar";
             	        					}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
             	        						bbarId="screwPumpCalculateManagerBbar";
+            	        					}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+            	        						bbarId="elecInverCalculateManagerBbar";
             	        					}
+            	                            
             	                            Ext.getCmp(bbarId).getStore().loadPage(1);
             	                        } else {
             	                        	Ext.MessageBox.alert("信息","操作失败");
@@ -343,7 +361,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         				title: '电参反演',
         				id:'ElectricInversionCalculateManagerPanel',
         				layout: "fit",
-        				hidden:true,
+        				hidden:false,
         				border: false,
         				bbar: screwPumpBbar,
         				html:'<div class=ElectricInversionCalculateManagerContainer" style="width:100%;height:100%;"><div class="con" id="ElectricInversionCalculateManagerDiv_id"></div></div>',
@@ -355,8 +373,13 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="PumpingUnitCalculateManagerPanel"){
         						$("#ScrewPumpCalculateManagerDiv_id").html('');
+        						$("#ElectricInversionCalculateManagerDiv_id").html('');
         					}else if(newCard.id=="ScrewPumpCalculateManagerPanel"){
         						$("#PumpingUnitCalculateManagerDiv_id").html('');
+        						$("#ElectricInversionCalculateManagerDiv_id").html('');
+        					}else if(newCard.id=="ElectricInversionCalculateManagerPanel"){
+        						$("#PumpingUnitCalculateManagerDiv_id").html('');
+        						$("#ScrewPumpCalculateManagerDiv_id").html('');
         					}
         					calculateResultStore.loadPage(1);
         				}
@@ -381,7 +404,7 @@ function CreateAndLoadCalculateManagerTable(isNew,result,divid){
         var columns="[";
         for(var i=0;i<result.columns.length;i++){
         	colHeaders+="'"+result.columns[i].header+"'";
-        	columns+="{data:'"+result.columns[i].dataIndex+"'}";
+        	columns+="{data:'"+result.columns[i].dataIndex+"'";
         	if(result.columns[i].dataIndex.toUpperCase()=="id".toUpperCase()){
         		columns+=",type: 'checkbox'";
         	}
@@ -457,6 +480,11 @@ var CalculateManagerHandsontableHelper = {
 			                }
 						}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
 							if (visualColIndex >= 1 && visualColIndex <= 6) {
+								cellProperties.readOnly = true;
+								cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
+			                }
+						}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+							if (visualColIndex >= 1 && visualColIndex <= 3) {
 								cellProperties.readOnly = true;
 								cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
 			                }
@@ -539,13 +567,19 @@ var CalculateManagerHandsontableHelper = {
 	            if (JSON.stringify(calculateManagerHandsontableHelper.AllData) != "{}" && calculateManagerHandsontableHelper.validresult) {
 	            	var bbarId="pumpingCalculateManagerBbar";
 	            	var wellType=200;
+	            	var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
                     var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
                     if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
                     	bbarId="pumpingCalculateManagerBbar";
                     	wellType=200;
+                    	calculateType=1;
 					}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
 						bbarId="screwPumpCalculateManagerBbar";
 						wellType=400;
+						calculateType=2;
+					}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+						bbarId="elecInverCalculateManagerBbar";
+						calculateType=5;
 					}
 	            	Ext.Ajax.request({
 	            		method:'POST',
@@ -553,7 +587,7 @@ var CalculateManagerHandsontableHelper = {
 	            		success:function(response) {
 	            			var rdata=Ext.JSON.decode(response.responseText);
 	            			if (rdata.success) {
-	                        	Ext.MessageBox.alert("信息","保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。");
+	                        	var successInfo='保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。';
 	                            //保存以后重置全局容器
 	                            calculateManagerHandsontableHelper.clearContainer();
 	                            var bbarId="pumpingCalculateManagerBbar";
@@ -562,7 +596,10 @@ var CalculateManagerHandsontableHelper = {
 	                            	bbarId="pumpingCalculateManagerBbar";
 	        					}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
 	        						bbarId="screwPumpCalculateManagerBbar";
+	        					}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+	        						bbarId="elecInverCalculateManagerBbar";
 	        					}
+	                            Ext.MessageBox.alert("信息",successInfo);
 	                            Ext.getCmp(bbarId).getStore().loadPage(1);
 	                        } else {
 	                        	Ext.MessageBox.alert("信息","数据保存失败");
@@ -575,7 +612,8 @@ var CalculateManagerHandsontableHelper = {
 	            		},
 	            		params: {
 	                    	data: JSON.stringify(calculateManagerHandsontableHelper.AllData),
-	                    	wellType:wellType
+	                    	wellType: wellType,
+	                    	calculateType: calculateType
 	                    }
 	            	}); 
 	            } else {

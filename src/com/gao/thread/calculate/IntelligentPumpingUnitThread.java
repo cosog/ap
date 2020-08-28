@@ -523,6 +523,95 @@ public class IntelligentPumpingUnitThread extends Thread{
 	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
     					}
     					
+    					
+    					
+    					//重心远离支点每拍调节时间控制
+    					if(clientUnit.unitDataList.get(i).balanceAwayTimePerBeatControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat()!=null){
+    						wellReaded=true;
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimePerBeatControl(),driveConfig.getProtocol());
+							clientUnit.unitDataList.get(i).setBalanceAwayTimePerBeatControl(0);
+							
+							//写操作口令验证
+							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
+							if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"写操作口令验证发送失败:"+StringManagerUtils.bytesToHexString(readByte,12));
+	        					this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
+	    					if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"写操作口令验证返回数据读取失败，断开连接,释放资源");
+	            				this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+							
+							rc=this.writeSocketData(clientUnit.socket, readByte,os,clientUnit.unitDataList.get(i));
+							if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"重心远离支点每拍调节时间控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
+	        					this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+							clientUnit.unitDataList.get(i).sendPackageCount+=1;
+							clientUnit.unitDataList.get(i).sendPackageSize+=17;
+							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
+	    					if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间控制返回数据读取失败，断开连接,释放资源");
+	            				this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
+	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
+	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
+    					}
+    					
+    					
+    					//重心接近支点每拍调节时间控制
+    					if(clientUnit.unitDataList.get(i).balanceCloseTimePerBeatControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat()!=null){
+    						wellReaded=true;
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimePerBeatControl(),driveConfig.getProtocol());
+							clientUnit.unitDataList.get(i).setBalanceCloseTimePerBeatControl(0);
+							
+							//写操作口令验证
+							rc=this.writeSocketData(clientUnit.socket,writeCommand ,os,clientUnit.unitDataList.get(i));
+							if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"写操作口令验证发送失败:"+StringManagerUtils.bytesToHexString(readByte,12));
+	        					this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
+	    					if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"写操作口令验证返回数据读取失败，断开连接,释放资源");
+	            				this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+							
+							rc=this.writeSocketData(clientUnit.socket, readByte,os,clientUnit.unitDataList.get(i));
+							if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"重心接近支点每拍调节时间控制指令发送失败:"+StringManagerUtils.bytesToHexString(readByte,14));
+	        					this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+							clientUnit.unitDataList.get(i).sendPackageCount+=1;
+							clientUnit.unitDataList.get(i).sendPackageSize+=17;
+							rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,clientUnit.unitDataList.get(i));
+	    					if(rc==-1){//断开连接
+	    						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间控制返回数据读取失败，断开连接,释放资源");
+	            				this.releaseResource(is,os);
+	            				wellReaded=false;
+	            				break;
+	            			}
+	    					clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime("");//控制指令发出后，将离散数据上一次读取时间清空，执行离散数据读取
+	    					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime("");//控制指令发出后，将离散数据上一次保存时间清空，执行离散数据保存
+	    					clientUnit.unitDataList.get(i).getAcquisitionData().setScrewPumpSaveTime("");;//控制指令发出后，将螺杆泵数据上一次保存时间清空，执行离散数据保存
+    					}
+    					
     					//参与平衡计算冲程次数控制
     					if(clientUnit.unitDataList.get(i).balanceStrokeCountControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount()!=null){
     						wellReaded=true;

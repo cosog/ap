@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -21,14 +23,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gao.controller.base.BaseController;
 import com.gao.model.User;
+import com.gao.model.calculate.InversioneFSdiagramResponseData;
 import com.gao.model.gridmodel.CalculateManagerHandsontableChangedData;
+import com.gao.model.gridmodel.ElecInverCalculateManagerHandsontableChangedData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.calculateManager.CalculateManagerService;
+import com.gao.utils.Config;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import oracle.sql.CLOB;
 
 /**
  * 计算结果管理controller
@@ -61,6 +70,7 @@ public class CalculateManagerController extends BaseController {
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		this.pager = new Page("pagerForm", request);
 		User user=null;
 		if (!StringManagerUtils.isNotNull(orgId)) {
@@ -87,7 +97,7 @@ public class CalculateManagerController extends BaseController {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		String json = calculateManagerService.getCalculateResultData(orgId, wellName, pager,wellType,startDate,endDate,calculateSign);
+		String json = calculateManagerService.getCalculateResultData(orgId, wellName, pager,wellType,startDate,endDate,calculateSign,calculateType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -106,14 +116,164 @@ public class CalculateManagerController extends BaseController {
 	@SuppressWarnings("unused")
 	@RequestMapping("/saveRecalculateData")
 	public String saveRecalculateData() throws Exception {
-
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String orgid=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
-		
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
 		Gson gson = new Gson();
-		java.lang.reflect.Type type = new TypeToken<CalculateManagerHandsontableChangedData>() {}.getType();
-		CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData=gson.fromJson(data, type);
-		this.calculateManagerService.saveRecalculateData(calculateManagerHandsontableChangedData);
 		String json ="{success:true}";
+		if("1".equals(calculateType)){
+			java.lang.reflect.Type type = new TypeToken<CalculateManagerHandsontableChangedData>() {}.getType();
+			CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData=gson.fromJson(data, type);
+			this.calculateManagerService.saveRecalculateData(calculateManagerHandsontableChangedData);
+			json ="{success:true}";
+		}else if("5".equals(calculateType)){
+			java.lang.reflect.Type type = new TypeToken<ElecInverCalculateManagerHandsontableChangedData>() {}.getType();
+			ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData=gson.fromJson(data, type);
+			this.calculateManagerService.saveElecInverPumpingUnitData(elecInverCalculateManagerHandsontableChangedData);
+			this.calculateManagerService.saveElecInverOptimizeHandsontableData(elecInverCalculateManagerHandsontableChangedData, orgid);
+			
+			//进行反演计算
+			String inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorauto()[0];
+			StringBuffer result_json = new StringBuffer();
+			for(int i=0;elecInverCalculateManagerHandsontableChangedData!=null&&i<elecInverCalculateManagerHandsontableChangedData.getUpdatelist().size();i++){
+				String sql="select t.wellname,t2.id as diagramid,to_char(t2.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+	    				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
+	    				+ " t3.manufacturer as manufacturer_motor,t3.model as model_motor,t3.beltpulleydiameter,"
+	    				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
+	    				+ " t4.offsetangleofcrank,t5.offsetangleofcrankps,t4.crankgravityradius,t4.singlecrankweight,t4.structuralunbalance,"
+	    				+ " t4.gearreducerratio,t4.gearreducerbeltpulleydiameter, t4.balanceposition,t4.balanceweight,"
+	    				+ " t5.surfacesystemefficiency,t5.fs_leftpercent,t5.fs_rightpercent,"
+	    				+ " t5.wattangle,t5.filtertime_watt,t5.filtertime_i,t5.filtertime_rpm,t5.filtertime_fsdiagram,t5.filtertime_fsdiagram_l,t5.filtertime_fsdiagram_r,"
+	    				+ " t4.prtf "
+	    				+ " from tbl_wellinformation t,tbl_rpc_diagram_hist t2,tbl_rpc_motor t3,tbl_rpcinformation t4,tbl_rpc_inver_opt t5 "
+	    				+ " where t.id=t2.wellid and t.id=t3.wellid and t.id=t4.wellid and t.id=t5.wellid "
+						+ " and t2.wellid=t6.wellid and t2.acquisitionTime=t6.acquisitionTime and t6.id="+elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
+	    			
+	    		List<?> list = service.findCallSql(sql);
+	    		result_json = new StringBuffer();
+	    		if(list.size()>0){
+	    			Object[] obj=(Object[]) list.get(0);
+	    			String WattString="";
+	    			String IString="";
+	    			String RPMString="";
+	    			SerializableClobProxy   proxy=null;
+	    	        CLOB realClob=null;
+	    			if(obj[4]!=null){
+	    				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[4]);
+	    				realClob = (CLOB) proxy.getWrappedClob(); 
+	    				WattString=StringManagerUtils.CLOBtoString(realClob);
+	    			}
+	    			if(obj[5]!=null){
+	    				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[5]);
+	    				realClob = (CLOB) proxy.getWrappedClob(); 
+	    				IString=StringManagerUtils.CLOBtoString(realClob);
+	    			}
+	    			if(obj[6]!=null){
+	    				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[6]);
+	    				realClob = (CLOB) proxy.getWrappedClob(); 
+	    				RPMString=StringManagerUtils.CLOBtoString(realClob);
+	    			}
+	    			result_json.append("{\"AKString\":\"\",");
+	    			result_json.append("\"WellName\":\""+obj[0]+"\",");
+	    			result_json.append("\"AcquisitionTime\":\""+obj[2]+"\",");
+	    			result_json.append("\"SPM\":"+obj[3]+",");
+	    			result_json.append("\"Watt\":["+WattString+"],");
+	    			result_json.append("\"I\":["+IString+"],");
+	    			result_json.append("\"RPM\":["+RPMString+"],");
+	    			result_json.append("\"SurfaceSystemEfficiency\":"+obj[23]+",");
+	    			
+	    			result_json.append("\"LeftPercent\":"+obj[24]+",");
+					result_json.append("\"RightPercent\":"+obj[25]+",");
+					result_json.append("\"WattAngle\":"+obj[26]+",");
+					result_json.append("\"WattTimes\":"+obj[27]+",");
+					result_json.append("\"ITimes\":"+obj[28]+",");
+					result_json.append("\"RPMTimes\":"+obj[29]+",");
+					result_json.append("\"FSDiagramTimes\":"+obj[30]+",");
+					result_json.append("\"FSDiagramLeftTimes\":"+obj[31]+",");
+					result_json.append("\"FSDiagramRightTimes\":"+obj[32]+",");
+	    			
+	    			//电机数据
+	    			result_json.append("\"Motor\":{");
+	    			result_json.append("\"Manufacturer\":\""+obj[7]+"\",");
+					result_json.append("\"Model\":\""+obj[8]+"\",");
+					result_json.append("\"BeltPulleyDiameter\":"+obj[9]+"");
+					result_json.append("},");
+	    			//抽油机数据
+	    			result_json.append("\"PumpingUnit\":{");
+	    			
+	    			proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[33]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					String prtf=StringManagerUtils.CLOBtoString(realClob);
+					
+					result_json.append("\"Manufacturer\":\""+obj[10]+"\",");
+					result_json.append("\"Model\":\""+obj[11]+"\",");
+					result_json.append("\"Stroke\":"+obj[12]+",");
+					result_json.append("\"CrankRotationDirection\":\""+obj[13]+"\",");
+					result_json.append("\"OffsetAngleOfCrank\":"+obj[14]+",");
+					result_json.append("\"OffsetAngleOfCrankPS\":"+obj[15]+",");
+					result_json.append("\"CrankGravityRadius\":"+obj[16]+",");
+					result_json.append("\"SingleCrankWeight\":"+obj[17]+",");
+					result_json.append("\"StructuralUnbalance\":"+obj[18]+",");
+					result_json.append("\"GearReducerRatio\":"+obj[19]+",");
+					result_json.append("\"GearReducerBeltPulleyDiameter\":"+obj[20]+",");
+					result_json.append("\"Balance\":{");
+					result_json.append("\"EveryBalance\":[");
+					
+					//拼接抽油机平衡块数据
+					String[] BalancePositionArr=(obj[21]+"").split(",");
+					String[] BalanceWeightArr=(obj[22]+"").split(",");
+					for(int j=0;j<BalancePositionArr.length&&j<BalanceWeightArr.length;j++){
+						result_json.append("{\"Position\":"+BalancePositionArr[j]+",");
+						result_json.append("\"Weight\":"+BalanceWeightArr[j]+"}");
+						if(j<BalancePositionArr.length-1&&j<BalanceWeightArr.length-1){
+							result_json.append(",");
+						}
+					}
+					result_json.append("]},");
+					//拼接抽油机位置扭矩因数曲线数据
+					result_json.append("\"PRTF\":{");
+					String CrankAngle="[";
+					String PR="[";
+					String TF="[";
+					JSONObject prtfJsonObject = JSONObject.fromObject("{\"data\":"+prtf+"}");//解析数据
+					JSONArray prtfJsonArray = prtfJsonObject.getJSONArray("data");
+					for(int j=0;j<prtfJsonArray.size();j++){
+						JSONObject everydata = JSONObject.fromObject(prtfJsonArray.getString(j));
+						CrankAngle+=everydata.getString("CrankAngle");
+						PR+=everydata.getString("PR");
+						TF+=everydata.getString("TF");
+						if(j<prtfJsonArray.size()-1){
+							CrankAngle+=",";
+							PR+=",";
+							TF+=",";
+						}
+					}
+					CrankAngle+="]";
+					PR+="]";
+					TF+="]";
+					result_json.append("\"CrankAngle\":"+CrankAngle+",");
+					result_json.append("\"PR\":"+PR+",");
+					result_json.append("\"TF\":"+TF+"}");
+	    			
+					result_json.append("}");
+	    			result_json.append("}");
+	    			
+	    			
+	    			String responseData=StringManagerUtils.sendPostMethod(inversionUrl, result_json.toString(),"utf-8");
+	    			
+	    			java.lang.reflect.Type type2 = new TypeToken<InversioneFSdiagramResponseData>() {}.getType();
+	    			InversioneFSdiagramResponseData inversioneFSdiagramResponseData=gson.fromJson(responseData, type2);
+	    			if(inversioneFSdiagramResponseData!=null){
+	    				this.calculateManagerService.reInverDiagram(obj[1]+"",inversioneFSdiagramResponseData);
+	    			}
+	    		}
+			}
+			
+			
+		}
+		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

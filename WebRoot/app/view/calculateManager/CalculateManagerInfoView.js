@@ -248,6 +248,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     text: '关联数据计算',
                     pressed: true,
                     iconCls: 'save',
+                    id:'calculateManager_LinkedData_Btn',
                     handler: function (v, o) {
                     	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                         var wellName=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
@@ -321,6 +322,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     pressed: true,
                     hidden: false,
                     iconCls: 'save',
+                    id:'calculateManager_ExportData_Btn',
                     handler: function (v, o) {
                     	if(calculateManagerHandsontableHelper.hot.getSelected()){
                     		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
@@ -374,12 +376,18 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         					if(newCard.id=="PumpingUnitCalculateManagerPanel"){
         						$("#ScrewPumpCalculateManagerDiv_id").html('');
         						$("#ElectricInversionCalculateManagerDiv_id").html('');
+        						Ext.getCmp("calculateManager_LinkedData_Btn").show();
+        						Ext.getCmp("calculateManager_ExportData_Btn").show();
         					}else if(newCard.id=="ScrewPumpCalculateManagerPanel"){
         						$("#PumpingUnitCalculateManagerDiv_id").html('');
         						$("#ElectricInversionCalculateManagerDiv_id").html('');
+        						Ext.getCmp("calculateManager_LinkedData_Btn").show();
+        						Ext.getCmp("calculateManager_ExportData_Btn").show();
         					}else if(newCard.id=="ElectricInversionCalculateManagerPanel"){
         						$("#PumpingUnitCalculateManagerDiv_id").html('');
         						$("#ScrewPumpCalculateManagerDiv_id").html('');
+        						Ext.getCmp("calculateManager_LinkedData_Btn").hide();
+        						Ext.getCmp("calculateManager_ExportData_Btn").hide();
         					}
         					calculateResultStore.loadPage(1);
         				}

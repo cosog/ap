@@ -285,7 +285,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"filterTime_I\":\""+obj[20]+"\",");
 			result_json.append("\"filterTime_RPM\":\""+obj[21]+"\",");
 			result_json.append("\"filterTime_FSDiagram\":\""+obj[22]+"\",");
-			result_json.append("\"filterTime_FSDiagram_R\":\""+obj[23]+"\",");
+			result_json.append("\"filterTime_FSDiagram_L\":\""+obj[23]+"\",");
 			result_json.append("\"filterTime_FSDiagram_R\":\""+obj[24]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){

@@ -68,7 +68,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();

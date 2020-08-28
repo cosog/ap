@@ -140,16 +140,15 @@ public class CalculateManagerController extends BaseController {
 			for(int i=0;elecInverCalculateManagerHandsontableChangedData!=null&&i<elecInverCalculateManagerHandsontableChangedData.getUpdatelist().size();i++){
 				String sql="select t.wellname,t2.id as diagramid,to_char(t2.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
 	    				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
-	    				+ " t3.manufacturer as manufacturer_motor,t3.model as model_motor,t3.beltpulleydiameter,"
 	    				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 	    				+ " t4.offsetangleofcrank,t5.offsetangleofcrankps,t4.crankgravityradius,t4.singlecrankweight,t4.structuralunbalance,"
 	    				+ " t4.gearreducerratio,t4.gearreducerbeltpulleydiameter, t4.balanceposition,t4.balanceweight,"
 	    				+ " t5.surfacesystemefficiency,t5.fs_leftpercent,t5.fs_rightpercent,"
 	    				+ " t5.wattangle,t5.filtertime_watt,t5.filtertime_i,t5.filtertime_rpm,t5.filtertime_fsdiagram,t5.filtertime_fsdiagram_l,t5.filtertime_fsdiagram_r,"
 	    				+ " t4.prtf "
-	    				+ " from tbl_wellinformation t,tbl_rpc_diagram_hist t2,tbl_rpc_motor t3,tbl_rpcinformation t4,tbl_rpc_inver_opt t5 "
-	    				+ " where t.id=t2.wellid and t.id=t3.wellid and t.id=t4.wellid and t.id=t5.wellid "
-						+ " and t2.wellid=t6.wellid and t2.acquisitionTime=t6.acquisitionTime and t6.id="+elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
+	    				+ " from tbl_wellinformation t,tbl_rpc_diagram_hist t2,tbl_rpcinformation t4,tbl_rpc_inver_opt t5 "
+	    				+ " where t.id=t2.wellid and t.id=t4.wellid and t.id=t5.wellid "
+						+ " and t2.id="+elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
 	    			
 	    		List<?> list = service.findCallSql(sql);
 	    		result_json = new StringBuffer();
@@ -182,48 +181,47 @@ public class CalculateManagerController extends BaseController {
 	    			result_json.append("\"Watt\":["+WattString+"],");
 	    			result_json.append("\"I\":["+IString+"],");
 	    			result_json.append("\"RPM\":["+RPMString+"],");
-	    			result_json.append("\"SurfaceSystemEfficiency\":"+obj[23]+",");
+	    			result_json.append("\"SurfaceSystemEfficiency\":"+obj[20]+",");
 	    			
-	    			result_json.append("\"LeftPercent\":"+obj[24]+",");
-					result_json.append("\"RightPercent\":"+obj[25]+",");
-					result_json.append("\"WattAngle\":"+obj[26]+",");
-					result_json.append("\"WattTimes\":"+obj[27]+",");
-					result_json.append("\"ITimes\":"+obj[28]+",");
-					result_json.append("\"RPMTimes\":"+obj[29]+",");
-					result_json.append("\"FSDiagramTimes\":"+obj[30]+",");
-					result_json.append("\"FSDiagramLeftTimes\":"+obj[31]+",");
-					result_json.append("\"FSDiagramRightTimes\":"+obj[32]+",");
+	    			result_json.append("\"LeftPercent\":"+obj[21]+",");
+					result_json.append("\"RightPercent\":"+obj[22]+",");
+					result_json.append("\"WattAngle\":"+obj[23]+",");
+					result_json.append("\"WattTimes\":"+obj[24]+",");
+					result_json.append("\"ITimes\":"+obj[25]+",");
+					result_json.append("\"RPMTimes\":"+obj[26]+",");
+					result_json.append("\"FSDiagramTimes\":"+obj[27]+",");
+					result_json.append("\"FSDiagramLeftTimes\":"+obj[28]+",");
+					result_json.append("\"FSDiagramRightTimes\":"+obj[29]+",");
 	    			
-	    			//电机数据
-	    			result_json.append("\"Motor\":{");
-	    			result_json.append("\"Manufacturer\":\""+obj[7]+"\",");
-					result_json.append("\"Model\":\""+obj[8]+"\",");
-					result_json.append("\"BeltPulleyDiameter\":"+obj[9]+"");
-					result_json.append("},");
 	    			//抽油机数据
 	    			result_json.append("\"PumpingUnit\":{");
 	    			
-	    			proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[33]);
-					realClob = (CLOB) proxy.getWrappedClob(); 
-					String prtf=StringManagerUtils.CLOBtoString(realClob);
+	    			//位置扭矩因数
+	    			String prtf="";
+	    			if(obj[30]!=null){
+	    				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[30]);
+						realClob = (CLOB) proxy.getWrappedClob(); 
+						prtf=StringManagerUtils.CLOBtoString(realClob);
+	    			}
+	    			
 					
-					result_json.append("\"Manufacturer\":\""+obj[10]+"\",");
-					result_json.append("\"Model\":\""+obj[11]+"\",");
-					result_json.append("\"Stroke\":"+obj[12]+",");
-					result_json.append("\"CrankRotationDirection\":\""+obj[13]+"\",");
-					result_json.append("\"OffsetAngleOfCrank\":"+obj[14]+",");
-					result_json.append("\"OffsetAngleOfCrankPS\":"+obj[15]+",");
-					result_json.append("\"CrankGravityRadius\":"+obj[16]+",");
-					result_json.append("\"SingleCrankWeight\":"+obj[17]+",");
-					result_json.append("\"StructuralUnbalance\":"+obj[18]+",");
-					result_json.append("\"GearReducerRatio\":"+obj[19]+",");
-					result_json.append("\"GearReducerBeltPulleyDiameter\":"+obj[20]+",");
+					result_json.append("\"Manufacturer\":\""+obj[7]+"\",");
+					result_json.append("\"Model\":\""+obj[8]+"\",");
+					result_json.append("\"Stroke\":"+obj[9]+",");
+					result_json.append("\"CrankRotationDirection\":\""+obj[10]+"\",");
+					result_json.append("\"OffsetAngleOfCrank\":"+obj[11]+",");
+					result_json.append("\"OffsetAngleOfCrankPS\":"+obj[12]+",");
+					result_json.append("\"CrankGravityRadius\":"+obj[13]+",");
+					result_json.append("\"SingleCrankWeight\":"+obj[14]+",");
+					result_json.append("\"StructuralUnbalance\":"+obj[15]+",");
+					result_json.append("\"GearReducerRatio\":"+obj[16]+",");
+					result_json.append("\"GearReducerBeltPulleyDiameter\":"+obj[17]+",");
 					result_json.append("\"Balance\":{");
 					result_json.append("\"EveryBalance\":[");
 					
 					//拼接抽油机平衡块数据
-					String[] BalancePositionArr=(obj[21]+"").split(",");
-					String[] BalanceWeightArr=(obj[22]+"").split(",");
+					String[] BalancePositionArr=(obj[18]+"").split(",");
+					String[] BalanceWeightArr=(obj[19]+"").split(",");
 					for(int j=0;j<BalancePositionArr.length&&j<BalanceWeightArr.length;j++){
 						result_json.append("{\"Position\":"+BalancePositionArr[j]+",");
 						result_json.append("\"Weight\":"+BalanceWeightArr[j]+"}");
@@ -237,19 +235,23 @@ public class CalculateManagerController extends BaseController {
 					String CrankAngle="[";
 					String PR="[";
 					String TF="[";
-					JSONObject prtfJsonObject = JSONObject.fromObject("{\"data\":"+prtf+"}");//解析数据
-					JSONArray prtfJsonArray = prtfJsonObject.getJSONArray("data");
-					for(int j=0;j<prtfJsonArray.size();j++){
-						JSONObject everydata = JSONObject.fromObject(prtfJsonArray.getString(j));
-						CrankAngle+=everydata.getString("CrankAngle");
-						PR+=everydata.getString("PR");
-						TF+=everydata.getString("TF");
-						if(j<prtfJsonArray.size()-1){
-							CrankAngle+=",";
-							PR+=",";
-							TF+=",";
+					
+					if(StringManagerUtils.isNotNull(prtf)){
+						JSONObject prtfJsonObject = JSONObject.fromObject("{\"data\":"+prtf+"}");//解析数据
+						JSONArray prtfJsonArray = prtfJsonObject.getJSONArray("data");
+						for(int j=0;j<prtfJsonArray.size();j++){
+							JSONObject everydata = JSONObject.fromObject(prtfJsonArray.getString(j));
+							CrankAngle+=everydata.getString("CrankAngle");
+							PR+=everydata.getString("PR");
+							TF+=everydata.getString("TF");
+							if(j<prtfJsonArray.size()-1){
+								CrankAngle+=",";
+								PR+=",";
+								TF+=",";
+							}
 						}
 					}
+					
 					CrankAngle+="]";
 					PR+="]";
 					TF+="]";

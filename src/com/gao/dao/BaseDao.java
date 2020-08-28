@@ -1377,10 +1377,6 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
-		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
-		}
 		try {
 			cs = conn.prepareCall("{call prd_save_rpc_recalculateparam(?,"
 					+ "?,?,?,?,?,?,"
@@ -1463,7 +1459,7 @@ public class BaseDao extends HibernateDaoSupport {
 		CallableStatement cs=null;
 		
 		try {
-			cs = conn.prepareCall("{call prd_save_rpcinformationNoPTF(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpcinformationNoPTF(?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<elecInverCalculateManagerHandsontableChangedData.getUpdatelist().size();i++){
 				
 				cs.setString(1, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellName());
@@ -1494,10 +1490,6 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
-		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
-		}
 		try {
 			cs = conn.prepareCall("{call prd_save_rpc_inver_opt(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(elecInverCalculateManagerHandsontableChangedData.getUpdatelist()!=null){
@@ -1514,7 +1506,7 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(8, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_I());
 						cs.setString(9, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_RPM());
 						cs.setString(10, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram());
-						cs.setString(11,elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram_L());
+						cs.setString(11, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram_L());
 						cs.setString(12, elecInverCalculateManagerHandsontableChangedData.getUpdatelist().get(i).getFilterTime_FSDiagram_R());
 						cs.setString(13, orgId);
 						cs.executeUpdate();
@@ -4889,10 +4881,6 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
-		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
-		}
 		try {
 			cs = conn.prepareCall("{call prd_save_rpc_inver_opt(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(inverOptimizeHandsontableChangedData.getUpdatelist()!=null){

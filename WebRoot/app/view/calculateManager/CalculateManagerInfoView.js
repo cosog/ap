@@ -328,7 +328,18 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
                     		var wellName=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[1];
                     		var acquisitionTime=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[2];
-                    		var url=context + '/calculateManagerController/exportFSDiagramCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acquisitionTime='+acquisitionTime;
+                    		
+                    		var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
+                            var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
+                            if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+                            	calculateType=1;
+                			}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+                				calculateType=2;
+                			}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+                				calculateType=5;
+                			}
+                    		
+                    		var url=context + '/calculateManagerController/exportCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acquisitionTime='+acquisitionTime+'&calculateType='+calculateType;
                         	document.location.href = url;
                     	}else{
                     		Ext.MessageBox.alert("信息","未选择记录");
@@ -337,14 +348,14 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 }
                 ],
         		items: [{
-        				title: cosog.string.pumpUnit,
+        				title: '功图诊断计产',
         				layout: "fit",
         				id:'PumpingUnitCalculateManagerPanel',
         				border: false,
         				bbar: bbar,
         				html:'<div class=PumpingUnitCalculateManagerContainer" style="width:100%;height:100%;"><div class="con" id="PumpingUnitCalculateManagerDiv_id"></div></div>',
         			},{
-        				title: cosog.string.screwPump,
+        				title: '转速计产',
         				id:'ScrewPumpCalculateManagerPanel',
         				layout: "fit",
         				hidden:true,
@@ -377,17 +388,17 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         						$("#ScrewPumpCalculateManagerDiv_id").html('');
         						$("#ElectricInversionCalculateManagerDiv_id").html('');
         						Ext.getCmp("calculateManager_LinkedData_Btn").show();
-        						Ext.getCmp("calculateManager_ExportData_Btn").show();
+//        						Ext.getCmp("calculateManager_ExportData_Btn").show();
         					}else if(newCard.id=="ScrewPumpCalculateManagerPanel"){
         						$("#PumpingUnitCalculateManagerDiv_id").html('');
         						$("#ElectricInversionCalculateManagerDiv_id").html('');
         						Ext.getCmp("calculateManager_LinkedData_Btn").show();
-        						Ext.getCmp("calculateManager_ExportData_Btn").show();
+//        						Ext.getCmp("calculateManager_ExportData_Btn").show();
         					}else if(newCard.id=="ElectricInversionCalculateManagerPanel"){
         						$("#PumpingUnitCalculateManagerDiv_id").html('');
         						$("#ScrewPumpCalculateManagerDiv_id").html('');
         						Ext.getCmp("calculateManager_LinkedData_Btn").hide();
-        						Ext.getCmp("calculateManager_ExportData_Btn").hide();
+//        						Ext.getCmp("calculateManager_ExportData_Btn").hide();
         					}
         					calculateResultStore.loadPage(1);
         				}

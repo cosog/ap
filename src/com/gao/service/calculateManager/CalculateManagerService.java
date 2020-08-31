@@ -33,7 +33,10 @@ import com.gao.utils.DataModelMap;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
 
@@ -400,6 +403,16 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return getBaseDao().executeSqlUpdate(updateSql);
 	}
 	
+	public String getCalculateRequestData(String wellName,String acquisitionTime,String calculateType) throws SQLException, IOException, ParseException{
+		String requestData="{}";
+		if("1".equals(calculateType)){
+			requestData=this.getFSDiagramCalculateRequestData(wellName,acquisitionTime);
+		}else if("5".equals(calculateType)){
+			requestData=this.getElecInverCalculateRequestData(wellName,acquisitionTime);
+		}
+		return requestData;
+	}
+	
 	public String getFSDiagramCalculateRequestData(String wellName,String acquisitionTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		String sql="select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -426,6 +439,137 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(0);
 			requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
 		}
+		return requestData;
+	}
+	
+	public String getElecInverCalculateRequestData(String wellName,String acquisitionTime) throws SQLException, IOException, ParseException{
+		String requestData="{}";
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.wellname,t2.id as diagramid,to_char(t2.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
+				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
+				+ " t4.offsetangleofcrank,t5.offsetangleofcrankps,t4.crankgravityradius,t4.singlecrankweight,t4.structuralunbalance,"
+				+ " t4.gearreducerratio,t4.gearreducerbeltpulleydiameter, t4.balanceposition,t4.balanceweight,"
+				+ " t5.surfacesystemefficiency,t5.fs_leftpercent,t5.fs_rightpercent,"
+				+ " t5.wattangle,t5.filtertime_watt,t5.filtertime_i,t5.filtertime_rpm,t5.filtertime_fsdiagram,t5.filtertime_fsdiagram_l,t5.filtertime_fsdiagram_r,"
+				+ " t4.prtf "
+				+ " from tbl_wellinformation t,tbl_rpc_diagram_hist t2,tbl_rpcinformation t4,tbl_rpc_inver_opt t5 "
+				+ " where t.id=t2.wellid and t.id=t4.wellid and t.id=t5.wellid "
+				+ " and t.wellname='"+wellName+"' and t2.acquisitionTime=to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			String WattString="";
+			String IString="";
+			String RPMString="";
+			SerializableClobProxy   proxy=null;
+	        CLOB realClob=null;
+			if(obj[4]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[4]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				WattString=StringManagerUtils.CLOBtoString(realClob);
+			}
+			if(obj[5]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[5]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				IString=StringManagerUtils.CLOBtoString(realClob);
+			}
+			if(obj[6]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[6]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				RPMString=StringManagerUtils.CLOBtoString(realClob);
+			}
+			result_json.append("{\"AKString\":\"\",");
+			result_json.append("\"WellName\":\""+obj[0]+"\",");
+			result_json.append("\"AcquisitionTime\":\""+obj[2]+"\",");
+			result_json.append("\"SPM\":"+obj[3]+",");
+			result_json.append("\"Watt\":["+WattString+"],");
+			result_json.append("\"I\":["+IString+"],");
+			result_json.append("\"RPM\":["+RPMString+"],");
+			result_json.append("\"SurfaceSystemEfficiency\":"+obj[20]+",");
+			
+			result_json.append("\"LeftPercent\":"+obj[21]+",");
+			result_json.append("\"RightPercent\":"+obj[22]+",");
+			result_json.append("\"WattAngle\":"+obj[23]+",");
+			result_json.append("\"WattTimes\":"+obj[24]+",");
+			result_json.append("\"ITimes\":"+obj[25]+",");
+			result_json.append("\"RPMTimes\":"+obj[26]+",");
+			result_json.append("\"FSDiagramTimes\":"+obj[27]+",");
+			result_json.append("\"FSDiagramLeftTimes\":"+obj[28]+",");
+			result_json.append("\"FSDiagramRightTimes\":"+obj[29]+",");
+			
+			//抽油机数据
+			result_json.append("\"PumpingUnit\":{");
+			
+			//位置扭矩因数
+			String prtf="";
+			if(obj[30]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[30]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				prtf=StringManagerUtils.CLOBtoString(realClob);
+			}
+			
+			
+			result_json.append("\"Manufacturer\":\""+obj[7]+"\",");
+			result_json.append("\"Model\":\""+obj[8]+"\",");
+			result_json.append("\"Stroke\":"+obj[9]+",");
+			result_json.append("\"CrankRotationDirection\":\""+obj[10]+"\",");
+			result_json.append("\"OffsetAngleOfCrank\":"+obj[11]+",");
+			result_json.append("\"OffsetAngleOfCrankPS\":"+obj[12]+",");
+			result_json.append("\"CrankGravityRadius\":"+obj[13]+",");
+			result_json.append("\"SingleCrankWeight\":"+obj[14]+",");
+			result_json.append("\"StructuralUnbalance\":"+obj[15]+",");
+			result_json.append("\"GearReducerRatio\":"+obj[16]+",");
+			result_json.append("\"GearReducerBeltPulleyDiameter\":"+obj[17]+",");
+			result_json.append("\"Balance\":{");
+			result_json.append("\"EveryBalance\":[");
+			
+			//拼接抽油机平衡块数据
+			String[] BalancePositionArr=(obj[18]+"").split(",");
+			String[] BalanceWeightArr=(obj[19]+"").split(",");
+			for(int j=0;j<BalancePositionArr.length&&j<BalanceWeightArr.length;j++){
+				result_json.append("{\"Position\":"+BalancePositionArr[j]+",");
+				result_json.append("\"Weight\":"+BalanceWeightArr[j]+"}");
+				if(j<BalancePositionArr.length-1&&j<BalanceWeightArr.length-1){
+					result_json.append(",");
+				}
+			}
+			result_json.append("]},");
+			//拼接抽油机位置扭矩因数曲线数据
+			result_json.append("\"PRTF\":{");
+			String CrankAngle="[";
+			String PR="[";
+			String TF="[";
+			
+			if(StringManagerUtils.isNotNull(prtf)){
+				JSONObject prtfJsonObject = JSONObject.fromObject("{\"data\":"+prtf+"}");//解析数据
+				JSONArray prtfJsonArray = prtfJsonObject.getJSONArray("data");
+				for(int j=0;j<prtfJsonArray.size();j++){
+					JSONObject everydata = JSONObject.fromObject(prtfJsonArray.getString(j));
+					CrankAngle+=everydata.getString("CrankAngle");
+					PR+=everydata.getString("PR");
+					TF+=everydata.getString("TF");
+					if(j<prtfJsonArray.size()-1){
+						CrankAngle+=",";
+						PR+=",";
+						TF+=",";
+					}
+				}
+			}
+			
+			CrankAngle+="]";
+			PR+="]";
+			TF+="]";
+			result_json.append("\"CrankAngle\":"+CrankAngle+",");
+			result_json.append("\"PR\":"+PR+",");
+			result_json.append("\"TF\":"+TF+"}");
+			
+			result_json.append("}");
+			result_json.append("}");
+			
+			requestData=result_json.toString();
+		}
+		
 		return requestData;
 	}
 	

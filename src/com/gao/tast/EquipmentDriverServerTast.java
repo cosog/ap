@@ -71,11 +71,6 @@ public class EquipmentDriverServerTast {
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
-//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
-//		String path=stringManagerUtils.getFilePath("test.json","data/");
-//		String json=stringManagerUtils.readFile(path,"utf-8");
-//		StringManagerUtils.sendPostMethod(url, json,"utf-8");
 		
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;

@@ -381,20 +381,26 @@ public class CalculateManagerController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/exportFSDiagramCalculateRequestData")
-	public String exportFSDiagramCalculateRequestData() throws Exception{
+	@RequestMapping("/exportCalculateRequestData")
+	public String exportCalculateRequestData() throws Exception{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd_HHmmss");//设置日期格式
 		
 		String wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
 		String acquisitionTime=ParamUtils.getParameter(request, "acquisitionTime");
-		String json=calculateManagerService.getFSDiagramCalculateRequestData(wellName, acquisitionTime);
+		String calculateType=ParamUtils.getParameter(request, "calculateType");
+		String json=calculateManagerService.getCalculateRequestData(wellName, acquisitionTime,calculateType);
 		
 		Date date = df.parse(acquisitionTime);
 		acquisitionTime=df2.format(date);
 		
 		String fileName="请求数据-"+wellName+"-"+acquisitionTime+".json";
+		if("1".equals(calculateType)){
+			fileName="请求数据-"+wellName+"-"+acquisitionTime+".json";
+		}else if("5".equals(calculateType)){
+			fileName="反演请求数据-"+wellName+"-"+acquisitionTime+".json";
+		}
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);
 		try {

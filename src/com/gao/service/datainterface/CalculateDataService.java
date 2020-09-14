@@ -48,7 +48,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String elecCalRequest="{\"AKString\":\"\","
 				+ "\"WellName\":\""+object[0]+"\","
-				+ "\"AcquisitionTime\":\""+object[63]+"\","
+				+ "\"AcqTime\":\""+object[63]+"\","
 				+ "\"CurrentA\":"+object[44]+","
 				+ "\"CurrentB\":"+object[45]+","
 				+ "\"CurrentC\":"+object[46]+","
@@ -66,7 +66,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		String elecCalRequest="{\"AKString\":\"\","
 				+ "\"WellName\":\""+object[0]+"\","
-				+ "\"AcquisitionTime\":\""+object[63]+"\","
+				+ "\"AcqTime\":\""+object[63]+"\","
 				+ "\"RunStatus\":"+runStatus+","
 				+ "\"TotalAPC\":"+object[53]+","
 				+ "\"TotalRPC\":"+object[54]+""
@@ -77,7 +77,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public String getObjectToCommCalculateRequestData(Object[] object) throws SQLException, IOException, ParseException{
 		String elecCalRequest="{\"AKString\":\"\","
 				+ "\"WellName\":\""+object[0]+"\","
-				+ "\"AcquisitionTime\":\""+object[2]+"\","
+				+ "\"AcqTime\":\""+object[2]+"\","
 				+ "\"CommStatus\":1"
 				+ "}";
 		return elecCalRequest;
@@ -251,7 +251,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
 			calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[31]+""));
-	        calculateRequestData.getFESDiagram().setAcquisitionTime(object[2]+"");
+	        calculateRequestData.getFESDiagram().setAcqTime(object[2]+"");
 	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[25]+""));
 	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[26]+""));
 			
@@ -453,7 +453,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellObj[0]+"\","
 									+ "\"Last\":{"
-									+ "\"AcquisitionTime\": \""+statusObj[1]+"\","
+									+ "\"AcqTime\": \""+statusObj[1]+"\","
 									+ "\"CommStatus\": "+commStatus+","
 									+ "\"CommEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[3]+","
@@ -462,7 +462,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcquisitionTime\":\""+tatalDate+" 01:00:00\","
+									+ "\"AcqTime\":\""+tatalDate+" 01:00:00\","
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
@@ -470,7 +470,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellObj[0]+"\","
 									+ "\"Last\":{"
-									+ "\"AcquisitionTime\": \""+statusObj[1]+"\","
+									+ "\"AcqTime\": \""+statusObj[1]+"\","
 									+ "\"RunStatus\": "+runStatus+","
 									+ "\"RunEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[7]+","
@@ -479,7 +479,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcquisitionTime\":\""+tatalDate+" 01:00:00\","
+									+ "\"AcqTime\":\""+tatalDate+" 01:00:00\","
 									+ "\"RunStatus\":true"
 									+ "}"
 									+ "}";
@@ -508,7 +508,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(wellObj[0].toString().equals(resuleObj[0].toString())){
-						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
+						dataSbf.append("{\"AcqTime\":\""+resuleObj[1]+"\",");
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
 							dataSbf.append("\"CommStatus\":"+(commResponseData.getDaily().getCommStatus()?1:0)+",");
 							dataSbf.append("\"CommTime\":"+commResponseData.getDaily().getCommEfficiency().getTime()+",");
@@ -717,7 +717,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellObj[0]+"\","
 									+ "\"Last\":{"
-									+ "\"AcquisitionTime\": \""+statusObj[1]+"\","
+									+ "\"AcqTime\": \""+statusObj[1]+"\","
 									+ "\"CommStatus\": "+commStatus+","
 									+ "\"CommEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[3]+","
@@ -726,7 +726,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcquisitionTime\":\""+tatalDate+" 01:00:00\","
+									+ "\"AcqTime\":\""+tatalDate+" 01:00:00\","
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
@@ -734,7 +734,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+wellObj[0]+"\","
 									+ "\"Last\":{"
-									+ "\"AcquisitionTime\": \""+statusObj[1]+"\","
+									+ "\"AcqTime\": \""+statusObj[1]+"\","
 									+ "\"RunStatus\": "+runStatus+","
 									+ "\"RunEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[7]+","
@@ -743,7 +743,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
-									+ "\"AcquisitionTime\":\""+tatalDate+" 01:00:00\","
+									+ "\"AcqTime\":\""+tatalDate+" 01:00:00\","
 									+ "\"RunStatus\":true"
 									+ "}"
 									+ "}";
@@ -771,7 +771,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(wellObj[0].toString().equals(resuleObj[0].toString())){
-						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
+						dataSbf.append("{\"AcqTime\":\""+resuleObj[1]+"\",");
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1&&commResponseData.getDaily().getCommEfficiency().getRange()!=null&&commResponseData.getDaily().getCommEfficiency().getRange().size()>0){
 							dataSbf.append("\"CommStatus\":"+(commResponseData.getDaily().getCommStatus()?1:0)+",");
 							dataSbf.append("\"CommTime\":"+commResponseData.getDaily().getCommEfficiency().getTime()+",");
@@ -889,7 +889,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(wellObj[0].toString().equals(resuleObj[0].toString())){
-						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
+						dataSbf.append("{\"AcqTime\":\""+resuleObj[1]+"\",");
 						dataSbf.append("\"ETResultCode\":"+resuleObj[2]+",");
 						dataSbf.append("\"IA\":"+resuleObj[3]+",");
 						dataSbf.append("\"IB\":"+resuleObj[4]+",");
@@ -957,7 +957,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				for(int j=0;j<singleresultlist.size();j++){
 					Object[] resuleObj=(Object[]) singleresultlist.get(j);
 					if(wellObj[0].toString().equals(resuleObj[0].toString())){
-						dataSbf.append("{\"AcquisitionTime\":\""+resuleObj[1]+"\",");
+						dataSbf.append("{\"AcqTime\":\""+resuleObj[1]+"\",");
 						dataSbf.append("\"IA\":"+resuleObj[2]+",");
 						dataSbf.append("\"IB\":"+resuleObj[3]+",");
 						dataSbf.append("\"IC\":"+resuleObj[4]+",");

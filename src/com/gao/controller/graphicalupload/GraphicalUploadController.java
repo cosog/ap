@@ -29,6 +29,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.logging.Log;
@@ -49,10 +50,15 @@ import com.gao.controller.base.BaseController;
 import com.gao.model.calculate.PCPCalculateRequestData;
 import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.model.calculate.RPCCalculateResponseData;
+import com.gao.model.calculate.TimeEffResponseData;
+import com.gao.model.User;
+import com.gao.model.calculate.EnergyCalculateResponseData;
 import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.graphicalupload.GraphicalUploadService;
+import com.gao.tast.KafkaServerTast;
+import com.gao.tast.KafkaServerTast.KafkaUpData;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.Constants;
@@ -106,6 +112,32 @@ public class GraphicalUploadController extends BaseController {
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		json = raphicalUploadService.getSurfaceCardTrpeList();
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getKafkaConfigWellList")
+	public String getKafkaConfigWellList() throws Exception {
+		String json = "";
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		json = raphicalUploadService.getKafkaConfigWellList(orgId,wellName);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -1136,6 +1168,250 @@ public class GraphicalUploadController extends BaseController {
 		
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveKafkaUpData")
+	public String saveKafkaUpData() throws Exception {
+		Gson gson=new Gson();
+		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
+		String FSdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
+		ServletInputStream ss = request.getInputStream();
+		String data=convertStreamToString(ss,"utf-8");
+		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
+		KafkaUpData kafkaUpData=gson.fromJson(data, type);
+		if(kafkaUpData!=null){
+			String sql="select t.wellName,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
+					+ " t2.totalwattenergy,t2.totalpwattenergy,t2.totalnwattenergy,t2.totalvarenergy,t2.totalpvarenergy,t2.totalnvarenergy,t2.totalvaenergy,"
+					+ " t2.todaywattenergy,t2.todaypwattenergy,t2.todaynwattenergy,t2.todayvarenergy,t2.todaypvarenergy,t2.todaynvarenergy,t2.todayvaenergy "
+					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
+					+ " where t2.wellId=t.id and t.driverAddr='"+kafkaUpData.getKey()+"'";
+			List list = this.commonDataService.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				kafkaUpData.setWellName(obj[0]+"");
+				//进行时率计算
+				TimeEffResponseData timeEffResponseData=null;
+				String tiemEffRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+kafkaUpData.getWellName()+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+					tiemEffRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"RunStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"RunEfficiency\": {"
+							+ "\"Efficiency\": "+obj[3]+","
+							+ "\"Time\": "+obj[2]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[5]+"")+""
+							+ "}"
+							+ "},";
+				}	
+				tiemEffRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+kafkaUpData.getAcqTime()+"\","
+						+ "\"RunStatus\":"+kafkaUpData.getRunStatus()+""
+						+ "}"
+						+ "}";
+				String timeEffResponse="";
+				timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
+				type = new TypeToken<TimeEffResponseData>() {}.getType();
+				timeEffResponseData=gson.fromJson(timeEffResponse, type);
+				
+				//进行电量计算
+				EnergyCalculateResponseData energyCalculateResponseData=null;
+				String energyRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+kafkaUpData.getWellName()+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")){
+					energyRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"Total\":{"
+							+ "\"KWattH\":"+obj[6]+","
+							+ "\"PKWattH\":"+obj[7]+","
+							+ "\"NKWattH\":"+obj[8]+","
+							+ "\"KVarH\":"+obj[9]+","
+							+ "\"PKVarH\":"+obj[10]+","
+							+ "\"NKVarH\":"+obj[11]+","
+							+ "\"KVAH\":"+obj[12]+""
+							+ "},\"Today\":{"
+							+ "\"KWattH\":"+obj[13]+","
+							+ "\"PKWattH\":"+obj[14]+","
+							+ "\"NKWattH\":"+obj[15]+","
+							+ "\"KVarH\":"+obj[16]+","
+							+ "\"PKVarH\":"+obj[17]+","
+							+ "\"NKVarH\":"+obj[18]+","
+							+ "\"KVAH\":"+obj[19]+""
+							+ "}"
+							+ "},";
+				}	
+				energyRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+kafkaUpData.getAcqTime()+"\","
+						+ "\"Total\":{"
+						+ "\"KWattH\":"+kafkaUpData.getTotalEnergy().getKWattH()+","
+						+ "\"PKWattH\":"+kafkaUpData.getTotalEnergy().getPKWattH()+","
+						+ "\"NKWattH\":"+kafkaUpData.getTotalEnergy().getNKWattH()+","
+						+ "\"KVarH\":"+kafkaUpData.getTotalEnergy().getKVarH()+","
+						+ "\"PKVarH\":"+kafkaUpData.getTotalEnergy().getPKVarH()+","
+						+ "\"NKVarH\":"+kafkaUpData.getTotalEnergy().getNKVarH()+","
+						+ "\"KVAH\":"+kafkaUpData.getTotalEnergy().getKVAH()+""
+						+ "}"
+						+ "}"
+						+ "}";
+				String energyResponse=StringManagerUtils.sendPostMethod(energyUrl, energyRequest,"utf-8");
+				type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
+				energyCalculateResponseData=gson.fromJson(energyResponse, type);
+				
+				//更新数据
+				String updateDailyData="";
+				String updateProdData="update tbl_rpc_productiondata_latest t set t.acquisitionTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
+				if(kafkaUpData.getWaterCut()>=0){
+					updateProdData+=",t.WaterCut_W="+kafkaUpData.getWaterCut();
+				}
+				if(kafkaUpData.getTubingPressure()>=0){
+					updateProdData+=",t.TubingPressure="+kafkaUpData.getTubingPressure();
+				}
+				if(kafkaUpData.getCasingPressure()>=0){
+					updateProdData+=",t.CasingPressure="+kafkaUpData.getCasingPressure();
+				}
+				if(kafkaUpData.getWellHeadFluidTemperature()>=0){
+					updateProdData+=",t.WellHeadFluidTemperature="+kafkaUpData.getWellHeadFluidTemperature();
+				}
+				if(kafkaUpData.getProducingfluidLevel()>=0){
+					updateProdData+=",t.ProducingfluidLevel="+kafkaUpData.getProducingfluidLevel();
+				}
+				updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
+				
+				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
+						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)
+						+ "t.workingconditioncode="+kafkaUpData.getResultCode()+","
+						+ "t.FrequencyRunValue="+kafkaUpData.getFreq()+","
+						+ "t.AcquisitionTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
+						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
+					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
+						
+					}
+				}
+				
+				if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.TotalWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
+							+ ",t.TotalPWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
+							+ ",t.TotalNWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
+							+ ",t.TotalVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
+							+ ",t.TotalPVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
+							+ ",t.TotalNVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
+							+ ",t.TotalVAEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
+							
+							+ ",t.TodayWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
+							+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
+							+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
+							+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
+							+ ",t.TodayPVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
+							+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
+							+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
+					if(energyCalculateResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate())){
+						updateDailyData="update tbl_rpc_total_day t set t.TotalWattEnergy= "+energyCalculateResponseData.getDaily().getKWattH()
+								+ ",t.TotalPWattEnergy= "+energyCalculateResponseData.getDaily().getPKWattH()
+								+ ",t.TotalNWattEnergy= "+energyCalculateResponseData.getDaily().getNKWattH()
+								+ ",t.TotalVarEnergy= "+energyCalculateResponseData.getDaily().getKVarH()
+								+ ",t.TotalPVarEnergy= "+energyCalculateResponseData.getDaily().getPKVarH()
+								+ ",t.TotalNVarEnergy= "+energyCalculateResponseData.getDaily().getNKVarH()
+								+ ",t.TotalVAEnergy= "+energyCalculateResponseData.getDaily().getKVAH()
+								
+								+ ",t.Todaywattenergy= "+energyCalculateResponseData.getDaily().getKWattH()
+								+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getDaily().getPKWattH()
+								+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getDaily().getNKWattH()
+								+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getDaily().getKVarH()
+								+ ",t.TodayPVarEnergy= "+energyCalculateResponseData.getDaily().getPKVarH()
+								+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getDaily().getNKVarH()
+								+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getDaily().getKVAH()
+								+ " where t.calculatedate=to_date('"+energyCalculateResponseData.getDaily().getDate()+"','yyyy-mm-dd') "
+						         +" and t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
+					}
+				}else{
+					updateDiscreteData+= " ,t.totalWattEnergy= "+kafkaUpData.getTotalEnergy().getKWattH()
+							+ " ,t.totalVarEnergy= "+kafkaUpData.getTotalEnergy().getKVarH();
+				}
+				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
+				commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);
+				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(StringManagerUtils.isNotNull(updateDailyData)){
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
+				}
+				
+				//处理曲线数据
+				String requestData=raphicalUploadService.getFSdiagramCalculateRequestData(kafkaUpData);
+				String responseData=StringManagerUtils.sendPostMethod(FSdiagramCalculateHttpServerURL, requestData,"utf-8");
+				type = new TypeToken<RPCCalculateResponseData>() {}.getType();
+				RPCCalculateResponseData rpcCalculateResponseData=gson.fromJson(responseData, type);
+				raphicalUploadService.saveRPCAcquisitionAndCalculateData(kafkaUpData,rpcCalculateResponseData);
+				//汇总
+				String totalDate = StringManagerUtils.getCurrentTime();
+				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
+				if((rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1)){
+					totalUrl+="&wellId="+kafkaUpData.getWellId();
+					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
+				}
+			}
+			
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/kafkaProducerMsg")
+	public String kafkaProducerMsg() throws Exception {
+		String type = ParamUtils.getParameter(request, "type");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String data = ParamUtils.getParameter(request, "data");
+		String sql="select t.drivercode, t.driveraddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
+		List list = this.commonDataService.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			String driverCode=obj[0]+"";
+			String ID=obj[1]+"";
+			if("KafkaDrive".equalsIgnoreCase(driverCode)&&StringManagerUtils.isNotNull(ID)){
+				String topic="Down-"+ID+"-";
+				if("1".equals(type)){
+					topic+="RTC";
+				}else if("2".equals(type)){
+					topic+="StartRPC";
+				}else if("3".equals(type)){
+					topic+="StopRPC";
+				}else if("4".equals(type)){
+					topic+="FixPositionStopRPC";
+				}else if("5".equals(type)){
+					topic+="Freq";
+				}else if("6".equals(type)){
+					topic+="Config";
+				}else if("7".equals(type)){
+					topic+="Model";
+				}
+				KafkaServerTast.producerMsg(topic, "下行数据", data);
+			}
+		}
+		
+		
+		
+		String json ="{success:true}";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);

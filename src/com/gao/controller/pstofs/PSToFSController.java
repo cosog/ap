@@ -745,7 +745,7 @@ public class PSToFSController extends BaseController {
         				Object[] obj=(Object[]) inverDataList.get(0);
         				result_json.append("{\"AKString\":\"\",");
             			result_json.append("\"WellName\":\""+transferDiagram.getWellName()+"\",");
-            			result_json.append("\"AcquisitionTime\":\""+transferDiagram.getAcquisitionTime()+"\",");
+            			result_json.append("\"AcqTime\":\""+transferDiagram.getAcquisitionTime()+"\",");
             			result_json.append("\"SPM\":"+transferDiagram.getSPM()+",");
             			
             			result_json.append("\"SurfaceSystemEfficiency\":"+obj[14]+",");
@@ -1010,7 +1010,7 @@ public class PSToFSController extends BaseController {
     			}
     			result_json.append("{\"AKString\":\"\",");
     			result_json.append("\"WellName\":\""+obj[0]+"\",");
-    			result_json.append("\"AcquisitionTime\":\""+obj[2]+"\",");
+    			result_json.append("\"AcqTime\":\""+obj[2]+"\",");
     			result_json.append("\"SPM\":"+obj[3]+",");
     			result_json.append("\"Watt\":["+WattString+"],");
     			result_json.append("\"I\":["+IString+"],");

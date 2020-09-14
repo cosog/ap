@@ -4,7 +4,7 @@ import java.util.List;
 public  class PCPCalculateResponseData {
 
 	private String WellName;
-	private String AcquisitionTime;
+	private String AcqTime;
 	private float RPM;
 	private int RunStatus;
 	private RodString RodString;
@@ -733,13 +733,13 @@ public  class PCPCalculateResponseData {
 			}
 
 
-			public String getAcquisitionTime() {
-				return AcquisitionTime;
+			public String getAcqTime() {
+				return AcqTime;
 			}
 
 
-			public void setAcquisitionTime(String acquisitionTime) {
-				AcquisitionTime = acquisitionTime;
+			public void setAcqTime(String AcqTime) {
+				AcqTime = AcqTime;
 			}
 
 

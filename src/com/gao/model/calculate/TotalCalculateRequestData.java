@@ -63,7 +63,7 @@ public class TotalCalculateRequestData {
 
 	public static class EveryTime
 	{
-	    private String AcquisitionTime;
+	    private String AcqTime;
 
 	    private int ResultCode;
 
@@ -87,11 +87,11 @@ public class TotalCalculateRequestData {
 	    
 	    private float PowerConsumptionPerTHM;
 
-	    public void setAcquisitionTime(String AcquisitionTime){
-	        this.AcquisitionTime = AcquisitionTime;
+	    public void setAcqTime(String AcqTime){
+	        this.AcqTime = AcqTime;
 	    }
-	    public String getAcquisitionTime(){
-	        return this.AcquisitionTime;
+	    public String getAcqTime(){
+	        return this.AcqTime;
 	    }
 	    public void setResultCode(int ResultCode){
 	        this.ResultCode = ResultCode;

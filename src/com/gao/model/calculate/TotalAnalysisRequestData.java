@@ -33,7 +33,7 @@ public class TotalAnalysisRequestData {
 	
 	public static class EveryTime
 	{
-		private String AcquisitionTime;
+		private String AcqTime;
 		private int CommStatus;
 	    private float CommTime;
 	    private float CommTimeEfficiency;
@@ -132,12 +132,12 @@ public class TotalAnalysisRequestData {
 	    private float VarSum; //无功功率					kVar
 	    private float VASum; //视在功率					kVA
 	    private float PFSum; //功率因数					小数
-		public String getAcquisitionTime() {
-			return AcquisitionTime;
+		public String getAcqTime() {
+			return AcqTime;
 		}
 
-		public void setAcquisitionTime(String acquisitionTime) {
-			AcquisitionTime = acquisitionTime;
+		public void setAcqTime(String acqTime) {
+			AcqTime = acqTime;
 		}
 
 		public int getCommStatus() {

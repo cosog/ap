@@ -6,7 +6,7 @@ public class ElectricCalculateResponseData {
 
 	    private int ResultStatus;
 
-	    private String AcquisitionTime;
+	    private String AcqTime;
 
 	    private int RunStatus;
 
@@ -36,11 +36,11 @@ public class ElectricCalculateResponseData {
 	    public int getResultStatus(){
 	        return this.ResultStatus;
 	    }
-	    public void setAcquisitionTime(String AcquisitionTime){
-	        this.AcquisitionTime = AcquisitionTime;
+	    public void setAcqTime(String AcqTime){
+	        this.AcqTime = AcqTime;
 	    }
-	    public String getAcquisitionTime(){
-	        return this.AcquisitionTime;
+	    public String getAcqTime(){
+	        return this.AcqTime;
 	    }
 	    public void setRunStatus(int RunStatus){
 	        this.RunStatus = RunStatus;

@@ -97,77 +97,90 @@ public class EnergyCalculateResponseData {
 
 	public static class Energy
 	{
-	    private float Watt;
+	    private float KWattH;
 
-	    private float PWatt;
+	    private float PKWattH;
 
-	    private float NWatt;
+	    private float NKWattH;
 
-	    private float Var;
+	    private float KVarH;
 
-	    private float PVar;
+	    private float PKVarH;
 
-	    private float NVar;
+	    private float NKVarH;
 
-	    private float VA;
+	    private float KVAH;
 
-	    public void setWatt(float Watt){
-	        this.Watt = Watt;
-	    }
-	    public float getWatt(){
-	        return this.Watt;
-	    }
-	    public void setPWatt(float PWatt){
-	        this.PWatt = PWatt;
-	    }
-	    public float getPWatt(){
-	        return this.PWatt;
-	    }
-	    public void setNWatt(float NWatt){
-	        this.NWatt = NWatt;
-	    }
-	    public float getNWatt(){
-	        return this.NWatt;
-	    }
-	    public void setVar(float Var){
-	        this.Var = Var;
-	    }
-	    public float getVar(){
-	        return this.Var;
-	    }
-	    public void setPVar(float PVar){
-	        this.PVar = PVar;
-	    }
-	    public float getPVar(){
-	        return this.PVar;
-	    }
-	    public void setNVar(float NVar){
-	        this.NVar = NVar;
-	    }
-	    public float getNVar(){
-	        return this.NVar;
-	    }
-	    public void setVA(float VA){
-	        this.VA = VA;
-	    }
-	    public float getVA(){
-	        return this.VA;
-	    }
+		public float getKWattH() {
+			return KWattH;
+		}
+
+		public void setKWattH(float kWattH) {
+			KWattH = kWattH;
+		}
+
+		public float getPKWattH() {
+			return PKWattH;
+		}
+
+		public void setPKWattH(float pKWattH) {
+			PKWattH = pKWattH;
+		}
+
+		public float getNKWattH() {
+			return NKWattH;
+		}
+
+		public void setNKWattH(float nKWattH) {
+			NKWattH = nKWattH;
+		}
+
+		public float getKVarH() {
+			return KVarH;
+		}
+
+		public void setKVarH(float kVarH) {
+			KVarH = kVarH;
+		}
+
+		public float getPKVarH() {
+			return PKVarH;
+		}
+
+		public void setPKVarH(float pKVarH) {
+			PKVarH = pKVarH;
+		}
+
+		public float getNKVarH() {
+			return NKVarH;
+		}
+
+		public void setNKVarH(float nKVarH) {
+			NKVarH = nKVarH;
+		}
+
+		public float getKVAH() {
+			return KVAH;
+		}
+
+		public void setKVAH(float kVAH) {
+			KVAH = kVAH;
+		}
 	}
 	
 	public static class Energy2
 	{
-	    private String AcquisitionTime;
+	    private String AcqTime;
 
 	    private Energy Total;
 
 	    private Energy Today;
 
-	    public void setAcquisitionTime(String AcquisitionTime){
-	        this.AcquisitionTime = AcquisitionTime;
+	    public void setAcqTime(String AcqTime){
+	        this.AcqTime = AcqTime;
 	    }
-	    public String getAcquisitionTime(){
-	        return this.AcquisitionTime;
+	    public String getAcqTime(){
+	        return this.AcqTime;
 	    }
 	    public void setTotal(Energy Total){
 	        this.Total = Total;
@@ -187,67 +200,84 @@ public class EnergyCalculateResponseData {
 	{
 	    private String Date;
 
-	    private float Watt;
+	    private float KWattH;
 
-	    private float PWatt;
+	    private float PKWattH;
 
-	    private float NWatt;
+	    private float NKWattH;
 
-	    private float Var;
+	    private float KVarH;
 
-	    private float PVar;
+	    private float PKVarH;
 
-	    private float NVar;
+	    private float NKVarH;
 
-	    private float VA;
+	    private float KVAH;
 
-	    public void setDate(String Date){
-	        this.Date = Date;
-	    }
-	    public String getDate(){
-	        return this.Date;
-	    }
-	    public void setWatt(float Watt){
-	        this.Watt = Watt;
-	    }
-	    public float getWatt(){
-	        return this.Watt;
-	    }
-	    public void setPWatt(float PWatt){
-	        this.PWatt = PWatt;
-	    }
-	    public float getPWatt(){
-	        return this.PWatt;
-	    }
-	    public void setNWatt(float NWatt){
-	        this.NWatt = NWatt;
-	    }
-	    public float getNWatt(){
-	        return this.NWatt;
-	    }
-	    public void setVar(float Var){
-	        this.Var = Var;
-	    }
-	    public float getVar(){
-	        return this.Var;
-	    }
-	    public void setPVar(float PVar){
-	        this.PVar = PVar;
-	    }
-	    public float getPVar(){
-	        return this.PVar;
-	    }
-	    public void setNVar(float NVar){
-	        this.NVar = NVar;
-	    }
-	    public float getNVar(){
-	        return this.NVar;
-	    }
-	    public void setVA(float VA){
-	        this.VA = VA;
-	    }
-	    public float getVA(){
-	        return this.VA;
-	    }
+		public String getDate() {
+			return Date;
+		}
+
+		public void setDate(String date) {
+			Date = date;
+		}
+
+		public float getKWattH() {
+			return KWattH;
+		}
+
+		public void setKWattH(float kWattH) {
+			KWattH = kWattH;
+		}
+
+		public float getPKWattH() {
+			return PKWattH;
+		}
+
+		public void setPKWattH(float pKWattH) {
+			PKWattH = pKWattH;
+		}
+
+		public float getNKWattH() {
+			return NKWattH;
+		}
+
+		public void setNKWattH(float nKWattH) {
+			NKWattH = nKWattH;
+		}
+
+		public float getKVarH() {
+			return KVarH;
+		}
+
+		public void setKVarH(float kVarH) {
+			KVarH = kVarH;
+		}
+
+		public float getPKVarH() {
+			return PKVarH;
+		}
+
+		public void setPKVarH(float pKVarH) {
+			PKVarH = pKVarH;
+		}
+
+		public float getNKVarH() {
+			return NKVarH;
+		}
+
+		public void setNKVarH(float nKVarH) {
+			NKVarH = nKVarH;
+		}
+
+		public float getKVAH() {
+			return KVAH;
+		}
+
+		public void setKVAH(float kVAH) {
+			KVAH = kVAH;
+		}
+
+	    
 	}
 }

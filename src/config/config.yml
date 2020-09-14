@@ -21,40 +21,42 @@ viewInformation:
    linkshow: ""
 agileCalculate:
    FESDiagram: 
-    - http://39.98.134.121:18100/api/calc/rpc/fesdiagram/pro
+    - http://139.129.166.94:18100/api/calc/rpc/fesdiagram/pro
    FSDiagram: 
-    - http://39.98.134.121:18100/api/calc/rpc/fsdiagram/balance/back
+    - http://139.129.166.94:18100/api/calc/rpc/fsdiagram/balance/back
    ESDiagram:
       balance: 
-       - http://39.98.134.121:18100/api/calc/rpc/esdiagram/balance/back
+       - http://139.129.166.94:18100/api/calc/rpc/esdiagram/balance/back
       inversion:
          inversionSwitch: false
          url:
             motorauto: 
-             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/motorauto
+             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/motorauto
             motorsemiauto: 
-             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
+             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
             beam: 
-             - http://39.98.134.121:18100/api/calc/rpc/esdiagram/inversion/beam
+             - http://139.129.166.94:18100/api/calc/rpc/esdiagram/inversion/beam
          timerCorrectionStart: 06:00:00
          imerCorrectionEnd: 21:00:00
          timerCorrectionLimit: 1800
    pcpProduction: 
-    - http://39.98.134.121:18100/api/calc/pcp/rpm
+    - http://139.129.166.94:18100/api/calc/pcp/rpm
    communication: 
-    - http://39.98.134.121:18100/api/calc/comm
+    - http://139.129.166.94:18100/api/calc/plugin/timeeff/comm
    run: 
-    - http://39.98.134.121:18100/api/calc/run
+    - http://139.129.166.94:18100/api/calc/plugin/timeeff/run
    energy: 
-    - http://39.98.134.121:18100/api/calc/energy
+    - http://139.129.166.94:18100/api/calc/plugin/energy
    totalCalculation:
       well: 
-       - http://39.98.134.121:18100/api/analy/total/well
+       - http://139.129.166.94:18100/api/analy/total/well
    plugin: 
-      wellboreTrajectory: http://39.98.134.121:18100/api/plugin/2xyz
-      fa2fs: http://39.98.134.121:18100/api/plugin/fa2fs
+      wellboreTrajectory: http://139.129.166.94:18100/api/plugin/2xyz
+      fa2fs: http://139.129.166.94:18100/api/plugin/fa2fs
 mqtt:
-   server: tcp://47.93.196.203:1883
+   server: tcp://broker.hivemq.com:1883
+kafka:
+   server: 39.98.64.56:9092
 others:
    cache: false
    language: zh_CN

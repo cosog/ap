@@ -10,7 +10,7 @@ public class PCPCalculateRequestData {
 	private String AKString;                                              //秘钥
 	private String WellName;                                              //井名
 	private int LiftingType;											  //举升类型
-	private String AcquisitionTime;                                       //采集时间
+	private String AcqTime;                                       //采集时间
 	private float RPM;                                                    //螺杆泵转速
 	private FluidPVT FluidPVT;                                            //流体PVT物性
 	private Reservoir Reservoir;                                          //油藏物性
@@ -194,13 +194,13 @@ public class PCPCalculateRequestData {
 	}
 
 
-	public String getAcquisitionTime() {
-		return AcquisitionTime;
+	public String getAcqTime() {
+		return AcqTime;
 	}
 
 
-	public void setAcquisitionTime(String acquisitionTime) {
-		AcquisitionTime = acquisitionTime;
+	public void setAcqTime(String acqTime) {
+		AcqTime = acqTime;
 	}
 
 

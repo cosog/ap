@@ -75,6 +75,7 @@ import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.gridmodel.WellProHandsontableChangedData;
 import com.gao.model.gridmodel.WellringGridPanelData;
 import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.tast.KafkaServerTast.KafkaUpData;
 import com.gao.tast.MQTTServerTast.TransferDaily;
 import com.gao.tast.MQTTServerTast.TransferDiagram;
 import com.gao.model.WellInformation;
@@ -2791,6 +2792,388 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
+	public Boolean saveFSDiagramAndCalculateData(KafkaUpData kafkaUpData,RPCCalculateResponseData calculateResponseData) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		
+		CLOB diagramClob_S=new CLOB((OracleConnection) conn);
+		diagramClob_S = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_S.putString(1, StringUtils.join(kafkaUpData.getS(), ","));
+		
+		CLOB diagramClob_F=new CLOB((OracleConnection) conn);
+		diagramClob_F = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_F.putString(1, StringUtils.join(kafkaUpData.getF(), ","));
+		
+		CLOB diagramClob_P=new CLOB((OracleConnection) conn);
+		diagramClob_P = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_P.putString(1, StringUtils.join(kafkaUpData.getKWatt(), ","));
+		
+		CLOB diagramClob_I=new CLOB((OracleConnection) conn);
+		diagramClob_I = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_I.putString(1, StringUtils.join(kafkaUpData.getI(), ","));
+		
+		
+		
+		
+		CLOB nullClob=new CLOB((OracleConnection) conn);
+		nullClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		nullClob.putString(1, "");
+		
+		StringBuffer bgtStrBuff = new StringBuffer();
+		StringBuffer wellboreSliceStrBuff = new StringBuffer();
+		
+		CLOB crankAngleClob=new CLOB((OracleConnection) conn);
+		crankAngleClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB polishRodVClob=new CLOB((OracleConnection) conn);
+		polishRodVClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB polishRodAClob=new CLOB((OracleConnection) conn);
+		polishRodAClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB PRClob=new CLOB((OracleConnection) conn);
+		PRClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB TFClob=new CLOB((OracleConnection) conn);
+		TFClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB loadTorqueClob=new CLOB((OracleConnection) conn);
+		loadTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB crankTorqueClob=new CLOB((OracleConnection) conn);
+		crankTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB currentBalanceTorqueClob=new CLOB((OracleConnection) conn);
+		currentBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB currentNetTorqueClob=new CLOB((OracleConnection) conn);
+		currentNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB expectedBalanceTorqueClob=new CLOB((OracleConnection) conn);
+		expectedBalanceTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB expectedNetTorqueClob=new CLOB((OracleConnection) conn);
+		expectedNetTorqueClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		CLOB wellboreSliceClob=new CLOB((OracleConnection) conn);
+		wellboreSliceClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		
+		if(calculateResponseData!=null
+				&&calculateResponseData.getCalculationStatus().getResultStatus()==1
+				&&calculateResponseData.getCalculationStatus().getResultCode()!=1232
+				&&calculateResponseData.getFESDiagram()!=null){
+			int curvecount=calculateResponseData.getFESDiagram().getS().get(0).size();
+			int pointcount=calculateResponseData.getFESDiagram().getS().size();
+			bgtStrBuff.append(curvecount+";"+pointcount+";");
+			for(int i=0;i<curvecount;i++){
+				for(int j=0;j<pointcount;j++){
+					bgtStrBuff.append(calculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
+					bgtStrBuff.append(calculateResponseData.getFESDiagram().getF().get(j).get(i)+",");//载荷
+				}
+				if(pointcount>0){
+					bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
+				}
+				bgtStrBuff.append(";");
+			}
+			if(curvecount>0){
+				bgtStrBuff.deleteCharAt(bgtStrBuff.length() - 1);
+			}
+		}
+		
+		CLOB pumpFSDiagramClob=new CLOB((OracleConnection) conn);
+		pumpFSDiagramClob = oracle.sql.CLOB.createTemporary(conn,false,1);
+		pumpFSDiagramClob.putString(1, bgtStrBuff.toString());
+		
+		if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null&&calculateResponseData.getFESDiagram().getCrankAngle()!=null&&calculateResponseData.getFESDiagram().getCrankAngle().size()>0){
+			crankAngleClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
+			polishRodVClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
+			polishRodAClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
+			PRClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getPR(), ","));
+			TFClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getTF(), ","));
+			
+			loadTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getLoadTorque(), ","));
+			crankTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankTorque(), ","));
+			currentBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentBalanceTorque(), ","));
+			currentNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCurrentNetTorque(), ","));
+			expectedBalanceTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedBalanceTorque(), ","));
+			expectedNetTorqueClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getExpectedNetTorque(), ","));
+		}else{
+			crankAngleClob.putString(1, "");
+			polishRodVClob.putString(1, "");
+			polishRodAClob.putString(1, "");
+			PRClob.putString(1, "");
+			TFClob.putString(1, "");
+			
+			loadTorqueClob.putString(1, "");
+			crankTorqueClob.putString(1, "");
+			currentBalanceTorqueClob.putString(1, "");
+			currentNetTorqueClob.putString(1, "");
+			expectedBalanceTorqueClob.putString(1, "");
+			expectedNetTorqueClob.putString(1, "");
+		}
+		
+		if(calculateResponseData!=null&&calculateResponseData.getWellboreSlice()!=null){
+			wellboreSliceStrBuff.append(calculateResponseData.getWellboreSlice().getCNT()+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getMeasuringDepth(), ",")+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getX(), ",")+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getY(), ",")+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getZ(), ",")+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getP(), ",")+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getBo(), ",")+";");
+			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getGLRis(), ","));
+		}
+		wellboreSliceClob.putString(1, wellboreSliceStrBuff.toString());
+		try {
+			cs = conn.prepareCall("{call prd_save_rpc_diagram("
+					+ "?,?,?,?,"
+					+ "?,?,?,?,?,?,?,?,?,?,?,"
+					+ "?,?,?,"
+					+ "?,?,?,?,"
+					+ "?,?,"
+					+ "?,?,?,?,?,?,?,"
+					+ "?,"
+					+ "?,"
+					+ "?,?,"
+					+ "?,?,?,"
+					+ "?,"
+					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,?,?,?,"
+					+ "?,?,?,?,?,?,?,?,?,?,?,?,"
+					+ "?,?,?,"
+					+ "?,?,?,?,"
+					+ "?)}");
+			cs.setString(1,kafkaUpData.getWellName());
+			cs.setString(2,kafkaUpData.getAcqTime());
+			cs.setString(3,kafkaUpData.getStroke()+"");
+			cs.setString(4,kafkaUpData.getSPM()+"");
+			
+			cs.setClob(5,diagramClob_S);
+			cs.setClob(6,diagramClob_F);
+			cs.setClob(7,nullClob);
+			cs.setClob(8,nullClob);
+			cs.setClob(9,nullClob);
+			cs.setClob(10,diagramClob_P);
+			cs.setClob(11,diagramClob_I);
+			cs.setClob(12,nullClob);
+			cs.setClob(13,nullClob);
+			cs.setClob(14,nullClob);
+			cs.setClob(15,nullClob);
+			
+			cs.setClob(16,nullClob);
+			cs.setClob(17,nullClob);
+			cs.setClob(18,nullClob);
+			
+			cs.setInt(19,0);//功图来源 0-采集 1-电参反演 2-人工上传
+			cs.setInt(20,kafkaUpData.getProdDataId()==null?0:kafkaUpData.getProdDataId());//生产数据Id
+			cs.setInt(21,calculateResponseData==null?0:calculateResponseData.getCalculationStatus().getResultStatus());//计算标志
+			cs.setInt(22, 0);//功图反演标志
+			
+			if(calculateResponseData!=null&&(calculateResponseData.getCalculationStatus().getResultStatus()==1||calculateResponseData.getCalculationStatus().getResultStatus()==-99)){//如果计算成功
+				//最大最小载荷
+				if(calculateResponseData.getFESDiagram().getFMax()!=null&&calculateResponseData.getFESDiagram().getFMax().size()>0){
+					cs.setFloat(23,calculateResponseData.getFESDiagram().getFMax().get(0));
+				}else{
+					cs.setString(23,"");
+				}
+				if(calculateResponseData.getFESDiagram().getFMin()!=null&&calculateResponseData.getFESDiagram().getFMin().size()>0){
+					cs.setFloat(24,calculateResponseData.getFESDiagram().getFMin().get(0));
+				}else{
+					cs.setString(24,"");
+				}
+				
+				//平衡
+				cs.setFloat(25,calculateResponseData.getFESDiagram().getUpStrokeIMax());
+				cs.setFloat(26,calculateResponseData.getFESDiagram().getDownStrokeIMax());
+				cs.setFloat(27,calculateResponseData.getFESDiagram().getUpStrokeWattMax());
+				cs.setFloat(28,calculateResponseData.getFESDiagram().getDownStrokeWattMax());
+				cs.setFloat(29,calculateResponseData.getFESDiagram().getIDegreeBalance());
+				cs.setFloat(30,calculateResponseData.getFESDiagram().getWattDegreeBalance());
+				//移动距离
+				cs.setFloat(31,calculateResponseData.getFESDiagram().getDeltaRadius());
+				
+				//工况代码
+				cs.setInt(32,calculateResponseData.getCalculationStatus().getResultCode());
+				//充满系数、抽空充满系数
+				cs.setFloat(33,calculateResponseData.getFESDiagram().getFullnessCoefficient());
+				cs.setFloat(34,calculateResponseData.getFESDiagram().getNoLiquidFullnessCoefficient());
+				//柱塞冲程、柱塞有效冲程、抽空柱塞有效冲程
+				cs.setFloat(35,calculateResponseData.getFESDiagram().getPlungerStroke());
+				cs.setFloat(36,calculateResponseData.getFESDiagram().getAvailablePlungerStroke());
+				cs.setFloat(37,calculateResponseData.getFESDiagram().getNoLiquidAvailablePlungerStroke());
+				
+				//上下理论载荷线
+				cs.setFloat(38,calculateResponseData.getFESDiagram().getUpperLoadLine());
+				cs.setFloat(39,calculateResponseData.getFESDiagram().getUpperLoadLineOfExact());
+				cs.setFloat(40,calculateResponseData.getFESDiagram().getLowerLoadLine());
+				//泵功图
+				cs.setClob(41,pumpFSDiagramClob);
+				//产量
+				cs.setFloat(42,calculateResponseData.getProduction().getTheoreticalProduction());
+				cs.setFloat(43,calculateResponseData.getProduction().getLiquidVolumetricProduction());
+				cs.setFloat(44,calculateResponseData.getProduction().getOilVolumetricProduction());
+				cs.setFloat(45,calculateResponseData.getProduction().getWaterVolumetricProduction());
+				cs.setFloat(46,calculateResponseData.getProduction().getAvailablePlungerStrokeVolumetricProduction());
+				cs.setFloat(47,calculateResponseData.getProduction().getPumpClearanceLeakVolumetricProduction());
+				cs.setFloat(48,calculateResponseData.getProduction().getTVLeakVolumetricProduction());
+				cs.setFloat(49,calculateResponseData.getProduction().getSVLeakVolumetricProduction());
+				cs.setFloat(50,calculateResponseData.getProduction().getGasInfluenceVolumetricProduction());
+				cs.setFloat(51,calculateResponseData.getProduction().getLiquidWeightProduction());
+				cs.setFloat(52,calculateResponseData.getProduction().getOilWeightProduction());
+				cs.setFloat(53,calculateResponseData.getProduction().getWaterWeightProduction());
+				cs.setFloat(54,calculateResponseData.getProduction().getAvailablePlungerStrokeWeightProduction());
+				cs.setFloat(55,calculateResponseData.getProduction().getPumpClearanceLeakWeightProduction());
+				cs.setFloat(56,calculateResponseData.getProduction().getTVLeakWeightProduction());
+				cs.setFloat(57,calculateResponseData.getProduction().getSVLeakWeightProduction());
+				cs.setFloat(58,calculateResponseData.getProduction().getGasInfluenceWeightProduction());
+				//液面反演校正值、反演液面
+				cs.setFloat(59,calculateResponseData.getProduction().getLevelCorrectValue());
+				cs.setFloat(60,calculateResponseData.getProduction().getProducingfluidLevel());
+				//系统效率
+				cs.setFloat(61,calculateResponseData.getFESDiagram().getAvgWatt());
+				cs.setFloat(62,calculateResponseData.getSystemEfficiency().getPolishRodPower());
+				cs.setFloat(63,calculateResponseData.getSystemEfficiency().getWaterPower());
+				cs.setFloat(64,calculateResponseData.getSystemEfficiency().getSurfaceSystemEfficiency());
+				cs.setFloat(65,calculateResponseData.getSystemEfficiency().getWellDownSystemEfficiency());
+				cs.setFloat(66,calculateResponseData.getSystemEfficiency().getSystemEfficiency());
+				cs.setFloat(67,calculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
+				cs.setFloat(68,calculateResponseData.getFESDiagram().getArea());
+				//泵效
+				cs.setFloat(69,calculateResponseData.getPumpEfficiency().getRodFlexLength());
+				cs.setFloat(70,calculateResponseData.getPumpEfficiency().getTubingFlexLength());
+				cs.setFloat(71,calculateResponseData.getPumpEfficiency().getInertiaLength());
+				cs.setFloat(72,calculateResponseData.getPumpEfficiency().getPumpEff1());
+				cs.setFloat(73,calculateResponseData.getPumpEfficiency().getPumpEff2());
+				cs.setFloat(74,calculateResponseData.getPumpEfficiency().getPumpEff3());
+				cs.setFloat(75,calculateResponseData.getPumpEfficiency().getPumpEff4());
+				cs.setFloat(76,calculateResponseData.getPumpEfficiency().getPumpEff());
+				//泵入口出口参数
+				cs.setFloat(77,calculateResponseData.getProduction().getPumpIntakeP());
+				cs.setFloat(78,calculateResponseData.getProduction().getPumpIntakeT());
+				cs.setFloat(79,calculateResponseData.getProduction().getPumpIntakeGOL());
+				cs.setFloat(80,calculateResponseData.getProduction().getPumpIntakeVisl());
+				cs.setFloat(81,calculateResponseData.getProduction().getPumpIntakeBo());
+				cs.setFloat(82,calculateResponseData.getProduction().getPumpOutletP());
+				cs.setFloat(83,calculateResponseData.getProduction().getPumpOutletT());
+				cs.setFloat(84,calculateResponseData.getProduction().getPumpOutletGOL());
+				cs.setFloat(85,calculateResponseData.getProduction().getPumpOutletVisl());
+				cs.setFloat(86,calculateResponseData.getProduction().getPumpOutletBo());
+				//杆参数
+				cs.setString(87,calculateResponseData.getRodCalData());
+			}else{
+				cs.setString(23,"");
+				cs.setString(24,"");
+				
+				cs.setString(25,"");
+				cs.setString(26,"");
+				cs.setString(27,"");
+				cs.setString(28,"");
+				cs.setString(29,"");
+				cs.setString(30,"");
+				if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null){
+					cs.setFloat(31,calculateResponseData.getFESDiagram().getDeltaRadius());
+				}else{
+					cs.setString(31,"");
+				}
+				
+				if(calculateResponseData!=null){
+					cs.setInt(32,calculateResponseData.getCalculationStatus().getResultCode());
+				}else{
+					cs.setString(32,"");
+				}
+				cs.setString(33,"");
+				cs.setString(34,"");
+				cs.setString(35,"");
+				cs.setString(36,"");
+				cs.setString(37,"");
+				cs.setString(38,"");
+				cs.setString(39,"");
+				cs.setString(40,"");
+				cs.setClob(41,nullClob);//泵功图
+				//产量
+				cs.setString(42,"");
+				cs.setString(43,"");
+				cs.setString(44,"");
+				cs.setString(45,"");
+				cs.setString(46,"");
+				cs.setString(47,"");
+				cs.setString(48,"");
+				cs.setString(49,"");
+				cs.setString(50,"");
+				cs.setString(51,"");
+				cs.setString(52,"");
+				cs.setString(53,"");
+				cs.setString(54,"");
+				cs.setString(55,"");
+				cs.setString(56,"");
+				cs.setString(57,"");
+				cs.setString(58,"");
+				
+				cs.setString(59,"");
+				cs.setString(60,"");
+				//系统效率
+				cs.setString(61,"");
+				cs.setString(62,"");
+				cs.setString(63,"");
+				cs.setString(64,"");
+				cs.setString(65,"");
+				cs.setString(66,"");
+				cs.setString(67,"");
+				cs.setString(68,"");
+				//泵效、
+				cs.setString(69,"");
+				cs.setString(70,"");
+				cs.setString(71,"");
+				cs.setString(72,"");
+				cs.setString(73,"");
+				cs.setString(74,"");
+				cs.setString(75,"");
+				cs.setString(76,"");
+				//泵入口出口参数
+				cs.setString(77,"");
+				cs.setString(78,"");
+				cs.setString(79,"");
+				cs.setString(80,"");
+				cs.setString(81,"");
+				cs.setString(82,"");
+				cs.setString(83,"");
+				cs.setString(84,"");
+				cs.setString(85,"");
+				cs.setString(86,"");
+				//杆参数
+				cs.setString(87,"");
+			}
+			//平衡曲线
+			cs.setClob(88,crankAngleClob);
+			cs.setClob(89,polishRodVClob);
+			cs.setClob(90,polishRodAClob);
+			cs.setClob(91,PRClob);
+			cs.setClob(92,TFClob);
+			cs.setClob(93,loadTorqueClob);
+			cs.setClob(94,crankTorqueClob);
+			cs.setClob(95,currentBalanceTorqueClob);
+			cs.setClob(96,currentNetTorqueClob);
+			cs.setClob(97,expectedBalanceTorqueClob);
+			cs.setClob(98,expectedNetTorqueClob);
+			//井深切片
+			cs.setClob(99,wellboreSliceClob);
+			
+			cs.setString(100,"");
+			cs.setString(101,"");
+			cs.setString(102,"");
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
 	public Boolean saveScrewPumpRPMAndCalculateData(WellAcquisitionData wellAcquisitionData,PCPCalculateResponseData calculateResponseData) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
@@ -4786,7 +5169,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			cs = conn.prepareCall("{call SAVE_FSDIAGRSM(?,?,?,?,?)}");
 			cs.setString(1, FA2FSResponseData.getWellName());
-			cs.setString(2,FA2FSResponseData.getFSDiagram().getAcquisitionTime());
+			cs.setString(2,FA2FSResponseData.getFSDiagram().getAcqTime());
 			cs.setClob(3, gtClob);
 			cs.setFloat(4, FA2FSResponseData.getNameplateStroke());
 			cs.setFloat(5, FA2FSResponseData.getForearmLength());

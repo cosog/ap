@@ -13,6 +13,8 @@ public class ConfigFile {
     private AgileCalculate agileCalculate;
 
     private Mqtt mqtt;
+    
+    private Kafka kafka;
 
     private ViewInformation viewInformation;
 
@@ -48,6 +50,12 @@ public class ConfigFile {
     public Mqtt getMqtt(){
         return this.mqtt;
     }
+	public Kafka getKafka() {
+		return kafka;
+	}
+	public void setKafka(Kafka kafka) {
+		this.kafka = kafka;
+	}
     public void setViewInformation(ViewInformation viewInformation){
         this.viewInformation = viewInformation;
     }
@@ -333,6 +341,18 @@ public class ConfigFile {
 	}
 
 	public static class Mqtt
+	{
+	    private String server;
+
+	    public void setServer(String server){
+	        this.server = server;
+	    }
+	    public String getServer(){
+	        return this.server;
+	    }
+	}
+	
+	public static class Kafka
 	{
 	    private String server;
 

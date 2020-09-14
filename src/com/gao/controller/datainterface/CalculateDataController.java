@@ -495,7 +495,7 @@ public class CalculateDataController extends BaseController{
 					+ "\"WellName\":\""+obj[1]+"\",";
 			if(StringManagerUtils.isNotNull(obj[3]+"")&&StringManagerUtils.isNotNull(obj[7]+"")){
 				commRequest+= "\"Last\":{"
-						+ "\"AcquisitionTime\": \""+obj[3]+"\","
+						+ "\"AcqTime\": \""+obj[3]+"\","
 						+ "\"CommStatus\": "+(("1".equals(obj[4]+""))?true:false)+","
 						+ "\"CommEfficiency\": {"
 						+ "\"Efficiency\": "+obj[6]+","
@@ -506,7 +506,7 @@ public class CalculateDataController extends BaseController{
 			}	
 			
 			commRequest+= "\"Current\": {"
-					+ "\"AcquisitionTime\":\""+AcquisitionTime+"\","
+					+ "\"AcqTime\":\""+AcquisitionTime+"\","
 					+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
 					+ "}"
 					+ "}";

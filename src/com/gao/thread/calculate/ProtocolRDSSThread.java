@@ -150,7 +150,7 @@ public class ProtocolRDSSThread extends Thread{
 										//进行通信计算
 			        					String commRequest="{\"AKString\":\"\","
 			        							+ "\"WellName\":\""+wellName+"\","
-			        							+ "\"AcquisitionTime\":\""+acquisitionData.AcquisitionTime+"\","
+			        							+ "\"AcqTime\":\""+acquisitionData.AcquisitionTime+"\","
 			        							+ "\"CommStatus\":1"
 			        							+ "}";
 			        					String commResponse=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAgileCalculate().getCommunication()[0], commRequest,"utf-8");
@@ -160,7 +160,7 @@ public class ProtocolRDSSThread extends Thread{
 			        					//进行电参计算
 			        					String elecCalRequest="{\"AKString\":\"\","
 			        							+ "\"WellName\":\""+wellName+"\","
-			        							+ "\"AcquisitionTime\":\""+AcquisitionTime+"\","
+			        							+ "\"AcqTime\":\""+AcquisitionTime+"\","
 			        							+ "\"CurrentA\":"+CurrentA+","
 			        							+ "\"CurrentB\":"+CurrentB+","
 			        							+ "\"CurrentC\":"+CurrentC+","
@@ -193,7 +193,7 @@ public class ProtocolRDSSThread extends Thread{
 			        					}
 			        					String tiemEffRequest="{\"AKString\":\"\","
 			        							+ "\"WellName\":\""+wellName+"\","
-			        							+ "\"AcquisitionTime\":\""+AcquisitionTime+"\","
+			        							+ "\"AcqTime\":\""+AcquisitionTime+"\","
 			        							+ "\"RunStatus\":"+RunStatus+","
 			        							+ "\"TotalAPC\":"+ActivePowerConsumption+","
 			        							+ "\"TotalRPC\":"+ReactivePowerConsumption+""

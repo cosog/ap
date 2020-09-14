@@ -268,7 +268,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		List<?> motorList = this.findCallSql(motorSql);
 		result_json.append("{\"AKString\":\"\",");
 		result_json.append("\"WellName\":\""+wellName+"\",");
-		result_json.append("\"AcquisitionTime\":\""+cjsj+"\",");
+		result_json.append("\"AcqTime\":\""+cjsj+"\",");
 		
 		//拼接有功功率数据
 		String PA="[";

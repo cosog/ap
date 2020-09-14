@@ -63,7 +63,7 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 		}
 		jsonbuff.append("]}},");
 		jsonbuff.append("\"FSDiagram\": {");
-		jsonbuff.append("\"AcquisitionTime\":\""+object[13]+"\",");
+		jsonbuff.append("\"AcqTime\":\""+object[13]+"\",");
 		String gtsj=StringManagerUtils.CLOBObjectToString(object[14]);
 		String[] gtsjArr=gtsj.replaceAll("\r\n", "\n").split("\n");
 		jsonbuff.append("\"SPM\":"+gtsjArr[3]+",");
@@ -138,7 +138,7 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 		jsonbuff.append("\"PRTF\":{\"CrankAngle\":[],\"PR\":[],\"TF\":[]}");
 		jsonbuff.append("},");
 		jsonbuff.append("\"FSDiagram\": {");
-		jsonbuff.append("\"AcquisitionTime\":\""+object[13]+"\",");
+		jsonbuff.append("\"AcqTime\":\""+object[13]+"\",");
 		String gtsj=StringManagerUtils.CLOBObjectToString(object[14]);
 		String[] gtsjArr=gtsj.replaceAll("\r\n", "\n").split("\n");
 		jsonbuff.append("\"SPM\":"+gtsjArr[3]+",");
@@ -510,7 +510,7 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 					Object[] totalObj=(Object[]) totallist.get(j);
 					if(wellObj[0].toString().equals(totalObj[0].toString())){//判断该条记录是否属于此井
 						haveRecord=true;
-						dataSbf.append("{\"AcquisitionTime\":\""+totalObj[1]+"\",");
+						dataSbf.append("{\"AcqTime\":\""+totalObj[1]+"\",");
 						dataSbf.append("\"DeltaRadius\":"+totalObj[2]+",");
 						dataSbf.append("\"DeltaBlock\":"+totalObj[3]+",");
 						dataSbf.append("\"CurrentDegreeOfBalance\":"+totalObj[4]+",");
@@ -592,7 +592,7 @@ public class BalanceDataAInterfaceService<T> extends BaseService<T> {
 					Object[] totalObj=(Object[]) totallist.get(j);
 					if(wellObj[0].toString().equals(totalObj[0].toString())){//判断该条记录是否属于此井
 						haveRecord=true;
-						dataSbf.append("{\"AcquisitionTime\":\""+totalObj[1]+"\",");
+						dataSbf.append("{\"AcqTime\":\""+totalObj[1]+"\",");
 						dataSbf.append("\"DeltaRadius\":"+totalObj[2]+",");
 						dataSbf.append("\"DeltaBlock\":"+totalObj[3]+",");
 						dataSbf.append("\"CurrentDegreeOfBalance\":"+totalObj[4]+",");

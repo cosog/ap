@@ -481,7 +481,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			}
 			result_json.append("{\"AKString\":\"\",");
 			result_json.append("\"WellName\":\""+obj[0]+"\",");
-			result_json.append("\"AcquisitionTime\":\""+obj[2]+"\",");
+			result_json.append("\"AcqTime\":\""+obj[2]+"\",");
 			result_json.append("\"SPM\":"+obj[3]+",");
 			result_json.append("\"Watt\":["+WattString+"],");
 			result_json.append("\"I\":["+IString+"],");

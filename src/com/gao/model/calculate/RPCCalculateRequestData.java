@@ -677,7 +677,7 @@ public class RPCCalculateRequestData {
 	{
 	    private int Src;
 		
-		private String AcquisitionTime;
+		private String AcqTime;
 
 	    private float Stroke;
 
@@ -691,11 +691,11 @@ public class RPCCalculateRequestData {
 
 	    private List<Float> I;
 
-	    public void setAcquisitionTime(String AcquisitionTime){
-	        this.AcquisitionTime = AcquisitionTime;
+	    public void setAcqTime(String AcqTime){
+	        this.AcqTime = AcqTime;
 	    }
-	    public String getAcquisitionTime(){
-	        return this.AcquisitionTime;
+	    public String getAcqTime(){
+	        return this.AcqTime;
 	    }
 	    public void setStroke(float Stroke){
 	        this.Stroke = Stroke;

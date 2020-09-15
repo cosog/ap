@@ -96,7 +96,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		sql+= " t.fullnesscoEfficient,"
 			+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
 			+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
-			+ " t.todayWattEnergy,"
+			+ " t.todayKWattH,"
 			+ " remark"
 			+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
@@ -136,7 +136,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ "{ \"header\":\"地面效率(%)\",\"dataIndex\":\"surfaceSystemEfficiency\"},"
 				+ "{ \"header\":\"井下效率(%)\",\"dataIndex\":\"welldownSystemEfficiency\"},"
 				+ "{ \"header\":\"吨液百米耗电量(kW·h/100·t)\",\"dataIndex\":\"powerConsumptionPerthm\"},"
-				+ "{ \"header\":\"日用电量(kW·h)\",\"dataIndex\":\"todayWattEnergy\"},"
+				+ "{ \"header\":\"日用电量(kW·h)\",\"dataIndex\":\"todayKWattH\"},"
 				+ "{ \"header\":\"备注\",\"dataIndex\":\"remark\"}"
 				+ "]";
 		
@@ -162,7 +162,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"waterCut\":\""+obj[14]+"\",");
 			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
 			result_json.append("\"powerConsumptionPerthm\":\""+obj[24]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[25]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[25]+"\",");
 			
 			result_json.append("\"workingConditionName\":\""+obj[9]+"\",");
 			result_json.append("\"fullnesscoEfficient\":\""+obj[15]+"\",");
@@ -199,7 +199,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		sql+= " t.fullnesscoEfficient,"
 			+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.iDegreeBalanceLevel,t.iDegreeBalance,t.deltaRadius,"
 			+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
-			+ " t.todayWattEnergy,"
+			+ " t.todayKWattH,"
 			+ " remark"
 			+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
@@ -232,7 +232,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"waterCut\":\""+obj[14]+"\",");
 			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
 			result_json.append("\"powerConsumptionPerthm\":\""+obj[24]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[25]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[25]+"\",");
 			
 			result_json.append("\"workingConditionName\":\""+obj[9]+"\",");
 			result_json.append("\"fullnesscoEfficient\":\""+obj[15]+"\",");
@@ -267,7 +267,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		sql+= " t.rpm,"
 				+ " t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
-				+ " t.todayWattEnergy,"
+				+ " t.todayKWattH,"
 				+ " remark"
 				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		
@@ -303,7 +303,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				
 				+ "{ \"header\":\"系统效率(%)\",\"dataIndex\":\"systemEfficiency\"},"
 				+ "{ \"header\":\"吨液百米耗电量(kW·h/100·t)\",\"dataIndex\":\"powerConsumptionPerthm\"},"
-				+ "{ \"header\":\"日用电量(kW·h)\",\"dataIndex\":\"todayWattEnergy\"},"
+				+ "{ \"header\":\"日用电量(kW·h)\",\"dataIndex\":\"todayKWattH\"},"
 				+ "{ \"header\":\"备注\",\"dataIndex\":\"remark\"}"
 				
 		        + "]";
@@ -333,7 +333,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			
 			result_json.append("\"systemEfficiency\":\""+obj[17]+"\",");
 			result_json.append("\"powerConsumptionPerthm\":\""+obj[18]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[19]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[19]+"\",");
 			result_json.append("\"remark\":\""+obj[20]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
@@ -358,7 +358,7 @@ ConfigFile configFile=Config.getInstance().configFile;
 		sql+= " t.rpm,"
 				+ " t.pumpSettingDepth,t.producingFluidLevel,t.submergence,"
 				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
-				+ " t.todayWattEnergy,"
+				+ " t.todayKWattH,"
 				+ " remark"
 				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
 		
@@ -394,7 +394,7 @@ ConfigFile configFile=Config.getInstance().configFile;
 			
 			result_json.append("\"systemEfficiency\":\""+obj[17]+"\",");
 			result_json.append("\"powerConsumptionPerthm\":\""+obj[18]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[19]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[19]+"\",");
 			result_json.append("\"remark\":\""+obj[20]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){

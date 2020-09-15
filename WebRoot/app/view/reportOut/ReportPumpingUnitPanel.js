@@ -477,7 +477,7 @@ var DiagnoseDailyReportHelper = {
 	                diagnoseDailyReportHelper.my_data[index + 3][23] = _day.welldownSystemEfficiency;
 	                diagnoseDailyReportHelper.my_data[index + 3][24] = _day.powerConsumptionPerthm;
 	                
-	                diagnoseDailyReportHelper.my_data[index + 3][25] = _day.todayWattEnergy;
+	                diagnoseDailyReportHelper.my_data[index + 3][25] = _day.todayKWattH;
 	                
 	                diagnoseDailyReportHelper.my_data[index + 3][26] = _day.remark;
 	            })

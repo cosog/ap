@@ -455,7 +455,7 @@ var ScrewPumpDailyReportHelper = {
 	                screwPumpDailyReportHelper.my_data[index + 3][17] = _day.systemEfficiency;
 	                screwPumpDailyReportHelper.my_data[index + 3][18] = _day.powerConsumptionPerthm;
 	                
-	                screwPumpDailyReportHelper.my_data[index + 3][19] = _day.todayWattEnergy;
+	                screwPumpDailyReportHelper.my_data[index + 3][19] = _day.todayKWattH;
 	                
 	                screwPumpDailyReportHelper.my_data[index + 3][20] = _day.remark;
 	            })

@@ -9,7 +9,7 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisiWellListStore', {
         'pumpboreDiameter','pumpEff', 'pumpSettingDepth', 'producingFluidLevel', 'submergence', 
         'wattDegreeBalanceName', 'wattDegreeBalance','wattRatio', 'iDegreeBalanceName', 'iDegreeBalance', 'iRatio', 
         'systemEfficiency', 'motorInputActivePower','waterPower','powerConsumptionPerthm', 
-        'todayWattEnergy', 
+        'todayKWattH', 
         'theoreticalProduction', 'pumpOutletGol'],
     autoLoad: true,
     pageSize: 50,

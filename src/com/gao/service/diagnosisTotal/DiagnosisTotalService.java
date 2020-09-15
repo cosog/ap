@@ -126,7 +126,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="dailyPowertDist";
 			}
-			typeColumnName="todayWattEnergyLevel";
+			typeColumnName="todayKWattHLevel";
 		}else if("11".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyCommStatus";
@@ -259,7 +259,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="dailyPowertDist";
 			}
-			typeColumnName="todayWattEnergyLevel";
+			typeColumnName="todayKWattHLevel";
 		}else if("11".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyCommStatus";
@@ -338,7 +338,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}else if("9".equalsIgnoreCase(type)){
 			statType="wellDownSystemEfficiencyLevel";
 		}else if("10".equalsIgnoreCase(type)){
-			statType="todayWattEnergyLevel";
+			statType="todayKWattHLevel";
 		}else if("11".equalsIgnoreCase(type)){
 			statType="commStatusName";
 		}else if("12".equalsIgnoreCase(type)){
@@ -586,7 +586,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.varSum,t.varSumMax,t.varSumMin,"
 				+ " t.vaSum,t.vaSumMax,t.vaSumMin,"
 				+ " t.PFSum,t.PFSumMax,t.PFSumMin,"
-				+ " t.todayWattEnergy,t.todayvarenergy,t.todayvaenergy,"//加2
+				+ " t.todayKWattH,t.todayKVarH,t.todayKVAH,"//加2
 				+ " t.signal,t.signalmax,t.signalmin,"//加3
 				+ " t.frequency,t.frequencymax,t.frequencymin,"//加3
 				+ " t.runrange,t.workingconditionstring,"
@@ -845,9 +845,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"PFSumMax\":\""+obj[222]+"\",");
 			result_json.append("\"PFSumMin\":\""+obj[223]+"\",");
 			
-			result_json.append("\"todayWattEnergy\":\""+obj[224]+"\",");
-			result_json.append("\"todayVarEnergy\":\""+obj[225]+"\",");
-			result_json.append("\"todayVAEnergy\":\""+obj[226]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[224]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[225]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[226]+"\",");
 			
 			result_json.append("\"signal\":\""+obj[227]+"\",");
 			result_json.append("\"signalMax\":\""+obj[228]+"\",");
@@ -912,7 +912,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.frequency,t.frequencyMax,t.frequencyMin,"
 				+ " t.Ia,t.IaMax,t.IaMin,t.Ib,t.IbMax,t.IbMin,t.Ic,t.IcMax,t.IcMin,"
 				+ " t.Va,t.VaMax,t.VaMin,t.Vb,t.VbMax,t.VbMin,t.Vc,t.VcMax,t.VcMin,"
-				+ " t.todayWattEnergy,t.todayVarEnergy,t.todayVAEnergy,"
+				+ " t.todayKWattH,t.todayKVarH,t.todayKVAH,"
 				+ " t.wattSum,t.wattSumMax,t.wattSumMin,"
 				+ " t.varSum,t.varSumMax,t.varSumMin,"
 				+ " t.vaSum,t.vaSumMax,t.vaSumMin,"
@@ -1023,9 +1023,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"Vc\":\""+obj[80]+"\",");
 			result_json.append("\"VcMax\":\""+obj[81]+"\",");
 			result_json.append("\"VcMin\":\""+obj[82]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[83]+"\",");
-			result_json.append("\"todayVarEnergy\":\""+obj[84]+"\",");
-			result_json.append("\"todayVAEnergy\":\""+obj[85]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[83]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[84]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[85]+"\",");
 			result_json.append("\"wattSum\":\""+obj[86]+"\",");
 			result_json.append("\"wattSumMax\":\""+obj[87]+"\",");
 			result_json.append("\"wattSumMin\":\""+obj[88]+"\",");
@@ -1050,9 +1050,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	public String getRPCDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)
-				&&!"todayWattEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayVarEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayVAEnergy".equalsIgnoreCase(itemCode)){
+				&&!"todayKWattH".equalsIgnoreCase(itemCode)
+				&&!"todayKVarH".equalsIgnoreCase(itemCode)
+				&&!"todayKVAH".equalsIgnoreCase(itemCode)){
 			if("pumpEff".equalsIgnoreCase(itemCode)||"pumpEff1".equalsIgnoreCase(itemCode)||"pumpEff2".equalsIgnoreCase(itemCode)||"pumpEff3".equalsIgnoreCase(itemCode)||"pumpEff4".equalsIgnoreCase(itemCode)
 				||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)
 				||"deltaRadius".equalsIgnoreCase(itemCode)){
@@ -1098,7 +1098,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 //		if(itemCode.indexOf("WeightProduction")>=0){
 //			itemCode=itemCode.replace("WeightProduction", "VolumetricProduction");
 //		}
-//		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayWattEnergy".equalsIgnoreCase(itemCode)){
+//		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayKWattH".equalsIgnoreCase(itemCode)){
 //			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)){
 //				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
 //			}else{
@@ -1111,9 +1111,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 //				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
 //		
 		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)
-				&&!"todayWattEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayVarEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayVAEnergy".equalsIgnoreCase(itemCode)){
+				&&!"todayKWattH".equalsIgnoreCase(itemCode)
+				&&!"todayKVarH".equalsIgnoreCase(itemCode)
+				&&!"todayKVAH".equalsIgnoreCase(itemCode)){
 			if("pumpEff".equalsIgnoreCase(itemCode)||"pumpEff1".equalsIgnoreCase(itemCode)||"pumpEff2".equalsIgnoreCase(itemCode)||"pumpEff3".equalsIgnoreCase(itemCode)||"pumpEff4".equalsIgnoreCase(itemCode)
 				||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)
 				||"deltaRadius".equalsIgnoreCase(itemCode)){

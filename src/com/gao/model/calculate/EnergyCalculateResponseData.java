@@ -123,16 +123,16 @@ public class EnergyCalculateResponseData {
 			return PKWattH;
 		}
 
-		public void setPKWattH(float pKWattH) {
-			PKWattH = pKWattH;
+		public void setPKWattH(float PKWattH) {
+			this.PKWattH = PKWattH;
 		}
 
 		public float getNKWattH() {
 			return NKWattH;
 		}
 
-		public void setNKWattH(float nKWattH) {
-			NKWattH = nKWattH;
+		public void setNKWattH(float NKWattH) {
+			this.NKWattH = NKWattH;
 		}
 
 		public float getKVarH() {
@@ -147,16 +147,16 @@ public class EnergyCalculateResponseData {
 			return PKVarH;
 		}
 
-		public void setPKVarH(float pKVarH) {
-			PKVarH = pKVarH;
+		public void setPKVarH(float PKVarH) {
+			this.PKVarH = PKVarH;
 		}
 
 		public float getNKVarH() {
 			return NKVarH;
 		}
 
-		public void setNKVarH(float nKVarH) {
-			NKVarH = nKVarH;
+		public void setNKVarH(float NKVarH) {
+			this.NKVarH = NKVarH;
 		}
 
 		public float getKVAH() {
@@ -234,16 +234,16 @@ public class EnergyCalculateResponseData {
 			return PKWattH;
 		}
 
-		public void setPKWattH(float pKWattH) {
-			PKWattH = pKWattH;
+		public void setPKWattH(float PKWattH) {
+			this.PKWattH = PKWattH;
 		}
 
 		public float getNKWattH() {
 			return NKWattH;
 		}
 
-		public void setNKWattH(float nKWattH) {
-			NKWattH = nKWattH;
+		public void setNKWattH(float NKWattH) {
+			this.NKWattH = NKWattH;
 		}
 
 		public float getKVarH() {
@@ -258,16 +258,16 @@ public class EnergyCalculateResponseData {
 			return PKVarH;
 		}
 
-		public void setPKVarH(float pKVarH) {
-			PKVarH = pKVarH;
+		public void setPKVarH(float PKVarH) {
+			this.PKVarH = PKVarH;
 		}
 
 		public float getNKVarH() {
 			return NKVarH;
 		}
 
-		public void setNKVarH(float nKVarH) {
-			NKVarH = nKVarH;
+		public void setNKVarH(float NKVarH) {
+			this.NKVarH = NKVarH;
 		}
 
 		public float getKVAH() {

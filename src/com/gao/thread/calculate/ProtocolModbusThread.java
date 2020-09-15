@@ -1621,21 +1621,21 @@ public class ProtocolModbusThread extends Thread{
         						energyRequest+= "\"Last\":{"
     									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcquisitionTime+"\","
     									+ "\"Total\":{"
-    									+ "\"Watt\":"+clientUnit.unitDataList.get(i).lastTotalWattEnergy+","
-    									+ "\"PWatt\":"+clientUnit.unitDataList.get(i).lastTotalPWattEnergy+","
-    									+ "\"NWatt\":"+clientUnit.unitDataList.get(i).lastTotalNWattEnergy+","
-    									+ "\"Var\":"+clientUnit.unitDataList.get(i).lastTotalVarEnergy+","
-    									+ "\"PVar\":"+clientUnit.unitDataList.get(i).lastTotalPVarEnergy+","
-    									+ "\"NVar\":"+clientUnit.unitDataList.get(i).lastTotalNVarEnergy+","
-    									+ "\"VA\":"+clientUnit.unitDataList.get(i).lastTotalVAEnergy+""
+    									+ "\"Watt\":"+clientUnit.unitDataList.get(i).lastTotalKWattH+","
+    									+ "\"PWatt\":"+clientUnit.unitDataList.get(i).lastTotalPKWattH+","
+    									+ "\"NWatt\":"+clientUnit.unitDataList.get(i).lastTotalNKWattH+","
+    									+ "\"Var\":"+clientUnit.unitDataList.get(i).lastTotalKVarH+","
+    									+ "\"PVar\":"+clientUnit.unitDataList.get(i).lastTotalPKVarH+","
+    									+ "\"NVar\":"+clientUnit.unitDataList.get(i).lastTotalNKVarH+","
+    									+ "\"VA\":"+clientUnit.unitDataList.get(i).lastTotalKVAH+""
     									+ "},\"Today\":{"
-    									+ "\"Watt\":"+clientUnit.unitDataList.get(i).lastTodayWattEnergy+","
-    									+ "\"PWatt\":"+clientUnit.unitDataList.get(i).lastTodayPWattEnergy+","
-    									+ "\"NWatt\":"+clientUnit.unitDataList.get(i).lastTodayNWattEnergy+","
-    									+ "\"Var\":"+clientUnit.unitDataList.get(i).lastTodayVarEnergy+","
-    									+ "\"PVar\":"+clientUnit.unitDataList.get(i).lastTodayPVarEnergy+","
-    									+ "\"NVar\":"+clientUnit.unitDataList.get(i).lastTodayNVarEnergy+","
-    									+ "\"VA\":"+clientUnit.unitDataList.get(i).lastTodayVAEnergy+""
+    									+ "\"Watt\":"+clientUnit.unitDataList.get(i).lastTodayKWattH+","
+    									+ "\"PWatt\":"+clientUnit.unitDataList.get(i).lastTodayPKWattH+","
+    									+ "\"NWatt\":"+clientUnit.unitDataList.get(i).lastTodayNKWattH+","
+    									+ "\"Var\":"+clientUnit.unitDataList.get(i).lastTodayKVarH+","
+    									+ "\"PVar\":"+clientUnit.unitDataList.get(i).lastTodayPKVarH+","
+    									+ "\"NVar\":"+clientUnit.unitDataList.get(i).lastTodayNKVarH+","
+    									+ "\"VA\":"+clientUnit.unitDataList.get(i).lastTodayKVAH+""
     									+ "}"
     									+ "},";
         					}	
@@ -1657,21 +1657,21 @@ public class ProtocolModbusThread extends Thread{
         					energyCalculateResponseData=gson.fromJson(energyResponse, type);
         					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
 //        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
-        						clientUnit.unitDataList.get(i).lastTotalWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getKWattH();
-        						clientUnit.unitDataList.get(i).lastTotalPWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getPKWattH();
-        						clientUnit.unitDataList.get(i).lastTotalNWattEnergy=energyCalculateResponseData.getCurrent().getTotal().getNKWattH();
-        						clientUnit.unitDataList.get(i).lastTotalVarEnergy=energyCalculateResponseData.getCurrent().getTotal().getKVarH();
-        						clientUnit.unitDataList.get(i).lastTotalPVarEnergy=energyCalculateResponseData.getCurrent().getTotal().getPKVarH();
-        						clientUnit.unitDataList.get(i).lastTotalNVarEnergy=energyCalculateResponseData.getCurrent().getTotal().getNKVarH();
-        						clientUnit.unitDataList.get(i).lastTotalVAEnergy=energyCalculateResponseData.getCurrent().getTotal().getKVAH();
+        						clientUnit.unitDataList.get(i).lastTotalKWattH=energyCalculateResponseData.getCurrent().getTotal().getKWattH();
+        						clientUnit.unitDataList.get(i).lastTotalPKWattH=energyCalculateResponseData.getCurrent().getTotal().getPKWattH();
+        						clientUnit.unitDataList.get(i).lastTotalNKWattH=energyCalculateResponseData.getCurrent().getTotal().getNKWattH();
+        						clientUnit.unitDataList.get(i).lastTotalKVarH=energyCalculateResponseData.getCurrent().getTotal().getKVarH();
+        						clientUnit.unitDataList.get(i).lastTotalPKVarH=energyCalculateResponseData.getCurrent().getTotal().getPKVarH();
+        						clientUnit.unitDataList.get(i).lastTotalNKVarH=energyCalculateResponseData.getCurrent().getTotal().getNKVarH();
+        						clientUnit.unitDataList.get(i).lastTotalKVAH=energyCalculateResponseData.getCurrent().getTotal().getKVAH();
         						
-        						clientUnit.unitDataList.get(i).lastTodayWattEnergy=energyCalculateResponseData.getCurrent().getToday().getKWattH();
-        						clientUnit.unitDataList.get(i).lastTodayPWattEnergy=energyCalculateResponseData.getCurrent().getToday().getPKWattH();
-        						clientUnit.unitDataList.get(i).lastTodayNWattEnergy=energyCalculateResponseData.getCurrent().getToday().getNKWattH();
-        						clientUnit.unitDataList.get(i).lastTodayVarEnergy=energyCalculateResponseData.getCurrent().getToday().getKVarH();
-        						clientUnit.unitDataList.get(i).lastTodayPVarEnergy=energyCalculateResponseData.getCurrent().getToday().getPKVarH();
-        						clientUnit.unitDataList.get(i).lastTodayNVarEnergy=energyCalculateResponseData.getCurrent().getToday().getNKVarH();
-        						clientUnit.unitDataList.get(i).lastTodayVAEnergy=energyCalculateResponseData.getCurrent().getToday().getKVAH();
+        						clientUnit.unitDataList.get(i).lastTodayKWattH=energyCalculateResponseData.getCurrent().getToday().getKWattH();
+        						clientUnit.unitDataList.get(i).lastTodayPKWattH=energyCalculateResponseData.getCurrent().getToday().getPKWattH();
+        						clientUnit.unitDataList.get(i).lastTodayNKWattH=energyCalculateResponseData.getCurrent().getToday().getNKWattH();
+        						clientUnit.unitDataList.get(i).lastTodayKVarH=energyCalculateResponseData.getCurrent().getToday().getKVarH();
+        						clientUnit.unitDataList.get(i).lastTodayPKVarH=energyCalculateResponseData.getCurrent().getToday().getPKVarH();
+        						clientUnit.unitDataList.get(i).lastTodayNKVarH=energyCalculateResponseData.getCurrent().getToday().getNKVarH();
+        						clientUnit.unitDataList.get(i).lastTodayKVAH=energyCalculateResponseData.getCurrent().getToday().getKVAH();
         					}else{
         						System.out.println("energy error");
         						System.out.println("请求数据："+energyRequest);
@@ -1710,34 +1710,34 @@ public class ProtocolModbusThread extends Thread{
         							}
             					}
         						if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-        							updateDiscreteData+=",t.TotalWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
-            								+ ",t.TotalPWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
-            								+ ",t.TotalNWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
-            								+ ",t.TotalVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
-            								+ ",t.TotalPVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
-            								+ ",t.TotalNVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
-            								+ ",t.TotalVAEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
-            								+ ",t.TodayWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
-            								+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
-            								+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
-            								+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
-            								+ ",t.TodayPVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
-            								+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
-            								+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
+        							updateDiscreteData+=",t.TotalKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
+            								+ ",t.TotalPKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
+            								+ ",t.TotalNKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
+            								+ ",t.TotalKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
+            								+ ",t.TotalPKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
+            								+ ",t.TotalNKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
+            								+ ",t.TotalKVAH= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
+            								+ ",t.TodayKWattH= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
+            								+ ",t.TodayPKWattH= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
+            								+ ",t.TodayNKWattH= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
+            								+ ",t.TodayKVarH= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
+            								+ ",t.TodayPKVarH= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
+            								+ ",t.TodayNKVarH= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
+            								+ ",t.TodayKVAH= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
         							if(energyCalculateResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate())){
-        								updateDailyData="update tbl_rpc_total_day t set t.todaywattenergy="+energyCalculateResponseData.getDaily().getKWattH()
-        										+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getDaily().getPKWattH()
-                								+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getDaily().getNKWattH()
-                								+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getDaily().getKVarH()
-                								+ ",t.TodayPVarEnergy= "+energyCalculateResponseData.getDaily().getPKVarH()
-                								+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getDaily().getNKVarH()
-                								+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getDaily().getKVAH()
+        								updateDailyData="update tbl_rpc_total_day t set t.todayKWattH="+energyCalculateResponseData.getDaily().getKWattH()
+        										+ ",t.TodayPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
+                								+ ",t.TodayNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
+                								+ ",t.TodayKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
+                								+ ",t.TodayPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
+                								+ ",t.TodayNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
+                								+ ",t.TodayKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
         										+ " where t.calculatedate=to_date('"+energyCalculateResponseData.getDaily().getDate()+"','yyyy-mm-dd') "
         								         +" and t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
         							}
         						}else{
-        							updateDiscreteData+= " ,t.totalWattEnergy= "+ActivePowerConsumption
-        									+ " ,t.totalVarEnergy= "+ReactivePowerConsumption;
+        							updateDiscreteData+= " ,t.totalKWattH= "+ActivePowerConsumption
+        									+ " ,t.totalKVarH= "+ReactivePowerConsumption;
         						}
         						
         						//如果时率来源非人工录入且电参计算成功，更新运行状态

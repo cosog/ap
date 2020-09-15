@@ -1190,8 +1190,8 @@ public class GraphicalUploadController extends BaseController {
 		if(kafkaUpData!=null){
 			String sql="select t.wellName,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
-					+ " t2.totalwattenergy,t2.totalpwattenergy,t2.totalnwattenergy,t2.totalvarenergy,t2.totalpvarenergy,t2.totalnvarenergy,t2.totalvaenergy,"
-					+ " t2.todaywattenergy,t2.todaypwattenergy,t2.todaynwattenergy,t2.todayvarenergy,t2.todaypvarenergy,t2.todaynvarenergy,t2.todayvaenergy "
+					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
+					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH "
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
 					+ " where t2.wellId=t.id and t.driverAddr='"+kafkaUpData.getKey()+"'";
 			List list = this.commonDataService.findCallSql(sql);
@@ -1303,43 +1303,43 @@ public class GraphicalUploadController extends BaseController {
 				}
 				
 				if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-					updateDiscreteData+=",t.TotalWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
-							+ ",t.TotalPWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
-							+ ",t.TotalNWattEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
-							+ ",t.TotalVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
-							+ ",t.TotalPVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
-							+ ",t.TotalNVarEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
-							+ ",t.TotalVAEnergy= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
+					updateDiscreteData+=",t.TotalKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
+							+ ",t.TotalPKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
+							+ ",t.TotalNKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
+							+ ",t.TotalKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
+							+ ",t.TotalPKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
+							+ ",t.TotalNKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
+							+ ",t.TotalKVAH= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
 							
-							+ ",t.TodayWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
-							+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
-							+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
-							+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
-							+ ",t.TodayPVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
-							+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
-							+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
+							+ ",t.TodayKWattH= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
+							+ ",t.TodayPKWattH= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
+							+ ",t.TodayNKWattH= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
+							+ ",t.TodayKVarH= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
+							+ ",t.TodayPKVarH= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
+							+ ",t.TodayNKVarH= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
+							+ ",t.TodayKVAH= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
 					if(energyCalculateResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate())){
-						updateDailyData="update tbl_rpc_total_day t set t.TotalWattEnergy= "+energyCalculateResponseData.getDaily().getKWattH()
-								+ ",t.TotalPWattEnergy= "+energyCalculateResponseData.getDaily().getPKWattH()
-								+ ",t.TotalNWattEnergy= "+energyCalculateResponseData.getDaily().getNKWattH()
-								+ ",t.TotalVarEnergy= "+energyCalculateResponseData.getDaily().getKVarH()
-								+ ",t.TotalPVarEnergy= "+energyCalculateResponseData.getDaily().getPKVarH()
-								+ ",t.TotalNVarEnergy= "+energyCalculateResponseData.getDaily().getNKVarH()
-								+ ",t.TotalVAEnergy= "+energyCalculateResponseData.getDaily().getKVAH()
+						updateDailyData="update tbl_rpc_total_day t set t.TotalKWattH= "+energyCalculateResponseData.getDaily().getKWattH()
+								+ ",t.TotalPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
+								+ ",t.TotalNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
+								+ ",t.TotalKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
+								+ ",t.TotalPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
+								+ ",t.TotalNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
+								+ ",t.TotalKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
 								
-								+ ",t.Todaywattenergy= "+energyCalculateResponseData.getDaily().getKWattH()
-								+ ",t.TodayPWattEnergy= "+energyCalculateResponseData.getDaily().getPKWattH()
-								+ ",t.TodayNWattEnergy= "+energyCalculateResponseData.getDaily().getNKWattH()
-								+ ",t.TodayVarEnergy= "+energyCalculateResponseData.getDaily().getKVarH()
-								+ ",t.TodayPVarEnergy= "+energyCalculateResponseData.getDaily().getPKVarH()
-								+ ",t.TodayNVarEnergy= "+energyCalculateResponseData.getDaily().getNKVarH()
-								+ ",t.TodayVAEnergy= "+energyCalculateResponseData.getDaily().getKVAH()
+								+ ",t.TodayKWattH= "+energyCalculateResponseData.getDaily().getKWattH()
+								+ ",t.TodayPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
+								+ ",t.TodayNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
+								+ ",t.TodayKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
+								+ ",t.TodayPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
+								+ ",t.TodayNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
+								+ ",t.TodayKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
 								+ " where t.calculatedate=to_date('"+energyCalculateResponseData.getDaily().getDate()+"','yyyy-mm-dd') "
 						         +" and t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
 					}
 				}else{
-					updateDiscreteData+= " ,t.totalWattEnergy= "+kafkaUpData.getTotalEnergy().getKWattH()
-							+ " ,t.totalVarEnergy= "+kafkaUpData.getTotalEnergy().getKVarH();
+					updateDiscreteData+= " ,t.totalKWattH= "+kafkaUpData.getTotalEnergy().getKWattH()
+							+ " ,t.totalKVarH= "+kafkaUpData.getTotalEnergy().getKVarH();
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
 				commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);

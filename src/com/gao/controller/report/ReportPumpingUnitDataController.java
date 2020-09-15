@@ -442,7 +442,7 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content24=new Label(23,i+3,everydata.getString("welldownSystemEfficiency"),wcf_table);
             	   content25=new Label(24,i+3,everydata.getString("powerConsumptionPerthm"),wcf_table);
             	   
-            	   content26=new Label(25,i+3,everydata.getString("todayWattEnergy"),wcf_table);
+            	   content26=new Label(25,i+3,everydata.getString("todayKWattH"),wcf_table);
             	   content27=new Label(26,i+3,everydata.getString("remark"),wcf_table);
         	   }else if(i==jsonArray.size()){
         		   sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
@@ -851,7 +851,7 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content18=new Label(17,i+3,everydata.getString("systemEfficiency"),wcf_table);
             	   content19=new Label(18,i+3,everydata.getString("powerConsumptionPerthm"),wcf_table);
             	   
-            	   content20=new Label(19,i+3,everydata.getString("todayWattEnergy"),wcf_table);
+            	   content20=new Label(19,i+3,everydata.getString("todayKWattH"),wcf_table);
             	   
             	   content21=new Label(20,i+3,everydata.getString("remark"),wcf_table);
         	   }else if(i==jsonArray.size()){

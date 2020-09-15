@@ -1127,21 +1127,21 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ ",t.RunTimeEfficiency= "+transferDiscrete.getRunEfficiency().getEfficiency()
 				+ " ,t.RunTime= "+transferDiscrete.getRunEfficiency().getTime()
 				+ " ,t.RunRange= '"+transferDiscrete.getRunEfficiency().getRangeString()+"'"
-				+ " ,t.todaywattenergy= "+transferDiscrete.getTodayEnergy().getWatt()
-				+ " ,t.todaypwattenergy= "+transferDiscrete.getTodayEnergy().getPWatt()
-				+ " ,t.todaynwattenergy= "+transferDiscrete.getTodayEnergy().getNWatt()
-				+ " ,t.todayvarenergy= "+transferDiscrete.getTodayEnergy().getVar()
-				+ " ,t.todaypvarenergy= "+transferDiscrete.getTodayEnergy().getPVar()
-				+ " ,t.todaynvarenergy= "+transferDiscrete.getTodayEnergy().getNVar()
-				+ " ,t.todayvaenergy= "+transferDiscrete.getTodayEnergy().getVA()
+				+ " ,t.todayKWattH= "+transferDiscrete.getTodayEnergy().getWatt()
+				+ " ,t.todayPKWattH= "+transferDiscrete.getTodayEnergy().getPWatt()
+				+ " ,t.todayNKWattH= "+transferDiscrete.getTodayEnergy().getNWatt()
+				+ " ,t.todayKVarH= "+transferDiscrete.getTodayEnergy().getVar()
+				+ " ,t.todayPKVarH= "+transferDiscrete.getTodayEnergy().getPVar()
+				+ " ,t.todayNKVarH= "+transferDiscrete.getTodayEnergy().getNVar()
+				+ " ,t.todayKVAH= "+transferDiscrete.getTodayEnergy().getVA()
 				
-				+ " ,t.totalwattenergy= "+transferDiscrete.getTotalEnergy().getWatt()
-				+ " ,t.totalpwattenergy= "+transferDiscrete.getTotalEnergy().getPWatt()
-				+ " ,t.totalnwattenergy= "+transferDiscrete.getTotalEnergy().getNWatt()
-				+ " ,t.totalvarenergy= "+transferDiscrete.getTotalEnergy().getVar()
-				+ " ,t.totalpvarenergy= "+transferDiscrete.getTotalEnergy().getPVar()
-				+ " ,t.totalnvarenergy= "+transferDiscrete.getTotalEnergy().getNVar()
-				+ " ,t.totalvaenergy= "+transferDiscrete.getTotalEnergy().getVA()
+				+ " ,t.totalKWattH= "+transferDiscrete.getTotalEnergy().getWatt()
+				+ " ,t.totalPKWattH= "+transferDiscrete.getTotalEnergy().getPWatt()
+				+ " ,t.totalNKWattH= "+transferDiscrete.getTotalEnergy().getNWatt()
+				+ " ,t.totalKVarH= "+transferDiscrete.getTotalEnergy().getVar()
+				+ " ,t.totalPKVarH= "+transferDiscrete.getTotalEnergy().getPVar()
+				+ " ,t.totalNKVarH= "+transferDiscrete.getTotalEnergy().getNVar()
+				+ " ,t.totalKVAH= "+transferDiscrete.getTotalEnergy().getVA()
 				+ ",t.RunStatus="+(transferDiscrete.getRunStatus()?1:0)
 				+ " ,t.WorkingConditionCode= "+transferDiscrete.getResultCode()
 				+ " ,t.WorkingConditionString= '"+WorkingConditionString+"'"
@@ -1282,8 +1282,8 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " WattA,WattB,WattC,WattSum,WattStr,"
 				+ " VarA,VarB,VarC,VarSum,VarStr,"
 				+ " PFA,PFB,PFC,PFSum,PFStr,"
-				+ " totalWattEnergy,totalPWattEnergy,totalNWattEnergy,totalVarEnergy,totalPVarEnergy,totalNVarEnergy,totalVAEnergy,"
-				+ " todayWattEnergy,todayPWattEnergy,todayNWattEnergy,todayVarEnergy,todayPVarEnergy,todayNVarEnergy,todayVAEnergy,"
+				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
+				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
 				+ " frequencyRunValue,signal,interval,deviceVer "
 				+ " from viw_rpc_discrete_latest t "
 				+ " where t.org_id in("+orgId+") and length(t.driveraddr)=16 ";
@@ -1301,7 +1301,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			sql+=" and runtimeefficiencyLevel='"+timeEff+"' ";
 		}
 		if(StringManagerUtils.isNotNull(rydl)){
-			sql+=" and todaywattenergyLevel='"+rydl+"' ";
+			sql+=" and todayKWattHLevel='"+rydl+"' ";
 		}
 		if(StringManagerUtils.isNotNull(type)){
 			if("runStatus".equalsIgnoreCase(type)){
@@ -1344,8 +1344,8 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " WattA,WattB,WattC,WattSum,"
 				+ " VarA,VarB,VarC,VarSum,"
 				+ " PFA,PFB,PFC,PFSum,"
-				+ " totalWattEnergy,totalPWattEnergy,totalNWattEnergy,totalVarEnergy,totalPVarEnergy,totalNVarEnergy,totalVAEnergy,"
-				+ " todayWattEnergy,todayPWattEnergy,todayNWattEnergy,todayVarEnergy,todayPVarEnergy,todayNVarEnergy,todayVAEnergy,"
+				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
+				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
 				+ " frequencyRunValue,signal,interval,"
 				+ " runrange,workingconditionstring "
 				+ " from "+tableName+" t where id="+id;
@@ -1375,20 +1375,20 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"PFB\":\""+obj[19]+"\",");
 			result_json.append("\"PFC\":\""+obj[20]+"\",");
 			result_json.append("\"PFSum\":\""+obj[21]+"\",");
-			result_json.append("\"totalWattEnergy\":\""+obj[22]+"\",");
-			result_json.append("\"totalPWattEnergy\":\""+obj[23]+"\",");
-			result_json.append("\"totalNWattEnergy\":\""+obj[24]+"\",");
-			result_json.append("\"totalVarEnergy\":\""+obj[25]+"\",");
-			result_json.append("\"totalPVarEnergy\":\""+obj[26]+"\",");
-			result_json.append("\"totalNVarEnergy\":\""+obj[27]+"\",");
-			result_json.append("\"totalVAEnergy\":\""+obj[28]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[29]+"\",");
-			result_json.append("\"todayPWattEnergy\":\""+obj[30]+"\",");
-			result_json.append("\"todayNWattEnergy\":\""+obj[31]+"\",");
-			result_json.append("\"todayVarEnergy\":\""+obj[32]+"\",");
-			result_json.append("\"todayPVarEnergy\":\""+obj[33]+"\",");
-			result_json.append("\"todayNVarEnergy\":\""+obj[34]+"\",");
-			result_json.append("\"todayVAEnergy\":\""+obj[35]+"\",");
+			result_json.append("\"totalKWattH\":\""+obj[22]+"\",");
+			result_json.append("\"totalPKWattH\":\""+obj[23]+"\",");
+			result_json.append("\"totalNKWattH\":\""+obj[24]+"\",");
+			result_json.append("\"totalKVarH\":\""+obj[25]+"\",");
+			result_json.append("\"totalPKVarH\":\""+obj[26]+"\",");
+			result_json.append("\"totalNKVarH\":\""+obj[27]+"\",");
+			result_json.append("\"totalKVAH\":\""+obj[28]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[29]+"\",");
+			result_json.append("\"todayPKWattH\":\""+obj[30]+"\",");
+			result_json.append("\"todayNKWattH\":\""+obj[31]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[32]+"\",");
+			result_json.append("\"todayPKVarH\":\""+obj[33]+"\",");
+			result_json.append("\"todayNKVarH\":\""+obj[34]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[35]+"\",");
 			result_json.append("\"frequencyRunValue\":\""+obj[36]+"\",");
 			result_json.append("\"signal\":\""+obj[37]+"\",");
 			result_json.append("\"interval\":\""+obj[38]+"\",");
@@ -1565,7 +1565,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " VcMax,VcMin,Vc,VcStr,"
 				+ " wattDegreeBalanceMax,wattDegreeBalanceMin,wattDegreeBalance,wattDegreeBalanceStr,wattDegreeBalanceLevel,wattDegreeBalanceAlarmLevel,"
 				+ " iDegreeBalanceMax,iDegreeBalanceMin,iDegreeBalance,iDegreeBalanceStr,iDegreeBalanceLevel,iDegreeBalanceAlarmLevel,"
-				+ " todayWattEnergy,todayPWattEnergy,todayNWattEnergy,todayVarEnergy,todayPVarEnergy,todayNVarEnergy,todayVAEnergy,"
+				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
 				+ " signalMax,signalMin,signal,signalStr"
 				+ " from viw_rpc_total_day t "
 				+ " where t.org_id in("+orgId+") and length(t.driveraddr)=16";
@@ -1676,7 +1676,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " t.spm,t.spmmax,t.spmmin,t.f,t.fmax,t.fmin,"
 				+ " t.ia,t.iamax,t.iamin,t.ib,t.ibmax,t.ibmin,t.ic,t.icmax,t.icmin,"
 				+ " t.va,t.vamax,t.vamin,t.vb,t.vbmax,t.vbmin,t.vc,t.vcmax,t.vcmin,"
-				+ " t.todaywattenergy,t.todaypwattenergy,t.todaynwattenergy,t.todayvarenergy,t.todaypvarenergy,t.todaynvarenergy,t.todayvaenergy,"
+				+ " t.todayKWattH,t.todayPKWattH,t.todayNKWattH,t.todayKVarH,t.todayPKVarH,t.todayNKVarH,t.todayKVAH,"
 				+ " t.signal,t.signalmax,t.signalmin,"
 				+ " t.runrange,t.workingconditionstring_e"
 				+ " from tbl_rpc_total_day t where id="+id;
@@ -1716,13 +1716,13 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"Vc\":\""+obj[29]+"\",");
 			result_json.append("\"VcMax\":\""+obj[30]+"\",");
 			result_json.append("\"VcMin\":\""+obj[31]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[32]+"\",");
-			result_json.append("\"todayPWattEnergy\":\""+obj[33]+"\",");
-			result_json.append("\"todayNWattEnergy\":\""+obj[34]+"\",");
-			result_json.append("\"todayVarEnergy\":\""+obj[35]+"\",");
-			result_json.append("\"todayPVarEnergy\":\""+obj[36]+"\",");
-			result_json.append("\"todayNVarEnergy\":\""+obj[37]+"\",");
-			result_json.append("\"todayVAEnergy\":\""+obj[38]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[32]+"\",");
+			result_json.append("\"todayPKWattH\":\""+obj[33]+"\",");
+			result_json.append("\"todayNKWattH\":\""+obj[34]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[35]+"\",");
+			result_json.append("\"todayPKVarH\":\""+obj[36]+"\",");
+			result_json.append("\"todayNKVarH\":\""+obj[37]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[38]+"\",");
 			result_json.append("\"signal\":\""+obj[39]+"\",");
 			result_json.append("\"signalMax\":\""+obj[40]+"\",");
 			result_json.append("\"signalMin\":\""+obj[41]+"\",");
@@ -1739,13 +1739,13 @@ public class PSToFSService<T> extends BaseService<T> {
 		StringBuffer dynSbf = new StringBuffer();
 		if(!"runTime".equalsIgnoreCase(itemCode)
 				&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)
-				&&!"todayWattEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayPWattEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayNWattEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayVarEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayPVarEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayNVarEnergy".equalsIgnoreCase(itemCode)
-				&&!"todayVAEnergy".equalsIgnoreCase(itemCode)
+				&&!"todayKWattH".equalsIgnoreCase(itemCode)
+				&&!"todayPKWattH".equalsIgnoreCase(itemCode)
+				&&!"todayNKWattH".equalsIgnoreCase(itemCode)
+				&&!"todayKVarH".equalsIgnoreCase(itemCode)
+				&&!"todayPKVarH".equalsIgnoreCase(itemCode)
+				&&!"todayNKVarH".equalsIgnoreCase(itemCode)
+				&&!"todayKVAH".equalsIgnoreCase(itemCode)
 			){
 			itemCode="t."+itemCode+",t."+itemCode+"max,t."+itemCode+"min";
 		}else{

@@ -112,8 +112,8 @@ public class EquipmentDriverServerTast {
 				+ " to_char(t3.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as disAcquisitiontime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
-				+ " totalwattenergy,totalpwattenergy,totalnwattenergy,totalvarenergy,totalpvarenergy,totalnvarenergy,totalvaenergy,"
-				+ " todaywattenergy,todaypwattenergy,todaynwattenergy,todayvarenergy,todaypvarenergy,todaynvarenergy,todayvaenergy "
+				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
+				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH "
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
@@ -124,8 +124,8 @@ public class EquipmentDriverServerTast {
 				+ " to_char(t3.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as disAcquisitiontime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
-				+ " totalwattenergy,totalpwattenergy,totalnwattenergy,totalvarenergy,totalpvarenergy,totalnvarenergy,totalvaenergy,"
-				+ " todaywattenergy,todaypwattenergy,todaynwattenergy,todayvarenergy,todaypvarenergy,todaynvarenergy,todayvaenergy,"
+				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
+				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
 				+ " t2.rpm "
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_pcp_rpm_latest t2 on t2.wellId=t.id"
@@ -214,20 +214,20 @@ public class EquipmentDriverServerTast {
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
 				unit.lastRunRange=rs.getString(20);
 				
-				unit.lastTotalWattEnergy=rs.getFloat(21);
-				unit.lastTotalPWattEnergy=rs.getFloat(22);
-				unit.lastTotalNWattEnergy=rs.getFloat(23);
-				unit.lastTotalVarEnergy=rs.getFloat(24);
-				unit.lastTotalPVarEnergy=rs.getFloat(25);
-				unit.lastTotalNVarEnergy=rs.getFloat(26);
-				unit.lastTotalVAEnergy=rs.getFloat(27);
-				unit.lastTodayWattEnergy=rs.getFloat(28);
-				unit.lastTodayPWattEnergy=rs.getFloat(29);
-				unit.lastTodayNWattEnergy=rs.getFloat(30);
-				unit.lastTodayVarEnergy=rs.getFloat(31);
-				unit.lastTodayPVarEnergy=rs.getFloat(32);
-				unit.lastTodayNVarEnergy=rs.getFloat(33);
-				unit.lastTodayVAEnergy=rs.getFloat(34);
+				unit.lastTotalKWattH=rs.getFloat(21);
+				unit.lastTotalPKWattH=rs.getFloat(22);
+				unit.lastTotalNKWattH=rs.getFloat(23);
+				unit.lastTotalKVarH=rs.getFloat(24);
+				unit.lastTotalPKVarH=rs.getFloat(25);
+				unit.lastTotalNKVarH=rs.getFloat(26);
+				unit.lastTotalKVAH=rs.getFloat(27);
+				unit.lastTodayKWattH=rs.getFloat(28);
+				unit.lastTodayPKWattH=rs.getFloat(29);
+				unit.lastTodayNKWattH=rs.getFloat(30);
+				unit.lastTodayKVarH=rs.getFloat(31);
+				unit.lastTodayPKVarH=rs.getFloat(32);
+				unit.lastTodayNKVarH=rs.getFloat(33);
+				unit.lastTodayKVAH=rs.getFloat(34);
 				units.add(unit);
 				clientUnitList.add(clientUnit);
 				
@@ -281,20 +281,20 @@ public class EquipmentDriverServerTast {
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
 				unit.lastRunRange=rs.getString(20);
 				
-				unit.lastTotalWattEnergy=rs.getFloat(21);
-				unit.lastTotalPWattEnergy=rs.getFloat(22);
-				unit.lastTotalNWattEnergy=rs.getFloat(23);
-				unit.lastTotalVarEnergy=rs.getFloat(24);
-				unit.lastTotalPVarEnergy=rs.getFloat(25);
-				unit.lastTotalNVarEnergy=rs.getFloat(26);
-				unit.lastTotalVAEnergy=rs.getFloat(27);
-				unit.lastTodayWattEnergy=rs.getFloat(28);
-				unit.lastTodayPWattEnergy=rs.getFloat(29);
-				unit.lastTodayNWattEnergy=rs.getFloat(30);
-				unit.lastTodayVarEnergy=rs.getFloat(31);
-				unit.lastTodayPVarEnergy=rs.getFloat(32);
-				unit.lastTodayNVarEnergy=rs.getFloat(33);
-				unit.lastTodayVAEnergy=rs.getFloat(34);
+				unit.lastTotalKWattH=rs.getFloat(21);
+				unit.lastTotalPKWattH=rs.getFloat(22);
+				unit.lastTotalNKWattH=rs.getFloat(23);
+				unit.lastTotalKVarH=rs.getFloat(24);
+				unit.lastTotalPKVarH=rs.getFloat(25);
+				unit.lastTotalNKVarH=rs.getFloat(26);
+				unit.lastTotalKVAH=rs.getFloat(27);
+				unit.lastTodayKWattH=rs.getFloat(28);
+				unit.lastTodayPKWattH=rs.getFloat(29);
+				unit.lastTodayNKWattH=rs.getFloat(30);
+				unit.lastTodayKVarH=rs.getFloat(31);
+				unit.lastTodayPKVarH=rs.getFloat(32);
+				unit.lastTodayNKVarH=rs.getFloat(33);
+				unit.lastTodayKVAH=rs.getFloat(34);
 				unit.lastRPM=rs.getFloat(35);
 				units.add(unit);
 				clientUnitList.add(clientUnit);
@@ -1216,104 +1216,104 @@ public class EquipmentDriverServerTast {
 		public float lastRunTime;
 		public float lastRunTimeEfficiency;
 		public String lastRunRange;
-		public float lastTotalWattEnergy;
-		public float lastTotalPWattEnergy;
-		public float lastTotalNWattEnergy;
-		public float lastTotalVarEnergy;
-		public float lastTotalPVarEnergy;
-		public float lastTotalNVarEnergy;
-		public float lastTotalVAEnergy;
-		public float lastTodayWattEnergy;
-		public float lastTodayPWattEnergy;
-		public float lastTodayNWattEnergy;
-		public float lastTodayVarEnergy;
-		public float lastTodayPVarEnergy;
-		public float lastTodayNVarEnergy;
-		public float lastTodayVAEnergy;
+		public float lastTotalKWattH;
+		public float lastTotalPKWattH;
+		public float lastTotalNKWattH;
+		public float lastTotalKVarH;
+		public float lastTotalPKVarH;
+		public float lastTotalNKVarH;
+		public float lastTotalKVAH;
+		public float lastTodayKWattH;
+		public float lastTodayPKWattH;
+		public float lastTodayNKWattH;
+		public float lastTodayKVarH;
+		public float lastTodayPKVarH;
+		public float lastTodayNKVarH;
+		public float lastTodayKVAH;
 		public float lastRPM=0.0f;
-		public float getLastTotalWattEnergy() {
-			return lastTotalWattEnergy;
+		public float getLastTotalKWattH() {
+			return lastTotalKWattH;
 		}
-		public void setLastTotalWattEnergy(float lastTotalWattEnergy) {
-			this.lastTotalWattEnergy = lastTotalWattEnergy;
+		public void setLastTotalKWattH(float lastTotalKWattH) {
+			this.lastTotalKWattH = lastTotalKWattH;
 		}
-		public float getLastTotalPWattEnergy() {
-			return lastTotalPWattEnergy;
+		public float getLastTotalPKWattH() {
+			return lastTotalPKWattH;
 		}
-		public void setLastTotalPWattEnergy(float lastTotalPWattEnergy) {
-			this.lastTotalPWattEnergy = lastTotalPWattEnergy;
+		public void setLastTotalPKWattH(float lastTotalPKWattH) {
+			this.lastTotalPKWattH = lastTotalPKWattH;
 		}
-		public float getLastTotalNWattEnergy() {
-			return lastTotalNWattEnergy;
+		public float getLastTotalNKWattH() {
+			return lastTotalNKWattH;
 		}
-		public void setLastTotalNWattEnergy(float lastTotalNWattEnergy) {
-			this.lastTotalNWattEnergy = lastTotalNWattEnergy;
+		public void setLastTotalNKWattH(float lastTotalNKWattH) {
+			this.lastTotalNKWattH = lastTotalNKWattH;
 		}
-		public float getLastTotalVarEnergy() {
-			return lastTotalVarEnergy;
+		public float getLastTotalKVarH() {
+			return lastTotalKVarH;
 		}
-		public void setLastTotalVarEnergy(float lastTotalVarEnergy) {
-			this.lastTotalVarEnergy = lastTotalVarEnergy;
+		public void setLastTotalKVarH(float lastTotalKVarH) {
+			this.lastTotalKVarH = lastTotalKVarH;
 		}
-		public float getLastTotalPVarEnergy() {
-			return lastTotalPVarEnergy;
+		public float getLastTotalPKVarH() {
+			return lastTotalPKVarH;
 		}
-		public void setLastTotalPVarEnergy(float lastTotalPVarEnergy) {
-			this.lastTotalPVarEnergy = lastTotalPVarEnergy;
+		public void setLastTotalPKVarH(float lastTotalPKVarH) {
+			this.lastTotalPKVarH = lastTotalPKVarH;
 		}
-		public float getLastTotalNVarEnergy() {
-			return lastTotalNVarEnergy;
+		public float getLastTotalNKVarH() {
+			return lastTotalNKVarH;
 		}
-		public void setLastTotalNVarEnergy(float lastTotalNVarEnergy) {
-			this.lastTotalNVarEnergy = lastTotalNVarEnergy;
+		public void setLastTotalNKVarH(float lastTotalNKVarH) {
+			this.lastTotalNKVarH = lastTotalNKVarH;
 		}
-		public float getLastTotalVAEnergy() {
-			return lastTotalVAEnergy;
+		public float getLastTotalKVAH() {
+			return lastTotalKVAH;
 		}
-		public void setLastTotalVAEnergy(float lastTotalVAEnergy) {
-			this.lastTotalVAEnergy = lastTotalVAEnergy;
+		public void setLastTotalKVAH(float lastTotalKVAH) {
+			this.lastTotalKVAH = lastTotalKVAH;
 		}
-		public float getLastTodayWattEnergy() {
-			return lastTodayWattEnergy;
+		public float getLastTodayKWattH() {
+			return lastTodayKWattH;
 		}
-		public void setLastTodayWattEnergy(float lastTodayWattEnergy) {
-			this.lastTodayWattEnergy = lastTodayWattEnergy;
+		public void setLastTodayKWattH(float lastTodayKWattH) {
+			this.lastTodayKWattH = lastTodayKWattH;
 		}
-		public float getLastTodayPWattEnergy() {
-			return lastTodayPWattEnergy;
+		public float getLastTodayPKWattH() {
+			return lastTodayPKWattH;
 		}
-		public void setLastTodayPWattEnergy(float lastTodayPWattEnergy) {
-			this.lastTodayPWattEnergy = lastTodayPWattEnergy;
+		public void setLastTodayPKWattH(float lastTodayPKWattH) {
+			this.lastTodayPKWattH = lastTodayPKWattH;
 		}
-		public float getLastTodayNWattEnergy() {
-			return lastTodayNWattEnergy;
+		public float getLastTodayNKWattH() {
+			return lastTodayNKWattH;
 		}
-		public void setLastTodayNWattEnergy(float lastTodayNWattEnergy) {
-			this.lastTodayNWattEnergy = lastTodayNWattEnergy;
+		public void setLastTodayNKWattH(float lastTodayNKWattH) {
+			this.lastTodayNKWattH = lastTodayNKWattH;
 		}
-		public float getLastTodayVarEnergy() {
-			return lastTodayVarEnergy;
+		public float getLastTodayKVarH() {
+			return lastTodayKVarH;
 		}
-		public void setLastTodayVarEnergy(float lastTodayVarEnergy) {
-			this.lastTodayVarEnergy = lastTodayVarEnergy;
+		public void setLastTodayKVarH(float lastTodayKVarH) {
+			this.lastTodayKVarH = lastTodayKVarH;
 		}
-		public float getLastTodayPVarEnergy() {
-			return lastTodayPVarEnergy;
+		public float getLastTodayPKVarH() {
+			return lastTodayPKVarH;
 		}
-		public void setLastTodayPVarEnergy(float lastTodayPVarEnergy) {
-			this.lastTodayPVarEnergy = lastTodayPVarEnergy;
+		public void setLastTodayPKVarH(float lastTodayPKVarH) {
+			this.lastTodayPKVarH = lastTodayPKVarH;
 		}
-		public float getLastTodayNVarEnergy() {
-			return lastTodayNVarEnergy;
+		public float getLastTodayNKVarH() {
+			return lastTodayNKVarH;
 		}
-		public void setLastTodayNVarEnergy(float lastTodayNVarEnergy) {
-			this.lastTodayNVarEnergy = lastTodayNVarEnergy;
+		public void setLastTodayNKVarH(float lastTodayNKVarH) {
+			this.lastTodayNKVarH = lastTodayNKVarH;
 		}
-		public float getLastTodayVAEnergy() {
-			return lastTodayVAEnergy;
+		public float getLastTodayKVAH() {
+			return lastTodayKVAH;
 		}
-		public void setLastTodayVAEnergy(float lastTodayVAEnergy) {
-			this.lastTodayVAEnergy = lastTodayVAEnergy;
+		public void setLastTodayKVAH(float lastTodayKVAH) {
+			this.lastTodayKVAH = lastTodayKVAH;
 		}
 		public float getLastRPM() {
 			return lastRPM;

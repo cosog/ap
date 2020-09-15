@@ -144,7 +144,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimePowerDist";
 			}
-			typeColumnName="todayWattEnergyLevel";
+			typeColumnName="todayKWattHLevel";
 		}else if("11".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeCommStatus";
@@ -305,7 +305,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimePowerDist";
 			}
-			typeColumnName="todayWattEnergyLevel";
+			typeColumnName="todayKWattHLevel";
 		}else if("11".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeCommStatus";
@@ -1143,7 +1143,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else if("9".equalsIgnoreCase(type)){
 			statType="wellDownSystemEfficiencyLevel";
 		}else if("10".equalsIgnoreCase(type)){
-			statType="todayWattEnergyLevel";
+			statType="todayKWattHLevel";
 		}else if("11".equalsIgnoreCase(type)){
 			statType="commStatusName";
 		}else if("12".equalsIgnoreCase(type)){
@@ -1214,8 +1214,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " to_char(acquisitionTime_d,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
-				+ " totalWattEnergy,totalVarEnergy,totalVAEnergy,"
-				+ " todayWattEnergy,todayVarEnergy,todayVAEnergy,"
+				+ " totalKWattH,totalKVarH,totalKVAH,"
+				+ " todayKWattH,todayKVarH,todayKVAH,"
 				+ " wattSum,varSum,reversePower,vaSum,pfSum,"
 				+ " IaUpLimit,IaDownLimit,wattUpLimit,wattDownLimit,"
 				+ " IaMax,IaMin,IbMax,IbMin,IcMax,IcMin,"
@@ -1334,12 +1334,12 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"Va\":\""+obj[65]+"\",");
 			result_json.append("\"Vb\":\""+obj[66]+"\",");
 			result_json.append("\"Vc\":\""+obj[67]+"\",");
-			result_json.append("\"totalWattEnergy\":\""+obj[68]+"\",");
-			result_json.append("\"totalVarEnergy\":\""+obj[69]+"\",");
-			result_json.append("\"totalVAEnergy\":\""+obj[70]+"\",");
-			result_json.append("\"todayWattEnergy\":\""+obj[71]+"\",");
-			result_json.append("\"todayVarEnergy\":\""+obj[72]+"\",");
-			result_json.append("\"todayVAEnergy\":\""+obj[73]+"\",");
+			result_json.append("\"totalKWattH\":\""+obj[68]+"\",");
+			result_json.append("\"totalKVarH\":\""+obj[69]+"\",");
+			result_json.append("\"totalKVAH\":\""+obj[70]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[71]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[72]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[73]+"\",");
 			
 			result_json.append("\"wattSum\":\""+obj[74]+"\",");
 			result_json.append("\"varSum\":\""+obj[75]+"\",");
@@ -1432,8 +1432,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " to_char(acquisitionTime_d,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
-				+ " totalWattEnergy,totalVarEnergy,totalVAEnergy,"
-				+ " todayWattEnergy,todayVarEnergy,todayVAEnergy,"
+				+ " totalKWattH,totalKVarH,totalKVAH,"
+				+ " todayKWattH,todayKVarH,todayKVAH,"
 				+ " wattSum,varSum,reversePower,vaSum,pfSum,"
 				+ " frequencySetValue,frequencyRunValue,"
 				+ " videourl,"
@@ -1512,13 +1512,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"Vb\":\""+obj[38]+"\",");
 			result_json.append("\"Vc\":\""+obj[39]+"\",");
 			
-			result_json.append("\"totalWattEnergy\":\""+obj[40]+"\",");
-			result_json.append("\"totalVarEnergy\":\""+obj[41]+"\",");
-			result_json.append("\"totalVAEnergy\":\""+obj[42]+"\",");
+			result_json.append("\"totalKWattH\":\""+obj[40]+"\",");
+			result_json.append("\"totalKVarH\":\""+obj[41]+"\",");
+			result_json.append("\"totalKVAH\":\""+obj[42]+"\",");
 			
-			result_json.append("\"todayWattEnergy\":\""+obj[43]+"\",");
-			result_json.append("\"todayVarEnergy\":\""+obj[44]+"\",");
-			result_json.append("\"todayVAEnergy\":\""+obj[45]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[43]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[44]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[45]+"\",");
 			
 			result_json.append("\"wattSum\":\""+obj[46]+"\",");
 			result_json.append("\"varSum\":\""+obj[47]+"\",");
@@ -1549,8 +1549,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tableName="viw_rpc_discrete_hist";
 		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
-				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)||"totalVAEnergy".equalsIgnoreCase(itemCode)
-				||"todayWattEnergy".equalsIgnoreCase(itemCode)||"todayVarEnergy".equalsIgnoreCase(itemCode)||"todayVAEnergy".equalsIgnoreCase(itemCode)
+				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)||"totalKVAH".equalsIgnoreCase(itemCode)
+				||"todayKWattH".equalsIgnoreCase(itemCode)||"todayKVarH".equalsIgnoreCase(itemCode)||"todayKVAH".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
 				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 				||"frequencyRunValue".equalsIgnoreCase(itemCode)
@@ -1614,8 +1614,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tableName="viw_pcp_discrete_hist";
 		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
-				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)||"totalVAEnergy".equalsIgnoreCase(itemCode)
-				||"todayWattEnergy".equalsIgnoreCase(itemCode)||"todayVarEnergy".equalsIgnoreCase(itemCode)||"todayVAEnergy".equalsIgnoreCase(itemCode)
+				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)||"totalKVAH".equalsIgnoreCase(itemCode)
+				||"todayKWattH".equalsIgnoreCase(itemCode)||"todayKVarH".equalsIgnoreCase(itemCode)||"todayKVAH".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
 				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 				||"frequencyRunValue".equalsIgnoreCase(itemCode)
@@ -1644,7 +1644,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 //					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
 //		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
 //				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
-//				||"totalWattEnergy".equalsIgnoreCase(itemCode)||"totalVarEnergy".equalsIgnoreCase(itemCode)
+//				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)
 //				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
 //				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 //				||"frequencyRunValue".equalsIgnoreCase(itemCode)){

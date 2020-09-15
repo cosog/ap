@@ -10,7 +10,7 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
         'pumpboreDiameter','pumpEff', 'pumpSettingDepth', 'producingFluidLevel', 'submergence', 
         'wattDegreeBalanceName', 'wattDegreeBalance','wattRatio', 'iDegreeBalanceName', 'iDegreeBalance', 'iRatio', 
         'systemEfficiency', 'surfaceSystemEfficiency','welldownSystemEfficiency', 'motorInputActivePower', 'polishrodPower', 'waterPower','powerConsumptionPerthm', 
-        'todayWattEnergy', 
+        'todayKWattH', 
         'theoreticalProduction', 'availablePlungerstrokeProd', 'pumpClearanceLeakProd', 'pumpOutletGol'],
     autoLoad: true,
     pageSize: 50,

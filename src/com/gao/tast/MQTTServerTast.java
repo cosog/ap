@@ -42,7 +42,7 @@ import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-
+@SuppressWarnings("static-access")
 @Component("MQTTServerTast")  
 public class MQTTServerTast {
 	public static final String HOST =Config.getInstance().configFile.getMqtt().getServer();// "tcp://47.93.196.203:1883";
@@ -51,8 +51,8 @@ public class MQTTServerTast {
     private static final String clientid = "mqttServerClient"+new Date().getTime();
     private static MqttClient client=null;
     private MqttConnectOptions options=null;  
-    private String userName = "admin";   //非必须
-    private String passWord = "password";  //非必须
+    private String userName = Config.getInstance().configFile.getMqtt().getUserName();//"hinnotekClient1";   //非必须
+    private String passWord = Config.getInstance().configFile.getMqtt().getPassWord();//"ZJ6m*#D4pd%b";  //非必须
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	

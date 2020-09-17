@@ -232,8 +232,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "todayKVarH".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayKVarH\",\"value\":\""+get_rawData.todayKVarH+"\",\"curve\":\"\"},";
         			break;
-    			case "todayVAEnergy".toUpperCase():
-    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayVAEnergy\",\"value\":\""+get_rawData.todayVAEnergy+"\",\"curve\":\"\"},";
+    			case "todayKVAH".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayKVAH\",\"value\":\""+get_rawData.todayKVAH+"\",\"curve\":\"\"},";
         			break;
     			}
     		}
@@ -356,8 +356,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "totalKVarH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVarH\",\"value\":\""+get_rawData.totalKVarH+"\",\"curve\":\"\"},";
         			break;
-    			case "totalVAEnergy".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalVAEnergy\",\"value\":\""+get_rawData.totalVAEnergy+"\",\"curve\":\"\"},";
+    			case "totalKVAH".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
         			break;
     			case "tubingPressure".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";

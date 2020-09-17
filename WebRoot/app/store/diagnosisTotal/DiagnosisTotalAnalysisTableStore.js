@@ -240,8 +240,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         		case "todayKVarH".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayKVarH\",\"value\":\""+get_rawData.todayKVarH+"\",\"curve\":\"\"},";
             		break;
-        		case "todayVAEnergy".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayVAEnergy\",\"value\":\""+get_rawData.todayVAEnergy+"\",\"curve\":\"\"},";
+        		case "todayKVAH".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"todayKVAH\",\"value\":\""+get_rawData.todayKVAH+"\",\"curve\":\"\"},";
             		break;
         		}
         	}

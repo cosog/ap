@@ -343,6 +343,10 @@ public class ConfigFile {
 	public static class Mqtt
 	{
 	    private String server;
+	    
+	    private String userName;
+	    
+	    private String passWord;
 
 	    public void setServer(String server){
 	        this.server = server;
@@ -350,6 +354,18 @@ public class ConfigFile {
 	    public String getServer(){
 	        return this.server;
 	    }
+		public String getUserName() {
+			return userName;
+		}
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}
+		public String getPassWord() {
+			return passWord;
+		}
+		public void setPassWord(String passWord) {
+			this.passWord = passWord;
+		}
 	}
 	
 	public static class Kafka

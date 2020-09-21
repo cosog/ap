@@ -79,7 +79,7 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
             	[4, '固定位置停抽'],
             	[5, '频率'],
             	[6, '数据配置'],
-            	[7, '模式配置']
+            	[7, '模型配置']
             ]
         });
         var configTypeComboBox = new Ext.form.ComboBox({

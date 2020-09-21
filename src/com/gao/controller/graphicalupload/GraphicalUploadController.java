@@ -1289,7 +1289,7 @@ public class GraphicalUploadController extends BaseController {
 				updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
 				
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
-						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)
+						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)+","
 						+ "t.workingconditioncode="+kafkaUpData.getResultCode()+","
 						+ "t.FrequencyRunValue="+kafkaUpData.getFreq()+","
 						+ "t.AcquisitionTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";

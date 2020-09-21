@@ -533,17 +533,25 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 			        List<Float> S=new ArrayList<Float>();
 			        List<Float> Watt=new ArrayList<Float>();
 			        List<Float> I=new ArrayList<Float>();
-			        for(int i=0;i<kafkaUpData.getF().size();i++){
-			        	F.add(kafkaUpData.getF().get(i));
+			        if(kafkaUpData.getF()!=null&&kafkaUpData.getF().size()>0){
+			        	for(int i=0;i<kafkaUpData.getF().size();i++){
+				        	F.add(kafkaUpData.getF().get(i));
+				        }
 			        }
-			        for(int i=0;i<kafkaUpData.getS().size();i++){
-			        	S.add(kafkaUpData.getS().get(i));
+			        if(kafkaUpData.getS()!=null&&kafkaUpData.getS().size()>0){
+			        	for(int i=0;i<kafkaUpData.getS().size();i++){
+				        	S.add(kafkaUpData.getS().get(i));
+				        }
 			        }
-			        for(int i=0;i<kafkaUpData.getKWatt().size();i++){
-			        	Watt.add(kafkaUpData.getKWatt().get(i));
+			        if(kafkaUpData.getKWatt()!=null&&kafkaUpData.getKWatt().size()>0){
+			        	for(int i=0;i<kafkaUpData.getKWatt().size();i++){
+				        	Watt.add(kafkaUpData.getKWatt().get(i));
+				        }
 			        }
-			        for(int i=0;i<kafkaUpData.getI().size();i++){
-			        	I.add(kafkaUpData.getI().get(i));
+			        if(kafkaUpData.getI()!=null&&kafkaUpData.getI().size()>0){
+			        	for(int i=0;i<kafkaUpData.getI().size();i++){
+				        	I.add(kafkaUpData.getI().get(i));
+				        }
 			        }
 			        
 			        calculateRequestData.getFESDiagram().setF(F);

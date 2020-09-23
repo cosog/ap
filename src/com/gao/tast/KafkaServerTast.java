@@ -1,6 +1,9 @@
 package com.gao.tast;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -111,8 +114,26 @@ public class KafkaServerTast {
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
         		if(kafkaUpData!=null){
-        			kafkaUpData.setKey(record.key());
-        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
+        			try {
+        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            			//如果时间差达到半小时，校正时间
+						if(Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpData.getAcqTime()).getTime()/1000)>60*30){
+							kafkaUpData.setAcqTime(currentTime);
+							//下行时间
+							String topic="Down-"+record.key()+"-RTC";
+							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+						}
+						kafkaUpData.setKey(record.key());
+	        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+        			
+        			
+        			
+        			
+        			
         		}
         	}else if("Up-Config".equalsIgnoreCase(record.topic())){
         		

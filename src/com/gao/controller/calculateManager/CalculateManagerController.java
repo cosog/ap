@@ -81,7 +81,7 @@ public class CalculateManagerController extends BaseController {
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -138,7 +138,7 @@ public class CalculateManagerController extends BaseController {
 			String inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorauto()[0];
 			StringBuffer result_json = new StringBuffer();
 			for(int i=0;elecInverCalculateManagerHandsontableChangedData!=null&&i<elecInverCalculateManagerHandsontableChangedData.getUpdatelist().size();i++){
-				String sql="select t.wellname,t2.id as diagramid,to_char(t2.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+				String sql="select t.wellname,t2.id as diagramid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 	    				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
 	    				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 	    				+ " t4.offsetangleofcrank,t5.offsetangleofcrankps,t4.crankgravityradius,t4.singlecrankweight,t4.structuralunbalance,"
@@ -312,7 +312,7 @@ public class CalculateManagerController extends BaseController {
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -388,18 +388,18 @@ public class CalculateManagerController extends BaseController {
 		SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMdd_HHmmss");//设置日期格式
 		
 		String wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
-		String acquisitionTime=ParamUtils.getParameter(request, "acquisitionTime");
+		String acqTime=ParamUtils.getParameter(request, "acqTime");
 		String calculateType=ParamUtils.getParameter(request, "calculateType");
-		String json=calculateManagerService.getCalculateRequestData(wellName, acquisitionTime,calculateType);
+		String json=calculateManagerService.getCalculateRequestData(wellName, acqTime,calculateType);
 		
-		Date date = df.parse(acquisitionTime);
-		acquisitionTime=df2.format(date);
+		Date date = df.parse(acqTime);
+		acqTime=df2.format(date);
 		
-		String fileName="请求数据-"+wellName+"-"+acquisitionTime+".json";
+		String fileName="请求数据-"+wellName+"-"+acqTime+".json";
 		if("1".equals(calculateType)){
-			fileName="请求数据-"+wellName+"-"+acquisitionTime+".json";
+			fileName="请求数据-"+wellName+"-"+acqTime+".json";
 		}else if("5".equals(calculateType)){
-			fileName="反演请求数据-"+wellName+"-"+acquisitionTime+".json";
+			fileName="反演请求数据-"+wellName+"-"+acqTime+".json";
 		}
 		String path=stringManagerUtils.getFilePath(fileName,"download/");
 		File file=StringManagerUtils.createJsonFile(json, path);

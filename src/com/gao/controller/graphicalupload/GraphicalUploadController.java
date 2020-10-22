@@ -319,7 +319,7 @@ public class GraphicalUploadController extends BaseController {
 		}
 		surfaceCardFileMap=new HashMap<String,String>();
 		String json = "";
-		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acquisitionTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"cch\"},{ \"header\":\"冲次\",\"dataIndex\":\"cci\"}]";
+		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acqTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"cch\"},{ \"header\":\"冲次\",\"dataIndex\":\"cci\"}]";
 		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+files.length+",");
 		result_json.append("\"totalRoot\":[");
@@ -333,17 +333,17 @@ public class GraphicalUploadController extends BaseController {
 			        String fileName=files[i].getOriginalFilename();
 			        String fileNameArr[]=fileName.split("\\.")[0].split("%");
 			        String wellName=fileNameArr[0];
-//			        String acquisitionTimeStr=fileNameArr[1].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-			        String acquisitionTimeStr=diagramDataStrArr[0]+diagramDataStrArr[1];
-			        if(acquisitionTimeStr.length()==6){
-			        	acquisitionTimeStr="00000000"+acquisitionTimeStr;
-			        }else if(acquisitionTimeStr.length()==8){
-			        	acquisitionTimeStr+="000000";
+//			        String acqTimeStr=fileNameArr[1].replaceAll("-", "").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
+			        String acqTimeStr=diagramDataStrArr[0]+diagramDataStrArr[1];
+			        if(acqTimeStr.length()==6){
+			        	acqTimeStr="00000000"+acqTimeStr;
+			        }else if(acqTimeStr.length()==8){
+			        	acqTimeStr+="000000";
 			        }
 			        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 					SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
-					Date date = df2.parse(acquisitionTimeStr);
-					String acquisitionTime=df.format(date);
+					Date date = df2.parse(acqTimeStr);
+					String acqTime=df.format(date);
 					
 					
 					StringBuffer diagramDataBuff = new StringBuffer();
@@ -359,7 +359,7 @@ public class GraphicalUploadController extends BaseController {
 							fData+=",";
 						}
 			        }
-		        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTime+"\",\"stroke\":"+stroke+","+"\"spm\":"+spm+",");
+		        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acqTime\":\""+acqTime+"\",\"stroke\":"+stroke+","+"\"spm\":"+spm+",");
 		        	diagramDataBuff.append("\"S\":["+sData+"],");
 		        	diagramDataBuff.append("\"F\":["+fData+"],");
 		        	diagramDataBuff.append("\"Watt\":["+wattData+"],");
@@ -368,10 +368,10 @@ public class GraphicalUploadController extends BaseController {
 		        	
 			        result_json.append("{\"id\":"+(i+1)+",");
 					result_json.append("\"wellName\":\""+wellName+"\",");
-					result_json.append("\"acquisitionTime\":\""+acquisitionTime+"\",");
+					result_json.append("\"acqTime\":\""+acqTime+"\",");
 					result_json.append("\"stroke\":\""+stroke+"\",");
 					result_json.append("\"spm\":\""+spm+"\"},");
-					surfaceCardFileMap.put(wellName+"@"+acquisitionTime,diagramDataBuff.toString());
+					surfaceCardFileMap.put(wellName+"@"+acqTime,diagramDataBuff.toString());
 				}catch(Exception e){
 					e.printStackTrace();
 					continue;
@@ -412,7 +412,7 @@ public class GraphicalUploadController extends BaseController {
 		}
 		surfaceCardFileMap=new HashMap<String,String>();
 		String json = "";
-		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acquisitionTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"stroke\"},{ \"header\":\"冲次\",\"dataIndex\":\"spm\"}]";
+		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acqTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"stroke\"},{ \"header\":\"冲次\",\"dataIndex\":\"spm\"}]";
 		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+tablecolumns+",");
 		result_json.append("\"totalCount\":"+files.length+",");
 		result_json.append("\"totalRoot\":[");
@@ -428,7 +428,7 @@ public class GraphicalUploadController extends BaseController {
 			        	try{
 			        		StringBuffer diagramDataBuff = new StringBuffer();
 				        	String wellName= oFirstSheet.getCell(1,j).getContents().replaceAll(" ", "");
-				        	String acquisitionTimeStr="";
+				        	String acqTimeStr="";
 				        	Cell cell = oFirstSheet.getCell(2,j);  
 				        	if(cell.getType() == CellType.DATE){//如果是日期类型
 				        		DateCell dc = (DateCell) cell;   
@@ -436,11 +436,11 @@ public class GraphicalUploadController extends BaseController {
 	                            TimeZone zone = TimeZone.getTimeZone("GMT");  
 	                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	                            sdf.setTimeZone(zone);  
-	                            acquisitionTimeStr = sdf.format(date);  
+	                            acqTimeStr = sdf.format(date);  
 				        	}else{
-				        		acquisitionTimeStr=cell.getContents();
+				        		acqTimeStr=cell.getContents();
 				        	}
-				        	acquisitionTimeStr=acquisitionTimeStr.replaceAll("/", "-");
+				        	acqTimeStr=acqTimeStr.replaceAll("/", "-");
 				        	String sDataString=oFirstSheet.getCell(3,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",");
 				        	String fDataString=oFirstSheet.getCell(4,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",").replaceAll("00\\.", "0\\.").replaceAll("01\\.", "1\\.");
 				        	String wattDataString=oFirstSheet.getCell(5,j).getContents().replaceAll(" ", "").replaceAll("；", ";").replaceAll("，", ",").replaceAll(";", ",").replaceAll("00\\.", "0\\.").replaceAll("01\\.", "1\\.");
@@ -481,7 +481,7 @@ public class GraphicalUploadController extends BaseController {
 				        		}
 				        	}
 				        	
-				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTimeStr+"\",\"stroke\":"+StringManagerUtils.stringToFloat(stroke)+","+"\"spm\":"+StringManagerUtils.stringToFloat(spm)+",");
+				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acqTime\":\""+acqTimeStr+"\",\"stroke\":"+StringManagerUtils.stringToFloat(stroke)+","+"\"spm\":"+StringManagerUtils.stringToFloat(spm)+",");
 				        	diagramDataBuff.append("\"S\":["+sData+"],");
 				        	diagramDataBuff.append("\"F\":["+fData+"],");
 				        	diagramDataBuff.append("\"Watt\":["+wattData+"],");
@@ -490,10 +490,10 @@ public class GraphicalUploadController extends BaseController {
 							
 							result_json.append("{\"id\":"+j+",");
 							result_json.append("\"wellName\":\""+wellName+"\",");
-							result_json.append("\"acquisitionTime\":\""+acquisitionTimeStr+"\",");
+							result_json.append("\"acqTime\":\""+acqTimeStr+"\",");
 							result_json.append("\"stroke\":\""+stroke+"\",");
 							result_json.append("\"spm\":\""+spm+"\"},");
-							surfaceCardFileMap.put(wellName+"@"+acquisitionTimeStr,diagramDataBuff.toString());
+							surfaceCardFileMap.put(wellName+"@"+acqTimeStr,diagramDataBuff.toString());
 			        	}catch(Exception e){
 							continue;
 						}
@@ -538,7 +538,7 @@ public class GraphicalUploadController extends BaseController {
 		}
 		surfaceCardFileMap=new HashMap<String,String>();
 		String json = "";
-		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acquisitionTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"stroke\"},{ \"header\":\"冲次\",\"dataIndex\":\"spm\"}]";
+		String tablecolumns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},{ \"header\":\"功图采集时间\",\"dataIndex\":\"acqTime\"},{ \"header\":\"冲程\",\"dataIndex\":\"stroke\"},{ \"header\":\"冲次\",\"dataIndex\":\"spm\"}]";
 		result_json.append("{ \"success\":true,\"flag\":true,\"columns\":"+tablecolumns+",");
 		result_json.append("\"totalCount\":"+files.length+",");
 		result_json.append("\"totalRoot\":[");
@@ -554,7 +554,7 @@ public class GraphicalUploadController extends BaseController {
 			        	try{
 			        		StringBuffer diagramDataBuff = new StringBuffer();
 				        	String wellName= oFirstSheet.getCell(0,j).getContents().replaceAll(" ", "");
-				        	String acquisitionTimeStr="";
+				        	String acqTimeStr="";
 				        	Cell cell = oFirstSheet.getCell(1,j);  
 				        	if(cell.getType() == CellType.DATE){//如果是日期类型
 				        		DateCell dc = (DateCell) cell;   
@@ -562,11 +562,11 @@ public class GraphicalUploadController extends BaseController {
 	                            TimeZone zone = TimeZone.getTimeZone("GMT");  
 	                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	                            sdf.setTimeZone(zone);  
-	                            acquisitionTimeStr = sdf.format(date);  
+	                            acqTimeStr = sdf.format(date);  
 				        	}else{
-				        		acquisitionTimeStr=cell.getContents();
+				        		acqTimeStr=cell.getContents();
 				        	}
-				        	acquisitionTimeStr=acquisitionTimeStr.replaceAll("/", "-");
+				        	acqTimeStr=acqTimeStr.replaceAll("/", "-");
 				        	
 				        	String spm=oFirstSheet.getCell(2,j).getContents().replaceAll(" ", "");
 				        	
@@ -666,7 +666,7 @@ public class GraphicalUploadController extends BaseController {
 				        		}
 				        	}
 				        	
-				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTimeStr+"\",\"stroke\":"+stroke+","+"\"spm\":"+StringManagerUtils.stringToFloat(spm)+",");
+				        	diagramDataBuff.append("{\"wellName\":\""+wellName+"\",\"acqTime\":\""+acqTimeStr+"\",\"stroke\":"+stroke+","+"\"spm\":"+StringManagerUtils.stringToFloat(spm)+",");
 				        	diagramDataBuff.append("\"S\":["+sData_of_prdc+"],");
 				        	diagramDataBuff.append("\"F\":["+fData+"],");
 				        	diagramDataBuff.append("\"Watt\":["+pData+"],");
@@ -675,10 +675,10 @@ public class GraphicalUploadController extends BaseController {
 							
 							result_json.append("{\"id\":"+j+",");
 							result_json.append("\"wellName\":\""+wellName+"\",");
-							result_json.append("\"acquisitionTime\":\""+acquisitionTimeStr+"\",");
+							result_json.append("\"acqTime\":\""+acqTimeStr+"\",");
 							result_json.append("\"stroke\":\""+sMax_of_prdc+"\",");
 							result_json.append("\"spm\":\""+spm+"\"},");
-							surfaceCardFileMap.put(wellName+"@"+acquisitionTimeStr,diagramDataBuff.toString());
+							surfaceCardFileMap.put(wellName+"@"+acqTimeStr,diagramDataBuff.toString());
 			        	}catch(Exception e){
 							continue;
 						}
@@ -941,11 +941,11 @@ public class GraphicalUploadController extends BaseController {
             TimeZone zone = TimeZone.getTimeZone("GMT");  
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
             sdf.setTimeZone(zone);  
-            String acquisitionTimeStr = sdf.format(date);
+            String acqTimeStr = sdf.format(date);
         	
-//        	String acquisitionTimeStr=oFirstSheet.getCell(1,i).getContents();//2017-10-22 01:00:00
-        	String dateStr=acquisitionTimeStr.split(" ")[0].replaceAll("-", "");
-        	String timeStr=acquisitionTimeStr.split(" ")[1].replaceAll(":", "");
+//        	String acqTimeStr=oFirstSheet.getCell(1,i).getContents();//2017-10-22 01:00:00
+        	String dateStr=acqTimeStr.split(" ")[0].replaceAll("-", "");
+        	String timeStr=acqTimeStr.split(" ")[1].replaceAll(":", "");
         	String cch=oFirstSheet.getCell(2,i).getContents();
         	String cci=oFirstSheet.getCell(3,i).getContents();
         	String gtstr=oFirstSheet.getCell(7,i).getContents();
@@ -967,7 +967,7 @@ public class GraphicalUploadController extends BaseController {
         		}
         	}
 //        	System.out.println(gtBuf.toString());
-//        	raphicalUploadService.saveSurfaceCard(wellName,acquisitionTimeStr,gtBuf.toString());
+//        	raphicalUploadService.saveSurfaceCard(wellName,acqTimeStr,gtBuf.toString());
         }
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -1188,7 +1188,7 @@ public class GraphicalUploadController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
 		KafkaUpData kafkaUpData=gson.fromJson(data, type);
 		if(kafkaUpData!=null){
-			String sql="select t.wellName,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
+			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
 					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH "
@@ -1270,7 +1270,7 @@ public class GraphicalUploadController extends BaseController {
 				
 				//更新数据
 				String updateDailyData="";
-				String updateProdData="update tbl_rpc_productiondata_latest t set t.acquisitionTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
+				String updateProdData="update tbl_rpc_productiondata_latest t set t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
 				if(kafkaUpData.getWaterCut()>=0){
 					updateProdData+=",t.WaterCut_W="+kafkaUpData.getWaterCut();
 				}
@@ -1289,10 +1289,12 @@ public class GraphicalUploadController extends BaseController {
 				updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
 				
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
+						+ "t.signal="+kafkaUpData.getSignal()+","
+						+ "t.deviceVer='"+kafkaUpData.getVer()+"',"
 						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)+","
 						+ "t.workingconditioncode="+kafkaUpData.getResultCode()+","
 						+ "t.FrequencyRunValue="+kafkaUpData.getFreq()+","
-						+ "t.AcquisitionTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
+						+ "t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
@@ -1401,6 +1403,8 @@ public class GraphicalUploadController extends BaseController {
 					topic+="Config";
 				}else if("7".equals(type)){
 					topic+="Model";
+				}else if("8".equals(type)){
+					topic+="DogRestart";
 				}
 				KafkaServerTast.producerMsg(topic, "下行数据", data);
 			}
@@ -1472,7 +1476,7 @@ public class GraphicalUploadController extends BaseController {
 	 */
 	@RequestMapping("/getOuterSurfaceCardData")
 	public String getOuterSurfaceCardData(){
-		String localSql="select t.wellName,t2.pumpsettingdepth,to_char(t3.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') "
+		String localSql="select t.wellName,t2.pumpsettingdepth,to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t  "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "
 				+ " left outer join tbl_rpc_diagram_latest t3 on t3.wellid=t.id "
@@ -1490,9 +1494,9 @@ public class GraphicalUploadController extends BaseController {
 					Object[] obj = (Object[]) localList.get(i);
 					String wellName=obj[0]+"";
 					String pumpSettingSepth=obj[1]+"";
-					String acquisitionTime=obj[2]+"";
+					String acqTime=obj[2]+"";
 					int record=100;
-//					acquisitionTime=StringManagerUtils.isNotNull(acquisitionTime)?acquisitionTime:"1970-01-01 00:00:00";
+//					acqTime=StringManagerUtils.isNotNull(acqTime)?acqTime:"1970-01-01 00:00:00";
 					if(StringManagerUtils.isNotNull(pumpSettingSepth)){//如果生产数据不是空
 						pstmt=null;
 						rs=null;
@@ -1502,12 +1506,12 @@ public class GraphicalUploadController extends BaseController {
 								+ " from a11prod.pc_fd_pumpjack_dyna_dia_t t  "
 								+ " where 1=1 ";
 						
-						if(!StringManagerUtils.isNotNull(acquisitionTime)){
-//							acquisitionTime="1970-01-01 00:00:00";
+						if(!StringManagerUtils.isNotNull(acqTime)){
+//							acqTime="1970-01-01 00:00:00";
 							record=1;
 							outerSql+=" and t.dyna_create_time > to_date('"+StringManagerUtils.getCurrentTime()+"','yyyy-mm-dd')-30 ";
 						}else{
-							outerSql+= " and t.dyna_create_time > to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss') ";
+							outerSql+= " and t.dyna_create_time > to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss') ";
 						}
 						outerSql+= " and t.dyna_create_time < to_date('2020-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ";
 						outerSql+=" and t.well_common_name='"+wellName+"' "
@@ -1521,7 +1525,7 @@ public class GraphicalUploadController extends BaseController {
 						while(rs.next()){
 							try{
 								wellName=rs.getString(1)==null?"":rs.getString(1);
-								String acquisitionTimeStr=rs.getString(2)==null?"":rs.getString(2);
+								String acqTimeStr=rs.getString(2)==null?"":rs.getString(2);
 								float stroke;
 								float frequency;
 								if(rs.getObject(3)==null){
@@ -1541,8 +1545,8 @@ public class GraphicalUploadController extends BaseController {
 								String AStr=rs.getString(8)==null?"":rs.getString(8).replaceAll(";", ",");
 								String PStr=rs.getString(9)==null?"":rs.getString(9).replaceAll(";", ",");
 								point=SStr.split(",").length;
-								System.out.println(acquisitionTimeStr);
-								raphicalUploadService.saveSurfaceCard(wellName,acquisitionTimeStr,point,stroke,frequency,SStr,FStr,AStr,PStr);
+								System.out.println(acqTimeStr);
+								raphicalUploadService.saveSurfaceCard(wellName,acqTimeStr,point,stroke,frequency,SStr,FStr,AStr,PStr);
 							}catch(Exception ee){
 								ee.printStackTrace();
 								continue;

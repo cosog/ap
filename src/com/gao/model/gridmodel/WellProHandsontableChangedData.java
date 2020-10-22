@@ -117,7 +117,7 @@ public class WellProHandsontableChangedData {
 	    
 	    private String netGrossRatio;
 	    
-	    private String acquisitionTime;
+	    private String acqTime;
 
 		public String getId() {
 			return id;
@@ -463,12 +463,12 @@ public class WellProHandsontableChangedData {
 			this.netGrossRatio = netGrossRatio;
 		}
 
-		public String getAcquisitionTime() {
-			return acquisitionTime;
+		public String getAcqTime() {
+			return acqTime;
 		}
 
-		public void setAcquisitionTime(String acquisitionTime) {
-			this.acquisitionTime = acquisitionTime;
+		public void setAcqTime(String acqTime) {
+			this.acqTime = acqTime;
 		}
 	}
 }

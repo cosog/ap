@@ -561,7 +561,7 @@ public class MobileService<T> extends BaseService<T> {
 			
 	        dataSbf.append("{\"WellName\":\""+wellName+"\",");
 	        dataSbf.append("\"LiftingType\":\""+obj[1]+"\",");
-	        dataSbf.append("\"AcquisitionTime\":\""+obj[2]+"\",");
+	        dataSbf.append("\"acqTime\":\""+obj[2]+"\",");
 	        dataSbf.append("\"Status\":\""+obj[3]+"\",");
 	        dataSbf.append("\"CommRange\":\""+obj[4]+"\",");
 	        dataSbf.append("\"CommTimeEfficiency\":\""+obj[5]+"\",");
@@ -629,7 +629,7 @@ public class MobileService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{\"WellName\":\""+wellName+"\",");
 			dataSbf.append("\"LiftingType\":\"\",");
-	        dataSbf.append("\"AcquisitionTime\":\"\",");
+	        dataSbf.append("\"acqTime\":\"\",");
 	        dataSbf.append("\"Status\":\"\",");  
 	        dataSbf.append("\"CommRange\":\"\","); 
 	        dataSbf.append("\"CommTimeEfficiency\":\"\",");  

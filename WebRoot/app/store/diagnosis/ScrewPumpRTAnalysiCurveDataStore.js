@@ -21,11 +21,11 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysiCurveDataStore', {
         	initScrewPumpRTCurveChartFn(get_rawData,"ScrewPumpRTCurveDataChartDiv_Id");
         },
         beforeload: function (store, options) {
-        	var acquisitionTime  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.acquisitionTime;
+        	var acqTime  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.acqTime;
         	var wellName  = Ext.getCmp("ScrewPumpRTAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
             var selectedwellName = Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').getValue();
             var new_params = {
-            		acquisitionTime: acquisitionTime,
+            		acqTime: acqTime,
             		wellName:wellName,
             		selectedwellName:selectedwellName
             };

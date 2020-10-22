@@ -37,7 +37,7 @@ public class CalculateThread extends Thread{
 		String screwPumpCalUrl[]=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
 		CommonDataService commonDataService=new CommonDataService();
 		String sql="select * from ("
-				+ "select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ "select t3.wellname,t3.liftingtype,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
 				+ " t2.rodstring,"
 				+ " t2.tubingstringinsidediameter,"
@@ -56,9 +56,9 @@ public class CalculateThread extends Thread{
 				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
 				+ " and t.resultstatus in (0,2)  "
 				+ " and t.wellid="+wellNo+""
-				+ " order by t.acquisitiontime "
+				+ " order by t.acqTime "
 				+ " ) v where rownum<=100";
-		String totalDateSql="select distinct(to_char(t.acquisitiontime,'yyyy-mm-dd'))"
+		String totalDateSql="select distinct(to_char(t.acqTime,'yyyy-mm-dd'))"
 				+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
 				+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
 				+ " and t.resultstatus in (0,2)  "
@@ -100,7 +100,7 @@ public class CalculateThread extends Thread{
 					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
 					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
 					+ " and t.resultstatus in (0,2)  "
-					+ " and to_char(t.acquisitiontime,'yyyy-mm-dd')='"+totalDateList.get(i)+"'"
+					+ " and to_char(t.acqTime,'yyyy-mm-dd')='"+totalDateList.get(i)+"'"
 					+ " and t.wellid="+wellNo+"";
 			int remainTotals=calculateDataService.getTotalCountRows(remainSql);
 			if(remainTotals==0){

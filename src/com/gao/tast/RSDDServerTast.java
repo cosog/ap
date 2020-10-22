@@ -62,7 +62,7 @@ public class RSDDServerTast {
 	
 	public static class AcquisitionData{
 		public String terminalNo="";//终端卡号
-		public String AcquisitionTime="";
+		public String AcqTime="";
 		public byte[] runStatus=new byte[2];//运行状态
 		public byte[] prodData=new byte[16];//油压、套压。回应、井口油温
 		public byte[] elecData=new byte[48];//电参数据
@@ -77,7 +77,7 @@ public class RSDDServerTast {
 		
 		
 		public void init(){//数据清零
-			this.AcquisitionTime="";
+			this.AcqTime="";
 			this.runStatus=new byte[2];
 			this.prodData=new byte[16];
 			this.elecData=new byte[48];
@@ -168,12 +168,12 @@ public class RSDDServerTast {
 			this.freqData = freqData;
 		}
 
-		public String getAcquisitionTime() {
-			return AcquisitionTime;
+		public String getAcqTime() {
+			return AcqTime;
 		}
 
-		public void setAcquisitionTime(String acquisitionTime) {
-			AcquisitionTime = acquisitionTime;
+		public void setAcqTime(String acqTime) {
+			AcqTime = acqTime;
 		}
 		
 	}

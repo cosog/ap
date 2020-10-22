@@ -205,12 +205,12 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                           value: '',
                           hidden: true
                       }, {
-                          id: 'FSDiagramMaxAcquisitionTime_Id',//功图最新采集时间
+                          id: 'FSDiagramMaxAcqTime_Id',//功图最新采集时间
                           xtype: 'textfield',
                           value: '',
                           hidden: true
                       }, {
-                          id: 'DiscreteMaxAcquisitionTime_Id',//功图最新采集时间
+                          id: 'DiscreteMaxAcqTime_Id',//功图最新采集时间
                           xtype: 'textfield',
                           value: '',
                           hidden: true
@@ -1277,7 +1277,7 @@ function createDiagnosisColumn(columnInfo) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
         } else if (attr.dataIndex.toUpperCase()=='wellName'.toUpperCase()) {
             myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
-        } else if (attr.dataIndex.toUpperCase() == 'acquisitionTime'.toUpperCase()) {
+        } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
             myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
         } else {
             myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
@@ -1609,7 +1609,7 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
     var catagories = "[";
     var title = get_rawData.wellName + "井" + itemName.split("(")[0] + "曲线";
     for (var i = 0; i < data.length; i++) {
-        catagories += "\"" + data[i].acquisitionTime + "\"";
+        catagories += "\"" + data[i].acqTime + "\"";
         if (i < data.length - 1) {
             catagories += ",";
         }
@@ -1631,18 +1631,18 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
         series += "{\"name\":\"" + legendName[i] + "\",";
         series += "\"data\":[";
         for (var j = 0; j < data.length; j++) {
-            var year = parseInt(data[j].acquisitionTime.split(" ")[0].split("-")[0]);
-            var month = parseInt(data[j].acquisitionTime.split(" ")[0].split("-")[1]);
-            var day = parseInt(data[j].acquisitionTime.split(" ")[0].split("-")[2]);
-            var hour = parseInt(data[j].acquisitionTime.split(" ")[1].split(":")[0]);
-            var minute = parseInt(data[j].acquisitionTime.split(" ")[1].split(":")[1]);
-            var second = parseInt(data[j].acquisitionTime.split(" ")[1].split(":")[2]);
+            var year = parseInt(data[j].acqTime.split(" ")[0].split("-")[0]);
+            var month = parseInt(data[j].acqTime.split(" ")[0].split("-")[1]);
+            var day = parseInt(data[j].acqTime.split(" ")[0].split("-")[2]);
+            var hour = parseInt(data[j].acqTime.split(" ")[1].split(":")[0]);
+            var minute = parseInt(data[j].acqTime.split(" ")[1].split(":")[1]);
+            var second = parseInt(data[j].acqTime.split(" ")[1].split(":")[2]);
 //            series += "[" + Date.UTC(year, month - 1, day, hour, minute, second) + "," + data[j].value + "]";
-//            series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+//            series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].value + "]";
             if (i == 0) {
-            	series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+            	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].value + "]";
             }else if(i == 1){
-            	series += "[" + Date.parse(data[j].acquisitionTime.replace(/-/g, '/')) + "," + data[j].value2 + "]";
+            	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].value2 + "]";
             }
             if (j != data.length - 1) {
                 series += ",";
@@ -1876,7 +1876,7 @@ function initWellboreSliceCharts(result,divId){
 			text: title
 		},
 		subtitle: {
-        	text: result.wellName+' ['+result.acquisitionTime+']'                                                      
+        	text: result.wellName+' ['+result.acqTime+']'                                                      
         },
 		colors: color,
 		xAxis: {
@@ -2045,29 +2045,29 @@ var FSDiagramAnalysisRealtimeRefreshTask = {
 	    	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
 			if (activeId == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
 				if (isNotVal(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id"))) {
-					var FSDiagramMaxAcquisitionTime=Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").getValue();
-					var DiscreteMaxAcquisitionTime=Ext.getCmp("DiscreteMaxAcquisitionTime_Id").getValue();
+					var FSDiagramMaxAcqTime=Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue();
+					var DiscreteMaxAcqTime=Ext.getCmp("DiscreteMaxAcqTime_Id").getValue();
 					var orgId = Ext.getCmp('leftOrg_Id').getValue();
 					Ext.Ajax.request({
 			    		method:'POST',
-			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcquisitionTime',
+			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcqTime',
 			    		success:function(response) {
 			    			var result = Ext.decode(response.responseText);
-			    			if(Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").getValue()==''){
-			    				Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").setValue(result.newestFSDiagramAcquisitionTime);
+			    			if(Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue()==''){
+			    				Ext.getCmp("FSDiagramMaxAcqTime_Id").setValue(result.newestFSDiagramAcqTime);
 			    			}
 			    			
-			    			if(Ext.getCmp("DiscreteMaxAcquisitionTime_Id").getValue()==''){
-			    				Ext.getCmp("DiscreteMaxAcquisitionTime_Id").setValue(result.newestDiscreteAcquisitionTime);
+			    			if(Ext.getCmp("DiscreteMaxAcqTime_Id").getValue()==''){
+			    				Ext.getCmp("DiscreteMaxAcqTime_Id").setValue(result.newestDiscreteAcqTime);
 			    			}
 			    			
 			    			
 			    			if(result.diagramRecords>0 || result.discreteRecords>0){
 			    				if(result.diagramRecords>0){
-			    					Ext.getCmp("FSDiagramMaxAcquisitionTime_Id").setValue(result.newestFSDiagramAcquisitionTime);
+			    					Ext.getCmp("FSDiagramMaxAcqTime_Id").setValue(result.newestFSDiagramAcqTime);
 			    				}
 			    				if(result.discreteRecords>0){
-			    					Ext.getCmp("DiscreteMaxAcquisitionTime_Id").setValue(result.newestDiscreteAcquisitionTime);
+			    					Ext.getCmp("DiscreteMaxAcqTime_Id").setValue(result.newestDiscreteAcqTime);
 			    				}
 			    				Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
 			    			}
@@ -2077,8 +2077,8 @@ var FSDiagramAnalysisRealtimeRefreshTask = {
 			    		},
 			    		params: {
 			    			orgId: orgId,
-			    			FSDiagramMaxAcquisitionTime: FSDiagramMaxAcquisitionTime,
-			    			DiscreteMaxAcquisitionTime:DiscreteMaxAcquisitionTime
+			    			FSDiagramMaxAcqTime: FSDiagramMaxAcqTime,
+			    			DiscreteMaxAcqTime:DiscreteMaxAcqTime
 			            }
 			    	});
 		    	}

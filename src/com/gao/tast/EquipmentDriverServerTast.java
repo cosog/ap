@@ -107,9 +107,9 @@ public class EquipmentDriverServerTast {
 	public static boolean init(){
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
-		String sql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+		String sql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode,"
-				+ " to_char(t3.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as disAcquisitiontime,"
+				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
 				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
@@ -119,9 +119,9 @@ public class EquipmentDriverServerTast {
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=200 and t.liftingType<300"
 				+ " order by t.sortNum";
-		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode,"
-				+ " to_char(t3.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as disAcquisitiontime,"
+				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
 				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
@@ -132,7 +132,7 @@ public class EquipmentDriverServerTast {
 				+ " left outer join  tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=400 and t.liftingType<500"
 				+ " order by t.sortNum";
-		String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String resetCommStatus="update tbl_rpc_discrete_latest t set t.commstatus=0  ";
 		String resetPCPCommStatus="update tbl_pcp_discrete_latest t set t.commstatus=0  ";
 		if(clientUnitList!=null){
@@ -177,7 +177,7 @@ public class EquipmentDriverServerTast {
 				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
 				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
 				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
-				unit.diagranAcquisitionTime=rs.getString(6);
+				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
 				unit.dirverName="必创";
 				unit.commStatus=0;
@@ -204,7 +204,7 @@ public class EquipmentDriverServerTast {
 						break;
 					}
 				}
-				unit.lastDisAcquisitionTime=rs.getString(12);
+				unit.lastDisAcqTime=rs.getString(12);
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
@@ -244,7 +244,7 @@ public class EquipmentDriverServerTast {
 				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
 				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
 				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
-				unit.diagranAcquisitionTime=rs.getString(6);
+				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
 				unit.dirverName="必创";
 				unit.commStatus=0;
@@ -271,7 +271,7 @@ public class EquipmentDriverServerTast {
 						break;
 					}
 				}
-				unit.lastDisAcquisitionTime=rs.getString(12);
+				unit.lastDisAcqTime=rs.getString(12);
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
@@ -350,7 +350,7 @@ public class EquipmentDriverServerTast {
 			wellList=wellList.substring(0, wellList.length()-1);
 		}
 		
-		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,t.acqcycle_diagram,to_char(t2.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode "
 				+ " from tbl_wellinformation t "
 				+ " left join tbl_rpc_diagram_latest t2 on t2.wellId=t.id "
@@ -396,7 +396,7 @@ public class EquipmentDriverServerTast {
 					units.get(i).driverAddr=rs.getString(3)==null?"":rs.getString(3);
 					units.get(i).dirverId=rs.getString(4)==null?"":rs.getString(4);
 					units.get(i).acqCycle_Diagram=Short.parseShort(rs.getString(5));
-					units.get(i).diagranAcquisitionTime=rs.getString(6);
+					units.get(i).diagramAcqTime=rs.getString(6);
 					units.get(i).UnitId=Integer.parseInt(rs.getString(4)==null?"01":rs.getString(4));
 					units.get(i).commStatus=0;
 					units.get(i).runTimeEfficiencySource=rs.getInt(7);
@@ -432,7 +432,7 @@ public class EquipmentDriverServerTast {
 				unit.driverAddr=rs.getString(3);
 				unit.dirverId=rs.getString(4);
 				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5));
-				unit.diagranAcquisitionTime=rs.getString(6);
+				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(unit.dirverId);
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
@@ -506,15 +506,17 @@ public class EquipmentDriverServerTast {
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
-		
-		//添加安控驱动配置
-		String path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","data/");
-		String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		java.lang.reflect.Type type = new TypeToken<RTUDriveConfig>() {}.getType();
+		String path="";
+		String DriverConfigData="";
+		java.lang.reflect.Type type=null;
+//		//添加安控驱动配置
+		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(EtrolRTUDrive.getDriverCode(), EtrolRTUDrive);
-		
-		//添加必创驱动配置
+//		
+//		//添加必创驱动配置
 		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
@@ -528,35 +530,35 @@ public class EquipmentDriverServerTast {
 		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
 		
-		//添加中科奥维驱动配置
-		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
-		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
-		
-//		//添加A11驱动配置
-//		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
+//		//添加中科奥维驱动配置
+//		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
 //		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 //		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
-//		
-		//添加四化驱动配置
+//		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
+//		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
+		
+//		//添加A11驱动配置
+		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
+		
+//		//添加四化驱动配置
 		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
 		
-		//添加MQTT驱动配置
+//		//添加MQTT驱动配置
 		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
 		
-		//添加Kafka
+//		//添加Kafka
 		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
@@ -675,8 +677,8 @@ public class EquipmentDriverServerTast {
 						acquisitionUnitData.setFSDiagramSetPointCount(1);
 					else if("FSDiagramPointCount".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setFSDiagramPointCount(1);
-					else if("AcquisitionTime".equalsIgnoreCase(itemRs.getString(1)))
-						acquisitionUnitData.setAcquisitionTime(1);
+					else if("AcqTime".equalsIgnoreCase(itemRs.getString(1)))
+						acquisitionUnitData.setAcqTime(1);
 					else if("SPM".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setSPM(1);
 					else if("Stroke".equalsIgnoreCase(itemRs.getString(1)))
@@ -756,7 +758,7 @@ public class EquipmentDriverServerTast {
 	}
 	
 	public static class AcquisitionData{
-		public  String AcquisitionTime="";
+		public  String AcqTime="";
 		public  String ReadTime="";//读取数据时间
 		public  String SaveTime="";//离散数据保存时间
 		public  String screwPumpSaveTime="";//螺杆泵数据保存时间
@@ -819,11 +821,11 @@ public class EquipmentDriverServerTast {
 	    public String RealTimeCommRangeString;//通信区间字符串
 	    public float RealTimeCommTime;//在线时间
 	    public float RealTimeCommTimeEfficiency;//在线时率
-		public String getAcquisitionTime() {
-			return AcquisitionTime;
+		public String getAcqTime() {
+			return AcqTime;
 		}
-		public void setAcquisitionTime(String acquisitionTime) {
-			AcquisitionTime = acquisitionTime;
+		public void setAcqTime(String acqTime) {
+			AcqTime = acqTime;
 		}
 		public int getRunStatus() {
 			return runStatus;
@@ -1205,9 +1207,9 @@ public class EquipmentDriverServerTast {
 		public  String dirverId;
 		public  String dirverName;
 		public  int acqCycle_Diagram;
-		public  String diagranAcquisitionTime;
+		public  String diagramAcqTime;
 		public int commStatus;
-		public  String lastDisAcquisitionTime;
+		public  String lastDisAcqTime;
 		public int lastCommStatus;
 		public float lastCommTime;
 		public float lastCommTimeEfficiency;
@@ -1472,11 +1474,11 @@ public class EquipmentDriverServerTast {
 		public void setAcquisitionUnitData(AcquisitionUnitData acquisitionUnitData) {
 			this.acquisitionUnitData = acquisitionUnitData;
 		}
-		public String getDiagranAcquisitionTime() {
-			return diagranAcquisitionTime;
+		public String getDiagramAcqTime() {
+			return diagramAcqTime;
 		}
-		public void setDiagranAcquisitionTime(String diagranAcquisitionTime) {
-			this.diagranAcquisitionTime = diagranAcquisitionTime;
+		public void setDiagramAcqTime(String diagramAcqTime) {
+			this.diagramAcqTime = diagramAcqTime;
 		}
 		public int getBalanceControlModeControl() {
 			return balanceControlModeControl;
@@ -1574,11 +1576,11 @@ public class EquipmentDriverServerTast {
 		public void setLastRunRange(String lastRunRange) {
 			this.lastRunRange = lastRunRange;
 		}
-		public String getLastDisAcquisitionTime() {
-			return lastDisAcquisitionTime;
+		public String getLastDisAcqTime() {
+			return lastDisAcqTime;
 		}
-		public void setLastDisAcquisitionTime(String lastDisAcquisitionTime) {
-			this.lastDisAcquisitionTime = lastDisAcquisitionTime;
+		public void setLastDisAcqTime(String lastDisAcqTime) {
+			this.lastDisAcqTime = lastDisAcqTime;
 		}
 		public int getLastCommStatus() {
 			return lastCommStatus;

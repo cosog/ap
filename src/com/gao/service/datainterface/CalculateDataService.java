@@ -45,7 +45,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	
 	public String getObjectToElecCalculateRequestData(Object[] object) throws SQLException, IOException, ParseException{
 		
-		String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String elecCalRequest="{\"AKString\":\"\","
 				+ "\"WellName\":\""+object[0]+"\","
 				+ "\"AcqTime\":\""+object[63]+"\","
@@ -373,7 +373,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " left outer join tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType between 200 and 299 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.workingconditioncode,"
 											+ "t.TheoreticalProduction,"
 											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
 											+ "t.availableplungerstrokeprod_v,t.pumpclearanceleakprod_v,t.tvleakvolumetricproduction,t.svleakvolumetricproduction,t.gasinfluenceprod_v,"
@@ -402,18 +402,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio"
 											+" from tbl_rpc_diagram_hist t ,tbl_wellinformation t007 ,tbl_rpc_productiondata_hist prod"
 											+" where t.wellid=t007.id and t.productiondataid=prod.id "
-											+" and  t.acquisitiontime > "
-											+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
+											+" and  t.acqTime > "
+											+" (select max(to_date(to_char(t2.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
 											+" from tbl_rpc_diagram_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
-											+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
+											+" and t2.acqTime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
 											+" and t.resultstatus=1 "
 //											+" and t.workingconditioncode<>1232 "
-											+" and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
-		String statusSql="select well.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+											+" and t.acqTime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+		String statusSql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_rpc_discrete_hist t,tbl_wellinformation well "
-				+ " where t.wellid=well.id and t.acquisitiontime=( select max(t2.acquisitiontime) from tbl_rpc_discrete_hist t2 where t2.wellid=t.wellid and t2.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
+				+ " where t.wellid=well.id and t.acqTime=( select max(t2.acqTime) from tbl_rpc_discrete_hist t2 where t2.wellid=t.wellid and t2.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
@@ -425,7 +425,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 //		wellinformationSql+=" and t.jh='龙1-斜09'";
 //		singleCalculateResuleSql+=" and t007.jh='龙1-斜09'";
 		
-		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
+		singleCalculateResuleSql+=" order by t007.sortnum,t.acqTime";
 		wellinformationSql+=" order by t.sortnum";
 		statusSql+=" order by well.sortnum";
 		List<?> welllist = findCallSql(wellinformationSql);
@@ -659,7 +659,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " left outer join tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType between 400 and 499 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.rpm,"
 				+ "t.TheoreticalProduction,"							
 				+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
@@ -671,16 +671,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio"
 				+" from tbl_pcp_rpm_hist t ,tbl_wellinformation t007 ,tbl_pcp_productiondata_hist prod"
 				+" where t.wellid=t007.id and t.productiondataid=prod.id "
-				+" and  t.acquisitiontime > "
-				+" (select max(to_date(to_char(t2.acquisitiontime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
+				+" and  t.acqTime > "
+				+" (select max(to_date(to_char(t2.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
 				+" from tbl_pcp_rpm_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
-				+" and t2.acquisitiontime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
-				+" and t.resultstatus=1 and t.acquisitiontime<to_date('"+tatalDate+"','yyyy-mm-dd')";
-		String statusSql="select well.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+				+" and t2.acqTime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
+				+" and t.resultstatus=1 and t.acqTime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+		String statusSql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_pcp_discrete_hist t,tbl_wellinformation well "
-				+ " where t.wellid=well.id and t.acquisitiontime=( select max(t2.acquisitiontime) from tbl_pcp_discrete_hist t2 where t2.wellid=t.wellid and t2.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
+				+ " where t.wellid=well.id and t.acqTime=( select max(t2.acqTime) from tbl_pcp_discrete_hist t2 where t2.wellid=t.wellid and t2.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
@@ -689,7 +689,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 //		wellinformationSql+=" and t.jh='龙1-斜09'";
 //		singleCalculateResuleSql+=" and t007.jh='龙1-斜09'";
 		
-		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
+		singleCalculateResuleSql+=" order by t007.sortnum,t.acqTime";
 		wellinformationSql+=" order by t.sortnum";
 		statusSql+=" order by well.sortnum";
 		List<?> welllist = findCallSql(wellinformationSql);
@@ -860,19 +860,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " where t.liftingType between 200 and 299 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,t.workingconditioncode,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.workingconditioncode,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue,"
 				+ "t.Signal,t.WattSum,t.VarSum,t.VASum,t.PFSum"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
-				+ " and t.acquisitiontime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
+				+ " and t.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
 		}
 		
-		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
+		singleCalculateResuleSql+=" order by t007.sortnum,t.acqTime";
 		wellinformationSql+=" order by t.sortnum";
 		List<?> welllist = findCallSql(wellinformationSql);
 		List<?> singleresultlist = findCallSql(singleCalculateResuleSql);
@@ -928,19 +928,19 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " where t.liftingType between 400 and 499 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue,"
 				+ "t.WattSum,t.VarSum,t.VASum,t.PFSum"
 				+" from tbl_pcp_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
-				+" and t.acquisitiontime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
+				+" and t.acqTime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
 		}
 		
-		singleCalculateResuleSql+=" order by t007.sortnum,t.acquisitiontime";
+		singleCalculateResuleSql+=" order by t007.sortnum,t.acqTime";
 		wellinformationSql+=" order by t.sortnum";
 		List<?> welllist = findCallSql(wellinformationSql);
 		List<?> singleresultlist = findCallSql(singleCalculateResuleSql);

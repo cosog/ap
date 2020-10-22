@@ -204,8 +204,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			sql+=" and "+typeColumnName+"='"+statValue+"' ";
 		}
 		sql+=" order by t.sortNum, t.wellName";
-		sqlHis+=" and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-				+ "and  t.wellName = '" + wellName.trim() + "' order by t.acquisitionTime desc";
+		//sqlHis+=" and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
+		sqlHis+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') + 1 "
+				+ "and  t.wellName = '" + wellName.trim() + "' order by t.acqTime desc";
 		
 		if(StringManagerUtils.isNotNull(wellName.trim())){
 			sqlAll=sqlHis;
@@ -365,8 +366,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			sql+=" and "+typeColumnName+"='"+statValue+"' ";
 		}
 		sql+=" order by t.sortNum, t.wellName";
-		sqlHis+=" and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-				+ "and  t.wellName = '" + wellName.trim() + "' order by t.acquisitionTime desc";
+		sqlHis+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 "
+				+ "and  t.wellName = '" + wellName.trim() + "' order by t.acqTime desc";
 		
 		if(StringManagerUtils.isNotNull(wellName.trim())){
 			sqlAll=sqlHis;
@@ -451,7 +452,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" liquidVolumetricProduction";
 		}
-        String sql="select well.wellName as wellName, to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+        String sql="select well.wellName as wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
@@ -575,7 +576,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("upperLoadLine:\""+obj[3]+"\",");         // 理论上载荷
 	        dataSbf.append("lowerLoadLine:\""+obj[4]+"\",");         // 理论下载荷
 	        dataSbf.append("fmax:\""+obj[5]+"\",");         // 最大载荷
@@ -612,7 +613,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{success:true,");
 			dataSbf.append("wellName:\""+wellName+"\",");
-	        dataSbf.append("acquisitionTime:\"\",");
+	        dataSbf.append("acqTime:\"\",");
 	        dataSbf.append("upperLoadLine:\"\",");  
 	        dataSbf.append("lowerLoadLine:\"\","); 
 	        dataSbf.append("fmax:\"\",");  
@@ -658,7 +659,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         	tableName="tbl_rpc_diagram_latest";
         }
         
-        String sql="select well.wellName, to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+        String sql="select well.wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,t.upstrokeimax,t.downstrokeimax,t.idegreebalance,t.deltaRadius*100,"
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
         		+ " t.ia_curve,t.ib_curve,t.ic_curve,"
@@ -771,7 +772,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("upStrokeWattMax:\""+obj[2]+"\",");         
 	        dataSbf.append("downStrokeWattMax:\""+obj[3]+"\",");
 	        dataSbf.append("wattDegreeBalance:\""+obj[4]+"\",");
@@ -800,7 +801,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\"\",");         // 时间
+	        dataSbf.append("acqTime:\"\",");         // 时间
 	        dataSbf.append("upStrokeWattMax:\"\",");         
 	        dataSbf.append("downStrokeWattMax:\"\",");
 	        dataSbf.append("wattDegreeBalance:\"\",");
@@ -847,7 +848,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" liquidVolumetricProduction";
 		}
-        String sql="select well.wellName as wellName, to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as acquisitiontime,"
+        String sql="select well.wellName as wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
@@ -963,7 +964,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("upperLoadLine:\""+obj[3]+"\",");         // 理论上载荷
 	        dataSbf.append("lowerLoadLine:\""+obj[4]+"\",");         // 理论下载荷
 	        dataSbf.append("fmax:\""+obj[5]+"\",");         // 最大载荷
@@ -1001,7 +1002,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{success:true,");
 			dataSbf.append("wellName:\""+wellName+"\",");
-	        dataSbf.append("acquisitionTime:\"\",");
+	        dataSbf.append("acqTime:\"\",");
 	        dataSbf.append("upperLoadLine:\"\",");  
 	        dataSbf.append("lowerLoadLine:\"\","); 
 	        dataSbf.append("fmax:\"\",");  
@@ -1043,17 +1044,17 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	 * */
 	public String queryRodPress(int id) throws SQLException, IOException{
 		String wellName="";
-		String acquisitionTime="";
+		String acqTime="";
 		String rodStressRatio1="0",rodStressRatio2="0",rodStressRatio3="0",rodStressRatio4="0";
 		StringBuffer dataSbf = new StringBuffer();
-		String sql="select t.wellName as wellName, to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
+		String sql="select t.wellName as wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 				  + "t.rodstring from "
 		          +"viw_rpc_diagram_hist t where t.id in (" + id + ") ";
 		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			wellName=obj[0].toString();
-			acquisitionTime=obj[1].toString();
+			acqTime=obj[1].toString();
 	        String rodDataArr[]=obj[2].toString().split(";");
 	        for(int i=1;i<rodDataArr.length;i++){
 	        	if(i==1&&rodDataArr[i].split(",").length==6){
@@ -1069,7 +1070,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	    }
 		dataSbf.append("{success:true,columns:[{\"header\":\"X轴\",\"dataIndex\":\"XData\",children:[]},{\"header\":\"Y轴\",\"dataIndex\":\"YData\",children:[]}],");
         dataSbf.append("wellName"+wellName+"\",");             // 井名
-        dataSbf.append("acquisitionTime:\""+acquisitionTime+"\",");         // 时间
+        dataSbf.append("acqTime:\""+acqTime+"\",");         // 时间
         dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
         dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
         dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
@@ -1083,17 +1084,17 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	 * */
 	public String queryPumpEfficiency(int id) throws SQLException, IOException{
 		String wellName="";
-		String acquisitionTime="";
+		String acqTime="";
 		Float pumpeff1=0.0f,pumpeff2=0.0f,pumpeff3=0.0f,pumpeff4=0.0f;
 		StringBuffer dataSbf = new StringBuffer();
-		String sql="select t.wellName as wellName, to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
+		String sql="select t.wellName as wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 				  + "t.pumpeff1*100, t.pumpeff2*100, t.pumpeff3*100, t.pumpeff4*100 from "
 		          +"viw_rpc_diagram_hist t where t.id in (" + id + ") ";
 		List<?> list=this.findCallSql(sql);
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			wellName=obj[0].toString();
-			acquisitionTime=obj[1].toString();
+			acqTime=obj[1].toString();
 			pumpeff1=StringManagerUtils.stringToFloat(obj[2].toString() ,1);
 			pumpeff2=StringManagerUtils.stringToFloat(obj[3].toString() ,1);
 			pumpeff3=StringManagerUtils.stringToFloat(obj[4].toString() ,1);
@@ -1101,7 +1102,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	    }
 		dataSbf.append("{success:true,");
         dataSbf.append("wellName:\""+wellName+"\",");             // 井名
-        dataSbf.append("acquisitionTime:\""+acquisitionTime+"\",");         // 时间
+        dataSbf.append("acqTime:\""+acqTime+"\",");         // 时间
         dataSbf.append("pumpeff1:\""+pumpeff1+"\",");     // 冲程损失系数
         dataSbf.append("pumpeff2:\""+pumpeff2+"\",");         // 充满系数
         dataSbf.append("pumpeff3:"+pumpeff3+",");             // 漏失系数
@@ -1211,7 +1212,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " rodString,"
 				+ " upperLoadLineOfExact,"
 				+ " tubingPressure,casingPressure,wellHeadFluidTemperature,productionGasOilRatio,"
-				+ " to_char(acquisitionTime_d,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " to_char(acqTime_d,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalKWattH,totalKVarH,totalKVAH,"
@@ -1325,7 +1326,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"wellHeadFluidTemperature\":\""+obj[57]+"\",");
 			result_json.append("\"productionGasOilRatio\":\""+obj[58]+"\",");
 			
-			result_json.append("\"acquisitionTime_d\":\""+obj[59]+"\",");
+			result_json.append("\"acqTime_d\":\""+obj[59]+"\",");
 			result_json.append("\"commStatus\":\""+obj[60]+"\",");
 			result_json.append("\"runStatus\":\""+obj[61]+"\",");
 			result_json.append("\"Ia\":\""+obj[62]+"\",");
@@ -1429,7 +1430,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " rodString,"
 				+ " tubingPressure,casingPressure,wellHeadFluidTemperature,productionGasOilRatio,"
 				+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
-				+ " to_char(acquisitionTime_d,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " to_char(acqTime_d,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " commStatus,runStatus,"
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalKWattH,totalKVarH,totalKVAH,"
@@ -1502,7 +1503,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"producingFluidLevel\":\""+obj[29]+"\",");
 			result_json.append("\"submergence\":\""+obj[30]+"\",");
 			
-			result_json.append("\"acquisitionTime_d\":\""+obj[31]+"\",");
+			result_json.append("\"acqTime_d\":\""+obj[31]+"\",");
 			result_json.append("\"commStatus\":\""+obj[32]+"\",");
 			result_json.append("\"runStatus\":\""+obj[33]+"\",");
 			result_json.append("\"Ia\":\""+obj[34]+"\",");
@@ -1573,15 +1574,15 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else{
 			tableName="viw_rpc_diagram_hist";
 		}
-		sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" from "+tableName+" t "
-				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" from "+tableName+" t "
+				+ " where t.wellName='"+wellName+"' and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') +1 order by t.acqTime";
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);
 		dynSbf.append("{\"success\":true,\"totalCount\":" + totals + ",\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
-				dynSbf.append("{ \"acquisitionTime\":\"" + obj[0] + "\",");
+				dynSbf.append("{ \"acqTime\":\"" + obj[0] + "\",");
 				dynSbf.append("\"value\":\""+obj[1]+"\"");
 				if("iRatio".equalsIgnoreCase(itemCode)||"wattRatio".equalsIgnoreCase(itemCode)){
 					dynSbf.append(",\"value2\":\""+obj[2]+"\"");
@@ -1635,25 +1636,25 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		
 		
 		
-//		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_rpm_hist t "
-//				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+//		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_rpm_hist t "
+//				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acqTime";
 //		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
 //				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
 //			itemCode="t."+itemCode+",t."+itemCode+"uplimit,t."+itemCode+"downlimit";
-//			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
-//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+//			sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
+//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acqTime";
 //		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
 //				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 //				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)
 //				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
 //				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
 //				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
-//			sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_discrete_hist t "
-//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+//			sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_discrete_hist t "
+//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acqTime";
 //		}
 		
-		sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" from "+tableName+" t "
-				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acquisitionTime";
+		sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" from "+tableName+" t "
+				+ " where t.wellName='"+wellName+"' and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 order by t.acqTime";
 		
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
@@ -1663,7 +1664,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
-				dynSbf.append("{ \"acquisitionTime\":\"" + obj[0] + "\",");
+				dynSbf.append("{ \"acqTime\":\"" + obj[0] + "\",");
 				dynSbf.append("\"value\":\""+obj[1]+"\"},");
 				if(obj.length==4&&i==list.size()-1){
 					uplimit=obj[2]+"";
@@ -1676,7 +1677,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
-	public String getScrewPumpRTAnalysiCurveData(String acquisitionTime,String wellName) throws SQLException, IOException {
+	public String getScrewPumpRTAnalysiCurveData(String acqTime,String wellName) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		float iauplimit=0;
 		float iadownlimit=0;
@@ -1692,21 +1693,21 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		float vcdownlimit=0;
 		
 		String sql="select "
-				+ " to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,t.ia,t.ib,t.ic,t.va,t.vb,t.vc, "
+				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,t.ia,t.ib,t.ic,t.va,t.vb,t.vc, "
 				+ " t.iauplimit,t.iadownlimit,t.ibuplimit,t.ibdownlimit,t.icuplimit,t.icdownlimit, "
 				+ " t.vauplimit,t.vadownlimit,t.vbuplimit,t.vbdownlimit,t.vcuplimit,t.vcdownlimit "
 				+ " from viw_pcp_comprehensive_hist t "
-				+ " where t.acquisitionTime between to_date(to_char(to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
-				+ " and to_date('"+acquisitionTime+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " where t.acqTime between to_date(to_char(to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'yyyy-mm-dd'),'yyyy-mm-dd') "
+				+ " and to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.wellName='"+wellName+"'"
-				+ " order by t.acquisitionTime";
+				+ " order by t.acqTime";
 		List<?> list=this.findCallSql(sql);
 		
-		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"acquisitionTime\":\""+acquisitionTime+"\",\"totalRoot\":[");
+		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"acqTime\":\""+acqTime+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
-				dynSbf.append("{ \"acquisitionTime\":\"" + obj[0] + "\",");
+				dynSbf.append("{ \"acqTime\":\"" + obj[0] + "\",");
 				dynSbf.append("\"rpm\":"+obj[1]+",");
 				dynSbf.append("\"ia\":"+obj[2]+",");
 				dynSbf.append("\"ib\":"+obj[3]+",");
@@ -1742,28 +1743,28 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
-	public String getNewestAcquisitionTime(String orgId,String FSDiagramMaxAcquisitionTime,String DiscreteMaxAcquisitionTime){
+	public String getNewestAcqTime(String orgId,String FSDiagramMaxAcqTime,String DiscreteMaxAcqTime){
 		long startTime=new Date().getTime();
 		StringBuffer result_json = new StringBuffer();
-		String newestFSDiagramAcquisitionTime="";
-		String newestDiscreteAcquisitionTime="";
+		String newestFSDiagramAcqTime="";
+		String newestDiscreteAcqTime="";
 		int diagramRecords=0;
 		int discreteRecords=0;
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		String diagramSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd hh24:mi:ss'),count(1) from TBL_RPC_DIAGRAM_HIST t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
-		String discreteSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd hh24:mi:ss'),count(1) from tbl_rpc_discrete_hist t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
+		String diagramSql="select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss'),count(1) from TBL_RPC_DIAGRAM_HIST t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
+		String discreteSql="select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss'),count(1) from tbl_rpc_discrete_hist t,tbl_wellinformation well where t.wellid=well.id and well.orgid in("+orgId+")";
 		
-		if(StringManagerUtils.isNotNull(FSDiagramMaxAcquisitionTime)){
-			diagramSql+="and t.acquisitiontime>to_date('"+FSDiagramMaxAcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		if(StringManagerUtils.isNotNull(FSDiagramMaxAcqTime)){
+			diagramSql+="and t.acqTime>to_date('"+FSDiagramMaxAcqTime+"','yyyy-mm-dd hh24:mi:ss')";
 		}else{
-			diagramSql+="and t.acquisitiontime>to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
-			newestFSDiagramAcquisitionTime=currentTime;
+			diagramSql+="and t.acqTime>to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+			newestFSDiagramAcqTime=currentTime;
 		}
-		if(StringManagerUtils.isNotNull(DiscreteMaxAcquisitionTime)){
-			discreteSql+="and t.acquisitiontime>to_date('"+DiscreteMaxAcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		if(StringManagerUtils.isNotNull(DiscreteMaxAcqTime)){
+			discreteSql+="and t.acqTime>to_date('"+DiscreteMaxAcqTime+"','yyyy-mm-dd hh24:mi:ss')";
 		}else{
-			discreteSql+="and t.acquisitiontime>to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
-			newestDiscreteAcquisitionTime=currentTime;
+			discreteSql+="and t.acqTime>to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+			newestDiscreteAcqTime=currentTime;
 		}
 		
 		List<?> diagramList=this.findCallSql(diagramSql);
@@ -1776,7 +1777,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}
 			if(diagramRecords>0){
 				if(obj[0]!=null){
-					newestFSDiagramAcquisitionTime=obj[0]+"";
+					newestFSDiagramAcqTime=obj[0]+"";
 				}
 			}
 		}
@@ -1788,14 +1789,14 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}
 			if(discreteRecords>0){
 				if(obj[0]!=null){
-					newestDiscreteAcquisitionTime=obj[0]+"";
+					newestDiscreteAcqTime=obj[0]+"";
 				}
 			}
 		}
 		result_json.append("{");
-		result_json.append("\"newestFSDiagramAcquisitionTime\":\""+newestFSDiagramAcquisitionTime+"\",");
+		result_json.append("\"newestFSDiagramAcqTime\":\""+newestFSDiagramAcqTime+"\",");
 		result_json.append("\"diagramRecords\":"+diagramRecords+",");
-		result_json.append("\"newestDiscreteAcquisitionTime\":\""+newestDiscreteAcquisitionTime+"\",");
+		result_json.append("\"newestDiscreteAcqTime\":\""+newestDiscreteAcqTime+"\",");
 		result_json.append("\"discreteRecords\":"+discreteRecords+"");
 		result_json.append("}");
 		long endTime=new Date().getTime();

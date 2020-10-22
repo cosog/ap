@@ -533,7 +533,7 @@ iconDiagnoseAnalysisCurve = function(value, e, o) {
 	var item=o.data.item;
 	var index=o.internalId%2;
 	var resultstring='';
-	if(itemCode.toUpperCase() == 'acquisitionTime_d'.toUpperCase()||itemCode.toUpperCase() == 'deviceVer'.toUpperCase()){
+	if(itemCode.toUpperCase() == 'acqTime_d'.toUpperCase()||itemCode.toUpperCase() == 'deviceVer'.toUpperCase()){
 //		resultstring=o.data.value;
 		resultstring='';
 	}else{
@@ -4185,7 +4185,7 @@ showAngleLoadContinuousDiagram = function(diagramData,divid) {
 	var angleCurveData=diagramData.angle360CurveData.split(",");
 	var loadCurveData=diagramData.load360CurveData.split(",");
 	var title="曲柄角度-悬点载荷曲线(360点)";
-	var subtitle=diagramData.wellName+' ['+diagramData.acquisitionTime+']';
+	var subtitle=diagramData.wellName+' ['+diagramData.acqTime+']';
 	var xtext='曲柄转角(°)';
 	var ytext='悬点载荷(kN)';
 	var color='#FF6633';
@@ -4723,7 +4723,7 @@ function initBalanceCurveChart(catagories,series,divId,title,subtitle,ytext,xtex
 
 function initSurfaceCardChart(pointdata, gtdata, divid) {
 	var wellName=gtdata.wellName;         // 井名
-	var acquisitionTime=gtdata.acquisitionTime;     // 采集时间
+	var acqTime=gtdata.acqTime;     // 采集时间
 	var upperLoadLine=gtdata.upperLoadLine;   // 理论上载荷
 	var lowerLoadLine=gtdata.lowerLoadLine;   // 理论下载荷
 	var fmax=gtdata.fmax;     // 最大载荷
@@ -4761,7 +4761,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        	text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {
-		        	text: wellName+' ['+acquisitionTime+']'                                                      
+		        	text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -4825,7 +4825,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        },
 		        exporting:{
                     enabled:true,    
-                    filename:wellName+'-'+acquisitionTime+'-光杆功图',    
+                    filename:wellName+'-'+acqTime+'-光杆功图',    
                     url:context + '/exportHighcharsPicController/export'
                },
 		        legend: {                                                                            
@@ -4874,7 +4874,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 
 function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtdata, divid) {
 	var wellName=gtdata.wellName;         // 井名
-	var acquisitionTime=gtdata.acquisitionTime;     // 采集时间
+	var acqTime=gtdata.acqTime;     // 采集时间
 	var upperLoadLine=gtdata.upperLoadLine;   // 理论上载荷
 	var lowerLoadLine=gtdata.lowerLoadLine;   // 理论下载荷
 	var fmax=gtdata.fmax;     // 最大载荷
@@ -4903,7 +4903,7 @@ function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtd
 		        	text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {
-		        	text:wellName+' ['+acquisitionTime+']'                                                
+		        	text:wellName+' ['+acqTime+']'                                                
 		        },
 		        credits: {
 		            enabled: false
@@ -5021,7 +5021,7 @@ function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtd
 
 function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid,title,xtext,ytext,color) {
 	var wellName=gtdata.wellName;         // 井名
-	var acquisitionTime=gtdata.acquisitionTime;     // 采集时间
+	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
@@ -5034,7 +5034,7 @@ function initPSDiagramChart(upStrokePointdata,downStrokePointdata, gtdata, divid
 		        	text: title          
 		        },                                                                                   
 		        subtitle: {
-		        	text: wellName+' ['+acquisitionTime+']'                                                      
+		        	text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -5426,7 +5426,7 @@ function initAF360ContinuousDiagramChart(pointdata, divid,title,subtitle,xtext,y
 
 function initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, gtdata, divid,title,xtext,ytext,color) {
 	var wellName=gtdata.wellName;         // 井名
-	var acquisitionTime=gtdata.acquisitionTime;     // 采集时间
+	var acqTime=gtdata.acqTime;     // 采集时间
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',     // 散点图   
@@ -5438,7 +5438,7 @@ function initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, gtd
 		        	text: title          
 		        },                                                                                   
 		        subtitle: {
-		        	text: wellName+' ['+acquisitionTime+']'                                                      
+		        	text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -5525,7 +5525,7 @@ function initFSDiagramChart(pointdata,upStrokePointdata,downStrokePointdata, gtd
 showPumpCard = function(result,divid) {
 	var color=new Array("#00ff00","#ff0000","#ff8000","#ff06c5","#0000ff"); // 线条颜色
 	var wellName=result.wellName;                        // 井名
-	var acquisitionTime=result.acquisitionTime;                    // 时间
+	var acqTime=result.acqTime;                    // 时间
 	var workingConditionCode=result.workingConditionCode;
 	var pumpFSDiagramData=result.pumpFSDiagramData.split("#");       // 图形数据
 	var series = "[";
@@ -5552,7 +5552,7 @@ showPumpCard = function(result,divid) {
 	series+="]";
 	var pointdata = Ext.JSON.decode(series);
 	title = cosog.string.pumpFSDiagram;  // 泵功图
-	initMultiSurfaceCardChart(pointdata, title, wellName, acquisitionTime, divid);
+	initMultiSurfaceCardChart(pointdata, title, wellName, acqTime, divid);
 	return false;
 }
 
@@ -5560,7 +5560,7 @@ showPumpCard = function(result,divid) {
  * 初始化多个功图曲线数据
  * li 2015-07-23
  */
-function initMultiSurfaceCardChart(series, title, wellName, acquisitionTime, divid,upperLoadLine,lowerLoadLine) {
+function initMultiSurfaceCardChart(series, title, wellName, acqTime, divid,upperLoadLine,lowerLoadLine) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -5572,7 +5572,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acquisitionTime, div
 		        	text: title
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: wellName+' ['+acquisitionTime+']'                                                      
+		            text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -5676,7 +5676,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acquisitionTime, div
  */
 showRodPress = function(result, divid) {
 	var wellName=result.wellName;                        // 井名
-	var acquisitionTime=result.acquisitionTime;                    // 时间
+	var acqTime=result.acqTime;                    // 时间
 	var rodStressRatio1=changeTwoDecimal(parseFloat(result.rodStressRatio1)*100);              // 一级应力百分比
 	var rodStressRatio2=changeTwoDecimal(parseFloat(result.rodStressRatio2)*100);              // 二级应力百分比
 	var rodStressRatio3=changeTwoDecimal(parseFloat(result.rodStressRatio3)*100);              // 三级应力百分比
@@ -5707,7 +5707,7 @@ showRodPress = function(result, divid) {
 	ydata+="]";
 	var xdata2 = Ext.JSON.decode(xdata);
 	var ydata2 = Ext.JSON.decode(ydata);
-	initRodPressChart(xdata2, ydata2, wellName, acquisitionTime, divid);
+	initRodPressChart(xdata2, ydata2, wellName, acqTime, divid);
 	return false;
 }
 
@@ -5715,7 +5715,7 @@ showRodPress = function(result, divid) {
  * 初始化杆柱应力数据
  * li 2015-05-05
  */
-function initRodPressChart(xdata, ydata, wellName, acquisitionTime, divid) {
+function initRodPressChart(xdata, ydata, wellName, acqTime, divid) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
@@ -5751,7 +5751,7 @@ function initRodPressChart(xdata, ydata, wellName, acquisitionTime, divid) {
 		            }
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: wellName+' ['+acquisitionTime+']'
+		            text: wellName+' ['+acqTime+']'
 		        },
 		        colors: ['#00bc00','#006837', '#00FF00','#006837', '#00FF00','#006837'],
 		        credits: {
@@ -5820,7 +5820,7 @@ function initRodPressChart(xdata, ydata, wellName, acquisitionTime, divid) {
  */
 showPumpEfficiency = function(bxzcData, divid) {
 	var wellName=bxzcData.wellName;           // 井名
-	var acquisitionTime=bxzcData.acquisitionTime;       // 时间
+	var acqTime=bxzcData.acqTime;       // 时间
 	var pumpEff1=bxzcData.pumpEff1;   // 冲程损失系数
 	var pumpEff2=bxzcData.pumpEff2;       // 充满系数
 	var pumpEff3=bxzcData.pumpEff3;       // 漏失系数
@@ -5830,7 +5830,7 @@ showPumpEfficiency = function(bxzcData, divid) {
 		ydata="[]";
 	}
 	ydata = Ext.JSON.decode(ydata);
-	initPumpEfficiencyChart(ydata, wellName, acquisitionTime, divid);
+	initPumpEfficiencyChart(ydata, wellName, acqTime, divid);
 //	initPumpEfficiencyChartTest(divid);
 	return false;
 }
@@ -5839,7 +5839,7 @@ showPumpEfficiency = function(bxzcData, divid) {
  * 初始化泵效组成数据
  * li 2015-05-07
  */
-function initPumpEfficiencyChart(ydata, wellName, acquisitionTime, divid, title, yname) {
+function initPumpEfficiencyChart(ydata, wellName, acqTime, divid, title, yname) {
 	$('#'+divid).highcharts({
 				chart: {                                                                             
 		            type: 'column',                      // 柱状图
@@ -5851,7 +5851,7 @@ function initPumpEfficiencyChart(ydata, wellName, acquisitionTime, divid, title,
 		            text: cosog.string.pumpEff              // 泵效组成  
 		        },
 		        subtitle: {                              // 子标题                                                                   
-		            text: wellName+' ['+acquisitionTime+']'                                                      
+		            text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        colors: ['#66ffcc', '#009999', '#ffcc33', '#ff6633', '#00ffff', '#3366cc', '#ffccff', '#cc0000', '#6AF9C4'],
 		        credits: {                               // 版权信息
@@ -7630,7 +7630,7 @@ function initSingleYCurveChartFn(catagories, series, tickInterval, divId, title,
  * 拼接光杆功图曲线数据
  */
 showSurfaceCardUploadChart = function(result, divid) {
-    var acquisitionTime=result.acquisitionTime;
+    var acqTime=result.acqTime;
     var stroke=result.stroke;
     var spm=result.spm;
     var wellName=result.wellName;
@@ -7658,13 +7658,13 @@ showSurfaceCardUploadChart = function(result, divid) {
 	data+="]";
 	var pointdata = Ext.JSON.decode(data);
 	//画功图
-	initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,spm, divid);
+	initSurfaceCardUploadChart(wellName,pointdata, acqTime,stroke,spm, divid);
 	return false;
 }
 
 
 
-function initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,spm, divid) {
+function initSurfaceCardUploadChart(wellName,pointdata, acqTime,stroke,spm, divid) {
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br/>';
     xtext+='冲程:' + stroke + 'm 冲次:' + spm + '/min<br/>';
     xtext += '</span>';
@@ -7679,7 +7679,7 @@ function initSurfaceCardUploadChart(wellName,pointdata, acquisitionTime,stroke,s
 		            text: cosog.string.FSDiagram  // 光杆功图                        
 		        },                                                                                   
 		        subtitle: {                                                                          
-		        	text:wellName+' ['+acquisitionTime+']'                                               
+		        	text:wellName+' ['+acqTime+']'                                               
 		        },
 		        credits: {
 		            enabled: false
@@ -7989,7 +7989,7 @@ showPSDiagramOverlayChart = function(get_rawData,divid,curveType,visible) {
 	return false;
 }
 //initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
-function initFSDiagramOverlayChart(series, title,ytext, wellName, acquisitionTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
+function initFSDiagramOverlayChart(series, title,ytext, wellName, acqTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -8000,7 +8000,7 @@ function initFSDiagramOverlayChart(series, title,ytext, wellName, acquisitionTim
 		        	text: title
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: wellName+' ['+acquisitionTime+']'                                                      
+		            text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false
@@ -8100,7 +8100,7 @@ function initFSDiagramOverlayChart(series, title,ytext, wellName, acquisitionTim
 	});
 }
 
-function initPSDiagramOverlayChart(series, title,ytext, wellName, acquisitionTime, divid) {
+function initPSDiagramOverlayChart(series, title,ytext, wellName, acqTime, divid) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -8111,7 +8111,7 @@ function initPSDiagramOverlayChart(series, title,ytext, wellName, acquisitionTim
 		        	text: title
 		        },                                                                                   
 		        subtitle: {                                                                          
-		            text: wellName+' ['+acquisitionTime+']'                                                      
+		            text: wellName+' ['+acqTime+']'                                                      
 		        },
 		        credits: {
 		            enabled: false

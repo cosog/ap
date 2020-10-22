@@ -34,17 +34,20 @@ import com.google.gson.reflect.TypeToken;
 public class KafkaServerTast {
 	public static final String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
     public static final String[] TOPIC = {"Up-Data","Up-Config","Up-Model"};
-    private static final String clientid = "apKafkaClient"+new Date().getTime();
+    private static final String clientid = "apKafkaClient";//+new Date().getTime();
+    private static int receivedDataCount=0;
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runKafkaServer() {
 		Properties props = new Properties();
 	    props.put("bootstrap.servers", HOST);
 	    props.put("group.id", clientid);
 	    props.put("enable.auto.commit", "true");
 	    props.put("auto.commit.interval.ms", "1000");
+	    
+	    props.put("auto.offset.reset", "latest");//latest,earliest,none
 	    
 	    props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 	    props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -54,7 +57,9 @@ public class KafkaServerTast {
 	        }
 	        public void onPartitionsAssigned(Collection<TopicPartition> collection) {
 	            //将偏移设置到最开始
-	            consumer.seekToBeginning(collection);
+//	            consumer.seekToBeginning(collection);
+	        	//将偏移设置到最后
+//	        	consumer.seekToEnd(collection);
 	        }
 	    });
 	    while (true) {
@@ -69,6 +74,7 @@ public class KafkaServerTast {
 //	        	}else if("Up-Model".equalsIgnoreCase(record.topic())){
 //	        		
 //	        	}
+	        	receivedDataCount++;
 	        	KafkaDataAnalysisThread kafkaDataAnalysisThread=new KafkaDataAnalysisThread(record);
 	        	kafkaDataAnalysisThread.start();
 	        }
@@ -106,34 +112,40 @@ public class KafkaServerTast {
 		}
 
 		public void run(){
-			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
+//			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
 			Gson gson = new Gson();
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
-			
-        	if("Up-Data".equalsIgnoreCase(record.topic())){
+			if("Up-Data".equalsIgnoreCase(record.topic())){
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
         		if(kafkaUpData!=null){
         			try {
         				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            			System.out.println("offset="+record.offset()+",采集时间:"+kafkaUpData.getAcqTime()+",系统时间:"+kafkaUpData.getSysTime());
             			//如果时间差达到半小时，校正时间
-						if(Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpData.getAcqTime()).getTime()/1000)>60*30){
+            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
+						if(diffTime>60*30){
+							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+kafkaUpData.getSysTime()+",时间差:"+diffTime+"秒");
 							kafkaUpData.setAcqTime(currentTime);
 							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
 							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
-						kafkaUpData.setKey(record.key());
-	        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
-					} catch (ParseException e) {
+						if(StringManagerUtils.isNotNull(kafkaUpData.getAcqTime())){
+							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpData.getAcqTime()).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
+							kafkaUpData.setKey(record.key());
+		        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
+						}else{
+							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
+						}
+						
+					} catch (Exception e) {
 						e.printStackTrace();
+						System.out.println(record.value());
 					}
-        			
-        			
-        			
-        			
-        			
+        		}else{
+        			System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
         		}
         	}else if("Up-Config".equalsIgnoreCase(record.topic())){
         		
@@ -153,7 +165,13 @@ public class KafkaServerTast {
 
 	public static class KafkaUpData
 	{
-	    private String AcqTime;
+		private String Ver;
+		
+		private String SysTime;
+		
+		private String AcqTime;
+		
+		private Integer Signal;
 	    
 	    private String Key;
 	    
@@ -171,7 +189,7 @@ public class KafkaServerTast {
 
 	    private List<Float> F;
 
-	    private List<Float> KWatt;
+	    private List<Float> Watt;
 
 	    private List<Float> I;
 
@@ -237,11 +255,11 @@ public class KafkaServerTast {
 	    public List<Float> getF(){
 	        return this.F;
 	    }
-	    public void setKWatt(List<Float> KWatt){
-	        this.KWatt = KWatt;
+	    public void setWatt(List<Float> Watt){
+	        this.Watt = Watt;
 	    }
-	    public List<Float> getKWatt(){
-	        return this.KWatt;
+	    public List<Float> getWatt(){
+	        return this.Watt;
 	    }
 	    public void setI(List<Float> I){
 	        this.I = I;
@@ -543,6 +561,24 @@ public class KafkaServerTast {
 		}
 		public void setWellId(Integer wellId) {
 			this.wellId = wellId;
+		}
+		public String getVer() {
+			return Ver;
+		}
+		public void setVer(String ver) {
+			Ver = ver;
+		}
+		public String getSysTime() {
+			return SysTime;
+		}
+		public void setSysTime(String sysTime) {
+			SysTime = sysTime;
+		}
+		public Integer getSignal() {
+			return Signal;
+		}
+		public void setSignal(Integer signal) {
+			Signal = signal;
 		}
 	}
 }

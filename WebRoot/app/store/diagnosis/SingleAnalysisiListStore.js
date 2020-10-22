@@ -1,6 +1,6 @@
 Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
     extend: 'Ext.data.Store',
-    fields: ['wellName','acquisitionTime',
+    fields: ['wellName','acqTime',
     	'commStatusName','commTime','commTimeEfficiency',
     	'runStatusName', 'runTime','runTimeEfficiency', 'runRange', 
     	'workingConditionName', 'optimizationSuggestion', 
@@ -53,6 +53,7 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                     },
                     columnLines: true,
                     columns:newColumns,
+                    height: document.documentElement.clientHeight,
                     listeners: {
                         selectionchange: function (view, selected, o) {
                             if (selected.length > 0) {
@@ -83,6 +84,10 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                         itemdblclick: function (view,record,item,index,e,eOpts) {
                         	var wellName=Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
                     		if(wellName==null||wellName==""){
+//                    			var gridPanel=Ext.getCmp("FSDiagramAnalysisSingleDetails_Id");
+//                    			if(isNotVal(gridPanel)){
+//                    				gridPanel.destroy();
+//                    			}
                     			Ext.getCmp("RPCRealtimeAnalysisWellListPanel_Id").setTitle("单井历史");
                     			Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").show();
                             	Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").show();
@@ -95,8 +100,8 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                             	
                     			Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue(record.data.wellName);
                             	Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setRawValue(record.data.wellName);
-                            	Ext.getCmp('FSDiagramAnalysisSingleDetails_Id').getStore().loadPage(1);
-                            	
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetails_Id').getStore().load();
+//                            	Ext.create("AP.store.diagnosis.SingleAnalysisiListStore");
                     		}
                         },
                         select: function(grid, record, index, eOpts) {

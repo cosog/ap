@@ -75,7 +75,7 @@ public class SurfaceCardQueryController extends BaseController {
 		String json = "";
 		try {
 			if(StringManagerUtils.isNotNull(wellName)&&(!StringManagerUtils.isNotNull(endDate))){
-				String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
+				String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
 				List list = this.commonDataService.reportDateJssj(sql);
 				if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 					endDate = list.get(0).toString();

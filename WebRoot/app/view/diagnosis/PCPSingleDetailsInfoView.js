@@ -1070,31 +1070,31 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
 			}
 		}
 		RPM.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].rpm)
         ]);
 		Ia.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].ia)
         ]);
 		Ib.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].ib)
         ]);
 		Ic.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].ic)
         ]);
 		Va.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].va)
         ]);
 		Vb.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].vb)
         ]);
 		Vc.push([
-            Date.parse(items[i].acquisitionTime.replace(/-/g, '/')),
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].vc)
         ]);
 	}

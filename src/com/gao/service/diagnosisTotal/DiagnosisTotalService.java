@@ -383,9 +383,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
 		String startDate=calculateDate;
-		String startDateSql="select to_char(max(t.acquisitiontime),'yyyy-mm-dd') "
+		String startDateSql="select to_char(max(t.acqTime),'yyyy-mm-dd') "
 				+ " from tbl_rpc_diagram_hist t,tbl_wellinformation well "
-				+ " where t.wellid=well.id and  t.acquisitiontime<to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
+				+ " where t.wellid=well.id and  t.acqTime<to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and well.wellname='"+wellName+"'";
 		List<?> startDateList = this.findCallSql(startDateSql);
 		if(startDateList.size()>0&&startDateList.get(0)!=null){
@@ -398,7 +398,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			prodCol="liquidVolumetricProduction";
 		}
 		
-		String sql="select t.id,t.wellname,to_char(t.acquisitiontime,'hh24:mi:ss'),"
+		String sql="select t.id,t.wellname,to_char(t.acqTime,'hh24:mi:ss'),"
 				+ " t.workingConditionName,t.workingConditionAlarmLevel,t."+prodCol+","
 				+ " t.stroke,t.spm,t.fmax,t.fmin,t.upperloadline,t.lowerloadline,"
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
@@ -406,9 +406,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve  "
 				+ " from viw_rpc_diagramquery_hist t "
 				+ " where t.orgid in ("+orgId+") "
-				+ " and t.acquisitiontime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
+				+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and t.wellname='"+wellName+"' "
-				+ " order by t.acquisitiontime desc";
+				+ " order by t.acqTime desc";
 		
 		List<?> list=this.findCallSql(sql);
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyDiagramOverlay");

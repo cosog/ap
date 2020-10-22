@@ -5,7 +5,7 @@ import java.util.List;
 public class FSDiagramModel {
 	private String wellName;
 
-    private String acquisitionTime;
+    private String acqTime;
 
     private float stroke;
 
@@ -27,12 +27,12 @@ public class FSDiagramModel {
 		this.wellName = wellName;
 	}
 
-	public String getAcquisitionTime() {
-		return acquisitionTime;
+	public String getAcqTime() {
+		return acqTime;
 	}
 
-	public void setAcquisitionTime(String acquisitionTime) {
-		this.acquisitionTime = acquisitionTime;
+	public void setAcqTime(String acqTime) {
+		this.acqTime = acqTime;
 	}
 
 	public float getStroke() {

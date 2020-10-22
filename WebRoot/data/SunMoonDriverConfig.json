@@ -341,7 +341,7 @@
             "Length": 1,
             "Zoom": 1
         },
-        "AcquisitionTime": {
+        "AcqTime": {
             "Address": 40985,
             "DataType": 3,
             "Length": 6,

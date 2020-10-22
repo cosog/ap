@@ -6,7 +6,7 @@ public class BalanceResponseData {
 	
 	private String WellName;
 
-    private String AcquisitionTime;
+    private String AcqTime;
 
     private CalculationStatus CalculationStatus;
 
@@ -30,11 +30,11 @@ public class BalanceResponseData {
     public String getWellName(){
         return this.WellName;
     }
-    public void setAcquisitionTime(String AcquisitionTime){
-        this.AcquisitionTime = AcquisitionTime;
+    public void setAcqTime(String AcqTime){
+        this.AcqTime = AcqTime;
     }
-    public String getAcquisitionTime(){
-        return this.AcquisitionTime;
+    public String getAcqTime(){
+        return this.AcqTime;
     }
     public void setCalculationStatus(CalculationStatus CalculationStatus){
         this.CalculationStatus = CalculationStatus;

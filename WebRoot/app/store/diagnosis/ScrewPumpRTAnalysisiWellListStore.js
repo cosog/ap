@@ -1,6 +1,6 @@
 Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisiWellListStore', {
     extend: 'Ext.data.Store',
-    fields: ['wellName','acquisitionTime',
+    fields: ['wellName','acqTime',
     	'commStatusName','commTime','commTimeEfficiency',
     	'runStatusName', 'runTime','runTimeEfficiency', 'runRange', 
     	'workingConditionName', 'optimizationSuggestion', 

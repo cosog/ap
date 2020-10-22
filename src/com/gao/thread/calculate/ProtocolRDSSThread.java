@@ -68,9 +68,9 @@ public class ProtocolRDSSThread extends Thread{
 							beidouTerminalMap.put(terminalNo, acquisitionData);
 						}
 						//记录采集时间
-						String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-						if(!StringManagerUtils.isNotNull(acquisitionData.AcquisitionTime)||format.parse(AcquisitionTime).getTime()<format.parse(acquisitionData.AcquisitionTime).getTime()){
-							acquisitionData.setAcquisitionTime(AcquisitionTime);
+						String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+						if(!StringManagerUtils.isNotNull(acquisitionData.AcqTime)||format.parse(AcqTime).getTime()<format.parse(acquisitionData.AcqTime).getTime()){
+							acquisitionData.setAcqTime(AcqTime);
 						}
 						short addr=StringManagerUtils.getShort(revData, 1);//地址
 						short totalFrag=StringManagerUtils.getShort(revData[3]);//总片段
@@ -150,7 +150,7 @@ public class ProtocolRDSSThread extends Thread{
 										//进行通信计算
 			        					String commRequest="{\"AKString\":\"\","
 			        							+ "\"WellName\":\""+wellName+"\","
-			        							+ "\"AcqTime\":\""+acquisitionData.AcquisitionTime+"\","
+			        							+ "\"AcqTime\":\""+acquisitionData.AcqTime+"\","
 			        							+ "\"CommStatus\":1"
 			        							+ "}";
 			        					String commResponse=StringManagerUtils.sendPostMethod(Config.getInstance().configFile.getAgileCalculate().getCommunication()[0], commRequest,"utf-8");
@@ -160,7 +160,7 @@ public class ProtocolRDSSThread extends Thread{
 			        					//进行电参计算
 			        					String elecCalRequest="{\"AKString\":\"\","
 			        							+ "\"WellName\":\""+wellName+"\","
-			        							+ "\"AcqTime\":\""+AcquisitionTime+"\","
+			        							+ "\"AcqTime\":\""+AcqTime+"\","
 			        							+ "\"CurrentA\":"+CurrentA+","
 			        							+ "\"CurrentB\":"+CurrentB+","
 			        							+ "\"CurrentC\":"+CurrentC+","
@@ -193,7 +193,7 @@ public class ProtocolRDSSThread extends Thread{
 			        					}
 			        					String tiemEffRequest="{\"AKString\":\"\","
 			        							+ "\"WellName\":\""+wellName+"\","
-			        							+ "\"AcqTime\":\""+AcquisitionTime+"\","
+			        							+ "\"AcqTime\":\""+AcqTime+"\","
 			        							+ "\"RunStatus\":"+RunStatus+","
 			        							+ "\"TotalAPC\":"+ActivePowerConsumption+","
 			        							+ "\"TotalRPC\":"+ReactivePowerConsumption+""
@@ -207,7 +207,7 @@ public class ProtocolRDSSThread extends Thread{
 			        					
 			        					String updateTXZT="update tbl_wellinformation t set t.txzt=1 where t.jh='"+wellName+"'";
 		        						
-		        						String updateProdData="update tbl_rpc_productiondata_hist t set t.cjsj=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		        						String updateProdData="update tbl_rpc_productiondata_hist t set t.cjsj=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')";
 		        						boolean hasProData=false;
 		            					if(TubingPressure>0){
 		            						hasProData=true;
@@ -230,7 +230,7 @@ public class ProtocolRDSSThread extends Thread{
 		        						
 		        						String updateTXZT033="update t_outputwellhistory t set t.txzt=1,t.gtcjzq=0,t.bpszpl="+SetFrequency+",t.bpyxpl="+RunFrequency+","
 		        								+ "t.TubingPressure="+TubingPressure+",t.CasingPressure="+CasingPressure+",t.BackPressure="+BackPressure+",t.WellHeadFluidTemperature="+WellHeadFluidTemperature+","
-		        								+ "t.cjsj=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+		        								+ "t.cjsj=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')";
 		        						String updateTXZT033RT="";
 		        						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 		        							updateTXZT033+=" ,t.txsl= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
@@ -348,7 +348,7 @@ public class ProtocolRDSSThread extends Thread{
 										recvPBuff.append("\"P\": [");
 										proParamsBuff.append("\"ProductionParameter\": {");
 										elecBuff.append("\"Electric\": {");
-										recvBuff.append("{\"WellName\":\""+wellName+"\",\"AcquisitionTime\":\""+gtcjsj+"\",");
+										recvBuff.append("{\"WellName\":\""+wellName+"\",\"AcqTime\":\""+gtcjsj+"\",");
 										
 										proParamsBuff.append("\"TubingPressure\":"+TubingPressure+",");
 	                					proParamsBuff.append("\"CasingPressure\":"+CasingPressure+",");
@@ -372,7 +372,7 @@ public class ProtocolRDSSThread extends Thread{
 	                					elecBuff.append("\"PowerFactor\":"+PowerFactor+"}");
 	                					recvBuff.append(elecBuff+",");
 	                					
-	                					recvBuff.append("\"Diagram\":{\"AcquisitionTime\":\""+gtcjsj+"\",\"AcquisitionCycle\":0,\"SPM\":"+SPM+","+"\"Stroke\":"+Stroke+",");
+	                					recvBuff.append("\"Diagram\":{\"AcqTime\":\""+gtcjsj+"\",\"AcquisitionCycle\":0,\"SPM\":"+SPM+","+"\"Stroke\":"+Stroke+",");
 	                					for(int i=0;i<pointCount;i++){
 	                						recvSBuff.append(StringManagerUtils.getShort(acquisitionData.gtSData,i*2)*0.01);
 	                						recvFBuff.append(StringManagerUtils.getShort(acquisitionData.gtFData,i*2)*0.01);

@@ -139,8 +139,8 @@ public class IntelligentPumpingUnitThread extends Thread{
             				wellReaded=false;
             				break;
     					}else{
-    						String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-							String updateDiscreteComm="update tbl_rpc_discrete_latest t set t.commstatus=1,t.acquisitiontime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')  "
+    						String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+							String updateDiscreteComm="update tbl_rpc_discrete_latest t set t.commstatus=1,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')  "
 									+ " where t.wellId in (select well.id from tbl_wellinformation well where well.driveraddr='"+revMacStr+"') ";
 							Connection conn=OracleJdbcUtis.getConnection();
 							Statement stmt=null;
@@ -166,7 +166,7 @@ public class IntelligentPumpingUnitThread extends Thread{
     			}else{
     				//循环读取数据 
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
-    					String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+    					String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
     					//接收工况报警信息
     					rc=this.readElectricAlarmInfo(clientUnit.socket, 5000, recByte,is);
     					if(rc!=-1){
@@ -965,8 +965,8 @@ public class IntelligentPumpingUnitThread extends Thread{
 							readTime=format.parse(clientUnit.unitDataList.get(i).getAcquisitionData().getReadTime()).getTime();
 						}
 						//当前采集时间与上次读取时间差值大于离散数据采集周期时，读取离散数据
-    					if(format.parse(AcquisitionTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcqCycle_Discrete()){
-    						clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime(AcquisitionTime);
+    					if(format.parse(AcqTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcqCycle_Discrete()){
+    						clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime(AcqTime);
     						int runSatus=0;
     						int DiscreteAcquisitionInterval=0;
         					float TubingPressure=0;
@@ -1033,7 +1033,7 @@ public class IntelligentPumpingUnitThread extends Thread{
         					
         					
         					
-        					String diagramAcquisitionTime="1970-01-01 08:00:00";
+        					String diagramAcqTime="1970-01-01 08:00:00";
         					
         					String prodTableName="tbl_rpc_productiondata_latest";
     						String discreteTableName="tbl_rpc_discrete_latest";
@@ -1042,11 +1042,11 @@ public class IntelligentPumpingUnitThread extends Thread{
         						discreteTableName="tbl_pcp_discrete_latest";
     						}
     						boolean hasProData=false;
-    						String updateProdData="update "+prodTableName+" t set t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+    						String updateProdData="update "+prodTableName+" t set t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')";
     						String updateDailyData="";
-    						String updateDiscreteData="update "+discreteTableName+" t set t.commStatus=1,t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+    						String updateDiscreteData="update "+discreteTableName+" t set t.commStatus=1,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')";
     						
-        					clientUnit.unitDataList.get(i).getAcquisitionData().setAcquisitionTime(AcquisitionTime);
+        					clientUnit.unitDataList.get(i).getAcquisitionData().setAcqTime(AcqTime);
         					//读取离散数据
         					//读取电参工况
         					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40449,1,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
@@ -1248,7 +1248,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 								FSDiagramSetPointCount=getUnsignedShort(recByte,4, driveConfig.getProtocol());
 								point=getUnsignedShort(recByte,6, driveConfig.getProtocol());
 								
-								diagramAcquisitionTime=BCD2TimeString(recByte,8, driveConfig.getProtocol());
+								diagramAcqTime=BCD2TimeString(recByte,8, driveConfig.getProtocol());
 								
 								SPM=getFloat(recByte,20, driveConfig.getProtocol());
 								Stroke=getFloat(recByte,24, driveConfig.getProtocol());
@@ -1258,9 +1258,9 @@ public class IntelligentPumpingUnitThread extends Thread{
         					String commRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",";
-        					if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcquisitionTime)&&StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastCommRange)){
+        					if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcqTime)&&StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastCommRange)){
         						commRequest+= "\"Last\":{"
-    									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcquisitionTime+"\","
+    									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcqTime+"\","
     									+ "\"CommStatus\": "+(clientUnit.unitDataList.get(i).lastCommStatus==1?true:false)+","
     									+ "\"CommEfficiency\": {"
     									+ "\"Efficiency\": "+clientUnit.unitDataList.get(i).lastCommTimeEfficiency+","
@@ -1270,7 +1270,7 @@ public class IntelligentPumpingUnitThread extends Thread{
     									+ "},";
         					}	
         					commRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+AcquisitionTime+"\","
+									+ "\"AcqTime\":\""+AcqTime+"\","
 									+ "\"CommStatus\":true"
 									+ "}"
 									+ "}";
@@ -1291,7 +1291,7 @@ public class IntelligentPumpingUnitThread extends Thread{
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommTimeEfficiency(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeCommRangeString(commResponseData.getCurrent().getCommEfficiency().getRangeString());
         						
-//        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+//        						clientUnit.unitDataList.get(i).lastDisAcqTime=AcqTime;
         						clientUnit.unitDataList.get(i).lastCommStatus=commResponseData.getCurrent().getCommStatus()?1:0;
         						clientUnit.unitDataList.get(i).lastCommTime=commResponseData.getCurrent().getCommEfficiency().getTime();
         						clientUnit.unitDataList.get(i).lastCommTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();
@@ -1321,9 +1321,9 @@ public class IntelligentPumpingUnitThread extends Thread{
         					String tiemEffRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",";
-        					if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcquisitionTime)&&StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastRunRange)){
+        					if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcqTime)&&StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastRunRange)){
         						tiemEffRequest+= "\"Last\":{"
-    									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcquisitionTime+"\","
+    									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcqTime+"\","
     									+ "\"RunStatus\": "+(clientUnit.unitDataList.get(i).lastRunStatus==1?true:false)+","
     									+ "\"RunEfficiency\": {"
     									+ "\"Efficiency\": "+clientUnit.unitDataList.get(i).lastRunTimeEfficiency+","
@@ -1333,7 +1333,7 @@ public class IntelligentPumpingUnitThread extends Thread{
     									+ "},";
         					}	
         					tiemEffRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+AcquisitionTime+"\","
+									+ "\"AcqTime\":\""+AcqTime+"\","
 									+ "\"RunStatus\":"+(RunStatus==1?true:false)+""
 									+ "}"
 									+ "}";
@@ -1355,7 +1355,7 @@ public class IntelligentPumpingUnitThread extends Thread{
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunTimeEfficiency(timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency());
         						clientUnit.unitDataList.get(i).getAcquisitionData().setRealTimeRunRangeString(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
         						
-//        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+//        						clientUnit.unitDataList.get(i).lastDisAcqTime=AcqTime;
         						clientUnit.unitDataList.get(i).lastRunStatus=timeEffResponseData.getCurrent().getRunStatus()?1:0;
         						clientUnit.unitDataList.get(i).lastRunTime=timeEffResponseData.getCurrent().getRunEfficiency().getTime();
         						clientUnit.unitDataList.get(i).lastRunTimeEfficiency=timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency();
@@ -1371,9 +1371,9 @@ public class IntelligentPumpingUnitThread extends Thread{
         					String energyRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",";
-        					if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcquisitionTime)){
+        					if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcqTime)){
         						energyRequest+= "\"Last\":{"
-    									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcquisitionTime+"\","
+    									+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcqTime+"\","
     									+ "\"Total\":{"
     									+ "\"KWattH\":"+clientUnit.unitDataList.get(i).lastTotalKWattH+","
     									+ "\"PKWattH\":"+clientUnit.unitDataList.get(i).lastTotalPKWattH+","
@@ -1394,7 +1394,7 @@ public class IntelligentPumpingUnitThread extends Thread{
     									+ "},";
         					}	
         					energyRequest+= "\"Current\": {"
-									+ "\"AcqTime\":\""+AcquisitionTime+"\","
+									+ "\"AcqTime\":\""+AcqTime+"\","
 									+ "\"Total\":{"
 									+ "\"KWattH\":"+ActivePowerConsumption+","
 									+ "\"PKWattH\":"+0+","
@@ -1410,7 +1410,7 @@ public class IntelligentPumpingUnitThread extends Thread{
         					type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
         					energyCalculateResponseData=gson.fromJson(energyResponse, type);
         					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-//        						clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+//        						clientUnit.unitDataList.get(i).lastDisAcqTime=AcqTime;
         						clientUnit.unitDataList.get(i).lastTotalKWattH=energyCalculateResponseData.getCurrent().getTotal().getKWattH();
         						clientUnit.unitDataList.get(i).lastTotalPKWattH=energyCalculateResponseData.getCurrent().getTotal().getPKWattH();
         						clientUnit.unitDataList.get(i).lastTotalNKWattH=energyCalculateResponseData.getCurrent().getTotal().getNKWattH();
@@ -1431,14 +1431,14 @@ public class IntelligentPumpingUnitThread extends Thread{
         						System.out.println("请求数据："+energyRequest);
     							System.out.println("返回数据："+energyResponse);
         					}
-        					clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+        					clientUnit.unitDataList.get(i).lastDisAcqTime=AcqTime;
         					long hisDataInterval=0;
     						if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).getAcquisitionData().getSaveTime())){
     							hisDataInterval=format.parse(clientUnit.unitDataList.get(i).getAcquisitionData().getSaveTime()).getTime();
     						}
     						if(commResponseData!=null&&timeEffResponseData!=null&&
         							(RunStatus!=clientUnit.unitDataList.get(i).acquisitionData.runStatus//运行状态发生改变
-        							||format.parse(AcquisitionTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getSaveCycle_Discrete()//比上次保存时间大于5分钟
+        							||format.parse(AcqTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getSaveCycle_Discrete()//比上次保存时间大于5分钟
         							)
         						){
         						clientUnit.unitDataList.get(i).acquisitionData.setRunStatus(RunStatus);
@@ -1510,7 +1510,7 @@ public class IntelligentPumpingUnitThread extends Thread{
     								conn.close();
     								stmt.close();
     								clientUnit.unitDataList.get(i).getAcquisitionData().setRunStatus(RunStatus);
-    								clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcquisitionTime);
+    								clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcqTime);
     							} catch (SQLException e) {
     								e.printStackTrace();
     								try {
@@ -1528,13 +1528,13 @@ public class IntelligentPumpingUnitThread extends Thread{
     						//读取功图
 
     						long currentTimelong=0;
-        					if(clientUnit.unitDataList.get(i).getDiagranAcquisitionTime()!=null){
-        						currentTimelong = format.parse(clientUnit.unitDataList.get(i).getDiagranAcquisitionTime()).getTime();//数据库中最新功图采集时间
+        					if(clientUnit.unitDataList.get(i).getDiagramAcqTime()!=null){
+        						currentTimelong = format.parse(clientUnit.unitDataList.get(i).getDiagramAcqTime()).getTime();//数据库中最新功图采集时间
         					}
-        					long newTimelong = format.parse(diagramAcquisitionTime).getTime();
+        					long newTimelong = format.parse(diagramAcqTime).getTime();
         					if(newTimelong>currentTimelong){//发现新功图
         						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"发现新功图");
-        						clientUnit.unitDataList.get(i).setDiagranAcquisitionTime(diagramAcquisitionTime);
+        						clientUnit.unitDataList.get(i).setDiagramAcqTime(diagramAcqTime);
         						recvBuff=new StringBuffer();
         						StringBuffer recvFBuff=new StringBuffer();
         						StringBuffer recvSBuff=new StringBuffer();
@@ -1555,7 +1555,7 @@ public class IntelligentPumpingUnitThread extends Thread{
         						recvIcBuff.append("\"Ic\": [");
         						proParamsBuff.append("\"ProductionParameter\": {");
         						elecBuff.append("\"Electric\": {");
-        						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"LiftingType\":"+clientUnit.unitDataList.get(i).getLiftingType()+",\"AcquisitionTime\":\""+diagramAcquisitionTime+"\",");
+        						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"LiftingType\":"+clientUnit.unitDataList.get(i).getLiftingType()+",\"AcqTime\":\""+diagramAcqTime+"\",");
         						
         						
             					proParamsBuff.append("\"TubingPressure\":"+TubingPressure+",");
@@ -1581,7 +1581,7 @@ public class IntelligentPumpingUnitThread extends Thread{
             					elecBuff.append("\"PowerFactor\":"+PowerFactor+"}");
             					recvBuff.append(elecBuff+",");
             					
-            					recvBuff.append("\"Diagram\":{\"AcquisitionTime\":\""+diagramAcquisitionTime+"\","
+            					recvBuff.append("\"Diagram\":{\"AcqTime\":\""+diagramAcqTime+"\","
             							+ "\"AcquisitionCycle\":"+acquisitionCycle+","
             							+ "\"SPM\":"+SPM+","
             							+"\"Stroke\":"+Stroke+","
@@ -1846,7 +1846,7 @@ public class IntelligentPumpingUnitThread extends Thread{
             					recvBuff.append(recvFBuff+","+recvSBuff+","+recvABuff+","+recvPBuff+","+recvIaBuff+","+recvIbBuff+","+recvIcBuff+"}}");
             					System.out.println("线程"+this.threadId+"解析读取数据:"+recvBuff.toString());
             					StringManagerUtils.sendPostMethod(saveDiagramurl, recvBuff.toString(),"utf-8");
-            					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcquisitionTime);
+            					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcqTime);
             					wellReaded=true;
         					}
     					}
@@ -1875,7 +1875,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 			Statement stmt=null;
 			stmt = conn.createStatement();
 			Gson gson = new Gson();
-			String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			
 			for(int i=0;i<this.clientUnit.unitDataList.size();i++){
 				clientUnit.unitDataList.get(i).acquisitionData=new  AcquisitionData();
@@ -1888,9 +1888,9 @@ public class IntelligentPumpingUnitThread extends Thread{
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcquisitionTime)){
+				if(StringManagerUtils.isNotNull(clientUnit.unitDataList.get(i).lastDisAcqTime)){
 					commRequest+= "\"Last\":{"
-							+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcquisitionTime+"\","
+							+ "\"AcqTime\": \""+clientUnit.unitDataList.get(i).lastDisAcqTime+"\","
 							+ "\"CommStatus\": "+(clientUnit.unitDataList.get(i).lastCommStatus==1?true:false)+","
 							+ "\"CommEfficiency\": {"
 							+ "\"Efficiency\": "+clientUnit.unitDataList.get(i).lastCommTimeEfficiency+","
@@ -1900,20 +1900,20 @@ public class IntelligentPumpingUnitThread extends Thread{
 							+ "},";
 				}	
 				commRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+AcquisitionTime+"\","
+						+ "\"AcqTime\":\""+AcqTime+"\","
 						+ "\"CommStatus\":false"
 						+ "}"
 						+ "}";
 				String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
 				java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
 				CommResponseData commResponseData=gson.fromJson(commResponse, type);
-				String updateCommStatus="update tbl_rpc_discrete_latest t set t.commStatus=0,t.acquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss') ";
+				String updateCommStatus="update tbl_rpc_discrete_latest t set t.commStatus=0,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss') ";
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateCommStatus+=" ,t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
 							+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
 					
-					clientUnit.unitDataList.get(i).lastDisAcquisitionTime=AcquisitionTime;
+					clientUnit.unitDataList.get(i).lastDisAcqTime=AcqTime;
 					clientUnit.unitDataList.get(i).lastCommStatus=commResponseData.getCurrent().getCommStatus()?1:0;
 					clientUnit.unitDataList.get(i).lastCommTime=commResponseData.getCurrent().getCommEfficiency().getTime();
 					clientUnit.unitDataList.get(i).lastCommTimeEfficiency=commResponseData.getCurrent().getCommEfficiency().getEfficiency();

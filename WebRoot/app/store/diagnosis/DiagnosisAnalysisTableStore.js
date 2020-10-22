@@ -287,8 +287,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		
     		for(var i=0;i<acquisitionDataList.length;i++){
     			switch(acquisitionDataList[i].dataIndex.toUpperCase()) {
-    			case "acquisitionTime_d".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"acquisitionTime_d\",\"value\":\""+get_rawData.acquisitionTime_d+"\",\"curve\":\"\"},";
+    			case "acqTime_d".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"acqTime_d\",\"value\":\""+get_rawData.acqTime_d+"\",\"curve\":\"\"},";
         			break;
     			case "commStatus".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"commStatus\",\"value\":\""+commStatus+"\",\"curve\":\"\"},";

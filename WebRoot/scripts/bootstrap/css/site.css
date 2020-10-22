@@ -1526,6 +1526,9 @@ button.input-search-close {
 .open>.dropdown-toggle.btn-default.focus,
 .open>.dropdown-toggle.btn-default:focus,
 .open>.dropdown-toggle.btn-default:hover {
+    /*
+    background-color: #ccd5db;
+    border-color: #ccd5db*/
     background-color: #ccd5db;
     border-color: #ccd5db
 }

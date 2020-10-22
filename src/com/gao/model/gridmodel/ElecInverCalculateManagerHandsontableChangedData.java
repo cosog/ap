@@ -35,7 +35,7 @@ public class ElecInverCalculateManagerHandsontableChangedData {
 
 	    private String wellName;
 
-	    private String acquisitionTime;
+	    private String acqTime;
 	    
 	    private String resultStatus;
 	    
@@ -73,11 +73,11 @@ public class ElecInverCalculateManagerHandsontableChangedData {
 		public void setWellName(String wellName) {
 			this.wellName = wellName;
 		}
-		public String getAcquisitionTime() {
-			return acquisitionTime;
+		public String getAcqTime() {
+			return acqTime;
 		}
-		public void setAcquisitionTime(String acquisitionTime) {
-			this.acquisitionTime = acquisitionTime;
+		public void setAcqTime(String acqTime) {
+			this.acqTime = acqTime;
 		}
 		public String getResultStatus() {
 			return resultStatus;

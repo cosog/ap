@@ -48,15 +48,15 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			prodCol=" liquidVolumetricProduction";
 		}
 		
-		allsql="select id, wellName, to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime, "
+		allsql="select id, wellName, to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 				+ " position_curve,load_curve,"
 				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, "+prodCol+", workingConditionName "
 				+ " from  "+tableName+""
 				+ " where orgid in(" + orgId + ")";
 		if(StringManagerUtils.isNotNull(wellName)){
 			allsql+= " and wellName='" + wellName + "' ";
-			allsql+= " and acquisitionTime between to_date('"+ startDate +"','yyyy-MM-dd') and to_date('"+ endDate +"','yyyy-MM-dd')+1";
-			allsql+=" order by acquisitionTime desc";
+			allsql+= " and acqTime between to_date('"+ startDate +"','yyyy-MM-dd') and to_date('"+ endDate +"','yyyy-MM-dd')+1";
+			allsql+=" order by acqTime desc";
 		}else{
 			allsql+=" order by sortnum,wellName";
 		}
@@ -88,7 +88,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 	        
 			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
 			dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
-			dynSbf.append("\"acquisitionTime\":\"" + obj[2] + "\",");
+			dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
 			dynSbf.append("\"upperLoadLine\":\"" + obj[5] + "\",");
 			dynSbf.append("\"lowerLoadLine\":\"" + obj[6] + "\",");
 			dynSbf.append("\"fmax\":\""+obj[7]+"\",");

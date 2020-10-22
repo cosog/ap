@@ -115,7 +115,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t3.levelcorrectvalue,"
 					+ " t.wellid "
 					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
-					+ " where t.wellid=t2.wellid and t.acquisitiontime=t2.acquisitiontime and t.wellid=t3.id"
+					+ " where t.wellid=t2.wellid and t.acqTime=t2.acqTime and t.wellid=t3.id"
 					+ " and t3.wellName='"+wellAcquisitionData.getWellName()+"'";
 			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 					+ " t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,"
@@ -290,7 +290,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				if(wellAcquisitionData.getDiagram()!=null){
 			        calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
 			        calculateRequestData.getFESDiagram().setSrc(0);
-			        calculateRequestData.getFESDiagram().setAcqTime(wellAcquisitionData.getAcquisitionTime());
+			        calculateRequestData.getFESDiagram().setAcqTime(wellAcquisitionData.getAcqTime());
 			        calculateRequestData.getFESDiagram().setStroke(wellAcquisitionData.getDiagram().getStroke());
 			        calculateRequestData.getFESDiagram().setSPM(wellAcquisitionData.getDiagram().getSPM());
 			        List<Float> F=new ArrayList<Float>();
@@ -351,7 +351,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t3.levelcorrectvalue,"
 					+ " t.wellid "
 					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
-					+ " where t.wellid=t2.wellid and t.acquisitiontime=t2.acquisitiontime and t.wellid=t3.id"
+					+ " where t.wellid=t2.wellid and t.acqTime=t2.acqTime and t.wellid=t3.id"
 					+ " and t3.wellName='"+kafkaUpData.getWellName()+"'";
 			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 					+ " t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,"
@@ -543,9 +543,9 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				        	S.add(kafkaUpData.getS().get(i));
 				        }
 			        }
-			        if(kafkaUpData.getKWatt()!=null&&kafkaUpData.getKWatt().size()>0){
-			        	for(int i=0;i<kafkaUpData.getKWatt().size();i++){
-				        	Watt.add(kafkaUpData.getKWatt().get(i));
+			        if(kafkaUpData.getWatt()!=null&&kafkaUpData.getWatt().size()>0){
+			        	for(int i=0;i<kafkaUpData.getWatt().size();i++){
+				        	Watt.add(kafkaUpData.getWatt().get(i));
 				        }
 			        }
 			        if(kafkaUpData.getI()!=null&&kafkaUpData.getI().size()>0){
@@ -594,7 +594,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t.netgrossratio,"
 					+ " t.wellid "
 					+ " from tbl_pcp_productiondata_hist t,tbl_pcp_productiondata_latest t2,  tbl_wellinformation t3 "
-					+ " where t.wellid=t2.wellid and t.acquisitiontime=t2.acquisitiontime and t.wellid=t3.id"
+					+ " where t.wellid=t2.wellid and t.acqTime=t2.acqTime and t.wellid=t3.id"
 					+ " and t3.wellName='"+wellAcquisitionData.getWellName()+"'";
 			List<?> prodDataList = this.findCallSql(prodDataSql);
 			if(prodDataList.size()>0){
@@ -604,7 +604,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				wellAcquisitionData.setWellId(StringManagerUtils.stringToInteger(object[object.length-1]+""));
 				calculateRequestData.setAKString("");
 				calculateRequestData.setWellName(wellAcquisitionData.getWellName());
-				calculateRequestData.setAcqTime(wellAcquisitionData.getAcquisitionTime());
+				calculateRequestData.setAcqTime(wellAcquisitionData.getAcqTime());
 				
 				//转速
 				calculateRequestData.setRPM(wellAcquisitionData.getScrewPump().getRPM());

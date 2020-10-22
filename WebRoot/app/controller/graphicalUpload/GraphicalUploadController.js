@@ -31,7 +31,7 @@ function submitSurfaceCardFile() {
                 }
                 var result =  Ext.JSON.decode(o.response.responseText);
                 var store=Ext.create('Ext.data.Store', {
-                    fields:[ 'id', 'wellName', 'acquisitionTime','stroke','spm'],
+                    fields:[ 'id', 'wellName', 'acqTime','stroke','spm'],
                     data:result.totalRoot
                 });
                 var column=createDiagStatisticsColumn(result.columns);
@@ -49,8 +49,8 @@ function submitSurfaceCardFile() {
                     	selectionchange:function(grid, record , eOpts) {
                     		if(record.length>0){
                     			var wellName=record[record.length-1].data.wellName;
-                    			var acquisitionTime=record[record.length-1].data.acquisitionTime;
-                    			var param=wellName+"@"+acquisitionTime;
+                    			var acqTime=record[record.length-1].data.acqTime;
+                    			var param=wellName+"@"+acqTime;
                     			Ext.Ajax.request({
                     				url : context + '/graphicalUploadController/getSurfaceCardGraphicalData',
                     				method : "POST",
@@ -96,7 +96,7 @@ function uploadAllSurfaceCardFile(){
 //		var record = gridPanel_model.getSelection();
 //		var uploadData = [];
 //		Ext.Array.each(record, function(name, index, countriesItSelf) {
-//			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
+//			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acqTime"));
 //			});
 //		var uploadSurfaceCardList = "" + uploadData.join(",");
 		Ext.getCmp("SelectSurfaceCardFilePanel_Id").mask("数据保存中，请稍后...");
@@ -137,7 +137,7 @@ function uploadSelectedSurfaceCardFile(){
 		var record = gridPanel_model.getSelection();
 		var uploadData = [];
 		Ext.Array.each(record, function(name, index, countriesItSelf) {
-			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acquisitionTime"));
+			uploadData.push(record[index].get("wellName")+"@"+record[index].get("acqTime"));
 			});
 		var uploadSurfaceCardList = "" + uploadData.join(",");
 		Ext.getCmp("SelectSurfaceCardFilePanel_Id").mask("数据保存中，请稍后...");

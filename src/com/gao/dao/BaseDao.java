@@ -1974,7 +1974,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			cs = conn.prepareCall("{call prd_save_rpc_uploaddiagram(?,?,?,?,?,?,?,?)}");
 			cs.setString(1, FSDiagramModel.getWellName());
-			cs.setString(2, FSDiagramModel.getAcquisitionTime());
+			cs.setString(2, FSDiagramModel.getAcqTime());
 			cs.setFloat(3, FSDiagramModel.getStroke());
 			cs.setFloat(4, FSDiagramModel.getSpm());
 			cs.setClob(5, sClob);
@@ -2002,9 +2002,9 @@ public class BaseDao extends HibernateDaoSupport {
 		SimpleDateFormat dateFormat1=new SimpleDateFormat("yyyyMMdd_HHmmss");
         SimpleDateFormat dateFormat2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String wellname=wellAcquisitionData.getWellName();
-		String cjsjstr=wellAcquisitionData.getAcquisitionTime();
+		String cjsjstr=wellAcquisitionData.getAcqTime();
 		
-		Date date=dateFormat2.parse(wellAcquisitionData.getAcquisitionTime());
+		Date date=dateFormat2.parse(wellAcquisitionData.getAcqTime());
 		String cjsjstr2=dateFormat1.format(date);
 		CLOB gtClob=null;
 		gtClob=new CLOB((OracleConnection) conn);
@@ -2112,7 +2112,7 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	
-	public Boolean saveSurfaceCard(String wellname,String acquisitionTime,int point,float stroke,float spm,String sStr,String fStr,String iStr,String wattStr) throws SQLException, ParseException {
+	public Boolean saveSurfaceCard(String wellname,String acqTime,int point,float stroke,float spm,String sStr,String fStr,String iStr,String wattStr) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		CLOB sClob=new CLOB((OracleConnection) conn);
@@ -2134,7 +2134,7 @@ public class BaseDao extends HibernateDaoSupport {
 		try {
 			cs = conn.prepareCall("{call prd_save_rpc_uploaddiagram(?,?,?,?,?,?,?,?)}");
 			cs.setString(1, wellname);
-			cs.setString(2, acquisitionTime);
+			cs.setString(2, acqTime);
 			cs.setFloat(3, stroke);
 			cs.setFloat(4, spm);
 			cs.setClob(5, sClob);
@@ -2154,7 +2154,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return true;
 	}
 	
-	public Boolean saveSurfaceCard(String wellname,String acquisitionTime,int point,float stroke,float SPM,
+	public Boolean saveSurfaceCard(String wellname,String acqTime,int point,float stroke,float SPM,
 			float F_Max,float F_Min,
 			String SStr,String FStr,
 			String S360Str,String A360Str,String F360Str,
@@ -2239,7 +2239,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?)}");
 			cs.setString(1, wellname);
-			cs.setString(2,acquisitionTime);
+			cs.setString(2,acqTime);
 			cs.setFloat(3,stroke);
 			cs.setFloat(4,SPM);
 			
@@ -2545,7 +2545,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,"
 					+ "?)}");
 			cs.setString(1, wellAcquisitionData.getWellName());
-			cs.setString(2,wellAcquisitionData.getAcquisitionTime());
+			cs.setString(2,wellAcquisitionData.getAcqTime());
 			cs.setString(3,wellAcquisitionData.getDiagram().getStroke()+"");
 			cs.setString(4,wellAcquisitionData.getDiagram().getSPM()+"");
 			
@@ -2806,7 +2806,7 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		CLOB diagramClob_P=new CLOB((OracleConnection) conn);
 		diagramClob_P = oracle.sql.CLOB.createTemporary(conn,false,1);
-		diagramClob_P.putString(1, StringUtils.join(kafkaUpData.getKWatt(), ","));
+		diagramClob_P.putString(1, StringUtils.join(kafkaUpData.getWatt(), ","));
 		
 		CLOB diagramClob_I=new CLOB((OracleConnection) conn);
 		diagramClob_I = oracle.sql.CLOB.createTemporary(conn,false,1);
@@ -3182,7 +3182,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_pcp_rpm("
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, wellAcquisitionData.getWellName());
-			cs.setString(2,wellAcquisitionData.getAcquisitionTime());
+			cs.setString(2,wellAcquisitionData.getAcqTime());
 			
 			cs.setFloat(3,wellAcquisitionData.getScrewPump().getRPM());
 			cs.setFloat(4,wellAcquisitionData.getScrewPump().getTorque());

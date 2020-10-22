@@ -434,7 +434,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getAcquisitionTimeList(Page pager,String wellName) throws Exception {
+	public String getAcqTimeList(Page pager,String wellName) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
@@ -514,7 +514,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	public String getDiagramDataList(String orgId,String wellName,String startDate,String endDate, Page pager)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String columns=service.showTableHeadersColumns("elecInverDiagram_Realtime");
-		String sqlAll="select  t.id,well.wellName,to_char(t.acquisitionTime@'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+		String sqlAll="select  t.id,well.wellName,to_char(t.acqTime@'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " stroke,spm,  "
 				+ " decode(t.fmax@0@null@t.fmax) as fmax,decode(t.fmin@0@null@t.fmin) as fmin,"
 				+ " upStrokeIMax,downStrokeIMax,iDegreeBalance,upStrokeWattMax,downStrokeWattMax,wattDegreeBalance,"
@@ -525,14 +525,14 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " order by well.sortnum";
 		
 		if(StringManagerUtils.isNotNull(wellName)){
-			sqlAll="select  t.id,well.wellName,to_char(t.acquisitionTime@'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+			sqlAll="select  t.id,well.wellName,to_char(t.acqTime@'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 					+ " stroke,spm,  "
 					+ " decode(t.fmax@0@null@t.fmax) as fmax,decode(t.fmin@0@null@t.fmin) as fmin,"
 					+ " upStrokeIMax,downStrokeIMax,iDegreeBalance,upStrokeWattMax,downStrokeWattMax,wattDegreeBalance, "
 					+ " signal,interval,deviceVer "
 					+ " from tbl_rpc_diagram_hist t,tbl_wellinformation well "
-					+ " where t.wellid=well.id and t.datasource=1  and well.wellname='"+wellName+"' and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-					+ " order by t.acquisitionTime desc";
+					+ " where t.wellid=well.id and t.datasource=1  and well.wellname='"+wellName+"' and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 "
+					+ " order by t.acqTime desc";
 		}
 		
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -551,7 +551,7 @@ public class PSToFSService<T> extends BaseService<T> {
 //			Object[] obj=(Object[]) list.get(i);
 //			result_json.append("{\"id\":"+obj[0]+",");
 //			result_json.append("\"wellName\":\""+obj[1]+"\",");
-//			result_json.append("\"acquisitionTime\":\""+obj[2]+"\",");
+//			result_json.append("\"acqTime\":\""+obj[2]+"\",");
 //			result_json.append("\"fmax\":\""+obj[3]+"\",");
 //			result_json.append("\"fmin\":\""+obj[4]+"\"},");
 //		}
@@ -568,7 +568,7 @@ public class PSToFSService<T> extends BaseService<T> {
         if(!StringManagerUtils.isNotNull(wellName)){
         	table="tbl_rpc_diagram_latest";
         }
-        String sql="select well.wellname,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+        String sql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.stroke,t.spm,t.fmax,t.fmin,"
         		+ " t.upstrokeimax,t.downstrokeimax,t.idegreebalance,t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,"
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,t.rpm_curve "
@@ -611,7 +611,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			}
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+obj[0]+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("stroke:\""+obj[2]+"\",");         // 冲程
 	        dataSbf.append("SPM:\""+obj[3]+"\",");         // 冲次
 	        dataSbf.append("fmax:\""+obj[4]+"\",");         // 最大载荷
@@ -634,7 +634,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{success:true,");
 			dataSbf.append("wellName:\"\",");
-	        dataSbf.append("acquisitionTime:\"\",");
+	        dataSbf.append("acqTime:\"\",");
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("SPM:\"\",");
 	        dataSbf.append("fmax:\"\",");         // 最大载荷
@@ -661,7 +661,7 @@ public class PSToFSService<T> extends BaseService<T> {
         if(!StringManagerUtils.isNotNull(wellName)){
         	table="tbl_rpc_diagram_latest";
         }
-        String sql="select well.wellname,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+        String sql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.stroke,t.spm,t.fmax,t.fmin,"
         		+ " t.position_curve,t.load_curve,"
         		+ " t.upstrokeimax,t.downstrokeimax,t.idegreebalance,t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,"
@@ -674,7 +674,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			Object[] obj=(Object[])list.get(0);
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+obj[0]+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("stroke:\""+obj[2]+"\",");         // 冲程
 	        dataSbf.append("SPM:\""+obj[3]+"\",");         // 冲次
 	        dataSbf.append("fmax:\""+obj[4]+"\",");         // 最大载荷
@@ -753,7 +753,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{success:true,");
 			dataSbf.append("wellName:\"\",");
-	        dataSbf.append("acquisitionTime:\"\",");
+	        dataSbf.append("acqTime:\"\",");
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("SPM:\"\",");
 	        dataSbf.append("fmax:\"\",");         // 最大载荷
@@ -790,7 +790,7 @@ public class PSToFSService<T> extends BaseService<T> {
         if(!StringManagerUtils.isNotNull(wellName)){
         	table="tbl_rpc_diagram_latest";
         }
-        String sql="select well.wellName,to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+        String sql="select well.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.stroke,t.spm,t.fmax,t.fmin,"
         		+ " t.position_curve,t.load_curve,"
         		+ " t.position360_curve,t.angle360_curve,t.load360_curve"
@@ -835,7 +835,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			}
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+obj[0]+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
 	        dataSbf.append("stroke:\""+obj[2]+"\",");         // 冲程
 	        dataSbf.append("SPM:\""+obj[3]+"\",");         // 冲次
 	        dataSbf.append("fmax:\""+obj[4]+"\",");         // 最大载荷
@@ -852,7 +852,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else{
 			dataSbf.append("{success:true,");
 			dataSbf.append("wellName:\"\",");
-	        dataSbf.append("acquisitionTime:\"\",");
+	        dataSbf.append("acqTime:\"\",");
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("SPM:\"\",");
 	        dataSbf.append("fmax:\"\",");         // 最大载荷
@@ -873,7 +873,7 @@ public class PSToFSService<T> extends BaseService<T> {
         if(!StringManagerUtils.isNotNull(wellName)){
         	table="tbl_rpc_diagram_latest";
         }
-        String sql="select well.wellName,to_char(t.acquisitionTime,'yyyymmddhh24miss') as acquisitionTime,"
+        String sql="select well.wellName,to_char(t.acqTime,'yyyymmddhh24miss') as acqTime,"
         		+ " t.position360_curve,t.angle360_curve,t.load360_curve"
         		+ " from "+table+" t,tbl_wellinformation well "
         		+ " where t.wellId=well.id  and t.id="+recordId;
@@ -884,7 +884,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			SerializableClobProxy proxy=null;
 			CLOB realClob=null;
 			String diagramWellName=obj[0]+"";
-			String acquisitionTime=obj[1]+"";
+			String acqTime=obj[1]+"";
 			String[] position360CurveData={},angle360CurveData={},load360CurveData={};
 			if(obj[2]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[2]);
@@ -925,7 +925,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	        }
 	        
 	        dataSbf.append("]}");
-	        String fileName=diagramWellName+"反演功图数据-"+acquisitionTime;
+	        String fileName=diagramWellName+"反演功图数据-"+acqTime;
 	        String sheetName="反演功图数据";
 	        String head="角度(°),位移(m),载荷(kN)";
 	        String field="angle,position,load";
@@ -941,7 +941,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		int start = pager.getStart();
 		int maxvalue = limit + start;
 		String allsql="",sql="";
-		allsql="select id,wellName,to_char(acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),";
+		allsql="select id,wellName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss'),";
 		if("FSDiagram".equalsIgnoreCase(diagramType)){//地面功图
 			allsql+="stroke,spm,fmax,fmin,load_curve,";
 		}else if("PSDiagram".equalsIgnoreCase(diagramType)){//电功图
@@ -953,7 +953,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		
 		if(StringManagerUtils.isNotNull(wellName)){  // 井名不为空 查询该井历史曲线
 			allsql=allsql.replaceAll("viw_rpc_diagramquery_latest", "viw_rpc_diagramquery_hist");
-			allsql+=" and acquisitionTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 and wellName='"+wellName+"' order by acquisitionTime desc";
+			allsql+=" and acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 and wellName='"+wellName+"' order by acqTime desc";
 		}else{// 井名为空 查询每口井实时曲线
 			allsql+=" and orgid in("+orgId+") order by sortnum";
 		}
@@ -972,7 +972,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	        String DiagramYData="";
 	        dataSbf.append("{\"id\":"+obj[0]+",");
 	        dataSbf.append("wellName:\""+obj[1]+"\",");           // 井名
-	        dataSbf.append("acquisitionTime:\""+obj[2]+"\",");         // 时间
+	        dataSbf.append("acqTime:\""+obj[2]+"\",");         // 时间
 	        
 	        if("FSDiagram".equalsIgnoreCase(diagramType)){//地面功图
 	        	dataSbf.append("stroke:\""+obj[3]+"\",");
@@ -1123,7 +1123,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ "t.signal="+transferDiscrete.getSignal()+","
 				+ "t.interval="+transferDiscrete.getInterval2()+","
 				+ "t.deviceVer='"+transferDiscrete.getVer()+"',"
-				+ "t.AcquisitionTime=to_date('"+transferDiscrete.getAcquisitionTime()+"','yyyy-mm-dd hh24:mi:ss')"
+				+ "t.AcqTime=to_date('"+transferDiscrete.getAcquisitionTime()+"','yyyy-mm-dd hh24:mi:ss')"
 				+ ",t.RunTimeEfficiency= "+transferDiscrete.getRunEfficiency().getEfficiency()
 				+ " ,t.RunTime= "+transferDiscrete.getRunEfficiency().getTime()
 				+ " ,t.RunRange= '"+transferDiscrete.getRunEfficiency().getRangeString()+"'"
@@ -1273,7 +1273,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		columns=service.showTableHeadersColumns("elecInverDetails_Realtime");
 		
 		String sourcesql="select "
-				+ " id,wellName,to_char(t.acquisitionTime@'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+				+ " id,wellName,to_char(t.acqTime@'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "	commStatus,commStatusName,commAlarmLevel,"
 				+ "	runStatus,runStatusName,runAlarmLevel,"
 				+ " workingConditionCode,workingConditionName,workingConditionAlarmLevel as workingConditionAlarmLevel_E,"
@@ -1314,9 +1314,9 @@ public class PSToFSService<T> extends BaseService<T> {
 		}
 		sql+=" order by t.sortnum, t.wellName";
 		
-		sqlHis+=" and to_date(to_char(t.acquisitionTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') ";
+		sqlHis+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 ";
 		sqlHis+=" and wellName='"+wellName+"'";
-		sqlHis+=" order by t.acquisitionTime desc";
+		sqlHis+=" order by t.acqTime desc";
 		
 		if(StringManagerUtils.isNotNull(wellName.trim())){
 			sqlAll=sqlHis;
@@ -1455,11 +1455,11 @@ public class PSToFSService<T> extends BaseService<T> {
 		}else if("Diagram".equalsIgnoreCase(type)){
 			tableName="viw_rpc_diagramquery_hist";
 		}
-		String sql="select to_char(t.acquisitionTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" "
+		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" "
 				+ " from "+tableName+" t "
 				+ " where t.wellName='"+wellName+"' "
-				+ " and t.acquisitionTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 "
-				+ " order by t.acquisitionTime";
+				+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 "
+				+ " order by t.acqTime";
 		
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
@@ -1470,7 +1470,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			for (int i = 0; i < list.size(); i++) {
 				Object[] obj = (Object[]) list.get(i);
 				if(obj[1]!=null){
-					dynSbf.append("{ \"acquisitionTime\":\"" + obj[0] + "\",");
+					dynSbf.append("{ \"acqTime\":\"" + obj[0] + "\",");
 					dynSbf.append("\"value\":\""+obj[1]+"\"");
 					if("downAndUpStrokeIMax".equalsIgnoreCase(itemCode)||"downAndUpStrokeWattMax".equalsIgnoreCase(itemCode)){
 						dynSbf.append(",\"value2\":\""+obj[2]+"\"");
@@ -1590,15 +1590,15 @@ public class PSToFSService<T> extends BaseService<T> {
 	@SuppressWarnings("deprecation")
 	public String getFSdiagramOverlayData(Page pager,String orgId,String wellName,String calculateDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		String sql="select t.id,t.wellname,to_char(t.acquisitiontime,'hh24:mi:ss'),t.stroke,t.spm,t.fmax,t.fmin,"
+		String sql="select t.id,t.wellname,to_char(t.acqTime,'hh24:mi:ss'),t.stroke,t.spm,t.fmax,t.fmin,"
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve  "
 				+ " from viw_rpc_diagramquery_hist t "
 				+ " where t.orgid in ("+orgId+") "
-				+ " and t.acquisitiontime between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
+				+ " and t.acqTime between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and t.wellname='"+wellName+"' "
-				+ " order by t.acquisitiontime";
+				+ " order by t.acqTime";
 		
 		List<?> list=this.findCallSql(sql);
 		

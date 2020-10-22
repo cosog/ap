@@ -90,7 +90,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from "+tableName+" t where t.wellId=( select t2.id from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from "+tableName+" t where t.wellId=( select t2.id from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -274,7 +274,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		}
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from "+tableName+" t  where wellName= '"+wellName+"' ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from "+tableName+" t  where wellName= '"+wellName+"' ";
 			List list = this.service.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -554,10 +554,10 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 	@RequestMapping("/getScrewPumpRTAnalysiCurveData")
 	public String getScrewPumpRTAnalysiCurveData()throws Exception{
 		@SuppressWarnings("unused")
-		String acquisitionTime = ParamUtils.getParameter(request, "acquisitionTime");
+		String acqTime = ParamUtils.getParameter(request, "acqTime");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		String json = "";
-		json = this.diagnosisAnalysisOnlyService.getScrewPumpRTAnalysiCurveData(acquisitionTime,wellName);
+		json = this.diagnosisAnalysisOnlyService.getScrewPumpRTAnalysiCurveData(acqTime,wellName);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -568,17 +568,18 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getNewestAcquisitionTime")
-	public String getNewestAcquisitionTime() throws Exception {
+	@RequestMapping("/getNewestAcqTime")
+	public String getNewestAcqTime() throws Exception {
 
 		orgId = ParamUtils.getParameter(request, "orgId");
 		orgId = findCurrentUserOrgIdInfo(orgId);
 		
-		String FSDiagramMaxAcquisitionTime = ParamUtils.getParameter(request, "FSDiagramMaxAcquisitionTime");
-		String DiscreteMaxAcquisitionTime = ParamUtils.getParameter(request, "DiscreteMaxAcquisitionTime");
+		String FSDiagramMaxAcqTime = ParamUtils.getParameter(request, "FSDiagramMaxAcqTime");
+		String DiscreteMaxAcqTime = ParamUtils.getParameter(request, "DiscreteMaxAcqTime");
 		this.pager = new Page("pagerForm", request);
 		
-		String json =diagnosisAnalysisOnlyService.getNewestAcquisitionTime(orgId,FSDiagramMaxAcquisitionTime,DiscreteMaxAcquisitionTime);
+		String json =diagnosisAnalysisOnlyService.getNewestAcqTime(orgId,FSDiagramMaxAcqTime,DiscreteMaxAcqTime);
+//		System.out.println(json);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

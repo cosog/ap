@@ -461,11 +461,11 @@ public class PSToFSController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getAcquisitionTimeList")
-	public String getAcquisitionTimeList() throws Exception {
+	@RequestMapping("/getAcqTimeList")
+	public String getAcqTimeList() throws Exception {
 		this.pager=new Page("pageForm",request);
 		String wellName = ParamUtils.getParameter(request, "wellName");
-		String json = this.PSToFSService.getAcquisitionTimeList(pager,wellName);
+		String json = this.PSToFSService.getAcqTimeList(pager,wellName);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -516,7 +516,7 @@ public class PSToFSController extends BaseController {
 		String endDate = ParamUtils.getParameter(request, "endDate");
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -622,7 +622,7 @@ public class PSToFSController extends BaseController {
 		}
 		
 		if(StringManagerUtils.isNotNull(wellName)&&(!StringManagerUtils.isNotNull(endDate))){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -660,7 +660,7 @@ public class PSToFSController extends BaseController {
 		TransferDiscrete transferDiscrete=gson.fromJson(data, type);
 		
 		if(transferDiscrete!=null){
-//			transferDiscrete.setAcquisitionTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+//			transferDiscrete.setacqTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 			String wellName="";
 			String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiscrete.getID()+")', 'i')";//不区分ID大小写
 			List list = this.commonDataService.reportDateJssj(sql);
@@ -697,7 +697,7 @@ public class PSToFSController extends BaseController {
     	String inversionUrl=Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getUrl().getMotorsemiauto()[0];
     	
     	if(transferDiagram!=null){
-//    		transferDiagram.setAcquisitionTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+//    		transferDiagram.setacqTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
     		String wellName="";
     		String wellSql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiagram.getID()+")', 'i')";//不区分ID大小写
     		List list = this.commonDataService.reportDateJssj(wellSql);
@@ -962,7 +962,7 @@ public class PSToFSController extends BaseController {
 		int defaultCount=0;
     	for(int i=0;i<diagramIdArr.length;i++){
     		totalCount++;
-    		String sql="select t.wellname,t2.id as diagramid,to_char(t2.acquisitionTime,'yyyy-mm-dd hh24:mi:ss') as acquisitionTime,"
+    		String sql="select t.wellname,t2.id as diagramid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
     				+ " t2.spm,t2.rawpower_curve,t2.rawcurrent_curve,t2.rawrpm_curve, "
     				+ " t3.manufacturer as manufacturer_motor,t3.model as model_motor,t3.beltpulleydiameter,"
     				+ " t4.manufacturer,t4.model,t4.stroke,decode(t4.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
@@ -981,7 +981,7 @@ public class PSToFSController extends BaseController {
     		if(StringManagerUtils.isNotNull(wellName)){
     			sql+= " and t2.id="+diagramIdArr[i];
     		}else{
-    			sql+=" and t2.wellid=t6.wellid and t2.acquisitionTime=t6.acquisitionTime and t6.id="+diagramIdArr[i];
+    			sql+=" and t2.wellid=t6.wellid and t2.acqTime=t6.acqTime and t6.id="+diagramIdArr[i];
     		}	
     		List<?> list = commonDataService.findCallSql(sql);
     		result_json = new StringBuffer();
@@ -1194,7 +1194,7 @@ public class PSToFSController extends BaseController {
 			}
 		}
 		if(StringManagerUtils.isNotNull(wellName)&&!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t where t.wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t where t.wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -1280,7 +1280,7 @@ public class PSToFSController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		this.pager = new Page("pagerForm", request);
 		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t where wellName='"+wellName+"'  ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t where wellName='"+wellName+"'  ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				endDate = list.get(0).toString();
@@ -1317,7 +1317,7 @@ public class PSToFSController extends BaseController {
 		orgId=ParamUtils.getParameter(request, "orgId");
 		String date=ParamUtils.getParameter(request, "date");
 		if(!StringManagerUtils.isNotNull(date)){
-			String sql = " select to_char(max(t.acquisitionTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t ";
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from viw_rpc_discrete_hist t ";
 			List list = this.commonDataService.reportDateJssj(sql);
 			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 				date = list.get(0).toString();

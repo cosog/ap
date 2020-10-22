@@ -109,7 +109,7 @@ public class CalculateDataController extends BaseController{
 //			totalUrl+="?date="+totalDate;
 //			totalUrl+="&wellId="+wellId;
 //			String sql="select * from ("
-//					+ "select t3.wellname,t3.liftingtype,to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss'),"
+//					+ "select t3.wellname,t3.liftingtype,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 //					+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
 //					+ " t2.rodstring,"
 //					+ " t2.tubingstringinsidediameter,"
@@ -128,7 +128,7 @@ public class CalculateDataController extends BaseController{
 //					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
 //					+ " and t.resultstatus in (0,2)  "
 //					+ " and t.wellid="+wellId+""
-//					+ " order by t.acquisitiontime "
+//					+ " order by t.acqTime "
 //					+ " ) v where rownum<=100";
 //			List<?> list = calculateDataService.findCallSql(sql);
 //			calCount+=list.size();
@@ -481,7 +481,7 @@ public class CalculateDataController extends BaseController{
 		Gson gson = new Gson();
 		String sql="select t.wellid,"
 				+ " comm.wellName,comm.commstatus,"
-				+ " to_char(t.acquisitiontime,'yyyy-mm-dd hh24:mi:ss') as lastAcquisitiontime,"
+				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as lastacqTime,"
 				+ " t.commstatus as lastcCommstatus,t.commtime as lastCommtime,t.commtimeefficiency as lastCommtimeefficiency,t.commrange as lastCommrange"
 				+ " from tbl_rpc_discrete_latest t,viw_commstatus comm"
 				+ " where t.wellid=comm.id";
@@ -489,7 +489,7 @@ public class CalculateDataController extends BaseController{
 		List<?> list = calculateDataService.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String AcquisitionTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String commRequest="{"
 					+ "\"AKString\":\"\","
 					+ "\"WellName\":\""+obj[1]+"\",";
@@ -506,7 +506,7 @@ public class CalculateDataController extends BaseController{
 			}	
 			
 			commRequest+= "\"Current\": {"
-					+ "\"AcqTime\":\""+AcquisitionTime+"\","
+					+ "\"AcqTime\":\""+acqTime+"\","
 					+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
 					+ "}"
 					+ "}";
@@ -515,7 +515,7 @@ public class CalculateDataController extends BaseController{
 			java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
 			CommResponseData commResponseData=gson.fromJson(commResponse, type);
 			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-				String currentDate=AcquisitionTime.split(" ")[0];
+				String currentDate=acqTime.split(" ")[0];
 				String lastDate=(obj[3]+"").split(" ")[0];
 				String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
 						+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
@@ -528,7 +528,7 @@ public class CalculateDataController extends BaseController{
 							+ "t.commrange='"+commResponseData.getDaily().getCommEfficiency().getRangeString()+"'";
 				}
 				if(!(obj[4]+"").equals(obj[2]+"")){
-					updateSql+=",t.AcquisitionTime=to_date('"+AcquisitionTime+"','yyyy-mm-dd hh24:mi:ss')";
+					updateSql+=",t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 				}
 				updateSql+= " where t.wellid="+obj[0];
 				int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);

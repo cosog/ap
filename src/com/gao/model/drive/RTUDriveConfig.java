@@ -124,7 +124,7 @@ public class RTUDriveConfig {
 	    private Item FSDiagramAcquisitionInterval;
 	    private Item FSDiagramSetPointCount;
 	    private Item FSDiagramPointCount;
-	    private Item AcquisitionTime;
+	    private Item AcqTime;
 	    private Item SPM;
 	    private Item Stroke;
 	    
@@ -307,11 +307,11 @@ public class RTUDriveConfig {
 		public void setFSDiagramPointCount(Item fSDiagramPointCount) {
 			FSDiagramPointCount = fSDiagramPointCount;
 		}
-		public Item getAcquisitionTime() {
-			return AcquisitionTime;
+		public Item getAcqTime() {
+			return AcqTime;
 		}
-		public void setAcquisitionTime(Item acquisitionTime) {
-			AcquisitionTime = acquisitionTime;
+		public void setAcqTime(Item acqTime) {
+			AcqTime = acqTime;
 		}
 		public Item getSPM() {
 			return SPM;

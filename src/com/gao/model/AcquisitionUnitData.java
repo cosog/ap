@@ -80,7 +80,7 @@ public class AcquisitionUnitData {
 
     private int FSDiagramPointCount=0;
 
-    private int AcquisitionTime=0;
+    private int AcqTime=0;
 
     private int SPM=0;
 
@@ -149,7 +149,7 @@ public class AcquisitionUnitData {
 
         this.FSDiagramPointCount=0;
 
-        this.AcquisitionTime=0;
+        this.AcqTime=0;
 
         this.SPM=0;
 
@@ -338,11 +338,11 @@ public class AcquisitionUnitData {
     public int getFSDiagramPointCount(){
         return this.FSDiagramPointCount;
     }
-    public void setAcquisitionTime(int AcquisitionTime){
-        this.AcquisitionTime = AcquisitionTime;
+    public void setAcqTime(int AcqTime){
+        this.AcqTime = AcqTime;
     }
-    public int getAcquisitionTime(){
-        return this.AcquisitionTime;
+    public int getAcqTime(){
+        return this.AcqTime;
     }
     public void setSPM(int SPM){
         this.SPM = SPM;

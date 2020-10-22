@@ -327,7 +327,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     	if(calculateManagerHandsontableHelper.hot.getSelected()){
                     		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
                     		var wellName=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[1];
-                    		var acquisitionTime=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[2];
+                    		var acqTime=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[2];
                     		
                     		var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
                             var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
@@ -339,7 +339,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 				calculateType=5;
                 			}
                     		
-                    		var url=context + '/calculateManagerController/exportCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acquisitionTime='+acquisitionTime+'&calculateType='+calculateType;
+                    		var url=context + '/calculateManagerController/exportCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
                         	document.location.href = url;
                     	}else{
                     		Ext.MessageBox.alert("信息","未选择记录");

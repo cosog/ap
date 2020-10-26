@@ -33,13 +33,13 @@ import com.google.gson.reflect.TypeToken;
 @Component("KafkaServerTast")  
 public class KafkaServerTast {
 	public static final String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
-    public static final String[] TOPIC = {"Up-Data","Up-Config","Up-Model"};
+    public static final String[] TOPIC = {"Up-Data","Up-Config","Up-Model","Up-RawData"};
     private static final String clientid = "apKafkaClient";//+new Date().getTime();
     private static int receivedDataCount=0;
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runKafkaServer() {
 		Properties props = new Properties();
 	    props.put("bootstrap.servers", HOST);
@@ -59,7 +59,7 @@ public class KafkaServerTast {
 	            //将偏移设置到最开始
 //	            consumer.seekToBeginning(collection);
 	        	//将偏移设置到最后
-//	        	consumer.seekToEnd(collection);
+	        	consumer.seekToEnd(collection);
 	        }
 	    });
 	    while (true) {
@@ -115,6 +115,7 @@ public class KafkaServerTast {
 //			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
 			Gson gson = new Gson();
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
+			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
 			if("Up-Data".equalsIgnoreCase(record.topic())){
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
@@ -151,6 +152,36 @@ public class KafkaServerTast {
         		
         	}else if("Up-Model".equalsIgnoreCase(record.topic())){
         		
+        	}else if("Up-RawData".equalsIgnoreCase(record.topic())){//原始数据
+        		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
+        		KafkaUpRawData kafkaUpRawData=gson.fromJson(record.value(), type);
+        		if(kafkaUpRawData!=null){
+        			try {
+        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            			System.out.println("offset="+record.offset()+",采集时间:"+kafkaUpData.getAcqTime()+",系统时间:"+kafkaUpData.getSysTime());
+            			//如果时间差达到半小时，校正时间
+            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
+						if(diffTime>60*30){
+							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+kafkaUpRawData.getSysTime()+",时间差:"+diffTime+"秒");
+							kafkaUpRawData.setAcqTime(currentTime);
+							//下行时间
+							String topic="Down-"+record.key()+"-RTC";
+							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+						}
+						if(StringManagerUtils.isNotNull(kafkaUpRawData.getAcqTime())){
+							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpRawData.getAcqTime()).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
+							kafkaUpRawData.setKey(record.key());
+		        			StringManagerUtils.sendPostMethod(saveRawDataUrl, gson.toJson(kafkaUpRawData),"utf-8");
+						}else{
+							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println(record.value());
+					}
+        		}
         	}
 		}
 
@@ -579,6 +610,108 @@ public class KafkaServerTast {
 		}
 		public void setSignal(Integer signal) {
 			Signal = signal;
+		}
+	}
+	public static class KafkaUpRawData
+	{
+		private String Ver;
+		
+		private String SysTime;
+		
+		private String AcqTime;
+		
+		private Integer Signal;
+	    
+	    private String Key;
+	    
+	    private List<Float> Interval;
+	    
+	    private List<Float> A;
+
+	    private List<Float> F;
+
+	    private List<Float> Watt;
+
+	    private List<Float> I;
+
+		public String getVer() {
+			return Ver;
+		}
+
+		public void setVer(String ver) {
+			Ver = ver;
+		}
+
+		public String getSysTime() {
+			return SysTime;
+		}
+
+		public void setSysTime(String sysTime) {
+			SysTime = sysTime;
+		}
+
+		public String getAcqTime() {
+			return AcqTime;
+		}
+
+		public void setAcqTime(String acqTime) {
+			AcqTime = acqTime;
+		}
+
+		public Integer getSignal() {
+			return Signal;
+		}
+
+		public void setSignal(Integer signal) {
+			Signal = signal;
+		}
+
+		public String getKey() {
+			return Key;
+		}
+
+		public void setKey(String key) {
+			Key = key;
+		}
+
+		public List<Float> getInterval() {
+			return Interval;
+		}
+
+		public void setInterval(List<Float> interval) {
+			Interval = interval;
+		}
+
+		public List<Float> getA() {
+			return A;
+		}
+
+		public void setA(List<Float> a) {
+			A = a;
+		}
+
+		public List<Float> getF() {
+			return F;
+		}
+
+		public void setF(List<Float> f) {
+			F = f;
+		}
+
+		public List<Float> getWatt() {
+			return Watt;
+		}
+
+		public void setWatt(List<Float> watt) {
+			Watt = watt;
+		}
+
+		public List<Float> getI() {
+			return I;
+		}
+
+		public void setI(List<Float> i) {
+			I = i;
 		}
 	}
 }

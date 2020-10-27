@@ -22,6 +22,7 @@ import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.BaseService;
 import com.gao.tast.KafkaServerTast.KafkaUpData;
+import com.gao.tast.KafkaServerTast.KafkaUpRawData;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -715,6 +716,11 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 	public boolean saveRPCAcquisitionAndCalculateData(KafkaUpData kafkaUpData,RPCCalculateResponseData calculateResponseData) throws SQLException, ParseException{
 		boolean result=false;
 		result=this.getBaseDao().saveFSDiagramAndCalculateData(kafkaUpData,calculateResponseData);
+		return result;
+	}
+	public boolean saveKafkaUpRawData(KafkaUpRawData kafkaUpRawData) throws SQLException, ParseException{
+		boolean result=false;
+		result=this.getBaseDao().saveKafkaUpRawData(kafkaUpRawData);
 		return result;
 	}
 }

@@ -76,6 +76,7 @@ import com.gao.model.gridmodel.WellProHandsontableChangedData;
 import com.gao.model.gridmodel.WellringGridPanelData;
 import com.gao.tast.EquipmentDriverServerTast;
 import com.gao.tast.KafkaServerTast.KafkaUpData;
+import com.gao.tast.KafkaServerTast.KafkaUpRawData;
 import com.gao.tast.MQTTServerTast.TransferDaily;
 import com.gao.tast.MQTTServerTast.TransferDiagram;
 import com.gao.model.WellInformation;
@@ -3162,6 +3163,58 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(100,"");
 			cs.setString(101,"");
 			cs.setString(102,"");
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
+	public Boolean saveKafkaUpRawData(KafkaUpRawData kafkaUpRawData) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		
+		CLOB diagramClob_Interval=new CLOB((OracleConnection) conn);
+		diagramClob_Interval = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_Interval.putString(1, StringUtils.join(kafkaUpRawData.getInterval(), ","));
+		
+		CLOB diagramClob_A=new CLOB((OracleConnection) conn);
+		diagramClob_A = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_A.putString(1, StringUtils.join(kafkaUpRawData.getA(), ","));
+		
+		CLOB diagramClob_F=new CLOB((OracleConnection) conn);
+		diagramClob_F = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_F.putString(1, StringUtils.join(kafkaUpRawData.getF(), ","));
+		
+		CLOB diagramClob_Watt=new CLOB((OracleConnection) conn);
+		diagramClob_Watt = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_Watt.putString(1, StringUtils.join(kafkaUpRawData.getWatt(), ","));
+		
+		CLOB diagramClob_I=new CLOB((OracleConnection) conn);
+		diagramClob_I = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_I.putString(1, StringUtils.join(kafkaUpRawData.getI(), ","));
+		
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_a9RawData("
+					+ "?,?,?,?,"
+					+ "?,?,?,?,?)}");
+			cs.setString(1,kafkaUpRawData.getKey());
+			cs.setString(2,kafkaUpRawData.getAcqTime());
+			cs.setString(3,kafkaUpRawData.getVer());
+			cs.setInt(4,kafkaUpRawData.getSignal());
+			
+			cs.setClob(5,diagramClob_Interval);
+			cs.setClob(6,diagramClob_A);
+			cs.setClob(7,diagramClob_F);
+			cs.setClob(8,diagramClob_Watt);
+			cs.setClob(9,diagramClob_I);
+			
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

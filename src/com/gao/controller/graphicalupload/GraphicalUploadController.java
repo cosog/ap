@@ -59,6 +59,7 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.graphicalupload.GraphicalUploadService;
 import com.gao.tast.KafkaServerTast;
 import com.gao.tast.KafkaServerTast.KafkaUpData;
+import com.gao.tast.KafkaServerTast.KafkaUpRawData;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.Constants;
@@ -1365,6 +1366,27 @@ public class GraphicalUploadController extends BaseController {
 				}
 			}
 			
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveKafkaUpRawData")
+	public String saveKafkaUpRawData() throws Exception {
+		Gson gson=new Gson();
+		
+		ServletInputStream ss = request.getInputStream();
+		String data=convertStreamToString(ss,"utf-8");
+		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
+		KafkaUpRawData kafkaUpRawData=gson.fromJson(data, type);
+		if(kafkaUpRawData!=null){
+			raphicalUploadService.saveKafkaUpRawData(kafkaUpRawData);
 		}
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

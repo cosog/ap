@@ -1,12 +1,12 @@
-Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
+Ext.define('AP.store.kafkaConfig.KafkaConfigOperationListStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.kafkaConfigWellListStore',
+    alias: 'widget.kafkaConfigOperationListStore',
     fields: ['id','wellName'],
     autoLoad: true,
     pageSize: 10000,
     proxy: {
         type: 'ajax',
-        url: context + '/graphicalUploadController/getKafkaConfigWellList',
+        url: context + '/kafkaConfigController/getKafkaConfigOperationList',
         actionMethods: {
             read: 'POST'
         },
@@ -22,12 +22,12 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var kafkaConfigGridPanel = Ext.getCmp("kafkaConfigGridPanel_Id");
+            var kafkaConfigGridPanel = Ext.getCmp("kafkaConfigOperationGridPanel_Id");
             if (!isNotVal(kafkaConfigGridPanel)) {
                 var column = createDiagStatisticsColumn(arrColumns)
                 var newColumns = Ext.JSON.decode(column);
                 kafkaConfigGridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "kafkaConfigGridPanel_Id",
+                    id: "kafkaConfigOperationGridPanel_Id",
                     border: false,
                     autoLoad: true,
                     columnLines: true,
@@ -40,37 +40,38 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     		Ext.getCmp("KafkaConfigDataTextArea_Id").setValue("");
+                    		
                     		if(selected.length>0){
-                        		var kafkaConfigOperationGridPanel=Ext.getCmp("kafkaConfigOperationGridPanel_Id");
-                        		if(isNotVal(kafkaConfigOperationGridPanel)){
-                        			var operationRecord = kafkaConfigOperationGridPanel.getSelectionModel().getSelection();
-                            		var type = operationRecord[0].data.id;
-                            		var operationName = operationRecord[0].data.operation;
-                            		if(type<=1 || type>=5){
-                            			var wellName =selected[0].data.wellName;
-                                		var deviceId =selected[0].data.deviceId;
+                    			if(selected[0].data.id==2){
+                        			Ext.getCmp("KafkaConfigSendBtn_Id").disable();
+                        		}else{
+                        			Ext.getCmp("KafkaConfigSendBtn_Id").enable();
+                        		}
+                    			
+                    			if(selected[0].data.id<=1 || selected[0].data.id>=5){
+                        			var loaded=false;
+                        			var kafkaConfigGridPanel=Ext.getCmp("kafkaConfigGridPanel_Id");
+                        			if(isNotVal(kafkaConfigGridPanel)){
+                        				loaded=true;
+                        				var wellRecord = kafkaConfigGridPanel.getSelectionModel().getSelection();
+                                		var type = selected[0].data.id;
+                                		var operationName = selected[0].data.id.operation;
                                 		
-                                		readDeviceInfo(deviceId,type);
-                            		}
+                                		var wellName =wellRecord[0].data.wellName;
+                                		var deviceId =wellRecord[0].data.deviceId;
+                            			readDeviceInfo(deviceId,type);
+                        			}
                         		}
                     		}
                     	}
                     }
                 });
-                var SurfaceCardTypeListPanel = Ext.getCmp("KafkaConfigWellListPanel_Id");
+                var SurfaceCardTypeListPanel = Ext.getCmp("KafkaConfigOperationListPanel_Id");
                 SurfaceCardTypeListPanel.add(kafkaConfigGridPanel);
             }
             kafkaConfigGridPanel.getSelectionModel().select(0,true);//选中第一行
         },
         beforeload: function (store, options) {
-        	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-            var wellName = Ext.getCmp('kafkaConfigInfoWellCom_Id').getValue();
-            var type = Ext.getCmp('kafkaConfigTypeWellCom_Id').getValue();
-            var new_params = {
-                    orgId: orgId,
-                    wellName: wellName
-                };
-            Ext.apply(store.proxy.extraParams, new_params);
         },
         datachanged: function (v, o) {
             //onLabelSizeChange(v, o, "statictisTotalsId");

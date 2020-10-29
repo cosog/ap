@@ -53,6 +53,8 @@ Ext.define('AP.store.kafkaConfig.A9RowDataListStore', {
                             	}else{
                             		//请求图形数据
                             		Ext.create("AP.store.kafkaConfig.A9RawCurveDataStore");
+                            		
+                            		
                             	}
                             }
                             
@@ -73,7 +75,7 @@ Ext.define('AP.store.kafkaConfig.A9RowDataListStore', {
                         }
                     }
                 });
-            	Ext.getCmp("KafkaConfigWellListPanel_Id").add(gridPanel);
+            	Ext.getCmp("A9RawDataListPanel_Id").add(gridPanel);
             }
             var startDate=Ext.getCmp('A9RawDataStartDate_Id').rawValue;
             if(startDate==''||null==startDate){

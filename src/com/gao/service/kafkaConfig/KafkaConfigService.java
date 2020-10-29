@@ -68,13 +68,20 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 	}
 	
 	public String getA9RowDataList(Page pager,String deviceId,String startDate,String endDate) throws Exception {
-		String sql="select t.id,t.deviceId,to_char(t.acqtime@'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer from tbl_a9rawdata_latest t order by t.deviceId";
-		String sqlHis="select t.id,t.deviceId,to_char(t.acqtime@'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer from tbl_a9rawdata_hist t where 1=1";
+		String sql="select t.id,t.deviceId,well.wellName,to_char(t.acqtime@'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer "
+				+ " from tbl_a9rawdata_latest t "
+				+ " left outer join tbl_wellinformation well on well.driveraddr=t.deviceid"
+				+ " order by t.deviceId";
+		String sqlHis="select t.id,t.deviceId,well.wellName,to_char(t.acqtime@'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer "
+				+ " from tbl_a9rawdata_hist t "
+				+ " left outer join tbl_wellinformation well on well.driveraddr=t.deviceid"
+				+ " where 1=1";
 		String finalSql="";
 		String sqlAll="";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"设备ID\",\"dataIndex\":\"deviceId\",width:120 ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",width:130 ,children:[] },"
 				+ "{ \"header\":\"信号强度\",\"dataIndex\":\"signal\" ,children:[] },"
 				+ "{ \"header\":\"设备版本\",\"dataIndex\":\"deviceVer\",children:[] }"
@@ -161,5 +168,25 @@ public class KafkaConfigService<T> extends BaseService<T>  {
         dataSbf.append("iCurveData:\""+iCurveData+"\"");
         dataSbf.append("}");
 		return dataSbf.toString().replaceAll("null", "");
+	}
+	
+	public String getKafkaConfigOperationList(){
+		StringBuffer result_json = new StringBuffer();
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"操作\",\"dataIndex\":\"operation\" ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		result_json.append("{\"id\":1,\"operation\":\"驱动配置\"},");
+		result_json.append("{\"id\":2,\"operation\":\"启抽\"},");
+		result_json.append("{\"id\":3,\"operation\":\"停抽\"},");
+		result_json.append("{\"id\":4,\"operation\":\"RTU软重启\"},");
+		result_json.append("{\"id\":5,\"operation\":\"频率下行\"},");
+		result_json.append("{\"id\":6,\"operation\":\"时钟下行\"},");
+		result_json.append("{\"id\":7,\"operation\":\"模型下行\"}");
+		
+		result_json.append("]}");
+		return result_json.toString();
 	}
 }

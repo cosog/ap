@@ -1398,54 +1398,6 @@ public class GraphicalUploadController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/kafkaProducerMsg")
-	public String kafkaProducerMsg() throws Exception {
-		String type = ParamUtils.getParameter(request, "type");
-		String wellName = ParamUtils.getParameter(request, "wellName");
-		String data = ParamUtils.getParameter(request, "data");
-		String sql="select t.drivercode, t.driveraddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
-		List list = this.commonDataService.findCallSql(sql);
-		if(list.size()>0){
-			Object[] obj=(Object[]) list.get(0);
-			String driverCode=obj[0]+"";
-			String ID=obj[1]+"";
-			if("KafkaDrive".equalsIgnoreCase(driverCode)&&StringManagerUtils.isNotNull(ID)){
-				String topic="Down-"+ID+"-";
-				if("1".equals(type)){
-					topic+="RTC";
-				}else if("2".equals(type)){
-					topic+="StartRPC";
-				}else if("3".equals(type)){
-					topic+="StopRPC";
-				}else if("4".equals(type)){
-					topic+="FixPositionStopRPC";
-				}else if("5".equals(type)){
-					topic+="Freq";
-				}else if("6".equals(type)){
-					topic+="Config";
-				}else if("7".equals(type)){
-					topic+="Model";
-				}else if("8".equals(type)){
-					topic+="DogRestart";
-				}
-				KafkaServerTast.producerMsg(topic, "下行数据", data);
-			}
-		}
-		
-		
-		
-		String json ="{success:true}";
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	public static String convertStreamToString(InputStream is,String encoding) {      
 		StringBuilder sb = new StringBuilder();
        try {

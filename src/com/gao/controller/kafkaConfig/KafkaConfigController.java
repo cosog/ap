@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +20,12 @@ import com.gao.controller.base.BaseController;
 import com.gao.model.User;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.kafkaConfig.KafkaConfigService;
+import com.gao.tast.KafkaServerTast;
 import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.handler.SpringWebSocketHandler;
 
 import jxl.Workbook;
 import jxl.format.UnderlineStyle;
@@ -43,6 +46,11 @@ public class KafkaConfigController extends BaseController {
 	private CommonDataService commonDataService;
 	@Autowired
 	private KafkaConfigService<?> kafkaConfigService;
+	
+	@Bean//这个注解会从Spring容器拿出Bean
+    public SpringWebSocketHandler infoHandler() {
+        return new SpringWebSocketHandler();
+    }
 	
 	@RequestMapping("/loadDeviceComboxList")
 	public String loadDeviceComboxList() throws Exception {
@@ -85,6 +93,22 @@ public class KafkaConfigController extends BaseController {
 		pager.setEnd_date(endDate);
 		
 		json = kafkaConfigService.getA9RowDataList(pager,deviceId,startDate,endDate);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getKafkaConfigOperationList")
+	public String getKafkaConfigOperationList() throws Exception {
+		String json = "";
+		
+		json = kafkaConfigService.getKafkaConfigOperationList();
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -280,6 +304,94 @@ public class KafkaConfigController extends BaseController {
 	        // TODO: handle exception  
 	        e.printStackTrace();  
 	    }
+		return null;
+	}
+	
+
+	
+	@RequestMapping("/kafkaProducerMsg")
+	public String kafkaProducerMsg() throws Exception {
+		String type = ParamUtils.getParameter(request, "type");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String data = ParamUtils.getParameter(request, "data");
+		String sql="select t.drivercode, t.driveraddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
+		List list = this.commonDataService.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			String driverCode=obj[0]+"";
+			String ID=obj[1]+"";
+			if("KafkaDrive".equalsIgnoreCase(driverCode)&&StringManagerUtils.isNotNull(ID)){
+				String topic="Down-"+ID+"-";
+				if("1".equals(type)){
+					topic+="Config";
+				}else if("2".equals(type)){
+					topic+="StartRPC";
+				}else if("3".equals(type)){
+					topic+="StopRPC";
+				}else if("4".equals(type)){
+					topic+="DogRestart";
+				}else if("5".equals(type)){
+					topic+="Freq";
+				}else if("6".equals(type)){
+					topic+="RTC";
+				}else if("7".equals(type)){
+					topic+="Model";
+				}
+				System.out.println("Kafka下行数据，设备："+ID+",主题："+topic+",数据"+data);
+				//不执行启抽指令
+				if(!"2".equals(type)){
+					KafkaServerTast.producerMsg(topic, "下行数据", data);
+				}
+			}
+		}
+		
+		String json ="{success:true}";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/readDeviceInfo")
+	public String readDeviceInfo() throws Exception {
+		String type = ParamUtils.getParameter(request, "type");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		String topic="Down-"+deviceId+"-Req";
+		String data="";
+		if("1".equals(type)){
+			data="Config";
+		}else if("2".equals(type)){
+			
+		}else if("3".equals(type)){
+			
+		}else if("4".equals(type)){
+			
+		}else if("5".equals(type)){
+			data="Freq";
+		}else if("6".equals(type)){
+			data="RTC";
+		}else if("7".equals(type)){
+			data="Model";
+		}
+		System.out.println("Kafka下行数据，设备："+deviceId+",主题："+topic+",数据"+data);
+		if(StringManagerUtils.isNotNull(data)){
+			KafkaServerTast.producerMsg(topic, deviceId, data);
+		}
+		
+		String json ="{success:true}";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 }

@@ -2,7 +2,6 @@ package com.gao.tast;
 
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -20,12 +18,14 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.TextMessage;
 
 import com.gao.utils.Config;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,11 +33,12 @@ import com.google.gson.reflect.TypeToken;
 @Component("KafkaServerTast")  
 public class KafkaServerTast {
 	public static final String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
-    public static final String[] TOPIC = {"Up-Data","Up-Config","Up-Model","Up-RawData"};
-    private static final String clientid = "apKafkaClient";//+new Date().getTime();
+    public static final String[] TOPIC = {"Up-Data","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC"};
+    private static final String clientid = "apKafkaClient"+new Date().getTime();
     private static int receivedDataCount=0;
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
+    
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runKafkaServer() {
@@ -103,6 +104,11 @@ public class KafkaServerTast {
 	    producer.close();
 	}
 	
+	@Bean//这个注解会从Spring容器拿出Bean
+    public static SpringWebSocketHandler infoHandler() {
+        return new SpringWebSocketHandler();
+    }
+	
 	public static class KafkaDataAnalysisThread extends Thread{
 		private ConsumerRecord<String, String> record;
 		
@@ -112,7 +118,7 @@ public class KafkaServerTast {
 		}
 
 		public void run(){
-//			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
+			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
 			Gson gson = new Gson();
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
 			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
@@ -148,10 +154,6 @@ public class KafkaServerTast {
         		}else{
         			System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
         		}
-        	}else if("Up-Config".equalsIgnoreCase(record.topic())){
-        		
-        	}else if("Up-Model".equalsIgnoreCase(record.topic())){
-        		
         	}else if("Up-RawData".equalsIgnoreCase(record.topic())){//原始数据
         		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
         		KafkaUpRawData kafkaUpRawData=gson.fromJson(record.value(), type);
@@ -182,6 +184,18 @@ public class KafkaServerTast {
 						System.out.println(record.value());
 					}
         		}
+        	}else if("Up-Config".equalsIgnoreCase(record.topic())){
+        		String sendData="1##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
+        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        	}else if("Up-Model".equalsIgnoreCase(record.topic())){
+        		String sendData="7##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
+        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        	}else if("Up-Freq".equalsIgnoreCase(record.topic())){
+        		String sendData="5##"+record.key()+"##"+record.value();
+        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        	}else if("Up-RTC".equalsIgnoreCase(record.topic())){
+        		String sendData="6##"+record.key()+"##"+record.value();
+        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
         	}
 		}
 

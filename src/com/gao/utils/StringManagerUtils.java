@@ -66,6 +66,7 @@ import org.w3c.dom.svg.SVGDocument;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -1521,12 +1522,38 @@ public class StringManagerUtils {
 	     * 格式化输出JSON字符串
 	     * @return 格式化后的JSON字符串
 	     */
-	    private static String toPrettyFormat(String json) {
+	    public static String toPrettyFormat(String json) {
+	    	if(json.indexOf("'")!=-1){  
+                //将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
+	    		json = json.replaceAll("'", "\\'");  
+            }  
+            if(json.indexOf("\"")!=-1){  
+                //将双引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
+            	json = json.replaceAll("\"", "\\\"");  
+            }  
+              
+            if(json.indexOf("\r\n")!=-1){  
+                //将回车换行转换一下，因为JSON串中字符串不能出现显式的回车换行  
+            	json = json.replaceAll("\r\n", "\\u000d\\u000a");  
+            }  
+            if(json.indexOf("\n")!=-1){  
+                //将换行转换一下，因为JSON串中字符串不能出现显式的换行  
+            	json = json.replaceAll("\n", "\\u000a");  
+            }  
 	    	JsonParser jsonParser = new JsonParser();
 	    	JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
 	    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	    	return gson.toJson(jsonObject);
 	    }
+	    public static String jsonStringFormat(String json) {
+	    	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		    JsonParser jp = new JsonParser();
+		    JsonElement je = jp.parse(json);
+		    String prettyJsonString = gson.toJson(je);
+		    return prettyJsonString;
+	    }
+	    
+	    
 	    /** 
 	     *  按长度截取字符串
 	     *@param str  源字符串

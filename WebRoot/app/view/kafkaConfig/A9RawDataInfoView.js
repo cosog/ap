@@ -166,7 +166,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                     region: 'center',
                     border: false,
                     layout: 'fit',
-                    id: "KafkaConfigWellListPanel_Id", // 井名列表
+                    id: "A9RawDataListPanel_Id", // 井名列表
                     collapsible: false, // 是否折叠
                     split: true // 竖折叠条
                 }, {

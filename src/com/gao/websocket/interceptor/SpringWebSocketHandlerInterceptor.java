@@ -1,5 +1,6 @@
 package com.gao.websocket.interceptor;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -11,8 +12,13 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;  
 import org.springframework.web.socket.WebSocketHandler;  
 import org.springframework.web.socket.server.HandshakeInterceptor;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
-public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {  
+/**
+ * 创建websocket连接是的拦截器，记录建立连接的用户的session以便根据不同session来通信
+ * 
+ * */
+public class SpringWebSocketHandlerInterceptor extends HttpSessionHandshakeInterceptor implements HandshakeInterceptor {  
 	  
     @SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(HandshakeInterceptor.class);  
@@ -21,12 +27,13 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
         if (request instanceof ServletServerHttpRequest) {  
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;  
             HttpSession session = servletRequest.getServletRequest().getSession(false);  
-            String userName="systest";
+            String userName="WEBSOCKETCLIENT";//+new Date().getTime();
             if (session != null) {  
                 //使用userName区分WebSocketHandler，以便定向发送消息  
-                //String userName = (String) session.getAttribute("session_username");  
+//                userName = (String) session.getAttribute("SESSION_USERNAME");  
+            	userName = ((ServletServerHttpRequest) request).getServletRequest().getParameter("module_Code")+new Date().getTime(); 
                 if(userName != null){  
-                    attributes.put("websocket_username",userName);  
+                    attributes.put("WEBSOCKET_USERID",userName);  
                 }  
             }  
         }  
@@ -34,7 +41,7 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     }  
   
     @Override  
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {  
-  
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception ex) {  
+    	super.afterHandshake(request, response, wsHandler, ex);
     }
 }

@@ -96,8 +96,9 @@ public class UserLoginManagerController extends BaseController {
 		l = new Locale("en", "US"); 
 		} 
 		ActionContext.getContext().setLocale(l);   
-        ServletActionContext.getRequest().getSession().setAttribute("WW_TRANS_I18N_LOCALE", l);
-        ServletActionContext.getRequest().getSession().setAttribute("browserLang", locale);
+		session.setAttribute("WW_TRANS_I18N_LOCALE", l);
+		session.setAttribute("browserLang", locale);
+		session.setAttribute("WEBSOCKET_USERID", username);
         if(locale.equalsIgnoreCase("zh_CN")){
 		if (null == username || "".equals(username)) {
 			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
@@ -317,6 +318,7 @@ public class UserLoginManagerController extends BaseController {
 				user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
 				session.setAttribute("userLogin", user);
+				session.setAttribute("SESSION_USERNAME", username);
 				out.print("{success:true,flag:'normal'}");
 			} else {
 				if(locale.equalsIgnoreCase("zh_CN")){

@@ -74,11 +74,14 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			SerializableClobProxy   proxy=null;
 			String DiagramXData="";
 	        String DiagramYData="";
-	        
+	        String pointCount="";
 	        if(obj[3]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[3]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+				if(StringManagerUtils.isNotNull(DiagramXData)){
+					pointCount=DiagramXData.split(",").length+"";
+				}
 			}
 	        if(obj[4]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[4]);
@@ -89,6 +92,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
 			dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
 			dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
+			dynSbf.append("\"pointCount\":\""+pointCount+"\","); 
 			dynSbf.append("\"upperLoadLine\":\"" + obj[5] + "\",");
 			dynSbf.append("\"lowerLoadLine\":\"" + obj[6] + "\",");
 			dynSbf.append("\"fmax\":\""+obj[7]+"\",");

@@ -117,7 +117,17 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
                             }
                         }
                     }
-                }, '->', {
+                },'-',{
+                    xtype: 'button',
+                    iconCls: 'note-refresh',
+                    text: cosog.string.refresh,
+                    pressed: true,
+                    hidden:false,
+                    handler: function (v, o) {
+                    	loadSurfaceCardList(1);
+                    }
+                
+        		}, '->', {
                     id: 'SurfaceCardTotalCount_Id',
                     xtype: 'component',
                     tpl: cosog.string.totalCount + ': {count}', // 总记录数

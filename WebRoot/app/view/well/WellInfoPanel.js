@@ -157,6 +157,16 @@ Ext.define('AP.view.well.WellInfoPanel', {
             			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id  + "&jh=" + URLencode(URLencode(jh)) +"&recordCount=10000"+ "&fileName="+URLencode(URLencode("井名基本信息"))+ "&title="+URLencode(URLencode("井名基本信息"));
             			    openExcelWindow(url + '?flag=true' + param);
             			}
+            		},'-',{
+                        xtype: 'button',
+                        iconCls: 'note-refresh',
+                        text: cosog.string.refresh,
+                        pressed: true,
+                        hidden:false,
+                        handler: function (v, o) {
+                        	CreateAndLoadWellInfoTable();
+                        }
+                    
             		},'-', {
             			xtype: 'button',
             			itemId: 'saveWellInformationClassBtnId',

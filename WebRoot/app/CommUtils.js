@@ -1398,7 +1398,7 @@ function initWaterCurveChart(years, values, tickInterval, divId) {
 					renderTo : divId,
 					type : 'spline',
 					shadow : false,
-					reflow : false,
+					reflow : true,
 					borderWidth : 0
 				},
 				credits : {
@@ -4726,6 +4726,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 	var acqTime=gtdata.acqTime;     // 采集时间
 	var upperLoadLine=gtdata.upperLoadLine;   // 理论上载荷
 	var lowerLoadLine=gtdata.lowerLoadLine;   // 理论下载荷
+	var pointCount=gtdata.pointCount;//曲线点数
 	var fmax=gtdata.fmax;     // 最大载荷
 	var fmin=gtdata.fmin;     // 最小载荷
 	var stroke=gtdata.stroke;       // 冲程
@@ -4737,8 +4738,16 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     if(productionUnit!=0){
     	productionUnitStr='m^3/d';
     }
-    xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidProduction + productionUnitStr+ '<br />';
-    xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + workingConditionName + '<br /></span>';
+    xtext+='点数:'+pointCount+"";
+    xtext+=' 最大载荷:'+fmax+'kN';
+    xtext+=' 最小载荷:'+fmin+'kN';
+    xtext+=' 冲程:'+stroke+'m';
+    xtext+=' 冲次:'+spm+'/min';
+    xtext+=' 产液:'+liquidProduction+productionUnitStr;
+    xtext+=' 工况:'+workingConditionName;
+    
+//    xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidProduction + productionUnitStr+ '<br />';
+//    xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + workingConditionName + '<br /></span>';
     var upperlimit=parseFloat(fmax)+10;
 //    if(parseFloat(upperLoadLine)==0||upperLoadLine==""||parseFloat(fmax)==0||fmax==""){
 //    	upperlimit=null
@@ -4750,12 +4759,11 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     	upperlimit=null;
     }
 	mychart = new Highcharts.Chart({
-				chart: {                                                                             
-		            type: 'scatter',     // 散点图   
+				chart: {
 		            renderTo : divid,
 		            zoomType: 'xy',
 		            borderWidth : 0,
-		            reflow: false
+		            reflow: true
 		        },                                                                                   
 		        title: {
 		        	text: cosog.string.FSDiagram  // 光杆功图                        
@@ -4766,7 +4774,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		        credits: {
 		            enabled: false
 		        },
-		        xAxis: {                                                                             
+		        xAxis: {                                                                           
 		            title: {                                                                         
 		                text: xtext,    // 坐标+显示文字
 //		                align:'low',
@@ -4797,31 +4805,31 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
                     },
 		            allowDecimals: false,    // 刻度值是否为小数
 		            minorTickInterval: '',   // 不显示次刻度线
-		            min: 0,                  // 最小值
-		            max:upperlimit,
-		            plotLines: [{   //一条延伸到整个绘图区的线，标志着轴中一个特定值。
-	                    color: '#d12',
-	                    dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
-	                    label: {
-	                        text: upperLoadLine,
-	                        align: 'right',
-	                        x: -10
-	                    },
-	                    width: 3,
-	                    value: upperLoadLine,  //y轴显示位置
-	                    zIndex: 10
-	                },{
-	                    color: '#d12',
-	                    dashStyle: 'Dash',
-	                    label: {
-	                        text: lowerLoadLine,
-	                        align: 'right',
-	                        x: -10
-	                    },
-	                    width: 3,
-	                    value: lowerLoadLine,  //y轴显示位置
-	                    zIndex: 10
-	                }]
+		            min: 0                  // 最小值
+//		            max:upperlimit,
+//		            plotLines: [{   //一条延伸到整个绘图区的线，标志着轴中一个特定值。
+//	                    color: '#d12',
+//	                    dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
+//	                    label: {
+//	                        text: upperLoadLine,
+//	                        align: 'right',
+//	                        x: -10
+//	                    },
+//	                    width: 3,
+//	                    value: upperLoadLine,  //y轴显示位置
+//	                    zIndex: 10
+//	                },{
+//	                    color: '#d12',
+//	                    dashStyle: 'Dash',
+//	                    label: {
+//	                        text: lowerLoadLine,
+//	                        align: 'right',
+//	                        x: -10
+//	                    },
+//	                    width: 3,
+//	                    value: lowerLoadLine,  //y轴显示位置
+//	                    zIndex: 10
+//	                }]
 		        },
 		        exporting:{
                     enabled:true,    
@@ -4863,8 +4871,41 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 		                }                                                                            
 		            }                                                                                
 		        }, 
-		        series: [{                                                                           
-		            name: '',                                                                  
+		        series: [{
+		    		type: 'line',
+		    		color: '#d12',
+		    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
+		    		lineWidth:2,
+		    		name: '理论上载荷线',
+		    		data: [[0, parseFloat(upperLoadLine)], [parseFloat(stroke), parseFloat(upperLoadLine)]],
+		    		marker: {
+		    			enabled: false
+		    		},
+		    		states: {
+		    			hover: {
+		    				lineWidth: 0
+		    			}
+		    		},
+		    		enableMouseTracking: true
+		    	},{
+		    		type: 'line',
+		    		color: '#d12',
+		    		dashStyle: 'Dash', //Dash,Dot,Solid,shortdash,默认Solid
+		    		lineWidth:2,
+		    		name: '理论下载荷线',
+		    		data: [[0, parseFloat(lowerLoadLine)], [parseFloat(stroke), parseFloat(lowerLoadLine)]],
+		    		marker: {
+		    			enabled: false
+		    		},
+		    		states: {
+		    			hover: {
+		    				lineWidth: 0
+		    			}
+		    		},
+		    		enableMouseTracking: true
+		    	},{                                                                           
+		            name: '',   
+		            type: 'scatter',     // 散点图   
 		            color: '#00ff00',   
 		            lineWidth:3,
 		            data:  pointdata                                                                                  
@@ -5602,6 +5643,7 @@ function initMultiSurfaceCardChart(series, title, wellName, acqTime, divid,upper
 		            allowDecimals: false,    // 刻度值是否为小数
 		            //endOnTick: false,        //是否强制轴线在标线处结束   
 		            minorTickInterval: '',    // 不显示次刻度线
+//		            min:0,
 		            plotLines: [{   //一条延伸到整个绘图区的线，标志着轴中一个特定值。
 	                    color: '#d12',
 	                    dashStyle: 'Dash', //Dash,Dot,Solid,默认Solid
@@ -7768,6 +7810,7 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 	var lowerLoadLine=null;
 	var fmax=null;
 	var fmin=null;
+	var strokeMax=0;
 	var visiblestr='';
 	if(!visible){
 		visiblestr='visible:false,';
@@ -7796,6 +7839,9 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 		}
 		if(parseFloat(list[i].fmin)<fmin){
 			fmin=parseFloat(list[i].fmin);
+		}
+		if(parseFloat(list[i].stroke)>strokeMax){
+			strokeMax=parseFloat(list[i].stroke);
 		}
 		var xData = list[i].positionCurveData.split(",");
 		var yData;
@@ -7837,6 +7883,12 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 			}
 		}
 	}
+	
+	if(strokeMax>0 && diagramType===0){//如果是功图
+		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '理论上载荷线',data: [[0," +parseFloat(upperLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(upperLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
+		series+=",{type: 'line',color: '#d12',dashStyle: 'Dash',lineWidth:2,name: '理论下载荷线',data: [[0," +parseFloat(lowerLoadLine)+"], ["+parseFloat(strokeMax)+", "+parseFloat(lowerLoadLine)+"]],marker: {enabled: false},states: {hover: {lineWidth: 0}},enableMouseTracking: true}";
+	}
+	
 	series+="]";
 	
 	var pointdata = Ext.JSON.decode(series);
@@ -7861,7 +7913,7 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
     	upperlimit=null;
     }
     if(diagramType===0){//如果是功图
-    	initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
+    	initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax);
 	}else {
 		initPSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid);
 	}
@@ -7989,7 +8041,7 @@ showPSDiagramOverlayChart = function(get_rawData,divid,curveType,visible) {
 	return false;
 }
 //initFSDiagramOverlayChart(pointdata, title,ytext,get_rawData.wellName, get_rawData.calculateDate, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit);
-function initFSDiagramOverlayChart(series, title,ytext, wellName, acqTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit) {
+function initFSDiagramOverlayChart(series, title,ytext, wellName, acqTime, divid,upperLoadLine,lowerLoadLine,upperlimit,underlimit,strokeMax) {
 	mychart = new Highcharts.Chart({
 				chart: {                                                                             
 		            type: 'scatter',      // 散点图   
@@ -8030,31 +8082,31 @@ function initFSDiagramOverlayChart(series, title,ytext, wellName, acqTime, divid
 		            allowDecimals: false,    // 刻度值是否为小数
 		            //endOnTick: false,        //是否强制轴线在标线处结束   
 		            minorTickInterval: '',    // 不显示次刻度线
-		            max:upperlimit,
-		            min:underlimit,
-		            plotLines: [{   //一条延伸到整个绘图区的线，标志着轴中一个特定值。
-	                    color: '#d12',
-	                    dashStyle: 'Dash', //Dash,Dot,Solid,默认Solid
-	                    label: {
-	                        text: upperLoadLine,
-	                        align: 'right',
-	                        x: -10
-	                    },
-	                    width: 3,
-	                    value: upperLoadLine,  //y轴显示位置
-	                    zIndex: 10
-	                },{
-	                    color: '#d12',
-	                    dashStyle: 'Dash',
-	                    label: {
-	                        text: lowerLoadLine,
-	                        align: 'right',
-	                        x: -10
-	                    },
-	                    width: 3,
-	                    value: lowerLoadLine,  //y轴显示位置
-	                    zIndex: 10
-	                }]
+//		            max:upperlimit,
+		            min:0
+//		            plotLines: [{   //一条延伸到整个绘图区的线，标志着轴中一个特定值。
+//	                    color: '#d12',
+//	                    dashStyle: 'Dash', //Dash,Dot,Solid,默认Solid
+//	                    label: {
+//	                        text: upperLoadLine,
+//	                        align: 'right',
+//	                        x: -10
+//	                    },
+//	                    width: 3,
+//	                    value: upperLoadLine,  //y轴显示位置
+//	                    zIndex: 10
+//	                },{
+//	                    color: '#d12',
+//	                    dashStyle: 'Dash',
+//	                    label: {
+//	                        text: lowerLoadLine,
+//	                        align: 'right',
+//	                        x: -10
+//	                    },
+//	                    width: 3,
+//	                    value: lowerLoadLine,  //y轴显示位置
+//	                    zIndex: 10
+//	                }]
 		        },
 		        exporting:{    
                     enabled:true,    

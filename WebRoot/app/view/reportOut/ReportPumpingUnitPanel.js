@@ -123,7 +123,17 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
                 	var url=context + '/reportPumpingUnitDataController/exportRPCDailyReportData?wellType=200&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
-            }, '->', {
+            },'-',{
+                xtype: 'button',
+                iconCls: 'note-refresh',
+                text: cosog.string.refresh,
+                pressed: true,
+                hidden:false,
+                handler: function (v, o) {
+                	CreateDiagnosisDailyReportTable();
+                }
+            
+    		}, '->', {
                 id: 'PumpingUnitDailyReportTotalCount_Id',
                 xtype: 'component',
                 tpl: cosog.string.totalCount + ': {count}',

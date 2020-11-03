@@ -100,6 +100,16 @@ Ext.define("AP.view.productionData.ScrewPumpProductionDataPanel", {
     			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id+"&wellType="+wellType  + "&jh=" + URLencode(URLencode(jh)) + "&fileName="+URLencode(URLencode("螺杆泵生产数据"))+ "&title="+URLencode(URLencode("螺杆泵生产数据"));
     			    openExcelWindow(url + '?flag=true' + param);
     			}
+    		},'-',{
+                xtype: 'button',
+                iconCls: 'note-refresh',
+                text: cosog.string.refresh,
+                pressed: true,
+                hidden:false,
+                handler: function (v, o) {
+                	CreateAndLoadScrewPumpProTable();
+                }
+            
     		},'-', {
             	xtype: 'button',
             	disabled: false,

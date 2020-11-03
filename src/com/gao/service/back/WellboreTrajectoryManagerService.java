@@ -135,8 +135,8 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 				String XArr[]=X.split(",");
 				String YArr[]=Y.split(",");
 				String ZArr[]=Z.split(",");
-				total=measuringDepthArr.length;
-				for(int i=0;i<measuringDepthArr.length;i++){
+				total=XArr.length;
+				for(int i=0;i<XArr.length&&StringManagerUtils.isNotNull(XArr[i]);i++){
 					result_json.append("{\"measuringDepth\":"+measuringDepthArr[i]+",");
 					result_json.append("\"verticalDepth\":"+verticalDepthArr[i]+",");
 					result_json.append("\"deviationAngle\":"+deviationAngleArr[i]+",");

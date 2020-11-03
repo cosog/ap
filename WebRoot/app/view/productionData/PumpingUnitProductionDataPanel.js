@@ -114,6 +114,16 @@ Ext.define("AP.view.productionData.PumpingUnitProductionDataPanel", {
     			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id+"&wellType="+wellType  + "&wellName=" + URLencode(URLencode(wellName)) + "&fileName="+URLencode(URLencode("抽油机生产数据"))+ "&title="+URLencode(URLencode("抽油机生产数据"));
     			    openExcelWindow(url + '?flag=true' + param);
     			}
+    		},'-',{
+                xtype: 'button',
+                iconCls: 'note-refresh',
+                text: cosog.string.refresh,
+                pressed: true,
+                hidden:false,
+                handler: function (v, o) {
+                	CreateAndLoadWellProTable();
+                }
+            
     		},'-', {
             	xtype: 'button',
             	disabled: false,

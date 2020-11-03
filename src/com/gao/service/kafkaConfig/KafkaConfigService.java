@@ -67,11 +67,42 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 		return result_json.toString();
 	}
 	
+	public String getKafkaConfigWellList(String orgId,String wellName){
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.driveraddr,t.wellname,t.driverCode from tbl_wellinformation t where t.orgid in ("+orgId+")";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and t.wellName='"+wellName+"'";
+		}
+		sql+=" order by t.sortnum,t.wellname";
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"设备ID\",\"dataIndex\":\"deviceId\",width:120 ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,width:120 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"deviceId\":\""+obj[1]+"\",");
+			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"driverCode\":\""+obj[3]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
 	public String getA9RowDataList(Page pager,String deviceId,String startDate,String endDate) throws Exception {
 		String sql="select t.id,t.deviceId,well.wellName,to_char(t.acqtime@'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer "
 				+ " from tbl_a9rawdata_latest t "
 				+ " left outer join tbl_wellinformation well on well.driveraddr=t.deviceid"
-				+ " order by t.deviceId";
+				+ " order by well.sortnum,well.wellName,t.deviceId";
 		String sqlHis="select t.id,t.deviceId,well.wellName,to_char(t.acqtime@'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer "
 				+ " from tbl_a9rawdata_hist t "
 				+ " left outer join tbl_wellinformation well on well.driveraddr=t.deviceid"
@@ -81,7 +112,7 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"设备ID\",\"dataIndex\":\"deviceId\",width:120 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",width:120 ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",width:130 ,children:[] },"
 				+ "{ \"header\":\"信号强度\",\"dataIndex\":\"signal\" ,children:[] },"
 				+ "{ \"header\":\"设备版本\",\"dataIndex\":\"deviceVer\",children:[] }"

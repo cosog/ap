@@ -62,36 +62,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 		result_json.append("]}");
 		return result_json.toString();
 	}
-	
-	public String getKafkaConfigWellList(String orgId,String wellName){
-		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.driveraddr,t.wellname from tbl_wellinformation t where t.orgid in ("+orgId+")";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.wellName='"+wellName+"'";
-		}
-		int totals=this.getTotalCountRows(sql);
-		List<?> list = this.findCallSql(sql);
-		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"设备ID\",\"dataIndex\":\"deviceId\",width:120 ,children:[] },"
-				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] }"
-				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalCount\":"+totals+",");
-		result_json.append("\"totalRoot\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"deviceId\":\""+obj[1]+"\",");
-			result_json.append("\"wellName\":\""+obj[2]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString();
-	}
-	
+		
 	public boolean saveSurfaceCard(FSDiagramModel FSDiagramModel) throws SQLException, ParseException{
 		return this.getBaseDao().saveSurfaceCard(FSDiagramModel);
 	}

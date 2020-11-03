@@ -1,5 +1,6 @@
 package com.gao.controller.kafkaConfig;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
@@ -22,14 +23,18 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.kafkaConfig.KafkaConfigService;
 import com.gao.tast.KafkaServerTast;
 import com.gao.utils.Constants;
+import com.gao.utils.MarkDown2HtmlWrapper;
+import com.gao.utils.MarkdownEntity;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 
 import jxl.Workbook;
+import jxl.biff.DisplayFormat;
 import jxl.format.UnderlineStyle;
 import jxl.write.Label;
+import jxl.write.NumberFormats;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -59,6 +64,32 @@ public class KafkaConfigController extends BaseController {
 		User user = null;
 		String json = this.kafkaConfigService.loadDeviceComboxList(pager,deviceName);
 		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getKafkaConfigWellList")
+	public String getKafkaConfigWellList() throws Exception {
+		String json = "";
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		json = kafkaConfigService.getKafkaConfigWellList(orgId,wellName);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -192,6 +223,13 @@ public class KafkaConfigController extends BaseController {
 	        wcf_table.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE); // 设置垂直对齐方式   
 	        wcf_table.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK); 
 	        
+	        DisplayFormat displayFormat = NumberFormats.TEXT;
+	        WritableCellFormat format = new WritableCellFormat(wf_table,displayFormat);
+	        format.setBackground(jxl.format.Colour.WHITE); 
+	        format.setAlignment(jxl.format.Alignment.CENTRE);
+	        format.setVerticalAlignment(jxl.format.VerticalAlignment.CENTRE); // 设置垂直对齐方式  
+	        format.setBorder(jxl.format.Border.ALL,jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+	        
 	        sheetOne.setColumnView(0, 30); // 设置列的宽度    
 	        sheetOne.setColumnView(1, 30); // 设置列的宽度    
 	        sheetOne.setColumnView(2, 15); // 设置列的宽度    
@@ -267,7 +305,9 @@ public class KafkaConfigController extends BaseController {
 				Label content4=new Label(3,1,obj[3]+"",wcf_table);
 				sheetOne.addCell(content1);
 				sheetOne.addCell(content2);
-				sheetOne.addCell(content3);
+//				sheetOne.addCell(content3);
+				jxl.write.Number number = new jxl.write.Number(2, 1, StringManagerUtils.stringToDouble(obj[2]+""),format);
+				sheetOne.addCell(number);
 				sheetOne.addCell(content4);
 				
 				String[] intervalData=intervalCurveData.split(",");
@@ -277,24 +317,39 @@ public class KafkaConfigController extends BaseController {
 				String[] iData=iCurveData.split(",");
 				
 				for(int i=0;i<intervalData.length;i++){
-					Label content=new Label(4,i+1,intervalData[i]+"",wcf_table);
-					sheetOne.addCell(content);
+					number = new jxl.write.Number(4, i+1, StringManagerUtils.stringToDouble(intervalData[i]),format);
+					sheetOne.addCell(number);
+					
+//					Label content=new Label(4,i+1,intervalData[i]+"",wcf_table);
+//					sheetOne.addCell(content);
 				}
 				for(int i=0;i<aData.length;i++){
-					Label content=new Label(5,i+1,aData[i]+"",wcf_table);
-					sheetOne.addCell(content);
+//					Label content=new Label(5,i+1,aData[i]+"",wcf_table);
+//					sheetOne.addCell(content);
+					
+					number = new jxl.write.Number(5, i+1, StringManagerUtils.stringToDouble(aData[i]),format);
+					sheetOne.addCell(number);
 				}
 				for(int i=0;i<fData.length;i++){
-					Label content=new Label(6,i+1,fData[i]+"",wcf_table);
-					sheetOne.addCell(content);
+//					Label content=new Label(6,i+1,fData[i]+"",wcf_table);
+//					sheetOne.addCell(content);
+					
+					number = new jxl.write.Number(6, i+1, StringManagerUtils.stringToDouble(fData[i]),format);
+					sheetOne.addCell(number);
 				}
 				for(int i=0;i<wattData.length;i++){
-					Label content=new Label(7,i+1,wattData[i]+"",wcf_table);
-					sheetOne.addCell(content);
+//					Label content=new Label(7,i+1,wattData[i]+"",wcf_table);
+//					sheetOne.addCell(content);
+					
+					number = new jxl.write.Number(7, i+1, StringManagerUtils.stringToDouble(wattData[i]),format);
+					sheetOne.addCell(number);
 				}
 				for(int i=0;i<iData.length;i++){
-					Label content=new Label(8,i+1,iData[i]+"",wcf_table);
-					sheetOne.addCell(content);
+//					Label content=new Label(8,i+1,iData[i]+"",wcf_table);
+//					sheetOne.addCell(content);
+					
+					number = new jxl.write.Number(8, i+1, StringManagerUtils.stringToDouble(iData[i]),format);
+					sheetOne.addCell(number);
 				}
 	        }
 	        //写入数据并关闭文件     
@@ -362,6 +417,7 @@ public class KafkaConfigController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String topic="Down-"+deviceId+"-Req";
+//		topic+="-Test";
 		String data="";
 		if("1".equals(type)){
 			data="Config";
@@ -392,6 +448,28 @@ public class KafkaConfigController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getHelpDocHtml")
+	public String getHelpDocHtml() throws Exception {
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String path=stringManagerUtils.getFilePath("KafkaConfigHelp.md","doc/");
+		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
+		String fileContent=html.toString();
+//		System.out.println(fileContent);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(fileContent);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

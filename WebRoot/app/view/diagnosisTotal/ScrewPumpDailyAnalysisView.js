@@ -237,6 +237,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyWorkCondStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -247,7 +248,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyWorkCondStatGraphPieDiv_Id',
@@ -285,6 +286,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyProdStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -295,7 +297,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyProdStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyProdStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyProdStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyProdStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyProdStatGraphPieDiv_Id',
@@ -332,6 +334,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyRunStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -342,7 +345,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyRunStatusStatGraphPieDiv_Id',
@@ -364,6 +367,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyRunTimeEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -374,7 +378,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyRunTimeEffStatGraphPieDiv_Id',
@@ -411,6 +415,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailySysEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -421,7 +426,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailySysEffStatGraphPieDiv_Id',
@@ -459,6 +464,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyTodayEnergyStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -469,7 +475,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyTodayEnergyStatGraphPieDiv_Id',
@@ -499,6 +505,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyCommStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -509,7 +516,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyCommStatusStatGraphPieDiv_Id',
@@ -531,6 +538,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisDailyCommEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -541,7 +549,7 @@ Ext.define("AP.view.diagnosisTotal.ScrewPumpDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisDailyCommEffStatGraphPieDiv_Id',

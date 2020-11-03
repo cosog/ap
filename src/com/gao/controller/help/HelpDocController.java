@@ -23,7 +23,7 @@ public class HelpDocController extends BaseController{
 		String path=stringManagerUtils.getFilePath("help.md","doc/");
 		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
 		String fileContent=html.toString();
-		System.out.println(fileContent);
+//		System.out.println(fileContent);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

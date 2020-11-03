@@ -6,7 +6,7 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
     pageSize: 10000,
     proxy: {
         type: 'ajax',
-        url: context + '/graphicalUploadController/getKafkaConfigWellList',
+        url: context + '/kafkaConfigController/getKafkaConfigWellList',
         actionMethods: {
             read: 'POST'
         },
@@ -49,8 +49,10 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
                             		if(type<=1 || type>=5){
                             			var wellName =selected[0].data.wellName;
                                 		var deviceId =selected[0].data.deviceId;
-                                		
-                                		readDeviceInfo(deviceId,type);
+                                		var driverCode =selected[0].data.driverCode;
+                                		if(isNotVal(deviceId) && driverCode.toUpperCase()=="KafkaDrive".toUpperCase()){
+                                			readDeviceInfo(deviceId,type);
+                                		}
                             		}
                         		}
                     		}

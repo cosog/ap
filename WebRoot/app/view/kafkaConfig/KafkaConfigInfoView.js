@@ -105,8 +105,20 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
                 }
             }
         });
+        
     	Ext.apply(me, {
-    		tbar: [wellComboBox,'-',configTypeComboBox,'->',{
+    		tbar: [wellComboBox,'-',configTypeComboBox,'-',{
+                xtype: 'button',
+                iconCls: 'note-refresh',
+                text: cosog.string.refresh,
+                id:'KafkaConfigFreshBtn_Id',
+                pressed: true,
+                hidden:false,
+                handler: function (v, o) {
+                	Ext.getCmp("kafkaConfigGridPanel_Id").getStore().loadPage(1);
+                }
+            
+    		},'->',{
                 xtype: 'button',
                 text: '发送',
                 id:'KafkaConfigSendBtn_Id',
@@ -114,7 +126,6 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
                 hidden:false,
                 handler: function (v, o) {
                 	producerMsg();
-//                	doSendUser();
                 }
             }],
     		items: [{
@@ -124,14 +135,14 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
                     region: 'west',
                     border: false,
                     layout: 'fit',
-                    width: '40%',
+                    width: '37%',
                     layout: 'border',
                     collapsible: true,
                     header:false,
                     split: true,
                     items: [{
                     	region: 'west',
-                    	width: '60%',
+                    	width: '65%',
                     	title:'井列表',
                     	layout: 'fit',
                         id: "KafkaConfigWellListPanel_Id", // 井名列表
@@ -147,28 +158,42 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
                     }]
                 }, {
                     region: 'center',
-                    xtype:'form',
-            		layout: 'auto',
-                    border: false,
-                    collapsible: false,
-//                    layout: 'fit',
-//                    id: 'SelectSurfaceCardFilePanel_Id',
-                    split: true,
-                    autoScroll:true,
-                    scrollable: true,
+                    layout: 'border',
                     items: [{
-                    	xtype:'textareafield',
-                    	id:'KafkaConfigDataTextArea_Id',
-                    	margin: '2 2 2 2',
-                    	grow:true,
-                    	width:'99%',
-                        height: '99%',
-                        anchor: '100%',
-                        emptyText: '在此输入下行数据...',
+                    	region: 'west',
+                    	width: '35%',
+                    	xtype:'form',
+                		layout: 'auto',
+                        border: false,
+                        collapsible: false,
+                        split: true,
                         autoScroll:true,
                         scrollable: true,
-                        readOnly:false
-                    }]
+                        items: [{
+                        	xtype:'textareafield',
+                        	id:'KafkaConfigDataTextArea_Id',
+                        	margin: '0 0 0 0',
+                        	padding:0,
+                        	grow:false,//自动增长
+                        	border: false,
+                        	width:'100%',
+                            height: '100%',
+                            anchor: '100%',
+                            emptyText: '在此输入下行数据...',
+                            autoScroll:true,
+                            scrollable: true,
+                            readOnly:false
+                        }]
+                    },{
+                    	region: 'center',
+                        layout: 'border',
+                        border: false,
+                        layout: 'fit',
+                        title:'帮助',
+                        id:'kafkaConfigHelpDocPanel_Id',
+            			autoScroll: true,
+            			html:''
+                    }]  
                 }]
     		}],
     		listeners: {
@@ -177,14 +202,57 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     				websocketClose();
     			},
     			afterrender: function ( panel, eOpts) {
+    				//加载帮助文档
+    				Ext.Ajax.request({
+    		    		method:'POST',
+    		    		url:context + '/kafkaConfigController/getHelpDocHtml',
+    		    		success:function(response) {
+    		    			var p =Ext.getCmp("kafkaConfigHelpDocPanel_Id");
+//    		    			p.body.update(response.responseText.replace(/.\/Image/g,"..\/images"));
+    		    			p.body.update(response.responseText);
+    		    		},
+    		    		failure:function(){
+    		    			Ext.MessageBox.alert("信息","请求失败");
+    		    		},
+    		    		params: {
+    		            }
+    		    	}); 
+    				
+    				var curWwwPath=window.document.location.href;
+    				//获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+    				var pathName=window.document.location.pathname;
+    				var pos=curWwwPath.indexOf(pathName);
+    				//获取主机地址，如： http://localhost:8083
+    				var localhostPaht=curWwwPath.substring(0,pos);
+    				//获取带"/"的项目名，如：/uimcardprj
+    				var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+    				var baseRoot = localhostPaht+projectName;
+    				var baseUrl=baseRoot.replace("https","ws").replace("http","ws");
+//    				alert(baseRoot);
+    				
     				if ('WebSocket' in window) {
-    				    websocket = new WebSocket("ws://localhost:16100/ap/websocket/socketServer?module_Code=kafkaConfig");
+//    				    websocket = new WebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
+    					websocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
+    					websocket.debug = true;
+    					
+    					websocket.reconnectInterval = 1000;
+    					websocket.timeoutInterval = 2000;
+    					
+    					websocket.maxReconnectInterval = 30000;
+    					
+    					websocket.reconnectDecay=1.5;
+    					
+    					websocket.automaticOpen = true;
+    					
+//    					websocket.maxReconnectAttempts = 5;
+    					
+    					
     				}
     				else if ('MozWebSocket' in window) {
-    				    websocket = new MozWebSocket("ws://localhost:16100/ap/websocket/socketServer?module_Code=kafkaConfig");
+    				    websocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
     				}
     				else {
-    				    websocket = new SockJS("http://localhost:16100/ap/sockjs/socketServer?module_Code=kafkaConfig");
+    				    websocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code=kafkaConfig");
     				}
     				websocket.onopen = onOpen;
     				websocket.onmessage = onMessage;
@@ -207,7 +275,7 @@ function onMessage(evt) {
 //    alert("这是后台推送的消息："+evt.data);
 	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
 	if (activeId == "kafkaConfig_kafkaConfigGridPanel") {
-		Ext.getCmp("KafkaConfigDataTextArea_Id").setValue("");
+//		Ext.getCmp("KafkaConfigDataTextArea_Id").setValue("");
 		
 		var data=evt.data;
 		var dataArr=data.split("##");
@@ -263,13 +331,10 @@ function doSendUsers() {
 
 
 function websocketClose() {
-	websocket.close();
+	if(websocket!=null){
+		websocket.close();
+	}
 }
-
-
-
-
-
 
 function readDeviceInfo(deviceId,type){
 	Ext.Ajax.request({

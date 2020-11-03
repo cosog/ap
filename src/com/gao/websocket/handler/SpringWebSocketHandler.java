@@ -106,14 +106,16 @@ public class SpringWebSocketHandler implements WebSocketHandler {
      * @param message
      */
     public void sendMessageToUsers(TextMessage message) {
-        for (String userId : clients.keySet()) {
-            try {
-                if (clients.get(userId).isOpen()) {
-                	clients.get(userId).sendMessage(message);
+        for (String id : clients.keySet()) {
+        	synchronized (clients.get(id)) {
+        		try {
+                    if (clients.get(id).isOpen()) {
+                    	clients.get(id).sendMessage(message);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        	}
         }
     }
     
@@ -126,14 +128,17 @@ public class SpringWebSocketHandler implements WebSocketHandler {
     public void sendMessageToUser(String userId, TextMessage message) {
         for (String id : clients.keySet()) {
             if (id.equals(userId)) {
-                try {
-                    if (clients.get(id).isOpen()) {
-                    	clients.get(id).sendMessage(message);
+            	synchronized (clients.get(id)) {
+                	try {
+                        if (clients.get(id).isOpen()) {
+                        	clients.get(id).sendMessage(message);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//                break;
+                    break;
+            	}
+
             }
         }
     }
@@ -148,15 +153,17 @@ public class SpringWebSocketHandler implements WebSocketHandler {
     public void sendMessageToUserByModule(String userId, TextMessage message) {
         for (String id : clients.keySet()) {
             if (id.contains(userId)) {
-                try {
-                    if (clients.get(id).isOpen()) {
-                    	clients.get(id).sendMessage(message);
-                    	System.out.println("WebSocket服务端向客户端发送数据："+message);
+            	synchronized (clients.get(id)) {
+                	try {
+                        if (clients.get(id).isOpen()) {
+                        	clients.get(id).sendMessage(message);
+                        	System.out.println("WebSocket服务端向客户端发送数据："+message);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//                break;
+//                    break;
+            	}
             }
         }
     }

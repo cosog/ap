@@ -51,7 +51,7 @@ agileCalculate:
       well: 
        - http://139.129.166.94:18100/api/analy/total/well
    plugin: 
-      wellboreTrajectory: http://139.129.166.94:18100/api/plugin/2xyz
+      wellboreTrajectory: http://139.129.166.94:18100/api/calc/plugin/2xyz
       fa2fs: http://139.129.166.94:18100/api/plugin/fa2fs
 mqtt:
    server: tcp://39.106.157.126:1883

@@ -475,6 +475,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         	sql+=" and well.wellName='"+wellName+"'";
         }
 		List<?> list=this.findCallSql(sql);
+		String pointCount="";
 		if(list.size()>0){
 			Object[] obj=(Object[])list.get(0);
 			String positionCurveData="";
@@ -495,6 +496,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+				if(StringManagerUtils.isNotNull(positionCurveData)){
+					pointCount=positionCurveData.split(",").length+"";
+				}
 			}
 			
 			if(obj[18]!=null){
@@ -577,6 +581,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("{success:true,");
 	        dataSbf.append("wellName:\""+wellName+"\",");           // 井名
 	        dataSbf.append("acqTime:\""+obj[1]+"\",");         // 时间
+	        dataSbf.append("pointCount:\""+pointCount+"\","); 
 	        dataSbf.append("upperLoadLine:\""+obj[3]+"\",");         // 理论上载荷
 	        dataSbf.append("lowerLoadLine:\""+obj[4]+"\",");         // 理论下载荷
 	        dataSbf.append("fmax:\""+obj[5]+"\",");         // 最大载荷
@@ -614,6 +619,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			dataSbf.append("{success:true,");
 			dataSbf.append("wellName:\""+wellName+"\",");
 	        dataSbf.append("acqTime:\"\",");
+	        dataSbf.append("pointCount:\""+pointCount+"\","); 
 	        dataSbf.append("upperLoadLine:\"\",");  
 	        dataSbf.append("lowerLoadLine:\"\","); 
 	        dataSbf.append("fmax:\"\",");  

@@ -52,21 +52,25 @@ Ext.define("AP.view.wellboreTrajectory.WellboreTrajectoryInfoView", {
                     html: '<div id="WellboreTrajectoryChartDiv_Id" style="width:100%;height:100%;"></div>',
                     listeners: {
                     	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                    		var myChart = echarts.getInstanceByDom(document.getElementById("WellboreTrajectoryChartDiv_Id"));
-                        	if(myChart!=undefined){
-                        		var width=adjWidth;
-                        		var height=adjHeight;
-                        		if(height>width){
-                        			height=width;
-                        		}else{
-                        			width=height;
-                        		}
-                        		myChart.resize({
-                        			width: $("#WellboreTrajectoryChartDiv_Id").offsetWidth,
-                        			height: $("#WellboreTrajectoryChartDiv_Id").offsetHeight,
-                        			silent:true
-                        		});
-                        	}
+                    		if($("#WellboreTrajectoryChartDiv_Id").highcharts()!=undefined){
+                    			$("#WellboreTrajectoryChartDiv_Id").highcharts().setSize($("#WellboreTrajectoryChartDiv_Id").offsetWidth, $("#WellboreTrajectoryChartDiv_Id").offsetHeight,true);
+                    		}
+                    		
+//                    		var myChart = echarts.getInstanceByDom(document.getElementById("WellboreTrajectoryChartDiv_Id"));
+//                        	if(myChart!=undefined){
+//                        		var width=adjWidth;
+//                        		var height=adjHeight;
+//                        		if(height>width){
+//                        			height=width;
+//                        		}else{
+//                        			width=height;
+//                        		}
+//                        		myChart.resize({
+//                        			width: $("#WellboreTrajectoryChartDiv_Id").offsetWidth,
+//                        			height: $("#WellboreTrajectoryChartDiv_Id").offsetHeight,
+//                        			silent:true
+//                        		});
+//                        	}
                         }
                     }
                 }, {
@@ -307,8 +311,115 @@ var WellboreTrajectoryDetailsHandsontableHelper = {
 	        return wellboreTrajectoryDetailsHandsontableHelper;
 	    }
 };
-
 function initWellboreTrajectoryCharts(result){
+	var data = [];
+	var yMaxValue=0;
+	var wellName=result.wellName;
+	var zMin=null,zMax=null,xMin=null,xMax=null,yMin=null,yMax=null;
+	for(var i=0;i<result.totalRoot.length;i++){
+		data.push([result.totalRoot[i].X,result.totalRoot[i].Z,result.totalRoot[i].Y]);
+		yMaxValue=result.totalRoot[i].Z;
+	}
+	if(yMaxValue!=0 && yMaxValue!=undefined){
+		yMax=Math.ceil(yMaxValue/100)*100;
+		xMin=zMin=0-yMax/2;
+		xMax=zMax=yMax/2;
+		yMin=0;
+	}
+	var chart = new Highcharts.Chart({
+		chart: {
+			renderTo: 'WellboreTrajectoryChartDiv_Id',
+//			margin: 100,
+			type: 'scatter',
+			options3d: {
+				enabled: true,
+				alpha: 10,
+				beta: 10,
+				depth: 250,
+				viewDistance: 100,//视图距离，它对于计算角度影响在柱图和散列图非常重要。此值不能用于 3D 的饼图 默认是：100
+				frame: {
+					bottom: { size: 1, color: 'rgba(0,0,0,1)' },
+					back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+					side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+				}
+			}
+		},
+		credits : {
+			enabled : false
+		},
+		title: {
+			text: '井身轨迹'
+		},
+		subtitle: {
+			text: wellName
+		},
+		plotOptions: {
+			scatter: {
+				width: 10,
+				height: 10,
+				depth: 10
+			}
+		},
+		yAxis: {
+			min: yMin,
+			max: yMax,
+			reversed:true,
+			title: null
+		},
+		xAxis: {
+			min: xMin,
+			max: xMax,
+			gridLineWidth: 1
+		},
+		zAxis: {
+			min: zMin,
+			max: zMax
+		},
+		legend: {
+			enabled: false
+		},
+		series: [{
+			name: '井身轨迹',
+			colorByPoint: false,
+			color: '#0000FF',
+			lineWidth: 3,
+			marker:{
+				enabled: true,
+				radius: 2
+			},
+			data:data
+		}]
+	});
+	// Add mouse events for rotation
+	$(chart.container).bind('mousedown.hc touchstart.hc', function (e) {
+		e = chart.pointer.normalize(e);
+		var posX = e.pageX,
+			posY = e.pageY,
+			alpha = chart.options.chart.options3d.alpha,
+			beta = chart.options.chart.options3d.beta,
+			newAlpha,
+			newBeta,
+			sensitivity = 5; // lower is more sensitive
+		$(document).bind({
+			'mousemove.hc touchdrag.hc': function (e) {
+				// Run beta
+				newBeta = beta + (posX - e.pageX) / sensitivity;
+				newBeta = Math.min(100, Math.max(-100, newBeta));
+				chart.options.chart.options3d.beta = newBeta;
+				// Run alpha
+				newAlpha = alpha + (e.pageY - posY) / sensitivity;
+				newAlpha = Math.min(100, Math.max(-100, newAlpha));
+				chart.options.chart.options3d.alpha = newAlpha;
+				chart.redraw(false);
+			},
+			'mouseup touchend': function () {
+				$(document).unbind('.hc');
+			}
+		});
+	});
+};
+
+function initWellboreTrajectoryCharts2(result){
 	var data = [];
 	var zMaxValue=0;
 	var zMin=null,zMax=null,xMin=null,xMax=null,yMin=null,yMax=null;

@@ -76,7 +76,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                 		Ext.getCmp("A9RawDataStartDate_Id").show();
                 		Ext.getCmp("A9RawDataEndDate_Id").show();
                 	}
-//                	Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
+                	Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
                 }
             }
         });
@@ -98,7 +98,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                     value: '',
                     listeners: {
                     	select: function (combo, record, index) {
-//                    		Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
+                    		Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
                         }
                     }
                 },{
@@ -113,7 +113,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                     value: new Date(),
                     listeners: {
                     	select: function (combo, record, index) {
-//                    		Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
+                    		Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
                         }
                     }
                 },'-', {
@@ -124,7 +124,18 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                     handler: function (v, o) {
                     	exportA9RawDataExcel();
                     }
-                }, '->', {
+                },'-',{
+                    xtype: 'button',
+                    iconCls: 'note-refresh',
+                    text: cosog.string.refresh,
+                    id:'A9RawDataFreshBtn_Id',
+                    pressed: true,
+                    hidden:false,
+                    handler: function (v, o) {
+                    	Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
+                    }
+                
+        		}, '->', {
                     xtype: 'button',
                     text:'设备历史',
                     tooltip:'点击按钮或者双击表格，查看设备历史数据',

@@ -52,12 +52,14 @@ import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.model.calculate.RPCCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
 import com.gao.model.User;
+import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.EnergyCalculateResponseData;
 import com.gao.model.calculate.FSDiagramModel;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.graphicalupload.GraphicalUploadService;
 import com.gao.tast.KafkaServerTast;
+import com.gao.tast.KafkaServerTast.AggrOnline2Kafka;
 import com.gao.tast.KafkaServerTast.KafkaUpData;
 import com.gao.tast.KafkaServerTast.KafkaUpRawData;
 import com.gao.utils.Config;
@@ -113,32 +115,6 @@ public class GraphicalUploadController extends BaseController {
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		json = raphicalUploadService.getSurfaceCardTrpeList();
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getKafkaConfigWellList")
-	public String getKafkaConfigWellList() throws Exception {
-		String json = "";
-		String orgId = ParamUtils.getParameter(request, "orgId");
-		String wellName = ParamUtils.getParameter(request, "wellName");
-		this.pager = new Page("pagerForm", request);
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		json = raphicalUploadService.getKafkaConfigWellList(orgId,wellName);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
@@ -1387,6 +1363,88 @@ public class GraphicalUploadController extends BaseController {
 		KafkaUpRawData kafkaUpRawData=gson.fromJson(data, type);
 		if(kafkaUpRawData!=null){
 			raphicalUploadService.saveKafkaUpRawData(kafkaUpRawData);
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveKafkaUpAggrOnlineData")
+	public String saveKafkaUpAggrOnlineData() throws Exception {
+		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		Gson gson=new Gson();
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		ServletInputStream ss = request.getInputStream();
+		String data=convertStreamToString(ss,"utf-8");
+		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
+		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(data, type);
+		if(aggrOnline2Kafka!=null){
+			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
+					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
+					+ " where t2.wellId=t.id and t.driverAddr='"+aggrOnline2Kafka.getKey()+"'";
+			List list = this.commonDataService.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				aggrOnline2Kafka.setWellName(obj[0]+"");
+				//进行时率计算
+				CommResponseData commResponseData=null;
+				String commRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+aggrOnline2Kafka.getWellName()+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+					commRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"CommEfficiency\": {"
+							+ "\"Efficiency\": "+obj[3]+","
+							+ "\"Time\": "+obj[2]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[5]+"")+""
+							+ "}"
+							+ "},";
+				}	
+				commRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+currentTime+"\","
+						+ "\"CommStatus\":"+aggrOnline2Kafka.getCommStatus()+""
+						+ "}"
+						+ "}";
+				String commResponse="";
+				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+				type = new TypeToken<CommResponseData>() {}.getType();
+				commResponseData=gson.fromJson(commResponse, type);
+				
+				
+				
+				//更新数据
+				String updateDailyData="";
+				
+				
+				String updateDiscreteData="update tbl_rpc_discrete_latest t set  "
+						+ " t.commStatus="+(aggrOnline2Kafka.getCommStatus()?1:0)+","
+						+ " t.interval="+aggrOnline2Kafka.getTransferIntervel()+","
+						+ " t.signal="+aggrOnline2Kafka.getSignal()+","
+						+ " t.deviceVer='"+aggrOnline2Kafka.getVer()+"',"
+						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+						+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
+						+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
+						
+					}
+				}
+				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
+				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(StringManagerUtils.isNotNull(updateDailyData)){
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
+				}
+			}
+			
 		}
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

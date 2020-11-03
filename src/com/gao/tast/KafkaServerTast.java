@@ -33,7 +33,7 @@ import com.google.gson.reflect.TypeToken;
 @Component("KafkaServerTast")  
 public class KafkaServerTast {
 	public static final String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
-    public static final String[] TOPIC = {"Up-Data","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC"};
+    public static final String[] TOPIC = {"Up-Data","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
     private static final String clientid = "apKafkaClient"+new Date().getTime();
     private static int receivedDataCount=0;
     @SuppressWarnings("unused")
@@ -122,6 +122,7 @@ public class KafkaServerTast {
 			Gson gson = new Gson();
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
 			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
+			String saveAggrOnlineDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrOnlineData";
 			if("Up-Data".equalsIgnoreCase(record.topic())){
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
@@ -196,6 +197,33 @@ public class KafkaServerTast {
         	}else if("Up-RTC".equalsIgnoreCase(record.topic())){
         		String sendData="6##"+record.key()+"##"+record.value();
         		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        	}else if("Up-Online".equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
+        		//原始数据
+        		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
+        		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(record.value(), type);
+        		if(aggrOnline2Kafka!=null){
+        			try {
+        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            			//如果时间差达到半小时，校正时间
+            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrOnline2Kafka.getSysTime()).getTime()/1000);
+						if(diffTime>60*30){
+							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrOnline2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
+							//下行时间
+							String topic="Down-"+record.key()+"-RTC";
+							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+						}
+						aggrOnline2Kafka.setKey(record.key());
+	        			StringManagerUtils.sendPostMethod(saveAggrOnlineDataUrl, gson.toJson(aggrOnline2Kafka),"utf-8");
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println(record.value());
+					}
+        		}
+        	}else if("Up-RunStatus".equalsIgnoreCase(record.topic())){//运行状态发生改变，设备上报
+        		
+        	
         	}
 		}
 
@@ -726,6 +754,66 @@ public class KafkaServerTast {
 
 		public void setI(List<Float> i) {
 			I = i;
+		}
+	}
+	
+	public static class AggrOnline2Kafka
+	{
+	    private String Ver;
+
+	    private String SysTime;
+	    
+	    private String Key;
+	    
+	    private String WellName;
+
+	    private int Signal;
+
+	    private int TransferIntervel;
+
+	    private boolean CommStatus;
+
+	    public void setVer(String Ver){
+	        this.Ver = Ver;
+	    }
+	    public String getVer(){
+	        return this.Ver;
+	    }
+	    public void setSysTime(String SysTime){
+	        this.SysTime = SysTime;
+	    }
+	    public String getSysTime(){
+	        return this.SysTime;
+	    }
+	    public void setSignal(int Signal){
+	        this.Signal = Signal;
+	    }
+	    public int getSignal(){
+	        return this.Signal;
+	    }
+	    public void setTransferIntervel(int TransferIntervel){
+	        this.TransferIntervel = TransferIntervel;
+	    }
+	    public int getTransferIntervel(){
+	        return this.TransferIntervel;
+	    }
+	    public void setCommStatus(boolean CommStatus){
+	        this.CommStatus = CommStatus;
+	    }
+	    public boolean getCommStatus(){
+	        return this.CommStatus;
+	    }
+		public String getKey() {
+			return Key;
+		}
+		public void setKey(String key) {
+			Key = key;
+		}
+		public String getWellName() {
+			return WellName;
+		}
+		public void setWellName(String wellName) {
+			WellName = wellName;
 		}
 	}
 }

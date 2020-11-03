@@ -178,7 +178,17 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                             handler: function (v, o) {
                                 exportDiagnosisTotalDataExcel();
                             }
-                        }, '->', {
+                        },'-',{
+                            xtype: 'button',
+                            iconCls: 'note-refresh',
+                            text: cosog.string.refresh,
+                            pressed: true,
+                            hidden:false,
+                            handler: function (v, o) {
+                            	Ext.getCmp('DiagnosisTotalData_Id').getStore().loadPage(1);
+                            }
+                        
+                		}, '->', {
                             xtype: 'button',
                             text:'单井历史',
                             tooltip:'点击按钮或者双击表格，查看单井历史数据',
@@ -254,6 +264,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyWorkCondStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -264,7 +275,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyWorkCondStatGraphPieDiv_Id',
@@ -302,6 +314,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                         layout: 'fit'
                                     },{
                                     	region: 'south',
+                                    	layout: 'fit',
                                     	id:'FSDiagramAnalysisDailyElecWorkCondStatGraphPanel_Id',
                                         height: '50%',
                                         border: true,
@@ -312,7 +325,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 if ($("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                    $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                    $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id").offsetHeight,true);
                                                 }else{
                                                 	Ext.create('Ext.tip.ToolTip', {
                                                         target: 'FSDiagramAnalysisDailyElecWorkCondStatGraphPieDiv_Id',
@@ -349,6 +363,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyProdStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -359,7 +374,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyProdStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyProdStatGraphPieDiv_Id',
@@ -396,6 +412,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyWattBalanceStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -406,7 +423,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyWattBalanceStatGraphPieDiv_Id',
@@ -428,6 +446,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyIBalanceStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -438,7 +457,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyIBalanceStatGraphPieDiv_Id',
@@ -475,6 +495,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyRunStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -485,7 +506,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyRunStatusStatGraphPieDiv_Id',
@@ -507,6 +529,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyRunTimeEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -517,7 +540,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyRunTimeEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'DiagnosisTotalSlfbStatPieDiv_Id',
@@ -554,6 +578,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailySysEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -564,7 +589,8 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                        $("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                        $("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailySysEffStatGraphPieDiv_Id',
@@ -587,6 +613,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailySurfaceEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -597,7 +624,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    	$("#FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailySurfaceEffStatGraphPieDiv_Id',
@@ -619,6 +646,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyWellDownEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -629,7 +657,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    	$("#FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyWellDownEffStatGraphPieDiv_Id',
@@ -666,6 +694,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyTodayEnergyStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -676,7 +705,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    	$("#FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyTodayEnergyStatGraphPieDiv_Id',
@@ -706,6 +735,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyCommStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -716,7 +746,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    	$("#FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyCommStatusStatGraphPieDiv_Id',
@@ -738,6 +768,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             layout: 'fit'
                                         },{
                                         	region: 'south',
+                                        	layout: 'fit',
                                         	id:'FSDiagramAnalysisDailyCommEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -748,7 +779,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                     if ($("#FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts() != undefined && $("#FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    	$("#FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'FSDiagramAnalysisDailyCommEffStatGraphPieDiv_Id',

@@ -117,7 +117,17 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
                 	var url=context + '/reportPumpingUnitDataController/exportPCPDailyReportData?wellType=400&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
-            }, '->', {
+            },'-',{
+                xtype: 'button',
+                iconCls: 'note-refresh',
+                text: cosog.string.refresh,
+                pressed: true,
+                hidden:false,
+                handler: function (v, o) {
+                	CreateScrewPumpDailyReportTable();
+                }
+            
+    		}, '->', {
                 id: 'ScrewPumpDailyReportTotalCount_Id',
                 xtype: 'component',
                 tpl: cosog.string.totalCount + ': {count}',

@@ -235,7 +235,17 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     		calculateResultStore.loadPage(1);
                         }
                     }
-                },"-",calculateSignComb,'->',{
+                },"-",calculateSignComb,'-',{
+                    xtype: 'button',
+                    iconCls: 'note-refresh',
+                    text: cosog.string.refresh,
+                    pressed: true,
+                    hidden:false,
+                    handler: function (v, o) {
+                    	calculateResultStore.loadPage(1);
+                    }
+                
+        		},'->',{
                     xtype: 'button',
                     text: '修改数据计算',
                     pressed: true,

@@ -219,6 +219,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleElecWorkCondStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -229,7 +230,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleElecWorkCondStatGraphPieDiv_Id',
@@ -267,6 +268,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleProdStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -277,7 +279,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleProdStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleProdStatGraphPieDiv_Id',
@@ -314,6 +316,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleRunStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -324,7 +327,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleRunStatusStatGraphPieDiv_Id',
@@ -346,6 +349,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleRunTimeEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -356,7 +360,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleRunTimeEffStatGraphPieDiv_Id',
@@ -393,6 +397,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleSysEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -403,7 +408,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleSysEffStatGraphPieDiv_Id',
@@ -441,6 +446,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleTodayEnergyStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -451,7 +457,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleTodayEnergyStatGraphPieDiv_Id',
@@ -481,6 +487,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleCommStatusStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -491,7 +498,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleCommStatusStatGraphPieDiv_Id',
@@ -513,6 +520,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             layout: 'fit'
                                         }, {
                                             region: 'south',
+                                            layout: 'fit',
                                             id: 'PCPRPMAnalysisSingleCommEffStatGraphPanel_Id',
                                             height: '50%',
                                             border: true,
@@ -523,7 +531,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                                 	if ($("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                        $("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                		$("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts().setSize($("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").offsetWidth, $("#PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id").offsetHeight,true);
                                                     }else{
                                                     	Ext.create('Ext.tip.ToolTip', {
                                                             target: 'PCPRPMAnalysisSingleCommEffStatGraphPieDiv_Id',

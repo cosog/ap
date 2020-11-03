@@ -132,7 +132,18 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             handler: function (v, o) {
                             	exportFSDiagramAnalysisSingleDataExcel();
                             }
-                        }, '->', {
+                        },'-',{
+                            xtype: 'button',
+                            iconCls: 'note-refresh',
+                            text: cosog.string.refresh,
+                            id:'FSDiagramAnalysisSingleDetailsFreshBtn_Id',
+                            pressed: true,
+                            hidden:false,
+                            handler: function (v, o) {
+                            	Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
+                            }
+                        
+                		}, '->', {
                             xtype: 'button',
                             text:'单井历史',
                             tooltip:'点击按钮或者双击表格，查看单井历史数据',
@@ -249,6 +260,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                   	  layout: 'fit'
                                   },{
                                   	  region: 'south',
+                                  	  layout: 'fit',
                                   	  id:'FSDiagramAnalysisSingleWorkCondStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -259,7 +271,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleWorkCondStatGraphPieDiv_Id',
@@ -296,6 +309,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       	  layout: 'fit'
                                       },{
                                       	  region: 'south',
+                                      	  layout: 'fit',
                                       	  id:'FSDiagramAnalysisSingleElecWorkCondStatGraphPanel_Id',
                                           height: '50%',
                                           border: true,
@@ -306,7 +320,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                           listeners: {
                                               resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                               	if ($("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                      $("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                      $("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                      $("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id").offsetHeight,true);
                                                   }else{
                                                   	Ext.create('Ext.tip.ToolTip', {
                                                           target: 'FSDiagramAnalysisSingleElecWorkCondStatGraphPieDiv_Id',
@@ -343,8 +358,9 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleProdStatGraphPanel_Id',
-                                      height: '50%',
+                                  	height: '50%',
                                       border: true,
                                       header: false,
                                       collapsible: true, // 是否折叠
@@ -353,7 +369,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleProdStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleProdStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleProdStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleProdStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleProdStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleProdStatGraphPieDiv_Id',
@@ -390,6 +407,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleWattBalanceStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -400,7 +418,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleWattBalanceStatGraphPieDiv_Id',
@@ -422,6 +441,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleIBalanceStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -432,7 +452,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                          		$("#FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id").offsetHeight,true);
+//                                                  $("#FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleIBalanceStatGraphPieDiv_Id',
@@ -469,6 +490,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleRunStatusStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -479,7 +501,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                               if ($("#FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleRunStatusStatGraphPieDiv_Id',
@@ -501,6 +524,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleRunTimeEffStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -511,7 +535,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                               if ($("#FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleRunTimeEffStatGraphPieDiv_Id',
@@ -548,6 +573,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleSysEffStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -558,7 +584,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleSysEffStatGraphPieDiv_Id',
@@ -580,6 +607,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleSurfaceEffStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -590,7 +618,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleSurfaceEffStatGraphPieDiv_Id',
@@ -612,6 +641,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleWellDownEffStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -622,7 +652,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                               if ($("#FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleWellDownEffStatGraphPieDiv_Id',
@@ -659,6 +690,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleTodayEnergyStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -669,7 +701,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleTodayEnergyStatGraphPieDiv_Id',
@@ -706,6 +739,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleCommStatusStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -716,7 +750,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleCommStatusStatGraphPieDiv_Id',
@@ -738,6 +773,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       layout: 'fit'
                                   },{
                                   	region: 'south',
+                                  	layout: 'fit',
                                   	id:'FSDiagramAnalysisSingleCommEffStatGraphPanel_Id',
                                       height: '50%',
                                       border: true,
@@ -748,7 +784,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                       listeners: {
                                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                           	if ($("#FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts() != undefined) {
-                                                  $("#FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+//                                                  $("#FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                  $("#FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id").highcharts().setSize($("#FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id").offsetWidth, $("#FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id").offsetHeight,true);
                                               }else{
                                               	Ext.create('Ext.tip.ToolTip', {
                                                       target: 'FSDiagramAnalysisSingleCommEffStatGraphPieDiv_Id',
@@ -829,6 +866,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             padding: 0,
                             autoScroll:true,
                             scrollable: true,
+                            height:900,
                             id: 'FSDiagramAnalysisSingleDetailsCenterPanel1_Id',
                             layout: {
                                 type: 'vbox',
@@ -840,6 +878,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             		border: false,
                             		margin: '0 0 0 0',
 //                            		flex: 1,
+                            		height:300,
                             		layout: {
                             	        type: 'hbox',
                             	        pack: 'start',
@@ -847,6 +886,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
@@ -855,11 +895,13 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts()!=undefined){
                                         			$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").offsetHeight,true);
+//                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts().setSize(adjWidth, adjHeight, true);
                                         		}
                                             }
                                         }
                             	    },{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
@@ -875,7 +917,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	},{
                             		border: false,
 //                            		flex: 1,
-                            		margin: '0 0 0 0',
+                            		margin: '1 0 0 0',
                             		layout: {
                             	        type: 'hbox',
                             	        pack: 'start',
@@ -883,7 +925,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
-                            	    	margin: '1 0 0 0',
+                            	    	layout: 'fit',
+                            	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
@@ -896,7 +939,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                         }
                             	    },{
                             	    	border: true,
-                            	    	margin: '1 0 0 1',
+                            	    	layout: 'fit',
+                            	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
@@ -911,7 +955,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	},{
                             		border: false,
 //                            		flex: 1,
-                            		margin: '0 0 0 0',
+                            		margin: '1 0 0 0',
                             		layout: {
                             	        type: 'hbox',
                             	        pack: 'start',
@@ -919,7 +963,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
-                            	    	margin: '1 0 0 0',
+                            	    	layout: 'fit',
+                            	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
@@ -932,19 +977,24 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                         }
                             	    },{
                             	    	border: true,
-                            	    	margin: '1 0 0 1',
+                            	    	layout: 'fit',
+                            	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                            	var myChart = echarts.getInstanceByDom(document.getElementById("FSDiagramAnalysisSingleWellboreDetailsDiv6_id"));
-                                            	if(myChart!=undefined){
-                                            		myChart.resize({
-                                            			width: $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetWidth,
-                                            			height: $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetHeight,
-                                            		});
-                                            	}
+                                            	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").highcharts()!=undefined){
+                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetHeight,true);
+                                        		}
+                                            	
+//                                            	var myChart = echarts.getInstanceByDom(document.getElementById("FSDiagramAnalysisSingleWellboreDetailsDiv6_id"));
+//                                            	if(myChart!=undefined){
+//                                            		myChart.resize({
+//                                            			width: $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetWidth,
+//                                            			height: $("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").offsetHeight,
+//                                            		});
+//                                            	}
                                             }
                                         }
                             	    }]
@@ -974,6 +1024,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
@@ -987,6 +1038,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                         }
                             	    },{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
@@ -1010,6 +1062,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '1 0 0 0',
                                         flex: 1,
                                         height:300,
@@ -1023,6 +1076,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                         }
                             	    },{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '1 0 0 1',
                                         flex: 1,
                                         height:300,
@@ -1046,6 +1100,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    },
                             	    items:[{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '1 0 0 0',
                                         flex: 1,
                                         height:300,
@@ -1059,6 +1114,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                         }
                             	    },{
                             	    	border: true,
+                            	    	layout: 'fit',
                             	    	margin: '1 0 0 1',
                                         flex: 1,
                                         height:300,
@@ -1442,7 +1498,7 @@ function initFSDiagramAnalysisSingleStatPieOrColChat(store) {
 
 
 function ShowFSDiagramAnalysisSingleStatPieChart(title,divid, name, data) {
-	$('#'+divid).highcharts({
+	Highcharts.chart(divid, {
 		chart : {
 			plotBackgroundColor : null,
 			plotBorderWidth : null,
@@ -1490,7 +1546,7 @@ function ShowFSDiagramAnalysisSingleStatPieChart(title,divid, name, data) {
 				showInLegend : true
 			}
 		},
-		exporting:{    
+		exporting:{ 
             enabled:true,    
             filename:'class-booking-chart',    
             url:context + '/exportHighcharsPicController/export'
@@ -1837,7 +1893,7 @@ function initWellboreSliceCharts(result,divId){
 	];
 	var maxMeasuringDepth=0;
 	var xMaxValue=null;
-    if(measuringDepth.length>0){
+    if(measuringDepth.length>0 && measuringDepth[0]!=''){
         for(var i=0;i<measuringDepth.length;i++){
         	PData += "[" + (0-changeTwoDecimal(measuringDepth[i])) + ","+changeTwoDecimal(P[i])+"]";
         	GLRisData += "[" + (0-changeTwoDecimal(measuringDepth[i])) + ","+changeTwoDecimal(GLRis[i])+"]";
@@ -1947,7 +2003,7 @@ function initWellboreSliceCharts(result,divId){
 	});
 }
 
-function initSingleDetailsWellboreTrajectoryCharts(result,divId){
+function initSingleDetailsWellboreTrajectoryCharts2(result,divId){
 	var data = [];
 	var zMaxValue=0;
 	var zMin=null,zMax=null,xMin=null,xMax=null,yMin=null,yMax=null;
@@ -2038,6 +2094,134 @@ function initSingleDetailsWellboreTrajectoryCharts(result,divId){
 	myChart.clear();
     myChart.setOption(option);
 
+};
+
+function initSingleDetailsWellboreTrajectoryCharts(result,divId){
+	var data = [];
+	var yMaxValue=0;
+	var zMin=null,zMax=null,xMin=null,xMax=null,yMin=null,yMax=null;
+	
+	var wellName=result.wellName;
+	var wellboreTrajectoryX=result.wellboreTrajectoryX.split(",");
+	var wellboreTrajectoryY=result.wellboreTrajectoryZ.split(",");
+	var wellboreTrajectoryZ=result.wellboreTrajectoryY.split(",");
+	
+	var reservoirDepth=result.reservoirDepth;
+	
+	if(result.wellboreTrajectoryX!=""&&result.wellboreTrajectoryX!="null"&&result.wellboreTrajectoryX!=null){
+		for(var i=0;i<wellboreTrajectoryX.length;i++){
+			data.push([parseFloat(wellboreTrajectoryX[i]),parseFloat(wellboreTrajectoryY[i]),parseFloat(wellboreTrajectoryZ[i])]);
+			yMaxValue=parseFloat(wellboreTrajectoryY[i]);
+		}
+	}else{
+		data.push([0,0,0]);
+		data.push([0,parseFloat(reservoirDepth),0]);
+		yMaxValue=parseFloat(reservoirDepth);
+	}
+	
+	if(yMaxValue!=0 && yMaxValue!=undefined){
+		yMax=Math.ceil(yMaxValue/100)*100;
+		xMin=zMin=0-yMax/2;
+		xMax=zMax=yMax/2;
+		yMin=0;
+	}
+	
+	var chart = new Highcharts.Chart({
+		chart: {
+			renderTo: divId,
+//			margin: 100,
+			type: 'scatter',
+			options3d: {
+				enabled: true,
+				alpha: 10,
+				beta: 10,
+				depth: 250,
+				viewDistance: 100,//视图距离，它对于计算角度影响在柱图和散列图非常重要。此值不能用于 3D 的饼图 默认是：100
+				frame: {
+					bottom: { size: 1, color: 'rgba(0,0,0,1)' },
+					back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+					side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+				}
+			}
+		},
+		credits : {
+			enabled : false
+		},
+		title: {
+			text: '井身轨迹'
+		},
+		subtitle: {
+			text: wellName
+		},
+		plotOptions: {
+			scatter: {
+				width: 10,
+				height: 10,
+				depth: 10
+			}
+		},
+		yAxis: {
+			min: yMin,
+			max: yMax,
+			reversed:true,
+			title: null
+		},
+		xAxis: {
+			min: xMin,
+			max: xMax,
+			gridLineWidth: 1
+		},
+		zAxis: {
+			min: zMin,
+			max: zMax
+		},
+		legend: {
+			enabled: false
+		},
+		exporting: {
+            enabled: true,
+            filename: '井身轨迹-'+wellName,
+            url: context + '/exportHighcharsPicController/export'
+        },
+		series: [{
+			name: '井身轨迹',
+			colorByPoint: false,
+			color: '#0000FF',
+			lineWidth: 3,
+			marker:{
+				enabled: true,
+				radius: 2
+			},
+			data:data
+		}]
+	});
+	// Add mouse events for rotation
+	$(chart.container).bind('mousedown.hc touchstart.hc', function (e) {
+		e = chart.pointer.normalize(e);
+		var posX = e.pageX,
+			posY = e.pageY,
+			alpha = chart.options.chart.options3d.alpha,
+			beta = chart.options.chart.options3d.beta,
+			newAlpha,
+			newBeta,
+			sensitivity = 5; // lower is more sensitive
+		$(document).bind({
+			'mousemove.hc touchdrag.hc': function (e) {
+				// Run beta
+				newBeta = beta + (posX - e.pageX) / sensitivity;
+				newBeta = Math.min(100, Math.max(-100, newBeta));
+				chart.options.chart.options3d.beta = newBeta;
+				// Run alpha
+				newAlpha = alpha + (e.pageY - posY) / sensitivity;
+				newAlpha = Math.min(100, Math.max(-100, newAlpha));
+				chart.options.chart.options3d.alpha = newAlpha;
+				chart.redraw(false);
+			},
+			'mouseup touchend': function () {
+				$(document).unbind('.hc');
+			}
+		});
+	});
 };
 
 var FSDiagramAnalysisRealtimeRefreshTask = {

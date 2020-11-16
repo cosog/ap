@@ -1554,8 +1554,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
 			item=itemCode+","+itemCode+"uplimit,"+itemCode+"downlimit,"+itemCode+"Zero ";
 			tableName="viw_rpc_discrete_hist";
-		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
-				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
+		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)
+//				||"tubingpressure".equalsIgnoreCase(itemCode)||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)||"totalKVAH".equalsIgnoreCase(itemCode)
 				||"todayKWattH".equalsIgnoreCase(itemCode)||"todayKVarH".equalsIgnoreCase(itemCode)||"todayKVAH".equalsIgnoreCase(itemCode)
 				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
@@ -1577,6 +1577,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else if("wattRatio".equalsIgnoreCase(itemCode)){
 			item="downStrokeWattMax,upStrokeWattMax ";
 			tableName="viw_rpc_diagram_hist";
+		}else if("tubingPressure".equalsIgnoreCase(itemCode)||"casingPressure".equalsIgnoreCase(itemCode)||"wellheadFluidTemperature".equalsIgnoreCase(itemCode)
+				||"watercut".equalsIgnoreCase(itemCode)||"watercut_w".equalsIgnoreCase(itemCode)){
+			tableName="viw_rpc_productiondata_hist";
 		}else{
 			tableName="viw_rpc_diagram_hist";
 		}

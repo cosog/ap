@@ -522,35 +522,35 @@ public class EquipmentDriverServerTast {
 //		type = new TypeToken<RTUDriveConfig>() {}.getType();
 //		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
 //		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
-		
-		//添加蚌埠日月驱动配置
+//		
+//		//添加蚌埠日月驱动配置
 //		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
 //		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 //		type = new TypeToken<RTUDriveConfig>() {}.getType();
 //		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
 //		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
-		
+//		
 //		//添加中科奥维驱动配置
 //		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
 //		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 //		type = new TypeToken<RTUDriveConfig>() {}.getType();
 //		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
 //		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
-		
+//		
 //		//添加A11驱动配置
 //		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
 //		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 //		type = new TypeToken<RTUDriveConfig>() {}.getType();
 //		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
 //		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
-		
+//		
 //		//添加四化驱动配置
 //		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
 //		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 //		type = new TypeToken<RTUDriveConfig>() {}.getType();
 //		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
 //		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
-		
+//		
 //		//添加MQTT驱动配置
 //		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","data/");
 //		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
@@ -558,7 +558,7 @@ public class EquipmentDriverServerTast {
 //		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
 //		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
 		
-//		//添加Kafka
+		//添加Kafka
 		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
@@ -677,7 +677,7 @@ public class EquipmentDriverServerTast {
 						acquisitionUnitData.setFSDiagramSetPointCount(1);
 					else if("FSDiagramPointCount".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setFSDiagramPointCount(1);
-					else if("AcqTime".equalsIgnoreCase(itemRs.getString(1)))
+					else if("AcqTime".equalsIgnoreCase(itemRs.getString(1)) || "AcquisitionTime".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setAcqTime(1);
 					else if("SPM".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setSPM(1);

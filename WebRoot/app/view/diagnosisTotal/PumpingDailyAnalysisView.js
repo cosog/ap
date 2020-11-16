@@ -1002,10 +1002,12 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                                 		},{
                                                         	xtype:'textareafield',
                                                         	id:'FSDiagramAnalysisDailyDetailsRightRunRangeTextArea_Id',
-                                                        	grow:true,
+                                                        	grow:false,
                                                         	width:'99.9%',
                                                             height: '45%',
-                                                            readOnly:true
+                                                            readOnly:true,
+                                                            autoScroll: true,
+                                                            scrollable: true
                                                         },{
                                                 			xtype:'label',
                                                 			text:'工况累计:',
@@ -1013,10 +1015,12 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                                 		},{
                                                         	xtype:'textareafield',
                                                         	id:'FSDiagramAnalysisDailyDetailsRightResultCodeTextArea_Id',
-                                                        	grow:true,
+                                                        	grow:false,
                                                         	width:'99.9%',
                                                         	height: '45%',
-                                                            readOnly:true
+                                                            readOnly:true,
+                                                            autoScroll: true,
+                                                            scrollable: true
                                                         }]
                                                 	}
                                                 ]

@@ -359,6 +359,12 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "totalKVAH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
         			break;
+    			case "waterCut_W".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        			break;
     			case "tubingPressure".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
         			break;

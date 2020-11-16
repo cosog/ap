@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.socket.TextMessage;
 
 import com.gao.controller.base.BaseController;
 import com.gao.model.calculate.PCPCalculateRequestData;
@@ -60,6 +62,7 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.graphicalupload.GraphicalUploadService;
 import com.gao.tast.KafkaServerTast;
 import com.gao.tast.KafkaServerTast.AggrOnline2Kafka;
+import com.gao.tast.KafkaServerTast.AggrRunStatus2Kafka;
 import com.gao.tast.KafkaServerTast.KafkaUpData;
 import com.gao.tast.KafkaServerTast.KafkaUpRawData;
 import com.gao.utils.Config;
@@ -70,6 +73,7 @@ import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -104,6 +108,11 @@ public class GraphicalUploadController extends BaseController {
 	private GraphicalUploadService<?> raphicalUploadService;
 	@Autowired
 	private CommonDataService commonDataService;
+	
+	@Bean//这个注解会从Spring容器拿出Bean
+    public SpringWebSocketHandler infoHandler() {
+        return new SpringWebSocketHandler();
+    }
 	
 	/**<p>描述：显示功图类型列表</p>
 	 * 
@@ -1159,6 +1168,13 @@ public class GraphicalUploadController extends BaseController {
 		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
+		
+		long startTime=0;
+		long endTime=0;
+		long allTime=0;
+		
+		startTime=new Date().getTime();
+		
 		String FSdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
 		ServletInputStream ss = request.getInputStream();
 		String data=convertStreamToString(ss,"utf-8");
@@ -1198,6 +1214,7 @@ public class GraphicalUploadController extends BaseController {
 						+ "}";
 				String timeEffResponse="";
 				timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
+				
 				type = new TypeToken<TimeEffResponseData>() {}.getType();
 				timeEffResponseData=gson.fromJson(timeEffResponse, type);
 				
@@ -1268,6 +1285,7 @@ public class GraphicalUploadController extends BaseController {
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
 						+ "t.signal="+kafkaUpData.getSignal()+","
 						+ "t.deviceVer='"+kafkaUpData.getVer()+"',"
+						+ "t.interval="+kafkaUpData.getTransferIntervel()+","
 						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)+","
 						+ "t.workingconditioncode="+kafkaUpData.getResultCode()+","
 						+ "t.FrequencyRunValue="+kafkaUpData.getFreq()+","
@@ -1340,9 +1358,15 @@ public class GraphicalUploadController extends BaseController {
 					totalUrl+="&wellId="+kafkaUpData.getWellId();
 					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 				}
+				
+				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 			}
 			
 		}
+		endTime=new Date().getTime();
+		allTime=endTime-startTime;
+		System.out.println("kafka up data单条处理时间："+allTime+"毫秒");
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -1354,7 +1378,7 @@ public class GraphicalUploadController extends BaseController {
 	}
 	
 	@RequestMapping("/saveKafkaUpRawData")
-	public String saveKafkaUpRawData() throws Exception {
+	public String SaveKafkaUpRawData() throws Exception {
 		Gson gson=new Gson();
 		
 		ServletInputStream ss = request.getInputStream();
@@ -1363,6 +1387,8 @@ public class GraphicalUploadController extends BaseController {
 		KafkaUpRawData kafkaUpRawData=gson.fromJson(data, type);
 		if(kafkaUpRawData!=null){
 			raphicalUploadService.saveKafkaUpRawData(kafkaUpRawData);
+			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+			infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 		}
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -1375,7 +1401,7 @@ public class GraphicalUploadController extends BaseController {
 	}
 	
 	@RequestMapping("/saveKafkaUpAggrOnlineData")
-	public String saveKafkaUpAggrOnlineData() throws Exception {
+	public String SaveKafkaUpAggrOnlineData() throws Exception {
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		Gson gson=new Gson();
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
@@ -1443,6 +1469,90 @@ public class GraphicalUploadController extends BaseController {
 				if(StringManagerUtils.isNotNull(updateDailyData)){
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
 				}
+				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+			}
+			
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveKafkaUpAggrRunStatusData")
+	public String SaveKafkaUpAggrRunStatusData() throws Exception {
+		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		Gson gson=new Gson();
+		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
+		ServletInputStream ss = request.getInputStream();
+		String data=convertStreamToString(ss,"utf-8");
+		java.lang.reflect.Type type = new TypeToken<AggrRunStatus2Kafka>() {}.getType();
+		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(data, type);
+		if(aggrRunStatus2Kafka!=null){
+			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange"
+					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
+					+ " where t2.wellId=t.id and t.driverAddr='"+aggrRunStatus2Kafka.getKey()+"'";
+			List list = this.commonDataService.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				aggrRunStatus2Kafka.setWellName(obj[0]+"");
+				//进行时率计算
+				TimeEffResponseData timeEffResponseData=null;
+				String tiemEffRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+aggrRunStatus2Kafka.getWellName()+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+					tiemEffRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"RunStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"RunEfficiency\": {"
+							+ "\"Efficiency\": "+obj[3]+","
+							+ "\"Time\": "+obj[2]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[5]+"")+""
+							+ "}"
+							+ "},";
+				}	
+				tiemEffRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+currentTime+"\","
+						+ "\"RunStatus\":"+aggrRunStatus2Kafka.getRunStatus()+""
+						+ "}"
+						+ "}";
+				String timeEffResponse="";
+				timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
+				type = new TypeToken<TimeEffResponseData>() {}.getType();
+				timeEffResponseData=gson.fromJson(timeEffResponse, type);
+				
+				//更新数据
+				String updateDailyData="";
+				String updateDiscreteData="update tbl_rpc_discrete_latest t set  "
+						+ " t.commStatus=1,"
+						+ " t.runStatus="+(aggrRunStatus2Kafka.getRunStatus()?1:0)+","
+						+ " t.interval="+aggrRunStatus2Kafka.getTransferIntervel()+","
+						+ " t.signal="+aggrRunStatus2Kafka.getSignal()+","
+						+ " t.deviceVer='"+aggrRunStatus2Kafka.getVer()+"',"
+						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
+						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
+					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
+						
+					}
+				}
+				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
+				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(StringManagerUtils.isNotNull(updateDailyData)){
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
+				}
+				
+				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 			}
 			
 		}

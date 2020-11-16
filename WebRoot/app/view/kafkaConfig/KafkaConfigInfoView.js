@@ -127,6 +127,11 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
                 handler: function (v, o) {
                 	producerMsg();
                 }
+            }, {
+                id: 'KafkaConfigWellListSelectRow_Id',//功图最新采集时间
+                xtype: 'textfield',
+                value: 0,
+                hidden: true
             }],
     		items: [{
                 layout: "border",
@@ -228,11 +233,10 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     				var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
     				var baseRoot = localhostPaht+projectName;
     				var baseUrl=baseRoot.replace("https","ws").replace("http","ws");
-//    				alert(baseRoot);
-    				
+    				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
     				if ('WebSocket' in window) {
 //    				    websocket = new WebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
-    					websocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
+    					websocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
     					websocket.debug = true;
     					
     					websocket.reconnectInterval = 1000;
@@ -249,10 +253,10 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     					
     				}
     				else if ('MozWebSocket' in window) {
-    				    websocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
+    				    websocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
     				}
     				else {
-    				    websocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code=kafkaConfig");
+    				    websocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
     				}
     				websocket.onopen = onOpen;
     				websocket.onmessage = onMessage;
@@ -267,7 +271,7 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
 });
 
 function onOpen(openEvt) {
-    alert(openEvt.Data);
+//    alert(openEvt.Data);
 }
 
 function onMessage(evt) {
@@ -278,21 +282,28 @@ function onMessage(evt) {
 //		Ext.getCmp("KafkaConfigDataTextArea_Id").setValue("");
 		
 		var data=evt.data;
-		var dataArr=data.split("##");
-		var type=dataArr[0];
-		var deviceId=dataArr[1];
-		var jsonData=dataArr[2];
-		var kafkaConfigGridPanel=Ext.getCmp("kafkaConfigGridPanel_Id");
-		var kafkaConfigOperationGridPanel=Ext.getCmp("kafkaConfigOperationGridPanel_Id");
-		if(isNotVal(kafkaConfigGridPanel) && isNotVal(kafkaConfigOperationGridPanel)
-				&& kafkaConfigGridPanel.getSelectionModel().getSelection().length>0
-				&& kafkaConfigOperationGridPanel.getSelectionModel().getSelection().length>0){
-			var wellRecord = kafkaConfigGridPanel.getSelectionModel().getSelection();
-			var operationRecord = kafkaConfigOperationGridPanel.getSelectionModel().getSelection();
-			var selectedDeviceId=wellRecord[0].data.deviceId;
-			var selectedOpType=operationRecord[0].data.id;
-			if(type==selectedOpType && deviceId==selectedDeviceId){
-				Ext.getCmp("KafkaConfigDataTextArea_Id").setValue(jsonData);
+		if(data.toUpperCase()=='dataFresh'.toUpperCase()){//数据有刷新，更新界面
+			var kafkaConfigGridPanel=Ext.getCmp("kafkaConfigGridPanel_Id");
+			if(isNotVal(kafkaConfigGridPanel)){
+				kafkaConfigGridPanel.getStore().load();
+			}
+		}else{
+			var dataArr=data.split("##");
+			var type=dataArr[0];
+			var deviceId=dataArr[1];
+			var jsonData=dataArr[2];
+			var kafkaConfigGridPanel=Ext.getCmp("kafkaConfigGridPanel_Id");
+			var kafkaConfigOperationGridPanel=Ext.getCmp("kafkaConfigOperationGridPanel_Id");
+			if(isNotVal(kafkaConfigGridPanel) && isNotVal(kafkaConfigOperationGridPanel)
+					&& kafkaConfigGridPanel.getSelectionModel().getSelection().length>0
+					&& kafkaConfigOperationGridPanel.getSelectionModel().getSelection().length>0){
+				var wellRecord = kafkaConfigGridPanel.getSelectionModel().getSelection();
+				var operationRecord = kafkaConfigOperationGridPanel.getSelectionModel().getSelection();
+				var selectedDeviceId=wellRecord[0].data.deviceId;
+				var selectedOpType=operationRecord[0].data.id;
+				if(type==selectedOpType && deviceId==selectedDeviceId){
+					Ext.getCmp("KafkaConfigDataTextArea_Id").setValue(jsonData);
+				}
 			}
 		}
 	}
@@ -401,3 +412,43 @@ function producerMsg(){
         });
 	}
 }
+
+function createKafkaConfigWellListDataColumn(columnInfo) {
+    var myArr = columnInfo;
+
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        if (attr.dataIndex == 'id') {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
+        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+        }else if (attr.dataIndex.toUpperCase()=='deviceId'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+        } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+        } else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
+};

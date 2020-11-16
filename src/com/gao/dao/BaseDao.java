@@ -3166,9 +3166,9 @@ public class BaseDao extends HibernateDaoSupport {
 			//井深切片
 			cs.setClob(99,wellboreSliceClob);
 			
-			cs.setString(100,"");
-			cs.setString(101,"");
-			cs.setString(102,"");
+			cs.setInt(100,kafkaUpData.getSignal());
+			cs.setInt(101,kafkaUpData.getTransferIntervel());
+			cs.setString(102,kafkaUpData.getVer());
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -3208,18 +3208,19 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		try {
 			cs = conn.prepareCall("{call prd_save_a9RawData("
-					+ "?,?,?,?,"
+					+ "?,?,?,?,?,"
 					+ "?,?,?,?,?)}");
 			cs.setString(1,kafkaUpRawData.getKey());
 			cs.setString(2,kafkaUpRawData.getAcqTime());
 			cs.setString(3,kafkaUpRawData.getVer());
 			cs.setInt(4,kafkaUpRawData.getSignal());
+			cs.setInt(5,kafkaUpRawData.getTransferIntervel());
 			
-			cs.setClob(5,diagramClob_Interval);
-			cs.setClob(6,diagramClob_A);
-			cs.setClob(7,diagramClob_F);
-			cs.setClob(8,diagramClob_Watt);
-			cs.setClob(9,diagramClob_I);
+			cs.setClob(6,diagramClob_Interval);
+			cs.setClob(7,diagramClob_A);
+			cs.setClob(8,diagramClob_F);
+			cs.setClob(9,diagramClob_Watt);
+			cs.setClob(10,diagramClob_I);
 			
 			cs.executeUpdate();
 		} catch (SQLException e) {

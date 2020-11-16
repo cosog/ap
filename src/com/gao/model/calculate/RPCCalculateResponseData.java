@@ -89,19 +89,21 @@ public class RPCCalculateResponseData {
 			StringBuffer result=new StringBuffer();
 			if(this!=null&&this.getCalculationStatus().getResultStatus()==1){
 				result.append(this.getRodString().CNT+","+this.getRodString().getLengthAll()+","+this.getRodString().getWeightAll()+","+this.getRodString().getBuoyancyForceAll());
-				for(int i=0;i<this.getRodString().getEveryRod().size();i++){
-					result.append(";");
-					if(this.getFESDiagram().getFMax()!=null&&this.getFESDiagram().getFMax().size()>0){
-						result.append(this.getFESDiagram().getFMax().get(i)+",");
-						result.append(this.getFESDiagram().getFMin().get(i)+",");
-					}else{
-						result.append(0+",");
-						result.append(0+",");
+				if(this.getRodString().getEveryRod()!=null){
+					for(int i=0;i<this.getRodString().getEveryRod().size();i++){
+						result.append(";");
+						if(this.getFESDiagram().getFMax()!=null&&this.getFESDiagram().getFMax().size()>0){
+							result.append(this.getFESDiagram().getFMax().get(i)+",");
+							result.append(this.getFESDiagram().getFMin().get(i)+",");
+						}else{
+							result.append(0+",");
+							result.append(0+",");
+						}
+						result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
+						result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
+						result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
+						result.append(this.getRodString().getEveryRod().get(i).getStressRatio());
 					}
-					result.append(this.getRodString().getEveryRod().get(i).getMaxStress()+",");
-					result.append(this.getRodString().getEveryRod().get(i).getMinStress()+",");
-					result.append(this.getRodString().getEveryRod().get(i).getAllowableStress()+",");
-					result.append(this.getRodString().getEveryRod().get(i).getStressRatio());
 				}
 			}
 			return result.toString();

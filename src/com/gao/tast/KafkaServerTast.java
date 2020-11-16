@@ -18,6 +18,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.Headers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -123,6 +124,8 @@ public class KafkaServerTast {
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
 			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
 			String saveAggrOnlineDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrOnlineData";
+			String saveAggrRunStatusDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrRunStatusData";
+			
 			if("Up-Data".equalsIgnoreCase(record.topic())){
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
@@ -140,13 +143,23 @@ public class KafkaServerTast {
 							String topic="Down-"+record.key()+"-RTC";
 							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
-						if(StringManagerUtils.isNotNull(kafkaUpData.getAcqTime())){
-							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpData.getAcqTime()).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
-							kafkaUpData.setKey(record.key());
-		        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
-						}else{
-							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
+						
+						if(!StringManagerUtils.isNotNull(kafkaUpData.getAcqTime())){
+							kafkaUpData.setAcqTime(currentTime);
 						}
+						
+						long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpData.getAcqTime()).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
+						kafkaUpData.setKey(record.key());
+	        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
+						
+						
+//						if(StringManagerUtils.isNotNull(kafkaUpData.getAcqTime())){
+//							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpData.getAcqTime()).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
+//							kafkaUpData.setKey(record.key());
+//		        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
+//						}else{
+//							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
+//						}
 						
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -187,18 +200,18 @@ public class KafkaServerTast {
         		}
         	}else if("Up-Config".equalsIgnoreCase(record.topic())){
         		String sendData="1##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
-        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
         	}else if("Up-Model".equalsIgnoreCase(record.topic())){
         		String sendData="7##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
-        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
         	}else if("Up-Freq".equalsIgnoreCase(record.topic())){
         		String sendData="5##"+record.key()+"##"+record.value();
-        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
         	}else if("Up-RTC".equalsIgnoreCase(record.topic())){
         		String sendData="6##"+record.key()+"##"+record.value();
-        		infoHandler().sendMessageToUserByModule("kafkaConfig", new TextMessage(sendData));
+        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
         	}else if("Up-Online".equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
-        		//原始数据
+        		//上线数据
         		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
         		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(record.value(), type);
         		if(aggrOnline2Kafka!=null){
@@ -222,8 +235,29 @@ public class KafkaServerTast {
 					}
         		}
         	}else if("Up-RunStatus".equalsIgnoreCase(record.topic())){//运行状态发生改变，设备上报
-        		
-        	
+        		//运行状态数据
+        		java.lang.reflect.Type type = new TypeToken<AggrRunStatus2Kafka>() {}.getType();
+        		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(record.value(), type);
+        		if(aggrRunStatus2Kafka!=null){
+        			try {
+        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            			//如果时间差达到半小时，校正时间
+            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrRunStatus2Kafka.getSysTime()).getTime()/1000);
+						if(diffTime>60*30){
+							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrRunStatus2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
+							//下行时间
+							String topic="Down-"+record.key()+"-RTC";
+							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+						}
+						aggrRunStatus2Kafka.setKey(record.key());
+	        			StringManagerUtils.sendPostMethod(saveAggrRunStatusDataUrl, gson.toJson(aggrRunStatus2Kafka),"utf-8");
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println(record.value());
+					}
+        		}
         	}
 		}
 
@@ -247,6 +281,8 @@ public class KafkaServerTast {
 		private Integer Signal;
 	    
 	    private String Key;
+	    
+	    private int TransferIntervel;
 	    
 	    private Integer wellId;
 	    
@@ -653,6 +689,12 @@ public class KafkaServerTast {
 		public void setSignal(Integer signal) {
 			Signal = signal;
 		}
+		public int getTransferIntervel() {
+			return TransferIntervel;
+		}
+		public void setTransferIntervel(int transferIntervel) {
+			TransferIntervel = transferIntervel;
+		}
 	}
 	public static class KafkaUpRawData
 	{
@@ -665,6 +707,8 @@ public class KafkaServerTast {
 		private Integer Signal;
 	    
 	    private String Key;
+	    
+	    private int TransferIntervel;
 	    
 	    private List<Float> Interval;
 	    
@@ -755,6 +799,14 @@ public class KafkaServerTast {
 		public void setI(List<Float> i) {
 			I = i;
 		}
+
+		public int getTransferIntervel() {
+			return TransferIntervel;
+		}
+
+		public void setTransferIntervel(int transferIntervel) {
+			TransferIntervel = transferIntervel;
+		}
 	}
 	
 	public static class AggrOnline2Kafka
@@ -802,6 +854,66 @@ public class KafkaServerTast {
 	    }
 	    public boolean getCommStatus(){
 	        return this.CommStatus;
+	    }
+		public String getKey() {
+			return Key;
+		}
+		public void setKey(String key) {
+			Key = key;
+		}
+		public String getWellName() {
+			return WellName;
+		}
+		public void setWellName(String wellName) {
+			WellName = wellName;
+		}
+	}
+	
+	public static class AggrRunStatus2Kafka
+	{
+	    private String Ver;
+
+	    private String SysTime;
+	    
+	    private String Key;
+	    
+	    private String WellName;
+
+	    private int Signal;
+
+	    private int TransferIntervel;
+
+	    private boolean RunStatus;
+
+	    public void setVer(String Ver){
+	        this.Ver = Ver;
+	    }
+	    public String getVer(){
+	        return this.Ver;
+	    }
+	    public void setSysTime(String SysTime){
+	        this.SysTime = SysTime;
+	    }
+	    public String getSysTime(){
+	        return this.SysTime;
+	    }
+	    public void setSignal(int Signal){
+	        this.Signal = Signal;
+	    }
+	    public int getSignal(){
+	        return this.Signal;
+	    }
+	    public void setTransferIntervel(int TransferIntervel){
+	        this.TransferIntervel = TransferIntervel;
+	    }
+	    public int getTransferIntervel(){
+	        return this.TransferIntervel;
+	    }
+	    public void setRunStatus(boolean RunStatus){
+	        this.RunStatus = RunStatus;
+	    }
+	    public boolean getRunStatus(){
+	        return this.RunStatus;
 	    }
 		public String getKey() {
 			return Key;

@@ -24,7 +24,7 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
             var arrColumns = get_rawData.columns;
             var kafkaConfigGridPanel = Ext.getCmp("kafkaConfigGridPanel_Id");
             if (!isNotVal(kafkaConfigGridPanel)) {
-                var column = createDiagStatisticsColumn(arrColumns)
+                var column = createKafkaConfigWellListDataColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(column);
                 kafkaConfigGridPanel = Ext.create('Ext.grid.Panel', {
                     id: "kafkaConfigGridPanel_Id",
@@ -56,13 +56,23 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigWellListStore', {
                             		}
                         		}
                     		}
-                    	}
+                    	},
+                    	select: function(grid, record, index, eOpts) {
+                        	Ext.getCmp('KafkaConfigWellListSelectRow_Id').setValue(index);
+                        }
                     }
                 });
                 var SurfaceCardTypeListPanel = Ext.getCmp("KafkaConfigWellListPanel_Id");
                 SurfaceCardTypeListPanel.add(kafkaConfigGridPanel);
             }
-            kafkaConfigGridPanel.getSelectionModel().select(0,true);//选中第一行
+            if(get_rawData.totalCount>0){
+            	var kafkaConfigGridPanel = Ext.getCmp("kafkaConfigGridPanel_Id");
+                if (isNotVal(kafkaConfigGridPanel)) {
+                	kafkaConfigGridPanel.getSelectionModel().deselectAll(true);
+                	var KafkaConfigWellListSelectRow=Ext.getCmp('KafkaConfigWellListSelectRow_Id').getValue();
+                	kafkaConfigGridPanel.getSelectionModel().select(parseInt(KafkaConfigWellListSelectRow), true);
+                }
+            }
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

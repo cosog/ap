@@ -34,7 +34,7 @@ public class CalculateDataManagerTast {
     private static ResultSet rs = null;  
 	
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
@@ -50,7 +50,7 @@ public class CalculateDataManagerTast {
 	/**
 	 * 汇总计算
 	 * */
-	@Scheduled(cron = "0 0 1/24 * * ?")
+//	@Scheduled(cron = "0 0 1/24 * * ?")
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 //		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
@@ -69,7 +69,7 @@ public class CalculateDataManagerTast {
 	}
 	
 	//离散数据实时汇总
-	@Scheduled(cron = "0 30 0/1 * * ?")
+//	@Scheduled(cron = "0 30 0/1 * * ?")
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
 		@SuppressWarnings("static-access")
@@ -84,7 +84,8 @@ public class CalculateDataManagerTast {
 	
 	//订阅发布模式通信计算
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(cron = "0 0/5 * * * ?")
+//	@Scheduled(cron = "0 0/1 * * * ?")
+//	@Scheduled(cron = "0/30 * * * * ?")
 	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/pubSubModelCommCalculation";
 		String result="";

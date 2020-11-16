@@ -70,9 +70,9 @@ Driver									 驱动名称
 
 ### DI
 
-Num									   端子号，最小值为1
+Num									   端子号，最小值为1，缺省端子1：抽油机运行状态
 
-Driver	                                 驱动名称
+Driver	                                 驱动名称，rpc_run_status：抽油机运行状态
 
 ### DO
 

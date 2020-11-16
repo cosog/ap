@@ -22,9 +22,11 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.socket.TextMessage;
 
 import com.gao.controller.base.BaseController;
 import com.gao.model.calculate.PCPCalculateRequestData;
@@ -48,6 +50,7 @@ import com.gao.utils.Constants;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -70,7 +73,10 @@ public class CalculateDataController extends BaseController{
 	@Autowired
 	private CommonDataService commonDataService;
 	
-		
+	@Bean//这个注解会从Spring容器拿出Bean
+    public SpringWebSocketHandler infoHandler() {
+        return new SpringWebSocketHandler();
+    }	
 	
 	@RequestMapping("/getBatchCalculateTime")
 	public String getBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
@@ -530,11 +536,18 @@ public class CalculateDataController extends BaseController{
 				if(!(obj[4]+"").equals(obj[2]+"")){
 					updateSql+=",t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 				}
+				//如果跨天 重置运行状态
+				if(!StringManagerUtils.isNotNull(obj[3]+"") || !(obj[3]+"").split(" ")[0].equals(StringManagerUtils.getCurrentTime()) ){
+					updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
+				}
+				
 				updateSql+= " where t.wellid="+obj[0];
 				int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
 			}
 			
 		}
+		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+		infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

@@ -1,3 +1,4 @@
+var a9RawDataWebsocket = null;
 Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.a9RawDataInfoView',
@@ -172,6 +173,11 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                 	  Ext.getCmp("A9RawDataDeviceCom_Id").setValue('');
                 	  Ext.getCmp("A9RawDataGridPanel_Id").getStore().loadPage(1);
                   }
+                }, {
+                    id: 'A9RawDataListSelectRow_Id',//功图最新采集时间
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
                 }],
                 items: [{
                     region: 'center',
@@ -272,12 +278,91 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
             	   }
                }]
                 }]
-    		}]
+    		}],
+    		listeners: {
+    			beforeclose: function ( panel, eOpts) {
+    				a9RawDataWebsocketClose(a9RawDataWebsocket);
+    			},
+    			afterrender: function ( panel, eOpts) {
+    				var curWwwPath=window.document.location.href;
+    				var pathName=window.document.location.pathname;
+    				var pos=curWwwPath.indexOf(pathName);
+    				var localhostPaht=curWwwPath.substring(0,pos);
+    				var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+    				var baseRoot = localhostPaht+projectName;
+    				var baseUrl=baseRoot.replace("https","ws").replace("http","ws");
+    				
+    				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
+    				if ('WebSocket' in window) {
+    					a9RawDataWebsocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);//kafkaConfig_A9RawDataGridPanel
+    					a9RawDataWebsocket.debug = true;
+    					
+    					a9RawDataWebsocket.reconnectInterval = 1000;
+    					a9RawDataWebsocket.timeoutInterval = 2000;
+    					
+    					a9RawDataWebsocket.maxReconnectInterval = 30000;
+    					
+    					a9RawDataWebsocket.reconnectDecay=1.5;
+    					
+    					a9RawDataWebsocket.automaticOpen = true;
+    					
+//    					a9RawDataWebsocket.maxReconnectAttempts = 5;
+    					
+    					
+    				}
+    				else if ('MozWebSocket' in window) {
+    					a9RawDataWebsocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+    				}
+    				else {
+    					a9RawDataWebsocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
+    				}
+    				a9RawDataWebsocket.onopen = a9RawDataWebsocketOnOpen;
+    				a9RawDataWebsocket.onmessage = a9RawDataWebsocketOnMessage;
+    				a9RawDataWebsocket.onerror = a9RawDataWebsocketOnError;
+    				a9RawDataWebsocket.onclose = a9RawDataWebsocketOnClose;
+    			}
+    		}
         });
         this.callParent(arguments);
 
     }
 });
+
+
+function a9RawDataWebsocketOnOpen(openEvt) {
+//    alert(openEvt.Data);
+}
+
+function a9RawDataWebsocketOnMessage(evt) {
+	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
+	var data=evt.data;
+	if (activeId == "kafkaConfig_A9RawDataGridPanel") {
+		if(data.toUpperCase()=='dataFresh'.toUpperCase()){//数据有刷新，更新界面
+			var A9RawDataGridPanel=Ext.getCmp("A9RawDataGridPanel_Id");
+			if(isNotVal(A9RawDataGridPanel)){
+				A9RawDataGridPanel.getStore().load();
+			}
+		}
+		
+	}
+}
+function a9RawDataWebsocketOnOpen() {
+//	alert("WebSocket连接成功");
+}
+function a9RawDataWebsocketOnError() {
+//	alert("WebSocket连接发生错误");
+}
+function a9RawDataWebsocketOnClose() {
+//	alert("WebSocket连接关闭");
+}
+
+function a9RawDataWebsocketClose(websocket) {
+	if(websocket!=null){
+		websocket.close();
+	}
+}
+
+
 
 function createA9RawDataColumn(columnInfo) {
     var myArr = columnInfo;
@@ -300,6 +385,8 @@ function createA9RawDataColumn(columnInfo) {
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
         if (attr.dataIndex == 'id') {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:true";
+        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
         }else if (attr.dataIndex.toUpperCase()=='deviceId'.toUpperCase()) {
             myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
         } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {

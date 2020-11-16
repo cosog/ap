@@ -72,6 +72,9 @@ Ext.define('AP.store.kafkaConfig.A9RowDataListStore', {
                             	Ext.getCmp('A9RawDataDeviceCom_Id').setRawValue(record.data.deviceId);
                             	Ext.getCmp('A9RawDataGridPanel_Id').getStore().load();
                     		}
+                        },
+                    	select: function(grid, record, index, eOpts) {
+                        	Ext.getCmp('A9RawDataListSelectRow_Id').setValue(index);
                         }
                     }
                 });
@@ -82,8 +85,17 @@ Ext.define('AP.store.kafkaConfig.A9RowDataListStore', {
             	Ext.getCmp("A9RawDataStartDate_Id").setValue(get_rawData.start_date==undefined?get_rawData.startDate:get_rawData.start_date);
             }
             if(get_rawData.totalCount>0){
-            	Ext.getCmp("A9RawDataGridPanel_Id").getSelectionModel().deselectAll(true);
-            	Ext.getCmp("A9RawDataGridPanel_Id").getSelectionModel().select(0, true);
+            	var A9RawDataGridPanel = Ext.getCmp("A9RawDataGridPanel_Id");
+                if (isNotVal(A9RawDataGridPanel)) {
+                	A9RawDataGridPanel.getSelectionModel().deselectAll(true);
+                	var A9RawDataListSelectRow=Ext.getCmp('A9RawDataListSelectRow_Id').getValue();
+                	var selectedDiveceId = Ext.getCmp('A9RawDataDeviceCom_Id').getValue();
+                	if(selectedDiveceId==null||selectedDiveceId==""){
+                		A9RawDataGridPanel.getSelectionModel().select(parseInt(A9RawDataListSelectRow), true);
+                	}else{
+                		A9RawDataGridPanel.getSelectionModel().select(0, true);
+                	}
+                }
             }else{
             	$("#A9RwaDataCurveChartDiv1_Id").html('');
             	$("#A9RwaDataCurveChartDiv2_Id").html('');
@@ -91,8 +103,6 @@ Ext.define('AP.store.kafkaConfig.A9RowDataListStore', {
             	$("#A9RwaDataCurveChartDiv4_Id").html('');
             	$("#A9RwaDataCurveChartDiv5_Id").html('');
             }
-            
-            
         },
         beforeload: function (store, options) {
             var deviceId = Ext.getCmp('A9RawDataDeviceCom_Id').getValue();

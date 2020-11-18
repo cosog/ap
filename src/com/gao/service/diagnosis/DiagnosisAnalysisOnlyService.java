@@ -835,6 +835,53 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return dataSbf.toString().replaceAll("null", "");
 	}
 	
+	public String querySingleDetailsDynamicCurveData(int id,String wellName,String selectedWellName) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,prod.waterCut_W,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";;
+		}
+		
+		String sql="select well.wellname,to_char(t.acqtime,'yyyy-mm-dd-hh24:mi:ss') as acqtime,"
+				+ prodCol
+				+ " t.stroke,t.spm,prod.wellheadfluidtemperature,prod.tubingpressure,prod.casingpressure,"
+				+ " prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence "
+				+ " from tbl_wellinformation well,tbl_rpc_productiondata_hist prod,tbl_rpc_diagram_hist t "
+				+ " where t.wellid=well.id and t.productiondataid=prod.id "
+				+ " and t.acqtime>to_date(to_char(sysdate-5,'yyyy-mm-dd'),'yyyy-mm-dd') "
+				+ " and well.wellname='"+wellName+"' "
+				+ " order by t.acqtime";
+		List<?> list=this.findCallSql(sql);
+		
+		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"totalRoot\":[");
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Object[] obj = (Object[]) list.get(i);
+				dynSbf.append("{ \"acqTime\":\"" + obj[1] + "\",");
+				dynSbf.append("\"liquidProduction\":"+obj[2]+",");
+				dynSbf.append("\"oilProduction\":"+obj[3]+",");
+				dynSbf.append("\"waterProduction\":"+obj[4]+",");
+				dynSbf.append("\"waterCut\":"+obj[5]+",");
+				dynSbf.append("\"stroke\":"+obj[6]+",");
+				dynSbf.append("\"spm\":"+obj[7]+",");
+				dynSbf.append("\"wellheadFluidTemperature\":"+obj[8]+",");
+				dynSbf.append("\"tubingPressure\":"+obj[9]+",");
+				dynSbf.append("\"casingPressure\":"+obj[10]+",");
+				dynSbf.append("\"producingFluidLevel\":"+obj[11]+",");
+				dynSbf.append("\"pumpSettingDepth\":"+obj[12]+",");
+				dynSbf.append("\"submergence\":"+obj[13]+"},");
+				
+			}
+		}
+		if(dynSbf.toString().endsWith(",")){
+			dynSbf.deleteCharAt(dynSbf.length() - 1);
+		}
+		dynSbf.append("]}");
+		return dynSbf.toString();
+	}
+	
 	/*
 	 * 查询单井工况诊断的泵功图数据
 	 * */

@@ -227,15 +227,14 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                             margin: '0 0 0 0',
 //                            height: 300,
                             flex: 1,
-                            align:'stretch',
                             layout: 'fit',
                             id: 'A9RwaDataCurvePanel1_Id',
                             html: '<div id="A9RwaDataCurveChartDiv1_Id" style="width:100%;height:100%;"></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if($("#A9RwaDataCurveChartDiv2_Id").highcharts()!=undefined){
-                            			$("#A9RwaDataCurveChartDiv2_Id").highcharts().setSize($("#A9RwaDataCurveChartDiv2_Id").offsetWidth, $("#A9RwaDataCurveChartDiv2_Id").offsetHeight,true);
-                            		}
+                                	if ($("#A9RwaDataCurveChartDiv1_Id").highcharts() != undefined) {
+                                        $("#A9RwaDataCurveChartDiv1_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                    }
                                 }
                             }
                      },{
@@ -243,15 +242,14 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                          margin: '1 0 0 0',
 //                         height: 300,
                          flex: 1,
-                         align:'stretch',
                          layout: 'fit',
                          id: 'A9RwaDataCurvePanel2_Id',
                          html: '<div id="A9RwaDataCurveChartDiv2_Id" style="width:100%;height:100%;"></div>',
                          listeners: {
                              resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            	 if($("#A9RwaDataCurveChartDiv2_Id").highcharts()!=undefined){
-                         			$("#A9RwaDataCurveChartDiv2_Id").highcharts().setSize($("#A9RwaDataCurveChartDiv2_Id").offsetWidth, $("#A9RwaDataCurveChartDiv2_Id").offsetHeight,true);
-                         		}
+                             	if ($("#A9RwaDataCurveChartDiv2_Id").highcharts() != undefined) {
+                                     $("#A9RwaDataCurveChartDiv2_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                 }
                              }
                          }
                     },{
@@ -259,15 +257,14 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                        margin: '1 0 0 0',
 //                       height: 300,
                        flex: 1,
-                       align:'stretch',
                        layout: 'fit',
                        id: 'A9RwaDataCurvePanel3_Id',
                        html: '<div id="A9RwaDataCurveChartDiv3_Id" style="width:100%;height:100%;"></div>',
                        listeners: {
                           resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                        	  if($("#A9RwaDataCurveChartDiv3_Id").highcharts()!=undefined){
-                      			$("#A9RwaDataCurveChartDiv3_Id").highcharts().setSize($("#A9RwaDataCurveChartDiv3_Id").offsetWidth, $("#A9RwaDataCurveChartDiv3_Id").offsetHeight,true);
-                      		}
+                          	if ($("#A9RwaDataCurveChartDiv3_Id").highcharts() != undefined) {
+                                  $("#A9RwaDataCurveChartDiv3_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                              }
                           }
                       }
                    },{
@@ -275,15 +272,14 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                 	   margin: '1 0 0 0',
 //                	   height: 300,
                 	   flex: 1,
-                	   align:'stretch',
                 	   layout: 'fit',
                 	   id: 'A9RwaDataCurvePanel4_Id',
                 	   html: '<div id="A9RwaDataCurveChartDiv4_Id" style="width:100%;height:100%;"></div>',
                 	   listeners: {
                 		   resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                			   if($("#A9RwaDataCurveChartDiv4_Id").highcharts()!=undefined){
-                       			$("#A9RwaDataCurveChartDiv4_Id").highcharts().setSize($("#A9RwaDataCurveChartDiv4_Id").offsetWidth, $("#A9RwaDataCurveChartDiv4_Id").offsetHeight,true);
-                       		}
+                			   if ($("#A9RwaDataCurveChartDiv4_Id").highcharts() != undefined) {
+                				   $("#A9RwaDataCurveChartDiv4_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                			   }
                 		   }
                 	   }
                    },{
@@ -291,15 +287,14 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                 	   margin: '1 0 0 0',
 //                	   height: 300,
                 	   flex: 1,
-                	   align:'stretch',
                 	   layout: 'fit',
                 	   id: 'A9RwaDataCurvePanel5_Id',
                 	   html: '<div id="A9RwaDataCurveChartDiv5_Id" style="width:100%;height:100%;"></div>',
                 	   listeners: {
                 		   resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                			   if($("#A9RwaDataCurveChartDiv5_Id").highcharts()!=undefined){
-                				   $("#A9RwaDataCurveChartDiv5_Id").highcharts().setSize($("#A9RwaDataCurveChartDiv5_Id").offsetWidth, $("#A9RwaDataCurveChartDiv5_Id").offsetHeight,true);
-                       			}
+                			   if ($("#A9RwaDataCurveChartDiv5_Id").highcharts() != undefined) {
+                				   $("#A9RwaDataCurveChartDiv5_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                			   }
                 		   }
                 	   }
                    }]

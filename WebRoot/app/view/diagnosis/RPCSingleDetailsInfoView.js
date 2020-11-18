@@ -890,6 +890,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -905,6 +906,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -929,6 +931,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -943,6 +946,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -967,6 +971,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -981,6 +986,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleWellboreDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1028,6 +1034,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 0',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv1_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1042,6 +1049,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '0 0 0 1',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1066,6 +1074,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '1 0 0 0',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv3_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1080,6 +1089,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '1 0 0 1',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1104,6 +1114,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '1 0 0 0',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1118,6 +1129,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    	margin: '1 0 0 1',
                                         flex: 1,
                                         height:300,
+                                        align:'stretch',
                                         html: '<div id=\"FSDiagramAnalysisSingleSurfaceDetailsDiv6_id\" style="width:100%;height:100%;"></div>',
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1129,6 +1141,39 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	    }]
                             	}
                             ]
+                        },{
+                        	title: '动态曲线',
+                            autoScroll:true,
+                            scrollable: true,
+                            border: false,
+                            id: 'FSDiagramAnalysisSingleDetailsCenterPanel3_Id',
+                            layout: {
+                                type: 'vbox',
+                                pack: 'start',
+                                align: 'stretch'
+                            },
+                            items: [{
+                            	height: 1600,
+                                layout: {
+                                    type: 'vbox',
+                                    pack: 'start',
+                                    align: 'stretch'
+                                },
+                                items: [{
+                                	flex: 1,
+                                	align:'stretch',
+                                    layout: 'fit',
+                                    align: 'stretch',
+                                    html: '<div id="FSDiagramAnalysisSingleDynamicCurveDiv_id" style="width:100%;height:100%;"></div>',
+                                    listeners: {
+                                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                        	if($("#FSDiagramAnalysisSingleDynamicCurveDiv_id").highcharts()!=undefined){
+                                    			$("#FSDiagramAnalysisSingleDynamicCurveDiv_id").highcharts().setSize($("#FSDiagramAnalysisSingleDynamicCurveDiv_id").offsetWidth, $("#FSDiagramAnalysisSingleDynamicCurveDiv_id").offsetHeight,true);
+                                    		}
+                                        }
+                                    }
+                                }]
+                            }]
                         }],
                         listeners: {
                         	tabchange: function (tabPanel, newCard, oldCard,obj) {
@@ -2225,6 +2270,451 @@ function initSingleDetailsWellboreTrajectoryCharts(result,divId){
 				$(document).unbind('.hc');
 			}
 		});
+	});
+};
+
+initRPCDynamicCurveChartFn = function (get_rawData, divId) {
+	var items=get_rawData.totalRoot;
+	var liquidProduction=[];
+	var oilProduction=[];
+	var waterProduction=[];
+	var waterCut=[];
+	var stroke=[];
+	var spm=[];
+	var wellheadFluidTemperature=[];
+	var tubingPressure=[];
+	var casingPressure=[];
+	var producingFluidLevel=[];
+	var pumpSettingDepth=[];
+	var submergence=[];
+	
+	for(var i=0;i<items.length;i++){
+		liquidProduction.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].liquidProduction)
+        ]);
+		oilProduction.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].oilProduction)
+        ]);
+		waterProduction.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].waterProduction)
+        ]);
+		waterCut.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].waterCut)
+        ]);
+		stroke.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].stroke)
+        ]);
+		spm.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].spm)
+        ]);
+		wellheadFluidTemperature.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].wellheadFluidTemperature)
+        ]);
+		tubingPressure.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].tubingPressure)
+        ]);
+		casingPressure.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].casingPressure)
+        ]);
+		producingFluidLevel.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].producingFluidLevel)
+        ]);
+		pumpSettingDepth.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].pumpSettingDepth)
+        ]);
+		submergence.push([
+            Date.parse(items[i].acqTime.replace(/-/g, '/')),
+            parseFloat(items[i].submergence)
+        ]);
+	}
+	
+	Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+	mychart = new Highcharts.StockChart({
+		chart: {
+            renderTo : divId
+        }, 
+        exporting:{    
+            enabled:true,    
+            filename:'class-booking-chart',    
+            url:context + '/exportHighcharsPicController/export'
+       },
+        legend: {
+        	enabled:false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+		rangeSelector: {
+            selected: 1
+        },
+        title: {
+            text: get_rawData.wellName+'井动态曲线'
+        },
+        tooltip:{  
+            // 日期时间格式化  
+            xDateFormat: '%Y-%m-%d %H:%M:%S',
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.2f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions:{
+        	series:{
+        		dataGrouping:{
+        			groupPixelWidth:0.1
+        		}
+        	}
+        },
+        xAxis: {  
+            //tickPixelInterval: 200,//x轴上的间隔  
+        	title:{
+        		text:'时间'
+        	},
+            type: 'datetime', //定义x轴上日期的显示格式  
+            labels: {  
+            formatter: function() {  
+                var vDate=new Date(this.value);
+                //return vDate.getFullYear()+"-"+(vDate.getMonth()+1)+"-"+vDate.getDate()+" "+vDate.getDay()+":"+vDate.getMinutes()+":"+vDate.getSeconds();  
+                return vDate.getFullYear()+"-"+(vDate.getMonth()+1)+"-"+vDate.getDate(); 
+                },  
+            align: 'center'  
+            }
+        },
+        yAxis: [{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '产液量(t/d)',
+                style: {
+                    color: '#000000',
+                    fontWeight: 'bold'
+                }
+            },
+            endOnTick: false,
+//            min:0,
+            height: '7.4%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '产油量(t/d)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '8.4%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '产水量(t/d)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '16.8%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '含水率(%)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '25.2%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '冲程(m)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '33.6%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '冲次(1/min)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '42%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '井口流温(℃)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '50.4%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '油压(MPa)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '58.8%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '套压(MPa)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '67.2%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '动液面(m)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '75.6%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '泵挂(m)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '84%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '沉没度(m)'
+            },
+            endOnTick: false,
+            height: '7.4%',
+            top: '92.4%',
+            offset: 0,
+            lineWidth: 1
+        }],
+        rangeSelector: {  
+        	enabled:false,
+            buttons: [{//定义一组buttons,下标从0开始  
+            type: 'week',  
+            count: 1,  
+            text: '一周'  
+        },{  
+        	type: 'week',  
+            count: 2,  
+            text: '两周'   
+        }, {  
+        	type: 'week',  
+            count: 3,  
+            text: '三周' 
+        }, {  
+            type: 'month',  
+            count: 1,  
+            text: '一月'  
+        },{  
+            type: 'all',  
+            text: '全部'  
+        }],  
+            selected: 4,//表示以上定义button的index,从0开始  
+            inputDateFormat:'%Y-%m-%d'
+        },  
+        navigator:{
+        	enabled:true
+        },
+        scrollbar:{
+        	enabled:true
+        },
+        series: [{
+        		type: 'spline',
+        		name: '产液量(t/d)',
+        		data: liquidProduction,
+        		marker:{
+        			enabled:true,
+        			radius: 3
+        		},
+        		yAxis: 0
+        	},{
+            	type: 'spline',
+            	name: '产油量(t/d)',
+            	data: oilProduction,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 1
+            },{
+            	type: 'spline',
+            	name: '产水量(t/d)',
+            	data: waterProduction,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 2
+            },{
+            	type: 'spline',
+            	name: '含水率(%)',
+            	data: waterCut,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 3
+            },{
+            	type: 'spline',
+            	name: '冲程(m)',
+            	data: stroke,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 4
+            },{
+            	type: 'spline',
+            	name: '冲次(1/min)',
+            	data: spm,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 5
+            },{
+            	type: 'spline',
+            	name: '井口流温(℃)',
+            	data: wellheadFluidTemperature,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 6
+            },{
+            	type: 'spline',
+            	name: '油压(MPa)',
+            	data: tubingPressure,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 7
+            },{
+            	type: 'spline',
+            	name: '套压(MPa)',
+            	data: casingPressure,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 8
+            },{
+            	type: 'spline',
+            	name: '动液面(m)',
+            	data: producingFluidLevel,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 9
+            },{
+            	type: 'spline',
+            	name: '泵挂(m)',
+            	data: pumpSettingDepth,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 10
+            },{
+            	type: 'spline',
+            	name: '沉没度(m)',
+            	data: submergence,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 11
+            }
+        ]
 	});
 };
 

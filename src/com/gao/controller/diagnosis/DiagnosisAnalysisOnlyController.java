@@ -379,7 +379,11 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			json = this.diagnosisAnalysisOnlyService.querySingleDetailsWellBoreChartsData(id,wellName,selectedWellName);
 		}else if("2".equals(type)){
 			json = this.diagnosisAnalysisOnlyService.querySingleDetailsSurfaceData(id,wellName,selectedWellName);
+		}else if("3".equals(type)){
+			json = this.diagnosisAnalysisOnlyService.querySingleDetailsDynamicCurveData(id,wellName,selectedWellName);
 		}
+		
+		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

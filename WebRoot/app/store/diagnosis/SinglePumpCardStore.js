@@ -68,6 +68,8 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
             			expectedTorqueChartTitle,get_rawData.wellName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
             	showBalanceAnalysisMotionCurveChart(get_rawData.crankAngle,get_rawData.positionCurveData,get_rawData.polishrodV,get_rawData.polishrodA,
             			"运动特性曲线",get_rawData.wellName+' ['+get_rawData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv6_id",2);
+            }else if(activeId=="FSDiagramAnalysisSingleDetailsCenterPanel3_Id"){
+            	initRPCDynamicCurveChartFn(get_rawData,"FSDiagramAnalysisSingleDynamicCurveDiv_id");
             }
         },
         beforeload: function (store, options) {
@@ -81,6 +83,8 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
             	type=1;
             }else if(activeId=="FSDiagramAnalysisSingleDetailsCenterPanel2_Id"){//地面分析
             	type=2;
+            }else if(activeId=="FSDiagramAnalysisSingleDetailsCenterPanel3_Id"){
+            	type=3;
             }
             var new_params = { // 将图形数据id作为参数传给后台
                 id: id,

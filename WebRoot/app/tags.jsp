@@ -71,7 +71,7 @@ boolean isConnection=false;
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/form/PageNumberToolbar.js?timestamp=202011021230"></script>
 <script type="text/javascript" src="<%=path%>/app/app.js?timestamp=202011021230"></script>
 <script type="text/javascript" src="<%=path%>/app/CommUtils.js?timestamp=202011021230"></script>
-<script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-2.2.0.min.js?timestamp=202011021230"></script>
+<script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.5.1.min.js?timestamp=202011021230"></script>
 
 <script type="text/javascript" src="<%=path%>/app/ajaxfilter.js?timestamp=202011021230"></script>
 <!-- highcharts -->

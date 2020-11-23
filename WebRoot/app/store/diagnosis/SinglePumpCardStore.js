@@ -76,6 +76,8 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
         	var id  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.id;// 获取图形数据id
         	var wellName  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.wellName;
             var selectedWellName = Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
+            var startDate=Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').rawValue;
+            var endDate=Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').rawValue;
             var type=1;
             var tabPanel = Ext.getCmp("FSDiagramAnalysisSingleDetailsCenterTabPanel_Id");
             var activeId = tabPanel.getActiveTab().id;
@@ -90,6 +92,8 @@ Ext.define('AP.store.diagnosis.SinglePumpCardStore', {
                 id: id,
                 wellName:wellName,
                 selectedWellName:selectedWellName,
+                startDate:startDate,
+                endDate:endDate,
                 type:type
             };
             Ext.apply(store.proxy.extraParams, new_params);

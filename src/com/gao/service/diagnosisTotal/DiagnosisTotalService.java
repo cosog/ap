@@ -501,6 +501,57 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
+	public String getDiagnosisTotalDynamicCurveData(String wellName,String selectedWellName,String calculateDate, String startDate,String endDate) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";;
+		}
+		
+		String sql="select well.wellname,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
+				+ prodCol
+				+ " t.stroke,t.spm,t.wellheadfluidtemperature,t.tubingpressure,t.casingpressure,"
+				+ " t.producingfluidlevel,t.pumpsettingdepth,t.submergence "
+				+ " from tbl_wellinformation well,tbl_rpc_total_day t "
+				+ " where t.wellid=well.id ";
+		if(StringManagerUtils.isNotNull(selectedWellName)){
+			sql+="and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+		}else{
+			sql+="and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd')-30 and to_date('"+calculateDate+"','yyyy-mm-dd')";
+		}
+		
+		sql+= " and well.wellname='"+wellName+"' "+ " order by t.calculateDate";
+		List<?> list=this.findCallSql(sql);
+		
+		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"totalRoot\":[");
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Object[] obj = (Object[]) list.get(i);
+				dynSbf.append("{ \"calculateDate\":\"" + obj[1] + "\",");
+				dynSbf.append("\"liquidProduction\":"+obj[2]+",");
+				dynSbf.append("\"oilProduction\":"+obj[3]+",");
+				dynSbf.append("\"waterProduction\":"+obj[4]+",");
+				dynSbf.append("\"waterCut\":"+obj[5]+",");
+				dynSbf.append("\"stroke\":"+obj[6]+",");
+				dynSbf.append("\"spm\":"+obj[7]+",");
+				dynSbf.append("\"wellheadFluidTemperature\":"+obj[8]+",");
+				dynSbf.append("\"tubingPressure\":"+obj[9]+",");
+				dynSbf.append("\"casingPressure\":"+obj[10]+",");
+				dynSbf.append("\"producingFluidLevel\":"+obj[11]+",");
+				dynSbf.append("\"pumpSettingDepth\":"+obj[12]+",");
+				dynSbf.append("\"submergence\":"+obj[13]+"},");
+				
+			}
+		}
+		if(dynSbf.toString().endsWith(",")){
+			dynSbf.deleteCharAt(dynSbf.length() - 1);
+		}
+		dynSbf.append("]}");
+		return dynSbf.toString();
+	}
+	
 	public String getAnalysisAndAcqAndControlData(String id)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;

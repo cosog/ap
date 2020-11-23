@@ -835,24 +835,28 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return dataSbf.toString().replaceAll("null", "");
 	}
 	
-	public String querySingleDetailsDynamicCurveData(int id,String wellName,String selectedWellName) throws SQLException, IOException {
+	public String querySingleDetailsDynamicCurveData(int id,String wellName,String selectedWellName,String startDate,String endDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		
 		ConfigFile configFile=Config.getInstance().configFile;
 		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,prod.waterCut_W,";
 		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";;
+			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,prod.waterCut,";;
 		}
 		
-		String sql="select well.wellname,to_char(t.acqtime,'yyyy-mm-dd-hh24:mi:ss') as acqtime,"
+		String sql="select well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 				+ prodCol
 				+ " t.stroke,t.spm,prod.wellheadfluidtemperature,prod.tubingpressure,prod.casingpressure,"
 				+ " prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence "
 				+ " from tbl_wellinformation well,tbl_rpc_productiondata_hist prod,tbl_rpc_diagram_hist t "
-				+ " where t.wellid=well.id and t.productiondataid=prod.id "
-				+ " and t.acqtime>to_date(to_char(sysdate-5,'yyyy-mm-dd'),'yyyy-mm-dd') "
-				+ " and well.wellname='"+wellName+"' "
-				+ " order by t.acqtime";
+				+ " where t.wellid=well.id and t.productiondataid=prod.id ";
+		if(StringManagerUtils.isNotNull(selectedWellName)){
+			sql+="and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+		}else{
+			sql+= " and t.acqtime>to_date(to_char(sysdate-10,'yyyy-mm-dd'),'yyyy-mm-dd') ";
+		}
+		
+		sql+= " and well.wellname='"+wellName+"' "+ " order by t.acqtime";
 		List<?> list=this.findCallSql(sql);
 		
 		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"totalRoot\":[");

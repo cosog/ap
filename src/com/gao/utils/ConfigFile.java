@@ -443,6 +443,8 @@ public class ConfigFile {
 	    private int productionUnit;
 	    
 	    private boolean pcp;
+	    
+	    private boolean dynamicCurve;
 
 	    public boolean isPcp() {
 			return pcp;
@@ -505,6 +507,12 @@ public class ConfigFile {
 		}
 		public void setProductionUnit(int productionUnit) {
 			this.productionUnit = productionUnit;
+		}
+		public boolean isDynamicCurve() {
+			return dynamicCurve;
+		}
+		public void setDynamicCurve(boolean dynamicCurve) {
+			this.dynamicCurve = dynamicCurve;
 		}
 	}
 }

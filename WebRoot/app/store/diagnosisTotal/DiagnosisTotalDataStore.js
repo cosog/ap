@@ -50,12 +50,22 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalDataStore', {
                     	},
                     	selectionchange:function(grid, record , eOpts) {
                     		if(record.length>0){
-                    			var DiagnosisTotalFSdiagramOverlayGrid = Ext.getCmp("DiagnosisTotalFSdiagramOverlayGrid_Id");
-                    			if(isNotVal(DiagnosisTotalFSdiagramOverlayGrid)){
-                    				DiagnosisTotalFSdiagramOverlayGrid.getStore().load();
-                    			}else{
-                    				Ext.create("AP.store.diagnosisTotal.DiagnosisTotalFSDiagramOverlayStore");
-                    			}
+                                var tabPanel = Ext.getCmp("DiagnosisTotalCenterTabPanel_Id");
+                                var activeId = tabPanel.getActiveTab().id;
+                                if(activeId=="DiagnosisTotalCenterPanel1_Id"){//井筒分析
+                                	var DiagnosisTotalFSdiagramOverlayGrid = Ext.getCmp("DiagnosisTotalFSdiagramOverlayGrid_Id");
+                        			if(isNotVal(DiagnosisTotalFSdiagramOverlayGrid)){
+                        				DiagnosisTotalFSdiagramOverlayGrid.getStore().load();
+                        			}else{
+                        				Ext.create("AP.store.diagnosisTotal.DiagnosisTotalFSDiagramOverlayStore");
+                        			}
+                                }else if(activeId=="DiagnosisTotalCenterPanel2_Id"){//地面分析
+                                	Ext.create("AP.store.diagnosisTotal.DiagnosisTotalDynamicCurveStore");
+                                }
+                    			
+                    			
+                    			
+                    			
                     			Ext.create("AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore");
                     		}
                     	},

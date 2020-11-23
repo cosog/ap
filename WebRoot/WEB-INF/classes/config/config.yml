@@ -69,5 +69,6 @@ others:
    defaultGraghSize: 60
    productionUnit: 0
    pcp: true
+   dynamicCurve: true
    serialnumber: God bless you!
       

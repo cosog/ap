@@ -854,208 +854,190 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                         },
                         items: [
                             {
-                            	flex: 2,
-                            	border: false,
-                            	 xtype: 'tabpanel',
-                                 activeTab: 0,
-                                 tabPosition: 'top',
-                                 id: 'DiagnosisTotalCenterTabPanel_Id',
-                                 items: [{
-                                	 title: '功图叠加',
-                                     id: 'DiagnosisTotalCenterPanel1_Id',
-                                     layout: {
-                                         type: 'hbox',
-                                         pack: 'start',
-                                         align: 'stretch'
-                                     },
-                                     items: [
-                                         {
-                                             border: false,
-                                             margin: '0 0 0 0',
-                                             flex: 1,
-                                             height: 900,
-                                             autoScroll: true,
-                                             scrollable: true,
-                                             layout: {
-                                                 type: 'vbox',
-                                                 pack: 'start',
-                                                 align: 'stretch'
-                                             },
-                                             items: [{
-                                                 border: false,
-                                                 margin: '0 0 1 0',
-                                                 height: 300,
-                                                 align:'stretch',
-                                                 layout: 'fit',
-                                                 id: 'DiagnosisTotalOverlayPanel_Id',
-                                                 html: '<div id="DiagnosisTotalOverlayDiv_Id" style="width:100%;height:100%;"></div>',
-                                                 listeners: {
-                                                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                         if ($("#DiagnosisTotalOverlayDiv_Id").highcharts() != undefined && $("#DiagnosisTotalOverlayDiv_Id").highcharts() != null) {
-                                                             $("#DiagnosisTotalOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
-                                                         }
-                                                     }
-                                                 }
-                                          }, {
-                                                 border: false,
-                                                 margin: '0 0 1 0',
-                                                 height: 300,
-                                                 align:'stretch',
-                                                 layout: 'fit',
-                                                 id: 'DiagnosisTotalPowerOverlayPanel_Id',
-                                                 html: '<div id="DiagnosisTotalPowerOverlayDiv_Id" style="width:100%;height:100%;"></div>',
-                                                 listeners: {
-                                                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                         if ($("#DiagnosisTotalPowerOverlayDiv_Id").highcharts() != undefined && $("#DiagnosisTotalPowerOverlayDiv_Id").highcharts() != null) {
-                                                             $("#DiagnosisTotalPowerOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
-                                                         }
-                                                     }
-                                                 }
-                                          }, {
-                                                 border: false,
-                                                 margin: '0 0 0 0',
-                                                 height: 300,
-                                                 align:'stretch',
-                                                 layout: 'fit',
-                                                 id: 'DiagnosisTotalCurrentOverlayPanel_Id',
-                                                 html: '<div id="DiagnosisTotalCurrentOverlayDiv_Id" style="width:100%;height:100%;"></div>',
-                                                 listeners: {
-                                                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                         if ($("#DiagnosisTotalCurrentOverlayDiv_Id").highcharts() != undefined && $("#DiagnosisTotalCurrentOverlayDiv_Id").highcharts() != null) {
-                                                             $("#DiagnosisTotalCurrentOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
-                                                         }
-                                                     }
-                                                 }
-                                          }]
-                                      },{
-                                    	  border: false,
-                                          flex: 1,
-                                          autoScroll: true,
-                                          scrollable: true,
-                                          layout: 'fit',
-                                          id: 'DiagnosisTotalFSdiagramOverlayTable_Id'
-                                      }]
-                                 },{
-                                 	title: '动态曲线',
-                                    autoScroll:true,
-                                    scrollable: true,
-                                    border: false,
-                                    hidden: dynamicCurveHidden,
-                                    id: 'DiagnosisTotalCenterPanel2_Id',
-                                    layout: {
-                                        type: 'vbox',
-                                        pack: 'start',
-                                        align: 'stretch'
-                                    },
-                                    items: [{
-                                    	height: 1200,
-                                    	border: false,
+                                border: false,
+                                flex: 1,
+                                height: 900,
+                                margin: '0 0 0 0',
+                                padding: 0,
+                                autoScroll: true,
+                                scrollable: true,
+                                layout: {
+                                    type: 'hbox',
+                                    pack: 'start',
+                                    align: 'stretch'
+                                },
+                                items: [
+                                    {
+                                        border: false,
+                                        margin: '0 0 0 0',
+                                        flex: 1,
+                                        height: 900,
+                                        autoScroll: true,
+                                        scrollable: true,
                                         layout: {
                                             type: 'vbox',
                                             pack: 'start',
                                             align: 'stretch'
                                         },
                                         items: [{
-                                        	flex: 1,
-                                        	align:'stretch',
-                                        	border: false,
+                                            border: false,
+                                            margin: '0 0 1 0',
+                                            height: 300,
+                                            align:'stretch',
                                             layout: 'fit',
-                                            align: 'stretch',
-                                            html: '<div id="DiagnosisTotalDynamicCurveDiv_id" style="width:100%;height:100%;"></div>',
+                                            id: 'DiagnosisTotalOverlayPanel_Id',
+                                            html: '<div id="DiagnosisTotalOverlayDiv_Id" style="width:100%;height:100%;"></div>',
                                             listeners: {
                                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                                	if($("#DiagnosisTotalDynamicCurveDiv_id").highcharts()!=undefined){
-                                            			$("#DiagnosisTotalDynamicCurveDiv_id").highcharts().setSize($("#DiagnosisTotalDynamicCurveDiv_id").offsetWidth, $("#DiagnosisTotalDynamicCurveDiv_id").offsetHeight,true);
-                                            		}
+                                                    if ($("#DiagnosisTotalOverlayDiv_Id").highcharts() != undefined && $("#DiagnosisTotalOverlayDiv_Id").highcharts() != null) {
+                                                        $("#DiagnosisTotalOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    }
                                                 }
                                             }
-                                        }]
-                                    }]
-                                 }],
-                                 listeners: {
-                                 	tabchange: function (tabPanel, newCard, oldCard,obj) {
-                                 		if(newCard.id=='DiagnosisTotalCenterPanel1_Id'){
-                                 			var DiagnosisTotalFSdiagramOverlayGrid = Ext.getCmp("DiagnosisTotalFSdiagramOverlayGrid_Id");
-                                			if(isNotVal(DiagnosisTotalFSdiagramOverlayGrid)){
-                                				DiagnosisTotalFSdiagramOverlayGrid.getStore().load();
-                                			}else{
-                                				Ext.create("AP.store.diagnosisTotal.DiagnosisTotalFSDiagramOverlayStore");
-                                			}
-                                 		}else{
-                                 			Ext.create("AP.store.diagnosisTotal.DiagnosisTotalDynamicCurveStore");
-                                 		}
-                                     }
+                                     }, {
+                                            border: false,
+                                            margin: '0 0 1 0',
+                                            height: 300,
+                                            align:'stretch',
+                                            layout: 'fit',
+                                            id: 'DiagnosisTotalPowerOverlayPanel_Id',
+                                            html: '<div id="DiagnosisTotalPowerOverlayDiv_Id" style="width:100%;height:100%;"></div>',
+                                            listeners: {
+                                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                                    if ($("#DiagnosisTotalPowerOverlayDiv_Id").highcharts() != undefined && $("#DiagnosisTotalPowerOverlayDiv_Id").highcharts() != null) {
+                                                        $("#DiagnosisTotalPowerOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    }
+                                                }
+                                            }
+                                     }, {
+                                            border: false,
+                                            margin: '0 0 0 0',
+                                            height: 300,
+                                            align:'stretch',
+                                            layout: 'fit',
+                                            id: 'DiagnosisTotalCurrentOverlayPanel_Id',
+                                            html: '<div id="DiagnosisTotalCurrentOverlayDiv_Id" style="width:100%;height:100%;"></div>',
+                                            listeners: {
+                                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                                    if ($("#DiagnosisTotalCurrentOverlayDiv_Id").highcharts() != undefined && $("#DiagnosisTotalCurrentOverlayDiv_Id").highcharts() != null) {
+                                                        $("#DiagnosisTotalCurrentOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                                    }
+                                                }
+                                            }
+                                     }]
                                  }
-                            },{
-                                xtype: 'tabpanel',
-                                id: 'TotalAndAcqDataTabpanel_Id',
-                                flex: 1,
-                                activeTab: 0,
-                                header: false,
+                                ]
+                            },
+                            {
+                                border: false,
+                                flex: 2,
+                                height: 900,
+                                margin: '0 0 0 0',
+                                padding: 0,
+                                autoScroll: true,
+                                scrollable: true,
                                 collapsible: true,
-                                split: true,
+                                header: false,
                                 collapseDirection: 'right',
-                                border: true,
-                                tabPosition: 'top',
+                                split: true,
+                                layout: {
+                                    type: 'hbox',
+                                    pack: 'start',
+                                    align: 'stretch'
+                                },
                                 items: [
                                     {
-                                        title: '分析',
-                                        layout: 'border',
-                                        items:[
-                                        	{
-                                        		region: 'center',
-                                        		id: 'TotalAnalysisDataPanel_Id',
+                                        border: false,
+                                        flex: 1,
+                                        height: 900,
+                                        autoScroll: true,
+                                        scrollable: true,
+//                                        collapsible: true,
+//                                        header: false,
+//                                        collapseDirection: 'right',
+//                                        split: true,
+                                        layout: 'fit',
+                                        id: 'DiagnosisTotalFSdiagramOverlayTable_Id'
+                                    },
+                                    {
+                                        xtype: 'tabpanel',
+                                        id: 'TotalAndAcqDataTabpanel_Id',
+                                        flex: 1,
+                                        activeTab: 0,
+                                        header: false,
+                                        collapsible: true,
+                                        split: true,
+                                        collapseDirection: 'right',
+                                        border: true,
+                                        tabPosition: 'top',
+                                        items: [
+                                            {
+//                                                title: '分析',
+//                                                id: 'TotalAnalysisDataPanel_Id',
+//                                                border: false,
+//                                                layout: 'fit',
+//                                                autoScroll: true,
+//                                                scrollable: true
+                                                
+                                                title: '分析',
+                                                layout: 'border',
+                                                items:[
+                                                	{
+                                                		region: 'center',
+                                                		id: 'TotalAnalysisDataPanel_Id',
+                                                        border: false,
+                                                        layout: 'fit',
+                                                        height:'60%'
+//                                                        collapseDirection:'top'
+                                                	},{
+                                                		region: 'south',
+                                                		height:'40%',
+                                                		border: false,
+                                                		header: false,
+                                                        collapsible:true,
+                                                        split: true,
+                                                		xtype:'form',
+                                                		layout: 'auto',
+                                                		items: [{
+                                                			xtype:'label',
+                                                			text:'运行区间:',
+                                                			margin:'0 0 20 0'
+                                                		},{
+                                                        	xtype:'textareafield',
+                                                        	id:'FSDiagramAnalysisDailyDetailsRightRunRangeTextArea_Id',
+                                                        	grow:false,
+                                                        	width:'99.9%',
+                                                            height: '45%',
+                                                            readOnly:true,
+                                                            autoScroll: true,
+                                                            scrollable: true
+                                                        },{
+                                                			xtype:'label',
+                                                			text:'工况累计:',
+                                                			margin:'200 0 20 0'
+                                                		},{
+                                                        	xtype:'textareafield',
+                                                        	id:'FSDiagramAnalysisDailyDetailsRightResultCodeTextArea_Id',
+                                                        	grow:false,
+                                                        	width:'99.9%',
+                                                        	height: '45%',
+                                                            readOnly:true,
+                                                            autoScroll: true,
+                                                            scrollable: true
+                                                        }]
+                                                	}
+                                                ]
+                                            }, {
+                                                title: '采集',
+                                                id: 'TotalAcqDataPanel_Id',
                                                 border: false,
                                                 layout: 'fit',
-                                                height:'60%'
-//                                                collapseDirection:'top'
-                                        	},{
-                                        		region: 'south',
-                                        		height:'40%',
-                                        		border: false,
-                                        		header: false,
-                                                collapsible:true,
-                                                split: true,
-                                        		xtype:'form',
-                                        		layout: 'auto',
-                                        		items: [{
-                                        			xtype:'label',
-                                        			text:'运行区间:',
-                                        			margin:'0 0 20 0'
-                                        		},{
-                                                	xtype:'textareafield',
-                                                	id:'FSDiagramAnalysisDailyDetailsRightRunRangeTextArea_Id',
-                                                	grow:false,
-                                                	width:'99.9%',
-                                                    height: '45%',
-                                                    readOnly:true,
-                                                    autoScroll: true,
-                                                    scrollable: true
-                                                },{
-                                        			xtype:'label',
-                                        			text:'工况累计:',
-                                        			margin:'200 0 20 0'
-                                        		},{
-                                                	xtype:'textareafield',
-                                                	id:'FSDiagramAnalysisDailyDetailsRightResultCodeTextArea_Id',
-                                                	grow:false,
-                                                	width:'99.9%',
-                                                	height: '45%',
-                                                    readOnly:true,
-                                                    autoScroll: true,
-                                                    scrollable: true
-                                                }]
-                                        	}
-                                        ]
-                                    }, {
-                                        title: '采集',
-                                        id: 'TotalAcqDataPanel_Id',
-                                        border: false,
-                                        layout: 'fit',
-                                        autoScroll: true,
-                                        scrollable: true
-                                    }]
-                            	}
+                                                autoScroll: true,
+                                                scrollable: true
+                                            }]
+                                    }
+                                ]
+                            }
                         ],
                         listeners: {
                         	beforeCollapse: function (panel, eOpts) {
@@ -1903,421 +1885,4 @@ function initDiagnosisTotalDataCurveChartFn(catagories, series, tickInterval, di
         },
         series: series
     });
-};
-
-initRPCTotalDynamicCurveChartFn = function (get_rawData, divId) {
-	var items=get_rawData.totalRoot;
-	var liquidProduction=[];
-	var oilProduction=[];
-	var waterProduction=[];
-	var waterCut=[];
-	var stroke=[];
-	var spm=[];
-	var wellheadFluidTemperature=[];
-	var tubingPressure=[];
-	var casingPressure=[];
-	var producingFluidLevel=[];
-	var pumpSettingDepth=[];
-	var submergence=[];
-	
-	var rangeSelectorSelected=4;
-	var selectedWellName = Ext.getCmp('FSDiagramAnalysisDailyDetailsWellCom_Id').getValue();
-	if(selectedWellName==''){
-		rangeSelectorSelected=1;
-	}
-	
-	for(var i=0;i<items.length;i++){
-		liquidProduction.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].liquidProduction)
-        ]);
-		oilProduction.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].oilProduction)
-        ]);
-		waterProduction.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].waterProduction)
-        ]);
-		waterCut.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].waterCut)
-        ]);
-		stroke.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].stroke)
-        ]);
-		spm.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].spm)
-        ]);
-		wellheadFluidTemperature.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].wellheadFluidTemperature)
-        ]);
-		tubingPressure.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].tubingPressure)
-        ]);
-		casingPressure.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].casingPressure)
-        ]);
-		producingFluidLevel.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].producingFluidLevel)
-        ]);
-		pumpSettingDepth.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].pumpSettingDepth)
-        ]);
-		submergence.push([
-            Date.parse(items[i].calculateDate.replace(/-/g, '/')),
-            parseFloat(items[i].submergence)
-        ]);
-	}
-	
-	Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
-	mychart = new Highcharts.StockChart({
-		chart: {
-            renderTo : divId,
-            borderWidth : 0,
-            reflow: true
-        }, 
-        exporting:{    
-            enabled:true,    
-            filename:'class-booking-chart',    
-            url:context + '/exportHighcharsPicController/export'
-       },
-        legend: {
-        	enabled:false,
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        title: {
-            text: get_rawData.wellName+'井动态曲线'
-        },
-        tooltip:{  
-            // 日期时间格式化  
-            xDateFormat: '%Y-%m-%d %H:%M:%S',
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.2f}</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        credits: {
-            enabled: false
-        },
-        plotOptions:{
-        	series:{
-        		dataGrouping:{
-        			groupPixelWidth:0.1
-        		}
-        	}
-        },
-        xAxis: {  
-            //tickPixelInterval: 200,//x轴上的间隔  
-        	title:{
-        		text:'时间'
-        	},
-            type: 'datetime', //定义x轴上日期的显示格式  
-            labels: {  
-            formatter: function() {  
-                var vDate=new Date(this.value);
-                //return vDate.getFullYear()+"-"+(vDate.getMonth()+1)+"-"+vDate.getDate()+" "+vDate.getDay()+":"+vDate.getMinutes()+":"+vDate.getSeconds();  
-                return vDate.getFullYear()+"-"+(vDate.getMonth()+1)+"-"+vDate.getDate(); 
-                },  
-            align: 'center'  
-            }
-        },
-        yAxis: [{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '产量(t/d)',
-                style: {
-                    color: '#000000',
-                    fontWeight: 'bold'
-                }
-            },
-            endOnTick: false,
-//            min:0,
-            height: '10%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '含水率(%)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '11.25%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '冲程(m)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '22.5%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '冲次(1/min)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '33.75%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '井口流温(℃)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '45%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '压力(MPa)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '56.25%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '泵挂(m)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '67.5%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '动液面(m)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '78.75%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-        	tickPosition: 'inside',
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '沉没度(m)'
-            },
-            endOnTick: false,
-            height: '10%',
-            top: '90%',
-            offset: 0,
-            lineWidth: 1
-        }],
-        rangeSelector: {  
-        	enabled:true,
-            buttons: [{//定义一组buttons,下标从0开始  
-            type: 'week',  
-            count: 1,  
-            text: '周'  
-        },{  
-        	type: 'day',  
-            count: 10,  
-            text: '旬'   
-        }, {  
-        	type: 'month',  
-            count: 1,  
-            text: '月' 
-        }, {  
-            type: 'month',  
-            count: 3,  
-            text: '季度'  
-        },{  
-            type: 'all',  
-            text: '全部'  
-        }],  
-            selected: rangeSelectorSelected,//表示以上定义button的index,从0开始  
-            inputDateFormat:'%Y-%m-%d'
-        },  
-        navigator:{
-        	enabled:true
-        },
-        scrollbar:{
-        	enabled:true
-        },
-        series: [{
-        		type: 'spline',
-        		name: '产液量(t/d)',
-        		data: liquidProduction,
-        		marker:{
-        			enabled:true,
-        			radius: 3
-        		},
-        		yAxis: 0
-        	},{
-            	type: 'spline',
-            	name: '产油量(t/d)',
-            	data: oilProduction,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 0
-            },{
-            	type: 'spline',
-            	name: '产水量(t/d)',
-            	data: waterProduction,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 0
-            },{
-            	type: 'spline',
-            	name: '含水率(%)',
-            	data: waterCut,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 1
-            },{
-            	type: 'spline',
-            	name: '冲程(m)',
-            	data: stroke,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 2
-            },{
-            	type: 'spline',
-            	name: '冲次(1/min)',
-            	data: spm,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 3
-            },{
-            	type: 'spline',
-            	name: '井口流温(℃)',
-            	data: wellheadFluidTemperature,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 4
-            },{
-            	type: 'spline',
-            	name: '油压(MPa)',
-            	data: tubingPressure,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 5
-            },{
-            	type: 'spline',
-            	name: '套压(MPa)',
-            	data: casingPressure,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 5
-            },{
-            	type: 'spline',
-            	name: '泵挂(m)',
-            	data: pumpSettingDepth,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 6
-            },{
-            	type: 'column',
-            	name: '动液面(m)',
-            	data: producingFluidLevel,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 7
-            },{
-            	type: 'column',
-            	name: '沉没度(m)',
-            	data: submergence,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 8
-            }
-        ]
-	});
 };

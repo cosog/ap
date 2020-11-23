@@ -292,6 +292,58 @@ public class DiagnosisTotalController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDiagnosisTotalDynamicCurveData")
+	public String getDiagnosisTotalDynamicCurveData() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		wellName = ParamUtils.getParameter(request, "wellName");
+		String selectedWellName = ParamUtils.getParameter(request, "selectedWellName");
+		String calculateDate = ParamUtils.getParameter(request, "calculateDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		HttpSession session=request.getSession();
+		if (!StringUtils.isNotBlank(orgId)) {
+			User user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		this.pager = new Page("pagerForm", request);
+		if(!StringManagerUtils.isNotNull(endDate)){
+			String sql = " select to_char(max(t.calculateDate),'yyyy-mm-dd') from tbl_rpc_total_day t  where wellName= '"+wellName+"' ";
+			List list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if (!StringManagerUtils.isNotNull(startDate)) {
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-30);
+		} else {
+			
+		}
+		
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		json =  this.diagnosisTotalService.getDiagnosisTotalDynamicCurveData(wellName,selectedWellName,calculateDate, startDate,endDate);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@RequestMapping("/getAnalysisAndAcqAndControlData")
 	public String getAnalysisAndAcqAndControlData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");

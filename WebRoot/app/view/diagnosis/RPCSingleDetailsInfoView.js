@@ -1146,6 +1146,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             autoScroll:true,
                             scrollable: true,
                             border: false,
+                            hidden: dynamicCurveHidden,
                             id: 'FSDiagramAnalysisSingleDetailsCenterPanel3_Id',
                             layout: {
                                 type: 'vbox',
@@ -1153,7 +1154,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                 align: 'stretch'
                             },
                             items: [{
-                            	height: 1600,
+                            	height: 1200,
+                            	border: false,
                                 layout: {
                                     type: 'vbox',
                                     pack: 'start',
@@ -1162,6 +1164,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                                 items: [{
                                 	flex: 1,
                                 	align:'stretch',
+                                	border: false,
                                     layout: 'fit',
                                     align: 'stretch',
                                     html: '<div id="FSDiagramAnalysisSingleDynamicCurveDiv_id" style="width:100%;height:100%;"></div>',
@@ -2180,6 +2183,8 @@ function initSingleDetailsWellboreTrajectoryCharts(result,divId){
 			renderTo: divId,
 //			margin: 100,
 			type: 'scatter',
+			borderWidth : 0,
+            reflow: true,
 			options3d: {
 				enabled: true,
 				alpha: 10,
@@ -2288,6 +2293,12 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
 	var pumpSettingDepth=[];
 	var submergence=[];
 	
+	var rangeSelectorSelected=4;
+	var selectedWellName = Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
+	if(selectedWellName==''){
+		rangeSelectorSelected=0;
+	}
+	
 	for(var i=0;i<items.length;i++){
 		liquidProduction.push([
             Date.parse(items[i].acqTime.replace(/-/g, '/')),
@@ -2346,7 +2357,9 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
     });
 	mychart = new Highcharts.StockChart({
 		chart: {
-            renderTo : divId
+            renderTo : divId,
+            borderWidth : 0,
+            reflow: true
         }, 
         exporting:{    
             enabled:true,    
@@ -2359,9 +2372,6 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             align: 'right',
             verticalAlign: 'middle',
             borderWidth: 0
-        },
-		rangeSelector: {
-            selected: 1
         },
         title: {
             text: get_rawData.wellName+'井动态曲线'
@@ -2403,12 +2413,13 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
         },
         yAxis: [{
         	opposite:false,
+        	tickPosition: 'inside',//inside 和 outside,
             labels: {
                 align: 'left',
                 x: 0
             },
             title: {
-                text: '产液量(t/d)',
+                text: '产量(t/d)',
                 style: {
                     color: '#000000',
                     fontWeight: 'bold'
@@ -2416,39 +2427,12 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             },
             endOnTick: false,
 //            min:0,
-            height: '7.4%',
+            height: '10%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '产油量(t/d)'
-            },
-            endOnTick: false,
-            height: '7.4%',
-            top: '8.4%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '产水量(t/d)'
-            },
-            endOnTick: false,
-            height: '7.4%',
-            top: '16.8%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
@@ -2457,12 +2441,13 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 text: '含水率(%)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '25.2%',
+            height: '10%',
+            top: '11.25%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
@@ -2471,12 +2456,13 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 text: '冲程(m)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '33.6%',
+            height: '10%',
+            top: '22.5%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
@@ -2485,12 +2471,13 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 text: '冲次(1/min)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '42%',
+            height: '10%',
+            top: '33.75%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
@@ -2499,54 +2486,28 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 text: '井口流温(℃)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '50.4%',
+            height: '10%',
+            top: '45%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
             },
             title: {
-                text: '油压(MPa)'
+                text: '压力(MPa)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '58.8%',
+            height: '10%',
+            top: '56.25%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '套压(MPa)'
-            },
-            endOnTick: false,
-            height: '7.4%',
-            top: '67.2%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
-            labels: {
-                align: 'left',
-                x: 0
-            },
-            title: {
-                text: '动液面(m)'
-            },
-            endOnTick: false,
-            height: '7.4%',
-            top: '75.6%',
-            offset: 0,
-            lineWidth: 1
-        },{
-        	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
@@ -2555,12 +2516,28 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 text: '泵挂(m)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '84%',
+            height: '10%',
+            top: '67.5%',
             offset: 0,
             lineWidth: 1
         },{
         	opposite:false,
+        	tickPosition: 'inside',
+            labels: {
+                align: 'left',
+                x: 0
+            },
+            title: {
+                text: '动液面(m)'
+            },
+            endOnTick: false,
+            height: '10%',
+            top: '78.75%',
+            offset: 0,
+            lineWidth: 1
+        },{
+        	opposite:false,
+        	tickPosition: 'inside',
             labels: {
                 align: 'left',
                 x: 0
@@ -2569,34 +2546,34 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 text: '沉没度(m)'
             },
             endOnTick: false,
-            height: '7.4%',
-            top: '92.4%',
+            height: '10%',
+            top: '90%',
             offset: 0,
             lineWidth: 1
         }],
         rangeSelector: {  
-        	enabled:false,
+        	enabled:true,
             buttons: [{//定义一组buttons,下标从0开始  
-            type: 'week',  
+            type: 'day',  
             count: 1,  
-            text: '一周'  
+            text: '日'  
         },{  
         	type: 'week',  
-            count: 2,  
-            text: '两周'   
+            count: 1,  
+            text: '周'   
         }, {  
-        	type: 'week',  
-            count: 3,  
-            text: '三周' 
+        	type: 'day',  
+            count: 10,  
+            text: '旬' 
         }, {  
             type: 'month',  
             count: 1,  
-            text: '一月'  
+            text: '月'  
         },{  
             type: 'all',  
             text: '全部'  
         }],  
-            selected: 4,//表示以上定义button的index,从0开始  
+            selected: rangeSelectorSelected,//表示以上定义button的index,从0开始  
             inputDateFormat:'%Y-%m-%d'
         },  
         navigator:{
@@ -2622,7 +2599,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 1
+            	yAxis: 0
             },{
             	type: 'spline',
             	name: '产水量(t/d)',
@@ -2631,7 +2608,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 2
+            	yAxis: 0
             },{
             	type: 'spline',
             	name: '含水率(%)',
@@ -2640,7 +2617,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 3
+            	yAxis: 1
             },{
             	type: 'spline',
             	name: '冲程(m)',
@@ -2649,7 +2626,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 4
+            	yAxis: 2
             },{
             	type: 'spline',
             	name: '冲次(1/min)',
@@ -2658,7 +2635,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 5
+            	yAxis: 3
             },{
             	type: 'spline',
             	name: '井口流温(℃)',
@@ -2667,7 +2644,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 6
+            	yAxis: 4
             },{
             	type: 'spline',
             	name: '油压(MPa)',
@@ -2676,7 +2653,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 7
+            	yAxis: 5
             },{
             	type: 'spline',
             	name: '套压(MPa)',
@@ -2685,16 +2662,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 8
-            },{
-            	type: 'spline',
-            	name: '动液面(m)',
-            	data: producingFluidLevel,
-            	marker:{
-            		enabled:true,
-            		radius: 3
-            	},
-            	yAxis: 9
+            	yAxis: 5
             },{
             	type: 'spline',
             	name: '泵挂(m)',
@@ -2703,16 +2671,25 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 10
+            	yAxis: 6
             },{
-            	type: 'spline',
+            	type: 'column',
+            	name: '动液面(m)',
+            	data: producingFluidLevel,
+            	marker:{
+            		enabled:true,
+            		radius: 3
+            	},
+            	yAxis: 7
+            },{
+            	type: 'column',
             	name: '沉没度(m)',
             	data: submergence,
             	marker:{
             		enabled:true,
             		radius: 3
             	},
-            	yAxis: 11
+            	yAxis: 8
             }
         ]
 	});

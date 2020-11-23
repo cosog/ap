@@ -213,6 +213,7 @@ function CreateAndLoadWellInfoTable(isNew){
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	var wellInformationName_Id = Ext.getCmp('wellInfoPanel_jh_Id').getValue();
 	var liftingType = Ext.getCmp('wellInfoPanel_jslx_Id').getValue();
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/doWellInformationShow',
@@ -222,13 +223,16 @@ function CreateAndLoadWellInfoTable(isNew){
 				wellInfoHandsontableHelper = WellInfoHandsontableHelper.createNew("WellInformatonDiv_id");
 				var colHeaders="[";
 		        var columns="[";
+		       
 	            for(var i=0;i<result.columns.length;i++){
 	            	if(result.columns[i].header==='驱动名称'){
 	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
 	            	}else{
 	            		colHeaders+="'"+result.columns[i].header+"'";
 	            	}
-	            	if(result.columns[i].dataIndex==="liftingTypeName"){
+	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
+	            	}else if(result.columns[i].dataIndex==="liftingTypeName"){
 	            		if(pcpHidden){
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
 	            		}else{
@@ -260,6 +264,8 @@ function CreateAndLoadWellInfoTable(isNew){
 	            		}
 	            		source+="]";
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
 	            	}else{
 	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 	            	}
@@ -306,6 +312,11 @@ var WellInfoHandsontableHelper = {
 	        wellInfoHandsontableHelper.delidslist=[];
 	        wellInfoHandsontableHelper.insertlist=[];
 	        wellInfoHandsontableHelper.editWellNameList=[];
+	        
+	        wellInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
+	        }
 	        
 	        wellInfoHandsontableHelper.createTable = function (data) {
 	        	$('#'+wellInfoHandsontableHelper.divid).empty();
@@ -608,3 +619,4 @@ var WellInfoHandsontableHelper = {
 	        return wellInfoHandsontableHelper;
 	    }
 };
+

@@ -180,6 +180,19 @@ isNotVal = function(val) {
 	}
 	return result;
 }
+
+/**
+ * 是否为数值
+ */
+isNumber = function(val) {
+	var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if(regPos.test(val) && regNeg.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+}
 /**
  * 判断字符串是否已特定字符结尾
  */
@@ -8226,4 +8239,68 @@ function initPSDiagramOverlayChart(series, title,ytext, wellName, acqTime, divid
 		        }, 
 		        series: series 
 	});
-}
+};
+function handsontableDataCheck_Org(val, callback,row,col,handsontableHelper){
+	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+	var orgNum=Ext.getCmp("IframeView_Id").getStore().data.length;
+	var selectOrgName='';
+	if(IframeViewSelection.length>0){
+		selectOrgName=IframeViewSelection[0].data.text;
+	}else if(orgNum===1){
+		selectOrgName=Ext.getCmp("IframeView_Id").getStore().data.items[0].data.text;
+	}
+	
+	if(val!=selectOrgName){
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}else{
+		return callback(true);
+	}
+};
+
+function handsontableDataCheck_Num(val, callback,row,col,handsontableHelper){
+	var pattern=/^[0-9]*$/;
+	if(pattern.test(val)){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
+function handsontableDataCheck_Num_Nullable(val, callback,row,col,handsontableHelper){
+	var pattern=/^[0-9]*$/;
+	if(val==='' || !isNaN(val)){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
+function handsontableDataCheck_PumpGrade(val, callback,row,col,handsontableHelper){
+	if(val==1 || val==2 || val==3 || val==4 || val==5){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
+function handsontableDataCheck_RodGrade(val, callback,row,col,handsontableHelper){
+	if(val==''
+		||val.toUpperCase()=='A'||val.toUpperCase()=='B'
+		||val.toUpperCase()=='C'||val.toUpperCase()=='K'
+		||val.toUpperCase()=='D'||val.toUpperCase()=='KD'
+		||val.toUpperCase()=='HL'||val.toUpperCase()=='HY'){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};

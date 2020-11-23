@@ -373,6 +373,8 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		id = Integer.parseInt(ParamUtils.getParameter(request, "id"));
 		wellName = ParamUtils.getParameter(request, "wellName");
 		String selectedWellName = ParamUtils.getParameter(request, "selectedWellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
 		String type = ParamUtils.getParameter(request, "type");
 		String json = "";
 		if("1".equals(type)){
@@ -380,7 +382,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		}else if("2".equals(type)){
 			json = this.diagnosisAnalysisOnlyService.querySingleDetailsSurfaceData(id,wellName,selectedWellName);
 		}else if("3".equals(type)){
-			json = this.diagnosisAnalysisOnlyService.querySingleDetailsDynamicCurveData(id,wellName,selectedWellName);
+			json = this.diagnosisAnalysisOnlyService.querySingleDetailsDynamicCurveData(id,wellName,selectedWellName,startDate,endDate);
 		}
 		
 		

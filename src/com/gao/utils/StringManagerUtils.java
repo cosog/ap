@@ -1162,6 +1162,14 @@ public class StringManagerUtils {
 		                result += line;
 		            }
 		            return result;
+	            }else if(conn.getResponseCode()>=400){
+	            	String errorInfo="";
+	            	in = new BufferedReader(new InputStreamReader(conn.getErrorStream(),encoding));
+		            String line;
+		            while ((line = in.readLine()) != null) {
+		            	errorInfo += line;
+		            }
+		            System.out.println("错误信息："+errorInfo);
 	            }else{
 	            	throw new Exception();
 	            }

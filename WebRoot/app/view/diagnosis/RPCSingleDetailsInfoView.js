@@ -102,8 +102,8 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             labelWidth: 0,
                             width: 90,
                             format: 'Y-m-d ',
-                            id: 'FSDiagramAnalysisSingleDetailsStartDate_Id',
                             value: '',
+                            id: 'FSDiagramAnalysisSingleDetailsStartDate_Id',
                             listeners: {
                             	select: function (combo, record, index) {
                             		Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getStore().loadPage(1);
@@ -117,8 +117,9 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             labelWidth: 15,
                             width: 105,
                             format: 'Y-m-d ',
+                            value: '',
+//                            value: new Date(),
                             id: 'FSDiagramAnalysisSingleDetailsEndDate_Id',
-                            value: new Date(),
                             listeners: {
                             	select: function (combo, record, index) {
                             		Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getStore().loadPage(1);
@@ -163,6 +164,13 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                         			var record  = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0];
                             		Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue(record.data.wellName);
                                 	Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setRawValue(record.data.wellName);
+                                	
+                                	Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').setValue('');
+                                	Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').setRawValue('');
+                                	
+                                	Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').setValue('');
+                                	Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').setRawValue('');
+                                	
                                 	Ext.getCmp('FSDiagramAnalysisSingleDetails_Id').getStore().loadPage(1);
                         		}
                             }
@@ -1142,7 +1150,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	}
                             ]
                         },{
-                        	title: '动态曲线',
+                        	title: '趋势曲线',
                             autoScroll:true,
                             scrollable: true,
                             border: false,
@@ -2374,7 +2382,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             borderWidth: 0
         },
         title: {
-            text: get_rawData.wellName+'井动态曲线'
+            text: get_rawData.wellName+'趋势曲线'
         },
         tooltip:{  
             // 日期时间格式化  

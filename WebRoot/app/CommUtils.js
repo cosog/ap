@@ -8261,7 +8261,7 @@ function handsontableDataCheck_Org(val, callback,row,col,handsontableHelper){
 
 function handsontableDataCheck_Num(val, callback,row,col,handsontableHelper){
 	var pattern=/^[0-9]*$/;
-	if(pattern.test(val)){
+	if(isNotVal(val) && !isNaN(val)){
 		return callback(true);
 	}else{
 		var cell = handsontableHelper.hot.getCell(row, col);  

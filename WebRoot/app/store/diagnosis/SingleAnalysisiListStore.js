@@ -100,6 +100,14 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
                             	
                     			Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setValue(record.data.wellName);
                             	Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').setRawValue(record.data.wellName);
+                            	
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').setValue('');
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetailsStartDate_Id').setRawValue('');
+                            	
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').setValue('');
+                            	Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').setRawValue('');
+                            	
+                            	
                             	Ext.getCmp('FSDiagramAnalysisSingleDetails_Id').getStore().load();
 //                            	Ext.create("AP.store.diagnosis.SingleAnalysisiListStore");
                     		}
@@ -132,6 +140,12 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
             if(startDate==''||null==startDate){
             	Ext.getCmp("FSDiagramAnalysisSingleDetailsStartDate_Id").setValue(get_rawData.start_date==undefined?get_rawData.startDate:get_rawData.start_date);
             }
+            var endDate=Ext.getCmp('FSDiagramAnalysisSingleDetailsEndDate_Id').rawValue;
+            if(endDate==''||null==endDate){
+            	Ext.getCmp("FSDiagramAnalysisSingleDetailsEndDate_Id").setValue(get_rawData.end_date==undefined?get_rawData.endDate:get_rawData.end_date);
+            }
+            
+            
             if(get_rawData.totalCount>0){
             	var SingleAnalysisGridPanel = Ext.getCmp("FSDiagramAnalysisSingleDetails_Id");
                 if (isNotVal(SingleAnalysisGridPanel)) {
@@ -153,6 +167,17 @@ Ext.define('AP.store.diagnosis.SingleAnalysisiListStore', {
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").html('');
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv5_id").html('');
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv6_id").html('');
+            	
+            	
+            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").html('');
+            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").html('');
+            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").html('');
+            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").html('');
+            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").html('');
+            	$("#FSDiagramAnalysisSingleSurfaceDetailsDiv6_id").html('');
+            	
+            	$("#FSDiagramAnalysisSingleDynamicCurveDiv_id").html('');
+            	
         		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightRunRangeTextArea_Id").setValue("");
         		Ext.getCmp("FSDiagramAnalysisSingleDetailsRightResultCodeTextArea_Id").setValue("");
             	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightAnalysisPanel_Id").removeAll();

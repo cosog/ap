@@ -234,7 +234,15 @@ function CreateAndLoadWellboreTrajectoryDetailsTable(selectedRow){
 	
 	wellboreTrajectoryDetailsHandsontableHelper = WellboreTrajectoryDetailsHandsontableHelper.createNew("WellboreTrajectoryDetailsDiv_Id");
 	var colHeaders="['序号','测量深度(m)','井斜角(°)','方位角(°)']";
-	var columns="[{data:'id'},{data:'measuringDepth'},{data:'deviationAngle'},{data:'azimuthAngle'}]";
+	var columns="[" +
+			"{data:'id'},"
+			+"{data:'measuringDepth',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,wellboreTrajectoryDetailsHandsontableHelper);}},"
+			+"{data:'deviationAngle',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,wellboreTrajectoryDetailsHandsontableHelper);}},"
+			+"{data:'azimuthAngle',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,wellboreTrajectoryDetailsHandsontableHelper);}}"
+//			"{data:'measuringDepth'}," +
+//			"{data:'deviationAngle'}," +
+//			"{data:'azimuthAngle'}" +
+			+"]";
 	wellboreTrajectoryDetailsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 	wellboreTrajectoryDetailsHandsontableHelper.columns=Ext.JSON.decode(columns);
 	

@@ -936,7 +936,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                           id: 'DiagnosisTotalFSdiagramOverlayTable_Id'
                                       }]
                                  },{
-                                 	title: '动态曲线',
+                                 	title: '趋势曲线',
                                     autoScroll:true,
                                     scrollable: true,
                                     border: false,
@@ -2001,7 +2001,7 @@ initRPCTotalDynamicCurveChartFn = function (get_rawData, divId) {
             borderWidth: 0
         },
         title: {
-            text: get_rawData.wellName+'井动态曲线'
+            text: get_rawData.wellName+'趋势曲线'
         },
         tooltip:{  
             // 日期时间格式化  

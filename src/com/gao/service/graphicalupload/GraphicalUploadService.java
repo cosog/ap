@@ -71,8 +71,8 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 		return this.getBaseDao().saveSurfaceCard(wellAcquisitionData);
 	}
 	
-	public boolean saveSurfaceCard(String wellName,String cjsjstr,int point,float stroke,float frequency,String SStr,String FStr,String AStr,String PStr) throws SQLException, ParseException{
-		return this.getBaseDao().saveSurfaceCard(wellName,cjsjstr,point,stroke,frequency,SStr,FStr,AStr,PStr);
+	public boolean saveSurfaceCard(String wellName,String acqTime,int point,float stroke,float frequency,String SStr,String FStr,String AStr,String PStr) throws SQLException, ParseException{
+		return this.getBaseDao().saveSurfaceCard(wellName,acqTime,point,stroke,frequency,SStr,FStr,AStr,PStr);
 	}
 	
 	public String getFSdiagramCalculateRequestData(WellAcquisitionData wellAcquisitionData) throws SQLException, IOException, ParseException{

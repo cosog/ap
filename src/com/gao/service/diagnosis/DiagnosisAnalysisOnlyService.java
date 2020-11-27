@@ -839,6 +839,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		StringBuffer dynSbf = new StringBuffer();
 		
 		ConfigFile configFile=Config.getInstance().configFile;
+		
+		
+		
+		
 		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,prod.waterCut_W,";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,prod.waterCut,";;
@@ -851,9 +855,17 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " from tbl_wellinformation well,tbl_rpc_productiondata_hist prod,tbl_rpc_diagram_hist t "
 				+ " where t.wellid=well.id and t.productiondataid=prod.id ";
 		if(StringManagerUtils.isNotNull(selectedWellName)){
-			sql+="and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+			sql+="and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
 		}else{
-			sql+= " and t.acqtime>to_date(to_char(sysdate-10,'yyyy-mm-dd'),'yyyy-mm-dd') ";
+			String maxTimeSql = " select to_char(max(t.acqtime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t where t.wellid=( select t2.id from tbl_wellinformation t2 where t2.wellName='"+wellName+"' ) ";
+			List maxTimeList = this.service.reportDateJssj(maxTimeSql);
+			String maxTime="";
+			if (maxTimeList.size() > 0 &&maxTimeList.get(0)!=null&&!maxTimeList.get(0).toString().equals("null")) {
+				maxTime = maxTimeList.get(0).toString();
+			} else {
+				maxTime = StringManagerUtils.getCurrentTime();
+			}
+			sql+= " and t.acqtime>to_date('"+maxTime+"','yyyy-mm-dd')-10 ";
 		}
 		
 		sql+= " and well.wellname='"+wellName+"' "+ " order by t.acqtime";

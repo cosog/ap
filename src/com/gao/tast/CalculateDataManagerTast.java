@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
+import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -40,7 +41,6 @@ public class CalculateDataManagerTast {
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
 		String result="无未计算数据";
 		int count=getCount(sql);
-		closeDBConnection();
 		if(count>0){
 			System.out.println("发现未计算数据");
 			result=StringManagerUtils.sendPostMethod(url, "","utf-8");
@@ -98,64 +98,89 @@ public class CalculateDataManagerTast {
 //	@Scheduled(cron = "0 0/1 * * * ?")
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void getOuterDataRequset() throws SQLException, UnsupportedEncodingException, ParseException{
-//		System.out.println("取功图:"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
-		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/getOuterSurfaceCardData";
-		StringManagerUtils.sendPostMethod(url, "","utf-8");
+		
+		String sql="select t.id,t2.pumpsettingdepth,to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') "
+				+ " from tbl_wellinformation t  "
+				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "
+				+ " left outer join tbl_rpc_diagram_latest t3 on t3.wellid=t.id ";
+		try {
+			conn=OracleJdbcUtis.getConnection();
+			if(conn!=null){
+				pstmt = conn.prepareStatement(sql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					int wellId=rs.getInt(1);
+					String pumpsettingdepth=rs.getString(2);
+					if(StringManagerUtils.isNotNull(pumpsettingdepth)&&StringManagerUtils.stringToFloat(pumpsettingdepth)>0){//如果录入了生产数据
+						String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/getOuterSurfaceCardData?wellId="+wellId;
+						StringManagerUtils.sendPostMethod(url, "","utf-8");
+//						Thread.sleep(1000*5);
+					}
+				}
+			}
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		
 	}
 	
-	public static Connection getConnection(){
-        try{
-        	String driver=Config.getInstance().configFile.getSpring().getDatasource().getDriver();
-            String url = Config.getInstance().configFile.getSpring().getDatasource().getDriverUrl(); 
-            String username = Config.getInstance().configFile.getSpring().getDatasource().getUser();
-            String password = Config.getInstance().configFile.getSpring().getDatasource().getPassword();  
-            Class.forName(driver).newInstance();
-            Connection conn = DriverManager.getConnection(url, username, password);
-            return conn;
-        }
-        catch (Exception e){
-            return null;
-        }
-    }
-	
-	public static Connection getOuterConnection(){  
-        try{
-        	String driver=Config.getInstance().configFile.getDockDataSource().get(0).getDriver();
-            String url = Config.getInstance().configFile.getDockDataSource().get(0).getDriverUrl(); 
-            String username = Config.getInstance().configFile.getDockDataSource().get(0).getUser();
-            String password = Config.getInstance().configFile.getDockDataSource().get(0).getPassword();  
-            Class.forName(driver).newInstance();  
-            Connection conn = DriverManager.getConnection(url, username, password);  
-            return conn;  
-        }  
-        catch (Exception e){ 
-            return null;  
-        }  
-    }
-	
-	public static void closeDBConnection(){  
-        if(conn != null){  
-            try{           
-                pstmt.close();  
-                rs.close();
-                conn.close();  
-            }catch(SQLException e){
-                e.printStackTrace();  
-            }finally{  
-                try{  
-                    pstmt.close();  
-                    rs.close();
-                }catch(SQLException e){  
-                    e.printStackTrace();  
-                }  
-                conn = null;  
-            }  
-        }  
-    }
+//	public static Connection getConnection(){
+//        try{
+//        	String driver=Config.getInstance().configFile.getSpring().getDatasource().getDriver();
+//            String url = Config.getInstance().configFile.getSpring().getDatasource().getDriverUrl(); 
+//            String username = Config.getInstance().configFile.getSpring().getDatasource().getUser();
+//            String password = Config.getInstance().configFile.getSpring().getDatasource().getPassword();  
+//            Class.forName(driver).newInstance();
+//            Connection conn = DriverManager.getConnection(url, username, password);
+//            return conn;
+//        }
+//        catch (Exception e){
+//            return null;
+//        }
+//    }
+//	
+//	public static Connection getOuterConnection(){  
+//        try{
+//        	String driver=Config.getInstance().configFile.getDockDataSource().get(0).getDriver();
+//            String url = Config.getInstance().configFile.getDockDataSource().get(0).getDriverUrl(); 
+//            String username = Config.getInstance().configFile.getDockDataSource().get(0).getUser();
+//            String password = Config.getInstance().configFile.getDockDataSource().get(0).getPassword();  
+//            Class.forName(driver).newInstance();  
+//            Connection conn = DriverManager.getConnection(url, username, password);  
+//            return conn;  
+//        }  
+//        catch (Exception e){ 
+//            return null;  
+//        }  
+//    }
+//	
+//	public static void closeDBConnection(){  
+//        if(conn != null){  
+//            try{           
+//                pstmt.close();  
+//                rs.close();
+//                conn.close();  
+//            }catch(SQLException e){
+//                e.printStackTrace();  
+//            }finally{  
+//                try{  
+//                    pstmt.close();  
+//                    rs.close();
+//                }catch(SQLException e){  
+//                    e.printStackTrace();  
+//                }  
+//                conn = null;  
+//            }  
+//        }  
+//    }
 	
 	public static  int getCount(String sql) throws SQLException{  
         int result=0;
-        conn=getConnection();
+        conn=OracleJdbcUtis.getConnection();
         if(conn==null){
         	return -1;
         }
@@ -164,7 +189,7 @@ public class CalculateDataManagerTast {
 		while(rs.next()){
 			result=rs.getInt(1);
 		}
-		closeDBConnection();
+		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return result;
     }
 	

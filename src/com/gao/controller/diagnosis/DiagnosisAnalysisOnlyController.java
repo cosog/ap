@@ -97,11 +97,12 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			} else {
 				endDate = StringManagerUtils.getCurrentTime();
 			}
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			}
 		}
 		
-		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
-		}
+		
 		
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);

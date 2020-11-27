@@ -69,6 +69,7 @@ import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.Constants;
 import com.gao.utils.DataModelMap;
+import com.gao.utils.DataSourceConfig;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
@@ -1614,17 +1615,22 @@ public class GraphicalUploadController extends BaseController {
 	/**<p>获取对接数据库的功图文件文件</p>
 	 * 
 	 * @return
+	 * @throws IOException 
 	 * @throws Exception
 	 */
 	@RequestMapping("/getOuterSurfaceCardData")
-	public String getOuterSurfaceCardData(){
+	public String getOuterSurfaceCardData() throws IOException{
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
+//		ServletInputStream ss = request.getInputStream();
+//		String wellName=convertStreamToString(ss,"utf-8");
+		
+		
 		String localSql="select t.wellName,t2.pumpsettingdepth,to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t  "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "
 				+ " left outer join tbl_rpc_diagram_latest t3 on t3.wellid=t.id "
-				+ " where 1=1 "
-				+ " and t.liftingtype >=200 and t.liftingtype<300 "
-				+ " order by t.sortnum";
+				+ " where t.id="+wellId;
 		Connection outerConn= OracleJdbcUtis.getOuterConnection();
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
@@ -1649,7 +1655,6 @@ public class GraphicalUploadController extends BaseController {
 								+ " where 1=1 ";
 						
 						if(!StringManagerUtils.isNotNull(acqTime)){
-//							acqTime="1970-01-01 00:00:00";
 							record=1;
 							outerSql+=" and t.dyna_create_time > to_date('"+StringManagerUtils.getCurrentTime()+"','yyyy-mm-dd')-30 ";
 						}else{
@@ -1658,8 +1663,8 @@ public class GraphicalUploadController extends BaseController {
 						outerSql+= " and t.dyna_create_time < to_date('2020-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ";
 						outerSql+=" and t.well_common_name='"+wellName+"' "
 								+ " order by t.dyna_create_time ";
-//								+ " ) v where rownum<="+record+"";
-//						System.out.println("outerSql-"+wellName+":"+outerSql);
+						outerSql="select v.* from ( "+outerSql+ " ) v where rownum<="+record+"";
+						System.out.println("outerSql-"+wellName+":"+outerSql);
 						pstmt = outerConn.prepareStatement(outerSql);
 						rs=pstmt.executeQuery();
 //						System.out.println("outerSql-"+wellName+"查询完成!!!");
@@ -1693,15 +1698,13 @@ public class GraphicalUploadController extends BaseController {
 								ee.printStackTrace();
 								continue;
 							}
-							
-							
 						}
 						if(pstmt!=null)
 	                		pstmt.close();  
 	                	if(rs!=null)
 	                		rs.close();
 					}
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
 				}

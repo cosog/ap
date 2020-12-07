@@ -1653,18 +1653,17 @@ public class GraphicalUploadController extends BaseController {
 								+ " t.stroke,t.frequency,t.dyna_points,t.displacement,t.disp_load,t.disp_current,t.active_power "
 								+ " from a11prod.pc_fd_pumpjack_dyna_dia_t t  "
 								+ " where 1=1 ";
-						
 						if(!StringManagerUtils.isNotNull(acqTime)){
 							record=1;
 							outerSql+=" and t.dyna_create_time > to_date('"+StringManagerUtils.getCurrentTime()+"','yyyy-mm-dd')-30 ";
 						}else{
 							outerSql+= " and t.dyna_create_time > to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss') ";
 						}
-						outerSql+= " and t.dyna_create_time < to_date('2020-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ";
+//						outerSql+= " and t.dyna_create_time < to_date('2020-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ";
 						outerSql+=" and t.well_common_name='"+wellName+"' "
 								+ " order by t.dyna_create_time ";
 						outerSql="select v.* from ( "+outerSql+ " ) v where rownum<="+record+"";
-						System.out.println("outerSql-"+wellName+":"+outerSql);
+//						System.out.println("outerSql-"+wellName+":"+outerSql);
 						pstmt = outerConn.prepareStatement(outerSql);
 						rs=pstmt.executeQuery();
 //						System.out.println("outerSql-"+wellName+"查询完成!!!");

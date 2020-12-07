@@ -8281,6 +8281,16 @@ function handsontableDataCheck_Num_Nullable(val, callback,row,col,handsontableHe
 	}
 };
 
+function handsontableDataCheck_NotNull(val, callback,row,col,handsontableHelper){
+	if(isNotVal(val)){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
 function handsontableDataCheck_PumpGrade(val, callback,row,col,handsontableHelper){
 	if(val==1 || val==2 || val==3 || val==4 || val==5){
 		return callback(true);

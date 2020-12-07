@@ -405,6 +405,10 @@ function CreateDataSourceConfigColumnsInfoTable(result){
 	for(var i=0;i<result.diagramTableColumns.length;i++){
 		if(result.diagramTableColumns[i].dataIndex==="columnType"){
 			columns+="{data:'"+result.diagramTableColumns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['date','varchar2','number']}";
+    	}else if(result.diagramTableColumns[i].dataIndex==="columnName"){
+    		columns+="{data:'"+result.diagramTableColumns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,dataSourceConfigColumnsHandsontableHelper);}}";
+        }else if(result.diagramTableColumns[i].dataIndex==="checked"){
+    		columns+="{data:'"+result.diagramTableColumns[i].dataIndex+"',type:'checkbox'}";
     	}else{
     		columns+="{data:'"+result.diagramTableColumns[i].dataIndex+"'}";
     	}
@@ -505,43 +509,43 @@ var DataSourceConfigColumnsHandsontableHelper = {
 	                rowHeaders: false,
 	                colHeaders: false,
 //					rowHeights: [50],
-					colWidths:[6,10,10,10],
+					colWidths:[2,6,10,10,10],
 					stretchH: 'all',
-//					columns:dataSourceConfigColumnsHandsontableHelper.columns,
+					columns:dataSourceConfigColumnsHandsontableHelper.columns,
 	                mergeCells: [
 	                    {
 	                        "row": 0,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
 	                        "row": 11,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
 	                        "row": 16,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
 	                        "row": 31,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
 	                        "row": 35,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
 	                        "row": 39,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
 	                        "row": 45,
-	                        "col": 1,
+	                        "col": 2,
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    }],
@@ -553,22 +557,24 @@ var DataSourceConfigColumnsHandsontableHelper = {
 	                    if (visualRowIndex ==0 || visualRowIndex ==11 || visualRowIndex ==16
 	                    		|| visualRowIndex ==31|| visualRowIndex ==35 || visualRowIndex ==39
 	                    		|| visualRowIndex ==45) {
-	                    	cellProperties.renderer = dataSourceConfigColumnsHandsontableHelper.addSizeBg;
-	                    	if(visualColIndex==0){
+//	                    	cellProperties.renderer = dataSourceConfigColumnsHandsontableHelper.addSizeBg;
+	                    	if(visualColIndex==1){
 	                    		cellProperties.readOnly = true;
 	                    	}
 		                }
-	                    if (visualColIndex ==0) {
+	                    if (visualColIndex ==1) {
 	                    	cellProperties.readOnly = true;
 		                }
 	                    if (visualRowIndex ==1 || visualRowIndex ==12 || visualRowIndex ==17 
 	                    		|| visualRowIndex ==32 || visualRowIndex ==36 || visualRowIndex ==40
 	                    		|| visualRowIndex ==46) {
-	                    	cellProperties.readOnly = true;
-	                    	cellProperties.renderer = dataSourceConfigColumnsHandsontableHelper.addBoldBg;
+	                    	if(visualColIndex > 0 ){
+	                    		cellProperties.readOnly = true;
+	                    	}
+//	                    	cellProperties.renderer = dataSourceConfigColumnsHandsontableHelper.addBoldBg;
 	                    }
 						
-						if (visualColIndex==1
+						if (visualColIndex==2
 								&&( (visualRowIndex>=2&&visualRowIndex<=10) 
 										|| (visualRowIndex>=13&&visualRowIndex<=15)
 										|| (visualRowIndex>=18&&visualRowIndex<=30)  
@@ -592,24 +598,25 @@ var DataSourceConfigColumnsHandsontableHelper = {
 	            var columnRoot = data.columnRoot;
 	            dataSourceConfigColumnsHandsontableHelper.sum = columnRoot.length;
 	            dataSourceConfigColumnsHandsontableHelper.updateArray();
-	            for(var i=0;i<columnRoot.length;i++){
-	            	var columnInfo=[columnRoot[i].id,columnRoot[i].item,columnRoot[i].columnName,columnRoot[i].columnType];
-	            	dataSourceConfigColumnsHandsontableHelper.my_data.splice(i, 0, columnInfo);
-	            	
-	            	
-//	            	var columnInfo=columnRoot[i];
-//	            	dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][0] = columnInfo.id;
-//	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][1] = columnInfo.item;
-//	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][2] = columnInfo.columnName;
-//	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][3] = columnInfo.columnType;
-	            }
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(0, 0, ['功图数据', 'pc_fd_pumpjack_dyna_dia_t', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(11, 0, ['油层数据', 'tbl_reservoir', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(16, 0, ['杆柱组合数据', 'tbl_rodstring', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(31, 0, ['油管数据', 'tbl_tubingstringr', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(35, 0, ['套管数据', 'tbl_casingstring', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(39, 0, ['泵数据', 'tbl_pump', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(45, 0, ['动态数据', 'tbl_production', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            for(var i=0;i<columnRoot.length;i++){
+//	            	var columnInfo=[columnRoot[i].id,columnRoot[i].item,columnRoot[i].columnName,columnRoot[i].columnType];
+//	            	dataSourceConfigColumnsHandsontableHelper.my_data.splice(i, 0, columnInfo);
+//	            	
+//	            	
+////	            	var columnInfo=columnRoot[i];
+////	            	dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][0] = columnInfo.id;
+////	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][1] = columnInfo.item;
+////	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][2] = columnInfo.columnName;
+////	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][3] = columnInfo.columnType;
+//	            }
+	            dataSourceConfigColumnsHandsontableHelper.my_data=columnRoot;
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(0, 0, ['功图数据', 'pc_fd_pumpjack_dyna_dia_t', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(11, 0, ['油层数据', 'tbl_reservoir', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(16, 0, ['杆柱组合数据', 'tbl_rodstring', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(31, 0, ['油管数据', 'tbl_tubingstringr', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(35, 0, ['套管数据', 'tbl_casingstring', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(39, 0, ['泵数据', 'tbl_pump', '', ''],['序号', '字段名称', '字段代码','字段类型']);
+//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(45, 0, ['动态数据', 'tbl_production', '', ''],['序号', '字段名称', '字段代码','字段类型']);
 	            
 	            
 	            

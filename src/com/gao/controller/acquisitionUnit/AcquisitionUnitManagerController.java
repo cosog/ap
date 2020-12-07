@@ -257,6 +257,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDriverConfigData")
+	public String getDriverConfigData() throws Exception {
+		String json = "";
+		
+		json = acquisitionUnitItemManagerService.getDriverConfigData();
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 
 	public String getLimit() {
 		return limit;

@@ -8,8 +8,10 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gao.model.AcquisitionGroup;
 import com.gao.model.AcquisitionItem;
-import com.gao.model.AcquisitionUnitItem;
+import com.gao.model.AcquisitionUnitGroup;
+import com.gao.model.AcquisitionGroupItem;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
@@ -36,13 +38,38 @@ private CommonDataService service;
 	public String getAcquisitionUnitList(Map map,Page pager) {
 		String unitName = (String) map.get("unitName");
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark from tbl_acq_group_conf t where 1=1");
+		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark from tbl_acq_unit_conf t where 1=1");
 		if (StringManagerUtils.isNotNull(unitName)) {
 			sqlBuffer.append(" and t.unit_name like '%" + unitName + "%' ");
 		}
 		sqlBuffer.append(" order by t.id  asc");
 		String json = "";
 		String columns=service.showTableHeadersColumns("acquisitionUnit");
+		try {
+			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return json;
+	}
+	
+	public String doAcquisitionGroupShow(Map map,Page pager) {
+		String groupName = (String) map.get("groupName");
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("select t.id as id,t.group_code as groupCode,t.group_name as groupName,t.remark from tbl_acq_group_conf t where 1=1");
+		if (StringManagerUtils.isNotNull(groupName)) {
+			sqlBuffer.append(" and t.group_name like '%" + groupName + "%' ");
+		}
+		sqlBuffer.append(" order by t.id  asc");
+		String json = "";
+//		String columns=service.showTableHeadersColumns("acquisitionUnit");
+		String columns="["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
+				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
+				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
+				+ "]";
 		try {
 			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
 		} catch (Exception e) {
@@ -70,7 +97,8 @@ private CommonDataService service;
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"驱动名称\",\"dataIndex\":\"driverName\",width:120 ,children:[] },"
 				+ "{ \"header\":\"协议\",\"dataIndex\":\"protocol\",width:80 ,children:[] },"
-				+ "{ \"header\":\"端口\",\"dataIndex\":\"port\",width:80 ,children:[] }"
+				+ "{ \"header\":\"端口\",\"dataIndex\":\"port\",width:80 ,children:[] },"
+				+ "{ \"header\":\"注册包/心跳包\",\"dataIndex\":\"heartbeatPacket\",width:80 ,children:[] }"
 				+ "]";
 		
 		String diagramTableColumns = "["
@@ -169,7 +197,7 @@ private CommonDataService service;
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getPDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getPDiagram().getZoom()+"}");
 				
 				driverConfigData.append("]");
-				result_json.append("{\"id\":1,\"driverName\":\""+driveConfig.getDriverName()+"\",\"protocol\":\""+(driveConfig.getProtocol()==1?"modbus-tcp":"modbus-rtu")+"\",\"port\":"+driveConfig.getPort()+",\"dataConfig\":"+driverConfigData.toString()+"},");
+				result_json.append("{\"id\":1,\"driverName\":\""+driveConfig.getDriverName()+"\",\"protocol\":\""+(driveConfig.getProtocol()==1?"modbus-tcp":"modbus-rtu")+"\",\"port\":"+driveConfig.getPort()+",\"heartbeatPacket\":\""+driveConfig.getHeartbeatPacket()+"\",\"dataConfig\":"+driverConfigData.toString()+"},");
 			}
 			
 		}
@@ -186,6 +214,10 @@ private CommonDataService service;
 		getBaseDao().addObject(acquisitionUnit);
 	}
 	
+	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {
+		getBaseDao().addObject(acquisitionGroup);
+	}
+	
 	public void doAcquisitionUnitEdit(T acquisitionUnit) throws Exception {
 		getBaseDao().updateObject(acquisitionUnit);
 	}
@@ -200,21 +232,38 @@ private CommonDataService service;
 		return getBaseDao().find(queryString);
 	}
 	
-	public List<T> showAcquisitionUnitOwnItems(Class<AcquisitionUnitItem> class1, String unitId) {
-		if(!StringManagerUtils.isNotNull(unitId)){
-			unitId="0";
+	public List<T> showAcquisitionGroupOwnItems(Class<AcquisitionGroupItem> class1, String groupId) {
+		if(!StringManagerUtils.isNotNull(groupId)){
+			groupId="0";
 		}
-		String queryString = "select u FROM AcquisitionUnitItem u where   u.unitId=" + unitId + " order by u.id asc";
+		String queryString = "select u FROM AcquisitionGroupItem u where   u.groupId=" + groupId + " order by u.id asc";
 		return getBaseDao().find(queryString);
 	}
 	
-	public void deleteCurrentAcquisitionUnitOwnItems(final String unitId) throws Exception {
-		final String hql = "DELETE AcquisitionUnitItem u where u.unitId = " + unitId + "";
+	public List<T> showAcquisitionUnitOwnGroups(Class<AcquisitionUnitGroup> class1, String unitId) {
+		if(!StringManagerUtils.isNotNull(unitId)){
+			unitId="0";
+		}
+		String queryString = "select u FROM AcquisitionUnitGroup u where   u.unitId=" + unitId + " order by u.id asc";
+		return getBaseDao().find(queryString);
+	}
+	
+	public void deleteCurrentAcquisitionGroupOwnItems(final String groupId) throws Exception {
+		final String hql = "DELETE AcquisitionGroupItem u where u.groupId = " + groupId + "";
+		getBaseDao().bulkObjectDelete(hql);
+	}
+	
+	public void deleteCurrentAcquisitionUnitOwnGroups(final String unitId) throws Exception {
+		final String hql = "DELETE AcquisitionUnitGroup u where u.unitId = " + unitId + "";
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
 	public void grantAcquisitionItemsPermission(T acquisitionUnitItem) throws Exception {
 		getBaseDao().saveOrUpdateObject(acquisitionUnitItem);
+	}
+	
+	public void grantAcquisitionGroupsPermission(AcquisitionUnitGroup r) throws Exception {
+		getBaseDao().saveOrUpdateObject(r);
 	}
 	
 	public static String getDataItemsType(int type){

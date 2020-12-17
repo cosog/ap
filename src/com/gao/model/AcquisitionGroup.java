@@ -6,34 +6,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 /**
- *  <p>描述：采集类型 实体类  tbl_acq_unit_conf</p>
+ *  <p>描述：采集组实体类  tbl_acq_group_conf</p>
  *  
  * @author zhao  2018-11-02
  *
  */
 @Entity
-@Table(name = "tbl_acq_unit_conf")
-public class AcquisitionUnit implements java.io.Serializable {
+@Table(name = "tbl_acq_group_conf")
+public class AcquisitionGroup implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private String unitCode;
-	private String unitName;
+	private String groupCode;
+	private String groupName;
 	private String remark;
 
 	// Constructors
 
 	/** default constructor */
-	public AcquisitionUnit() {
+	public AcquisitionGroup() {
 	}
 
 	/** full constructor */
-	public AcquisitionUnit(String unitCode, String unitName,String remark) {
-		this.unitCode = unitCode;
-		this.unitName = unitName;
+	public AcquisitionGroup(String groupCode, String groupName,String remark) {
+		this.groupCode = groupCode;
+		this.groupName = groupName;
 		this.remark=remark;
 	}
 
@@ -48,22 +48,22 @@ public class AcquisitionUnit implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "UNIT_CODE", nullable = false, length = 20)
-	public String getUnitCode() {
-		return this.unitCode;
+	@Column(name = "GROUP_CODE", nullable = false, length = 20)
+	public String getGroupCode() {
+		return this.groupCode;
 	}
 
-	public void setUnitCode(String unitCode) {
-		this.unitCode = unitCode;
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
 	}
 
-	@Column(name = "UNIT_NAME", nullable = false, length = 40)
-	public String getUnitName() {
-		return this.unitName;
+	@Column(name = "GROUP_NAME", nullable = false, length = 40)
+	public String getGroupName() {
+		return this.groupName;
 	}
 
-	public void setUnitName(String unitName) {
-		this.unitName = unitName;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 	
 	@Column(name = "REMARK", nullable = false, length = 10)

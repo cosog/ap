@@ -34,6 +34,7 @@ Ext.define("AP.view.acquisitionUnit.ScadaConfigInfoView", {
 //                    		loadFSDiagramAnalysisSingleStatData();
                     	}else if(newCard.id=="AcquisitionUnitInfoPanel_Id"){
                     		var AcquisitionUnitInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionUnitInfoStore');
+                    		var AcquisitionGroupInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionGroupInfoStore');
                             var AcquisitionItemsTreeInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore');
                     	}
                     }

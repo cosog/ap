@@ -11,6 +11,8 @@ public class RTUDriveConfig {
 
     private int Protocol;
     
+    private String HeartbeatPacket;
+    
     private int Sort;
 
     private DataConfig DataConfig;
@@ -565,6 +567,13 @@ public class RTUDriveConfig {
 		public void setElectricDiagnosisResult(Item electricDiagnosisResult) {
 			ElectricDiagnosisResult = electricDiagnosisResult;
 		}
+	}
+
+	public String getHeartbeatPacket() {
+		return HeartbeatPacket;
+	}
+	public void setHeartbeatPacket(String heartbeatPacket) {
+		HeartbeatPacket = heartbeatPacket;
 	}
 
 }

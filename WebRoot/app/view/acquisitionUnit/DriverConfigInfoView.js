@@ -25,7 +25,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                     title:'驱动配置',
                     border: false,
                     layout: 'fit',
-                    width: '35%',
+                    width: '40%',
                     collapsible: true,
                     split: true,
                     html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
@@ -104,7 +104,7 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 			}
 			
 			var row1=driverConfigHandsontableHelper.hot.getDataAtRow(0);
-			CreateDataSourceConfigColumnsInfoTable(row1[4])
+			CreateDataSourceConfigColumnsInfoTable(row1[5])
 //			if(driverConfigItemsHandsontableHelper==null){
 //				CreateDataSourceConfigColumnsInfoTable(result);
 //			}else{
@@ -154,7 +154,7 @@ var DriverConfigHandsontableHelper = {
 	        	driverConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0,4],
+	                    columns: [0,5],
 	                    indicators: true
 	                },
 	                columns:driverConfigHandsontableHelper.columns,
@@ -182,7 +182,7 @@ var DriverConfigHandsontableHelper = {
 	                },
 	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=driverConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	CreateDataSourceConfigColumnsInfoTable(row1[4]);
+	                	CreateDataSourceConfigColumnsInfoTable(row1[5]);
 	                },
 	                afterDestroy: function() {
 	                    // 移除事件

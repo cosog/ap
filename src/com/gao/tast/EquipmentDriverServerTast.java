@@ -572,7 +572,7 @@ public class EquipmentDriverServerTast {
 	public static boolean  initAcquisitionUnit(){
 		System.out.println("采集单元初始化开始");
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
-		String sql="select t.unit_code,t.unit_name from tbl_acq_group_conf t order by id";
+		String sql="select t.unit_code,t.unit_name from tbl_acq_unit_conf t order by id";
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){
 			return false;
@@ -593,7 +593,7 @@ public class EquipmentDriverServerTast {
 				acquisitionUnitData.setAcquisitionUnitCode(rs.getString(1));
 				acquisitionUnitData.setAcquisitionUnitName(rs.getString(2));
 				String itemsSql="select t2.itemcode,t2.itemname "
-						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_group_conf t3 "
+						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_unit_conf t3 "
 						+ " where t.itemid=t2.id and  t.unitid=t3.id and t3.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"'  "
 						+ " and t2.id not in(select t4.parentid from tbl_acq_item_conf t4 )  order by t2.id";
 				pstmt = conn.prepareStatement(itemsSql); 

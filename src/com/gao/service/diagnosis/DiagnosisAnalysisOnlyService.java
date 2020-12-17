@@ -1262,11 +1262,19 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tableName="viw_rpc_comprehensive_hist";
 		}
 		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
-		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
-				+ " from tbl_wellinformation t,tbl_acq_group_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
-				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
-				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
-				+ " order by t3.seq";
+		String controlItemSql="select t.wellname,t4.itemname,t4.itemcode "
+				+ " from tbl_wellinformation t,"
+				+ " tbl_acq_unit_conf t2,"
+				+ " tbl_acq_group_conf t3,"
+				+ " tbl_acq_item_conf t4,"
+				+ " tbl_acq_group2unit_conf t5,"
+				+ " tbl_acq_item2group_conf t6 "
+				+ " where t.unitcode=t2.unit_code "
+				+ " and t2.id=t5.unitid and t3.id=t5.groupid "
+				+ " and t3.id=t6.groupid and t4.id=t6.itemid "
+				+ " and t.wellname='"+selectedWellName+"' "
+				+ " and t4.operationtype=2 "
+				+ " order by t4.seq";
 		String sql="select wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
 				+ prodCol
 				+ " theoreticalProduction,"
@@ -1486,7 +1494,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}
 		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
 		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
-				+ " from tbl_wellinformation t,tbl_acq_group_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
+				+ " from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
 				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
 				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
 				+ " order by t3.seq";

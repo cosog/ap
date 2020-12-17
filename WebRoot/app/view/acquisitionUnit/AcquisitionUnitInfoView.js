@@ -96,7 +96,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
                     text: cosog.string.add,
                     iconCls: 'add',
                     handler: function () {
-//                    	addAcquisitionUnitInfo();
+                    	addAcquisitionGroupInfo();
                     }
              }, "-", {
                     xtype: 'button',
@@ -105,7 +105,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
                     disabled: true,
                     iconCls: 'edit',
                     handler: function () {
-//                    	modifyAcquisitionUnitInfo();
+//                    	modifyAcquisitionGroupInfo();
                     }
              }, "-", {
                     xtype: 'button',
@@ -114,9 +114,22 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
                     text: cosog.string.del,
                     iconCls: 'delete',
                     handler: function () {
-//                    	delAcquisitionUnitInfo();
+//                    	delAcquisitionGroupInfo();
                     }
-             }]
+             }],
+             bbar: ['->', {
+                 xtype: 'button',
+                 id: 'saveAcquisitionGroupToUnitBtn_Id',
+                 text: '保存',
+                 iconCls: 'save',
+                 pressed: true,
+                 handler: function () {
+                 	grantAcquisitionGroupsPermission();
+                 }
+     		}, {
+                 xtype: 'tbspacer',
+                 flex: 1
+     		}]
         	},{
         		region:'east',
         		width:'20%',

@@ -352,7 +352,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ liftingType_Str
 				+ "  and t.orgid in ("+orgId+" )  "
 			    + " order by t.sortnum,t.wellname ";
-		String unitSql="select t.unit_name from tbl_acq_group_conf t order by t.id";
+		String unitSql="select t.unit_name from tbl_acq_unit_conf t order by t.id";
 		List<?> unitList = this.findCallSql(unitSql);
 		unitDropdownData.append("[");
 		for(int i=0;i<unitList.size();i++){
@@ -461,7 +461,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ liftingType_Str
 				+ "  and t.orgid in ("+orgId+" )  "
 			    + " order by t.sortnum,t.wellname ";
-		String unitSql="select t.unit_name from tbl_acq_group_conf t order by t.id";
+		String unitSql="select t.unit_name from tbl_acq_unit_conf t order by t.id";
 		List<?> list = this.findCallSql(sql);
 		result_json.append("[");
 		for(int i=0;i<list.size();i++){

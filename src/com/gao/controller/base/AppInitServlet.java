@@ -61,7 +61,7 @@ public class AppInitServlet extends HttpServlet {
 			String macAddress=StringManagerUtils.getMacAddress();
 			String serialnumber = Config.getInstance().configFile.getOthers().getSerialnumber();
 			String decodestr = (new CryptUtil()).decode(serialnumber);
-			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||"52:54:00:CE:1A:5C".equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
+			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||"00:50:56:9D:6B:D3".equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
 				license.put("license", "");
 				license.put("license", "God bless you!");
 				log.warn("恭喜软件已经授权！");

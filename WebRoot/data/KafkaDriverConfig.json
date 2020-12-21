@@ -3,7 +3,7 @@
     "DriverCode": "KafkaDrive",
     "Port": 0,
     "Protocol": 1,
-    "Sort":7,
+    "Sort":8,
     "DataConfig": {
         "RunStatus": {
             "Address": 40317,

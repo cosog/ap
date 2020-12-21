@@ -33,9 +33,13 @@ public class CalculateDataManagerTast {
 	private static Connection conn = null;   
     private static PreparedStatement pstmt = null;  
     private static ResultSet rs = null;  
+    
+    private static Connection conn_outer = null;   
+    private static PreparedStatement pstmt_outer = null;  
+    private static ResultSet rs_outer = null; 
 	
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/5 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
@@ -104,13 +108,13 @@ public class CalculateDataManagerTast {
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "
 				+ " left outer join tbl_rpc_diagram_latest t3 on t3.wellid=t.id ";
 		try {
-			conn=OracleJdbcUtis.getConnection();
-			if(conn!=null){
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				while(rs.next()){
-					int wellId=rs.getInt(1);
-					String pumpsettingdepth=rs.getString(2);
+			conn_outer=OracleJdbcUtis.getConnection();
+			if(conn_outer!=null){
+				pstmt_outer = conn_outer.prepareStatement(sql);
+				rs_outer=pstmt_outer.executeQuery();
+				while(rs_outer.next()){
+					int wellId=rs_outer.getInt(1);
+					String pumpsettingdepth=rs_outer.getString(2);
 					if(StringManagerUtils.isNotNull(pumpsettingdepth)&&StringManagerUtils.stringToFloat(pumpsettingdepth)>0){//如果录入了生产数据
 						String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/getOuterSurfaceCardData?wellId="+wellId;
 						StringManagerUtils.sendPostMethod(url, "","utf-8");
@@ -121,9 +125,9 @@ public class CalculateDataManagerTast {
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+			OracleJdbcUtis.closeDBConnection(conn_outer, pstmt_outer, rs_outer);
 		}finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+			OracleJdbcUtis.closeDBConnection(conn_outer, pstmt_outer, rs_outer);
 		}
 		
 	}

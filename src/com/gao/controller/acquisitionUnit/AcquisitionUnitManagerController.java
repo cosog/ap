@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gao.controller.base.BaseController;
+import com.gao.model.AcquisitionGroup;
 import com.gao.model.AcquisitionItem;
 import com.gao.model.AcquisitionUnit;
-import com.gao.model.AcquisitionUnitItem;
+import com.gao.model.AcquisitionUnitGroup;
+import com.gao.model.AcquisitionGroupItem;
 import com.gao.model.Module;
 import com.gao.model.Role;
 import com.gao.model.RoleModule;
@@ -54,21 +56,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@Autowired
 	private AcquisitionUnitManagerService<AcquisitionUnit> acquisitionUnitManagerService;
 	@Autowired
+	private AcquisitionUnitManagerService<AcquisitionGroup> acquisitionGroupManagerService;
+	@Autowired
 	private AcquisitionUnitManagerService<AcquisitionItem> acquisitionItemManagerService;
 	@Autowired
-	private AcquisitionUnitManagerService<AcquisitionUnitItem> acquisitionUnitItemManagerService;
+	private AcquisitionUnitManagerService<AcquisitionGroupItem> acquisitionUnitItemManagerService;
 	private List<AcquisitionUnit> list;
 	private AcquisitionUnit acquisitionUnit;
 	private AcquisitionItem acquisitionItem;
+	private AcquisitionGroup acquisitionGroup;
 	private String limit;
 	private String msg = "";
 	private String unitName;
+	private String groupName;
 	private String page;
 	
 	//添加绑定前缀 
 	@InitBinder("acquisitionUnit")
 	public void initBinder(WebDataBinder binder) {
 		binder.setFieldDefaultPrefix("acquisitionUnit.");
+	}
+	//添加绑定前缀 
+	@InitBinder("acquisitionGroup")
+	public void initBinder2(WebDataBinder binder) {
+		binder.setFieldDefaultPrefix("acquisitionGroup.");
 	}
 
 	/**<p>描述：采集类型数据显示方法</p>
@@ -117,6 +128,27 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doAcquisitionGroupAdd")
+	public String doAcquisitionGroupAdd(@ModelAttribute AcquisitionGroup acquisitionGroup) throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		try {
+			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
+			EquipmentDriverServerTast.initAcquisitionUnit();
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	
+	
 	@RequestMapping("/doAcquisitionUnitEdit")
 	public String doAcquisitionUnitEdit(@ModelAttribute AcquisitionUnit acquisitionUnit) {
 		String result ="{success:true,msg:false}";
@@ -149,6 +181,34 @@ public class AcquisitionUnitManagerController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	
+	/**<p>描述：采集组数据显示方法</p>
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping("/doAcquisitionGroupShow")
+	public String doAcquisitionGroupShow() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		groupName = ParamUtils.getParameter(request, "groupName");
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
+		int offset = (intPage - 1) * pageSize;
+		map.put(PagingConstants.PAGE_NO, intPage);
+		map.put(PagingConstants.PAGE_SIZE, pageSize);
+		map.put(PagingConstants.OFFSET, offset);
+		map.put("groupName", groupName);
+		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
+		this.pager = new Page("pagerForm", request);
+		String json = this.acquisitionUnitManagerService.doAcquisitionGroupShow(map,pager);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 	
@@ -188,15 +248,39 @@ public class AcquisitionUnitManagerController extends BaseController {
 	/**
 	 * @return Null
 	 * @throws IOException
-	 * @author 显示当前采集类型拥有的采集项信息
+	 * @author 显示当前采集组拥有的采集项信息
 	 * 
 	 */
-	@RequestMapping("/showAcquisitionUnitOwnItems")
-	public String showAcquisitionUnitOwnItems() throws IOException {
+	@RequestMapping("/showAcquisitionGroupOwnItems")
+	public String showAcquisitionGroupOwnItems() throws IOException {
+		// Gson g = new Gson();
+		String groupId = ParamUtils.getParameter(request, "groupId");
+		Gson g = new Gson();
+		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionGroupOwnItems(AcquisitionGroupItem.class, groupId);
+		String json = "";
+		json = g.toJson(list);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.debug("doShowRightCurrentUsersOwnRoles ***json==****" + json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	/**
+	 * @return Null
+	 * @throws IOException
+	 * @author 显示当前采集单元拥有的采集组信息
+	 * 
+	 */
+	@RequestMapping("/showAcquisitionUnitOwnGroups")
+	public String showAcquisitionUnitOwnGroups() throws IOException {
 		// Gson g = new Gson();
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		Gson g = new Gson();
-		List<AcquisitionUnitItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnItems(AcquisitionUnitItem.class, unitId);
+		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnGroups(AcquisitionUnitGroup.class, unitId);
 		String json = "";
 		json = g.toJson(list);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -212,30 +296,30 @@ public class AcquisitionUnitManagerController extends BaseController {
 	/**
 	 * @return NUll
 	 * @throws IOException
-	 *             为当前采集单元安排采集项
+	 *             为当前采集组安排采集项
 	 */
 	@RequestMapping("/grantAcquisitionItemsPermission")
 	public String grantAcquisitionItemsPermission() throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
-		AcquisitionUnitItem r = null;
+		AcquisitionGroupItem r = null;
 		try {
 			String paramsIds = ParamUtils.getParameter(request, "paramsId");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			String unitId = ParamUtils.getParameter(request, "unitId");
+			String groupId = ParamUtils.getParameter(request, "groupId");
 			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
 			
-			String unitIds[] = StringManagerUtils.split(paramsIds, ",");
+			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
 			//String oldModuleId[] = StringManagerUtils.split(oldModuleIds, ",");
-			if (unitIds.length > 0 && unitId != null) {
-				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionUnitOwnItems(unitId);
+			if (groupIds.length > 0 && groupId != null) {
+				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
 				if (matrixCodes != "" || matrixCodes != null) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");
-						r = new AcquisitionUnitItem();
-						r.setUnitId(Integer.parseInt(unitId));
-						log.debug("unitId==" + unitId);
+						r = new AcquisitionGroupItem();
+						r.setGroupId(Integer.parseInt(groupId));
+						log.debug("unitId==" + groupId);
 						r.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
 						r.setMatrix(module_[1]);
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(r);
@@ -254,6 +338,70 @@ public class AcquisitionUnitManagerController extends BaseController {
 			result = "{success:false,msg:false}";
 			out.print(result);
 		}
+		return null;
+	}
+	
+	/**
+	 * @return NUll
+	 * @throws IOException
+	 *             为当前采集单元安排采集组
+	 */
+	@RequestMapping("/grantAcquisitionGroupsPermission")
+	public String grantAcquisitionGroupsPermission() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		AcquisitionUnitGroup r = null;
+		try {
+			String paramsIds = ParamUtils.getParameter(request, "paramsId");
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
+			String unitId = ParamUtils.getParameter(request, "unitId");
+			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
+			
+			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
+			//String oldModuleId[] = StringManagerUtils.split(oldModuleIds, ",");
+			if (groupIds.length > 0 && unitId != null) {
+				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionUnitOwnGroups(unitId);
+				if (matrixCodes != "" || matrixCodes != null) {
+					String module_matrix[] = matrixCodes.split("\\|");
+					for (int i = 0; i < module_matrix.length; i++) {
+						String module_[] = module_matrix[i].split("\\:");
+						r = new AcquisitionUnitGroup();
+						r.setUnitId(Integer.parseInt(unitId));
+						log.debug("unitId==" + unitId);
+						r.setGroupId(StringManagerUtils.stringTransferInteger(module_[0]));
+						r.setMatrix(module_[1]);
+						this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(r);
+
+					}
+					EquipmentDriverServerTast.initAcquisitionUnit();
+				}
+
+			}
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/getDriverConfigData")
+	public String getDriverConfigData() throws Exception {
+		String json = "";
+		
+		json = acquisitionUnitItemManagerService.getDriverConfigData();
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 	
@@ -314,5 +462,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 
 	public void setAcquisitionItem(AcquisitionItem acquisitionItem) {
 		this.acquisitionItem = acquisitionItem;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public AcquisitionGroup getAcquisitionGroup() {
+		return acquisitionGroup;
+	}
+
+	public void setAcquisitionGroup(AcquisitionGroup acquisitionGroup) {
+		this.acquisitionGroup = acquisitionGroup;
 	}
 }

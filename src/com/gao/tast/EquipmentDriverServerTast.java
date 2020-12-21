@@ -509,54 +509,54 @@ public class EquipmentDriverServerTast {
 		String path="";
 		String DriverConfigData="";
 		java.lang.reflect.Type type=null;
-//		//添加安控驱动配置
-//		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(EtrolRTUDrive.getDriverCode(), EtrolRTUDrive);
-//		
-//		//添加必创驱动配置
-//		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
-//		
-//		//添加蚌埠日月驱动配置
-//		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
-//		
-//		//添加中科奥维驱动配置
-//		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
-//		
-//		//添加A11驱动配置
-//		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
-//		
-//		//添加四化驱动配置
-//		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
-//		
-//		//添加MQTT驱动配置
-//		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","data/");
-//		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-//		type = new TypeToken<RTUDriveConfig>() {}.getType();
-//		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
-//		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
+		//添加安控驱动配置
+		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(EtrolRTUDrive.getDriverCode(), EtrolRTUDrive);
+		
+		//添加必创驱动配置
+		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
+		
+		//添加蚌埠日月驱动配置
+		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
+		
+		//添加中科奥维驱动配置
+		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
+		
+		//添加A11驱动配置
+		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
+		
+		//添加四化驱动配置
+		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
+		
+		//添加MQTT驱动配置
+		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","data/");
+		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<RTUDriveConfig>() {}.getType();
+		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
 		
 		//添加Kafka
 		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
@@ -572,7 +572,7 @@ public class EquipmentDriverServerTast {
 	public static boolean  initAcquisitionUnit(){
 		System.out.println("采集单元初始化开始");
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
-		String sql="select t.unit_code,t.unit_name from tbl_acq_group_conf t order by id";
+		String sql="select t.unit_code,t.unit_name from tbl_acq_unit_conf t order by id";
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){
 			return false;
@@ -593,7 +593,7 @@ public class EquipmentDriverServerTast {
 				acquisitionUnitData.setAcquisitionUnitCode(rs.getString(1));
 				acquisitionUnitData.setAcquisitionUnitName(rs.getString(2));
 				String itemsSql="select t2.itemcode,t2.itemname "
-						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_group_conf t3 "
+						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_unit_conf t3 "
 						+ " where t.itemid=t2.id and  t.unitid=t3.id and t3.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"'  "
 						+ " and t2.id not in(select t4.parentid from tbl_acq_item_conf t4 )  order by t2.id";
 				pstmt = conn.prepareStatement(itemsSql); 

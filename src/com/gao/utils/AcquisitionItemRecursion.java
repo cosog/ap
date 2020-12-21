@@ -16,6 +16,7 @@ public class AcquisitionItemRecursion {
 	StringBuffer returnStr = new StringBuffer();
 
 	public AcquisitionItemRecursion() {// 构造方法里初始化模拟List
+		
 	}
 	public String recursionAcquisitionItemTreeFn(List list, AcquisitionItem acquisitionItem) {
 

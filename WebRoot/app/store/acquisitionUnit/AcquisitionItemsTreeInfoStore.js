@@ -62,7 +62,7 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore', {
                 var acquisitionItemsTreePanel = Ext.getCmp("acquisitionItemsTreePanel_Id");
                 acquisitionItemsTreePanel.add(acquisitionItemsTreeGridPanel);
             }
-            showAcquisitionUnitOwnItems(store);
+            showAcquisitionGroupOwnItems(store);
         }
     }
 });

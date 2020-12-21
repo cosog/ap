@@ -8,28 +8,28 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tbl_acq_item2group_conf")
-public class AcquisitionUnitItem implements java.io.Serializable {
+@Table(name = "tbl_acq_group2unit_conf")
+public class AcquisitionUnitGroup implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer id;
+	private Integer groupId;
 	private Integer unitId;
-	private Integer itemId;
 	private String matrix;
 
 	
 
 	
 
-	public AcquisitionUnitItem() {
+	public AcquisitionUnitGroup() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	/** full constructor */
-	public AcquisitionUnitItem(Integer unitId, Integer itemId, String matrix) {
+	public AcquisitionUnitGroup(Integer groupId, Integer unitId, String matrix) {
+		this.groupId = groupId;
 		this.unitId = unitId;
-		this.itemId = itemId;
 		this.matrix = matrix;
 	}
 
@@ -52,21 +52,21 @@ public class AcquisitionUnitItem implements java.io.Serializable {
 		this.matrix = matrix;
 	}
 
+	@Column(name = "groupid", nullable = false, precision = 22, scale = 0)
+	public Integer getGroupId() {
+		return this.groupId;
+	}
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
+	}
+	
 	@Column(name = "unitid", nullable = false, precision = 22, scale = 0)
 	public Integer getUnitId() {
 		return this.unitId;
 	}
+	
 	public void setUnitId(Integer unitId) {
 		this.unitId = unitId;
-	}
-	
-	@Column(name = "itemid", nullable = false, precision = 22, scale = 0)
-	public Integer getItemId() {
-		return this.itemId;
-	}
-	
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
 	}
 
 	

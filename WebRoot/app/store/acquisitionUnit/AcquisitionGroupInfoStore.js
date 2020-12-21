@@ -1,12 +1,12 @@
-Ext.define('AP.store.acquisitionUnit.AcquisitionUnitInfoStore', {
+Ext.define('AP.store.acquisitionUnit.AcquisitionGroupInfoStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.acquisitionUnitInfoStore',
+    alias: 'widget.acquisitionGroupInfoStore',
 //    model: 'AP.model.acquisitionUnit.AcquisitionUnitInfoModel',
     autoLoad: true,
     pageSize: defaultPageSize,
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/doAcquisitionUnitShow',
+        url: context + '/acquisitionUnitManagerController/doAcquisitionGroupShow',
         actionMethods: {
             read: 'POST'
         },
@@ -23,8 +23,8 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionUnitInfoStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
-            var AcquisitionUnitInfoGridPanel = Ext.getCmp("AcquisitionUnitInfoGridPanel_Id");
-            if (!isNotVal(AcquisitionUnitInfoGridPanel)) {
+            var AcquisitionGroupInfoGridPanel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+            if (!isNotVal(AcquisitionGroupInfoGridPanel)) {
                 var arrColumns = get_rawData.columns;
                 var cloums = createDiagStatisticsColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(cloums);
@@ -44,8 +44,8 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionUnitInfoStore', {
                     beforePageText: "当前页",
                     afterPageText: "共{0}页"
                 });
-                AcquisitionUnitInfoGridPanel = Ext.create('Ext.grid.Panel', {
-                    id: "AcquisitionUnitInfoGridPanel_Id",
+                AcquisitionGroupInfoGridPanel = Ext.create('Ext.grid.Panel', {
+                    id: "AcquisitionGroupInfoGridPanel_Id",
                     border: false,
                     stateful: true,
                     autoScroll: true,
@@ -54,45 +54,46 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionUnitInfoStore', {
                     stripeRows: true,
                     forceFit: true,
 //                    selType: 'checkboxmodel',
-//                    multiSelect: true,
+                    multiSelect: true,
                     selModel:{
                     	selType:'checkboxmodel',
-                    	showHeaderCheckbox:false,
-                    	mode:'SINGLE'
+                    	showHeaderCheckbox:false
+//                    	mode:'SINGLE'
                     },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
                         forceFit: true
                     },
-                    bbar: bbar,
+//                    bbar: bbar,
                     store: store,
                     columns: newColumns,
                     listeners: {
                         selectionchange: function (sm, selected) {
                         	if(selected.length>0){
-                        		Ext.getCmp("acquisitionUnitUpdateBtn_Id").enable();
-                        		Ext.getCmp("acquisitionUnitDeleteBtn_Id").enable();
-                        		Ext.getCmp("selectedAcquisitionUnitCode_Id").setValue(selected[0].data.id);
-                        		Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getStore().load();
+                        		Ext.getCmp("acquisitionGroupUpdateBtn_Id").enable();
+                        		Ext.getCmp("acquisitionGroupDeleteBtn_Id").enable();
+                        		Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(selected[0].data.id);
+                        		Ext.getCmp("acquisitionItemsTreeGridPanel_Id").getStore().load();
                         	}else{
-                        		Ext.getCmp("acquisitionUnitUpdateBtn_Id").disable();
-                        		Ext.getCmp("acquisitionUnitDeleteBtn_Id").disable();
+                        		Ext.getCmp("acquisitionGroupUpdateBtn_Id").disable();
+                        		Ext.getCmp("acquisitionGroupDeleteBtn_Id").disable();
                         	}
                         },
                         itemdblclick: function () {
-                            modifyAcquisitionUnitInfo();
+                            modifyAcquisitionGroupInfo();
                         }
                     }
                 });
-                var ContainPanel = Ext.getCmp("acquisitionUnitListPanel_Id");
-                ContainPanel.add(AcquisitionUnitInfoGridPanel);
+                var ContainPanel = Ext.getCmp("acquisitionGroupListPanel_Id");
+                ContainPanel.add(AcquisitionGroupInfoGridPanel);
             }
+            showAcquisitionUnitOwnGroups(store);
 
         },
         beforeload: function (store, options) {
-            var unitName= Ext.getCmp('acquisitionUnitName_Id').getValue();
+            var groupName= Ext.getCmp('acquisitionGroupName_Id').getValue();
             var new_params = {
-            		unitName: unitName
+            		groupName: groupName
             };
             Ext.apply(store.proxy.extraParams, new_params);
         }

@@ -71,7 +71,7 @@ public class CalculateThread extends Thread{
 				Object[] obj=(Object[])list.get(i);
 				//诊断计产
 				String requestData=calculateDataService.getObjectToRPCCalculateRequestData(obj);
-				System.out.println(requestData);
+//				System.out.println(requestData);
 				java.lang.reflect.Type type = new TypeToken<RPCCalculateRequestData>() {}.getType();
 				RPCCalculateRequestData calculateRequestData=gson.fromJson(requestData, type);
 				String responseData="";

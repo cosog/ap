@@ -1,6 +1,6 @@
 {
-    "DriverName": "A11协议_日月",
-    "DriverCode": "SunMoonStandardDrive",
+    "DriverName": "智慧抽油机",
+    "DriverCode": "IntelligentPumpingUnitDrive",
     "Port": 19200,
     "Protocol": 2,
     "HeartbeatPacket":"AA01***********0D",

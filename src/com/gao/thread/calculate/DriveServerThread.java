@@ -3,6 +3,9 @@ package com.gao.thread.calculate;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.tast.EquipmentDriverServerTast;
@@ -11,6 +14,7 @@ import com.gao.tast.EquipmentDriverServerTast;
 public class DriveServerThread extends Thread{
 	private ServerSocket serverSocket;
 	private RTUDriveConfig driveConfig;
+	private ExecutorService pool = Executors.newCachedThreadPool();
 	public DriveServerThread(ServerSocket serverSocket,RTUDriveConfig driveConfig) {
 		super();
 		this.serverSocket = serverSocket;
@@ -43,7 +47,10 @@ public class DriveServerThread extends Thread{
 									EquipmentDriverServerTast.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTast.clientUnitList.get(i),driveConfig);
 								}
 								if(EquipmentDriverServerTast.clientUnitList.get(i).thread!=null){
-									EquipmentDriverServerTast.clientUnitList.get(i).thread.start();
+//									EquipmentDriverServerTast.clientUnitList.get(i).thread.start();
+									pool.submit(EquipmentDriverServerTast.clientUnitList.get(i).thread);
+									System.out.println(driveConfig.getDriverCode()+"线程池中当前线程数："+((ThreadPoolExecutor)pool).getPoolSize());
+									System.out.println(driveConfig.getDriverCode()+"线程池中当前活跃线程数："+((ThreadPoolExecutor)pool).getActiveCount());
 									break;
 								}
 							}

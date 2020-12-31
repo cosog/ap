@@ -29,27 +29,37 @@ import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class IntelligentPumpingUnitThread extends Thread{
+public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 
-	private int threadId;
 	private ClientUnit clientUnit;
 	private String saveDiagramurl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveRTUAcquisitionData";
 	private String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 	private String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 	private String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
 	private RTUDriveConfig driveConfig;
-	private boolean isExit=false;
+	private InputStream is=null;
+	private OutputStream os=null;
+	private boolean releaseResourceSign=false;
 	public IntelligentPumpingUnitThread(int threadId, ClientUnit clientUnit,RTUDriveConfig driveConfig) {
 		super();
 		this.threadId = threadId;
 		this.clientUnit = clientUnit;
 		this.driveConfig = driveConfig;
+		init(clientUnit.socket);
 	}
+	private void init(Socket socket){
+		try {
+			is=socket.getInputStream();
+			os=socket.getOutputStream();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+	}
+	@SuppressWarnings("static-access")
 	public void run(){
 		clientUnit.setSign(1);
         int rc=0;
-        InputStream is=null;
-        OutputStream os=null;
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         StringBuffer recvBuff=new StringBuffer();
         EquipmentDriverServerTast beeTechDriverServerTast=EquipmentDriverServerTast.getInstance();
@@ -61,7 +71,7 @@ public class IntelligentPumpingUnitThread extends Thread{
         }else if(driveConfig.getProtocol()==2){
         	writeCommand=new byte[]{0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88,0x1F,(byte) 0xAC};
         }
-        while(!isExit){
+        while(!(isExit||this.interrupted()||is==null||os==null)){
         	//获取输入流，并读取客户端信息
             try {
     			byte[] recByte=new byte[256];
@@ -111,6 +121,7 @@ public class IntelligentPumpingUnitThread extends Thread{
 									if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
 										if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
 											EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
+											EquipmentDriverServerTast.clientUnitList.get(j).thread.isExit=true;
 											isRun=true;
 											break;
 										}
@@ -1853,24 +1864,29 @@ public class IntelligentPumpingUnitThread extends Thread{
     				}
     			}
     			if(this.interrupted()){
-    				System.out.println("线程"+this.threadId+"退出！");
             		throw new InterruptedException();
             	}else{
             		Thread.sleep(1000);
             	}
     		} catch (Exception e) {
     			e.printStackTrace();
-				this.releaseResource(is,os);
+    			if(!releaseResourceSign){//如果未释放资源
+    				this.releaseResource(is,os);
+    			}
 				break;
-    		} 
-            
+    		}
+        }
+        if(!releaseResourceSign){
+        	this.releaseResource(is,os);
         }
 	}
 	
 	public  void releaseResource(InputStream is,OutputStream os){
 		System.out.println("releaseResource");
 		try {
+			System.out.println("线程ID："+threadId+",线程名称："+Thread.currentThread().getName()+"释放资源！");
 			isExit=true;
+			releaseResourceSign=true;
 			Connection conn=OracleJdbcUtis.getConnection();
 			Statement stmt=null;
 			stmt = conn.createStatement();

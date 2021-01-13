@@ -593,10 +593,15 @@ public class EquipmentDriverServerTast {
 				}
 				acquisitionUnitData.setAcquisitionUnitCode(rs.getString(1));
 				acquisitionUnitData.setAcquisitionUnitName(rs.getString(2));
-				String itemsSql="select t2.itemcode,t2.itemname "
-						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_unit_conf t3 "
-						+ " where t.itemid=t2.id and  t.unitid=t3.id and t3.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"'  "
-						+ " and t2.id not in(select t4.parentid from tbl_acq_item_conf t4 )  order by t2.id";
+//				String itemsSql="select t2.itemcode,t2.itemname "
+//						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_unit_conf t3 "
+//						+ " where t.itemid=t2.id and  t.unitid=t3.id and t3.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"'  "
+//						+ " and t2.id not in(select t4.parentid from tbl_acq_item_conf t4 )  order by t2.id";
+				String itemsSql="select t.itemcode,t.itemname "
+						+ " from tbl_acq_item_conf t,tbl_acq_item2group_conf t2,tbl_acq_group_conf t3,tbl_acq_group2unit_conf t4,tbl_acq_unit_conf t5 "
+						+ " where t.id=t2.itemid and t2.groupid=t3.id and t3.id=t4.groupid and t4.unitid=t5.id "
+						+ " and t5.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"' "
+						+ " and t.id not in(select t6.parentid from tbl_acq_item_conf t6 )  order by t.id";
 				pstmt = conn.prepareStatement(itemsSql); 
 				itemRs=pstmt.executeQuery();
 				while(itemRs.next()){

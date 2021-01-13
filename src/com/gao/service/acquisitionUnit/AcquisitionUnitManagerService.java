@@ -118,6 +118,11 @@ private CommonDataService service;
 			if(!driveConfig.getDriverCode().toUpperCase().contains("KAFKA") && !driveConfig.getDriverCode().toUpperCase().contains("MQTT")){
 				StringBuffer driverConfigData = new StringBuffer();
 				driverConfigData.append("[");
+				if("IntelligentPumpingUnitDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+					
+				}else{
+					
+				}
 				driverConfigData.append("{\"id\":1,\"item\":\"运行状态\",\"address\":"+driveConfig.getDataConfig().getRunStatus().getAddress()+",\"length\":"+driveConfig.getDataConfig().getRunStatus().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getRunStatus().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getRunStatus().getZoom()+"},");
 				driverConfigData.append("{\"id\":2,\"item\":\"启停控制\",\"address\":"+driveConfig.getDataConfig().getRunControl().getAddress()+",\"length\":"+driveConfig.getDataConfig().getRunControl().getLength()+","

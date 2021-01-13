@@ -45,25 +45,26 @@ import com.google.gson.reflect.TypeToken;
 @SuppressWarnings("static-access")
 @Component("MQTTServerTast")  
 public class MQTTServerTast {
-	public static final String HOST =Config.getInstance().configFile.getMqtt().getServer();// "tcp://47.93.196.203:1883";
-    public static final String[] TOPIC = {"Discrete/#","Diagram/#","Daily/#"};
-    public static final int[] Qos  = {1,1,1};
-    private static final String clientid = "mqttServerClient"+new Date().getTime();
+	private String clientid = "mqttServerClient"+new Date().getTime();
     private static MqttClient client=null;
     private MqttConnectOptions options=null;  
-    private String userName = Config.getInstance().configFile.getMqtt().getUserName();//"hinnotekClient1";   //非必须
-    private String passWord = Config.getInstance().configFile.getMqtt().getPassWord();//"ZJ6m*#D4pd%b";  //非必须
+    
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runMQTTServer() throws InstantiationException, IllegalAccessException, SQLException{
 		//将以前接收到的数据清空
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();
 		if(!map.isEmpty()){
 			map.clear();
 		}
-		
+		String HOST =Config.getInstance().configFile.getMqtt().getServer();// "tcp://47.93.196.203:1883";
+	    String[] TOPIC = {"Discrete/#","Diagram/#","Daily/#"};
+	    int[] Qos  = {1,1,1};
+	    
+		String userName = Config.getInstance().configFile.getMqtt().getUserName();//"hinnotekClient1";   //非必须
+	    String passWord = Config.getInstance().configFile.getMqtt().getPassWord();//"ZJ6m*#D4pd%b";  //非必须
 		boolean isConnected=false;
 		while(!isConnected){
 			try {
@@ -95,8 +96,12 @@ public class MQTTServerTast {
 	            e.printStackTrace();
 	            isConnected=false;
 	            try {
+	            	if(client!=null&&client.isConnected()){
+		        		client.disconnect();
+		        	}
+	            	client=null;
 					Thread.sleep(10*1000);
-				} catch (InterruptedException e1) {
+				} catch (InterruptedException | MqttException e1) {
 					e1.printStackTrace();
 				}
 	        }
@@ -178,6 +183,7 @@ public class MQTTServerTast {
 	        	if(client!=null&&client.isConnected()){
 	        		client.disconnect();
 	        	}
+	        	client=null;
 				runMQTTServer();
 				System.out.println("MQTT重连成功。");
 			} catch (MqttException e) {

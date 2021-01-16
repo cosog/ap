@@ -1080,4 +1080,17 @@ public class TotalAnalysisResponseData {
 	public void setLevelCorrectValue(Item levelCorrectValue) {
 		LevelCorrectValue = levelCorrectValue;
 	}
+	
+	public boolean stringLengthManage(){
+		if(this.FSResultString.length()>2000){
+			this.setFSResultString(FSResultString.substring(0, 1996)+"...");
+		}
+		if(this.CommRange.length()>2000){
+			this.setCommRange(CommRange.substring(0, 1996)+"...");
+		}
+		if(this.RunRange.length()>2000){
+			this.setRunRange(RunRange.substring(0, 1996)+"...");
+		}
+		return true;
+	}
 }

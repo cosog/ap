@@ -301,10 +301,18 @@ public class CalculateDataController extends BaseController{
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
 				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
+				
 				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
+//				System.out.println(responseData);
+				
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					if(totalAnalysisResponseData.getFSResultString().length()>4000){
+						totalAnalysisResponseData.stringLengthManage();
+//						System.out.println(totalAnalysisResponseData.getFSResultString().length());
+//						System.out.println(totalAnalysisResponseData.getFSResultString());
+					}
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
 					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
@@ -485,6 +493,7 @@ public class CalculateDataController extends BaseController{
 	public String PubSubModelCommCalculation() throws ParseException{
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		Gson gson = new Gson();
+		boolean acqTimeChange=false;
 		String sql="select t.wellid,"
 				+ " comm.wellName,comm.commstatus,"
 				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as lastacqTime,"
@@ -533,12 +542,15 @@ public class CalculateDataController extends BaseController{
 							+ "t.commtimeefficiency="+commResponseData.getDaily().getCommEfficiency().getEfficiency()+","
 							+ "t.commrange='"+commResponseData.getDaily().getCommEfficiency().getRangeString()+"'";
 				}
+				//如果通信状态改变
 				if(!(obj[4]+"").equals(obj[2]+"")){
 					updateSql+=",t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+					acqTimeChange=true;
 				}
 				//如果跨天 重置运行状态
-				if(!StringManagerUtils.isNotNull(obj[3]+"") || !(obj[3]+"").split(" ")[0].equals(StringManagerUtils.getCurrentTime()) ){
-					updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
+				if(!StringManagerUtils.isNotNull(obj[3]+"") || !currentDate.equals(lastDate) ){
+					if(acqTimeChange)
+						updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
 				}
 				
 				updateSql+= " where t.wellid="+obj[0];

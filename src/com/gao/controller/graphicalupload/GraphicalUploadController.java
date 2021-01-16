@@ -1169,7 +1169,7 @@ public class GraphicalUploadController extends BaseController {
 		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
-		
+		boolean haveProdData=false;
 		long startTime=0;
 		long endTime=0;
 		long allTime=0;
@@ -1266,19 +1266,24 @@ public class GraphicalUploadController extends BaseController {
 				//更新数据
 				String updateDailyData="";
 				String updateProdData="update tbl_rpc_productiondata_latest t set t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
-				if(kafkaUpData.getWaterCut()>=0){
+				if(kafkaUpData.getWaterCut()>0){
+					haveProdData=true;
 					updateProdData+=",t.WaterCut_W="+kafkaUpData.getWaterCut();
 				}
-				if(kafkaUpData.getTubingPressure()>=0){
+				if(kafkaUpData.getTubingPressure()>0){
+					haveProdData=true;
 					updateProdData+=",t.TubingPressure="+kafkaUpData.getTubingPressure();
 				}
-				if(kafkaUpData.getCasingPressure()>=0){
+				if(kafkaUpData.getCasingPressure()>0){
+					haveProdData=true;
 					updateProdData+=",t.CasingPressure="+kafkaUpData.getCasingPressure();
 				}
-				if(kafkaUpData.getWellHeadFluidTemperature()>=0){
+				if(kafkaUpData.getWellHeadFluidTemperature()>0){
+					haveProdData=true;
 					updateProdData+=",t.WellHeadFluidTemperature="+kafkaUpData.getWellHeadFluidTemperature();
 				}
-				if(kafkaUpData.getProducingfluidLevel()>=0){
+				if(kafkaUpData.getProducingfluidLevel()>0){
+					haveProdData=true;
 					updateProdData+=",t.ProducingfluidLevel="+kafkaUpData.getProducingfluidLevel();
 				}
 				updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
@@ -1340,7 +1345,9 @@ public class GraphicalUploadController extends BaseController {
 							+ " ,t.totalKVarH= "+kafkaUpData.getTotalEnergy().getKVarH();
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
-				commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);
+				if(haveProdData){
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);
+				}
 				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
 				if(StringManagerUtils.isNotNull(updateDailyData)){
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
@@ -1444,8 +1451,6 @@ public class GraphicalUploadController extends BaseController {
 				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
-				
-				
 				
 				//更新数据
 				String updateDailyData="";

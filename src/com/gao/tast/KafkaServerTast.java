@@ -193,7 +193,6 @@ public class KafkaServerTast {
 						}else{
 							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
 						}
-						
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println(record.value());

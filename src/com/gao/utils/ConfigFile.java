@@ -444,6 +444,8 @@ public class ConfigFile {
 	    
 	    private boolean pcp;
 	    
+	    private boolean electrical;
+	    
 	    private boolean dynamicCurve;
 
 	    public boolean isPcp() {
@@ -513,6 +515,12 @@ public class ConfigFile {
 		}
 		public void setDynamicCurve(boolean dynamicCurve) {
 			this.dynamicCurve = dynamicCurve;
+		}
+		public boolean isElectrical() {
+			return electrical;
+		}
+		public void setElectrical(boolean electrical) {
+			this.electrical = electrical;
 		}
 	}
 }

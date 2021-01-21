@@ -2,7 +2,7 @@ server:
    accessPath: http://127.0.0.1:16100/ap
 spring:
    datasource:
-      driverUrl: jdbc:oracle:thin:@47.108.138.190:1521:orcl
+      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
       user: agile
@@ -69,6 +69,7 @@ others:
    defaultGraghSize: 60
    productionUnit: 0
    pcp: true
+   electrical: false
    dynamicCurve: true
    serialnumber: God bless you!
       

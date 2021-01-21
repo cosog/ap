@@ -302,6 +302,7 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                             	xtype: 'tabpanel',
                               	tabPosition: 'right',
                               	title:'电参工况',
+                              	hidden:electricalHidden,
                               	id: 'FSDiagramAnalysisSingleElecWorkCondStatTabpanel_Id',
                               	tabRotation:1,
                               	items: [{
@@ -825,9 +826,11 @@ Ext.define("AP.view.diagnosis.RPCSingleDetailsInfoView", {
                       		Ext.getCmp("FSDiagramAnalysisSingleWorkCondStatTabpanel_Id").getTabBar().insert(0, {
                     		      	xtype: 'tbfill'
                       		});
-                      		Ext.getCmp("FSDiagramAnalysisSingleElecWorkCondStatTabpanel_Id").getTabBar().insert(0, {
-                		      	xtype: 'tbfill'
-                      		});
+                      		if(!electricalHidden){
+                      			Ext.getCmp("FSDiagramAnalysisSingleElecWorkCondStatTabpanel_Id").getTabBar().insert(0, {
+                    		      	xtype: 'tbfill'
+                          		});
+                      		}
                       		Ext.getCmp("FSDiagramAnalysisSingleProdStatTabpanel_Id").getTabBar().insert(0, {
                     		      	xtype: 'tbfill'
                       		});
@@ -1723,7 +1726,7 @@ DiagnosisDataCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
     }
 
     var catagories = "[";
-    var title = get_rawData.wellName + "井" + itemName.split("(")[0] + "曲线";
+    var title = get_rawData.wellName  + itemName.split("(")[0] + "曲线";
     for (var i = 0; i < data.length; i++) {
         catagories += "\"" + data[i].acqTime + "\"";
         if (i < data.length - 1) {
@@ -2301,6 +2304,11 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
 	var pumpSettingDepth=[];
 	var submergence=[];
 	
+	var productionUnitStr='t/d';
+    if(productionUnit!=0){
+    	productionUnitStr='m^3/d';
+    }
+	
 	var rangeSelectorSelected=4;
 	var selectedWellName = Ext.getCmp('FSDiagramAnalysisSingleDetailsWellCom_Id').getValue();
 	if(selectedWellName==''){
@@ -2427,7 +2435,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
                 x: 0
             },
             title: {
-                text: '产量(t/d)',
+                text: '产量'+productionUnitStr,
                 style: {
                     color: '#000000',
                     fontWeight: 'bold'
@@ -2592,7 +2600,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
         },
         series: [{
         		type: 'spline',
-        		name: '产液量(t/d)',
+        		name: '产液量'+productionUnitStr,
         		data: liquidProduction,
         		marker:{
         			enabled:true,
@@ -2601,7 +2609,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
         		yAxis: 0
         	},{
             	type: 'spline',
-            	name: '产油量(t/d)',
+            	name: '产油量'+productionUnitStr,
             	data: oilProduction,
             	marker:{
             		enabled:true,
@@ -2610,7 +2618,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             	yAxis: 0
             },{
             	type: 'spline',
-            	name: '产水量(t/d)',
+            	name: '产水量'+productionUnitStr,
             	data: waterProduction,
             	marker:{
             		enabled:true,

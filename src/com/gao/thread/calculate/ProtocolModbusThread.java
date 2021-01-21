@@ -6,11 +6,14 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.model.calculate.CommResponseData;
@@ -1700,21 +1703,22 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         						clientUnit.unitDataList.get(i).acquisitionData.setRunStatus(RunStatus);
         						Connection conn=OracleJdbcUtis.getConnection();
         						Statement stmt=null;
+        						PreparedStatement ps=null;
             					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
             					
                 						
         						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
         							updateDiscreteData+=" ,t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
-        								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
-        								+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+        								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+//        								+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
         							if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
         								
         							}
             					}
         						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
         							updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
-        								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
-        								+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
+        								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+//        								+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
         							if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
         								
         							}
@@ -1758,6 +1762,13 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         						try {
     								stmt = conn.createStatement();
     								int result=stmt.executeUpdate(updateDiscreteData);
+    								if(commResponseData!=null&&commResponseData.getResultStatus()==1&&timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+            							String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?,t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+            							List<String> clobCont=new ArrayList<String>();
+            							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+            							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+            							result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);
+            						}
     								if(hasProData)
     									result=stmt.executeUpdate(updateProdData);
     								if(StringManagerUtils.isNotNull(updateDailyData)){
@@ -2096,6 +2107,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 			releaseResourceSign=true;
 			Connection conn=OracleJdbcUtis.getConnection();
 			Statement stmt=null;
+			PreparedStatement ps=null;
 			stmt = conn.createStatement();
 			Gson gson = new Gson();
 			String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -2133,8 +2145,8 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 				String updateCommStatus="update tbl_rpc_discrete_latest t set t.commStatus=0,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss') ";
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateCommStatus+=" ,t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
-							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
-							+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+//							+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
 					
 					clientUnit.unitDataList.get(i).lastDisAcqTime=AcqTime;
 					clientUnit.unitDataList.get(i).lastCommStatus=commResponseData.getCurrent().getCommStatus()?1:0;
@@ -2144,10 +2156,19 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 				}
 				updateCommStatus+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 				int result=stmt.executeUpdate(updateCommStatus);
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);
+				}
 			}
 			conn.close();
 			if(stmt!=null){
 				stmt.close();
+			}
+			if(ps!=null){
+				ps.close();
 			}
 			if(is!=null)
 				is.close();

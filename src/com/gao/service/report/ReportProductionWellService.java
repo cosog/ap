@@ -149,10 +149,10 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
-			result_json.append("\"commRange\":\""+obj[4]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
 			result_json.append("\"runTime\":\""+obj[6]+"\",");
-			result_json.append("\"runRange\":\""+obj[7]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 			
 			result_json.append("\"optimizationSuggestion\":\""+obj[10]+"\",");
@@ -219,10 +219,10 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
-			result_json.append("\"commRange\":\""+obj[4]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
 			result_json.append("\"runTime\":\""+obj[6]+"\",");
-			result_json.append("\"runRange\":\""+obj[7]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 			
 			result_json.append("\"optimizationSuggestion\":\""+obj[10]+"\",");
@@ -316,10 +316,10 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
-			result_json.append("\"commRange\":\""+obj[4]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
 			result_json.append("\"runTime\":\""+obj[6]+"\",");
-			result_json.append("\"runRange\":\""+obj[7]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 		
 			result_json.append("\"liquidProduction\":\""+obj[9]+"\",");
@@ -377,10 +377,10 @@ ConfigFile configFile=Config.getInstance().configFile;
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
-			result_json.append("\"commRange\":\""+obj[4]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
 			result_json.append("\"runTime\":\""+obj[6]+"\",");
-			result_json.append("\"runRange\":\""+obj[7]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
 		
 			result_json.append("\"liquidProduction\":\""+obj[9]+"\",");

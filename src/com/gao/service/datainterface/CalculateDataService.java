@@ -458,7 +458,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"CommEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[3]+","
 									+ "\"Time\": "+statusObj[4]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[5]+"")+""
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[5]))+""
+//									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[5]+"")+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -475,7 +476,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"RunEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[7]+","
 									+ "\"Time\": "+statusObj[8]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[9]+"")+""
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[9]))+""
+//									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[9]+"")+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -518,7 +520,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 							dataSbf.append("\"CommStatus\":"+wellObj[5]+",");
 							dataSbf.append("\"CommTime\":"+wellObj[6]+",");
 							dataSbf.append("\"CommTimeEfficiency\":"+wellObj[7]+",");
-							dataSbf.append("\"CommRange\":\""+wellObj[8]+"\",");
+							dataSbf.append("\"CommRange\":\""+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(wellObj[8]))+"\",");
+//							dataSbf.append("\"CommRange\":\""+StringManagerUtils.getWellRuningRangeJson(wellObj[8]+"")+"\",");
 						}
 						if("0".equals(wellObj[2]+"")){//如果时率来源是人工计算
 							String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
@@ -536,7 +539,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 								dataSbf.append("\"RunStatus\":"+wellObj[9]+",");
 								dataSbf.append("\"RunTime\":"+wellObj[10]+",");
 								dataSbf.append("\"RunTimeEfficiency\":"+wellObj[11]+",");
-								dataSbf.append("\"RunRange\":\""+wellObj[12]+"\",");
+								dataSbf.append("\"RunRange\":\""+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(wellObj[12]))+"\",");
+//								dataSbf.append("\"RunRange\":\""+StringManagerUtils.getWellRuningRangeJson(wellObj[12]+"")+"\",");
 							}
 						}
 						
@@ -722,7 +726,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"CommEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[3]+","
 									+ "\"Time\": "+statusObj[4]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[5]+"")+""
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[5]))+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -739,7 +743,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"RunEfficiency\": {"
 									+ "\"Efficiency\": "+statusObj[7]+","
 									+ "\"Time\": "+statusObj[8]+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[9]+"")+""
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[9]))+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -781,7 +785,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 							dataSbf.append("\"CommStatus\":"+wellObj[5]+",");
 							dataSbf.append("\"CommTime\":"+wellObj[6]+",");
 							dataSbf.append("\"CommTimeEfficiency\":"+wellObj[7]+",");
-							dataSbf.append("\"CommRange\":\""+wellObj[8]+"\",");
+							dataSbf.append("\"CommRange\":\""+StringManagerUtils.CLOBObjectToString(StringManagerUtils.CLOBObjectToString(wellObj[8]))+"\",");
 						}
 						if("0".equals(wellObj[2]+"")){//如果时率来源是人工计算
 							String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
@@ -799,7 +803,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 								dataSbf.append("\"RunStatus\":"+wellObj[9]+",");
 								dataSbf.append("\"RunTime\":"+wellObj[10]+",");
 								dataSbf.append("\"RunTimeEfficiency\":"+wellObj[11]+",");
-								dataSbf.append("\"RunRange\":\""+wellObj[12]+"\",");
+								dataSbf.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(StringManagerUtils.CLOBObjectToString(wellObj[12]))+"\",");
 							}
 						}
 						dataSbf.append("\"RPM\":"+resuleObj[2]+",");

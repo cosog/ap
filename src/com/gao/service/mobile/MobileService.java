@@ -563,9 +563,9 @@ public class MobileService<T> extends BaseService<T> {
 	        dataSbf.append("\"LiftingType\":\""+obj[1]+"\",");
 	        dataSbf.append("\"acqTime\":\""+obj[2]+"\",");
 	        dataSbf.append("\"Status\":\""+obj[3]+"\",");
-	        dataSbf.append("\"CommRange\":\""+obj[4]+"\",");
+	        dataSbf.append("\"CommRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
 	        dataSbf.append("\"CommTimeEfficiency\":\""+obj[5]+"\",");
-	        dataSbf.append("\"RunRange\":\""+obj[6]+"\","); 
+	        dataSbf.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(obj[6])+"\","); 
 	        dataSbf.append("\"RunTimeEfficiency\":\""+obj[7]+"\",");
 	        if(jslxcode>=200&&jslxcode<300){
 	        	dataSbf.append("\"FSWorkingCondition\":\""+obj[8]+"\",");

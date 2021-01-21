@@ -41,7 +41,7 @@ public class KafkaServerTast {
 	private ScheduledExecutorService scheduler;
     
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		Properties props = new Properties();
@@ -193,7 +193,6 @@ public class KafkaServerTast {
 						}else{
 							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
 						}
-						
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println(record.value());

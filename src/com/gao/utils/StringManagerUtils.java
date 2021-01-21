@@ -848,6 +848,18 @@ public class StringManagerUtils {
 		return flag;
 
 	}
+	
+	public static boolean clobDataFiter(String value) {
+		boolean flag = false;
+		String arrays[] = { "COMMRANGE", "RUNRANGE", "WORKINGCONDITIONSTRING", "WORKINGCONDITIONSTRING_E"};
+		for (String str : arrays) {
+			if (value.equalsIgnoreCase(str)) {
+				flag = true;
+			}
+		}
+		return flag;
+
+	}
 
 	public static boolean stringIsNull(String s) {
 		boolean flag = false;
@@ -1050,13 +1062,16 @@ public class StringManagerUtils {
 	 
 	//CLOB转字符串
 	 public static String CLOBObjectToString(Object obj) throws SQLException, IOException  {
-		SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj);
-		CLOB clob = (CLOB) proxy.getWrappedClob(); 
-		char[] buffer = null;
-		buffer = new char[(int)clob.length()]; 
-		clob.getCharacterStream().read(buffer);
-		return String.valueOf(buffer);
-	}
+		 if(obj==null){
+			 return "";
+		 }
+		 SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj);
+		 CLOB clob = (CLOB) proxy.getWrappedClob(); 
+		 char[] buffer = null;
+		 buffer = new char[(int)clob.length()]; 
+		 clob.getCharacterStream().read(buffer);
+		 return String.valueOf(buffer);
+	 }
 	 
 	 //Clob转字符串
 	 public static String CLOBtoString(Clob clob) throws SQLException, IOException  

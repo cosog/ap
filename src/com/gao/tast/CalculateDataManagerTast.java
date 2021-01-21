@@ -21,6 +21,7 @@ import java.text.ParseException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.gao.model.calculate.CommResponseData;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.OracleJdbcUtis;
@@ -39,15 +40,24 @@ public class CalculateDataManagerTast {
     private static ResultSet rs_outer = null; 
 	
 	
-//	@Scheduled(cron = "0/5 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
-		String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
-		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
-		String result="无未计算数据";
-		int count=getCount(sql);
-		if(count>0){
-			System.out.println("发现未计算数据");
-			result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+		//判断SDK是否启动
+		Gson gson=new Gson();
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		String commRequestData="{\"AKString\":\"\",\"WellName\":\"test\",\"Current\":{\"AcqTime\":\"2020-01-16 01:00:00\",\"CommStatus\":true}}";
+		String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequestData,"utf-8");
+		java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
+		CommResponseData commResponseData=gson.fromJson(commResponse, type);
+		if(commResponseData!=null){
+			String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
+			String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
+			String result="无未计算数据";
+			int count=getCount(sql);
+			if(count>0){
+				System.out.println("发现未计算数据");
+				result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+			}
 		}
 	}
 	

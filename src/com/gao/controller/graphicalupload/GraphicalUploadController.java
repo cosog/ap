@@ -1169,7 +1169,7 @@ public class GraphicalUploadController extends BaseController {
 		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
-		
+		boolean haveProdData=false;
 		long startTime=0;
 		long endTime=0;
 		long allTime=0;
@@ -1183,6 +1183,7 @@ public class GraphicalUploadController extends BaseController {
 		KafkaUpData kafkaUpData=gson.fromJson(data, type);
 		if(kafkaUpData!=null){
 			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
 					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH "
@@ -1192,19 +1193,47 @@ public class GraphicalUploadController extends BaseController {
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
 				kafkaUpData.setWellName(obj[0]+"");
+				//进行通信计算
+				//进行时率计算
+				CommResponseData commResponseData=null;
+				String commRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+kafkaUpData.getWellName()+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+					commRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"CommEfficiency\": {"
+							+ "\"Efficiency\": "+obj[4]+","
+							+ "\"Time\": "+obj[3]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
+							+ "}"
+							+ "},";
+				}	
+				commRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+kafkaUpData.getAcqTime()+"\","
+						+ "\"CommStatus\":1"
+						+ "}"
+						+ "}";
+				String commResponse="";
+				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+				type = new TypeToken<CommResponseData>() {}.getType();
+				commResponseData=gson.fromJson(commResponse, type);
+				
+				
 				//进行时率计算
 				TimeEffResponseData timeEffResponseData=null;
 				String tiemEffRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+kafkaUpData.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[9]+"")){
 					tiemEffRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
-							+ "\"RunStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"RunStatus\": "+("1".equals(obj[6]+"")?true:false)+","
 							+ "\"RunEfficiency\": {"
-							+ "\"Efficiency\": "+obj[3]+","
-							+ "\"Time\": "+obj[2]+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[5]+"")+""
+							+ "\"Efficiency\": "+obj[8]+","
+							+ "\"Time\": "+obj[7]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[9]))+""
 							+ "}"
 							+ "},";
 				}	
@@ -1215,7 +1244,6 @@ public class GraphicalUploadController extends BaseController {
 						+ "}";
 				String timeEffResponse="";
 				timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
-				
 				type = new TypeToken<TimeEffResponseData>() {}.getType();
 				timeEffResponseData=gson.fromJson(timeEffResponse, type);
 				
@@ -1228,21 +1256,21 @@ public class GraphicalUploadController extends BaseController {
 					energyRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"Total\":{"
-							+ "\"KWattH\":"+obj[6]+","
-							+ "\"PKWattH\":"+obj[7]+","
-							+ "\"NKWattH\":"+obj[8]+","
-							+ "\"KVarH\":"+obj[9]+","
-							+ "\"PKVarH\":"+obj[10]+","
-							+ "\"NKVarH\":"+obj[11]+","
-							+ "\"KVAH\":"+obj[12]+""
+							+ "\"KWattH\":"+obj[10]+","
+							+ "\"PKWattH\":"+obj[11]+","
+							+ "\"NKWattH\":"+obj[12]+","
+							+ "\"KVarH\":"+obj[13]+","
+							+ "\"PKVarH\":"+obj[14]+","
+							+ "\"NKVarH\":"+obj[15]+","
+							+ "\"KVAH\":"+obj[16]+""
 							+ "},\"Today\":{"
-							+ "\"KWattH\":"+obj[13]+","
-							+ "\"PKWattH\":"+obj[14]+","
-							+ "\"NKWattH\":"+obj[15]+","
-							+ "\"KVarH\":"+obj[16]+","
-							+ "\"PKVarH\":"+obj[17]+","
-							+ "\"NKVarH\":"+obj[18]+","
-							+ "\"KVAH\":"+obj[19]+""
+							+ "\"KWattH\":"+obj[17]+","
+							+ "\"PKWattH\":"+obj[18]+","
+							+ "\"NKWattH\":"+obj[19]+","
+							+ "\"KVarH\":"+obj[20]+","
+							+ "\"PKVarH\":"+obj[21]+","
+							+ "\"NKVarH\":"+obj[22]+","
+							+ "\"KVAH\":"+obj[23]+""
 							+ "}"
 							+ "},";
 				}	
@@ -1266,19 +1294,24 @@ public class GraphicalUploadController extends BaseController {
 				//更新数据
 				String updateDailyData="";
 				String updateProdData="update tbl_rpc_productiondata_latest t set t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
-				if(kafkaUpData.getWaterCut()>=0){
+				if(kafkaUpData.getWaterCut()>0){
+					haveProdData=true;
 					updateProdData+=",t.WaterCut_W="+kafkaUpData.getWaterCut();
 				}
-				if(kafkaUpData.getTubingPressure()>=0){
+				if(kafkaUpData.getTubingPressure()>0){
+					haveProdData=true;
 					updateProdData+=",t.TubingPressure="+kafkaUpData.getTubingPressure();
 				}
-				if(kafkaUpData.getCasingPressure()>=0){
+				if(kafkaUpData.getCasingPressure()>0){
+					haveProdData=true;
 					updateProdData+=",t.CasingPressure="+kafkaUpData.getCasingPressure();
 				}
-				if(kafkaUpData.getWellHeadFluidTemperature()>=0){
+				if(kafkaUpData.getWellHeadFluidTemperature()>0){
+					haveProdData=true;
 					updateProdData+=",t.WellHeadFluidTemperature="+kafkaUpData.getWellHeadFluidTemperature();
 				}
-				if(kafkaUpData.getProducingfluidLevel()>=0){
+				if(kafkaUpData.getProducingfluidLevel()>0){
+					haveProdData=true;
 					updateProdData+=",t.ProducingfluidLevel="+kafkaUpData.getProducingfluidLevel();
 				}
 				updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
@@ -1291,10 +1324,16 @@ public class GraphicalUploadController extends BaseController {
 						+ "t.workingconditioncode="+kafkaUpData.getResultCode()+","
 						+ "t.FrequencyRunValue="+kafkaUpData.getFreq()+","
 						+ "t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
+				
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+//							+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+				}
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
-						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
-						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
+						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+//						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
 					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
 						
 					}
@@ -1340,8 +1379,18 @@ public class GraphicalUploadController extends BaseController {
 							+ " ,t.totalKVarH= "+kafkaUpData.getTotalEnergy().getKVarH();
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
-				commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);
+				if(haveProdData){
+					commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);
+				}
 				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				//更新clob类型数据  运行区间
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?, t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+					int result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
+				}
 				if(StringManagerUtils.isNotNull(updateDailyData)){
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
 				}
@@ -1429,9 +1478,9 @@ public class GraphicalUploadController extends BaseController {
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
 							+ "\"CommEfficiency\": {"
-							+ "\"Efficiency\": "+obj[3]+","
-							+ "\"Time\": "+obj[2]+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[5]+"")+""
+							+ "\"Efficiency\": "+obj[4]+","
+							+ "\"Time\": "+obj[3]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
 							+ "}"
 							+ "},";
 				}	
@@ -1445,8 +1494,6 @@ public class GraphicalUploadController extends BaseController {
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
 				
-				
-				
 				//更新数据
 				String updateDailyData="";
 				
@@ -1459,16 +1506,27 @@ public class GraphicalUploadController extends BaseController {
 						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
-						+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime()
-						+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+						+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+//						+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
 					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
 						
 					}
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
-				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				int result= commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				
+				
+				//更新clob类型数据  通信区间
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
+				}
+				
+				
 				if(StringManagerUtils.isNotNull(updateDailyData)){
-					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
+					result=commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
 				}
 				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
@@ -1513,9 +1571,9 @@ public class GraphicalUploadController extends BaseController {
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"RunStatus\": "+("1".equals(obj[2]+"")?true:false)+","
 							+ "\"RunEfficiency\": {"
-							+ "\"Efficiency\": "+obj[3]+","
-							+ "\"Time\": "+obj[2]+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[5]+"")+""
+							+ "\"Efficiency\": "+obj[4]+","
+							+ "\"Time\": "+obj[3]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
 							+ "}"
 							+ "},";
 				}	
@@ -1548,6 +1606,16 @@ public class GraphicalUploadController extends BaseController {
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
 				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				
+				//更新clob类型数据  运行区间
+				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					String updateRangeClobSql="update tbl_rpc_discrete_latest t set t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+					commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql,clobCont);
+				}
+				
+				
 				if(StringManagerUtils.isNotNull(updateDailyData)){
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
 				}

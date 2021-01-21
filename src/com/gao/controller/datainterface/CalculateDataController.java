@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -301,10 +302,18 @@ public class CalculateDataController extends BaseController{
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
 				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
+				
 				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
+//				System.out.println(responseData);
+				
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					if(totalAnalysisResponseData.getFSResultString().length()>4000){
+						totalAnalysisResponseData.stringLengthManage();
+//						System.out.println(totalAnalysisResponseData.getFSResultString().length());
+//						System.out.println(totalAnalysisResponseData.getFSResultString());
+					}
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
 					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
@@ -482,9 +491,10 @@ public class CalculateDataController extends BaseController{
 	}
 	
 	@RequestMapping("/pubSubModelCommCalculation")
-	public String PubSubModelCommCalculation() throws ParseException{
+	public String PubSubModelCommCalculation() throws ParseException, SQLException, IOException{
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		Gson gson = new Gson();
+		boolean acqTimeChange=false;
 		String sql="select t.wellid,"
 				+ " comm.wellName,comm.commstatus,"
 				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as lastacqTime,"
@@ -495,56 +505,71 @@ public class CalculateDataController extends BaseController{
 		List<?> list = calculateDataService.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-			String commRequest="{"
-					+ "\"AKString\":\"\","
-					+ "\"WellName\":\""+obj[1]+"\",";
-			if(StringManagerUtils.isNotNull(obj[3]+"")&&StringManagerUtils.isNotNull(obj[7]+"")){
-				commRequest+= "\"Last\":{"
-						+ "\"AcqTime\": \""+obj[3]+"\","
-						+ "\"CommStatus\": "+(("1".equals(obj[4]+""))?true:false)+","
-						+ "\"CommEfficiency\": {"
-						+ "\"Efficiency\": "+obj[6]+","
-						+ "\"Time\": "+obj[5]+","
-						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(obj[7]+"")+""
-						+ "}"
-						+ "},";
-			}	
-			
-			commRequest+= "\"Current\": {"
-					+ "\"AcqTime\":\""+acqTime+"\","
-					+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
-					+ "}"
-					+ "}";
-			
-			String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
-			java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
-			CommResponseData commResponseData=gson.fromJson(commResponse, type);
-			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-				String currentDate=acqTime.split(" ")[0];
-				String lastDate=(obj[3]+"").split(" ")[0];
-				String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
-						+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
-						+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency()+","
-						+ "t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
-				if(!currentDate.equals(lastDate)){//如果跨天
-					updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getDaily().getCommStatus()?1:0)+","
-							+ "t.commtime="+commResponseData.getDaily().getCommEfficiency().getTime()+","
-							+ "t.commtimeefficiency="+commResponseData.getDaily().getCommEfficiency().getEfficiency()+","
-							+ "t.commrange='"+commResponseData.getDaily().getCommEfficiency().getRangeString()+"'";
-				}
-				if(!(obj[4]+"").equals(obj[2]+"")){
-					updateSql+=",t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-				}
-				//如果跨天 重置运行状态
-				if(!StringManagerUtils.isNotNull(obj[3]+"") || !(obj[3]+"").split(" ")[0].equals(StringManagerUtils.getCurrentTime()) ){
-					updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
-				}
+			//当离线时进行通信计算
+			if("0".equals(obj[2]+"")&&"1".equals(obj[4]+"")){
+				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+				String commRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+obj[1]+"\",";
+				if(StringManagerUtils.isNotNull(obj[3]+"")&&StringManagerUtils.isNotNull(obj[7]+"")){
+					commRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[3]+"\","
+							+ "\"CommStatus\": "+(("1".equals(obj[4]+""))?true:false)+","
+							+ "\"CommEfficiency\": {"
+							+ "\"Efficiency\": "+obj[6]+","
+							+ "\"Time\": "+obj[5]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[7]))+""
+							+ "}"
+							+ "},";
+				}	
 				
-				updateSql+= " where t.wellid="+obj[0];
-				int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
+				commRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+acqTime+"\","
+						+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
+						+ "}"
+						+ "}";
+				
+				String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+				java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
+				CommResponseData commResponseData=gson.fromJson(commResponse, type);
+				String commRange="";
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					String currentDate=acqTime.split(" ")[0];
+					String lastDate=(obj[3]+"").split(" ")[0];
+					String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
+							+ "t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"
+							+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
+							+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+							//+ ",t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+					commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+//					if(!currentDate.equals(lastDate)){//如果跨天
+//						updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getDaily().getCommStatus()?1:0)+","
+//								+ "t.commtime="+commResponseData.getDaily().getCommEfficiency().getTime()+","
+//								+ "t.commtimeefficiency="+commResponseData.getDaily().getCommEfficiency().getEfficiency();
+//								//+ ",t.commrange='"+commResponseData.getDaily().getCommEfficiency().getRangeString()+"'";
+//						commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
+//					}
+					//如果通信状态改变
+//					if(!(obj[4]+"").equals(obj[2]+"")){
+//						updateSql+=",t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+//						acqTimeChange=true;
+//					}
+					//如果跨天 重置运行状态
+					if(!StringManagerUtils.isNotNull(obj[3]+"") || !currentDate.equals(lastDate) ){
+//						if(acqTimeChange)
+							updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
+					}
+					
+					updateSql+= " where t.wellid="+obj[0];
+					int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
+					
+					//更新clob类型数据  通信区间
+					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellid="+obj[0];
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(commRange);
+					result=calculateDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
+				}
 			}
-			
 		}
 		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 		infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));

@@ -50,6 +50,7 @@
  var user_ = "${userLogin.userNo}";
  var viewInformation = ${configFile}.viewInformation;
  var pcpHidden = !${configFile}.others.pcp;
+ var electricalHidden = !${configFile}.others.electrical;
  var dynamicCurveHidden = !${configFile}.others.dynamicCurve;
  var productionUnit = ${configFile}.others.productionUnit;
 if (user_ == null || "" == (user_)) {

@@ -307,6 +307,43 @@ public class BaseDao extends HibernateDaoSupport {
 		}
 		return n;
 	}
+	
+	/**
+	 * 执行一个SQL，update或insert
+	 * 
+	 * @param sql
+	 * @return update或insert的记录数
+	 */
+	public int executeSqlUpdateClob(String sql,List<String> values) {
+		int n = 0;
+		Connection conn=null;
+		PreparedStatement ps=null;
+		try {
+			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+			for(int i=0;i<values.size();i++){
+				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
+				clob.putString(1,  values.get(i)); 
+				ps.setClob(i+1, clob);  
+			}
+			n=ps.executeUpdate();  
+//			ps.close();  
+//			conn.commit(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return n;
+	}
 
 	/**
 	 * HQL查询
@@ -2948,13 +2985,16 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(1,kafkaUpData.getWellName());
 			cs.setString(2,kafkaUpData.getAcqTime());
 			
-			if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null){
-				cs.setString(3,calculateResponseData.getFESDiagram().getStroke()+"");
-				cs.setString(4,calculateResponseData.getFESDiagram().getSPM()+"");
-			}else{
-				cs.setString(3,kafkaUpData.getStroke()+"");
-				cs.setString(4,kafkaUpData.getSPM()+"");
-			}
+			cs.setString(3,kafkaUpData.getStroke()+"");
+			cs.setString(4,kafkaUpData.getSPM()+"");
+			
+//			if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null){
+//				cs.setString(3,calculateResponseData.getFESDiagram().getStroke()+"");
+//				cs.setString(4,calculateResponseData.getFESDiagram().getSPM()+"");
+//			}else{
+//				cs.setString(3,kafkaUpData.getStroke()+"");
+//				cs.setString(4,kafkaUpData.getSPM()+"");
+//			}
 			
 			cs.setClob(5,diagramClob_S);
 			cs.setClob(6,diagramClob_F);
@@ -3639,7 +3679,7 @@ public class BaseDao extends HibernateDaoSupport {
 				//井深切片
 				cs.setClob(80,wellboreSliceClob);
 			}else{
-				cs.setInt(1, -11);
+				cs.setInt(1, 0);
 				cs.setString(2,"");
 				cs.setString(3,"");
 				cs.setString(4,"");

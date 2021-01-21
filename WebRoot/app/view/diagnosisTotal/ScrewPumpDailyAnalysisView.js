@@ -1038,7 +1038,7 @@ initScrewPumpDailyCurveChartFn = function (get_rawData, divId) {
             selected: 1
         },
         title: {
-            text: get_rawData.wellName+'井全天评价曲线'
+            text: get_rawData.wellName+'全天评价曲线'
         },
         tooltip:{  
             // 日期时间格式化  

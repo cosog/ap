@@ -299,6 +299,7 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                                 xtype: 'tabpanel',
                                 tabPosition: 'right',
                                 title: '电参工况',
+                                hidden: electricalHidden,
                                 id: 'FSDiagramAnalysisDailyElecWorkCondStatTabpanel_Id',
                                 tabRotation: 1,
                                 items: [{
@@ -815,9 +816,11 @@ Ext.define("AP.view.diagnosisTotal.PumpingDailyAnalysisView", {
                      		Ext.getCmp("FSDiagramAnalysisDailyWorkCondStatTabpanel_Id").getTabBar().insert(0, {
                    		      	xtype: 'tbfill'
                      		});
-                     		Ext.getCmp("FSDiagramAnalysisDailyElecWorkCondStatTabpanel_Id").getTabBar().insert(0, {
-                   		      	xtype: 'tbfill'
-                     		});
+                     		if(!electricalHidden){
+                     			Ext.getCmp("FSDiagramAnalysisDailyElecWorkCondStatTabpanel_Id").getTabBar().insert(0, {
+                       		      	xtype: 'tbfill'
+                         		});
+                     		}
                      		Ext.getCmp("FSDiagramAnalysisDailyProdStatTabpanel_Id").getTabBar().insert(0, {
                    		      	xtype: 'tbfill'
                      		});
@@ -1479,9 +1482,9 @@ DiagnosisTotalCurveChartFn = function (get_rawData) {
     var tabPanel = Ext.getCmp("DiagnosisTotalCurveTabpanel_Id");
     var activeId = tabPanel.getActiveTab().id;
     if (activeId == "DiagnosisTotalProCurvePanel_Id") {
-        initDiagnosisTotalCurveChartFn(cat, ser, tickInterval, "DiagnosisTotalProCurveDiv_Id", get_rawData.jh + "井 产量曲线", "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "日期", color);
+        initDiagnosisTotalCurveChartFn(cat, ser, tickInterval, "DiagnosisTotalProCurveDiv_Id", get_rawData.jh + " 产量曲线", "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "日期", color);
     } else {
-        initDiagnosisTotalFluChartFn(cat, BDser, tickInterval, "DiagnosisTotalFluCurveDiv_Id", get_rawData.jh + "井 产量波动曲线", "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "日期", color);
+        initDiagnosisTotalFluChartFn(cat, BDser, tickInterval, "DiagnosisTotalFluCurveDiv_Id", get_rawData.jh + " 产量波动曲线", "[" + get_rawData.startDate + "~" + get_rawData.endDate + "]", "日期", color);
     }
 
     return false;
@@ -1740,7 +1743,7 @@ DiagnosisTotalDataCurveChartFn = function (get_rawData, itemName, divId) {
     var data = get_rawData.totalRoot;
     tickInterval = Math.floor(data.length / 10) + 1;
     var catagories = "[";
-    var title = get_rawData.wellName + "井" + itemName.split("(")[0] + "曲线";
+    var title = get_rawData.wellName + itemName.split("(")[0] + "曲线";
     for (var i = 0; i < data.length; i++) {
         catagories += "\"" + data[i].calculateDate + "\"";
         if (i < data.length - 1) {

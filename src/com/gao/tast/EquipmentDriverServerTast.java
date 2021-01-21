@@ -209,11 +209,11 @@ public class EquipmentDriverServerTast {
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
-				unit.lastCommRange=rs.getString(16);
+				unit.lastCommRange=StringManagerUtils.CLOBtoString(rs.getClob(16));//rs.getString(16);
 				unit.lastRunStatus=rs.getInt(17);
 				unit.lastRunTime=rs.getFloat(18);
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
-				unit.lastRunRange=rs.getString(20);
+				unit.lastRunRange=StringManagerUtils.CLOBtoString(rs.getClob(20));//rs.getString(20);
 				
 				unit.lastTotalKWattH=rs.getFloat(21);
 				unit.lastTotalPKWattH=rs.getFloat(22);
@@ -276,11 +276,11 @@ public class EquipmentDriverServerTast {
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
-				unit.lastCommRange=rs.getString(16);
+				unit.lastCommRange=StringManagerUtils.CLOBtoString(rs.getClob(16));//rs.getString(16);
 				unit.lastRunStatus=rs.getInt(17);
 				unit.lastRunTime=rs.getFloat(18);
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
-				unit.lastRunRange=rs.getString(20);
+				unit.lastRunRange=StringManagerUtils.CLOBtoString(rs.getClob(20));//rs.getString(20);
 				
 				unit.lastTotalKWattH=rs.getFloat(21);
 				unit.lastTotalPKWattH=rs.getFloat(22);
@@ -306,6 +306,9 @@ public class EquipmentDriverServerTast {
 			e.printStackTrace();
 			OracleJdbcUtis.closeDBConnection(conn, stmt, pstmt, rs);
 			return false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		System.out.println("共配置井数:"+units.size()+",分配线程数量:"+clientUnitList.size());

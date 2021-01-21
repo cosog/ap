@@ -1132,7 +1132,7 @@ initScrewPumpRTCurveChartFn = function (get_rawData, divId) {
             selected: 1
         },
         title: {
-            text: get_rawData.wellName+'井实时曲线'
+            text: get_rawData.wellName+'实时曲线'
         },
         tooltip:{  
             // 日期时间格式化  

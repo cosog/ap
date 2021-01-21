@@ -280,7 +280,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                     			showWellName='所选组织下全部螺杆泵井';
                     		}
                     	}else{
-                    		showWellName+='井';
+//                    		showWellName+='井';
                     	}
                     	var operaName="生效范围："+showWellName+" "+startDate+"~"+endDate+" </br><font color=red>该操作将导致所选历史数据被当前生产数据覆盖，是否执行！</font>"
                     	Ext.Msg.confirm("操作确认", operaName, function (btn) {

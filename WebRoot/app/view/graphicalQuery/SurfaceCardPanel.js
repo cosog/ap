@@ -8,6 +8,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
     maskElement: 'body',
     initComponent: function () {
         var me = this;
+        var GraphicalQueryWellListStore = Ext.create("AP.store.graphicalQuery.GraphicalQueryWellListStore");
         var org_Id = Ext.getCmp('leftOrg_Id').getValue();
         var wellListStore = new Ext.data.JsonStore({
             pageSize: defaultWellComboxSize,
@@ -138,37 +139,86 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
                     value: '',
                     hidden: true
                 }],
-                items: [{
+                layout: 'border',
                 border: false,
-                layout: 'fit',
-                id: 'surfaceCardContent',
-                autoScroll: true,
-                html: '<div id="surfaceCardContainer" class="hbox"></div>',
-                listeners: {
-                    render: function (p, o, i, c) {
-                        p.body.on('scroll', function () {
-                            var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                            if (diagramPage < totalPages) {
-                                var surfaceCardContent = Ext.getCmp("surfaceCardContent");
-                                var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                                if (hRatio > 0.5) {
-                                    if (diagramPage < 2) {
-                                        diagramPage++;
-                                        loadSurfaceCardList(diagramPage);
-                                    } else {
-                                        var divCount = $("#surfaceCardContainer div ").size();
-                                        var count = (diagramPage - 1) * defaultGraghSize * 3;
-                                        if (divCount > count) {
+                items: [{
+                	region: 'center',
+                	title: '井列表',
+                	id: 'GraphicalQueryWellListPanel_Id',
+                	layout: "fit"
+                },{
+                	region: 'east',
+                	title:'图形数据',
+                    width: '75%',
+                    border: false,
+                    collapsible: true, // 是否可折叠
+                    collapsed:false,//是否折叠
+                    split: true, // 竖折叠条
+                    layout: "fit",
+                    id: 'surfaceCardContent',
+                    autoScroll: true,
+                    html: '<div id="surfaceCardContainer" class="hbox"></div>',
+                    listeners: {
+                        render: function (p, o, i, c) {
+                            p.body.on('scroll', function () {
+                                var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
+                                if (diagramPage < totalPages) {
+                                    var surfaceCardContent = Ext.getCmp("surfaceCardContent");
+                                    var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                                    if (hRatio > 0.5) {
+                                        if (diagramPage < 2) {
                                             diagramPage++;
                                             loadSurfaceCardList(diagramPage);
+                                        } else {
+                                            var divCount = $("#surfaceCardContainer div ").size();
+                                            var count = (diagramPage - 1) * defaultGraghSize * 3;
+                                            if (divCount > count) {
+                                                diagramPage++;
+                                                loadSurfaceCardList(diagramPage);
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        }, this);
+                            }, this);
+                        }
                     }
-                }
-            }]
+                }]
+                
+                
+                
+                
+                
+//                items: [{
+//                border: false,
+//                layout: 'fit',
+//                id: 'surfaceCardContent',
+//                autoScroll: true,
+//                html: '<div id="surfaceCardContainer" class="hbox"></div>',
+//                listeners: {
+//                    render: function (p, o, i, c) {
+//                        p.body.on('scroll', function () {
+//                            var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
+//                            if (diagramPage < totalPages) {
+//                                var surfaceCardContent = Ext.getCmp("surfaceCardContent");
+//                                var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+//                                if (hRatio > 0.5) {
+//                                    if (diagramPage < 2) {
+//                                        diagramPage++;
+//                                        loadSurfaceCardList(diagramPage);
+//                                    } else {
+//                                        var divCount = $("#surfaceCardContainer div ").size();
+//                                        var count = (diagramPage - 1) * defaultGraghSize * 3;
+//                                        if (divCount > count) {
+//                                            diagramPage++;
+//                                            loadSurfaceCardList(diagramPage);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }, this);
+//                    }
+//                }
+//            }]
         });
         me.callParent(arguments);
     }
@@ -177,7 +227,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
 //功图列表鼠标滚动时自动加载
 loadSurfaceCardList = function (page) {
 	diagramPage=page;
-    Ext.getCmp("SurfaceCardQuery_Id").mask(cosog.string.loading); // 数据加载中，请稍后
+    Ext.getCmp("surfaceCardContent").mask(cosog.string.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;
     if(page==1){
@@ -203,7 +253,7 @@ loadSurfaceCardList = function (page) {
         	if(page==1){
         		$("#electricAnalysisRealtimeDiagramContainer").html(''); // 将html内容清空
         	}
-            Ext.getCmp("SurfaceCardQuery_Id").unmask(cosog.string.loading); // 数据加载中，请稍后
+            Ext.getCmp("surfaceCardContent").unmask(cosog.string.loading); // 数据加载中，请稍后
             var get_rawData = Ext.decode(response.responseText); // 获取返回数据
             var gtlist = get_rawData.list; // 获取功图数据
             
@@ -254,4 +304,43 @@ loadSurfaceCardList = function (page) {
             Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
         }
     });
-}
+};
+function createGraphicalQueryWellListWellListDataColumn(columnInfo) {
+    var myArr = columnInfo;
+
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        if (attr.dataIndex == 'id') {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+        }else if (attr.dataIndex.toUpperCase()=='deviceId'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+        } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+        } else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
+};

@@ -858,9 +858,11 @@ public class BaseService<T> {
 								} else if (sql.contains("v_012_") && key.contains("lsxs")) {
 									float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 									value = value2 + "";
-								}else if (StringManagerUtils.clobDataFiter(key)) {
+								}
+								else if (StringManagerUtils.clobDataFiter(key)) {
 									value = StringManagerUtils.CLOBObjectToString(obj[j]);
-								} else if (!StringManagerUtils.stringDataFiter(key)) {
+								} 
+								else if (!StringManagerUtils.stringDataFiter(key)) {
 									value = StringManagerUtils.formatReportPrecisionValue(value);
 								}
 								strs.append("\"" + key + "\":\"" + value + "\",");
@@ -895,9 +897,11 @@ public class BaseService<T> {
 								}else{
 									value = StringManagerUtils.formatReportPrecisionValue(value);
 								}
-							}else if (StringManagerUtils.clobDataFiter(key)) {
+							}
+							else if (StringManagerUtils.clobDataFiter(key)) {
 								value = StringManagerUtils.CLOBObjectToString(obj[j]);
-							}else if (sql.contains("v_012_") && key.contains("lsxs")) {
+							}
+							else if (sql.contains("v_012_") && key.contains("lsxs")) {
 								float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 								value = value2 + "";
 							}else if (!StringManagerUtils.stringDataFiter(key)) {

@@ -66,7 +66,6 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 		driverConfigItemsHandsontableHelper=null;
 	}
 	
-	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getDriverConfigData',

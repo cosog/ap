@@ -7,6 +7,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
     initComponent: function () {
         var me = this;
         var calculateResultStore=Ext.create('AP.store.calculateManager.CalculateManagerDataStore');
+        var CalculateManagerWellListStore=Ext.create('AP.store.calculateManager.CalculateManagerWellListStore');
         var bbar = new Ext.toolbar.Paging({
         	id:'pumpingCalculateManagerBbar',
             store: calculateResultStore,
@@ -120,6 +121,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                         select: function (combo, record, index) {
                         	calculateSignComb.clearValue();
                         	calculateResultStore.loadPage(1);
+                        	CalculateManagerWellListStore.load();
                         }
                     }
                 });
@@ -194,169 +196,186 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                         },
                         select: function (combo, record, index) {
                         	calculateResultStore.loadPage(1);
+                        	CalculateManagerWellListStore.load();
                         }
                     }
         });
         Ext.apply(me, {
-            items: [{
+        	layout: 'border',
+            border: false,
+            tbar:[wellListComb
+    			,"-",{
+                xtype: 'datefield',
+                anchor: '100%',
+                fieldLabel: '',
+                labelWidth: 0,
+                width: 90,
+                format: 'Y-m-d ',
+                id: 'CalculateManagerStartDate_Id',
+                value: new Date(),
+                listeners: {
+                	select: function (combo, record, index) {
+                		calculateSignComb.clearValue();
+                		calculateResultStore.loadPage(1);
+                		CalculateManagerWellListStore.load();
+                    }
+                }
+            },{
+                xtype: 'datefield',
+                anchor: '100%',
+                fieldLabel: '至',
+                labelWidth: 15,
+                width: 105,
+                format: 'Y-m-d ',
+                id: 'CalculateManagerEndDate_Id',
+                value: new Date(),
+                listeners: {
+                	select: function (combo, record, index) {
+                		calculateSignComb.clearValue();
+                		calculateResultStore.loadPage(1);
+                		CalculateManagerWellListStore.load();
+                    }
+                }
+            },"-",calculateSignComb,'-',{
+                xtype: 'button',
+                iconCls: 'note-refresh',
+                text: cosog.string.refresh,
+                pressed: true,
+                hidden:false,
+                handler: function (v, o) {
+                	calculateResultStore.loadPage(1);
+                	CalculateManagerWellListStore.load();
+                }
+            
+    		},'->',{
+                xtype: 'button',
+                text: '修改数据计算',
+                pressed: true,
+                iconCls: 'save',
+                handler: function (v, o) {
+                	calculateManagerHandsontableHelper.saveData();
+                }
+            },"-",{
+                xtype: 'button',
+                text: '关联数据计算',
+                pressed: true,
+                iconCls: 'save',
+                id:'calculateManager_LinkedData_Btn',
+                handler: function (v, o) {
+                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                    var wellName=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
+                    var startDate=Ext.getCmp('CalculateManagerStartDate_Id').rawValue;
+                    var endDate=Ext.getCmp('CalculateManagerEndDate_Id').rawValue;
+                    var calculateSign=Ext.getCmp('CalculateManagerCalculateSignComBox_Id').getValue();
+                    var wellType=200;
+                    var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
+                    if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+                    	wellType=200;
+        			}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+        				wellType=400;
+        			}
+                    var showWellName=wellName;
+                	if(wellName == '' || wellName == null){
+                		if(wellType==200){
+                			showWellName='所选组织下全部抽油机井';
+                		}else if(wellType==400){
+                			showWellName='所选组织下全部螺杆泵井';
+                		}
+                	}else{
+//                		showWellName+='井';
+                	}
+                	var operaName="生效范围："+showWellName+" "+startDate+"~"+endDate+" </br><font color=red>该操作将导致所选历史数据被当前生产数据覆盖，是否执行！</font>"
+                	Ext.Msg.confirm("操作确认", operaName, function (btn) {
+                        if (btn == "yes") {
+                        	Ext.Ajax.request({
+        	            		method:'POST',
+        	            		url:context + '/calculateManagerController/recalculateByProductionData',
+        	            		success:function(response) {
+        	            			var rdata=Ext.JSON.decode(response.responseText);
+        	            			if (rdata.success) {
+        	                        	Ext.MessageBox.alert("信息","保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。");
+        	                            //保存以后重置全局容器
+        	                            calculateManagerHandsontableHelper.clearContainer();
+        	                            var bbarId="pumpingCalculateManagerBbar";
+        	                            var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
+        	                            if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+        	                            	bbarId="pumpingCalculateManagerBbar";
+        	        					}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+        	        						bbarId="screwPumpCalculateManagerBbar";
+        	        					}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+        	        						bbarId="elecInverCalculateManagerBbar";
+        	        					}
+        	                            
+        	                            Ext.getCmp(bbarId).getStore().loadPage(1);
+        	                        } else {
+        	                        	Ext.MessageBox.alert("信息","操作失败");
+
+        	                        }
+        	            		},
+        	            		failure:function(){
+        	            			Ext.MessageBox.alert("信息","请求失败");
+        	                        calculateManagerHandsontableHelper.clearContainer();
+        	            		},
+        	            		params: {
+        	            			orgId: orgId,
+        	            			wellName: wellName,
+        	                        startDate:startDate,
+        	                        endDate:endDate,
+        	                        calculateSign:calculateSign,
+        	                        wellType:wellType
+        	                    }
+        	            	}); 
+                        }
+                    });
+                }
+            },"-",{
+                xtype: 'button',
+                text: '导出请求数据',
+                pressed: true,
+                hidden: false,
+                iconCls: 'save',
+                id:'calculateManager_ExportData_Btn',
+                handler: function (v, o) {
+                	if(calculateManagerHandsontableHelper.hot.getSelected()){
+                		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
+                		var wellName=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[1];
+                		var acqTime=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[2];
+                		
+                		var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
+                        var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
+                        if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+                        	calculateType=1;
+            			}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+            				calculateType=2;
+            			}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+            				calculateType=5;
+            			}
+                		
+                		var url=context + '/calculateManagerController/exportCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
+                    	document.location.href = url;
+                	}else{
+                		Ext.MessageBox.alert("信息","未选择记录");
+                	}
+                }
+            }
+            ],
+        	items: [{
+        		region: 'center',
+            	title: '井列表',
+            	id: 'CalculateManagerWellListPanel_Id',
+            	layout: "fit"
+            },{
+            	region: 'east',
+            	title:'计算数据',
+                width: '75%',
+                border: false,
+                collapsible: true, // 是否可折叠
+                collapsed:false,//是否折叠
+                split: true, // 竖折叠条
         		xtype: 'tabpanel',
         		id:"CalculateManagerTabPanel",
         		activeTab: 0,
-        		border: false,
         		tabPosition: 'bottom',
-        		tbar:[wellListComb
-        			,"-",{
-                    xtype: 'datefield',
-                    anchor: '100%',
-                    fieldLabel: '',
-                    labelWidth: 0,
-                    width: 90,
-                    format: 'Y-m-d ',
-                    id: 'CalculateManagerStartDate_Id',
-                    value: new Date(),
-                    listeners: {
-                    	select: function (combo, record, index) {
-                    		calculateSignComb.clearValue();
-                    		calculateResultStore.loadPage(1);
-                        }
-                    }
-                },{
-                    xtype: 'datefield',
-                    anchor: '100%',
-                    fieldLabel: '至',
-                    labelWidth: 15,
-                    width: 105,
-                    format: 'Y-m-d ',
-                    id: 'CalculateManagerEndDate_Id',
-                    value: new Date(),
-                    listeners: {
-                    	select: function (combo, record, index) {
-                    		calculateSignComb.clearValue();
-                    		calculateResultStore.loadPage(1);
-                        }
-                    }
-                },"-",calculateSignComb,'-',{
-                    xtype: 'button',
-                    iconCls: 'note-refresh',
-                    text: cosog.string.refresh,
-                    pressed: true,
-                    hidden:false,
-                    handler: function (v, o) {
-                    	calculateResultStore.loadPage(1);
-                    }
-                
-        		},'->',{
-                    xtype: 'button',
-                    text: '修改数据计算',
-                    pressed: true,
-                    iconCls: 'save',
-                    handler: function (v, o) {
-                    	calculateManagerHandsontableHelper.saveData();
-                    }
-                },"-",{
-                    xtype: 'button',
-                    text: '关联数据计算',
-                    pressed: true,
-                    iconCls: 'save',
-                    id:'calculateManager_LinkedData_Btn',
-                    handler: function (v, o) {
-                    	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                        var wellName=Ext.getCmp('CalculateManagerWellListComBox_Id').getValue();
-                        var startDate=Ext.getCmp('CalculateManagerStartDate_Id').rawValue;
-                        var endDate=Ext.getCmp('CalculateManagerEndDate_Id').rawValue;
-                        var calculateSign=Ext.getCmp('CalculateManagerCalculateSignComBox_Id').getValue();
-                        var wellType=200;
-                        var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
-                        if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
-                        	wellType=200;
-            			}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
-            				wellType=400;
-            			}
-                        var showWellName=wellName;
-                    	if(wellName == '' || wellName == null){
-                    		if(wellType==200){
-                    			showWellName='所选组织下全部抽油机井';
-                    		}else if(wellType==400){
-                    			showWellName='所选组织下全部螺杆泵井';
-                    		}
-                    	}else{
-//                    		showWellName+='井';
-                    	}
-                    	var operaName="生效范围："+showWellName+" "+startDate+"~"+endDate+" </br><font color=red>该操作将导致所选历史数据被当前生产数据覆盖，是否执行！</font>"
-                    	Ext.Msg.confirm("操作确认", operaName, function (btn) {
-                            if (btn == "yes") {
-                            	Ext.Ajax.request({
-            	            		method:'POST',
-            	            		url:context + '/calculateManagerController/recalculateByProductionData',
-            	            		success:function(response) {
-            	            			var rdata=Ext.JSON.decode(response.responseText);
-            	            			if (rdata.success) {
-            	                        	Ext.MessageBox.alert("信息","保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。");
-            	                            //保存以后重置全局容器
-            	                            calculateManagerHandsontableHelper.clearContainer();
-            	                            var bbarId="pumpingCalculateManagerBbar";
-            	                            var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
-            	                            if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
-            	                            	bbarId="pumpingCalculateManagerBbar";
-            	        					}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
-            	        						bbarId="screwPumpCalculateManagerBbar";
-            	        					}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
-            	        						bbarId="elecInverCalculateManagerBbar";
-            	        					}
-            	                            
-            	                            Ext.getCmp(bbarId).getStore().loadPage(1);
-            	                        } else {
-            	                        	Ext.MessageBox.alert("信息","操作失败");
-
-            	                        }
-            	            		},
-            	            		failure:function(){
-            	            			Ext.MessageBox.alert("信息","请求失败");
-            	                        calculateManagerHandsontableHelper.clearContainer();
-            	            		},
-            	            		params: {
-            	            			orgId: orgId,
-            	            			wellName: wellName,
-            	                        startDate:startDate,
-            	                        endDate:endDate,
-            	                        calculateSign:calculateSign,
-            	                        wellType:wellType
-            	                    }
-            	            	}); 
-                            }
-                        });
-                    }
-                },"-",{
-                    xtype: 'button',
-                    text: '导出请求数据',
-                    pressed: true,
-                    hidden: false,
-                    iconCls: 'save',
-                    id:'calculateManager_ExportData_Btn',
-                    handler: function (v, o) {
-                    	if(calculateManagerHandsontableHelper.hot.getSelected()){
-                    		var row=calculateManagerHandsontableHelper.hot.getSelected()[0];
-                    		var wellName=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[1];
-                    		var acqTime=calculateManagerHandsontableHelper.hot.getDataAtRow(row)[2];
-                    		
-                    		var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
-                            var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
-                            if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
-                            	calculateType=1;
-                			}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
-                				calculateType=2;
-                			}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
-                				calculateType=5;
-                			}
-                    		
-                    		var url=context + '/calculateManagerController/exportCalculateRequestData?wellName='+URLencode(URLencode(wellName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
-                        	document.location.href = url;
-                    	}else{
-                    		Ext.MessageBox.alert("信息","未选择记录");
-                    	}
-                    }
-                }
-                ],
         		items: [{
         				title: '功图诊断计产',
         				layout: "fit",
@@ -411,6 +430,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
 //        						Ext.getCmp("calculateManager_ExportData_Btn").hide();
         					}
         					calculateResultStore.loadPage(1);
+        					CalculateManagerWellListStore.load();
         				}
         			}
             	}]
@@ -720,4 +740,44 @@ var CalculateManagerHandsontableHelper = {
 	        
 	        return calculateManagerHandsontableHelper;
 	    }
+};
+
+function createCalculateManagerWellListWellListDataColumn(columnInfo) {
+    var myArr = columnInfo;
+
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        if (attr.dataIndex == 'id') {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+        }else if (attr.dataIndex.toUpperCase()=='deviceId'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+        } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+        } else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
 };

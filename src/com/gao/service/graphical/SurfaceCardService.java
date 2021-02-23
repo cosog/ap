@@ -108,7 +108,76 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			dynSbf.deleteCharAt(dynSbf.length() - 1);
 		}
 		dynSbf.append("]}");
-		System.out.println(dynSbf.toString().replaceAll("null", ""));
+//		System.out.println(dynSbf.toString().replaceAll("null", ""));
 		return dynSbf.toString().replaceAll("null", "");
+	}
+	
+	public String getWellList(Page pager,String orgId,String wellName,String startDate,String endDate){
+		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		int intPage = pager.getPage();
+		int limit = pager.getLimit();
+		int start = pager.getStart();
+		int maxvalue = limit + start;
+		String allsql="",sql="";
+		String tableName="viw_rpc_diagramquery_latest";
+		String prodTitle="产量(t/d)";
+		if(StringManagerUtils.isNotNull(wellName)){
+			tableName="viw_rpc_diagramquery_hist";
+		}
+		String prodCol=" liquidWeightProduction";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction";
+			prodTitle="产量(m3/d)";
+		}
+		
+		allsql="select id, wellName, to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+				+ " workingConditionName,"+prodCol+",stroke, SPM,fmax, fmin   "
+				+ " from  "+tableName+""
+				+ " where orgid in(" + orgId + ")";
+		if(StringManagerUtils.isNotNull(wellName)){
+			allsql+= " and wellName='" + wellName + "' ";
+			allsql+= " and acqTime between to_date('"+ startDate +"','yyyy-MM-dd') and to_date('"+ endDate +"','yyyy-MM-dd')+1";
+			allsql+=" order by acqTime desc";
+		}else{
+			allsql+=" order by sortnum,wellName";
+		}
+		
+		sql="select b.* from (select a.*,rownum as rn from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn > "+ start +"";
+		int totals = getTotalCountRows(allsql);//获取总记录数
+		List<?> list=this.findCallSql(sql);
+		
+		
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
+				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",width:150,children:[] },"
+				+ "{ \"header\":\"工况\",\"dataIndex\":\"workingConditionName\" ,children:[] },"
+				+ "{ \"header\":\""+prodTitle+"\",\"dataIndex\":\"liquidProduction\" ,children:[] },"
+				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\" ,children:[] },"
+				+ "{ \"header\":\"冲次(1/min)\",\"dataIndex\":\"SPM\" ,children:[] },"
+				+ "{ \"header\":\"最大载荷(kN)\",\"dataIndex\":\"fmax\" ,children:[] },"
+				+ "{ \"header\":\"最小载荷(kN)\",\"dataIndex\":\"fmin\" ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"acqTime\":\""+obj[2]+"\",");
+			result_json.append("\"workingConditionName\":\""+obj[3]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[4]+"\",");
+			result_json.append("\"stroke\":\""+obj[5]+"\",");
+			result_json.append("\"SPM\":\""+obj[6]+"\",");
+			result_json.append("\"fmax\":\""+obj[7]+"\",");
+			result_json.append("\"fmin\":\""+obj[8]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
 	}
 }

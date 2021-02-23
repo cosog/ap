@@ -12,6 +12,7 @@ import com.gao.model.AcquisitionGroup;
 import com.gao.model.AcquisitionItem;
 import com.gao.model.AcquisitionUnitGroup;
 import com.gao.model.AcquisitionGroupItem;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
@@ -88,10 +89,16 @@ private CommonDataService service;
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		//驱动排序
-		Map<Integer,RTUDriveConfig> equipmentDriveSortMap=new TreeMap<Integer,RTUDriveConfig>();
+		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-			equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			if(entry.getKey().toUpperCase().contains("KAFKA")){
+				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			}else{
+				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			}
+			
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -113,7 +120,7 @@ private CommonDataService service;
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"diagramTableColumns\":"+diagramTableColumns+",");
 		result_json.append("\"totalRoot\":[");
-		for(Entry<Integer, RTUDriveConfig> entry:equipmentDriveSortMap.entrySet()){
+		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
 			if(!driveConfig.getDriverCode().toUpperCase().contains("KAFKA") && !driveConfig.getDriverCode().toUpperCase().contains("MQTT")){
 				StringBuffer driverConfigData = new StringBuffer();

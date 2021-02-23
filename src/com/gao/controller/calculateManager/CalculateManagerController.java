@@ -113,6 +113,58 @@ public class CalculateManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getWellList")
+	public String getWellList() throws Exception {
+		orgId = ParamUtils.getParameter(request, "orgId");
+		wellName = ParamUtils.getParameter(request, "wellName");
+		
+		String wellType = ParamUtils.getParameter(request, "wellType");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		String calculateSign = ParamUtils.getParameter(request, "calculateSign");
+		String calculateType = ParamUtils.getParameter(request, "calculateType");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		if(!StringManagerUtils.isNotNull(endDate)){
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t";
+			List list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+//		startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-120);
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		String json = calculateManagerService.getWellList(orgId, wellName, pager,wellType,startDate,endDate,calculateSign,calculateType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unused")
 	@RequestMapping("/saveRecalculateData")
 	public String saveRecalculateData() throws Exception {

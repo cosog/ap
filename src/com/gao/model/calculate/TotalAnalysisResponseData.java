@@ -18,8 +18,8 @@ public class TotalAnalysisResponseData {
     private Item CasingPressure;
     private Item WellHeadFluidTemperature;
     private Item ProductionGasOilRatio;
-    private int FSResultCode;
-    private String FSResultString;
+    private int ResultCode;
+    private String ResultString;
     private int ExtendedDays;
     private Item Stroke;
     private Item SPM;
@@ -91,7 +91,7 @@ public class TotalAnalysisResponseData {
     private Item SurfaceSystemEfficiency;
     private Item WellDownSystemEfficiency;
     private Item SystemEfficiency;
-    private Item PowerConsumptionPerTHM;
+    private Item EnergyPer100mLift;
     private Item AvgWatt; //平均有功功率        		kW
     private Item PolishRodPower; //光杆功率              	kW
     private Item WaterPower; //水功率             		kW
@@ -108,10 +108,10 @@ public class TotalAnalysisResponseData {
     private Item RunFrequency;
     private Item RPM;
     private Item Signal; //信号强度
-    private Item WattSum; //有功功率					kW
-    private Item VarSum; //无功功率					kVar
-    private Item VASum; //视在功率					kVA
-    private Item PFSum; //功率因数					小数
+    private Item Watt3; //有功功率					kW
+    private Item Var3; //无功功率					kVar
+    private Item VA3; //视在功率					kVA
+    private Item PF3; //功率因数					小数
 
 	public static class Verification
 	{
@@ -329,20 +329,20 @@ public class TotalAnalysisResponseData {
 		ProductionGasOilRatio = productionGasOilRatio;
 	}
 
-	public int getFSResultCode() {
-		return FSResultCode;
+	public int getResultCode() {
+		return ResultCode;
 	}
 
-	public void setFSResultCode(int fSResultCode) {
-		FSResultCode = fSResultCode;
+	public void setResultCode(int resultCode) {
+		ResultCode = resultCode;
 	}
 
-	public String getFSResultString() {
-		return FSResultString;
+	public String getResultString() {
+		return ResultString;
 	}
 
-	public void setFSResultString(String fSResultString) {
-		FSResultString = fSResultString;
+	public void setResultString(String resultString) {
+		ResultString = resultString;
 	}
 
 	public int getExtendedDays() {
@@ -545,12 +545,12 @@ public class TotalAnalysisResponseData {
 		SystemEfficiency = systemEfficiency;
 	}
 
-	public Item getPowerConsumptionPerTHM() {
-		return PowerConsumptionPerTHM;
+	public Item getEnergyPer100mLift() {
+		return EnergyPer100mLift;
 	}
 
-	public void setPowerConsumptionPerTHM(Item powerConsumptionPerTHM) {
-		PowerConsumptionPerTHM = powerConsumptionPerTHM;
+	public void setEnergyPer100mLift(Item energyPer100mLift) {
+		EnergyPer100mLift = energyPer100mLift;
 	}
 
 	public Item getIA() {
@@ -1025,36 +1025,36 @@ public class TotalAnalysisResponseData {
 		Signal = signal;
 	}
 
-	public Item getWattSum() {
-		return WattSum;
+	public Item getWatt3() {
+		return Watt3;
 	}
 
-	public void setWattSum(Item wattSum) {
-		WattSum = wattSum;
+	public void setWatt3(Item watt3) {
+		Watt3 = watt3;
 	}
 
-	public Item getVarSum() {
-		return VarSum;
+	public Item getVar3() {
+		return Var3;
 	}
 
-	public void setVarSum(Item varSum) {
-		VarSum = varSum;
+	public void setVar3(Item var3) {
+		Var3 = var3;
 	}
 
-	public Item getVASum() {
-		return VASum;
+	public Item getVA3() {
+		return VA3;
 	}
 
-	public void setVASum(Item vASum) {
-		VASum = vASum;
+	public void setVA3(Item vA3) {
+		VA3 = vA3;
 	}
 
-	public Item getPFSum() {
-		return PFSum;
+	public Item getPF3() {
+		return PF3;
 	}
 
-	public void setPFSum(Item pFSum) {
-		PFSum = pFSum;
+	public void setPF3(Item pF3) {
+		PF3 = pF3;
 	}
 
 	public Item getNoLiquidAvailablePlungerStroke() {
@@ -1082,8 +1082,8 @@ public class TotalAnalysisResponseData {
 	}
 	
 	public boolean stringLengthManage(){
-		if(this.FSResultString.length()>2000){
-			this.setFSResultString(FSResultString.substring(0, 1996)+"...");
+		if(this.ResultString.length()>2000){
+			this.setResultString(ResultString.substring(0, 1996)+"...");
 		}
 		if(this.CommRange.length()>2000){
 			this.setCommRange(CommRange.substring(0, 1996)+"...");

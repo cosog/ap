@@ -840,9 +840,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		
-		
-		
 		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,prod.waterCut_W,";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,prod.waterCut,";;
@@ -851,7 +848,11 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String sql="select well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 				+ prodCol
 				+ " t.stroke,t.spm,prod.wellheadfluidtemperature,prod.tubingpressure,prod.casingpressure,"
-				+ " prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence "
+//				+ " prod.producingfluidlevel,"
+				+ " case when prod.producingfluidLevel>=0 then prod.producingfluidLevel when  prod.producingfluidLevel is null then prod.producingfluidLevel else t.inverproducingfluidlevel end as producingfluidLevel,"
+				+ " prod.pumpsettingdepth,"
+//				+ " prod.pumpsettingdepth-prod.producingfluidlevel as submergence "
+				+ " case when prod.producingfluidLevel>=0 then prod.pumpsettingdepth-prod.producingfluidLevel when  prod.producingfluidLevel is null then prod.pumpsettingdepth-prod.producingfluidLevel else prod.pumpsettingdepth-t.inverproducingfluidlevel end as submergence"
 				+ " from tbl_wellinformation well,tbl_rpc_productiondata_hist prod,tbl_rpc_diagram_hist t "
 				+ " where t.wellid=well.id and t.productiondataid=prod.id ";
 		if(StringManagerUtils.isNotNull(selectedWellName)){
@@ -1275,6 +1276,11 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " and t.wellname='"+selectedWellName+"' "
 				+ " and t4.operationtype=2 "
 				+ " order by t4.seq";
+//		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
+//				+ " from tbl_wellinformation t,tbl_acq_group_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
+//				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t3.id=t4.itemid "
+//				+ " and t.wellname='"+selectedWellName+"' "
+//				+ " order by t3.seq";
 		String sql="select wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
 				+ prodCol
 				+ " theoreticalProduction,"

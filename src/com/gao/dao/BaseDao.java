@@ -4139,8 +4139,8 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(8, totalAnalysisResponseData.getRunTime());//运行时间
 			cs.setFloat(9, totalAnalysisResponseData.getRunTimeEfficiency());//运行时率
 			cs.setString(10, totalAnalysisResponseData.getRunRange());//运行区间
-			cs.setInt(11, totalAnalysisResponseData.getFSResultCode());//功图工况代码
-			cs.setString(12, totalAnalysisResponseData.getFSResultString());//功图工况字符串
+			cs.setInt(11, totalAnalysisResponseData.getResultCode());//功图工况代码
+			cs.setString(12, totalAnalysisResponseData.getResultString());//功图工况字符串
 			cs.setInt(13, totalAnalysisResponseData.getExtendedDays());//功图延用天数
 			
 			//冲程、冲次、充满系数
@@ -4223,9 +4223,9 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(80, totalAnalysisResponseData.getSystemEfficiency().getValue());
 			cs.setFloat(81, totalAnalysisResponseData.getSystemEfficiency().getMax());
 			cs.setFloat(82, totalAnalysisResponseData.getSystemEfficiency().getMin());
-			cs.setFloat(83, totalAnalysisResponseData.getPowerConsumptionPerTHM().getValue());
-			cs.setFloat(84, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMax());
-			cs.setFloat(85, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMin());
+			cs.setFloat(83, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+			cs.setFloat(84, totalAnalysisResponseData.getEnergyPer100mLift().getMax());
+			cs.setFloat(85, totalAnalysisResponseData.getEnergyPer100mLift().getMin());
 			
 			//电流平衡度、功率平衡度
 			cs.setFloat(86, totalAnalysisResponseData.getIDegreeBalance().getValue());
@@ -4332,21 +4332,21 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(26, totalAnalysisResponseData.getSignal().getMax());
 			cs.setFloat(27, totalAnalysisResponseData.getSignal().getMin());
 			
-			cs.setFloat(28, totalAnalysisResponseData.getWattSum().getValue());
-			cs.setFloat(29, totalAnalysisResponseData.getWattSum().getMax());
-			cs.setFloat(30, totalAnalysisResponseData.getWattSum().getMin());
+			cs.setFloat(28, totalAnalysisResponseData.getWatt3().getValue());
+			cs.setFloat(29, totalAnalysisResponseData.getWatt3().getMax());
+			cs.setFloat(30, totalAnalysisResponseData.getWatt3().getMin());
 			
-			cs.setFloat(31, totalAnalysisResponseData.getVarSum().getValue());
-			cs.setFloat(32, totalAnalysisResponseData.getVarSum().getMax());
-			cs.setFloat(33, totalAnalysisResponseData.getVarSum().getMin());
+			cs.setFloat(31, totalAnalysisResponseData.getVar3().getValue());
+			cs.setFloat(32, totalAnalysisResponseData.getVar3().getMax());
+			cs.setFloat(33, totalAnalysisResponseData.getVar3().getMin());
 			
-			cs.setFloat(34, totalAnalysisResponseData.getVASum().getValue());
-			cs.setFloat(35, totalAnalysisResponseData.getVASum().getMax());
-			cs.setFloat(36, totalAnalysisResponseData.getVASum().getMin());
+			cs.setFloat(34, totalAnalysisResponseData.getVA3().getValue());
+			cs.setFloat(35, totalAnalysisResponseData.getVA3().getMax());
+			cs.setFloat(36, totalAnalysisResponseData.getVA3().getMin());
 			
-			cs.setFloat(37, totalAnalysisResponseData.getPFSum().getValue());
-			cs.setFloat(38, totalAnalysisResponseData.getPFSum().getMax());
-			cs.setFloat(39, totalAnalysisResponseData.getPFSum().getMin());
+			cs.setFloat(37, totalAnalysisResponseData.getPF3().getValue());
+			cs.setFloat(38, totalAnalysisResponseData.getPF3().getMax());
+			cs.setFloat(39, totalAnalysisResponseData.getPF3().getMin());
 			
 			cs.setString(40, tatalDate);//汇总日期
 			cs.executeUpdate();
@@ -4400,21 +4400,21 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(21, totalAnalysisResponseData.getRunFrequency().getMax());
 			cs.setFloat(22, totalAnalysisResponseData.getRunFrequency().getMin());
 			
-			cs.setFloat(23, totalAnalysisResponseData.getWattSum().getValue());
-			cs.setFloat(24, totalAnalysisResponseData.getWattSum().getMax());
-			cs.setFloat(25, totalAnalysisResponseData.getWattSum().getMin());
+			cs.setFloat(23, totalAnalysisResponseData.getWatt3().getValue());
+			cs.setFloat(24, totalAnalysisResponseData.getWatt3().getMax());
+			cs.setFloat(25, totalAnalysisResponseData.getWatt3().getMin());
 			
-			cs.setFloat(26, totalAnalysisResponseData.getVarSum().getValue());
-			cs.setFloat(27, totalAnalysisResponseData.getVarSum().getMax());
-			cs.setFloat(28, totalAnalysisResponseData.getVarSum().getMin());
+			cs.setFloat(26, totalAnalysisResponseData.getVar3().getValue());
+			cs.setFloat(27, totalAnalysisResponseData.getVar3().getMax());
+			cs.setFloat(28, totalAnalysisResponseData.getVar3().getMin());
 			
-			cs.setFloat(29, totalAnalysisResponseData.getVASum().getValue());
-			cs.setFloat(30, totalAnalysisResponseData.getVASum().getMax());
-			cs.setFloat(31, totalAnalysisResponseData.getVASum().getMin());
+			cs.setFloat(29, totalAnalysisResponseData.getVA3().getValue());
+			cs.setFloat(30, totalAnalysisResponseData.getVA3().getMax());
+			cs.setFloat(31, totalAnalysisResponseData.getVA3().getMin());
 			
-			cs.setFloat(32, totalAnalysisResponseData.getPFSum().getValue());
-			cs.setFloat(33, totalAnalysisResponseData.getPFSum().getMax());
-			cs.setFloat(34, totalAnalysisResponseData.getPFSum().getMin());
+			cs.setFloat(32, totalAnalysisResponseData.getPF3().getValue());
+			cs.setFloat(33, totalAnalysisResponseData.getPF3().getMax());
+			cs.setFloat(34, totalAnalysisResponseData.getPF3().getMin());
 			
 			cs.setString(35, tatalDate);//汇总日期
 			cs.executeUpdate();
@@ -4455,8 +4455,8 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setInt(2, totalAnalysisResponseData.getResultStatus());//计算状态
 			
 			
-			cs.setInt(3, totalAnalysisResponseData.getFSResultCode());//功图工况代码
-			cs.setString(4, totalAnalysisResponseData.getFSResultString());//功图工况字符串
+			cs.setInt(3, totalAnalysisResponseData.getResultCode());//功图工况代码
+			cs.setString(4, totalAnalysisResponseData.getResultString());//功图工况字符串
 			cs.setInt(5, totalAnalysisResponseData.getExtendedDays());//功图延用天数
 			
 			//冲程、冲次、充满系数
@@ -4676,9 +4676,9 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(198, totalAnalysisResponseData.getSystemEfficiency().getValue());
 			cs.setFloat(199, totalAnalysisResponseData.getSystemEfficiency().getMax());
 			cs.setFloat(200, totalAnalysisResponseData.getSystemEfficiency().getMin());
-			cs.setFloat(201, totalAnalysisResponseData.getPowerConsumptionPerTHM().getValue());
-			cs.setFloat(202, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMax());
-			cs.setFloat(203, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMin());
+			cs.setFloat(201, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+			cs.setFloat(202, totalAnalysisResponseData.getEnergyPer100mLift().getMax());
+			cs.setFloat(203, totalAnalysisResponseData.getEnergyPer100mLift().getMin());
 			cs.setFloat(204, totalAnalysisResponseData.getAvgWatt().getValue());
 			cs.setFloat(205, totalAnalysisResponseData.getAvgWatt().getMax());
 			cs.setFloat(206, totalAnalysisResponseData.getAvgWatt().getMin());
@@ -4831,9 +4831,9 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setFloat(63, totalAnalysisResponseData.getSystemEfficiency().getValue());
 			cs.setFloat(64, totalAnalysisResponseData.getSystemEfficiency().getMax());
 			cs.setFloat(65, totalAnalysisResponseData.getSystemEfficiency().getMin());
-			cs.setFloat(66, totalAnalysisResponseData.getPowerConsumptionPerTHM().getValue());
-			cs.setFloat(67, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMax());
-			cs.setFloat(68, totalAnalysisResponseData.getPowerConsumptionPerTHM().getMin());
+			cs.setFloat(66, totalAnalysisResponseData.getEnergyPer100mLift().getValue());
+			cs.setFloat(67, totalAnalysisResponseData.getEnergyPer100mLift().getMax());
+			cs.setFloat(68, totalAnalysisResponseData.getEnergyPer100mLift().getMin());
 			cs.setFloat(69, totalAnalysisResponseData.getAvgWatt().getValue());
 			cs.setFloat(70, totalAnalysisResponseData.getAvgWatt().getMax());
 			cs.setFloat(71, totalAnalysisResponseData.getAvgWatt().getMin());

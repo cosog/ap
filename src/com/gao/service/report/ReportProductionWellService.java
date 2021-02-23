@@ -79,7 +79,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	}
 
 	
-	public String showRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
+	public String showRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String calculateEndDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
@@ -98,12 +98,11 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
 			+ " t.todayKWattH,"
 			+ " remark"
-			+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+			+ " from "
+			+ " viw_rpc_total_day t where t.org_id in ("+orgId+") "
+			+ " and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateEndDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
-		}
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+99) ";
 		}
 		sql+=" order by t.sortNum, t.wellName";
 		int totals=this.getTotalCountRows(sql);
@@ -252,7 +251,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String showPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate)throws Exception {
+	public String showPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String calculateEndDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
@@ -269,7 +268,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
 				+ " t.todayKWattH,"
 				+ " remark"
-				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " from viw_pcp_total_day t "
+				+ " where t.org_id in ("+orgId+") "
+				+ " and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateEndDate+"','yyyy-mm-dd')";
 		
 		
 		
@@ -345,7 +346,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 	
 	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-ConfigFile configFile=Config.getInstance().configFile;
+		ConfigFile configFile=Config.getInstance().configFile;
 		
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
@@ -402,5 +403,40 @@ ConfigFile configFile=Config.getInstance().configFile;
 		}
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getWellList(String orgId,String wellName,String wellType){
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.wellname"
+				+ " from tbl_wellinformation t "
+				+ " where  t.orgid in ("+orgId+")";
+		if(StringManagerUtils.isNotNull(wellType)){
+			sql+=" and t.liftingtype>="+wellType+" and t.liftingtype<"+wellType+"+100";
+		}
+		
+		
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and t.wellName='"+wellName+"'";
+		}
+		sql+=" order by t.sortnum,t.wellname";
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[1]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
 	}
 }

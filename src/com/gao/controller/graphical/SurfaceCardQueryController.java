@@ -100,6 +100,49 @@ public class SurfaceCardQueryController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/getWellList")
+	public String getWellList() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		wellName = ParamUtils.getParameter(request, "wellName");
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		if(StringManagerUtils.isNotNull(wellName)&&(!StringManagerUtils.isNotNull(endDate))){
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_rpc_diagram_hist t,tbl_wellinformation t2 where t.wellId=t2.id and  t2.wellName='"+wellName+"'  ";
+			List list = this.commonDataService.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)&&StringManagerUtils.isNotNull(endDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-1);
+		}
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		json = this.service.getWellList(pager,orgId,wellName,startDate,endDate);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	public String getOrgId() {
 		return orgId;

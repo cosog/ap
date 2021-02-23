@@ -26,6 +26,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import com.gao.model.AcquisitionUnitData;
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.calculate.FA2FSResponseData;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.thread.calculate.ProtocolModbusThread;
@@ -565,9 +566,9 @@ public class EquipmentDriverServerTast {
 		//添加Kafka
 		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig KafkaDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(KafkaDriver.getDriverCode(), KafkaDriver);
+		type = new TypeToken<KafkaConfig>() {}.getType();
+		KafkaConfig kafkaConfig=gson.fromJson(DriverConfigData, type);
+		equipmentDriveMap.put(kafkaConfig.getDriverCode(), kafkaConfig);
 		
 		System.out.println("驱动初始化结束");
 	}

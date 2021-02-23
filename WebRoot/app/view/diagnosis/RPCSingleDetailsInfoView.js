@@ -2304,6 +2304,22 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
 	var pumpSettingDepth=[];
 	var submergence=[];
 	
+	
+	var liquidProductionStr="[";
+	var oilProductionStr="[";
+	var waterProductionStr="[";
+	var waterCutStr="[";
+	var strokeStr="[";
+	var spmStr="[";
+	var wellheadFluidTemperatureStr="[";
+	var tubingPressureStr="[";
+	var casingPressureStr="[";
+	var producingFluidLevelStr="[";
+	var pumpSettingDepthStr="[";
+	var submergenceStr="[";
+	
+	
+	
 	var productionUnitStr='t/d';
     if(productionUnit!=0){
     	productionUnitStr='m^3/d';
@@ -2316,6 +2332,34 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
 	}
 	
 	for(var i=0;i<items.length;i++){
+		liquidProductionStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].liquidProduction)+"]";
+		oilProductionStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].oilProduction)+"]";
+		waterProductionStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].waterProduction)+"]";
+		waterCutStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].waterCut)+"]";
+		strokeStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].stroke)+"]";
+		spmStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].spm)+"]";
+		wellheadFluidTemperatureStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].wellheadFluidTemperature)+"]";
+		tubingPressureStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].tubingPressure)+"]";
+		casingPressureStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].casingPressure)+"]";
+		producingFluidLevelStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].producingFluidLevel)+"]";
+		pumpSettingDepthStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].pumpSettingDepth)+"]";
+		submergenceStr+="["+Date.parse(items[i].acqTime.replace(/-/g, '/'))+","+parseFloat(items[i].submergence)+"]";
+		if(i<items.length-1){
+			liquidProductionStr+=",";
+			oilProductionStr+=",";
+			waterProductionStr+=",";
+			waterCutStr+=",";
+			strokeStr+=",";
+			spmStr+=",";
+			wellheadFluidTemperatureStr+=",";
+			tubingPressureStr+=",";
+			casingPressureStr+=",";
+			producingFluidLevelStr+=",";
+			pumpSettingDepthStr+=",";
+			submergenceStr+=",";
+		}
+		
+		
 		liquidProduction.push([
             Date.parse(items[i].acqTime.replace(/-/g, '/')),
             parseFloat(items[i].liquidProduction)
@@ -2365,6 +2409,32 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
             parseFloat(items[i].submergence)
         ]);
 	}
+	
+	liquidProductionStr+="]";
+	oilProductionStr+="]";
+	waterProductionStr+="]";
+	waterCutStr+="]";
+	strokeStr+="]";
+	spmStr+="]";
+	wellheadFluidTemperatureStr+="]";
+	tubingPressureStr+="]";
+	casingPressureStr+="]";
+	producingFluidLevelStr+="]";
+	pumpSettingDepthStr+="]";
+	submergenceStr+="]";
+	
+	console.log("liquidProductionStr:"+liquidProductionStr);
+	console.log("oilProductionStr:"+oilProductionStr);
+	console.log("waterProductionStr:"+waterProductionStr);
+	console.log("waterCutStr:"+waterCutStr);
+	console.log("strokeStr:"+strokeStr);
+	console.log("spmStr:"+spmStr);
+	console.log("wellheadFluidTemperatureStr:"+wellheadFluidTemperatureStr);
+	console.log("tubingPressureStr:"+tubingPressureStr);
+	console.log("casingPressureStr:"+casingPressureStr);
+	console.log("producingFluidLevelStr:"+producingFluidLevelStr);
+	console.log("pumpSettingDepthStr:"+pumpSettingDepthStr);
+	console.log("submergenceStr:"+submergenceStr);
 	
 	Highcharts.setOptions({
         global: {

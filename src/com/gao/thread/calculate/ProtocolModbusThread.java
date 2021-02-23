@@ -107,8 +107,9 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					}
     				}else {
     					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
-    						byte[] macByte=new byte[11];
-        					for(int i=0;i<11;i++){
+    						int l=rc-3;
+    						byte[] macByte=new byte[rc];
+        					for(int i=0;i<rc;i++){
         						macByte[i]=recByte[i+2];
         					}
         					revMacStr=new String(macByte);
@@ -1882,7 +1883,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
             					}
             					long newTimelong = format.parse(diagramAcqTime).getTime();
             					
-            					System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"RTU中功图采集时间："+diagramAcqTime+",当前功图采集时间："+clientUnit.unitDataList.get(i).getDiagramAcqTime());
+//            					System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"RTU中功图采集时间："+diagramAcqTime+",当前功图采集时间："+clientUnit.unitDataList.get(i).getDiagramAcqTime());
             					
             					if(newTimelong>currentTimelong){//发现新功图
             						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"发现新功图");
@@ -1975,10 +1976,18 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								length=point-j*100;
                 							}
                 							wellReaded=true;
-                							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
-                    								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getAddress()+j*100,
-                    								length,
-                    								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							if(point>250){
+                								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
+                        								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+500+j*100,
+                        								length,
+                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							}else{
+                								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
+                        								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getAddress()+j*100,
+                        								length,
+                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							}
+                							
                 							if(rc==-1||rc==-2){
                 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图载荷数据发送或接收失败,rc="+rc);
                 								this.releaseResource(is,os);
@@ -2010,10 +2019,18 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								length=point-j*100;
                 							}
                 							wellReaded=true;
-                							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
-                    								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getAddress()+j*100,
-                    								length,
-                    								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							if(point>250){
+                								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
+                        								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+1000+j*100,
+                        								length,
+                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							}else{
+                								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
+                        								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getAddress()+j*100,
+                        								length,
+                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							}
+                							
                 							if(rc==-1||rc==-2){
                 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图电流数据发送或接收失败,rc="+rc);
                 								this.releaseResource(is,os);
@@ -2045,10 +2062,18 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								length=point-j*100;
                 							}
                 							wellReaded=true;
-                							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
-                    								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getAddress()+j*100,
-                    								length,
-                    								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							if(point>250){
+                								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
+                        								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+1500+j*100,
+                        								length,
+                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							}else{
+                								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
+                        								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getAddress()+j*100,
+                        								length,
+                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                							}
+                							
                 							if(rc==-1||rc==-2){
                 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图功率数据发送或接收失败,rc="+rc);
                 								this.releaseResource(is,os);
@@ -2072,7 +2097,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 					clientUnit.unitDataList.get(i).getAcquisitionData().setRecvPBuff(recvPBuff.toString());
                 					
                 					recvBuff.append(recvFBuff+","+recvSBuff+","+recvABuff+","+recvPBuff+"}}");
-                					System.out.println("线程"+this.threadId+"解析读取数据:"+recvBuff.toString());
+//                					System.out.println("线程"+this.threadId+"解析读取数据:"+recvBuff.toString());
                 					StringManagerUtils.sendPostMethod(url, recvBuff.toString(),"utf-8");
                 					clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcqTime);
                 					wellReaded=true;

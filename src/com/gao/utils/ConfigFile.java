@@ -241,6 +241,45 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class Probe{
+		private String[] app;
+		private String[] mem;
+		private String[] disk;
+		private String[] host;
+		private String[] cpu;
+		public String[] getApp() {
+			return app;
+		}
+		public void setApp(String[] app) {
+			this.app = app;
+		}
+		public String[] getMem() {
+			return mem;
+		}
+		public void setMem(String[] mem) {
+			this.mem = mem;
+		}
+		public String[] getDisk() {
+			return disk;
+		}
+		public void setDisk(String[] disk) {
+			this.disk = disk;
+		}
+		public String[] getHost() {
+			return host;
+		}
+		public void setHost(String[] host) {
+			this.host = host;
+		}
+		public String[] getCpu() {
+			return cpu;
+		}
+		public void setCpu(String[] cpu) {
+			this.cpu = cpu;
+		}
+		
+	}
+	
 	public static class Plugin
 	{
 		private String wellboreTrajectory;
@@ -266,7 +305,9 @@ public class ConfigFile {
 	
 	public static class AgileCalculate
 	{
-	    private String[] FESDiagram;
+		private Probe probe;
+		
+		private String[] FESDiagram;
 
 	    private String[] FSDiagram;
 
@@ -338,6 +379,12 @@ public class ConfigFile {
 	    public TotalCalculation getTotalCalculation(){
 	        return this.totalCalculation;
 	    }
+		public Probe getProbe() {
+			return probe;
+		}
+		public void setProbe(Probe probe) {
+			this.probe = probe;
+		}
 	}
 
 	public static class Mqtt

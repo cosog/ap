@@ -26,6 +26,7 @@ import com.gao.service.base.CommonDataService;
 import com.gao.service.report.ReportProductionWellService;
 import com.gao.utils.Config;
 import com.gao.utils.ConfigFile;
+import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
@@ -54,6 +55,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 	private static final long serialVersionUID = 1L;
 	private String wellName = "";
 	private String calculateDate;
+	private String calculateEndDate;
 	private int limit = 10;
 	private String orgId;
 	private int page = 1;
@@ -75,6 +77,7 @@ public class ReportPumpingUnitDataController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
+		calculateEndDate= ParamUtils.getParameter(request, "calculateEndDate");
 		String wellType = ParamUtils.getParameter(request, "wellType");
 		String tableName="tbl_rpc_total_day";
 		if("400".equals(wellType)){
@@ -92,24 +95,25 @@ public class ReportPumpingUnitDataController extends BaseController {
 		}else{
 			v.add(null);
 		}
-		if (!StringUtils.isNotBlank(calculateDate)) {
+		if (!StringUtils.isNotBlank(calculateEndDate)) {
 			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from "+tableName+" t order by calculateDate desc) where rownum=1 ";
 			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
-				calculateDate = list.get(0).toString();
+				calculateEndDate = list.get(0).toString();
 			} else {
-				calculateDate = StringManagerUtils.getCurrentTime();
+				calculateEndDate = StringManagerUtils.getCurrentTime();
 			}
+			calculateDate=calculateEndDate;
 		}
 		v.add(calculateDate);
-		
+		v.add(calculateEndDate);
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setJssj(calculateDate);
 		if("400".equals(wellType)){
-			json = reportProductionWellService.showPCPDailyReportData(pager, orgId, wellName, calculateDate);
+			json = reportProductionWellService.showPCPDailyReportData(pager, orgId, wellName, calculateDate,calculateEndDate);
 		}else{
-			json = reportProductionWellService.showRPCDailyReportData(pager, orgId, wellName, calculateDate,wellType);
+			json = reportProductionWellService.showRPCDailyReportData(pager, orgId, wellName, calculateDate,calculateEndDate);
 		}
 		
 		response.setContentType("application/json;charset=utf-8");
@@ -1026,6 +1030,33 @@ public class ReportPumpingUnitDataController extends BaseController {
 		this.commonDataService.exportDataExcel(response, fileName, "采出井日报数据", null, heads, fields, orgId, "pumpUnitDayReport", v);
 		return null;
 	}
+	
+	@RequestMapping("/getWellList")
+	public String getWellList() throws Exception {
+		String json = "";
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String wellType = ParamUtils.getParameter(request, "wellType");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		json = reportProductionWellService.getWellList(orgId,wellName,wellType);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 
 	public static String formatStringDate(Calendar Month) {
@@ -1076,6 +1107,18 @@ public class ReportPumpingUnitDataController extends BaseController {
 
 	public void setPage(int page) {
 		this.page = page;
+	}
+
+	public String getCalculateEndDate() {
+		return calculateEndDate;
+	}
+
+	public void setCalculateEndDate(String calculateEndDate) {
+		this.calculateEndDate = calculateEndDate;
+	}
+
+	public void setWellName(String wellName) {
+		this.wellName = wellName;
 	}
 
 }

@@ -8,7 +8,7 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
     border: false,
     initComponent: function () {
         var me = this;
-//        var ReportPumpUnitDayStore = Ext.create("AP.store.reportOut.ReportPumpUnitDayStore2");
+        var RPCDailyReportWellListStore = Ext.create("AP.store.reportOut.RPCDailyReportWellListStore");
         /** 
          * 定义降序的groupingStore 
          */
@@ -37,7 +37,7 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('ReportPumpingUnitPanelEellListCombo_Id').getValue();
+                    var wellName = Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         wellName:wellName,
@@ -50,7 +50,7 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
         var wellListCombo = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
-                id: 'ReportPumpingUnitPanelEellListCombo_Id',
+                id: 'ReportPumpingUnitPanelWellListCombo_Id',
                 store: wellListStore,
                 labelWidth: 35,
                 width: 145,
@@ -88,12 +88,31 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
             tbar: [wellListCombo, {
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: cosog.string.date,
+                fieldLabel: '日期',
                 labelWidth: 36,
-                width: 156,
+                width: 126,
                 format: 'Y-m-d',
                 id: 'ReportPumpingUnitPanelCalculateDate_Id',
-                value:'',
+                value: new Date(),
+                listeners: {
+                	select: function (combo, record, index) {
+                        try {
+                        	CreateDiagnosisDailyReportTable();
+                        } catch (ex) {
+                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                        }
+                    }
+                }
+            },{
+                xtype: 'datefield',
+                anchor: '100%',
+                hidden: false,
+                fieldLabel: '至',
+                labelWidth: 15,
+                width: 105,
+                format: 'Y-m-d ',
+                id: 'ReportPumpingUnitPanelCalculateEndDate_Id',
+                value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
@@ -118,7 +137,7 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
                 pressed: true,
                 handler: function (v, o) {
                 	var leftOrg_Id = obtainParams('leftOrg_Id');
-                	var wellName = Ext.getCmp('ReportPumpingUnitPanelEellListCombo_Id').getValue();
+                	var wellName = Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').getValue();
                 	var calculateDate = Ext.getCmp('ReportPumpingUnitPanelCalculateDate_Id').rawValue;
                 	var url=context + '/reportPumpingUnitDataController/exportRPCDailyReportData?wellType=200&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
@@ -132,19 +151,36 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
                 handler: function (v, o) {
                 	CreateDiagnosisDailyReportTable();
                 }
-            
     		}, '->', {
                 id: 'PumpingUnitDailyReportTotalCount_Id',
                 xtype: 'component',
                 tpl: cosog.string.totalCount + ': {count}',
                 style: 'margin-right:15px'
             }],
-            html:'<div class="DiagnosisDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="DiagnosisDailyReportDiv_id"></div></div>',
-            listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                	CreateDiagnosisDailyReportTable();
+            layout: 'border',
+            border: false,
+            items: [{
+            	region: 'center',
+            	title: '井列表',
+            	id: 'RPCDailyReportWellListPanel_Id',
+            	layout: "fit"
+            },{
+            	region: 'east',
+            	title:'报表数据',
+                width: '80%',
+                border: false,
+                collapsible: true, // 是否可折叠
+                collapsed:false,//是否折叠
+                split: true, // 竖折叠条
+                layout: "fit",
+                html:'<div class="DiagnosisDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="DiagnosisDailyReportDiv_id"></div></div>',
+                listeners: {
+                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                		CreateDiagnosisDailyReportTable();
+                	}
                 }
-            }
+            }]
+
         });
         me.callParent(arguments);
     }
@@ -152,8 +188,10 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
 
 function CreateDiagnosisDailyReportTable(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var wellName = Ext.getCmp('ReportPumpingUnitPanelEellListCombo_Id').getValue();
+    var wellName = Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').getValue();
     var calculateDate = Ext.getCmp('ReportPumpingUnitPanelCalculateDate_Id').rawValue;
+    var calculateEndDate = Ext.getCmp('ReportPumpingUnitPanelCalculateEndDate_Id').rawValue;
+    
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportPumpingUnitDataController/showDiagnosisDailyReportData',
@@ -175,6 +213,7 @@ function CreateDiagnosisDailyReportTable(){
 			orgId: orgId,
 			wellName: wellName,
 			calculateDate: calculateDate,
+			calculateEndDate: calculateEndDate,
             wellType:200
         }
 	});
@@ -503,3 +542,43 @@ var DiagnoseDailyReportHelper = {
 	        return diagnoseDailyReportHelper;
 	    }
 	};
+
+function createRPCDailyReportWellListDataColumn(columnInfo) {
+    var myArr = columnInfo;
+
+    var myColumns = "[";
+    for (var i = 0; i < myArr.length; i++) {
+        var attr = myArr[i];
+        var width_ = "";
+        var lock_ = "";
+        var hidden_ = "";
+        if (attr.hidden == true) {
+            hidden_ = ",hidden:true";
+        }
+        if (isNotVal(attr.lock)) {
+            //lock_ = ",locked:" + attr.lock;
+        }
+        if (isNotVal(attr.width)) {
+            width_ = ",width:" + attr.width;
+        }
+        myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
+        if (attr.dataIndex == 'id') {
+            myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
+        }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
+        }else if (attr.dataIndex.toUpperCase()=='deviceId'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+        } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
+            myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
+        } else {
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
+        }
+        myColumns += "}";
+        if (i < myArr.length - 1) {
+            myColumns += ",";
+        }
+    }
+    myColumns += "]";
+    return myColumns;
+};

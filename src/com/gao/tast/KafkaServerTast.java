@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -24,7 +25,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
+import com.gao.model.drive.KafkaConfig;
 import com.gao.utils.Config;
+import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.StringManagerUtils;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
@@ -33,17 +36,38 @@ import com.google.gson.reflect.TypeToken;
 
 @Component("KafkaServerTast")  
 public class KafkaServerTast {
-	public static final String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
-    public static final String[] TOPIC = {"Up-Data","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
-    private static final String clientid = "apKafkaClient"+new Date().getTime();
+//	public static  String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
+	public static  String HOST ="39.98.64.56:9092";
+    public static  String[] TOPIC = {"Up-NormData","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
+    private static  String clientid = "apKafkaClient"+new Date().getTime();
     private static int receivedDataCount=0;
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
     
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
+		clientid = "apKafkaClient"+new Date().getTime();
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig!=null){
+			HOST=driveConfig.getServer().getIP()+":"+driveConfig.getServer().getPort();
+			TOPIC=new String[8];
+			TOPIC[0]=driveConfig.getTopic().getUp().getNormData();
+			TOPIC[1]=driveConfig.getTopic().getUp().getRawData();
+			TOPIC[2]=driveConfig.getTopic().getUp().getConfig();
+			TOPIC[3]=driveConfig.getTopic().getUp().getModel();
+			TOPIC[4]=driveConfig.getTopic().getUp().getFreq();
+			TOPIC[5]=driveConfig.getTopic().getUp().getRTC();
+			TOPIC[6]=driveConfig.getTopic().getUp().getOnline();
+			TOPIC[7]=driveConfig.getTopic().getUp().getRunStatus();
+		}
+		
 		Properties props = new Properties();
 	    props.put("bootstrap.servers", HOST);
 	    props.put("group.id", clientid);
@@ -70,7 +94,7 @@ public class KafkaServerTast {
 	        for (ConsumerRecord<String, String> record : records){
 //	        	System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
 //	        	System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
-//	        	if("Up-Data".equalsIgnoreCase(record.topic())){
+//	        	if("Up-NormData".equalsIgnoreCase(record.topic())){
 //	        		
 //	        	}else if("Up-Config".equalsIgnoreCase(record.topic())){
 //	        		
@@ -127,7 +151,7 @@ public class KafkaServerTast {
 			String saveAggrOnlineDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrOnlineData";
 			String saveAggrRunStatusDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrRunStatusData";
 			
-			if("Up-Data".equalsIgnoreCase(record.topic())){
+			if("Up-NormData".equalsIgnoreCase(record.topic())){
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
         		if(kafkaUpData!=null){

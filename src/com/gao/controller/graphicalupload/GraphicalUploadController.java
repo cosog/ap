@@ -1178,6 +1178,7 @@ public class GraphicalUploadController extends BaseController {
 		
 		String FSdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
 		ServletInputStream ss = request.getInputStream();
+		boolean ifAddDay=false;
 		String data=convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
 		KafkaUpData kafkaUpData=gson.fromJson(data, type);
@@ -1329,13 +1330,16 @@ public class GraphicalUploadController extends BaseController {
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 //							+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
+						ifAddDay=true;
+					}
 				}
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 //						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
 					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
-						
+						ifAddDay=true;
 					}
 				}
 				
@@ -1403,9 +1407,13 @@ public class GraphicalUploadController extends BaseController {
 				raphicalUploadService.saveRPCAcquisitionAndCalculateData(kafkaUpData,rpcCalculateResponseData);
 				//汇总
 				String totalDate = StringManagerUtils.getCurrentTime();
-				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
+				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?wellId="+kafkaUpData.getWellId();
+//				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
 				if((rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1)){
-					totalUrl+="&wellId="+kafkaUpData.getWellId();
+					if(ifAddDay){//如果跨天，汇总前一天数据
+						StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
+					}
+					totalUrl+="&date="+totalDate;
 					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 				}
 				

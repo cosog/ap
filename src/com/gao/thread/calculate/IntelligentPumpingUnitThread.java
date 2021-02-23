@@ -108,8 +108,9 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					}
     				}else {
     					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
-    						byte[] macByte=new byte[11];
-        					for(int i=0;i<11;i++){
+    						int l=rc-3;
+    						byte[] macByte=new byte[rc];
+        					for(int i=0;i<rc;i++){
         						macByte[i]=recByte[i+2];
         					}
         					revMacStr=new String(macByte);

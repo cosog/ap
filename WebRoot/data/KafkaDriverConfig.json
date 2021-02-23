@@ -1,213 +1,46 @@
 {
     "DriverName": "Kafka",
     "DriverCode": "KafkaDrive",
-    "Port": 0,
-    "Protocol": 1,
-    "Sort":8,
-    "DataConfig": {
-        "RunStatus": {
-            "Address": 40317,
-            "DataType": 1,
-            "Length": 1,
-            "Zoom": 1
+    "Sort": 8,
+    "Server": {
+        "IP": "39.98.64.56",
+        "Port": 9092
+    },
+    "Topic": {
+        "Up": {
+            "NormData": "Up-NormData",
+            "RawData": "Up-RawData",
+            "Config": "Up-Config",
+            "Model": "Up-Freq",
+            "Freq": "Up-Freq",
+            "RTC": "Up-RTC",
+            "Online": "Up-Online",
+            "RunStatus": "Up-RunStatus"
         },
-        "RunControl": {
-            "Address": 40320,
-            "DataType": 1,
-            "Length": 1,
-            "Zoom": 1
-        },
-        "CurrentA": {
-            "Address": 40351,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "CurrentB": {
-            "Address": 40353,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "CurrentC": {
-            "Address": 40355,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "VoltageA": {
-            "Address": 40357,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "VoltageB": {
-            "Address": 40359,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "VoltageC": {
-            "Address": 40361,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "ActivePowerConsumption": {
-            "Address": 40363,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "ReactivePowerConsumption": {
-            "Address": 40365,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "ActivePower": {
-            "Address": 40367,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "ReactivePower": {
-            "Address": 40369,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "ReversePower": {
-            "Address": 40371,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "PowerFactor": {
-            "Address": 40373,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "TubingPressure": {
-            "Address": 40300,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "CasingPressure": {
-            "Address": 40302,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "BackPressure": {
-            "Address": 40304,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "WellHeadFluidTemperature": {
-            "Address": 40306,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "ProducingfluidLevel": {
-            "Address": 0,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "WaterCut": {
-            "Address": 0,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "SetFrequency": {
-            "Address": 40402,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "RunFrequency": {
-            "Address": 40404,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "RPM": {
-            "Address": 40430,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "Torque": {
-            "Address": 40432,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "FSDiagramAcquisitionInterval": {
-            "Address": 40981,
-            "DataType": 1,
-            "Length": 1,
-            "Zoom": 1
-        },
-        "FSDiagramSetPointCount": {
-            "Address": 40983,
-            "DataType": 1,
-            "Length": 1,
-            "Zoom": 1
-        },
-        "FSDiagramPointCount": {
-            "Address": 40984,
-            "DataType": 1,
-            "Length": 1,
-            "Zoom": 1
-        },
-        "AcqTime": {
-            "Address": 40985,
-            "DataType": 3,
-            "Length": 6,
-            "Zoom": 1
-        },
-        "SPM": {
-            "Address": 40991,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "Stroke": {
-            "Address": 40993,
-            "DataType": 2,
-            "Length": 2,
-            "Zoom": 1
-        },
-        "SDiagram": {
-            "Address": 41001,
-            "DataType": 1,
-            "Length": 250,
-            "Zoom": 0.01
-        },
-        "FDiagram": {
-            "Address": 41251,
-            "DataType": 1,
-            "Length": 250,
-            "Zoom": 0.01
-        },
-        "ADiagram": {
-            "Address": 41501,
-            "DataType": 1,
-            "Length": 250,
-            "Zoom": 0.01
-        },
-        "PDiagram": {
-            "Address": 41751,
-            "DataType": 1,
-            "Length": 250,
-            "Zoom": 0.01
+        "Down": {
+            "Model": "Down-ID-Model",
+            "Model_FluidPVT": "Down-ID-Model-FluidPVT",
+            "Model_Reservoir": "Down-ID-Model-Reservoir",
+            "Model_WellboreTrajectory": "Down-ID-Model-WellboreTrajectory",
+            "Model_RodString": "Down-ID-Model-RodString",
+            "Model_TubingString": "Down-ID-Model-TubingString",
+            "Model_Pump": "Down-ID-Model-Pump",
+            "Model_TailtubingString": "Down-ID-Model-TailtubingString",
+            "Model_CasingString": "Down-ID-Model-CasingString",
+            "Model_PumpingUnit": "Down-ID-Model-PumpingUnit",
+            "Model_SystemEfficiency": "Down-ID-Model-SystemEfficiency",
+            "Model_Production": "Down-ID-Model-Production",
+            "Model_FeatureDB": "Down-ID-Model-FeatureDB",
+            "Model_CalculationMethod": "Down-ID-Model-CalculationMethod",
+            "Model_ManualIntervention": "Down-ID-Model-ManualIntervention",
+            "Config": "Down-ID-StartRPC",
+            "StopRPC": "Down-ID-StopRPC",
+            "DogRestart": "Down-ID-DogRestart",
+            "Freq": "Down-ID-Freq",
+            "RTC": "Down-ID-RTC",
+            "Req": "Down-ID-Req",
+            "A9": "Down-App-A9",
+            "AC": "Down-App-AC"
         }
     }
 }

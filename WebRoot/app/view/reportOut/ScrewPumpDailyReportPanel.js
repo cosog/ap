@@ -8,6 +8,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
     border: false,
     initComponent: function () {
         var me = this;
+        var PPCDailyReportWellListStore = Ext.create("AP.store.reportOut.PPCDailyReportWellListStore");
         /** 
          * 定义降序的groupingStore 
          */
@@ -36,7 +37,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
             listeners: {
                 beforeload: function (store, options) {
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('ReportScrewPumpPanelEellListCombo_Id').getValue();
+                    var wellName = Ext.getCmp('ReportScrewPumpPanelWellListCombo_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         wellName:wellName,
@@ -49,7 +50,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
         var wellListCombo = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
-                id: 'ReportScrewPumpPanelEellListCombo_Id',
+                id: 'ReportScrewPumpPanelWellListCombo_Id',
                 store: wellListStore,
                 labelWidth: 35,
                 width: 145,
@@ -79,15 +80,34 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
                 }
             });
         Ext.apply(me, {
-            tbar: [wellListCombo, {
+            tbar: [wellListCombo,{
                 xtype: 'datefield',
                 anchor: '100%',
-                fieldLabel: cosog.string.date,
+                fieldLabel: '日期',
                 labelWidth: 36,
-                width: 156,
+                width: 126,
                 format: 'Y-m-d',
                 id: 'ReportScrewPumpPanelCalculateDate_Id',
-                value:'',
+                value: new Date(),
+                listeners: {
+                	select: function (combo, record, index) {
+                        try {
+                        	CreateScrewPumpDailyReportTable();
+                        } catch (ex) {
+                            Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                        }
+                    }
+                }
+            },{
+                xtype: 'datefield',
+                anchor: '100%',
+                hidden: false,
+                fieldLabel: '至',
+                labelWidth: 15,
+                width: 105,
+                format: 'Y-m-d ',
+                id: 'ReportScrewPumpPanelCalculateEndDate_Id',
+                value: new Date(),
                 listeners: {
                 	select: function (combo, record, index) {
                         try {
@@ -112,7 +132,7 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
                 pressed: true,
                 handler: function (v, o) {
                 	var leftOrg_Id = obtainParams('leftOrg_Id');
-                	var wellName = obtainParams('ReportScrewPumpPanelEellListCombo_Id');
+                	var wellName = obtainParams('ReportScrewPumpPanelWellListCombo_Id');
                 	var calculateDate = Ext.getCmp('ReportScrewPumpPanelCalculateDate_Id').rawValue;
                 	var url=context + '/reportPumpingUnitDataController/exportPCPDailyReportData?wellType=400&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
@@ -133,12 +153,29 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
                 tpl: cosog.string.totalCount + ': {count}',
                 style: 'margin-right:15px'
             }],
-            html:'<div class="ScrewPumpDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="ScrewPumpDailyReportDiv_id"></div></div>',
-            listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                	CreateScrewPumpDailyReportTable();
+            layout: 'border',
+            border: false,
+            items: [{
+            	region: 'center',
+            	title: '井列表',
+            	id: 'PPCDailyReportWellListPanel_Id',
+            	layout: "fit"
+            },{
+            	region: 'east',
+            	title:'报表数据',
+                width: '80%',
+                border: false,
+                collapsible: true, // 是否可折叠
+                collapsed:false,//是否折叠
+                split: true, // 竖折叠条
+                layout: "fit",
+                html:'<div class="ScrewPumpDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="ScrewPumpDailyReportDiv_id"></div></div>',
+                listeners: {
+                    resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	CreateScrewPumpDailyReportTable();
+                    }
                 }
-            }
+            }]
         });
         me.callParent(arguments);
     }
@@ -146,8 +183,9 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
 
 function CreateScrewPumpDailyReportTable(){
 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-    var wellName = Ext.getCmp('ReportScrewPumpPanelEellListCombo_Id').getValue();
+    var wellName = Ext.getCmp('ReportScrewPumpPanelWellListCombo_Id').getValue();
     var calculateDate = Ext.getCmp('ReportScrewPumpPanelCalculateDate_Id').rawValue;
+    var calculateEndDate = Ext.getCmp('ReportScrewPumpPanelCalculateEndDate_Id').rawValue;
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportPumpingUnitDataController/showDiagnosisDailyReportData',
@@ -169,6 +207,7 @@ function CreateScrewPumpDailyReportTable(){
 			orgId: orgId,
             wellName: wellName,
             calculateDate: calculateDate,
+            calculateEndDate: calculateEndDate,
             wellType:400
         }
 	});

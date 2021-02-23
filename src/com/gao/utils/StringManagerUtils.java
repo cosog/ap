@@ -1214,6 +1214,33 @@ public class StringManagerUtils {
 	        return "";
 	    }
 	    
+	    public static Boolean checkHttpConnection(String url) {
+	        HttpURLConnection conn=null;
+	        Boolean result = false;
+	        try {
+	            URL realUrl = new URL(url);
+	            conn = (HttpURLConnection)realUrl.openConnection();
+	            conn.setRequestProperty("accept", "*/*");
+	            conn.setRequestProperty("connection", "Keep-Alive");
+	            conn.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+	            
+	            conn.connect();
+	            if(conn.getResponseCode()==HttpURLConnection.HTTP_OK){
+	            	result= true;
+	            }
+	            
+	        } catch (Exception e) {
+	            System.out.println("发送http请求出现异常！"+e);
+	            e.printStackTrace();
+	        }
+	        finally{
+	        	if(conn!=null){
+                    conn.disconnect();
+                }
+	        }
+	        return result;
+	    }
+	    
 	    
 	    public static String post(String path,String params) throws Exception{
 	    	HttpURLConnection httpConn=null;
@@ -2071,7 +2098,40 @@ public class StringManagerUtils {
 	    			result+=sign;
 	    		}
 	    	}
-	    	return "";
+	    	return result;
+	    }
+	    
+	    public static String join(List<Object> objarr,String sign){
+	    	String result="";
+	    	for(int i=0;i<objarr.size();i++){
+	    		result+=objarr.get(i)+"";
+	    		if(i<objarr.size()-1){
+	    			result+=sign;
+	    		}
+	    	}
+	    	return result;
+	    }
+	    
+	    public static String joinStringArr(String objarr[],String sign){
+	    	String result="";
+	    	for(int i=0;i<objarr.length;i++){
+	    		result+="\""+objarr[i]+"\"";
+	    		if(i<objarr.length-1){
+	    			result+=sign;
+	    		}
+	    	}
+	    	return result;
+	    }
+	    
+	    public static String joinStringArr(List<String> objarr,String sign){
+	    	String result="";
+	    	for(int i=0;i<objarr.size();i++){
+	    		result+="\""+objarr.get(i)+"\"";
+	    		if(i<objarr.size()-1){
+	    			result+=sign;
+	    		}
+	    	}
+	    	return result;
 	    }
 	    
 	    public static String inChangeToExists(String values,String column){

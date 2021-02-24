@@ -34,6 +34,7 @@
             "Model_CalculationMethod": "Down-ID-Model-CalculationMethod",
             "Model_ManualIntervention": "Down-ID-Model-ManualIntervention",
             "Config": "Down-ID-StartRPC",
+            "StartRPC": "Down-ID-StartRPC",
             "StopRPC": "Down-ID-StopRPC",
             "DogRestart": "Down-ID-DogRestart",
             "Freq": "Down-ID-Freq",

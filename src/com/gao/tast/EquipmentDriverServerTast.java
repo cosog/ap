@@ -50,6 +50,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import oracle.sql.CLOB;
 
 @Component("BeeTechDriverServerTast")  
 public class EquipmentDriverServerTast {
@@ -70,7 +71,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		
@@ -92,15 +93,17 @@ public class EquipmentDriverServerTast {
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-			if(driveConfig.getPort()>0){
-				try {
-					ServerSocket serverSocket = new ServerSocket(driveConfig.getPort());
-					DriveServerThread driveServerThread=new DriveServerThread(serverSocket,driveConfig);
-					driveServerThread.start();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
+				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				if(driveConfig.getPort()>0){
+					try {
+						ServerSocket serverSocket = new ServerSocket(driveConfig.getPort());
+						DriveServerThread driveServerThread=new DriveServerThread(serverSocket,driveConfig);
+						driveServerThread.start();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -109,7 +112,8 @@ public class EquipmentDriverServerTast {
 	public static boolean init(){
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
-		String sql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+		String sql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode,"
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
@@ -191,11 +195,13 @@ public class EquipmentDriverServerTast {
 				unit.screwPumpDataSaveInterval=1000*60*30;//螺杆泵据保存间隔,单位毫秒
 				unit.runStatusControl=0;
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-					if(driveConfig.getDriverCode().equalsIgnoreCase(rs.getString(10))){
-						unit.setRtuDriveConfig(driveConfig);
-						unit.setDirverName(driveConfig.getDriverName());
-						break;
+					if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
+						RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+						if(driveConfig.getDriverCode().equalsIgnoreCase(rs.getString(10))){
+							unit.setRtuDriveConfig(driveConfig);
+							unit.setDirverName(driveConfig.getDriverName());
+							break;
+						}
 					}
 				}
 				
@@ -206,15 +212,16 @@ public class EquipmentDriverServerTast {
 						break;
 					}
 				}
+				
 				unit.lastDisAcqTime=rs.getString(12);
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
-				unit.lastCommRange=StringManagerUtils.CLOBtoString(rs.getClob(16));//rs.getString(16);
+				unit.lastCommRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(16));//rs.getString(16);
 				unit.lastRunStatus=rs.getInt(17);
 				unit.lastRunTime=rs.getFloat(18);
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
-				unit.lastRunRange=StringManagerUtils.CLOBtoString(rs.getClob(20));//rs.getString(20);
+				unit.lastRunRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(20));//rs.getString(20);
 				
 				unit.lastTotalKWattH=rs.getFloat(21);
 				unit.lastTotalPKWattH=rs.getFloat(22);
@@ -277,11 +284,11 @@ public class EquipmentDriverServerTast {
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
-				unit.lastCommRange=StringManagerUtils.CLOBtoString(rs.getClob(16));//rs.getString(16);
+				unit.lastCommRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(16));//rs.getString(16);
 				unit.lastRunStatus=rs.getInt(17);
 				unit.lastRunTime=rs.getFloat(18);
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
-				unit.lastRunRange=StringManagerUtils.CLOBtoString(rs.getClob(20));//rs.getString(20);
+				unit.lastRunRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(20));//rs.getString(20);
 				
 				unit.lastTotalKWattH=rs.getFloat(21);
 				unit.lastTotalPKWattH=rs.getFloat(22);

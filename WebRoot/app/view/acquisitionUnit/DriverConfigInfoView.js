@@ -1,5 +1,8 @@
 var driverConfigHandsontableHelper=null;
 var driverConfigItemsHandsontableHelper=null;
+
+var kafkaDriverConfigHandsontableHelper=null;
+
 Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.driverConfigInfoView',
@@ -10,8 +13,6 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
     	var me = this;
     	Ext.apply(me, {
     		items: [{
-                layout: "border",
-                border: false,
                 tbar:['->',{
                 	xtype: 'button',
         			pressed: true,
@@ -20,30 +21,62 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
         			handler: function (v, o) {
         			}
                 }],
+                xtype: 'tabpanel',
+                id:"ScadaDriverConfigTabPanel_Id",
+                activeTab: 0,
+                border: false,
+                tabPosition: 'top',
                 items: [{
-                    region: 'west',
-                    title:'驱动配置',
+                	title:'Modbus',
+                	id:"ScadaDriverModbusConfigTabPanel_Id",
+                	layout: "border",
                     border: false,
-                    layout: 'fit',
-                    width: '40%',
-                    collapsible: true,
-                    split: true,
-                    html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
+                    items: [{
+                        region: 'west',
+                        title:'驱动配置',
+                        border: false,
+                        layout: 'fit',
+                        width: '40%',
+                        collapsible: true,
+                        split: true,
+                        html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            	CreateDriverConfigInfoTable(true);
+                            }
+                        }
+                    }, {
+                        region: 'center',
+                        title:'数据项配置',
+                        layout: 'fit',
+                        html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            }
+                        }
+                    }]
+                },{
+                	title:'Kafka',
+                	id:"ScadaDriverKafkaConfigTabPanel_Id",
+                	layout: 'fit',
+                    html:'<div class="ScadaKafkaConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ScadaKafkaConfigTableInfoDiv_id"></div></div>',
                     listeners: {
                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                        	CreateDataSourceConfigDBInfoTable(true);
                         }
                     }
-                }, {
-                    region: 'center',
-                    title:'数据项配置',
-                    layout: 'fit',
-                    html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                        }
+                }],
+                listeners: {
+                    tabchange: function (tabPanel, newCard, oldCard, obj) {
+                    	if(newCard.id=="ScadaDriverModbusConfigTabPanel_Id"){
+//                    		loadFSDiagramAnalysisSingleStatData();
+                    	}else if(newCard.id=="ScadaDriverKafkaConfigTabPanel_Id"){
+                    		CreateKafkaConfigInfoTable();
+                    	}
                     }
-                }]
+                }
+                
+                
+                
     		}],
     		listeners: {
     			beforeclose: function ( panel, eOpts) {},
@@ -55,7 +88,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
     }
 });
 
-function CreateDataSourceConfigDBInfoTable(isNew){
+function CreateDriverConfigInfoTable(isNew){
 	if(isNew&&driverConfigHandsontableHelper!=null){
         driverConfigHandsontableHelper.clearContainer();
         driverConfigHandsontableHelper.hot.destroy();
@@ -103,9 +136,9 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 			}
 			
 			var row1=driverConfigHandsontableHelper.hot.getDataAtRow(0);
-			CreateDataSourceConfigColumnsInfoTable(row1[5])
+			CreateDriverConfigItemsInfoTable(row1[5])
 //			if(driverConfigItemsHandsontableHelper==null){
-//				CreateDataSourceConfigColumnsInfoTable(result);
+//				CreateDriverConfigItemsInfoTable(result);
 //			}else{
 //				driverConfigItemsHandsontableHelper.hot.loadData(result.columnRoot);
 //			}
@@ -181,7 +214,7 @@ var DriverConfigHandsontableHelper = {
 	                },
 	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=driverConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	CreateDataSourceConfigColumnsInfoTable(row1[5]);
+	                	CreateDriverConfigItemsInfoTable(row1[5]);
 	                },
 	                afterDestroy: function() {
 	                    // 移除事件
@@ -280,7 +313,7 @@ var DriverConfigHandsontableHelper = {
 		                        	Ext.MessageBox.alert("信息","保存成功");
 		                            //保存以后重置全局容器
 		                            driverConfigHandsontableHelper.clearContainer();
-		                            CreateDataSourceConfigDBInfoTable();
+		                            CreateDriverConfigInfoTable();
 		                        } else {
 		                        	Ext.MessageBox.alert("信息","数据保存失败");
 
@@ -366,7 +399,7 @@ var DriverConfigHandsontableHelper = {
 	    }
 };
 
-function CreateDataSourceConfigColumnsInfoTable(data){
+function CreateDriverConfigItemsInfoTable(data){
 	driverConfigItemsHandsontableHelper = DriverConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
 	var colHeaders="['序号','名称','地址','寄存器长度','数据类型','单位换算系数']";
 	var columns="[{data:'id'},{data:'item'},"
@@ -445,3 +478,196 @@ var DriverConfigItemsHandsontableHelper = {
 	        return driverConfigItemsHandsontableHelper;
 	    }
 };
+
+function CreateKafkaConfigInfoTable(){
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getKafkaDriverConfigData',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			
+			
+			if(kafkaDriverConfigHandsontableHelper==null){
+				CreateKafkaConfigItemsInfoTable(result);
+			}else{
+				kafkaDriverConfigHandsontableHelper.hot.loadData(result.totalRoot);
+			}
+			
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+            
+        }
+	});
+};
+
+function CreateKafkaConfigItemsInfoTable(result){
+	var columns="[";
+	for(var i=0;i<result.columns.length;i++){
+		if(result.columns[i].dataIndex==="columnType"){
+			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['date','varchar2','number']}";
+    	}else if(result.columns[i].dataIndex==="columnName"){
+    		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,kafkaDriverConfigHandsontableHelper);}}";
+        }else if(result.columns[i].dataIndex==="checked"){
+    		columns+="{data:'"+result.columns[i].dataIndex+"',type:'checkbox'}";
+    	}else{
+    		columns+="{data:'"+result.columns[i].dataIndex+"'}";
+    	}
+		if(i<result.columns.length-1){
+        	columns+=",";
+    	}
+	}
+	columns+="]";
+	kafkaDriverConfigHandsontableHelper = KafkaDriverConfigHandsontableHelper.createNew("ScadaKafkaConfigTableInfoDiv_id","ScadaKafkaConfigTableInfoContainer");
+	kafkaDriverConfigHandsontableHelper.getData(result);
+	kafkaDriverConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+	kafkaDriverConfigHandsontableHelper.createTable();
+};
+
+
+var KafkaDriverConfigHandsontableHelper = {
+	    createNew: function (divid, containerid) {
+	        var kafkaDriverConfigHandsontableHelper = {};
+	        kafkaDriverConfigHandsontableHelper.get_data = {};
+	        kafkaDriverConfigHandsontableHelper.hot = '';
+	        kafkaDriverConfigHandsontableHelper.container = document.getElementById(divid);
+	        kafkaDriverConfigHandsontableHelper.last_index = 0;
+	        kafkaDriverConfigHandsontableHelper.calculation_type_computer = [];
+	        kafkaDriverConfigHandsontableHelper.calculation_type_not_computer = [];
+	        kafkaDriverConfigHandsontableHelper.editable = 0;
+	        kafkaDriverConfigHandsontableHelper.sum = 0;
+	        kafkaDriverConfigHandsontableHelper.editRecords = [];
+	        kafkaDriverConfigHandsontableHelper.columns=[];
+	        kafkaDriverConfigHandsontableHelper.my_data = [
+
+	        ];
+	        kafkaDriverConfigHandsontableHelper.updateArray = function () {
+	            for (var i = 0; i < kafkaDriverConfigHandsontableHelper.sum; i++) {
+	                kafkaDriverConfigHandsontableHelper.my_data.splice(i+1, 0, ['', '', '']);
+	            }
+	        }
+	        kafkaDriverConfigHandsontableHelper.clearArray = function () {
+	            kafkaDriverConfigHandsontableHelper.hot.loadData(kafkaDriverConfigHandsontableHelper.table_header);
+
+	        }
+
+	        kafkaDriverConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(242, 242, 242)';
+                td.style.fontWeight = 'bold';
+//				td.style.fontSize = '13px';
+				td.style.color = 'rgb(0, 0, 51)';
+				td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
+	        }
+			
+			kafkaDriverConfigHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+				Handsontable.renderers.TextRenderer.apply(this, arguments);
+                td.style.fontWeight = 'bold';
+		        td.style.fontSize = '13px';
+		        td.style.fontFamily = 'SimSun';
+//		        td.style.height = '50px';  
+	        }
+			
+			kafkaDriverConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	             Handsontable.renderers.TextRenderer.apply(this, arguments);
+	             td.style.backgroundColor = 'rgb(242, 242, 242)';
+	             td.style.fontWeight = 'bold';
+		         td.style.fontSize = '5px';
+		         td.style.fontFamily = 'SimHei';
+	        }
+			
+
+	        kafkaDriverConfigHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(183, 222, 232)';
+	        }
+
+	        kafkaDriverConfigHandsontableHelper.addContentReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	        }
+	        
+	        
+	        
+	        kafkaDriverConfigHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.display = 'none';
+	        }
+
+	        // 实现标题居中
+	        kafkaDriverConfigHandsontableHelper.titleCenter = function () {
+	            $(containerid).width($($('.wtHider')[0]).width());
+	        }
+
+	        kafkaDriverConfigHandsontableHelper.createTable = function () {
+//	            kafkaDriverConfigHandsontableHelper.container.innerHTML = "";
+	            kafkaDriverConfigHandsontableHelper.hot = new Handsontable(kafkaDriverConfigHandsontableHelper.container, {
+	                data: kafkaDriverConfigHandsontableHelper.my_data,
+//	                fixedRowsTop:0, //固定顶部多少行不能垂直滚动
+//	                fixedRowsBottom: 0,//固定底部多少行不能垂直滚动
+//	                fixedColumnsLeft:0, //固定左侧多少列不能水平滚动
+	                rowHeaders: false,
+	                colHeaders: false,
+//					rowHeights: [50],
+					colWidths:[1,6,10],
+					stretchH: 'all',
+					columns:kafkaDriverConfigHandsontableHelper.columns,
+	                mergeCells: [
+	                    {
+	                        "row": 1,
+	                        "col": 0,
+	                        "rowspan": 1,
+	                        "colspan": 3
+	                    },{
+	                        "row": 4,
+	                        "col": 0,
+	                        "rowspan": 1,
+	                        "colspan": 3
+	                    },{
+	                        "row": 13,
+	                        "col": 0,
+	                        "rowspan": 1,
+	                        "colspan": 3
+	                    }],
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    if (visualColIndex ==0) {
+	                    	cellProperties.readOnly = true;
+		                }
+	                    if (visualRowIndex ==0 || visualRowIndex ==1 || visualRowIndex ==4 || visualRowIndex ==11) {
+	                    	cellProperties.readOnly = true;
+	                    }
+						
+						if (visualColIndex==1
+								&&( (visualRowIndex>=2&&visualRowIndex<=3) 
+										|| (visualRowIndex>=5&&visualRowIndex<=12)
+										|| (visualRowIndex>=14&&visualRowIndex<=37)
+							)) {
+							cellProperties.renderer = kafkaDriverConfigHandsontableHelper.addContentReadOnlyBg;
+							cellProperties.readOnly = true;
+		                }
+	                    return cellProperties;
+	                },
+	                afterChange:function(changes, source){}
+	            });
+	        }
+	        kafkaDriverConfigHandsontableHelper.getData = function (data) {
+	            kafkaDriverConfigHandsontableHelper.get_data = data;
+	            
+	            
+	            var totalRoot = data.totalRoot;
+	            kafkaDriverConfigHandsontableHelper.sum = totalRoot.length;
+	            kafkaDriverConfigHandsontableHelper.updateArray();
+	            kafkaDriverConfigHandsontableHelper.my_data=totalRoot;
+	            
+	        }
+	        var init = function () {
+	        }
+	        init();
+	        return kafkaDriverConfigHandsontableHelper;
+	    }
+	};

@@ -91,10 +91,17 @@ private CommonDataService service;
 		//驱动排序
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			if(entry.getKey().toUpperCase().contains("KAFKA")){
-				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
-			}else{
+//			if(entry.getKey().toUpperCase().contains("KAFKA")){
+//				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+//				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+//			}else if(entry.getKey().toUpperCase().contains("MQTT")){
+//				
+//			}else{
+//				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+//				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+//			}
+			
+			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
 			}
@@ -219,6 +226,77 @@ private CommonDataService service;
 		result_json.append("]");
 		result_json.append("}");
 		return result_json.toString();
+	}
+	
+	public String getKafkaDriverConfigData(){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"项\",\"dataIndex\":\"item\",width:120 ,children:[] },"
+				+ "{ \"header\":\"值\",\"dataIndex\":\"value\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		
+		result_json.append("\"totalRoot\":[");
+		if(driveConfig!=null){
+			
+			result_json.append("{\"id\":\"序号\",\"item\":\"项\",\"value\":\"值\"},");
+			
+			result_json.append("{\"id\":\"Server\",\"item\":\"\",\"value\":\"\"},");
+			result_json.append("{\"id\":1,\"item\":\"IP\",\"value\":\""+driveConfig.getServer().getIP()+"\"},");
+			result_json.append("{\"id\":2,\"item\":\"Port\",\"value\":\""+driveConfig.getServer().getPort()+"\"},");
+			
+			result_json.append("{\"id\":\"上行主题\",\"item\":\"\",\"value\":\"\"},");
+			result_json.append("{\"id\":1,\"item\":\"上行数据\",\"value\":\""+driveConfig.getTopic().getUp().getNormData()+"\"},");
+			result_json.append("{\"id\":2,\"item\":\"上行原始数据\",\"value\":\""+driveConfig.getTopic().getUp().getRawData()+"\"},");
+			result_json.append("{\"id\":3,\"item\":\"上行配置\",\"value\":\""+driveConfig.getTopic().getUp().getConfig()+"\"},");
+			result_json.append("{\"id\":4,\"item\":\"上行模型\",\"value\":\""+driveConfig.getTopic().getUp().getModel()+"\"},");
+			result_json.append("{\"id\":5,\"item\":\"上行频率\",\"value\":\""+driveConfig.getTopic().getUp().getFreq()+"\"},");
+			result_json.append("{\"id\":6,\"item\":\"上行时钟\",\"value\":\""+driveConfig.getTopic().getUp().getRTC()+"\"},");
+			result_json.append("{\"id\":7,\"item\":\"上行上线/离线\",\"value\":\""+driveConfig.getTopic().getUp().getOnline()+"\"},");
+			result_json.append("{\"id\":8,\"item\":\"上行运行/停止\",\"value\":\""+driveConfig.getTopic().getUp().getRunStatus()+"\"},");
+			
+			result_json.append("{\"id\":\"下行主题\",\"item\":\"\",\"value\":\"\"},");
+			result_json.append("{\"id\":1,\"item\":\"下行模型\",\"value\":\""+driveConfig.getTopic().getDown().getModel()+"\"},");
+			result_json.append("{\"id\":2,\"item\":\"下行PVT物性\",\"value\":\""+driveConfig.getTopic().getDown().getModel_FluidPVT()+"\"},");
+			result_json.append("{\"id\":3,\"item\":\"下行油藏\",\"value\":\""+driveConfig.getTopic().getDown().getModel_Reservoir()+"\"},");
+			result_json.append("{\"id\":4,\"item\":\"下行井身轨迹\",\"value\":\""+driveConfig.getTopic().getDown().getModel_WellboreTrajectory()+"\"},");
+			result_json.append("{\"id\":5,\"item\":\"下行杆柱数据\",\"value\":\""+driveConfig.getTopic().getDown().getModel_RodString()+"\"},");
+			result_json.append("{\"id\":6,\"item\":\"下行管柱数据\",\"value\":\""+driveConfig.getTopic().getDown().getModel_TubingString()+"\"},");
+			result_json.append("{\"id\":7,\"item\":\"下行泵数据\",\"value\":\""+driveConfig.getTopic().getDown().getModel_Pump()+"\"},");
+			result_json.append("{\"id\":8,\"item\":\"下行尾管数据\",\"value\":\""+driveConfig.getTopic().getDown().getModel_TailtubingString()+"\"},");
+			result_json.append("{\"id\":9,\"item\":\"下行套管数据\",\"value\":\""+driveConfig.getTopic().getDown().getModel_CasingString()+"\"},");
+			result_json.append("{\"id\":10,\"item\":\"下行抽油机数据\",\"value\":\""+driveConfig.getTopic().getDown().getModel_PumpingUnit()+"\"},");
+			result_json.append("{\"id\":11,\"item\":\"下行系统效率\",\"value\":\""+driveConfig.getTopic().getDown().getModel_SystemEfficiency()+"\"},");
+			result_json.append("{\"id\":12,\"item\":\"下行生产参数\",\"value\":\""+driveConfig.getTopic().getDown().getModel_Production()+"\"},");
+			result_json.append("{\"id\":13,\"item\":\"下行特征库\",\"value\":\""+driveConfig.getTopic().getDown().getModel_FeatureDB()+"\"},");
+			result_json.append("{\"id\":14,\"item\":\"下行计算方法\",\"value\":\""+driveConfig.getTopic().getDown().getModel_CalculationMethod()+"\"},");
+			result_json.append("{\"id\":15,\"item\":\"下行人工干预\",\"value\":\""+driveConfig.getTopic().getDown().getModel_ManualIntervention()+"\"},");
+			
+			result_json.append("{\"id\":16,\"item\":\"下行配置\",\"value\":\""+driveConfig.getTopic().getDown().getConfig()+"\"},");
+			result_json.append("{\"id\":17,\"item\":\"下行启抽\",\"value\":\""+driveConfig.getTopic().getDown().getStartRPC()+"\"},");
+			result_json.append("{\"id\":18,\"item\":\"下行停抽\",\"value\":\""+driveConfig.getTopic().getDown().getStopRPC()+"\"},");
+			result_json.append("{\"id\":19,\"item\":\"下行看门狗重启\",\"value\":\""+driveConfig.getTopic().getDown().getDogRestart()+"\"},");
+			result_json.append("{\"id\":20,\"item\":\"下行频率\",\"value\":\""+driveConfig.getTopic().getDown().getFreq()+"\"},");
+			result_json.append("{\"id\":21,\"item\":\"下行时钟\",\"value\":\""+driveConfig.getTopic().getDown().getRTC()+"\"},");
+			result_json.append("{\"id\":22,\"item\":\"下行请求读驱动配置\",\"value\":\""+driveConfig.getTopic().getDown().getReq()+"\"},");
+			result_json.append("{\"id\":23,\"item\":\"下行程序A9\",\"value\":\""+driveConfig.getTopic().getDown().getA9()+"\"},");
+			result_json.append("{\"id\":24,\"item\":\"下行程序AC\",\"value\":\""+driveConfig.getTopic().getDown().getAC()+"\"}");
+		}
+		result_json.append("]");
+		result_json.append("}");
+		
+		return result_json.toString();
+//		return gson.toJson(driveConfig);
 	}
 	
 	

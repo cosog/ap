@@ -1,7 +1,7 @@
 {
     "DriverName": "A11协议",
     "DriverCode": "CNPCStandardDrive",
-    "Port": 0,
+    "Port": 19400,
     "Protocol": 1,
     "HeartbeatPacket":"AA01***********0D",
     "Sort":5,

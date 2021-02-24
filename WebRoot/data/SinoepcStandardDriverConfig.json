@@ -1,7 +1,7 @@
 {
     "DriverName": "四化协议",
     "DriverCode": "SinoepcStandardDrive",
-    "Port": 0,
+    "Port": 19500,
     "Protocol": 1,
     "HeartbeatPacket":"AA01***********0D",
     "Sort":6,

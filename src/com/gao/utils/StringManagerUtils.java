@@ -1053,6 +1053,9 @@ public class StringManagerUtils {
 	 //CLOB转字符串
 	 public static String CLOBtoString(oracle.sql.CLOB clob) throws SQLException, IOException  
 	 {
+		 if(clob==null){
+			 return "";
+		 }
 		 char[] buffer = null;
 		 buffer = new char[(int)clob.length()]; 
 		 clob.getCharacterStream().read(buffer);
@@ -1074,7 +1077,7 @@ public class StringManagerUtils {
 	 }
 	 
 	 //Clob转字符串
-	 public static String CLOBtoString(Clob clob) throws SQLException, IOException  
+	 public static String CLOBtoString2(Clob clob) throws SQLException, IOException  
 	 {
 		 BufferedReader reader = null;
 		 reader = new BufferedReader(new InputStreamReader(clob.getAsciiStream()));

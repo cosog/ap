@@ -164,6 +164,8 @@ public class KafkaConfig {
 	    private String Model_ManualIntervention;
 
 	    private String Config;
+	    
+	    private String StartRPC;
 
 	    private String StopRPC;
 
@@ -317,6 +319,12 @@ public class KafkaConfig {
 	    public String getAC(){
 	        return this.AC;
 	    }
+		public String getStartRPC() {
+			return StartRPC;
+		}
+		public void setStartRPC(String startRPC) {
+			StartRPC = startRPC;
+		}
 	}
 
 	public static class Topic

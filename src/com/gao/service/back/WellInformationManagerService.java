@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.gao.model.gridmodel.WellGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.WellInformation;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
@@ -365,15 +366,31 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		driverDropdownData.append("[");
 		
-		Map<Integer,RTUDriveConfig> equipmentDriveSortMap=new TreeMap<Integer,RTUDriveConfig>();
+		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-			equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			if(entry.getKey().toUpperCase().contains("KAFKA")){
+				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+//				boolean a=( driveConfig instanceof KafkaConfig );
+				
+				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			}else{
+				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			}
+			
+			
+			
 //			driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
 		}
-		for(Entry<Integer, RTUDriveConfig> entry:equipmentDriveSortMap.entrySet()){
-			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-			driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
+		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
+			if( ( entry.getValue() instanceof RTUDriveConfig ) ){
+				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
+			}else if( ( entry.getValue() instanceof KafkaConfig ) ){
+				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+				driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
+			}
+			
 		}
 		if(driverDropdownData.toString().endsWith(",")){
 			driverDropdownData.deleteCharAt(driverDropdownData.length() - 1);
@@ -391,10 +408,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String driverName="";
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-				if(driverCode.equals(driveConfig.getDriverCode())){
-					driverName=driveConfig.getDriverName();
-					break;
+				if( ( entry.getValue() instanceof RTUDriveConfig ) ){
+					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+					if(driverCode.equals(driveConfig.getDriverCode())){
+						driverName=driveConfig.getDriverName();
+						break;
+					}
+				}else if( ( entry.getValue() instanceof KafkaConfig ) ){
+					KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+					if(driverCode.equals(driveConfig.getDriverCode())){
+						driverName=driveConfig.getDriverName();
+						break;
+					}
 				}
 			}
 			result_json.append("{\"id\":\""+obj[0]+"\",");

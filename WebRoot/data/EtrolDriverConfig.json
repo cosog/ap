@@ -1,7 +1,7 @@
 {
     "DriverName": "A11协议_安控",
     "DriverCode": "EtrolDrive",
-    "Port": 0,
+    "Port": 19000,
     "Protocol": 1,
     "HeartbeatPacket":"AA01***********0D",
     "Sort":1,

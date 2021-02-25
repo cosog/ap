@@ -22,12 +22,17 @@ import com.gao.controller.base.BaseController;
 import com.gao.model.ProductionOutWellInfo;
 import com.gao.model.User;
 import com.gao.model.WellInformation;
+import com.gao.model.drive.KafkaConfig;
+import com.gao.model.drive.RTUDriveConfig;
 import com.gao.model.gridmodel.ProductionOutGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.gridmodel.WellProHandsontableChangedData;
 import com.gao.service.back.ProductionDataManagerService;
 import com.gao.service.base.CommonDataService;
+import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.tast.KafkaServerTast;
 import com.gao.utils.Constants;
+import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
 import com.gao.utils.PagingConstants;
 import com.gao.utils.ParamUtils;
@@ -130,6 +135,10 @@ public class ProductionDataController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<WellProHandsontableChangedData>() {}.getType();
 		WellProHandsontableChangedData wellProHandsontableChangedData=gson.fromJson(data, type);
 		this.services.saveProductionDataEditerGridData(wellProHandsontableChangedData,wellType, orgid);
+		
+		if("200".equalsIgnoreCase(wellType)){
+			downKafkaProductionData(wellProHandsontableChangedData);
+		}
 		String json ="{success:true}";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
@@ -139,6 +148,220 @@ public class ProductionDataController extends BaseController {
 		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	public String downKafkaProductionData(WellProHandsontableChangedData wellProHandsontableChangedData) throws Exception {
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig!=null){
+			if(wellProHandsontableChangedData.getUpdatelist()!=null){
+				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
+					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+						String sql="select t.drivercode,t.driveraddr from tbl_wellinformation t where t.wellname='"+wellProHandsontableChangedData.getUpdatelist().get(i).getWellName()+"'";
+						List list = this.services.findCallSql(sql);
+						if(list.size()>0){
+							Object[] obj=(Object[]) list.get(0);
+							String driverCode=obj[0].toString();
+							String ID=obj[1].toString();
+							if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+								String FluidPVTTopic=driveConfig.getTopic().getDown().getModel_FluidPVT().replace("-ID-", "-"+ID+"-");
+								String ReservoirTopic=driveConfig.getTopic().getDown().getModel_Reservoir().replace("-ID-", "-"+ID+"-");
+								String RodStringTopic=driveConfig.getTopic().getDown().getModel_RodString().replace("-ID-", "-"+ID+"-");
+								String TubingStringTopic=driveConfig.getTopic().getDown().getModel_TubingString().replace("-ID-", "-"+ID+"-");
+								String PumpTopic=driveConfig.getTopic().getDown().getModel_Pump().replace("-ID-", "-"+ID+"-");
+								String TailtubingStringTopic=driveConfig.getTopic().getDown().getModel_TailtubingString().replace("-ID-", "-"+ID+"-");
+								String CasingStringTopic=driveConfig.getTopic().getDown().getModel_CasingString().replace("-ID-", "-"+ID+"-");
+								String ProductionTopic=driveConfig.getTopic().getDown().getModel_Production().replace("-ID-", "-"+ID+"-");
+								String ManualInterventionTopic=driveConfig.getTopic().getDown().getModel_ManualIntervention().replace("-ID-", "-"+ID+"-");
+								
+								String FluidPVTData="{"
+										+ "\"CrudeOilDensity\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()+","
+										+ "\"WaterDensity\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()+","
+										+ "\"NaturalGasRelativeDensity\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()+","
+										+ "\"SaturationPressure\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()+""
+										+ "}";
+								String ReservoirData="{"
+										+ "\"Depth\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()+","
+										+ "\"Temperature\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()+""
+										+ "}";
+								String RodStringData="{\"EveryRod\":[";
+								if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
+									RodStringData+="{"
+											+ "\"Grade\":\""+wellProHandsontableChangedData.getUpdatelist().get(i).getRodGrade1()+"\","
+											+ "\"Length\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength1()+","
+											+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001+","
+											+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001+""
+											+ "}";
+									if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
+										RodStringData+=",{"
+												+ "\"Grade\":\""+wellProHandsontableChangedData.getUpdatelist().get(i).getRodGrade2()+"\","
+												+ "\"Length\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength2()+","
+												+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001+","
+												+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001+""
+												+ "}";
+										if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
+											RodStringData+=",{"
+													+ "\"Grade\":\""+wellProHandsontableChangedData.getUpdatelist().get(i).getRodGrade3()+"\","
+													+ "\"Length\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength3()+","
+													+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001+","
+													+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001+""
+													+ "}";
+											if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
+												RodStringData+=",{"
+														+ "\"Grade\":\""+wellProHandsontableChangedData.getUpdatelist().get(i).getRodGrade4()+"\","
+														+ "\"Length\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength4()+","
+														+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001+","
+														+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001+""
+														+ "}";
+											}
+										}
+									}
+								}
+								RodStringData+="]}";
+								String TubingStringData="{\"EveryTubing\":[{\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001+"}]}";
+								String CasingStringData="{\"EveryCasing\":[{\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001+"}]}";
+								
+								String ProductionData="{"
+										+ "\"WaterCut\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W()+","
+										+ "\"ProductionGasOilRatio\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()+","
+										+ "\"TubingPressure\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()+","
+										+ "\"CasingPressure\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()+","
+										+ "\"WellHeadFluidTemperature\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature()+","
+										+ "\"ProducingfluidLevel\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()+","
+										+ "\"PumpSettingDepth\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()+","
+										+ "\"Submergence\":"+(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth())-StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()))+""
+										+ "}";
+								
+								String PumpData="{"
+										+ "\"PumpGrade\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()+","
+										+ "\"BarrelLength\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()+","
+										+ "\"PlungerLength\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()+","
+										+ "\"PumpBoreDiameter\":"+(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter())*0.001)+""
+										+ "}";
+								
+								String ManualInterventionData="{\"NetGrossRatio\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()+"}";
+								
+								KafkaServerTast.producerMsg(FluidPVTTopic, "下行数据", FluidPVTData);
+								KafkaServerTast.producerMsg(ReservoirTopic, "下行数据", ReservoirData);
+								KafkaServerTast.producerMsg(RodStringTopic, "下行数据", RodStringData);
+								KafkaServerTast.producerMsg(TubingStringTopic, "下行数据", TubingStringData);
+								KafkaServerTast.producerMsg(PumpTopic, "下行数据", PumpData);
+								KafkaServerTast.producerMsg(CasingStringTopic, "下行数据", CasingStringData);
+								KafkaServerTast.producerMsg(ProductionTopic, "下行数据", ProductionData);
+								KafkaServerTast.producerMsg(ManualInterventionTopic, "下行数据", ManualInterventionData);
+							}
+						}
+					}
+				}
+			}
+			
+			if(wellProHandsontableChangedData.getInsertlist()!=null){
+				for(int i=0;i<wellProHandsontableChangedData.getInsertlist().size();i++){
+					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWellName())){
+						String sql="select t.drivercode,t.driveraddr from tbl_wellinformation t where t.wellname='"+wellProHandsontableChangedData.getInsertlist().get(i).getWellName()+"'";
+						List list = this.services.findCallSql(sql);
+						if(list.size()>0){
+							Object[] obj=(Object[]) list.get(0);
+							String driverCode=obj[0].toString();
+							String ID=obj[1].toString();
+							if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+								String FluidPVTTopic=driveConfig.getTopic().getDown().getModel_FluidPVT().replace("-ID-", "-"+ID+"-");
+								String ReservoirTopic=driveConfig.getTopic().getDown().getModel_Reservoir().replace("-ID-", "-"+ID+"-");
+								String RodStringTopic=driveConfig.getTopic().getDown().getModel_RodString().replace("-ID-", "-"+ID+"-");
+								String TubingStringTopic=driveConfig.getTopic().getDown().getModel_TubingString().replace("-ID-", "-"+ID+"-");
+								String PumpTopic=driveConfig.getTopic().getDown().getModel_Pump().replace("-ID-", "-"+ID+"-");
+								String TailtubingStringTopic=driveConfig.getTopic().getDown().getModel_TailtubingString().replace("-ID-", "-"+ID+"-");
+								String CasingStringTopic=driveConfig.getTopic().getDown().getModel_CasingString().replace("-ID-", "-"+ID+"-");
+								String ProductionTopic=driveConfig.getTopic().getDown().getModel_Production().replace("-ID-", "-"+ID+"-");
+								String ManualInterventionTopic=driveConfig.getTopic().getDown().getModel_ManualIntervention().replace("-ID-", "-"+ID+"-");
+								
+								String FluidPVTData="{"
+										+ "\"CrudeOilDensity\":"+wellProHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()+","
+										+ "\"WaterDensity\":"+wellProHandsontableChangedData.getInsertlist().get(i).getWaterDensity()+","
+										+ "\"NaturalGasRelativeDensity\":"+wellProHandsontableChangedData.getInsertlist().get(i).getNaturalGasRelativeDensity()+","
+										+ "\"SaturationPressure\":"+wellProHandsontableChangedData.getInsertlist().get(i).getSaturationPressure()+""
+										+ "}";
+								String ReservoirData="{"
+										+ "\"Depth\":"+wellProHandsontableChangedData.getInsertlist().get(i).getReservoirDepth()+","
+										+ "\"Temperature\":"+wellProHandsontableChangedData.getInsertlist().get(i).getReservoirTemperature()+""
+										+ "}";
+								String RodStringData="{\"EveryRod\":[";
+								if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodLength1())>0){
+									RodStringData+="{"
+											+ "\"Grade\":\""+wellProHandsontableChangedData.getInsertlist().get(i).getRodGrade1()+"\","
+											+ "\"Length\":"+wellProHandsontableChangedData.getInsertlist().get(i).getRodLength1()+","
+											+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())*0.001+","
+											+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter1())*0.001+""
+											+ "}";
+									if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodLength2())>0){
+										RodStringData+=",{"
+												+ "\"Grade\":\""+wellProHandsontableChangedData.getInsertlist().get(i).getRodGrade2()+"\","
+												+ "\"Length\":"+wellProHandsontableChangedData.getInsertlist().get(i).getRodLength2()+","
+												+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())*0.001+","
+												+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter2())*0.001+""
+												+ "}";
+										if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodLength3())>0){
+											RodStringData+=",{"
+													+ "\"Grade\":\""+wellProHandsontableChangedData.getInsertlist().get(i).getRodGrade3()+"\","
+													+ "\"Length\":"+wellProHandsontableChangedData.getInsertlist().get(i).getRodLength3()+","
+													+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())*0.001+","
+													+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter3())*0.001+""
+													+ "}";
+											if(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodLength4())>0){
+												RodStringData+=",{"
+														+ "\"Grade\":\""+wellProHandsontableChangedData.getInsertlist().get(i).getRodGrade4()+"\","
+														+ "\"Length\":"+wellProHandsontableChangedData.getInsertlist().get(i).getRodLength4()+","
+														+ "\"OutsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())*0.001+","
+														+ "\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4())*0.001+""
+														+ "}";
+											}
+										}
+									}
+								}
+								RodStringData+="]}";
+								String TubingStringData="{\"EveryTubing\":[{\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter())*0.001+"}]}";
+								String CasingStringData="{\"EveryCasing\":[{\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001+"}]}";
+								
+								String ProductionData="{"
+										+ "\"WaterCut\":"+wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W()+","
+										+ "\"ProductionGasOilRatio\":"+wellProHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()+","
+										+ "\"TubingPressure\":"+wellProHandsontableChangedData.getInsertlist().get(i).getTubingPressure()+","
+										+ "\"CasingPressure\":"+wellProHandsontableChangedData.getInsertlist().get(i).getCasingPressure()+","
+										+ "\"WellHeadFluidTemperature\":"+wellProHandsontableChangedData.getInsertlist().get(i).getWellHeadFluidTemperature()+","
+										+ "\"ProducingfluidLevel\":"+wellProHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()+","
+										+ "\"PumpSettingDepth\":"+wellProHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()+","
+										+ "\"Submergence\":"+(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth())-StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()))+""
+										+ "}";
+								
+								String PumpData="{"
+										+ "\"PumpGrade\":"+wellProHandsontableChangedData.getInsertlist().get(i).getPumpGrade()+","
+										+ "\"BarrelLength\":"+wellProHandsontableChangedData.getInsertlist().get(i).getBarrelLength()+","
+										+ "\"PlungerLength\":"+wellProHandsontableChangedData.getInsertlist().get(i).getPlungerLength()+","
+										+ "\"PumpBoreDiameter\":"+(StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter())*0.001)+""
+										+ "}";
+								
+								String ManualInterventionData="{\"NetGrossRatio\":"+wellProHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()+"}";
+								
+								KafkaServerTast.producerMsg(FluidPVTTopic, "下行数据", FluidPVTData);
+								KafkaServerTast.producerMsg(ReservoirTopic, "下行数据", ReservoirData);
+								KafkaServerTast.producerMsg(RodStringTopic, "下行数据", RodStringData);
+								KafkaServerTast.producerMsg(TubingStringTopic, "下行数据", TubingStringData);
+								KafkaServerTast.producerMsg(PumpTopic, "下行数据", PumpData);
+								KafkaServerTast.producerMsg(CasingStringTopic, "下行数据", CasingStringData);
+								KafkaServerTast.producerMsg(ProductionTopic, "下行数据", ProductionData);
+								KafkaServerTast.producerMsg(ManualInterventionTopic, "下行数据", ManualInterventionData);
+							}
+						}
+					}
+				}
+			}
+		}
 		return null;
 	}
 

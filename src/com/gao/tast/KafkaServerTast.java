@@ -45,7 +45,7 @@ public class KafkaServerTast {
 	private ScheduledExecutorService scheduler;
     
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		clientid = "apKafkaClient"+new Date().getTime();
@@ -151,7 +151,34 @@ public class KafkaServerTast {
 			String saveAggrOnlineDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrOnlineData";
 			String saveAggrRunStatusDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrRunStatusData";
 			
-			if("Up-NormData".equalsIgnoreCase(record.topic())){
+			String UpNormDataTopic="Up-NormData";
+			String UpRawDataTopic="Up-RawData";
+			String UpConfigTopic="Up-Config";
+			String UpModelTopic="Up-Model";
+			String UpFreqTopic="Up-Freq";
+			String UpRTCTopic="Up-RTC";
+			String UpOnlineTopic="Up-Online";
+			String UpRunStatusTopic="Up-RunStatus";
+			
+			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			if(equipmentDriveMap.size()==0){
+				EquipmentDriverServerTast.initDriverConfig();
+				equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			}
+			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+			
+			if(driveConfig!=null){
+				UpNormDataTopic=driveConfig.getTopic().getUp().getNormData();
+				UpRawDataTopic=driveConfig.getTopic().getUp().getRawData();
+				UpConfigTopic=driveConfig.getTopic().getUp().getConfig();
+				UpModelTopic=driveConfig.getTopic().getUp().getModel();
+				UpFreqTopic=driveConfig.getTopic().getUp().getFreq();
+				UpRTCTopic=driveConfig.getTopic().getUp().getRTC();
+				UpOnlineTopic=driveConfig.getTopic().getUp().getOnline();
+				UpRunStatusTopic=driveConfig.getTopic().getUp().getRunStatus();
+			}
+			
+			if(UpNormDataTopic.equalsIgnoreCase(record.topic())){
         		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
         		KafkaUpData kafkaUpData=gson.fromJson(record.value(), type);
         		if(kafkaUpData!=null){
@@ -175,17 +202,7 @@ public class KafkaServerTast {
 						
 						long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpData.getAcqTime()).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
 						kafkaUpData.setKey(record.key());
-	        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
-						
-						
-//						if(StringManagerUtils.isNotNull(kafkaUpData.getAcqTime())){
-//							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpData.getAcqTime()).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
-//							kafkaUpData.setKey(record.key());
-//		        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");
-//						}else{
-//							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
-//						}
-						
+	        			StringManagerUtils.sendPostMethod(saveDataUrl, gson.toJson(kafkaUpData),"utf-8");	
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println(record.value());
@@ -193,7 +210,7 @@ public class KafkaServerTast {
         		}else{
         			System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
         		}
-        	}else if("Up-RawData".equalsIgnoreCase(record.topic())){//原始数据
+        	}else if(UpRawDataTopic.equalsIgnoreCase(record.topic())){//原始数据
         		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
         		KafkaUpRawData kafkaUpRawData=gson.fromJson(record.value(), type);
         		if(kafkaUpRawData!=null){
@@ -222,19 +239,19 @@ public class KafkaServerTast {
 						System.out.println(record.value());
 					}
         		}
-        	}else if("Up-Config".equalsIgnoreCase(record.topic())){
+        	}else if(UpConfigTopic.equalsIgnoreCase(record.topic())){
         		String sendData="1##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
         		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if("Up-Model".equalsIgnoreCase(record.topic())){
+        	}else if(UpModelTopic.equalsIgnoreCase(record.topic())){
         		String sendData="7##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
         		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if("Up-Freq".equalsIgnoreCase(record.topic())){
+        	}else if(UpFreqTopic.equalsIgnoreCase(record.topic())){
         		String sendData="5##"+record.key()+"##"+record.value();
         		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if("Up-RTC".equalsIgnoreCase(record.topic())){
+        	}else if(UpRTCTopic.equalsIgnoreCase(record.topic())){
         		String sendData="6##"+record.key()+"##"+record.value();
         		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if("Up-Online".equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
+        	}else if(UpOnlineTopic.equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
         		//上线数据
         		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
         		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(record.value(), type);
@@ -258,7 +275,7 @@ public class KafkaServerTast {
 						System.out.println(record.value());
 					}
         		}
-        	}else if("Up-RunStatus".equalsIgnoreCase(record.topic())){//运行状态发生改变，设备上报
+        	}else if(UpRunStatusTopic.equalsIgnoreCase(record.topic())){//运行状态发生改变，设备上报
         		//运行状态数据
         		java.lang.reflect.Type type = new TypeToken<AggrRunStatus2Kafka>() {}.getType();
         		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(record.value(), type);

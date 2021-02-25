@@ -1213,7 +1213,7 @@ public class GraphicalUploadController extends BaseController {
 				}	
 				commRequest+= "\"Current\": {"
 						+ "\"AcqTime\":\""+kafkaUpData.getAcqTime()+"\","
-						+ "\"CommStatus\":1"
+						+ "\"CommStatus\":true"
 						+ "}"
 						+ "}";
 				String commResponse="";

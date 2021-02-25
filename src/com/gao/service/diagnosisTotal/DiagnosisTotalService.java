@@ -908,8 +908,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"frequencyMax\":\""+obj[231]+"\",");
 			result_json.append("\"frequencyMin\":\""+obj[232]+"\",");
 			
-			result_json.append("\"runRange\":\""+obj[233]+"\",");
-			result_json.append("\"workingConditionString\":\""+(obj[234]+"").replaceAll("<br/>", ";")+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[233])+"\",");
+			result_json.append("\"workingConditionString\":\""+(StringManagerUtils.CLOBObjectToString(obj[234])+"").replaceAll("<br/>", ";")+"\",");
 			
 			result_json.append("\"levelCorrectValue\":\""+obj[235]+"\",");
 			result_json.append("\"levelCorrectValueMax\":\""+obj[236]+"\",");
@@ -1090,8 +1090,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"PFSumMax\":\""+obj[96]+"\",");
 			result_json.append("\"PFSumMin\":\""+obj[97]+"\",");
 			
-			result_json.append("\"runRange\":\""+obj[98]+"\",");
-			result_json.append("\"workingConditionString\":\""+(obj[99]+"").replaceAll("<br/>", ";")+"\"");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[98])+"\",");
+			result_json.append("\"workingConditionString\":\""+(StringManagerUtils.CLOBObjectToString(obj[99])+"").replaceAll("<br/>", ";")+"\"");
 			
 		}
 		result_json.append("}");

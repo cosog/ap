@@ -329,22 +329,6 @@ public class TotalAnalysisResponseData {
 		ProductionGasOilRatio = productionGasOilRatio;
 	}
 
-	public int getResultCode() {
-		return ResultCode;
-	}
-
-	public void setResultCode(int resultCode) {
-		ResultCode = resultCode;
-	}
-
-	public String getResultString() {
-		return ResultString;
-	}
-
-	public void setResultString(String resultString) {
-		ResultString = resultString;
-	}
-
 	public int getExtendedDays() {
 		return ExtendedDays;
 	}
@@ -1093,4 +1077,22 @@ public class TotalAnalysisResponseData {
 		}
 		return true;
 	}
+
+	public int getResultCode() {
+		return ResultCode;
+	}
+
+	public void setResultCode(int resultCode) {
+		ResultCode = resultCode;
+	}
+
+	public String getResultString() {
+		return ResultString;
+	}
+
+	public void setResultString(String resultString) {
+		ResultString = resultString;
+	}
+
+	
 }

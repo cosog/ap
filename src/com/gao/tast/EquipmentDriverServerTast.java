@@ -71,7 +71,7 @@ public class EquipmentDriverServerTast {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		
@@ -95,6 +95,7 @@ public class EquipmentDriverServerTast {
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				System.out.println(driveConfig.getDriverName());
 				if(driveConfig.getPort()>0){
 					try {
 						ServerSocket serverSocket = new ServerSocket(driveConfig.getPort());
@@ -123,7 +124,8 @@ public class EquipmentDriverServerTast {
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
-				+ " where t.liftingType>=200 and t.liftingType<300"
+				+ " where t.liftingType>=200 and t.liftingType<300 "
+//				+ " and t.orgid=321"
 				+ " order by t.sortNum";
 		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode,"
@@ -137,6 +139,7 @@ public class EquipmentDriverServerTast {
 				+ " left outer join  tbl_pcp_rpm_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=400 and t.liftingType<500"
+//				+ " and t.orgid=321"
 				+ " order by t.sortNum";
 		String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String resetCommStatus="update tbl_rpc_discrete_latest t set t.commstatus=0  ";
@@ -185,7 +188,7 @@ public class EquipmentDriverServerTast {
 				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
 				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
-				unit.dirverName="必创";
+				unit.dirverName="";
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
 				unit.acquisitionData.setRunStatus(0);
@@ -417,11 +420,13 @@ public class EquipmentDriverServerTast {
 					units.get(i).screwPumpDataSaveInterval=1000*60*5;//螺杆泵据保存间隔,单位毫秒
 					units.get(i).runStatusControl=0;
 					for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-						RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-						if(driveConfig.getDriverCode().equals(rs.getString(10))){
-							units.get(i).setRtuDriveConfig(driveConfig);
-							units.get(i).setDirverName(driveConfig.getDriverName());
-							break;
+						if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
+							RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+							if(driveConfig.getDriverCode().equals(rs.getString(10))){
+								units.get(i).setRtuDriveConfig(driveConfig);
+								units.get(i).setDirverName(driveConfig.getDriverName());
+								break;
+							}
 						}
 					}
 					

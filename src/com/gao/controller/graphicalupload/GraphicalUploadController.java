@@ -1189,7 +1189,7 @@ public class GraphicalUploadController extends BaseController {
 					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
 					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH "
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and t.driverAddr='"+kafkaUpData.getKey()+"'";
+					+ " where t2.wellId=t.id and upper(t.drivercode) like '%KAFKA%' and t.driverAddr='"+kafkaUpData.getKey()+"'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);

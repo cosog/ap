@@ -1478,7 +1478,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"deviceVer\":\""+obj[107]+"\",");
 			
 			result_json.append("\"videourl\":\""+obj[108]+"\",");
-			result_json.append("\"runRange\":\""+obj[109]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[109])+"\",");
 			result_json.append("\"levelCorrectValue\":\""+obj[110]+"\",");
 			result_json.append("\"noLiquidAvailablePlungerStroke\":\""+obj[111]+"\",");
 			result_json.append("\"noLiquidFullnessCoefficient\":\""+obj[112]+"\"");
@@ -1613,7 +1613,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"frequencyRunValue\":\""+obj[52]+"\",");
 			
 			result_json.append("\"videourl\":\""+obj[53]+"\",");
-			result_json.append("\"runRange\":\""+obj[54]+"\"");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[54])+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");

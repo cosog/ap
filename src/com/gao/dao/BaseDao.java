@@ -320,6 +320,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PreparedStatement ps=null;
 		try {
 			conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+			ps=conn.prepareStatement(sql);
 			for(int i=0;i<values.size();i++){
 				CLOB clob   = oracle.sql.CLOB.createTemporary(conn, false,oracle.sql.CLOB.DURATION_SESSION);  
 				clob.putString(1,  values.get(i)); 

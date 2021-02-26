@@ -311,8 +311,6 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					if(totalAnalysisResponseData.getResultString().length()>2000){
 						totalAnalysisResponseData.stringLengthManage();
-//						System.out.println(totalAnalysisResponseData.getFSResultString().length());
-//						System.out.println(totalAnalysisResponseData.getFSResultString());
 					}
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{

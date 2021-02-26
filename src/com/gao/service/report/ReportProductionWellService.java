@@ -104,7 +104,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName";
+		sql+=" order by t.sortNum, t.wellName,t.calculateDate";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		String columns= "["

@@ -48,7 +48,7 @@ public class TotalAnalysisRequestData {
 	    private float CasingPressure;
 	    private float WellHeadFluidTemperature;
 	    private float ProductionGasOilRatio;
-	    private int FSResultCode;
+	    private int ResultCode;
 	    private float Stroke;
 	    private float SPM;
 	    private float UpperLoadLine; //理论上载荷线				kN
@@ -115,7 +115,7 @@ public class TotalAnalysisRequestData {
 	    private float SurfaceSystemEfficiency;
 	    private float WellDownSystemEfficiency;
 	    private float SystemEfficiency;
-	    private float PowerConsumptionPerTHM;
+	    private float EnergyPer100mLift;
 	    private float AvgWatt; //平均有功功率        		kW
 	    private float PolishRodPower; //光杆功率              	kW
 	    private float WaterPower; //水功率             		kW
@@ -252,13 +252,7 @@ public class TotalAnalysisRequestData {
 			ProductionGasOilRatio = productionGasOilRatio;
 		}
 
-		public int getFSResultCode() {
-			return FSResultCode;
-		}
-
-		public void setFSResultCode(int fSResultCode) {
-			FSResultCode = fSResultCode;
-		}
+		
 
 		public float getStroke() {
 			return Stroke;
@@ -442,14 +436,6 @@ public class TotalAnalysisRequestData {
 
 		public void setSystemEfficiency(float systemEfficiency) {
 			SystemEfficiency = systemEfficiency;
-		}
-
-		public float getPowerConsumptionPerTHM() {
-			return PowerConsumptionPerTHM;
-		}
-
-		public void setPowerConsumptionPerTHM(float powerConsumptionPerTHM) {
-			PowerConsumptionPerTHM = powerConsumptionPerTHM;
 		}
 
 		public float getIA() {
@@ -922,6 +908,22 @@ public class TotalAnalysisRequestData {
 
 		public void setPFSum(float pFSum) {
 			PFSum = pFSum;
+		}
+
+		public float getEnergyPer100mLift() {
+			return EnergyPer100mLift;
+		}
+
+		public void setEnergyPer100mLift(float energyPer100mLift) {
+			EnergyPer100mLift = energyPer100mLift;
+		}
+
+		public int getResultCode() {
+			return ResultCode;
+		}
+
+		public void setResultCode(int resultCode) {
+			ResultCode = resultCode;
 		}
 	}
 

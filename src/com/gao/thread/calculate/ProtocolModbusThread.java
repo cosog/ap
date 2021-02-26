@@ -108,8 +108,8 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     				}else {
     					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
     						int l=rc-3;
-    						byte[] macByte=new byte[rc];
-        					for(int i=0;i<rc;i++){
+    						byte[] macByte=new byte[l];
+        					for(int i=0;i<macByte.length;i++){
         						macByte[i]=recByte[i+2];
         					}
         					revMacStr=new String(macByte);
@@ -137,7 +137,10 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 						}
     					
     					for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
-    						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr)){
+    						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr) 
+    								&& beeTechDriverServerTast.units.get(i).getRtuDriveConfig()!=null
+    								&& !(beeTechDriverServerTast.units.get(i).getRtuDriveConfig().getDriverCode().toUpperCase().contains("KAFKA"))
+    								){
     							System.out.println(beeTechDriverServerTast.units.get(i).wellName+"上线");
     							clientUnit.unitDataList.add(beeTechDriverServerTast.units.get(i));
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).setCommStatus(1);
@@ -149,14 +152,14 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     						}
     					}
     					if(clientUnit.unitDataList.size()==0){//未找到匹配的井
-    						System.out.println("线程"+this.threadId+"未找到匹配的井，断开连接,释放资源:"+StringManagerUtils.bytesToHexString(recByte,12)+":"+revMacStr);
+    						System.out.println("线程"+this.threadId+"未找到匹配的井，断开连接,释放资源:"+StringManagerUtils.bytesToHexString(recByte,rc)+":"+revMacStr);
             				this.releaseResource(is,os);
             				wellReaded=false;
             				break;
     					}else{
     						String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 							String updateDiscreteComm="update tbl_rpc_discrete_latest t set t.commstatus=1,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')  "
-									+ " where t.wellId in (select well.id from tbl_wellinformation well where well.driveraddr='"+revMacStr+"') ";
+									+ " where t.wellId in (select well.id from tbl_wellinformation well where upper(well.drivercode) not like '%KAFKA%' and well.driveraddr='"+revMacStr+"') ";
 							Connection conn=OracleJdbcUtis.getConnection();
 							Statement stmt=null;
 							try {
@@ -1768,6 +1771,8 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
             							List<String> clobCont=new ArrayList<String>();
             							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
             							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+            							
+            							ps=conn.prepareStatement(updateCommAndRunRangeClobSql);
             							result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);
             						}
     								if(hasProData)
@@ -1775,17 +1780,25 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								if(StringManagerUtils.isNotNull(updateDailyData)){
     									result=stmt.executeUpdate(updateDailyData);
     								}
+    								if(ps!=null){
+    									ps.close();
+    								}
+    								if(stmt!=null){
+										stmt.close();
+									}
     								conn.close();
-    								stmt.close();
     								clientUnit.unitDataList.get(i).getAcquisitionData().setRunStatus(RunStatus);
     								clientUnit.unitDataList.get(i).getAcquisitionData().setSaveTime(AcqTime);
     							} catch (SQLException e) {
     								e.printStackTrace();
     								try {
-    									conn.close();
     									if(stmt!=null){
     										stmt.close();
     									}
+    									if(ps!=null){
+        									ps.close();
+        								}
+    									conn.close();
     								} catch (SQLException e1) {
     									e1.printStackTrace();
     								}
@@ -2185,6 +2198,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					ps=conn.prepareStatement(updateCommAndRunRangeClobSql);
 					result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);
 				}
 			}

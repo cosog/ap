@@ -309,9 +309,9 @@ public class CalculateDataController extends BaseController{
 				
 				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-					if(totalAnalysisResponseData.getResultString().length()>2000){
-						totalAnalysisResponseData.stringLengthManage();
-					}
+//					if(totalAnalysisResponseData.getResultString().length()>2000){
+//						totalAnalysisResponseData.stringLengthManage();
+//					}
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
 					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));

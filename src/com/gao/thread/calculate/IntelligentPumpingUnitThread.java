@@ -1525,6 +1525,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							List<String> clobCont=new ArrayList<String>();
             							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
             							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
+            							ps=conn.prepareStatement(updateCommAndRunRangeClobSql);
             							result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);
             						}
     								
@@ -1546,13 +1547,13 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     							} catch (SQLException e) {
     								e.printStackTrace();
     								try {
-    									conn.close();
     									if(stmt!=null){
     										stmt.close();
     									}
     									if(ps!=null){
     										ps.close();
     									}
+    									conn.close();
     								} catch (SQLException e1) {
     									e1.printStackTrace();
     								}
@@ -1967,6 +1968,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					ps=conn.prepareStatement(updateCommAndRunRangeClobSql);
 					result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);
 				}
 			}

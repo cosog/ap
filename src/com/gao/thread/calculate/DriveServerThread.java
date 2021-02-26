@@ -27,14 +27,14 @@ public class DriveServerThread extends Thread{
 			while(true){
 				for(int i=0;i<EquipmentDriverServerTast.clientUnitList.size();i++){
 					if(EquipmentDriverServerTast.clientUnitList.get(i).socket==null){
-						EquipmentDriverServerTast.clientUnitList.get(i).socket=new Socket();
 						System.out.println(driveConfig.getDriverCode()+"等待客户端连接...");
 						try {
 							if(serverSocket==null){
 								serverSocket = new ServerSocket(serverSocketPort);
 							}
-							
-							EquipmentDriverServerTast.clientUnitList.get(i).socket=serverSocket.accept();
+							Socket socket=serverSocket.accept();
+							EquipmentDriverServerTast.clientUnitList.get(i).socket=new Socket();
+							EquipmentDriverServerTast.clientUnitList.get(i).socket=socket;
 							
 							if(EquipmentDriverServerTast.clientUnitList.size()>0&&EquipmentDriverServerTast.clientUnitList.get(i).socket!=null){
 								System.out.println(driveConfig.getDriverCode()+"服务端接收到客户端连接,thread:"+i+",IP:"+EquipmentDriverServerTast.clientUnitList.get(i).socket.getInetAddress()+",端口:"+EquipmentDriverServerTast.clientUnitList.get(i).socket.getPort());

@@ -101,6 +101,7 @@ import com.gao.model.calculate.TotalCalculateRequestData;
 import com.gao.model.calculate.TotalCalculateResponseData;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.model.calculate.WellboreTrajectoryResponseData;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
@@ -1324,10 +1325,18 @@ public class BaseDao extends HibernateDaoSupport {
 						String driverName=wellHandsontableChangedData.getUpdatelist().get(i).getDriverName();
 						String driverCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-							RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-							if(driverName.equals(driveConfig.getDriverName())){
-								driverCode=driveConfig.getDriverCode();
-								break;
+							if(entry.getKey().toUpperCase().contains("KAFKA")){
+								KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+								if(driverName.equals(driveConfig.getDriverName())){
+									driverCode=driveConfig.getDriverCode();
+									break;
+								}
+							}else{
+								RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+								if(driverName.equals(driveConfig.getDriverName())){
+									driverCode=driveConfig.getDriverCode();
+									break;
+								}
 							}
 						}
 						

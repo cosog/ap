@@ -1739,7 +1739,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue,"
-				+ "t.Signal,t.Watt3,t.Var3,t.VA3,t.PF3"
+				+ "t.Signal,t.WattSum,t.VarSum,t.VASum,t.PFSum"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+ " and t.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
@@ -1834,7 +1834,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
 				+" t.frequencyrunvalue,"
-				+ "t.Watt3,t.Var3,t.VA3,t.PF3"
+				+ "t.WattSum,t.VarSum,t.VASum,t.PFSum"
 				+" from tbl_pcp_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+" and t.acqTime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";

@@ -624,6 +624,13 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 							readTime=format.parse(clientUnit.unitDataList.get(i).getAcquisitionData().getReadTime()).getTime();
 						}
 						//当前采集时间与上次读取时间差值大于离散数据采集周期时，读取离散数据
+//						if("长庆现场智能油田测试井".equals(clientUnit.unitDataList.get(i).getWellName())){
+//							System.out.println("当前时间戳："+AcqTime+","+format.parse(AcqTime).getTime());
+//							System.out.println("上次时间戳："+clientUnit.unitDataList.get(i).getAcquisitionData().getReadTime()+","+readTime);
+//							System.out.println("时间差："+(format.parse(AcqTime).getTime()-readTime));
+//							System.out.println("采集周期："+clientUnit.unitDataList.get(i).getAcqCycle_Discrete());
+//						}
+						
     					if(format.parse(AcqTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcqCycle_Discrete()){
     						clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime(AcqTime);
     						int runSatus=0;
@@ -1898,7 +1905,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
             					
 //            					System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"RTU中功图采集时间："+diagramAcqTime+",当前功图采集时间："+clientUnit.unitDataList.get(i).getDiagramAcqTime());
             					
-            					if(newTimelong>currentTimelong){//发现新功图
+            					if(newTimelong>currentTimelong&&newTimelong-currentTimelong>=clientUnit.unitDataList.get(i).getAcqCycle_Diagram()){//发现新功图
             						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"发现新功图");
             						clientUnit.unitDataList.get(i).setDiagramAcqTime(diagramAcqTime);
             						recvBuff=new StringBuffer();

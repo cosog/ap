@@ -374,6 +374,17 @@ public class KafkaServerTast {
 	    private boolean CommStatus;
 
 	    private CommEfficiency CommEfficiency;
+	    
+	    private float IA;//A相电流					安培
+	    private float IB;//B相电流					安培
+	    private float IC;//C相电流					安培
+	    private float VA;//A相电压					伏
+	    private float VB;//B相电压					伏
+	    private float VC;//C相电压					伏
+	    private float Watt3;//有功功率					kW
+	    private float Var3;//无功功率					kVar
+	    private float VA3;//视在功率					kVA
+	    private float PF3;//功率因数					小数
 
 	    public void setAcqTime(String AcqTime){
 	        this.AcqTime = AcqTime;
@@ -735,6 +746,66 @@ public class KafkaServerTast {
 		}
 		public void setTransferIntervel(int transferIntervel) {
 			TransferIntervel = transferIntervel;
+		}
+		public float getIA() {
+			return IA;
+		}
+		public void setIA(float iA) {
+			IA = iA;
+		}
+		public float getIB() {
+			return IB;
+		}
+		public void setIB(float iB) {
+			IB = iB;
+		}
+		public float getIC() {
+			return IC;
+		}
+		public void setIC(float iC) {
+			IC = iC;
+		}
+		public float getVA() {
+			return VA;
+		}
+		public void setVA(float vA) {
+			VA = vA;
+		}
+		public float getVB() {
+			return VB;
+		}
+		public void setVB(float vB) {
+			VB = vB;
+		}
+		public float getVC() {
+			return VC;
+		}
+		public void setVC(float vC) {
+			VC = vC;
+		}
+		public float getWatt3() {
+			return Watt3;
+		}
+		public void setWatt3(float watt3) {
+			Watt3 = watt3;
+		}
+		public float getVar3() {
+			return Var3;
+		}
+		public void setVar3(float var3) {
+			Var3 = var3;
+		}
+		public float getVA3() {
+			return VA3;
+		}
+		public void setVA3(float vA3) {
+			VA3 = vA3;
+		}
+		public float getPF3() {
+			return PF3;
+		}
+		public void setPF3(float pF3) {
+			PF3 = pF3;
 		}
 	}
 	public static class KafkaUpRawData

@@ -125,6 +125,7 @@ public class EquipmentDriverServerTast {
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=200 and t.liftingType<300 "
+//				+ " and t.wellname='南V10-6'"
 //				+ " and t.orgid=321"
 				+ " order by t.sortNum";
 		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
@@ -185,7 +186,7 @@ public class EquipmentDriverServerTast {
 				unit.liftingType=rs.getInt(2);
 				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
 				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
-				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
+				unit.acqCycle_Diagram=60*1000*Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
 				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
 				unit.dirverName="";
@@ -255,7 +256,7 @@ public class EquipmentDriverServerTast {
 				unit.liftingType=rs.getInt(2);
 				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
 				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
-				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
+				unit.acqCycle_Diagram=60*1000*Short.parseShort(rs.getString(5)==null?"60":rs.getString(5));
 				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
 				unit.dirverName="必创";
@@ -410,7 +411,7 @@ public class EquipmentDriverServerTast {
 					
 					units.get(i).driverAddr=rs.getString(3)==null?"":rs.getString(3);
 					units.get(i).dirverId=rs.getString(4)==null?"":rs.getString(4);
-					units.get(i).acqCycle_Diagram=Short.parseShort(rs.getString(5));
+					units.get(i).acqCycle_Diagram=60*1000*Short.parseShort(rs.getString(5));
 					units.get(i).diagramAcqTime=rs.getString(6);
 					units.get(i).UnitId=Integer.parseInt(rs.getString(4)==null?"01":rs.getString(4));
 					units.get(i).commStatus=0;
@@ -448,7 +449,7 @@ public class EquipmentDriverServerTast {
 				unit.liftingType=rs.getInt(2);
 				unit.driverAddr=rs.getString(3);
 				unit.dirverId=rs.getString(4);
-				unit.acqCycle_Diagram=Short.parseShort(rs.getString(5));
+				unit.acqCycle_Diagram=60*1000*Short.parseShort(rs.getString(5));
 				unit.diagramAcqTime=rs.getString(6);
 				unit.UnitId=Integer.parseInt(unit.dirverId);
 				unit.commStatus=0;

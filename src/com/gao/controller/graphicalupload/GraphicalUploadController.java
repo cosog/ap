@@ -1324,6 +1324,16 @@ public class GraphicalUploadController extends BaseController {
 						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)+","
 						+ "t.workingconditioncode="+kafkaUpData.getResultCode()+","
 						+ "t.FrequencyRunValue="+kafkaUpData.getFreq()+","
+						+ "t.Ia="+kafkaUpData.getIA()+","
+						+ "t.Ib="+kafkaUpData.getIB()+","
+						+ "t.Ic="+kafkaUpData.getIC()+","
+						+ "t.Va="+kafkaUpData.getVA()+","
+						+ "t.Vb="+kafkaUpData.getVB()+","
+						+ "t.Vc="+kafkaUpData.getVC()+","
+						+ "t.WattSum="+kafkaUpData.getWatt3()+","
+						+ "t.VarSum="+kafkaUpData.getVar3()+","
+						+ "t.VASum="+kafkaUpData.getVA3()+","
+						+ "t.PFSum="+kafkaUpData.getPF3()+","
 						+ "t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
 				
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){

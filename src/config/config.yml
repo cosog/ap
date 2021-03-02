@@ -8,7 +8,7 @@ spring:
       user: agile
       password: agile
 dockDataSource:
-      - driverUrl: jdbc:oracle:thin:@139.129.166.94:1521:orcl
+      - driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
         driver: oracle.jdbc.driver.OracleDriver
         dialect: org.hibernate.dialect.Oracle10gDialect
         user: agile

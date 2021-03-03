@@ -700,7 +700,38 @@ function SaveScadaDriverConfigData(){
 		configInfo.Port=driverConfigData[3];
 		configInfo.HeartbeatPacket=driverConfigData[4];
 		configInfo.DataConfig=[];
-		alert(configInfo.DriverName);
+		for(var i=0;i<driverConfigItemsData.length;i++){
+			var item={};
+			item.Name=driverConfigItemsData[i][1];
+			item.Address=driverConfigItemsData[i][2];
+			item.Length=driverConfigItemsData[i][3];
+			item.DataType=driverConfigItemsData[i][4];
+			item.Zoom=driverConfigItemsData[i][5];
+			configInfo.DataConfig.push(item);
+		}
+//		alert(JSON.stringify(configInfo));
+//		alert(configInfo.DriverName);
+		
+		Ext.Ajax.request({
+    		method:'POST',
+    		url:context + '/acquisitionUnitManagerController/SaveScadaDriverConfigData',
+    		success:function(response) {
+    			var data=Ext.JSON.decode(response.responseText);
+    			if (data.success) {
+                	Ext.MessageBox.alert("信息","保存成功");
+                    CreateAndLoadFSToPSPumpingUnitTable();
+                } else {
+                	Ext.MessageBox.alert("信息","数据保存失败");
+
+                }
+    		},
+    		failure:function(){
+    			Ext.MessageBox.alert("信息","请求失败");
+    		},
+    		params: {
+    			data:JSON.stringify(configInfo)
+            }
+    	}); 
 	}
 	
 //	if(driverConfigHandsontableHelper.hot.getSelected()){

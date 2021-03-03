@@ -19,7 +19,19 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
         			text: cosog.string.save,
         			iconCls: 'save',
         			handler: function (v, o) {
+        				var tabPanel = Ext.getCmp("ScadaDriverConfigTabPanel_Id");
+        				var activeId = tabPanel.getActiveTab().id;
+        				if(activeId=="ScadaDriverModbusConfigTabPanel_Id"){
+        					SaveScadaDriverConfigData();
+        				}else if(activeId=="ScadaDriverKafkaConfigTabPanel_Id"){
+        					SaveScadaKafkaDriverConfigData();
+        				}
         			}
+                },{
+                    id: 'ScadaDriverModbusConfigSelectRow_Id', //选择查看曲线的数据项名称
+                    xtype: 'textfield',
+                    value: '',
+                    hidden: true
                 }],
                 xtype: 'tabpanel',
                 id:"ScadaDriverConfigTabPanel_Id",
@@ -215,6 +227,8 @@ var DriverConfigHandsontableHelper = {
 	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=driverConfigHandsontableHelper.hot.getDataAtRow(row);
 	                	CreateDriverConfigItemsInfoTable(row1[5]);
+	                	
+	                	Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").setValue(row);
 	                },
 	                afterDestroy: function() {
 	                    // 移除事件
@@ -671,3 +685,29 @@ var KafkaDriverConfigHandsontableHelper = {
 	        return kafkaDriverConfigHandsontableHelper;
 	    }
 	};
+
+function SaveScadaDriverConfigData(){
+	
+	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").getValue();
+	if(ScadaDriverModbusConfigSelectRow!=''){
+		var driverConfigSaveData=[];
+		var driverConfigItemsSaveData=[];
+		var driverConfigData=driverConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+		var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
+		var configInfo={};
+		configInfo.DriverName=driverConfigData[1];
+		configInfo.Protocol=driverConfigData[2];
+		configInfo.Port=driverConfigData[3];
+		configInfo.HeartbeatPacket=driverConfigData[4];
+		configInfo.DataConfig=[];
+		alert(configInfo.DriverName);
+	}
+	
+//	if(driverConfigHandsontableHelper.hot.getSelected()){
+//		var row=hot.getSelected()[0]; //表示获取选中的某一行
+//		var data=hot.getDataAtRow(row);//获取选中行的数据
+//		alert(data[0]);
+//	}
+	
+	
+};

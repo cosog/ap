@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,16 +20,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gao.controller.base.BaseController;
 import com.gao.model.User;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.kafkaConfig.KafkaConfigService;
+import com.gao.tast.EquipmentDriverServerTast;
 import com.gao.tast.KafkaServerTast;
 import com.gao.utils.Constants;
+import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.MarkDown2HtmlWrapper;
 import com.gao.utils.MarkdownEntity;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
 import com.gao.websocket.handler.SpringWebSocketHandler;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import jxl.Workbook;
 import jxl.biff.DisplayFormat;
@@ -371,30 +377,52 @@ public class KafkaConfigController extends BaseController {
 		String data = ParamUtils.getParameter(request, "data");
 		String sql="select t.drivercode, t.driveraddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
 		List list = this.commonDataService.findCallSql(sql);
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig==null){
+			Gson gson = new Gson();
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
+			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
+			driveConfig=gson.fromJson(driverConfigData, reflectType);
+		}
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			String driverCode=obj[0]+"";
 			String ID=obj[1]+"";
 			if("KafkaDrive".equalsIgnoreCase(driverCode)&&StringManagerUtils.isNotNull(ID)){
-				String topic="Down-"+ID+"-";
+//				String topic="Down-"+ID+"-";
+				String topic="";
 				if("1".equals(type)){
-					topic+="Config";
+//					topic+="Config";
+					topic=driveConfig.getTopic().getDown().getConfig().replace("-ID-", "-"+ID+"-");
 				}else if("2".equals(type)){
-					topic+="StartRPC";
+//					topic+="StartRPC";
+					topic=driveConfig.getTopic().getDown().getStartRPC().replace("-ID-", "-"+ID+"-");
 				}else if("3".equals(type)){
-					topic+="StopRPC";
+//					topic+="StopRPC";
+					topic=driveConfig.getTopic().getDown().getStopRPC().replace("-ID-", "-"+ID+"-");
 				}else if("4".equals(type)){
-					topic+="DogRestart";
+//					topic+="DogRestart";
+					topic=driveConfig.getTopic().getDown().getDogRestart().replace("-ID-", "-"+ID+"-");
 				}else if("5".equals(type)){
-					topic+="Freq";
+//					topic+="Freq";
+					topic=driveConfig.getTopic().getDown().getFreq().replace("-ID-", "-"+ID+"-");
 				}else if("6".equals(type)){
-					topic+="RTC";
+//					topic+="RTC";
+					topic=driveConfig.getTopic().getDown().getRTC().replace("-ID-", "-"+ID+"-");
 				}else if("7".equals(type)){
-					topic+="Model";
+//					topic+="Model";
+					topic=driveConfig.getTopic().getDown().getModel().replace("-ID-", "-"+ID+"-");
 				}
 				System.out.println("Kafka下行数据，设备："+ID+",主题："+topic+",数据"+data);
 				//不执行启抽指令
-				if(!"2".equals(type)){
+				if(!"2".equals(type)&&StringManagerUtils.isNotNull(topic)){
 					KafkaServerTast.producerMsg(topic, "下行数据", data);
 				}
 			}
@@ -416,7 +444,24 @@ public class KafkaConfigController extends BaseController {
 	public String readDeviceInfo() throws Exception {
 		String type = ParamUtils.getParameter(request, "type");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
-		String topic="Down-"+deviceId+"-Req";
+		
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig==null){
+			Gson gson = new Gson();
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
+			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
+			driveConfig=gson.fromJson(driverConfigData, reflectType);
+		}
+		
+//		String topic="Down-"+deviceId+"-Req";
+		String topic=driveConfig.getTopic().getDown().getReq().replace("-ID-", "-"+deviceId+"-");
 //		topic+="-Test";
 		String data="";
 		if("1".equals(type)){

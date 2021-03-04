@@ -529,7 +529,9 @@ var WellInfoHandsontableHelper = {
 	      //修改井名
 	        wellInfoHandsontableHelper.editWellName = function () {
 	            //插入的数据的获取
+	        	
 	            if (wellInfoHandsontableHelper.editWellNameList.length>0 && wellInfoHandsontableHelper.validresult) {
+//	            	alert(JSON.stringify(wellInfoHandsontableHelper.editWellNameList));
 	            	Ext.Ajax.request({
 	            		method:'POST',
 	            		url:context + '/wellInformationManagerController/editWellName',

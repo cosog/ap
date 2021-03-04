@@ -55,7 +55,7 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigOperationListStore', {
                         				loaded=true;
                         				var wellRecord = kafkaConfigGridPanel.getSelectionModel().getSelection();
                                 		var type = selected[0].data.id;
-                                		var operationName = selected[0].data.id.operation;
+                                		var operationName = selected[0].data.operation;
                                 		
                                 		var wellName =wellRecord[0].data.wellName;
                                 		var deviceId =wellRecord[0].data.deviceId;

@@ -146,7 +146,7 @@ private CommonDataService service;
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCurrentA().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCurrentA().getZoom()+"},");
 				driverConfigData.append("{\"id\":4,\"item\":\"B相电流\",\"address\":"+driveConfig.getDataConfig().getCurrentB().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCurrentB().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCurrentB().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCurrentB().getZoom()+"},");
-				driverConfigData.append("{\"id\":5,\"item\":\"B相电流\",\"address\":"+driveConfig.getDataConfig().getCurrentC().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCurrentC().getLength()+","
+				driverConfigData.append("{\"id\":5,\"item\":\"C相电流\",\"address\":"+driveConfig.getDataConfig().getCurrentC().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCurrentC().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCurrentC().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCurrentC().getZoom()+"},");
 				
 				driverConfigData.append("{\"id\":6,\"item\":\"A相电压\",\"address\":"+driveConfig.getDataConfig().getVoltageA().getAddress()+",\"length\":"+driveConfig.getDataConfig().getVoltageA().getLength()+","

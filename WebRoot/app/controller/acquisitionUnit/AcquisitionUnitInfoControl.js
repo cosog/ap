@@ -252,22 +252,32 @@ showAcquisitionGroupOwnItems = function (store_) {
 }
 
 showAcquisitionUnitOwnGroups = function (store_) {
-    var selectedAcquisitionUnitCode = Ext.getCmp("selectedAcquisitionUnitCode_Id").getValue();
-    Ext.Ajax.request({
-        method: 'POST',
-        url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitId=' + selectedAcquisitionUnitCode,
-        success: function (response, opts) {
-            // 处理后
-            var groups = Ext.decode(response.responseText);
-            if (null != groups && groups != "") {
-                var getNode = store_.root.childNodes;
-                checkSelectedAcquisitionGroupsCombox(getNode, groups);
+    var selectedAcquisitionUnitId = Ext.getCmp("selectedAcquisitionUnitCode_Id").getValue();
+    var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+    panel.getSelectionModel().deselectAll(true);
+    if(selectedAcquisitionUnitId!==""){
+    	Ext.Ajax.request({
+            method: 'POST',
+            url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitId=' + selectedAcquisitionUnitId,
+            success: function (response, opts) {
+                // 处理后
+                var groups = Ext.decode(response.responseText);
+//                var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+                var model = store_.getRange(0,store_.getCount());
+                for(var i=0;i<groups.length;i++){
+                	for(var j=0;j<model.length;j++){
+                		if(groups[i].groupId==model[j].data.id){
+                			panel.getSelectionModel().select(j, true);
+                			break;
+                		}
+                	}
+                }
+            },
+            failure: function (response, opts) {
+                Ext.Msg.alert("信息提示", "后台获取数据失败！");
             }
-        },
-        failure: function (response, opts) {
-            Ext.Msg.alert("信息提示", "后台获取数据失败！");
-        }
-    });
+        });
+    }
     return false;
 }
 

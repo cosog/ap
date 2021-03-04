@@ -22,7 +22,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
         				var tabPanel = Ext.getCmp("ScadaDriverConfigTabPanel_Id");
         				var activeId = tabPanel.getActiveTab().id;
         				if(activeId=="ScadaDriverModbusConfigTabPanel_Id"){
-        					SaveScadaDriverConfigData();
+        					SaveModbusDriverConfigData();
         				}else if(activeId=="ScadaDriverKafkaConfigTabPanel_Id"){
         					SaveScadaKafkaDriverConfigData();
         				}
@@ -686,7 +686,7 @@ var KafkaDriverConfigHandsontableHelper = {
 	    }
 	};
 
-function SaveScadaDriverConfigData(){
+function SaveModbusDriverConfigData(){
 	
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
@@ -697,16 +697,16 @@ function SaveScadaDriverConfigData(){
 		var configInfo={};
 		configInfo.DriverName=driverConfigData[1];
 		configInfo.Protocol=driverConfigData[2];
-		configInfo.Port=driverConfigData[3];
+		configInfo.Port=parseInt(driverConfigData[3]);
 		configInfo.HeartbeatPacket=driverConfigData[4];
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};
 			item.Name=driverConfigItemsData[i][1];
-			item.Address=driverConfigItemsData[i][2];
-			item.Length=driverConfigItemsData[i][3];
+			item.Address=parseInt(driverConfigItemsData[i][2]);
+			item.Length=parseInt(driverConfigItemsData[i][3]);
 			item.DataType=driverConfigItemsData[i][4];
-			item.Zoom=driverConfigItemsData[i][5];
+			item.Zoom=parseFloat(driverConfigItemsData[i][5]);
 			configInfo.DataConfig.push(item);
 		}
 //		alert(JSON.stringify(configInfo));
@@ -714,12 +714,12 @@ function SaveScadaDriverConfigData(){
 		
 		Ext.Ajax.request({
     		method:'POST',
-    		url:context + '/acquisitionUnitManagerController/SaveScadaDriverConfigData',
+    		url:context + '/acquisitionUnitManagerController/saveModbusDriverConfigData',
     		success:function(response) {
     			var data=Ext.JSON.decode(response.responseText);
     			if (data.success) {
                 	Ext.MessageBox.alert("信息","保存成功");
-                    CreateAndLoadFSToPSPumpingUnitTable();
+                	CreateDriverConfigInfoTable();
                 } else {
                 	Ext.MessageBox.alert("信息","数据保存失败");
 
@@ -733,12 +733,72 @@ function SaveScadaDriverConfigData(){
             }
     	}); 
 	}
+};
+
+function SaveScadaKafkaDriverConfigData(){
+
+	var driverConfigData=kafkaDriverConfigHandsontableHelper.hot.getData();
+	var configInfo={};
+	var KafkaData={};
+	KafkaData.Server={};
+	KafkaData.Server.IP=driverConfigData[2][2];
+	KafkaData.Server.Port=parseInt(driverConfigData[3][2]);
 	
-//	if(driverConfigHandsontableHelper.hot.getSelected()){
-//		var row=hot.getSelected()[0]; //表示获取选中的某一行
-//		var data=hot.getDataAtRow(row);//获取选中行的数据
-//		alert(data[0]);
-//	}
+	KafkaData.Topic={};
+	KafkaData.Topic.Up={};
+	KafkaData.Topic.Up.NormData=driverConfigData[5][2];
+	KafkaData.Topic.Up.RawData=driverConfigData[6][2];
+	KafkaData.Topic.Up.Config=driverConfigData[7][2];
+	KafkaData.Topic.Up.Model=driverConfigData[8][2];
+	KafkaData.Topic.Up.Freq=driverConfigData[9][2];
+	KafkaData.Topic.Up.RTC=driverConfigData[10][2];
+	KafkaData.Topic.Up.Online=driverConfigData[11][2];
+	KafkaData.Topic.Up.RunStatus=driverConfigData[12][2];
 	
-	
+	KafkaData.Topic.Down={};
+	KafkaData.Topic.Down.Model=driverConfigData[14][2];
+	KafkaData.Topic.Down.Model_FluidPVT=driverConfigData[15][2];
+	KafkaData.Topic.Down.Model_Reservoir=driverConfigData[16][2];
+	KafkaData.Topic.Down.Model_WellboreTrajectory=driverConfigData[17][2];
+	KafkaData.Topic.Down.Model_RodString=driverConfigData[18][2];
+	KafkaData.Topic.Down.Model_TubingString=driverConfigData[19][2];
+	KafkaData.Topic.Down.Model_Pump=driverConfigData[20][2];
+	KafkaData.Topic.Down.Model_TailtubingString=driverConfigData[21][2];
+	KafkaData.Topic.Down.Model_CasingString=driverConfigData[22][2];
+	KafkaData.Topic.Down.Model_PumpingUnit=driverConfigData[23][2];
+	KafkaData.Topic.Down.Model_SystemEfficiency=driverConfigData[24][2];
+	KafkaData.Topic.Down.Model_Production=driverConfigData[25][2];
+	KafkaData.Topic.Down.Model_FeatureDB=driverConfigData[26][2];
+	KafkaData.Topic.Down.Model_CalculationMethod=driverConfigData[27][2];
+	KafkaData.Topic.Down.Model_ManualIntervention=driverConfigData[28][2];
+	KafkaData.Topic.Down.Config=driverConfigData[29][2];
+	KafkaData.Topic.Down.StartRPC=driverConfigData[30][2];
+	KafkaData.Topic.Down.StopRPC=driverConfigData[31][2];
+	KafkaData.Topic.Down.DogRestart=driverConfigData[32][2];
+	KafkaData.Topic.Down.Freq=driverConfigData[33][2];
+	KafkaData.Topic.Down.RTC=driverConfigData[34][2];
+	KafkaData.Topic.Down.Req=driverConfigData[35][2];
+	KafkaData.Topic.Down.A9=driverConfigData[36][2];
+	KafkaData.Topic.Down.AC=driverConfigData[37][2];
+
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/saveKafkaDriverConfigData',
+		success:function(response) {
+			var data=Ext.JSON.decode(response.responseText);
+			if (data.success) {
+            	Ext.MessageBox.alert("信息","保存成功");
+            	CreateKafkaConfigInfoTable();
+            } else {
+            	Ext.MessageBox.alert("信息","数据保存失败");
+
+            }
+		},
+		failure:function(){
+			Ext.MessageBox.alert("信息","请求失败");
+		},
+		params: {
+			KafkaData:JSON.stringify(KafkaData)
+        }
+	}); 
 };

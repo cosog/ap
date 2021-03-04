@@ -45,7 +45,7 @@ public class KafkaServerTast {
 	private ScheduledExecutorService scheduler;
     
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		clientid = "apKafkaClient"+new Date().getTime();
@@ -55,6 +55,14 @@ public class KafkaServerTast {
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig==null){
+			Gson gson = new Gson();
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
+			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
+			driveConfig=gson.fromJson(driverConfigData, type);
+		}
 		if(driveConfig!=null){
 			HOST=driveConfig.getServer().getIP()+":"+driveConfig.getServer().getPort();
 			TOPIC=new String[8];
@@ -166,7 +174,13 @@ public class KafkaServerTast {
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
-			
+			if(driveConfig==null){
+				StringManagerUtils stringManagerUtils=new StringManagerUtils();
+				String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+				String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
+				java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
+				driveConfig=gson.fromJson(driverConfigData, type);
+			}
 			if(driveConfig!=null){
 				UpNormDataTopic=driveConfig.getTopic().getUp().getNormData();
 				UpRawDataTopic=driveConfig.getTopic().getUp().getRawData();

@@ -234,6 +234,7 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     				var baseRoot = localhostPaht+projectName;
     				var baseUrl=baseRoot.replace("https","ws").replace("http","ws");
     				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
+//    				baseUrl="ws://127.0.0.1:16100/ap";
     				if ('WebSocket' in window) {
 //    				    websocket = new WebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
     					websocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);

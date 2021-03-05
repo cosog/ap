@@ -1365,11 +1365,20 @@ public class BaseDao extends HibernateDaoSupport {
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
 						String driverName=wellHandsontableChangedData.getInsertlist().get(i).getDriverName();
 						String driverCode="";
+						
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-							RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-							if(driverName.equals(driveConfig.getDriverName())){
-								driverCode=driveConfig.getDriverCode();
-								break;
+							if(entry.getKey().toUpperCase().contains("KAFKA")){
+								KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
+								if(driverName.equals(driveConfig.getDriverName())){
+									driverCode=driveConfig.getDriverCode();
+									break;
+								}
+							}else{
+								RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+								if(driverName.equals(driveConfig.getDriverName())){
+									driverCode=driveConfig.getDriverCode();
+									break;
+								}
 							}
 						}
 						

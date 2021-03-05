@@ -88,9 +88,8 @@ public class SpringWebSocketHandler implements WebSocketHandler {
         if(session.isOpen()){
         	session.close();
         }
-        
-        System.out.println("传输出现异常，关闭websocket连接... ");
         String userId= (String) session.getAttributes().get(USER_ID);
+        System.out.println(userId+"传输出现异常，关闭websocket连接... ");
         clients.remove(userId);
 	}
 

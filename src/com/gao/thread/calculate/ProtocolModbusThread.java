@@ -107,7 +107,17 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					}
     				}else {
     					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
+    						int end=0;
+    						for(int i=0;i<recByte.length;i++){
+    							if((recByte[i]&0xFF)==0x0D){
+    								end=i+1;
+    								break;
+    							}
+    						}
     						int l=rc-3;
+    						if(rc>end){
+    							l=end-3;
+    						}
     						byte[] macByte=new byte[l];
         					for(int i=0;i<macByte.length;i++){
         						macByte[i]=recByte[i+2];
@@ -152,7 +162,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     						}
     					}
     					if(clientUnit.unitDataList.size()==0){//未找到匹配的井
-    						System.out.println("线程"+this.threadId+"未找到匹配的井，断开连接,释放资源:"+StringManagerUtils.bytesToHexString(recByte,rc)+":"+revMacStr);
+    						System.out.println("线程"+this.threadId+"未找到匹配的井，断开连接,释放资源:"+StringManagerUtils.bytesToHexString(recByte,revMacStr.length()+3)+":"+revMacStr);
             				this.releaseResource(is,os);
             				wellReaded=false;
             				break;
@@ -1205,7 +1215,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							}else{
     								WaterCut=getFloat(recByte,0, driveConfig.getProtocol());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWaterCut(WaterCut);
-    								updateProdData+=",t.waterCut_W="+WaterCut;
+    								updateProdData+=",t.waterCut="+WaterCut;
     								hasProData=true;
     							}
         					}
@@ -2410,17 +2420,23 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 		byte[] readByte=new byte[12];
 		readByte=this.getSendByteData(id, gnm, startAddr, lengthOrData,protocol);
 		int rc=this.writeSocketData(clientUnit.socket, readByte,os,unit);
+		int result=0;
 		if(rc==-1){//断开连接
-			return -1;//发送数据失败
+			result= -1;//发送数据失败
+		}else{
+			rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,unit);
+			if(rc==-1){//断开连接
+				result= -2;//读取数据失败
+			}else if(recByte[7]==0x83){//读取异常
+				result= -3;//读取异常
+			}
 		}
-		rc=this.readSocketData(clientUnit.socket, readTimeout, recByte,is,unit);
-		if(rc==-1){//断开连接
-			return -2;//读取数据失败
+		if(result<0){
+			System.out.println(unit.getWellName()+"读取数据异常,rc="+rc+",readByte="+StringManagerUtils.bytesToHexString(readByte,readByte.length));
+		}else{
+			result=rc;
 		}
-		if(recByte[7]==0x83){//读取异常
-			return -3;//读取异常
-		}
-		return rc;
+		return result;
     }
     
     //socket写数据
@@ -2441,6 +2457,13 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     			rc=-1;
+    			System.out.println(unit.getWellName()+"发送指令失败,i="+i+",readByte="+StringManagerUtils.bytesToHexString(readByte,readByte.length));
+    			try {
+					Thread.sleep(1*1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
     		}
     		i++;
     	}while(rc!=1&&i<5);

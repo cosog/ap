@@ -1297,7 +1297,7 @@ public class GraphicalUploadController extends BaseController {
 				String updateProdData="update tbl_rpc_productiondata_latest t set t.acqTime=to_date('"+kafkaUpData.getAcqTime()+"','yyyy-mm-dd hh24:mi:ss')";
 				if(kafkaUpData.getWaterCut()>0){
 					haveProdData=true;
-					updateProdData+=",t.WaterCut_W="+kafkaUpData.getWaterCut();
+					updateProdData+=",t.waterCut="+kafkaUpData.getWaterCut();
 				}
 				if(kafkaUpData.getTubingPressure()>0){
 					haveProdData=true;

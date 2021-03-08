@@ -45,7 +45,7 @@ public class KafkaServerTast {
 	private ScheduledExecutorService scheduler;
     
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		clientid = "apKafkaClient"+new Date().getTime();
@@ -224,96 +224,97 @@ public class KafkaServerTast {
         		}else{
         			System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
         		}
-        	}else if(UpRawDataTopic.equalsIgnoreCase(record.topic())){//原始数据
-        		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
-        		KafkaUpRawData kafkaUpRawData=gson.fromJson(record.value(), type);
-        		if(kafkaUpRawData!=null){
-        			try {
-        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            			System.out.println("offset="+record.offset()+",采集时间:"+kafkaUpData.getAcqTime()+",系统时间:"+kafkaUpData.getSysTime());
-            			//如果时间差达到半小时，校正时间
-            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
-						if(diffTime>60*30){
-							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+kafkaUpRawData.getSysTime()+",时间差:"+diffTime+"秒");
-							kafkaUpRawData.setAcqTime(currentTime);
-							//下行时间
-							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
-						}
-						if(StringManagerUtils.isNotNull(kafkaUpRawData.getAcqTime())){
-							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpRawData.getAcqTime()).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
-							kafkaUpRawData.setKey(record.key());
-		        			StringManagerUtils.sendPostMethod(saveRawDataUrl, gson.toJson(kafkaUpRawData),"utf-8");
-						}else{
-							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.out.println(record.value());
-					}
-        		}
-        	}else if(UpConfigTopic.equalsIgnoreCase(record.topic())){
-        		String sendData="1##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if(UpModelTopic.equalsIgnoreCase(record.topic())){
-        		String sendData="7##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if(UpFreqTopic.equalsIgnoreCase(record.topic())){
-        		String sendData="5##"+record.key()+"##"+record.value();
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if(UpRTCTopic.equalsIgnoreCase(record.topic())){
-        		String sendData="6##"+record.key()+"##"+record.value();
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
-        	}else if(UpOnlineTopic.equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
-        		//上线数据
-        		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
-        		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(record.value(), type);
-        		if(aggrOnline2Kafka!=null){
-        			try {
-        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            			//如果时间差达到半小时，校正时间
-            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrOnline2Kafka.getSysTime()).getTime()/1000);
-						if(diffTime>60*30){
-							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrOnline2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
-							//下行时间
-							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
-						}
-						aggrOnline2Kafka.setKey(record.key());
-	        			StringManagerUtils.sendPostMethod(saveAggrOnlineDataUrl, gson.toJson(aggrOnline2Kafka),"utf-8");
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.out.println(record.value());
-					}
-        		}
-        	}else if(UpRunStatusTopic.equalsIgnoreCase(record.topic())){//运行状态发生改变，设备上报
-        		//运行状态数据
-        		java.lang.reflect.Type type = new TypeToken<AggrRunStatus2Kafka>() {}.getType();
-        		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(record.value(), type);
-        		if(aggrRunStatus2Kafka!=null){
-        			try {
-        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            			//如果时间差达到半小时，校正时间
-            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrRunStatus2Kafka.getSysTime()).getTime()/1000);
-						if(diffTime>60*30){
-							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrRunStatus2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
-							//下行时间
-							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
-						}
-						aggrRunStatus2Kafka.setKey(record.key());
-	        			StringManagerUtils.sendPostMethod(saveAggrRunStatusDataUrl, gson.toJson(aggrRunStatus2Kafka),"utf-8");
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.out.println(record.value());
-					}
-        		}
         	}
+//			else if(UpRawDataTopic.equalsIgnoreCase(record.topic())){//原始数据
+//        		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
+//        		KafkaUpRawData kafkaUpRawData=gson.fromJson(record.value(), type);
+//        		if(kafkaUpRawData!=null){
+//        			try {
+//        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+////            			System.out.println("offset="+record.offset()+",采集时间:"+kafkaUpData.getAcqTime()+",系统时间:"+kafkaUpData.getSysTime());
+//            			//如果时间差达到半小时，校正时间
+//            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
+//						if(diffTime>60*30){
+//							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+kafkaUpRawData.getSysTime()+",时间差:"+diffTime+"秒");
+//							kafkaUpRawData.setAcqTime(currentTime);
+//							//下行时间
+//							String topic="Down-"+record.key()+"-RTC";
+//							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+//						}
+//						if(StringManagerUtils.isNotNull(kafkaUpRawData.getAcqTime())){
+//							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpRawData.getAcqTime()).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
+//							kafkaUpRawData.setKey(record.key());
+//		        			StringManagerUtils.sendPostMethod(saveRawDataUrl, gson.toJson(kafkaUpRawData),"utf-8");
+//						}else{
+//							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
+//						}
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						System.out.println(record.value());
+//					}
+//        		}
+//        	}else if(UpConfigTopic.equalsIgnoreCase(record.topic())){
+//        		String sendData="1##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
+//        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+//        	}else if(UpModelTopic.equalsIgnoreCase(record.topic())){
+//        		String sendData="7##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
+//        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+//        	}else if(UpFreqTopic.equalsIgnoreCase(record.topic())){
+//        		String sendData="5##"+record.key()+"##"+record.value();
+//        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+//        	}else if(UpRTCTopic.equalsIgnoreCase(record.topic())){
+//        		String sendData="6##"+record.key()+"##"+record.value();
+//        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+//        	}else if(UpOnlineTopic.equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
+//        		//上线数据
+//        		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
+//        		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(record.value(), type);
+//        		if(aggrOnline2Kafka!=null){
+//        			try {
+//        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            			//如果时间差达到半小时，校正时间
+//            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrOnline2Kafka.getSysTime()).getTime()/1000);
+//						if(diffTime>60*30){
+//							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrOnline2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
+//							//下行时间
+//							String topic="Down-"+record.key()+"-RTC";
+//							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+//						}
+//						aggrOnline2Kafka.setKey(record.key());
+//	        			StringManagerUtils.sendPostMethod(saveAggrOnlineDataUrl, gson.toJson(aggrOnline2Kafka),"utf-8");
+//						
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						System.out.println(record.value());
+//					}
+//        		}
+//        	}else if(UpRunStatusTopic.equalsIgnoreCase(record.topic())){//运行状态发生改变，设备上报
+//        		//运行状态数据
+//        		java.lang.reflect.Type type = new TypeToken<AggrRunStatus2Kafka>() {}.getType();
+//        		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(record.value(), type);
+//        		if(aggrRunStatus2Kafka!=null){
+//        			try {
+//        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            			//如果时间差达到半小时，校正时间
+//            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrRunStatus2Kafka.getSysTime()).getTime()/1000);
+//						if(diffTime>60*30){
+//							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrRunStatus2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
+//							//下行时间
+//							String topic="Down-"+record.key()+"-RTC";
+//							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+//						}
+//						aggrRunStatus2Kafka.setKey(record.key());
+//	        			StringManagerUtils.sendPostMethod(saveAggrRunStatusDataUrl, gson.toJson(aggrRunStatus2Kafka),"utf-8");
+//						
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						System.out.println(record.value());
+//					}
+//        		}
+//        	}
 		}
 
 		public ConsumerRecord<String, String> getRecord() {

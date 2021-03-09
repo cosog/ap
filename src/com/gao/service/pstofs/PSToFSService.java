@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,18 +19,26 @@ import org.springframework.stereotype.Service;
 import com.gao.model.DistreteAlarmLimit;
 import com.gao.model.WellInformation;
 import com.gao.model.calculate.InversioneFSdiagramResponseData;
+import com.gao.model.calculate.RPCCalculateRequestData;
+import com.gao.model.calculate.RPCCalculateRequestData.PumpingUnit;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.model.data.DataDictionary;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.model.gridmodel.InverOptimizeHandsontableChangedData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
+import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.tast.KafkaServerTast;
 import com.gao.tast.MQTTServerTast.TransferDaily;
 import com.gao.tast.MQTTServerTast.TransferDiagram;
 import com.gao.tast.MQTTServerTast.TransferDiscrete;
+import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
 import com.gao.utils.PageHandler;
 import com.gao.utils.StringManagerUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -479,6 +489,71 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public boolean savePumpingUnitData(String PumpingUnitData,String PumpingUnitPTRData,String wellName) throws SQLException, ParseException{
 		return this.getBaseDao().savePSToFSPumpingUnitData(PumpingUnitData,PumpingUnitPTRData,wellName);
+	}
+	
+	public String downKafkaPumpingData(String PumpingUnitData,String PumpingUnitPTRData,String wellName){
+		
+		Gson gson = new Gson();
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig==null){
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
+			driveConfig=gson.fromJson(DriverConfigData, type);
+		}
+		if(driveConfig!=null){
+			JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+PumpingUnitData+"}");//解析数据
+			JSONArray jsonArray = jsonObject.getJSONArray("data");
+			for(int i=0;i<jsonArray.size();i++){
+				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
+				String sql="select t.drivercode,t.driveraddr from tbl_wellinformation t where t.wellname='"+everydata.getString("WellName")+"'";
+				List list = this.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					String driverCode=obj[0].toString();
+					String ID=obj[1].toString();
+					if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+						String topic=driveConfig.getTopic().getDown().getModel_PumpingUnit().replace("-ID-", "-"+ID+"-");
+						RPCCalculateRequestData.PumpingUnit pumpingUnit=new RPCCalculateRequestData.PumpingUnit();
+						
+						pumpingUnit.setManufacturer(everydata.getString("Manufacturer"));
+						pumpingUnit.setModel(everydata.getString("Model"));
+						pumpingUnit.setStroke(StringManagerUtils.stringToFloat(everydata.getString("Stroke")));
+						pumpingUnit.setCrankRotationDirection("顺时针".equalsIgnoreCase(everydata.getString("CrankRotationDirection"))?"Clockwise":"Anticlockwise");
+						pumpingUnit.setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(everydata.getString("OffsetAngleOfCrank")));
+						pumpingUnit.setCrankGravityRadius(StringManagerUtils.stringToFloat(everydata.getString("CrankGravityRadius")));
+						pumpingUnit.setSingleCrankWeight(StringManagerUtils.stringToFloat(everydata.getString("SingleCrankWeight")));
+						pumpingUnit.setStructuralUnbalance(StringManagerUtils.stringToFloat(everydata.getString("StructuralUnbalance")));
+						
+						String[] BalanceWeightArr=(everydata.getString("BalanceWeight")).split(",");
+						pumpingUnit.setBalance(new RPCCalculateRequestData.Balance());
+						pumpingUnit.getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
+						for(int j=0;BalanceWeightArr!=null&&j<BalanceWeightArr.length;j++){
+							RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
+							everyBalance.setWeight(StringManagerUtils.stringToFloat(BalanceWeightArr[j]));
+							pumpingUnit.getBalance().getEveryBalance().add(everyBalance);
+						}
+						
+						if(wellName.equals(everydata.getString("WellName"))){
+							
+						}
+						
+						KafkaServerTast.producerMsg(topic, "下行抽油机数据", gson.toJson(pumpingUnit));
+					}
+				}
+			}
+		}
+		
+		
+		return null;
 	}
 	
 	public boolean saveMotorData(String MotorData,String MotorPerformanceCurverData,String wellName) throws SQLException, ParseException{

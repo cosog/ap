@@ -213,6 +213,7 @@ public class PSToFSController extends BaseController {
 		String PumpingUnitData = ParamUtils.getParameter(request, "PumpingUnitData");
 		String PumpingUnitPTRData = ParamUtils.getParameter(request, "PumpingUnitPTRData");
 		this.PSToFSService.savePumpingUnitData(PumpingUnitData,PumpingUnitPTRData,wellName);
+		this.PSToFSService.downKafkaPumpingData(PumpingUnitData,PumpingUnitPTRData,wellName);
 		String json ="{success:true}";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

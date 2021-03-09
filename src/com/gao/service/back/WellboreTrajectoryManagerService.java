@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,11 +18,15 @@ import org.springframework.stereotype.Service;
 import com.gao.model.gridmodel.WellGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.WellInformation;
+import com.gao.model.calculate.RPCCalculateRequestData;
+import com.gao.model.calculate.RPCCalculateRequestData.WellboreTrajectory;
 import com.gao.model.calculate.WellboreTrajectoryResponseData;
+import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.tast.KafkaServerTast;
 import com.gao.utils.Config;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
@@ -232,5 +237,56 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		this.getBaseDao().saveWellboreTrajectoryData(wellName,wellboreTrajectoryResponseData,measuringDepth,deviationAngle,azimuthAngle);
 		
 		return result_json.toString();
+	}
+	
+	public  String downKafkaWellboreTrajectoryData(String wellName,String wellboreTrajectoryData) throws SQLException {
+		Gson gson = new Gson();
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTast.initDriverConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig==null){
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
+			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
+			driveConfig=gson.fromJson(DriverConfigData, type);
+		}
+		if(driveConfig!=null){
+			String sql="select t.drivercode,t.driveraddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
+			List list = this.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				String driverCode=obj[0].toString();
+				String ID=obj[1].toString();
+				if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+					String topic=driveConfig.getTopic().getDown().getModel_WellboreTrajectory().replace("-ID-", "-"+ID+"-");
+					RPCCalculateRequestData.WellboreTrajectory wellboreTrajectory=new RPCCalculateRequestData.WellboreTrajectory();
+					List<Float> measuringDepth=new ArrayList<Float>();
+			        List<Float> deviationAngle=new ArrayList<Float>();
+			        List<Float> azimuthAngle=new ArrayList<Float>();
+			        
+					JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+wellboreTrajectoryData+"}");//解析数据
+					JSONArray jsonArray = jsonObject.getJSONArray("data");
+					for(int i=0;i<jsonArray.size();i++){
+						JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
+						measuringDepth.add(StringManagerUtils.stringToFloat(everydata.getString("measuringDepth")));
+						deviationAngle.add(StringManagerUtils.stringToFloat(everydata.getString("deviationAngle")));
+						azimuthAngle.add(StringManagerUtils.stringToFloat(everydata.getString("azimuthAngle")));
+					}
+					wellboreTrajectory.setMeasuringDepth(measuringDepth);
+					wellboreTrajectory.setDeviationAngle(deviationAngle);
+					wellboreTrajectory.setAzimuthAngle(azimuthAngle);
+					
+					KafkaServerTast.producerMsg(topic, "下行井身轨迹数据", gson.toJson(wellboreTrajectory));
+				}
+			}
+		}
+		
+		return null;
 	}
 }

@@ -118,6 +118,7 @@ public class KafkaServerTast {
 	}
 	
 	public static void producerMsg(String topic,String title,String value){
+		System.out.println("Kafka下行，topic："+topic+",title:"+title+",value:"+value);
 		Properties props = new Properties();
 	    props.put("bootstrap.servers", HOST);
 	    //The "all" setting we have specified will result in blocking on the full commit of the record, the slowest but most durable setting.

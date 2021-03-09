@@ -247,14 +247,14 @@ public class ProductionDataController extends BaseController {
 								
 								String ManualInterventionData="{\"NetGrossRatio\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()+"}";
 								
-								KafkaServerTast.producerMsg(FluidPVTTopic, "下行数据", FluidPVTData);
-								KafkaServerTast.producerMsg(ReservoirTopic, "下行数据", ReservoirData);
-								KafkaServerTast.producerMsg(RodStringTopic, "下行数据", RodStringData);
-								KafkaServerTast.producerMsg(TubingStringTopic, "下行数据", TubingStringData);
-								KafkaServerTast.producerMsg(PumpTopic, "下行数据", PumpData);
-								KafkaServerTast.producerMsg(CasingStringTopic, "下行数据", CasingStringData);
-								KafkaServerTast.producerMsg(ProductionTopic, "下行数据", ProductionData);
-								KafkaServerTast.producerMsg(ManualInterventionTopic, "下行数据", ManualInterventionData);
+								KafkaServerTast.producerMsg(FluidPVTTopic, "下行PVT物性结数据", FluidPVTData);
+								KafkaServerTast.producerMsg(ReservoirTopic, "下行油藏数据", ReservoirData);
+								KafkaServerTast.producerMsg(RodStringTopic, "下行抽油杆数据", RodStringData);
+								KafkaServerTast.producerMsg(TubingStringTopic, "下行油管数据", TubingStringData);
+								KafkaServerTast.producerMsg(PumpTopic, "下行泵数据", PumpData);
+								KafkaServerTast.producerMsg(CasingStringTopic, "下行套管数据", CasingStringData);
+								KafkaServerTast.producerMsg(ProductionTopic, "下行生产参数", ProductionData);
+								KafkaServerTast.producerMsg(ManualInterventionTopic, "下行人工干预", ManualInterventionData);
 							}
 						}
 					}
@@ -348,14 +348,14 @@ public class ProductionDataController extends BaseController {
 								
 								String ManualInterventionData="{\"NetGrossRatio\":"+wellProHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()+"}";
 								
-								KafkaServerTast.producerMsg(FluidPVTTopic, "下行数据", FluidPVTData);
-								KafkaServerTast.producerMsg(ReservoirTopic, "下行数据", ReservoirData);
-								KafkaServerTast.producerMsg(RodStringTopic, "下行数据", RodStringData);
-								KafkaServerTast.producerMsg(TubingStringTopic, "下行数据", TubingStringData);
-								KafkaServerTast.producerMsg(PumpTopic, "下行数据", PumpData);
-								KafkaServerTast.producerMsg(CasingStringTopic, "下行数据", CasingStringData);
-								KafkaServerTast.producerMsg(ProductionTopic, "下行数据", ProductionData);
-								KafkaServerTast.producerMsg(ManualInterventionTopic, "下行数据", ManualInterventionData);
+								KafkaServerTast.producerMsg(FluidPVTTopic, "下行PVT物性结数据", FluidPVTData);
+								KafkaServerTast.producerMsg(ReservoirTopic, "下行油藏数据", ReservoirData);
+								KafkaServerTast.producerMsg(RodStringTopic, "下行抽油杆数据", RodStringData);
+								KafkaServerTast.producerMsg(TubingStringTopic, "下行油管数据", TubingStringData);
+								KafkaServerTast.producerMsg(PumpTopic, "下行泵数据", PumpData);
+								KafkaServerTast.producerMsg(CasingStringTopic, "下行套管数据", CasingStringData);
+								KafkaServerTast.producerMsg(ProductionTopic, "下行生产参数", ProductionData);
+								KafkaServerTast.producerMsg(ManualInterventionTopic, "下行人工干预", ManualInterventionData);
 							}
 						}
 					}

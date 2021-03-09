@@ -74,11 +74,11 @@ import com.gao.model.gridmodel.WellGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.gridmodel.WellProHandsontableChangedData;
 import com.gao.model.gridmodel.WellringGridPanelData;
-import com.gao.tast.EquipmentDriverServerTast;
-import com.gao.tast.KafkaServerTast.KafkaUpData;
-import com.gao.tast.KafkaServerTast.KafkaUpRawData;
-import com.gao.tast.MQTTServerTast.TransferDaily;
-import com.gao.tast.MQTTServerTast.TransferDiagram;
+import com.gao.task.EquipmentDriverServerTask;
+import com.gao.task.KafkaServerTask.KafkaUpData;
+import com.gao.task.KafkaServerTask.KafkaUpRawData;
+import com.gao.task.MQTTServerTask.TransferDaily;
+import com.gao.task.MQTTServerTask.TransferDiagram;
 import com.gao.model.WellInformation;
 import com.gao.model.WellTrajectory;
 import com.gao.model.Wellorder;
@@ -1315,7 +1315,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PreparedStatement ps=null;
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 		}
 		try {
 			cs = conn.prepareCall("{call prd_save_wellinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");

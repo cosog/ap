@@ -16,7 +16,7 @@ import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.DataSourceConfig;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
@@ -85,7 +85,7 @@ private CommonDataService service;
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		//驱动排序
@@ -241,7 +241,7 @@ private CommonDataService service;
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");

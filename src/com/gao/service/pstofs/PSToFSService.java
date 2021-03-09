@@ -28,11 +28,11 @@ import com.gao.model.gridmodel.InverOptimizeHandsontableChangedData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
-import com.gao.tast.KafkaServerTast;
-import com.gao.tast.MQTTServerTast.TransferDaily;
-import com.gao.tast.MQTTServerTast.TransferDiagram;
-import com.gao.tast.MQTTServerTast.TransferDiscrete;
+import com.gao.task.EquipmentDriverServerTask;
+import com.gao.task.KafkaServerTask;
+import com.gao.task.MQTTServerTask.TransferDaily;
+import com.gao.task.MQTTServerTask.TransferDiagram;
+import com.gao.task.MQTTServerTask.TransferDiscrete;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
 import com.gao.utils.PageHandler;
@@ -498,7 +498,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		
@@ -546,7 +546,7 @@ public class PSToFSService<T> extends BaseService<T> {
 							
 						}
 						
-						KafkaServerTast.producerMsg(topic, "下行抽油机数据", gson.toJson(pumpingUnit));
+						KafkaServerTask.producerMsg(topic, "下行抽油机数据", gson.toJson(pumpingUnit));
 					}
 				}
 			}

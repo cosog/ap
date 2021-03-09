@@ -35,7 +35,7 @@ import com.gao.model.drive.RTUDriveConfig;
 import com.gao.model.drive.RTUDriveConfig.Item;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
 import com.gao.service.right.RoleManagerService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.AcquisitionItemRecursion;
 import com.gao.utils.BackModuleRecursion;
 import com.gao.utils.Constants;
@@ -121,7 +121,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
-			EquipmentDriverServerTast.initAcquisitionUnit();
+			EquipmentDriverServerTask.initAcquisitionUnit();
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -140,7 +140,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
-			EquipmentDriverServerTast.initAcquisitionUnit();
+			EquipmentDriverServerTask.initAcquisitionUnit();
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -331,7 +331,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(r);
 
 					}
-					EquipmentDriverServerTast.initAcquisitionUnit();
+					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
 
 			}
@@ -379,7 +379,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(r);
 
 					}
-					EquipmentDriverServerTast.initAcquisitionUnit();
+					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
 
 			}
@@ -424,7 +424,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(modbusDriverSaveData!=null){
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTast.initDriverConfig();
+				EquipmentDriverServerTask.initDriverConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			switch (modbusDriverSaveData.getDriverName()){
@@ -579,7 +579,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(KafkaConfigSaveData!=null){
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTast.initDriverConfig();
+				EquipmentDriverServerTask.initDriverConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");

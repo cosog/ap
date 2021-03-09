@@ -28,7 +28,7 @@ import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.service.back.WellInformationManagerService;
 import com.gao.service.back.WellboreTrajectoryManagerService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.PagingConstants;

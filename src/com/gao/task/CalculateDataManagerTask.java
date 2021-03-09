@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 @Component("calculateDataManagerTast")  
-public class CalculateDataManagerTast {
+public class CalculateDataManagerTask {
 	private static Connection conn = null;   
     private static PreparedStatement pstmt = null;  
     private static ResultSet rs = null;  

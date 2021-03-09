@@ -23,8 +23,8 @@ import com.gao.model.User;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.kafkaConfig.KafkaConfigService;
-import com.gao.tast.EquipmentDriverServerTast;
-import com.gao.tast.KafkaServerTast;
+import com.gao.task.EquipmentDriverServerTask;
+import com.gao.task.KafkaServerTask;
 import com.gao.utils.Constants;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.MarkDown2HtmlWrapper;
@@ -379,7 +379,7 @@ public class KafkaConfigController extends BaseController {
 		List list = this.commonDataService.findCallSql(sql);
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
@@ -423,7 +423,7 @@ public class KafkaConfigController extends BaseController {
 				System.out.println("Kafka下行数据，设备："+ID+",主题："+topic+",数据"+data);
 				//不执行启抽指令
 				if(!"2".equals(type)&&StringManagerUtils.isNotNull(topic)){
-					KafkaServerTast.producerMsg(topic, "下行数据", data);
+					KafkaServerTask.producerMsg(topic, "下行数据", data);
 				}
 			}
 		}
@@ -447,7 +447,7 @@ public class KafkaConfigController extends BaseController {
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
@@ -481,7 +481,7 @@ public class KafkaConfigController extends BaseController {
 		}
 		System.out.println("Kafka下行数据，设备："+deviceId+",主题："+topic+",数据"+data);
 		if(StringManagerUtils.isNotNull(data)){
-			KafkaServerTast.producerMsg(topic, deviceId, data);
+			KafkaServerTask.producerMsg(topic, deviceId, data);
 		}
 		
 		String json ="{success:true}";

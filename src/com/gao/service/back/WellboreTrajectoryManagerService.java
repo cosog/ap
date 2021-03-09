@@ -25,8 +25,8 @@ import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
-import com.gao.tast.KafkaServerTast;
+import com.gao.task.EquipmentDriverServerTask;
+import com.gao.task.KafkaServerTask;
 import com.gao.utils.Config;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
@@ -245,7 +245,7 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		
@@ -282,7 +282,7 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 					wellboreTrajectory.setDeviationAngle(deviationAngle);
 					wellboreTrajectory.setAzimuthAngle(azimuthAngle);
 					
-					KafkaServerTast.producerMsg(topic, "下行井身轨迹数据", gson.toJson(wellboreTrajectory));
+					KafkaServerTask.producerMsg(topic, "下行井身轨迹数据", gson.toJson(wellboreTrajectory));
 				}
 			}
 		}

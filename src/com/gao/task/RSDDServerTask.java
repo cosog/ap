@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
 @Component("RSDDServerTast")  
-public class RSDDServerTast {
+public class RSDDServerTask {
 	public static final String readNum="$CCICA,0,00*7B\r\n";//读取北斗卡号指令  本卡号 0395725
 	public static final String readRSSI="$CCRMO,BSI,2,0*26\r\n";//读取北斗信号强度指令
 	public static final String readLocation="$CCDWA,0000000,V,1,L,,0,,,0*65\r\n";//读取北斗定位指令

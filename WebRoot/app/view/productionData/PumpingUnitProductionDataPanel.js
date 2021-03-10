@@ -180,6 +180,12 @@ function CreateAndLoadWellProTable(isNew){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 	            	}else if(result.columns[i].dataIndex==="anchoringStateName"){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']}";
+	            	}else if(result.columns[i].dataIndex==="barrelTypeName"){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']}";
+	            	}else if(result.columns[i].dataIndex==="pumpTypeName"){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']}";
+	            	}else if(result.columns[i].dataIndex==="pumpGrade"){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_PumpGrade(val, callback,this.row, this.col,wellProHandsontableHelper);}}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){

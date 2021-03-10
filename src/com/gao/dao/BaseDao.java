@@ -1128,7 +1128,7 @@ public class BaseDao extends HibernateDaoSupport {
 			prdName="prd_save_pcp_productiondata";
 		}
 		try {
-			cs = conn.prepareCall("{call "+prdName+"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call "+prdName+"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellProHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
@@ -1147,20 +1147,23 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(10, wellProHandsontableChangedData.getUpdatelist().get(i).getCasingPressure());
 						cs.setString(11, wellProHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature());
 						cs.setString(12, wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W());
-						cs.setString(13, wellProHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio());
-						cs.setString(14, wellProHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel());
-						cs.setString(15, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());
+						cs.setString(13, wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+						cs.setString(14, wellProHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio());
+						cs.setString(15, wellProHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel());
+						cs.setString(16, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());
 						
-						cs.setString(16, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpGrade());
-						cs.setString(17, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter());
-						cs.setString(18, wellProHandsontableChangedData.getUpdatelist().get(i).getPlungerLength());
-						cs.setString(19, wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelLength());
-						cs.setString(20, wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries());
-						cs.setString(21, wellProHandsontableChangedData.getUpdatelist().get(i).getRotorDiameter());
-						cs.setString(22, wellProHandsontableChangedData.getUpdatelist().get(i).getQPR());
+						cs.setString(17, wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName());
+						cs.setString(18, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName());
+						cs.setString(19, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpGrade());
+						cs.setString(20, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter());
+						cs.setString(21, wellProHandsontableChangedData.getUpdatelist().get(i).getPlungerLength());
+						cs.setString(22, wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelLength());
+						cs.setString(23, wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries());
+						cs.setString(24, wellProHandsontableChangedData.getUpdatelist().get(i).getRotorDiameter());
+						cs.setString(25, wellProHandsontableChangedData.getUpdatelist().get(i).getQPR());
 						
-						cs.setString(23, wellProHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter());
-						cs.setString(24, wellProHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter());
+						cs.setString(26, wellProHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter());
+						cs.setString(27, wellProHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter());
 						
 						String rodString="";
 						rodString+=wellProHandsontableChangedData.getUpdatelist().get(i).getRodGrade1()+","
@@ -1179,12 +1182,12 @@ public class BaseDao extends HibernateDaoSupport {
 									+wellProHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4()+","
 									+wellProHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4()+","
 									+wellProHandsontableChangedData.getUpdatelist().get(i).getRodLength4();
-						cs.setString(25, rodString);
+						cs.setString(28, rodString);
 						
-						cs.setString(26, wellProHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
-						cs.setString(27, wellProHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
-						cs.setString(28, currentTime);
-						cs.setString(29, ids);
+						cs.setString(29, wellProHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
+						cs.setString(30, wellProHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
+						cs.setString(31, currentTime);
+						cs.setString(32, ids);
 						cs.executeUpdate();
 					}
 				}

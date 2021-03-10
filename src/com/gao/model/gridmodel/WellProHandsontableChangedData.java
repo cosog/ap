@@ -56,12 +56,18 @@ public class WellProHandsontableChangedData {
 	    private String wellHeadFluidTemperature;
 
 	    private String waterCut_W;
+	    
+	    private String waterCut;
 
 	    private String productionGasOilRatio;
 
 	    private String producingfluidLevel;
 
 	    private String pumpSettingDepth;
+	    
+	    private String barrelTypeName;
+	    
+	    private String pumpTypeName;
 
 	    private String pumpGrade;
 
@@ -469,6 +475,30 @@ public class WellProHandsontableChangedData {
 
 		public void setAcqTime(String acqTime) {
 			this.acqTime = acqTime;
+		}
+
+		public String getWaterCut() {
+			return waterCut;
+		}
+
+		public void setWaterCut(String waterCut) {
+			this.waterCut = waterCut;
+		}
+
+		public String getBarrelTypeName() {
+			return barrelTypeName;
+		}
+
+		public void setBarrelTypeName(String barrelTypeName) {
+			this.barrelTypeName = barrelTypeName;
+		}
+
+		public String getPumpTypeName() {
+			return pumpTypeName;
+		}
+
+		public void setPumpTypeName(String pumpTypeName) {
+			this.pumpTypeName = pumpTypeName;
 		}
 	}
 }

@@ -171,7 +171,10 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		
 		sql="select id,wellName,runTime,"
 			+ "crudeOilDensity,waterDensity,naturalGasRelativeDensity,saturationPressure,reservoirDepth,reservoirTemperature,"
-			+ "tubingPressure,casingPressure,wellHeadFluidTemperature,waterCut_W,productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
+			+ "tubingPressure,casingPressure,wellHeadFluidTemperature,"
+			+ "waterCut_W,waterCut,"
+			+ "productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
+			+ "barrelTypeName,pumpTypeName,"
 			+ "pumpGrade,pumpBoreDiameter,plungerLength,"
 			+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
@@ -191,7 +194,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String rodString=obj[25]+"";
+			String rodString=obj[28]+"";
 			String[] rodStringArr={};
 			if(StringManagerUtils.isNotNull(rodString)){
 				rodStringArr=rodString.split(";");
@@ -209,18 +212,21 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			result_json.append("\"casingPressure\":\""+obj[10]+"\",");
 			result_json.append("\"wellHeadFluidTemperature\":\""+obj[11]+"\",");
 			result_json.append("\"waterCut_W\":\""+obj[12]+"\",");
-			result_json.append("\"productionGasOilRatio\":\""+obj[13]+"\",");
-			result_json.append("\"producingfluidLevel\":\""+obj[14]+"\",");
-			result_json.append("\"pumpSettingDepth\":\""+obj[15]+"\",");
-			result_json.append("\"pumpGrade\":\""+obj[16]+"\",");
-			result_json.append("\"pumpBoreDiameter\":\""+obj[17]+"\",");
-			result_json.append("\"plungerLength\":\""+obj[18]+"\",");
-			result_json.append("\"barrelLength\":\""+obj[19]+"\",");
-			result_json.append("\"barrelSeries\":\""+obj[20]+"\",");
-			result_json.append("\"rotorDiameter\":\""+obj[21]+"\",");
-			result_json.append("\"QPR\":\""+obj[22]+"\",");
-			result_json.append("\"tubingStringInsideDiameter\":\""+obj[23]+"\",");
-			result_json.append("\"casingStringInsideDiameter\":\""+obj[24]+"\",");
+			result_json.append("\"waterCut\":\""+obj[13]+"\",");
+			result_json.append("\"productionGasOilRatio\":\""+obj[14]+"\",");
+			result_json.append("\"producingfluidLevel\":\""+obj[15]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[16]+"\",");
+			result_json.append("\"barrelTypeName\":\""+obj[17]+"\",");
+			result_json.append("\"pumpTypeName\":\""+obj[18]+"\",");
+			result_json.append("\"pumpGrade\":\""+obj[19]+"\",");
+			result_json.append("\"pumpBoreDiameter\":\""+obj[20]+"\",");
+			result_json.append("\"plungerLength\":\""+obj[21]+"\",");
+			result_json.append("\"barrelLength\":\""+obj[22]+"\",");
+			result_json.append("\"barrelSeries\":\""+obj[23]+"\",");
+			result_json.append("\"rotorDiameter\":\""+obj[24]+"\",");
+			result_json.append("\"QPR\":\""+obj[25]+"\",");
+			result_json.append("\"tubingStringInsideDiameter\":\""+obj[26]+"\",");
+			result_json.append("\"casingStringInsideDiameter\":\""+obj[27]+"\",");
 			
 			for(int j=0;j<rodStringArr.length;j++){
 				String[] everyRod=rodStringArr[j].split(",");
@@ -231,9 +237,9 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 				result_json.append("\"rodLength"+(j+1)+"\":\""+(arrLength>=4?everyRod[3]:"")+"\",");
 			}
 			
-			result_json.append("\"anchoringStateName\":\""+obj[26]+"\",");
-			result_json.append("\"netGrossRatio\":\""+obj[27]+"\",");
-			result_json.append("\"acqTime\":\""+obj[28]+"\"},");
+			result_json.append("\"anchoringStateName\":\""+obj[29]+"\",");
+			result_json.append("\"netGrossRatio\":\""+obj[30]+"\",");
+			result_json.append("\"acqTime\":\""+obj[31]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");

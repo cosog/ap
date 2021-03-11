@@ -79,8 +79,10 @@ public class CalculateDataManagerTask {
 	
 	//离散数据实时汇总
 //	@Scheduled(cron = "0 30 0/1 * * ?")
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
+//		currentDate="2021-03-10";
 		@SuppressWarnings("static-access")
 		String discreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("static-access")

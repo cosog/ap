@@ -1132,7 +1132,12 @@ public class BaseDao extends HibernateDaoSupport {
 			if(wellProHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						
+						if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
+							wellProHandsontableChangedData.getUpdatelist().get(i).setBarrelTypeName("组合泵");
+						}
+						if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
+							wellProHandsontableChangedData.getUpdatelist().get(i).setPumpTypeName("管式泵");
+						}
 						cs.setString(1, wellProHandsontableChangedData.getUpdatelist().get(i).getWellName());
 						cs.setString(2, wellProHandsontableChangedData.getUpdatelist().get(i).getRunTime());
 						
@@ -1195,6 +1200,12 @@ public class BaseDao extends HibernateDaoSupport {
 			if(wellProHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getInsertlist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWellName())){
+						if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getBarrelTypeName())){
+							wellProHandsontableChangedData.getInsertlist().get(i).setBarrelTypeName("组合泵");
+						}
+						if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getPumpTypeName())){
+							wellProHandsontableChangedData.getInsertlist().get(i).setPumpTypeName("管式泵");
+						}
 						
 						cs.setString(1, wellProHandsontableChangedData.getInsertlist().get(i).getWellName());
 						cs.setString(2, wellProHandsontableChangedData.getInsertlist().get(i).getRunTime());
@@ -1210,20 +1221,23 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(10, wellProHandsontableChangedData.getInsertlist().get(i).getCasingPressure());
 						cs.setString(11, wellProHandsontableChangedData.getInsertlist().get(i).getWellHeadFluidTemperature());
 						cs.setString(12, wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W());
-						cs.setString(13, wellProHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio());
-						cs.setString(14, wellProHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel());
-						cs.setString(15, wellProHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth());
+						cs.setString(13, wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut());
+						cs.setString(14, wellProHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio());
+						cs.setString(15, wellProHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel());
+						cs.setString(16, wellProHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth());
 						
-						cs.setString(16, wellProHandsontableChangedData.getInsertlist().get(i).getPumpGrade());
-						cs.setString(17, wellProHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter());
-						cs.setString(18, wellProHandsontableChangedData.getInsertlist().get(i).getPlungerLength());
-						cs.setString(19, wellProHandsontableChangedData.getInsertlist().get(i).getBarrelLength());
-						cs.setString(20, wellProHandsontableChangedData.getInsertlist().get(i).getBarrelSeries());
-						cs.setString(21, wellProHandsontableChangedData.getInsertlist().get(i).getRotorDiameter());
-						cs.setString(22, wellProHandsontableChangedData.getInsertlist().get(i).getQPR());
+						cs.setString(17, wellProHandsontableChangedData.getInsertlist().get(i).getBarrelTypeName());
+						cs.setString(18, wellProHandsontableChangedData.getInsertlist().get(i).getPumpTypeName());
+						cs.setString(19, wellProHandsontableChangedData.getInsertlist().get(i).getPumpGrade());
+						cs.setString(20, wellProHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter());
+						cs.setString(21, wellProHandsontableChangedData.getInsertlist().get(i).getPlungerLength());
+						cs.setString(22, wellProHandsontableChangedData.getInsertlist().get(i).getBarrelLength());
+						cs.setString(23, wellProHandsontableChangedData.getInsertlist().get(i).getBarrelSeries());
+						cs.setString(24, wellProHandsontableChangedData.getInsertlist().get(i).getRotorDiameter());
+						cs.setString(25, wellProHandsontableChangedData.getInsertlist().get(i).getQPR());
 						
-						cs.setString(23, wellProHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter());
-						cs.setString(24, wellProHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter());
+						cs.setString(26, wellProHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter());
+						cs.setString(27, wellProHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter());
 						
 						String rodString="";
 						rodString+=wellProHandsontableChangedData.getInsertlist().get(i).getRodGrade1()+","
@@ -1242,13 +1256,12 @@ public class BaseDao extends HibernateDaoSupport {
 									+wellProHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4()+","
 									+wellProHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4()+","
 									+wellProHandsontableChangedData.getInsertlist().get(i).getRodLength4();
-						cs.setString(25, rodString);
+						cs.setString(28, rodString);
 						
-						cs.setString(26, wellProHandsontableChangedData.getInsertlist().get(i).getAnchoringStateName());
-						cs.setString(27, wellProHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio());
-						cs.setString(28, currentTime);
-						cs.setString(29, ids);
-						cs.executeUpdate();
+						cs.setString(29, wellProHandsontableChangedData.getInsertlist().get(i).getAnchoringStateName());
+						cs.setString(30, wellProHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio());
+						cs.setString(31, currentTime);
+						cs.setString(32, ids);
 					}
 				}
 			}

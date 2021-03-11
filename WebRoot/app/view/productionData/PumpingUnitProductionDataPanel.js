@@ -175,16 +175,15 @@ function CreateAndLoadWellProTable(isNew){
 		        var columns="[";
 	            for(var i=0;i<result.columns.length;i++){
 	            	colHeaders+="'"+result.columns[i].header+"'";
-	            	
 	            	if(result.columns[i].dataIndex.toUpperCase()==="wellName".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="acqTime".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	}else if(result.columns[i].dataIndex==="anchoringStateName"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="anchoringStateName".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']}";
-	            	}else if(result.columns[i].dataIndex==="barrelTypeName"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']}";
-	            	}else if(result.columns[i].dataIndex==="pumpTypeName"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']}";
-	            	}else if(result.columns[i].dataIndex==="pumpGrade"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_PumpGrade(val, callback,this.row, this.col,wellProHandsontableHelper);}}";
@@ -193,8 +192,6 @@ function CreateAndLoadWellProTable(isNew){
 	            	}else{
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,wellProHandsontableHelper);}}";
 	            	}
-	            	
-	            	
 	            	if(i<result.columns.length-1){
 	            		colHeaders+=",";
 	                	columns+=",";

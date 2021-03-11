@@ -167,8 +167,8 @@ public class ProductionDataController extends BaseController {
 						List list = this.services.findCallSql(sql);
 						if(list.size()>0){
 							Object[] obj=(Object[]) list.get(0);
-							String driverCode=obj[0].toString();
-							String ID=obj[1].toString();
+							String driverCode=obj[0]==null?"":obj[0].toString();
+							String ID=obj[1]==null?"":obj[1].toString();
 							if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 								String FluidPVTTopic=driveConfig.getTopic().getDown().getModel_FluidPVT().replace("-ID-", "-"+ID+"-");
 								String ReservoirTopic=driveConfig.getTopic().getDown().getModel_Reservoir().replace("-ID-", "-"+ID+"-");
@@ -179,6 +179,26 @@ public class ProductionDataController extends BaseController {
 								String CasingStringTopic=driveConfig.getTopic().getDown().getModel_CasingString().replace("-ID-", "-"+ID+"-");
 								String ProductionTopic=driveConfig.getTopic().getDown().getModel_Production().replace("-ID-", "-"+ID+"-");
 								String ManualInterventionTopic=driveConfig.getTopic().getDown().getModel_ManualIntervention().replace("-ID-", "-"+ID+"-");
+								float waterCut=0;
+								if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
+									wellProHandsontableChangedData.getUpdatelist().get(i).setBarrelTypeName("组合泵");
+								}
+								if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
+									wellProHandsontableChangedData.getUpdatelist().get(i).setPumpTypeName("管式泵");
+								}
+								
+								if((!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut()))&&StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W())){
+									float waterCut_W=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W());
+									float waterDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterDensity());
+									float crudeOilDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity());
+									
+									if(waterCut_W>0.0001&&crudeOilDensity!=0){
+										waterCut=100/(1+waterDensity/crudeOilDensity*(100-waterCut_W)/waterCut_W);
+									}
+								}else if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut())){
+									waterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+								}
+								
 								
 								String FluidPVTData="{"
 										+ "\"CrudeOilDensity\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()+","
@@ -228,7 +248,7 @@ public class ProductionDataController extends BaseController {
 								String CasingStringData="{\"EveryCasing\":[{\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001+"}]}";
 								
 								String ProductionData="{"
-										+ "\"WaterCut\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W()+","
+										+ "\"WaterCut\":"+waterCut+","
 										+ "\"ProductionGasOilRatio\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()+","
 										+ "\"TubingPressure\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()+","
 										+ "\"CasingPressure\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()+","
@@ -239,6 +259,8 @@ public class ProductionDataController extends BaseController {
 										+ "}";
 								
 								String PumpData="{"
+										+ "\"PumpType\":\""+("管式泵".equals(wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())?"T":"R")  +"\","
+										+ "\"BarrelType\":\""+("组合泵".equals(wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())?"L":"H")  +"\","
 										+ "\"PumpGrade\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()+","
 										+ "\"BarrelLength\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()+","
 										+ "\"PlungerLength\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()+","
@@ -280,6 +302,25 @@ public class ProductionDataController extends BaseController {
 								String CasingStringTopic=driveConfig.getTopic().getDown().getModel_CasingString().replace("-ID-", "-"+ID+"-");
 								String ProductionTopic=driveConfig.getTopic().getDown().getModel_Production().replace("-ID-", "-"+ID+"-");
 								String ManualInterventionTopic=driveConfig.getTopic().getDown().getModel_ManualIntervention().replace("-ID-", "-"+ID+"-");
+								float waterCut=0;
+								if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getBarrelTypeName())){
+									wellProHandsontableChangedData.getInsertlist().get(i).setBarrelTypeName("组合泵");
+								}
+								if(!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getPumpTypeName())){
+									wellProHandsontableChangedData.getInsertlist().get(i).setPumpTypeName("管式泵");
+								}
+								
+								if((!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut()))&&StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W())){
+									float waterCut_W=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W());
+									float waterDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWaterDensity());
+									float crudeOilDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity());
+									
+									if(waterCut_W>0.0001&&crudeOilDensity!=0){
+										waterCut=100/(1+waterDensity/crudeOilDensity*(100-waterCut_W)/waterCut_W);
+									}
+								}else if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut())){
+									waterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut());
+								}
 								
 								String FluidPVTData="{"
 										+ "\"CrudeOilDensity\":"+wellProHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()+","
@@ -329,7 +370,7 @@ public class ProductionDataController extends BaseController {
 								String CasingStringData="{\"EveryCasing\":[{\"InsideDiameter\":"+StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001+"}]}";
 								
 								String ProductionData="{"
-										+ "\"WaterCut\":"+wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W()+","
+										+ "\"WaterCut\":"+waterCut+","
 										+ "\"ProductionGasOilRatio\":"+wellProHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()+","
 										+ "\"TubingPressure\":"+wellProHandsontableChangedData.getInsertlist().get(i).getTubingPressure()+","
 										+ "\"CasingPressure\":"+wellProHandsontableChangedData.getInsertlist().get(i).getCasingPressure()+","
@@ -340,6 +381,8 @@ public class ProductionDataController extends BaseController {
 										+ "}";
 								
 								String PumpData="{"
+										+ "\"PumpType\":\""+("管式泵".equals(wellProHandsontableChangedData.getInsertlist().get(i).getBarrelTypeName())?"T":"R")  +"\","
+										+ "\"BarrelType\":\""+("组合泵".equals(wellProHandsontableChangedData.getInsertlist().get(i).getBarrelTypeName())?"L":"H")  +"\","
 										+ "\"PumpGrade\":"+wellProHandsontableChangedData.getInsertlist().get(i).getPumpGrade()+","
 										+ "\"BarrelLength\":"+wellProHandsontableChangedData.getInsertlist().get(i).getBarrelLength()+","
 										+ "\"PlungerLength\":"+wellProHandsontableChangedData.getInsertlist().get(i).getPlungerLength()+","

@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 import com.cosog.model.scada.CallbackDataItems;
 import com.gao.dao.BaseDao;
 import com.gao.model.AlarmShowStyle;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.GenericsUtils;
 import com.gao.utils.Page;
@@ -831,7 +831,7 @@ public class BaseService<T> {
 		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
 		AlarmShowStyle alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
 		if(alarmShowStyle==null){
-			EquipmentDriverServerTast.initAlarmStyle();
+			EquipmentDriverServerTask.initAlarmStyle();
 			alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
 		}
 		String[] str = splitPageSql(sql);

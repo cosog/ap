@@ -25,7 +25,7 @@ import com.gao.model.User;
 import com.gao.model.WorkStatusAlarm;
 import com.gao.service.back.AlarmSetManagerService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.Constants;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
@@ -392,7 +392,7 @@ public class AlarmSetManagerController extends BaseController {
 			alarmSetManagerService.setAlarmLevelColor(alarmLevelBackgroundColor0, alarmLevelBackgroundColor1, alarmLevelBackgroundColor2, alarmLevelBackgroundColor3,
 					alarmLevelColor0,alarmLevelColor1,alarmLevelColor2,alarmLevelColor3,
 					alarmLevelOpacity0,alarmLevelOpacity1,alarmLevelOpacity2,alarmLevelOpacity3);
-			EquipmentDriverServerTast.initAlarmStyle();
+			EquipmentDriverServerTask.initAlarmStyle();
 			json="{success:true,msg:true}";
 		} catch (Exception e) {
 			json = "{success:true,msg:false}";

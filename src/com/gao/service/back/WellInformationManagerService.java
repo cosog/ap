@@ -16,7 +16,7 @@ import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
@@ -330,7 +330,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer driverDropdownData = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -463,7 +463,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 		}
 		String wellInformationName = (String) map.get("wellInformationName");
 		String liftingType = (String) map.get("liftingType");

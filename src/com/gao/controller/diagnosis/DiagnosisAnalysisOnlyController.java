@@ -24,7 +24,7 @@ import com.gao.model.DiagnosisAnalysisStatistics;
 import com.gao.model.User;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.diagnosis.DiagnosisAnalysisOnlyService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.I18NConfig;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
@@ -449,14 +449,14 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			String getUpwd = userInfo.getUserPwd();
 			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				for(int i=0;EquipmentDriverServerTast.units!=null&&i<EquipmentDriverServerTast.units.size();i++){
-					if(wellName.equals(EquipmentDriverServerTast.units.get(i).getWellName())){
+				for(int i=0;EquipmentDriverServerTask.units!=null&&i<EquipmentDriverServerTask.units.size();i++){
+					if(wellName.equals(EquipmentDriverServerTask.units.get(i).getWellName())){
 						if("ImmediatelyAcquisition".equalsIgnoreCase(controlType)){//即时采集
-							EquipmentDriverServerTast.units.get(i).setImmediatelyAcquisitionControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setImmediatelyAcquisitionControl(StringManagerUtils.stringToInteger(controlValue));
 						}else if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
-							EquipmentDriverServerTast.units.get(i).setRunStatusControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setRunStatusControl(StringManagerUtils.stringToInteger(controlValue));
 						}else if("frequencySetValue".equalsIgnoreCase(controlType)){//设置变频频率
-							EquipmentDriverServerTast.units.get(i).setFrequencyControl(StringManagerUtils.stringToFloat(controlValue));
+							EquipmentDriverServerTask.units.get(i).setFrequencyControl(StringManagerUtils.stringToFloat(controlValue));
 						}
 						
 						else if("IaUpLimit".equalsIgnoreCase(controlType)){//设置电流上限
@@ -466,7 +466,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 								f=-0.5f;
 							}
 							int setValue=(int)(value*100+f);
-							EquipmentDriverServerTast.units.get(i).setCurrentUpLimitControl(setValue);
+							EquipmentDriverServerTask.units.get(i).setCurrentUpLimitControl(setValue);
 						}else if("IaDownLimit".equalsIgnoreCase(controlType)){//设置电流下限
 							float value=StringManagerUtils.stringToFloat(controlValue);
 							float f=0.5f;
@@ -474,7 +474,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 								f=-0.5f;
 							}
 							int setValue=(int)(value*100+f);
-							EquipmentDriverServerTast.units.get(i).setCurrentDownLimitControl(setValue);
+							EquipmentDriverServerTask.units.get(i).setCurrentDownLimitControl(setValue);
 						}else if("wattUpLimit".equalsIgnoreCase(controlType)){//设置功率上限
 							float value=StringManagerUtils.stringToFloat(controlValue);
 							float f=0.5f;
@@ -482,7 +482,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 								f=-0.5f;
 							}
 							int setValue=(int)(value*100+f);
-							EquipmentDriverServerTast.units.get(i).setPowerUpLimitControl(setValue);
+							EquipmentDriverServerTask.units.get(i).setPowerUpLimitControl(setValue);
 						}else if("wattDownLimit".equalsIgnoreCase(controlType)){//设置功率下限
 							float value=StringManagerUtils.stringToFloat(controlValue);
 							float f=0.5f;
@@ -490,12 +490,12 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 								f=-0.5f;
 							}
 							int setValue=(int)(value*100+f);
-							EquipmentDriverServerTast.units.get(i).setPowerDownLimitControl(setValue);
+							EquipmentDriverServerTask.units.get(i).setPowerDownLimitControl(setValue);
 						}
 						
 						
 						else if("acqcycle_diagram".equalsIgnoreCase(controlType)){//设置功图采集周期
-							EquipmentDriverServerTast.units.get(i).setFSDiagramIntervalControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setFSDiagramIntervalControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("acqcycle_discrete".equalsIgnoreCase(controlType)){//设置离散数据采集周期
 							float value=StringManagerUtils.stringToFloat(controlValue);
@@ -505,38 +505,38 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 							}else if(acqcycle_discrete>1800){
 								acqcycle_discrete=1800;
 							}
-							EquipmentDriverServerTast.units.get(i).setDiscreteIntervalControl(acqcycle_discrete);
+							EquipmentDriverServerTask.units.get(i).setDiscreteIntervalControl(acqcycle_discrete);
 						}
 						else if("balanceControlMode".equalsIgnoreCase(controlType)){//设置平衡调节远程触发控制
-							EquipmentDriverServerTast.units.get(i).setBalanceControlModeControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceControlModeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceCalculateMode".equalsIgnoreCase(controlType)){//设置平衡计算模式
-							EquipmentDriverServerTast.units.get(i).setBalanceCalculateModeControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceCalculateModeControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceAwayTime".equalsIgnoreCase(controlType)){//设置平衡远离支点调节时间
 							int value=StringManagerUtils.stringToInteger(controlValue);
 							int deltaRadius=(int)(value*10/3.6*1000+0.5);
-							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimeControl(deltaRadius);
+							EquipmentDriverServerTask.units.get(i).setBalanceAwayTimeControl(deltaRadius);
 						}
 						else if("balanceCloseTime".equalsIgnoreCase(controlType)){//设置平衡接近支点调节时间
 							int value=StringManagerUtils.stringToInteger(controlValue);
 							int deltaRadius=(int)(value*10/3.6*1000+0.5);
-							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimeControl(deltaRadius);
+							EquipmentDriverServerTask.units.get(i).setBalanceCloseTimeControl(deltaRadius);
 						}
 						else if("balanceAwayTimePerBeat".equalsIgnoreCase(controlType)){//设置平衡远离支点每拍调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceAwayTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceAwayTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceCloseTimePerBeat".equalsIgnoreCase(controlType)){//设置平衡接近支点每拍调节时间
-							EquipmentDriverServerTast.units.get(i).setBalanceCloseTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceCloseTimePerBeatControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceStrokeCount".equalsIgnoreCase(controlType)){//设置参与平衡计算冲程次数
-							EquipmentDriverServerTast.units.get(i).setBalanceStrokeCountControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceStrokeCountControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceOperationUpLimit".equalsIgnoreCase(controlType)){//设置平衡调节上限
-							EquipmentDriverServerTast.units.get(i).setBalanceOperationUpLimitControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceOperationUpLimitControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						else if("balanceOperationDownLimit".equalsIgnoreCase(controlType)){//设置平衡调节下限
-							EquipmentDriverServerTast.units.get(i).setBalanceOperationDownLimitControl(StringManagerUtils.stringToInteger(controlValue));
+							EquipmentDriverServerTask.units.get(i).setBalanceOperationDownLimitControl(StringManagerUtils.stringToInteger(controlValue));
 						}
 						break;
 					}

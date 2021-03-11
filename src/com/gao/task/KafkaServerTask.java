@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 
 import java.text.DateFormat;
@@ -35,7 +35,7 @@ import com.google.gson.reflect.TypeToken;
 
 
 @Component("KafkaServerTast")  
-public class KafkaServerTast {
+public class KafkaServerTask {
 //	public static  String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
 	public static  String HOST ="39.98.64.56:9092";
     public static  String[] TOPIC = {"Up-NormData","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
@@ -45,13 +45,13 @@ public class KafkaServerTast {
 	private ScheduledExecutorService scheduler;
     
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		clientid = "apKafkaClient"+new Date().getTime();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTast.initDriverConfig();
+			EquipmentDriverServerTask.initDriverConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
@@ -118,6 +118,7 @@ public class KafkaServerTast {
 	}
 	
 	public static void producerMsg(String topic,String title,String value){
+		System.out.println("Kafka下行，topic："+topic+",title:"+title+",value:"+value);
 		Properties props = new Properties();
 	    props.put("bootstrap.servers", HOST);
 	    //The "all" setting we have specified will result in blocking on the full commit of the record, the slowest but most durable setting.
@@ -170,7 +171,7 @@ public class KafkaServerTast {
 			
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTast.initDriverConfig();
+				EquipmentDriverServerTask.initDriverConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
@@ -207,7 +208,7 @@ public class KafkaServerTast {
 							kafkaUpData.setAcqTime(currentTime);
 							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
 						
 						if(!StringManagerUtils.isNotNull(kafkaUpData.getAcqTime())){
@@ -239,7 +240,7 @@ public class KafkaServerTast {
 							kafkaUpRawData.setAcqTime(currentTime);
 							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
 						if(StringManagerUtils.isNotNull(kafkaUpRawData.getAcqTime())){
 							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpRawData.getAcqTime()).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
@@ -279,7 +280,7 @@ public class KafkaServerTast {
 							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrOnline2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
 							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
 						aggrOnline2Kafka.setKey(record.key());
 	        			StringManagerUtils.sendPostMethod(saveAggrOnlineDataUrl, gson.toJson(aggrOnline2Kafka),"utf-8");
@@ -303,7 +304,7 @@ public class KafkaServerTast {
 							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrRunStatus2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
 							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
-							KafkaServerTast.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
 						aggrRunStatus2Kafka.setKey(record.key());
 	        			StringManagerUtils.sendPostMethod(saveAggrRunStatusDataUrl, gson.toJson(aggrRunStatus2Kafka),"utf-8");

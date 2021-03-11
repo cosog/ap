@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +53,7 @@ import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
 
 @Component("BeeTechDriverServerTast")  
-public class EquipmentDriverServerTast {
+public class EquipmentDriverServerTask {
 	public static Connection conn = null;   
 	public static PreparedStatement pstmt = null;  
 	public static Statement stmt = null;  
@@ -64,14 +64,14 @@ public class EquipmentDriverServerTast {
 	public static ServerSocket sunMoonServerSocket;
 	public static boolean exit=false;
 	//单例模式
-	private static EquipmentDriverServerTast instance=new EquipmentDriverServerTast();
+	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
 	
-	public static EquipmentDriverServerTast getInstance(){
+	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		

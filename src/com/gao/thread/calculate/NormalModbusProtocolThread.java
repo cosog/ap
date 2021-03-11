@@ -21,10 +21,10 @@ import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.EnergyCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
 import com.gao.model.drive.RTUDriveConfig;
-import com.gao.tast.EquipmentDriverServerTast;
-import com.gao.tast.EquipmentDriverServerTast.AcquisitionData;
-import com.gao.tast.EquipmentDriverServerTast.ClientUnit;
-import com.gao.tast.EquipmentDriverServerTast.UnitData;
+import com.gao.task.EquipmentDriverServerTask;
+import com.gao.task.EquipmentDriverServerTask.AcquisitionData;
+import com.gao.task.EquipmentDriverServerTask.ClientUnit;
+import com.gao.task.EquipmentDriverServerTask.UnitData;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.OracleJdbcUtis;
@@ -65,7 +65,7 @@ public class NormalModbusProtocolThread extends ProtocolBasicThread{
         int rc=0;
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         StringBuffer recvBuff=new StringBuffer();
-        EquipmentDriverServerTast beeTechDriverServerTast=EquipmentDriverServerTast.getInstance();
+        EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
         int readTimeout=1000*60;//socket read超时时间
         Gson gson = new Gson();
         byte[] writeCommand={0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
@@ -120,13 +120,13 @@ public class NormalModbusProtocolThread extends ProtocolBasicThread{
     				
     				if(StringManagerUtils.isNotNull(revMacStr)){//接收到注册包
     					boolean isRun=false;
-						for(int j=0;j<EquipmentDriverServerTast.clientUnitList.size();j++){//遍历已连接的客户端
-							if(EquipmentDriverServerTast.clientUnitList.get(j).socket!=null){//如果已连接
-								for(int k=0;k<EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.size();k++){
-									if(revMacStr.equals(EquipmentDriverServerTast.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
-										if(EquipmentDriverServerTast.clientUnitList.get(j).thread!=null){
-											EquipmentDriverServerTast.clientUnitList.get(j).thread.interrupt();
-											EquipmentDriverServerTast.clientUnitList.get(j).thread.isExit=true;
+						for(int j=0;j<EquipmentDriverServerTask.clientUnitList.size();j++){//遍历已连接的客户端
+							if(EquipmentDriverServerTask.clientUnitList.get(j).socket!=null){//如果已连接
+								for(int k=0;k<EquipmentDriverServerTask.clientUnitList.get(j).unitDataList.size();k++){
+									if(revMacStr.equals(EquipmentDriverServerTask.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
+										if(EquipmentDriverServerTask.clientUnitList.get(j).thread!=null){
+											EquipmentDriverServerTask.clientUnitList.get(j).thread.interrupt();
+											EquipmentDriverServerTask.clientUnitList.get(j).thread.isExit=true;
 											isRun=true;
 											break;
 										}
@@ -138,7 +138,7 @@ public class NormalModbusProtocolThread extends ProtocolBasicThread{
 							}
 						}
     					
-    					for(int i=0;i<EquipmentDriverServerTast.units.size();i++){
+    					for(int i=0;i<EquipmentDriverServerTask.units.size();i++){
     						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr)){
     							System.out.println(beeTechDriverServerTast.units.get(i).wellName+"上线");
     							clientUnit.unitDataList.add(beeTechDriverServerTast.units.get(i));
@@ -2182,7 +2182,7 @@ public class NormalModbusProtocolThread extends ProtocolBasicThread{
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		} finally{
-			EquipmentDriverServerTast beeTechDriverServerTast=EquipmentDriverServerTast.getInstance();
+			EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
 			if(beeTechDriverServerTast.clientUnitList.size()>threadId){
 				beeTechDriverServerTast.clientUnitList.remove(threadId);
 				clientUnit=null;

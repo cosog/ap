@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 @Component("calculateDataManagerTast")  
-public class CalculateDataManagerTast {
+public class CalculateDataManagerTask {
 	private static Connection conn = null;   
     private static PreparedStatement pstmt = null;  
     private static ResultSet rs = null;  
@@ -40,7 +40,7 @@ public class CalculateDataManagerTast {
     private static ResultSet rs_outer = null; 
 	
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断SDK是否启动
 		String probeUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
@@ -59,7 +59,7 @@ public class CalculateDataManagerTast {
 	/**
 	 * 汇总计算
 	 * */
-	@Scheduled(cron = "0 0 1/24 * * ?")
+//	@Scheduled(cron = "0 0 1/24 * * ?")
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 //		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
@@ -78,9 +78,11 @@ public class CalculateDataManagerTast {
 	}
 	
 	//离散数据实时汇总
-	@Scheduled(cron = "0 30 0/1 * * ?")
+//	@Scheduled(cron = "0 30 0/1 * * ?")
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
+//		currentDate="2021-03-10";
 		@SuppressWarnings("static-access")
 		String discreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("static-access")
@@ -93,7 +95,7 @@ public class CalculateDataManagerTast {
 	
 	//订阅发布模式通信计算
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(cron = "0 0/1 * * * ?")
+//	@Scheduled(cron = "0 0/1 * * * ?")
 //	@Scheduled(cron = "0/30 * * * * ?")
 	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/pubSubModelCommCalculation";

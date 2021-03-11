@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -18,7 +18,7 @@ import com.gao.utils.Config2;
 import com.gao.utils.StringManagerUtils;
 
 @Component("balanceDataManagerTast")  
-public class BalanceDataManagerTast {
+public class BalanceDataManagerTask {
 	private static Connection conn = null;   
     private static PreparedStatement pstmt = null;  
     private static ResultSet rs = null;  

@@ -13,7 +13,7 @@ import java.util.Map;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
-import com.gao.tast.RSDDServerTast.AcquisitionData;
+import com.gao.task.RSDDServerTask.AcquisitionData;
 import com.gao.utils.BeidouTerminalMap;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;

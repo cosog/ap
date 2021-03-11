@@ -21,7 +21,7 @@ import com.gao.model.data.DataDictionary;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.data.DataitemsInfoService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.Config;
 import com.gao.utils.ConfigFile;
 import com.gao.utils.DataModelMap;

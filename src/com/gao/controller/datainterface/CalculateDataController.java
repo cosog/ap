@@ -297,7 +297,7 @@ public class CalculateDataController extends BaseController{
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
-				System.out.println(requestDataList.get(i));
+//				System.out.println(requestDataList.get(i));
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);

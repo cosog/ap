@@ -28,7 +28,7 @@ import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.service.back.WellInformationManagerService;
 import com.gao.service.back.WellboreTrajectoryManagerService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.PagingConstants;
@@ -108,6 +108,7 @@ public class WellboreTrajectoryManagerController extends BaseController {
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String wellboreTrajectoryData = ParamUtils.getParameter(request, "wellboreTrajectoryData");
 		String json = this.wellboreTrajectoryManagerService.saveWellboreTrajectoryData(wellName,wellboreTrajectoryData);
+		this.wellboreTrajectoryManagerService.downKafkaWellboreTrajectoryData(wellName,wellboreTrajectoryData);
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

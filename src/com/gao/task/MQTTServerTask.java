@@ -1,4 +1,4 @@
-package com.gao.tast;
+package com.gao.task;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
-import com.gao.tast.MQTTServerTast.TransferDiscrete;
+import com.gao.task.MQTTServerTask.TransferDiscrete;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.JDBCUtil;
@@ -44,7 +44,7 @@ import com.google.gson.reflect.TypeToken;
 
 @SuppressWarnings("static-access")
 @Component("MQTTServerTast")  
-public class MQTTServerTast {
+public class MQTTServerTask {
 	private String clientid = "mqttServerClient"+new Date().getTime();
     private static MqttClient client=null;
     private MqttConnectOptions options=null;  
@@ -52,7 +52,7 @@ public class MQTTServerTast {
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runMQTTServer() throws InstantiationException, IllegalAccessException, SQLException{
 		//将以前接收到的数据清空
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();

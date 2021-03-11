@@ -27,7 +27,7 @@ import com.gao.model.WellInformation;
 import com.gao.model.calculate.PCPCalculateResponseData;
 import com.gao.service.back.WellInformationManagerService;
 import com.gao.service.base.CommonDataService;
-import com.gao.tast.EquipmentDriverServerTast;
+import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.Constants;
 import com.gao.utils.Page;
 import com.gao.utils.PagingConstants;
@@ -374,7 +374,7 @@ public class WellInformationManagerController extends BaseController {
 		pw.flush();
 		pw.close();
 		
-		EquipmentDriverServerTast beeTechDriverServerTast=EquipmentDriverServerTast.getInstance();
+		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
 		beeTechDriverServerTast.updateWellConfif(wellHandsontableChangedData);
 		
 		return null;
@@ -406,7 +406,7 @@ public class WellInformationManagerController extends BaseController {
 		pw.flush();
 		pw.close();
 		
-		EquipmentDriverServerTast beeTechDriverServerTast=EquipmentDriverServerTast.getInstance();
+		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
 		beeTechDriverServerTast.updateWellName(data);
 		
 		return null;

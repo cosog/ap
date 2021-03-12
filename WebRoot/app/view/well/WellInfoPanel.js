@@ -232,19 +232,21 @@ function CreateAndLoadWellInfoTable(isNew){
 	            	}
 	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
-	            	}else if(result.columns[i].dataIndex==="liftingTypeName"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="liftingTypeName".toUpperCase()){
 	            		if(pcpHidden){
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
 	            		}else{
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
 	            		}
-	            	}else if(result.columns[i].dataIndex==="runtimeEfficiencySource"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="runtimeEfficiencySource".toUpperCase()){
 	            		if(pcpHidden){
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算']}";
 	            		}else{
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算','转速计算']}";
 	            		}
-	            	}else if(result.columns[i].dataIndex==="driverName"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="driverName".toUpperCase()){
 	            		var source="[";
 	            		for(var j=0;j<result.driverDropdownData.length;j++){
 	            			source+="\'"+result.driverDropdownData[j]+"\'";
@@ -254,7 +256,7 @@ function CreateAndLoadWellInfoTable(isNew){
 	            		}
 	            		source+="]";
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex==="acquisitionUnit"){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="acquisitionUnit".toUpperCase()){
 	            		var source="[";
 	            		for(var j=0;j<result.unitDropdownData.length;j++){
 	            			source+="\'"+result.unitDropdownData[j]+"\'";

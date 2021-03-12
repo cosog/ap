@@ -347,7 +347,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
 				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.runtimeefficiencysource,t.videourl,t.sortnum,"
-				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete "
+				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
@@ -440,7 +440,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"videoUrl\":\""+obj[14]+"\",");
 			result_json.append("\"sortNum\":\""+obj[15]+"\",");
 			result_json.append("\"acqCycleSetStatus_diagram\":\""+obj[16]+"\",");
-			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[17]+"\"},");
+			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[17]+"\",");
+			result_json.append("\"protocol\":\""+obj[18]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -480,7 +481,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
 				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
-				+ " t.runtimeefficiencysource,t.videourl,t.sortnum "
+				+ " t.runtimeefficiencysource,t.videourl,t.sortnum, "
+				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
@@ -516,7 +518,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"savecycle_discrete\":\""+obj[12]+"\",");
 			result_json.append("\"runtimeEfficiencySource\":\""+obj[13]+"\",");
 			result_json.append("\"videoUrl\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[15]+"\"},");
+			result_json.append("\"sortNum\":\""+obj[15]+"\",");
+			result_json.append("\"acqCycleSetStatus_diagram\":\""+obj[16]+"\",");
+			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[17]+"\",");
+			result_json.append("\"protocol\":\""+obj[18]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

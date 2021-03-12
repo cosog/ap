@@ -69,11 +69,6 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
         int readTimeout=1000*60;//socket read超时时间
         Gson gson = new Gson();
         byte[] writeCommand={0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
-        if(driveConfig.getProtocol()==1){
-        	writeCommand=new byte[]{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
-        }else if(driveConfig.getProtocol()==2){
-        	writeCommand=new byte[]{0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88,0x1F,(byte) 0xAC};
-        }
         while(!(isExit||this.interrupted()||is==null||os==null)){
         	//获取输入流，并读取客户端信息
             try {
@@ -182,6 +177,11 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     				//循环读取数据 
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
     					String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+    					if(clientUnit.unitDataList.get(i).getProtocol()==1){
+    			        	writeCommand=new byte[]{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
+    			        }else if(clientUnit.unitDataList.get(i).getProtocol()==2){
+    			        	writeCommand=new byte[]{0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88,0x1F,(byte) 0xAC};
+    			        }
     					//接收工况报警信息
     					rc=this.readElectricAlarmInfo(clientUnit.socket, 5000, recByte,is);
     					if(rc!=-1){
@@ -199,7 +199,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     							&&clientUnit.unitDataList.get(i).runStatusControl!=1//不执行启抽操作
     							&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl().getAddress(), clientUnit.unitDataList.get(i).runStatusControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl().getAddress(), clientUnit.unitDataList.get(i).runStatusControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setRunStatusControl(0);
 							
 							//写操作口令验证
@@ -240,7 +240,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//功图采集周期控制
     					if(clientUnit.unitDataList.get(i).FSDiagramIntervalControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(i).FSDiagramIntervalControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(i).FSDiagramIntervalControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setFSDiagramIntervalControl(0);;
 							
 							//写操作口令验证
@@ -281,7 +281,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//离散数据采集周期控制
     					if(clientUnit.unitDataList.get(i).DiscreteIntervalControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getDiscreteAcquisitionInterval()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getDiscreteAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(i).DiscreteIntervalControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getDiscreteAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(i).DiscreteIntervalControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setDiscreteIntervalControl(0);;
 							
 							//写操作口令验证
@@ -323,7 +323,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//变频频率控制
     					if(clientUnit.unitDataList.get(i).FrequencyControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency()!=null){
     						wellReaded=true;
-							readByte=this.getWriteFloatData(clientUnit.unitDataList.get(i).UnitId, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency().getAddress(), clientUnit.unitDataList.get(i).FrequencyControl,driveConfig.getProtocol());
+							readByte=this.getWriteFloatData(clientUnit.unitDataList.get(i).UnitId, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency().getAddress(), clientUnit.unitDataList.get(i).FrequencyControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setFrequencyControl(0);
 							
 							//写操作口令验证
@@ -369,7 +369,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//平衡调节手自动控制
     					if(clientUnit.unitDataList.get(i).balanceControlModeControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceControlModeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceControlModeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceControlModeControl(-999999999);
 							
 							//写操作口令验证
@@ -412,7 +412,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//平衡调节计算方式控制
     					if(clientUnit.unitDataList.get(i).balanceCalculateModeControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceCalculateModeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceCalculateModeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceCalculateModeControl(-999999999);
 							
 							//写操作口令验证
@@ -455,7 +455,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//重心远离支点调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceAwayTimeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceAwayTimeControl(0);
 							
 							//写操作口令验证
@@ -498,7 +498,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//重心接近支点调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceCloseTimeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceCloseTimeControl(0);
 							
 							//写操作口令验证
@@ -543,7 +543,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//重心远离支点每拍调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceAwayTimePerBeatControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimePerBeatControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimePerBeatControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceAwayTimePerBeatControl(0);
 							
 							//写操作口令验证
@@ -587,7 +587,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//重心接近支点每拍调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceCloseTimePerBeatControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimePerBeatControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimePerBeatControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceCloseTimePerBeatControl(0);
 							
 							//写操作口令验证
@@ -630,7 +630,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//参与平衡计算冲程次数控制
     					if(clientUnit.unitDataList.get(i).balanceStrokeCountControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount().getAddress(), clientUnit.unitDataList.get(i).getBalanceStrokeCountControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount().getAddress(), clientUnit.unitDataList.get(i).getBalanceStrokeCountControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceStrokeCountControl(0);
 							
 							//写操作口令验证
@@ -673,7 +673,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//平衡调节上限控制
     					if(clientUnit.unitDataList.get(i).balanceOperationUpLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationUpLimitControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationUpLimitControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceOperationUpLimitControl(0);
 							
 							//写操作口令验证
@@ -716,7 +716,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//平衡调节下限控制
     					if(clientUnit.unitDataList.get(i).balanceOperationDownLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationDownLimitControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationDownLimitControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceOperationDownLimitControl(0);
 							
 							//写操作口令验证
@@ -760,7 +760,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//电流上限控制
     					if(clientUnit.unitDataList.get(i).CurrentUpLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentUpLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentUpLimit().getAddress(), clientUnit.unitDataList.get(i).CurrentUpLimitControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentUpLimit().getAddress(), clientUnit.unitDataList.get(i).CurrentUpLimitControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setCurrentUpLimitControl(-999999999);
 							
 							//写操作口令验证
@@ -803,7 +803,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//电流下限控制
     					if(clientUnit.unitDataList.get(i).CurrentDownLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentDownLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentDownLimit().getAddress(), clientUnit.unitDataList.get(i).CurrentDownLimitControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentDownLimit().getAddress(), clientUnit.unitDataList.get(i).CurrentDownLimitControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setCurrentDownLimitControl(-999999999);
 							
 							//写操作口令验证
@@ -846,7 +846,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//功率上限控制
     					if(clientUnit.unitDataList.get(i).PowerUpLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerUpLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerUpLimit().getAddress(), clientUnit.unitDataList.get(i).PowerUpLimitControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerUpLimit().getAddress(), clientUnit.unitDataList.get(i).PowerUpLimitControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setPowerUpLimitControl(-999999999);
 							
 							//写操作口令验证
@@ -889,7 +889,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//功率下限控制
     					if(clientUnit.unitDataList.get(i).PowerDownLimitControl!=-999999999&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerDownLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerDownLimit().getAddress(), clientUnit.unitDataList.get(i).PowerDownLimitControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerDownLimit().getAddress(), clientUnit.unitDataList.get(i).PowerDownLimitControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setPowerDownLimitControl(-999999999);
 							
 							//写操作口令验证
@@ -932,7 +932,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					//离散数据即时采集控制
     					if(clientUnit.unitDataList.get(i).ImmediatelyAcquisitionControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getImmediatelyAcquisition()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getImmediatelyAcquisition().getAddress(), clientUnit.unitDataList.get(i).ImmediatelyAcquisitionControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getImmediatelyAcquisition().getAddress(), clientUnit.unitDataList.get(i).ImmediatelyAcquisitionControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setImmediatelyAcquisitionControl(0);
 							
 							//写操作口令验证
@@ -1064,7 +1064,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
         					clientUnit.unitDataList.get(i).getAcquisitionData().setAcqTime(AcqTime);
         					//读取离散数据
         					//读取电参工况
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40449,1,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40449,1,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取电参工况发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1074,11 +1074,11 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取电参工况频率数据异常,rc="+rc);
 								break;
 							}else{ 
-								ElectricDiagnosisResult=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+								ElectricDiagnosisResult=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.workingConditionCode="+ElectricDiagnosisResult;
 							}
         					//读取离散采集周期
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40327,1,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40327,1,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取离散采集周期发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1088,11 +1088,11 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取离散采集周期异常,rc="+rc);
 								break;
 							}else{
-								DiscreteAcquisitionInterval=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+								DiscreteAcquisitionInterval=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.acqCycle_Discrete="+DiscreteAcquisitionInterval;
 							}
         					//读取运行状态和平衡DI状态
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40317,2,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40317,2,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取运行状态和平衡DI状态发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1102,7 +1102,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取运行状态和平衡DI状态数据异常,rc="+rc);
 								break;
 							}else{
-								runSatus= getUnsignedShort(recByte,0, driveConfig.getProtocol());
+								runSatus= getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
 								balanceAutoControl=(short) (0x0000 | (0x01 & recByte[6]));  
 								spmAutoControl=(short) (0x0000 | (0x02 & recByte[6])>>1);  
 								balanceFrontLimit=(short) (0x0000 | (0x04 & recByte[6])>>2);  
@@ -1117,7 +1117,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             					updateDiscreteData+=",t.balanceAfterLimit="+balanceAfterLimit;
 							}
         					//读取平衡计算设置项和电参设置限值
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40120,14,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40120,14,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡计算设置项和电参设置限值发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1127,48 +1127,48 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡计算设置项和电参设置限值数据异常,rc="+rc);
 								break;
 							}else{
-								balanceControlMode=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+								balanceControlMode=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
         						updateDiscreteData+=",t.balanceControlMode="+balanceControlMode;
         						
-        						balanceCalculateMode=getUnsignedShort(recByte,2, driveConfig.getProtocol());
+        						balanceCalculateMode=getUnsignedShort(recByte,2, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceCalculateMode="+balanceCalculateMode;
             					
-            					balanceAwayTimePerBeat=getUnsignedShort(recByte,4, driveConfig.getProtocol());
+            					balanceAwayTimePerBeat=getUnsignedShort(recByte,4, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceAwayTimePerBeat="+balanceAwayTimePerBeat;
             					
-            					balanceCloseTimePerBeat=getUnsignedShort(recByte,6, driveConfig.getProtocol());
+            					balanceCloseTimePerBeat=getUnsignedShort(recByte,6, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceCloseTimePerBeat="+balanceCloseTimePerBeat;
             					
-            					balanceStrokeCount=getUnsignedShort(recByte,8, driveConfig.getProtocol());
+            					balanceStrokeCount=getUnsignedShort(recByte,8, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceStrokeCount="+balanceStrokeCount;
             					
-            					balanceOperationUpLimit=getUnsignedShort(recByte,10, driveConfig.getProtocol());
+            					balanceOperationUpLimit=getUnsignedShort(recByte,10, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceOperationUpLimit="+balanceOperationUpLimit;
             					
-            					balanceOperationDownLimit=getUnsignedShort(recByte,12, driveConfig.getProtocol());
+            					balanceOperationDownLimit=getUnsignedShort(recByte,12, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceOperationDownLimit="+balanceOperationDownLimit;
             					
-            					balanceAwayTime=getUnsignedShort(recByte,14, driveConfig.getProtocol());
+            					balanceAwayTime=getUnsignedShort(recByte,14, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceAwayTime="+balanceAwayTime;
             					
-            					balanceCloseTime=getUnsignedShort(recByte,16, driveConfig.getProtocol());
+            					balanceCloseTime=getUnsignedShort(recByte,16, clientUnit.unitDataList.get(i).getProtocol());
             					updateDiscreteData+=",t.balanceCloseTime="+balanceCloseTime;
             					
-            					CurrentUpLimit=(float) (getShort(recByte,18, driveConfig.getProtocol())*0.01);
+            					CurrentUpLimit=(float) (getShort(recByte,18, clientUnit.unitDataList.get(i).getProtocol())*0.01);
             					updateDiscreteData+=",t.IaUpLimit="+CurrentUpLimit+",t.IbUpLimit="+CurrentUpLimit+",t.IcUpLimit="+CurrentUpLimit;
             					
-            					CurrentDownLimit=(float) (getShort(recByte,20, driveConfig.getProtocol())*0.01);
+            					CurrentDownLimit=(float) (getShort(recByte,20, clientUnit.unitDataList.get(i).getProtocol())*0.01);
             					updateDiscreteData+=",t.IaDownLimit="+CurrentDownLimit+",t.IbDownLimit="+CurrentDownLimit+",t.IcDownLimit="+CurrentDownLimit;
             					
-            					PowerUpLimit=(float) (getShort(recByte,22, driveConfig.getProtocol())*0.01);
+            					PowerUpLimit=(float) (getShort(recByte,22, clientUnit.unitDataList.get(i).getProtocol())*0.01);
             					updateDiscreteData+=",t.wattUpLimit="+PowerUpLimit;
             					
-            					PowerDownLimit=(float) (getShort(recByte,24, driveConfig.getProtocol())*0.01);
+            					PowerDownLimit=(float) (getShort(recByte,24, clientUnit.unitDataList.get(i).getProtocol())*0.01);
             					updateDiscreteData+=",t.wattDownLimit="+PowerDownLimit;
             					
 							}
         					//读取电参和平衡度
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40351,36,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40351,36,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取电参和平衡度发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1178,59 +1178,59 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取电参和平衡度数据异常,rc="+rc);
 								break;
 							}else{
-								CurrentA=getFloat(recByte,0, driveConfig.getProtocol());
+								CurrentA=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.Ia="+CurrentA;
 								
-								CurrentB=getFloat(recByte,4, driveConfig.getProtocol());
+								CurrentB=getFloat(recByte,4, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.Ib="+CurrentB;
 								
-								CurrentC=getFloat(recByte,8, driveConfig.getProtocol());
+								CurrentC=getFloat(recByte,8, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.Ic="+CurrentC;
 								
-								VoltageA=getFloat(recByte,12, driveConfig.getProtocol());
+								VoltageA=getFloat(recByte,12, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.Va="+VoltageA;
 								
-								VoltageB=getFloat(recByte,16, driveConfig.getProtocol());
+								VoltageB=getFloat(recByte,16, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.Vb="+VoltageB;
 								
-								VoltageC=getFloat(recByte,20, driveConfig.getProtocol());
+								VoltageC=getFloat(recByte,20, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.Vc="+VoltageC;
 								
-								ActivePowerConsumption=getFloat(recByte,24, driveConfig.getProtocol());
-								ReactivePowerConsumption=getFloat(recByte,28, driveConfig.getProtocol());
+								ActivePowerConsumption=getFloat(recByte,24, clientUnit.unitDataList.get(i).getProtocol());
+								ReactivePowerConsumption=getFloat(recByte,28, clientUnit.unitDataList.get(i).getProtocol());
 								
-								ActivePower=getFloat(recByte,32, driveConfig.getProtocol());
+								ActivePower=getFloat(recByte,32, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.wattSum="+ActivePower;
 								
-								ReactivePower=getFloat(recByte,36, driveConfig.getProtocol());
+								ReactivePower=getFloat(recByte,36, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.varSum="+ReactivePower;
 								
-								ReversePower=getFloat(recByte,40, driveConfig.getProtocol());
+								ReversePower=getFloat(recByte,40, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.ReversePower="+ReversePower;
 								
-								PowerFactor=getFloat(recByte,44, driveConfig.getProtocol());
+								PowerFactor=getFloat(recByte,44, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.pfSum="+PowerFactor;
 								
-								UpStrokeIMax=(float) (getShort(recByte,48, driveConfig.getProtocol())*0.01);
-								DownStrokeIMax=(float) (getShort(recByte,50, driveConfig.getProtocol())*0.01);
-								IDegreeBalance=(float) (getShort(recByte,52, driveConfig.getProtocol())*0.1);
-								UpStrokeWattMax=(float) (getShort(recByte,54, driveConfig.getProtocol())*0.01);
-								DownStrokeWattMax=(float) (getShort(recByte,56, driveConfig.getProtocol())*0.01);
-								WattDegreeBalance=(float) (getShort(recByte,58, driveConfig.getProtocol())*0.1);
+								UpStrokeIMax=(float) (getShort(recByte,48, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+								DownStrokeIMax=(float) (getShort(recByte,50, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+								IDegreeBalance=(float) (getShort(recByte,52, clientUnit.unitDataList.get(i).getProtocol())*0.1);
+								UpStrokeWattMax=(float) (getShort(recByte,54, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+								DownStrokeWattMax=(float) (getShort(recByte,56, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+								WattDegreeBalance=(float) (getShort(recByte,58, clientUnit.unitDataList.get(i).getProtocol())*0.1);
 								
 	        					
-	        					CurrentAMax=(float) (getShort(recByte,60, driveConfig.getProtocol())*0.01);
-	        					CurrentAMin=(float) (getShort(recByte,62, driveConfig.getProtocol())*0.01);
-	        					CurrentBMax=(float) (getShort(recByte,64, driveConfig.getProtocol())*0.01);
-	        					CurrentBMin=(float) (getShort(recByte,66, driveConfig.getProtocol())*0.01);
-	        					CurrentCMax=(float) (getShort(recByte,68, driveConfig.getProtocol())*0.01);
-	        					CurrentCMin=(float) (getShort(recByte,70, driveConfig.getProtocol())*0.01);
+	        					CurrentAMax=(float) (getShort(recByte,60, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+	        					CurrentAMin=(float) (getShort(recByte,62, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+	        					CurrentBMax=(float) (getShort(recByte,64, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+	        					CurrentBMin=(float) (getShort(recByte,66, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+	        					CurrentCMax=(float) (getShort(recByte,68, clientUnit.unitDataList.get(i).getProtocol())*0.01);
+	        					CurrentCMin=(float) (getShort(recByte,70, clientUnit.unitDataList.get(i).getProtocol())*0.01);
 	        					updateDiscreteData+=",t.IaMax="+CurrentAMax+",t.IaMin="+CurrentAMin
 	        							+",t.IbMax="+CurrentBMax+",t.IbMin="+CurrentBMin
 	        							+",t.IcMax="+CurrentCMax+",t.IcMin="+CurrentCMin;
 							}
         					//读取设置频率和运行频率
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40402,4,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40402,4,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取设置频率和运行频率发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1240,14 +1240,14 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取设置频率和运行频率数据异常,rc="+rc);
 								break;
 							}else{
-								SetFrequency=getFloat(recByte,0, driveConfig.getProtocol());
-								RunFrequency=getFloat(recByte,4, driveConfig.getProtocol());
+								SetFrequency=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
+								RunFrequency=getFloat(recByte,4, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.frequencySetValue="+SetFrequency+
 										",t.frequencyRunValue="+RunFrequency;
 							}
         					//读取曲线数据
         					//读取功图点数、采集时间、冲次、冲程数据 
-        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40981,14,recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        					rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,40981,14,recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         					if(rc==-1||rc==-2){
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数、采集时间、冲次、冲程数据发送或接收失败,rc="+rc);
 								this.releaseResource(is,os);
@@ -1257,16 +1257,16 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数、采集时间、冲次、冲程数据异常,rc="+rc);
 								break;
 							}else{
-								acquisitionCycle=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+								acquisitionCycle=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
 								updateDiscreteData+=",t.acqCycle_Diagram="+acquisitionCycle;
 								
-								FSDiagramSetPointCount=getUnsignedShort(recByte,4, driveConfig.getProtocol());
-								point=getUnsignedShort(recByte,6, driveConfig.getProtocol());
+								FSDiagramSetPointCount=getUnsignedShort(recByte,4, clientUnit.unitDataList.get(i).getProtocol());
+								point=getUnsignedShort(recByte,6, clientUnit.unitDataList.get(i).getProtocol());
 								
-								diagramAcqTime=BCD2TimeString(recByte,8, driveConfig.getProtocol());
+								diagramAcqTime=BCD2TimeString(recByte,8, clientUnit.unitDataList.get(i).getProtocol());
 								
-								SPM=getFloat(recByte,20, driveConfig.getProtocol());
-								Stroke=getFloat(recByte,24, driveConfig.getProtocol());
+								SPM=getFloat(recByte,20, clientUnit.unitDataList.get(i).getProtocol());
+								Stroke=getFloat(recByte,24, clientUnit.unitDataList.get(i).getProtocol());
 							}
         					
         					//进行通信计算
@@ -1643,7 +1643,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图位移数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1654,7 +1654,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvS=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getZoom());
+                        						Float recvS=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getZoom());
                         						recvSBuff.append(recvS+",");
                         					}
             							}
@@ -1679,7 +1679,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图载荷数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1690,7 +1690,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvF=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getZoom());
+                        						Float recvF=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getZoom());
                         						recvFBuff.append(recvF+",");
                         					}
             							}
@@ -1714,7 +1714,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图电流数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1725,7 +1725,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvA=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getZoom());
+                        						Float recvA=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getZoom());
                         						recvABuff.append(recvA+",");
                         					}
             							}
@@ -1749,7 +1749,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图功率数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1760,7 +1760,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvP=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getZoom());
+                        						Float recvP=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getZoom());
                         						recvPBuff.append(recvP+",");
                         					}
             							}
@@ -1784,7 +1784,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIaDiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电流曲线数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1795,7 +1795,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvIa=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIaDiagram().getZoom());
+                        						Float recvIa=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIaDiagram().getZoom());
                         						recvIaBuff.append(recvIa+",");
                         					}
             							}
@@ -1819,7 +1819,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIbDiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电流曲线数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1830,7 +1830,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvIb=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIbDiagram().getZoom());
+                        						Float recvIb=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIbDiagram().getZoom());
                         						recvIbBuff.append(recvIb+",");
                         					}
             							}
@@ -1854,7 +1854,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                 								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIcDiagram().getAddress()+j*100,
                 								length,
-                								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
             							if(rc==-1||rc==-2){
             								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电流曲线数据发送或接收失败,rc="+rc);
             								this.releaseResource(is,os);
@@ -1865,7 +1865,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             								break;
             							}else{
             								for(int k=0;k<length;k++){
-                        						Float recvIc=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIcDiagram().getZoom());
+                        						Float recvIc=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getIcDiagram().getZoom());
                         						recvIcBuff.append(recvIc+",");
                         					}
             							}

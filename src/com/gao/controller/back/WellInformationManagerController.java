@@ -358,7 +358,7 @@ public class WellInformationManagerController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String orgids=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
-		System.out.println(data);
+//		System.out.println(data);
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();

@@ -42,6 +42,8 @@ public class WellHandsontableChangedData {
 	    private String liftingTypeName="抽油机";
 
 	    private String driverName="";
+	    
+	    private String protocol="";
 
 	    private String acquisitionUnit="";
 
@@ -179,6 +181,14 @@ public class WellHandsontableChangedData {
 
 		public void setSortNum(String sortNum) {
 			this.sortNum = sortNum;
+		}
+
+		public String getProtocol() {
+			return protocol;
+		}
+
+		public void setProtocol(String protocol) {
+			this.protocol = protocol;
 		}
 	    
 	}

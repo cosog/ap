@@ -71,7 +71,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		
@@ -119,8 +119,9 @@ public class EquipmentDriverServerTask {
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
-				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
-				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH "
+				+ " t3.totalKWattH,t3.totalPKWattH,t3.totalNKWattH,t3.totalKVarH,t3.totalPKVarH,t3.totalNKVarH,t3.totalKVAH,"
+				+ " t3.todayKWattH,t3.todayPKWattH,t3.todayNKWattH,t3.todayKVarH,t3.todayPKVarH,t3.todayNKVarH,t3.todayKVAH,"
+				+ " t.protocol "
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
@@ -128,14 +129,16 @@ public class EquipmentDriverServerTask {
 //				+ " and t.wellname='南V10-6'"
 //				+ " and t.orgid=321"
 				+ " order by t.sortNum";
-		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode,"
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
-				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
-				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
-				+ " t2.rpm "
+				+ " t3.totalKWattH,t3.totalPKWattH,t3.totalNKWattH,t3.totalKVarH,t3.totalPKVarH,t3.totalNKVarH,t3.totalKVAH,"
+				+ " t3.todayKWattH,t3.todayPKWattH,t3.todayNKWattH,t3.todayKVarH,t3.todayPKVarH,t3.todayNKVarH,t3.todayKVAH,"
+				+ " t2.rpm,"
+				+ " t.protocol "
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_pcp_rpm_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
@@ -241,6 +244,7 @@ public class EquipmentDriverServerTask {
 				unit.lastTodayPKVarH=rs.getFloat(32);
 				unit.lastTodayNKVarH=rs.getFloat(33);
 				unit.lastTodayKVAH=rs.getFloat(34);
+				unit.protocol=rs.getInt(35);
 				units.add(unit);
 				clientUnitList.add(clientUnit);
 				
@@ -309,6 +313,7 @@ public class EquipmentDriverServerTask {
 				unit.lastTodayNKVarH=rs.getFloat(33);
 				unit.lastTodayKVAH=rs.getFloat(34);
 				unit.lastRPM=rs.getFloat(35);
+				unit.protocol=rs.getInt(36);
 				units.add(unit);
 				clientUnitList.add(clientUnit);
 				
@@ -366,8 +371,9 @@ public class EquipmentDriverServerTask {
 			wellList=wellList.substring(0, wellList.length()-1);
 		}
 		
-		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
-				+ " t.drivercode,t.unitcode "
+		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
+				+ " t.drivercode,t.unitcode,t.protocol "
 				+ " from tbl_wellinformation t "
 				+ " left join tbl_rpc_diagram_latest t2 on t2.wellId=t.id "
 				+ " where 1=1  ";
@@ -420,6 +426,7 @@ public class EquipmentDriverServerTask {
 					units.get(i).saveCycle_Discrete=60*1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
 					units.get(i).screwPumpDataSaveInterval=1000*60*5;//螺杆泵据保存间隔,单位毫秒
 					units.get(i).runStatusControl=0;
+					units.get(i).protocol=rs.getInt(12);
 					for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 						if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
 							RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
@@ -460,6 +467,7 @@ public class EquipmentDriverServerTask {
 				unit.saveCycle_Discrete=60*1000*rs.getInt(9);//离散数据保存间隔,单位毫秒
 				unit.screwPumpDataSaveInterval=1000*60*5;//螺杆泵据保存间隔,单位毫秒
 				unit.runStatusControl=0;
+				unit.protocol=rs.getInt(12);
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
 					if(driveConfig.getDriverCode().equals(rs.getString(10))){
@@ -1229,6 +1237,7 @@ public class EquipmentDriverServerTask {
 		public  String driverAddr;
 		public  String dirverId;
 		public  String dirverName;
+		public  int protocol;
 		public  int acqCycle_Diagram;
 		public  String diagramAcqTime;
 		public int commStatus;
@@ -1646,6 +1655,12 @@ public class EquipmentDriverServerTask {
 		}
 		public void setImmediatelyAcquisitionControl(int immediatelyAcquisitionControl) {
 			ImmediatelyAcquisitionControl = immediatelyAcquisitionControl;
+		}
+		public int getProtocol() {
+			return protocol;
+		}
+		public void setProtocol(int protocol) {
+			this.protocol = protocol;
 		}
 		
 		

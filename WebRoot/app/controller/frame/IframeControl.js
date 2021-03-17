@@ -350,8 +350,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
         var bbar=Ext.getCmp(bbarId);
         if (isNotVal(bbar)) {
-        	bbar.getStore().loadPage(1)
+        	bbar.getStore().loadPage(1);
         }
+        Ext.getCmp("CalculateManagerWellListGridPanel_Id").getStore().loadPage(1);
 	}else if(module_Code=="PSToFS_PumpingUnitInfo"){//反演抽油机数据
 		CreateAndLoadFSToPSPumpingUnitTable(true);
 	}else if(module_Code=="PSToFS_MotorInfo"){//反演电机数据

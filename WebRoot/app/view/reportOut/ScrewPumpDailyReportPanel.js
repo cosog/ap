@@ -134,7 +134,8 @@ Ext.define("AP.view.reportOut.ScrewPumpDailyReportPanel", {
                 	var leftOrg_Id = obtainParams('leftOrg_Id');
                 	var wellName = obtainParams('ReportScrewPumpPanelWellListCombo_Id');
                 	var calculateDate = Ext.getCmp('ReportScrewPumpPanelCalculateDate_Id').rawValue;
-                	var url=context + '/reportPumpingUnitDataController/exportPCPDailyReportData?wellType=400&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&orgId='+leftOrg_Id;
+                	var calculateEndDate = Ext.getCmp('ReportScrewPumpPanelCalculateEndDate_Id').rawValue;
+                	var url=context + '/reportPumpingUnitDataController/exportPCPDailyReportData?wellType=400&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&calculateEndDate='+calculateEndDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
             },'-',{

@@ -139,7 +139,8 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
                 	var leftOrg_Id = obtainParams('leftOrg_Id');
                 	var wellName = Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').getValue();
                 	var calculateDate = Ext.getCmp('ReportPumpingUnitPanelCalculateDate_Id').rawValue;
-                	var url=context + '/reportPumpingUnitDataController/exportRPCDailyReportData?wellType=200&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&orgId='+leftOrg_Id;
+                	var calculateEndDate = Ext.getCmp('ReportPumpingUnitPanelCalculateEndDate_Id').rawValue;
+                	var url=context + '/reportPumpingUnitDataController/exportRPCDailyReportData?wellType=200&wellName='+URLencode(URLencode(wellName))+'&calculateDate='+calculateDate+'&calculateEndDate='+calculateEndDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
             },'-',{

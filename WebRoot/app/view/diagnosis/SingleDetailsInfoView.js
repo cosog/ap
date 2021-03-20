@@ -20,30 +20,70 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                 	items: [{
                         xtype: 'tbfill'
                     },{
-                		xtype: 'label',
-                		width:150,
-                        id:"CPUUsedPercentLabel_id",
-                        text: 'CPU利用率:'
-                	},{
-                		xtype: 'label',
+                		xtype: 'button',
                 		width:180,
-                        id:"memUsedPercentLabel_id",
-                        text: '内存使用率:'
+                        id:"CPUUsedPercentLabel_id",
+                        text: 'CPU利用率:',
+                        handler: function (v, o) {
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("CPU利用率(%)");
+                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("cpuUsedPercent");
+                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
+                        	});
+                        	ResourceProbeHistoryCurveWindow.show();
+                        }
                 	},{
-                		xtype: 'label',
+                		xtype: 'button',
+                		width:150,
+                        id:"memUsedPercentLabel_id",
+                        text: '内存使用率:',
+                        handler: function (v, o) {
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("内存使用率(%)");
+                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("memUsedPercent");
+                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
+                        	});
+                        	ResourceProbeHistoryCurveWindow.show();
+                        }
+                	},{
+                		xtype: 'button',
                 		width:150,
                         id:"tableSpaceSizeProbeLabel_id",
-                        text: '表空间大小:'
+                        text: '表空间大小:',
+                        handler: function (v, o) {
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("表空间大小(Mb)");
+                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("tableSpaceSize");
+                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
+                        	});
+                        	ResourceProbeHistoryCurveWindow.show();
+                        }
                 	},{
-                		xtype: 'label',
+                		xtype: 'button',
                 		width:150,
                         id:"appRunStatusProbeLabel_id",
-                        text: 'SDK运行状态:'
+                        text: 'SDK运行状态:',
+                        handler: function (v, o) {
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("SDK运行状态");
+                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("appRunStatus");
+                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
+                        	});
+                        	ResourceProbeHistoryCurveWindow.show();
+                        }
                 	},{
-                		xtype: 'label',
+                		xtype: 'button',
                 		width:150,
                         id:"appVersionProbeLabel_id",
-                        text: 'SDK版本:'
+                        text: 'SDK版本:',
+                        handler: function (v, o) {
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("SDK版本");
+                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("appVersion");
+                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
+                        	});
+                        	ResourceProbeHistoryCurveWindow.show();
+                        }
                 	}]
                 },
                 items: [{

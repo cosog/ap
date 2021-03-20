@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -46,7 +47,9 @@ public class ResourceMonitoringTask {
     private static PreparedStatement pstmt_outer = null;  
     private static ResultSet rs_outer = null; 
 	
-	
+    private static CallableStatement cs= null; 
+    
+	@SuppressWarnings("static-access")
 //	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, UnsupportedEncodingException, ParseException{
 		String probeAppUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
@@ -54,10 +57,13 @@ public class ResourceMonitoringTask {
 		String probeCPUUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getCpu()[0];
 		
 		String appRunStatus="停止";
+		int appRunStatusValue=0;
 		String appVersion="";
 		String cpuUsedPercent="";
+		String cpuUsedPercentValue="";
 		String memUsedPercent="";
-		String tableSpaceSize=getTableSpaceSize()+"Mb";
+		String memUsedPercentValue="";
+		float tableSpaceSize=getTableSpaceSize();
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -69,6 +75,7 @@ public class ResourceMonitoringTask {
 		
 		if(appRunStatusProbeResonanceData!=null){
 			appRunStatus="运行";
+			appRunStatusValue=1;
 			appVersion=appRunStatusProbeResonanceData.getVer();
 			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8");
 			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8");
@@ -82,22 +89,41 @@ public class ResourceMonitoringTask {
 			if(cpuProbeResponseData!=null){
 				for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
 					cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
+					cpuUsedPercentValue+=cpuProbeResponseData.getPercent().get(i);
 					if(i<cpuProbeResponseData.getPercent().size()-1){
 						cpuUsedPercent+=";";
+						cpuUsedPercentValue+=";";
 					}
 				}
 			}
 			if(memoryProbeResponseData!=null){
 				memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
+				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
 			}
 		}
-		
+		conn=OracleJdbcUtis.getConnection();
+		if(conn!=null){
+			cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?)}");
+			cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+			cs.setInt(2, appRunStatusValue);
+			cs.setString(3, appVersion);
+			cs.setString(4, cpuUsedPercentValue);
+			cs.setString(5, memUsedPercentValue);
+			cs.setFloat(6, tableSpaceSize);
+			cs.executeUpdate();
+			if(cs!=null){
+				cs.close();
+			}
+			if(conn!=null){
+				conn.close();
+			}
+		}
 		String sendData="{"
 				+ "\"appRunStatus\":\""+appRunStatus+"\","
 				+ "\"appVersion\":\""+appVersion+"\","
 				+ "\"cpuUsedPercent\":\""+cpuUsedPercent+"\","
 				+ "\"memUsedPercent\":\""+memUsedPercent+"\","
-				+ "\"tableSpaceSize\":\""+tableSpaceSize+"\""
+				+ "\"tableSpaceSize\":\""+(tableSpaceSize+"Mb")+"\""
 				+ "}";
 		infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
 	}

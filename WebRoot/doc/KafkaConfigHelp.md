@@ -1,18 +1,14 @@
 # 驱动配置
 
-## Mode				   模式	0-debug	1-work
+## RunMode		   运行模式	debug-调试	work-工作
 
-## Server				 发布订阅服务器
+## CommMode	  通信模式
 
-IP 												缺省：39.98.64.56
+### WiFi
 
-Port											 缺省：9092
+#### AP							 	   热点模式
 
-RTU2GWMode						  RTU连接模式    4g   sta：wifi连接	eth：有线网卡连接 缺省：4g
-
-## WiFi
-
-### AP							 热点模式
+State										  开关		off-失效  on-使能
 
 Wifi_interface						   针对该设备为固定值wlan1					
 
@@ -22,7 +18,9 @@ SSID									   	名称			缺省：AP_ID
 
 PSK											密码			缺省：1234567889
 
-### STA						   站模式
+#### STA						   	   站模式
+
+State										  开关			off-失效  on-使能
 
 IP										  	 (DHCP时不需配置)
 
@@ -34,7 +32,9 @@ SSID									      名称											缺省：STA_TEST
 
 PSK										   密码											缺省：1234567889
 
-## Eth0				   100/1000Mbps网卡
+#### Eth0				   	       100/1000Mbps网卡
+
+State									    开关			off-失效  on-使能
 
 IP											  网卡1和网卡2设置不同网段																				
 
@@ -44,7 +44,9 @@ GW										   网关
 
 DNS									     域名服务器	可以设置与网关一致
 
-## Eth1				   10/100Mbps网卡
+#### Eth1				   		   10/100Mbps网卡
+
+State										开关			off-失效  on-使能
 
 IP											  网卡1和网卡2设置不同网段						
 
@@ -53,6 +55,42 @@ Mask									    掩码
 GW										   网关
 
 DNS										 域名服务器	可以设置与网关一致
+
+#### Eth2				   		   4G模组
+
+State									   开关			off-失效  on-使能
+
+## Server		  	 服务器
+
+### RemoteKafka
+
+State									       开关			off-失效  on-使能
+
+IP 												缺省：39.98.64.56
+
+Port											 缺省：9092
+
+#### Topic							主题
+
+##### Pub										    发布
+
+NormData								标准数据
+
+RawData								   原始数据
+
+LogData									日志数据
+
+ResourceData						  资源数据
+
+##### Sub											订阅
+
+### LocalApp								 APP
+
+State										  开关			off-失效  on-使能
+
+IP											    缺省：192.168.12.1
+
+Port										   缺省：17100
 
 ## Terminal	       端子配置
 
@@ -140,6 +178,8 @@ StartOverload					  启抽过载定时器		缺省：5分钟
 
 TransferIntervel				  传输间隔定时器		缺省：3分钟
 
+HeartbeatInterval               心跳包间隔定时器    缺省：10秒
+
 DailyStartTimer	               日报上传起始时间，区间内随机时间上传，填写1-24整型  缺省：2
 
 DailyEndTimer	                 日报上传结束时间，区间内随机时间上传，填写1-24整型  缺省：5
@@ -220,13 +260,7 @@ StoreCalcComm			  存储计算通信状态记录数						         缺省：1000
 
 StoreDaily					    存储日报记录数										         缺省：10
 
-LogReboot					   启动日志记录数										         缺省：100
-
-## Topic			  主题配置
-
-UpData							上行数据	true：上行 false：不上行
-
-UpRawData					上行原始数据 true：上行 false：不上行
+Log					   			 启动日志记录数										         缺省：10
 
 ## Filter			 滤波配置
 
@@ -242,4 +276,4 @@ FZero						     载荷零值滤波数值						 缺省：0kN
 
 AZero							 角度零值滤波数值						 缺省：0度
 
-## Rate			 速率配置  20,45,90,175,330,600,1000 缺省：1000		 
+## Rate			 速率配置  20,45,90,175,330,600,1000 缺省：1000

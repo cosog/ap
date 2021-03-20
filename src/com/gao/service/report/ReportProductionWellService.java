@@ -181,7 +181,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
+	public String exportRPCDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String calculateEndDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="select t.id, t.wellName,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
@@ -200,14 +200,13 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.powerConsumptionPerthm,"
 			+ " t.todayKWattH,"
 			+ " remark"
-			+ " from viw_rpc_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+			+ " from "
+			+ " viw_rpc_total_day t where t.org_id in ("+orgId+") "
+			+ " and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateEndDate+"','yyyy-mm-dd') ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
-		if(StringManagerUtils.isNotNull(wellType)){
-			sql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+99) ";
-		}
-		sql+=" order by t.sortNum, t.wellName";
+		sql+=" order by t.sortNum, t.wellName,t.calculateDate";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		
@@ -344,7 +343,7 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String wellType)throws Exception {
+	public String exportPCPDailyReportData(Page pager, String orgId,String wellName,String calculateDate,String calculateEndDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
@@ -361,7 +360,9 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 				+ " t.systemEfficiency,t.powerConsumptionPerthm,"
 				+ " t.todayKWattH,"
 				+ " remark"
-				+ " from viw_pcp_total_day t where t.org_id in ("+orgId+") and t.calculateDate=to_date('"+calculateDate+"','yyyy-mm-dd') ";
+				+ " from viw_pcp_total_day t "
+				+ " where t.org_id in ("+orgId+") "
+				+ " and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd') and to_date('"+calculateEndDate+"','yyyy-mm-dd')";
 		
 		
 		

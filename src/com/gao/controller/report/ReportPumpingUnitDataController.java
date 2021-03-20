@@ -142,7 +142,12 @@ public class ReportPumpingUnitDataController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		wellName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellName"),"utf-8");
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
+		calculateEndDate= ParamUtils.getParameter(request, "calculateEndDate");
 		String wellType = ParamUtils.getParameter(request, "wellType");
+		String tableName="tbl_rpc_total_day";
+		if("400".equals(wellType)){
+			tableName="tbl_pcp_total_day";
+		}
 		if (!StringUtils.isNotBlank(orgId)) {
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
@@ -155,21 +160,22 @@ public class ReportPumpingUnitDataController extends BaseController {
 		}else{
 			v.add(null);
 		}
-		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_rpc_total_day t order by calculateDate desc) where rownum=1 ";
-			List<?> list = this.commonDataService.reportDateJssj(sql);
+		if (!StringUtils.isNotBlank(calculateEndDate)) {
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from "+tableName+" t order by calculateDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
-				calculateDate = list.get(0).toString();
+				calculateEndDate = list.get(0).toString();
 			} else {
-				calculateDate = StringManagerUtils.getCurrentTime();
+				calculateEndDate = StringManagerUtils.getCurrentTime();
 			}
+			calculateDate=calculateEndDate;
 		}
 		v.add(calculateDate);
-		
+		v.add(calculateEndDate);
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setJssj(calculateDate);
-		json = reportProductionWellService.exportRPCDailyReportData(pager, orgId, wellName, calculateDate,wellType);
+		json = reportProductionWellService.exportRPCDailyReportData(pager, orgId, wellName, calculateDate,calculateEndDate);
 		
 		JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+json+"}");//解析数据
 		JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -596,7 +602,12 @@ public class ReportPumpingUnitDataController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		wellName = ParamUtils.getParameter(request, "wellName");
 		calculateDate = ParamUtils.getParameter(request, "calculateDate");
+		calculateEndDate= ParamUtils.getParameter(request, "calculateEndDate");
 		String wellType = ParamUtils.getParameter(request, "wellType");
+		String tableName="tbl_rpc_total_day";
+		if("400".equals(wellType)){
+			tableName="tbl_pcp_total_day";
+		}
 		if (!StringUtils.isNotBlank(orgId)) {
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
@@ -609,21 +620,23 @@ public class ReportPumpingUnitDataController extends BaseController {
 		}else{
 			v.add(null);
 		}
-		if (!StringUtils.isNotBlank(calculateDate)) {
-			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from tbl_pcp_total_day t order by calculateDate desc) where rownum=1 ";
-			List<?> list = this.commonDataService.reportDateJssj(sql);
+		if (!StringUtils.isNotBlank(calculateEndDate)) {
+			String sql = " select * from (select  to_char(t.calculateDate,'yyyy-mm-dd') from "+tableName+" t order by calculateDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
 			if (list.size() > 0 && list.get(0)!=null ) {
-				calculateDate = list.get(0).toString();
+				calculateEndDate = list.get(0).toString();
 			} else {
-				calculateDate = StringManagerUtils.getCurrentTime();
+				calculateEndDate = StringManagerUtils.getCurrentTime();
 			}
+			calculateDate=calculateEndDate;
 		}
 		v.add(calculateDate);
+		v.add(calculateEndDate);
 		
 		String json = "";
 		this.pager = new Page("pagerForm", request);
 		pager.setJssj(calculateDate);
-		json = reportProductionWellService.exportPCPDailyReportData(pager, orgId, wellName, calculateDate,wellType);
+		json = reportProductionWellService.exportPCPDailyReportData(pager, orgId, wellName, calculateDate,calculateEndDate);
 		
 		JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+json+"}");//解析数据
 		JSONArray jsonArray = jsonObject.getJSONArray("data");

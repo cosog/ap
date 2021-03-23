@@ -56,7 +56,7 @@ Ext.define("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
                     if ($("#ResourceProbeHistoryCurveDiv_Id").highcharts() != undefined) {
                         $("#ResourceProbeHistoryCurveDiv_Id").highcharts().setSize($("#ResourceProbeHistoryCurveDiv_Id").offsetWidth, $("#ResourceProbeHistoryCurveDiv_Id").offsetHeight, true);
                     }else{
-//                    	Ext.create("AP.store.diagnosis.ResourceProbeHistoryCurveStore");
+                    	Ext.create("AP.store.diagnosis.ResourceProbeHistoryCurveStore");
                     }
                 },
                 minimize: function (win, opts) {

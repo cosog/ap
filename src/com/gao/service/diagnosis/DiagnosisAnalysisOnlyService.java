@@ -1829,6 +1829,30 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
+	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+	
+		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from tbl_resourcemonitoring t "
+				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') +1 "
+				+ " order by t.acqTime";
+		int totals = getTotalCountRows(sql);//获取总记录数
+		List<?> list=this.findCallSql(sql);
+		dynSbf.append("{\"success\":true,\"totalCount\":" + totals + ",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Object[] obj = (Object[]) list.get(i);
+				dynSbf.append("{ \"acqTime\":\"" + obj[0] + "\",");
+				dynSbf.append("\"value\":\""+obj[1]+"\"},");
+			}
+			if(dynSbf.toString().endsWith(",")){
+				dynSbf.deleteCharAt(dynSbf.length() - 1);
+			}
+			
+		}
+		dynSbf.append("]}");
+		return dynSbf.toString().replaceAll("null", "");
+	}
+	
 	public String getNewestAcqTime(String orgId,String FSDiagramMaxAcqTime,String DiscreteMaxAcqTime){
 		long startTime=new Date().getTime();
 		StringBuffer result_json = new StringBuffer();

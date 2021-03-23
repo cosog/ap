@@ -21,7 +21,7 @@ function extFuncTreeItemsClk(view, rec, item, index, e) {
             var tabPanel = Ext.getCmp("frame_center_ids");
             if (module_Id_ == "backAdmin") {
                 if (user_Type == 1 || user_Type == 2 || user_Type == 3) {
-                    window.location.href = context + "/login/toBackMain";
+                    window.location.href = context + "/login/toLogin";
                 } else {
                     window.location.href = context + "login/toLogin";
                 }

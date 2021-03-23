@@ -5,7 +5,7 @@ Ext.define('AP.store.diagnosis.ResourceProbeHistoryCurveStore', {
     pageSize: 10000,
     proxy: {
         type: 'ajax',
-        url: context + '/diagnosisAnalysisOnlyController/getDiagnosisDataCurveData',
+        url: context + '/diagnosisAnalysisOnlyController/getResourceProbeHistoryCurveData',
         actionMethods: {
             read: 'POST'
         },
@@ -22,38 +22,25 @@ Ext.define('AP.store.diagnosis.ResourceProbeHistoryCurveStore', {
             var get_rawData = store.proxy.reader.rawData;
             var itemCode=Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').rawValue;
             var itemName=Ext.getCmp('DiagnosisAnalysisCurveItem_Id').rawValue;
-            var divId="HistoryCurve_"+itemCode+"_DivId";
-            divId="SingleFSDiagramHistoryCurveDiv_Id";
-            var startDate=Ext.getCmp("DiagnosisData_from_date_Id").getValue();
+            var divId="ResourceProbeHistoryCurve_"+itemCode+"_DivId";
+            divId="ResourceProbeHistoryCurveDiv_Id";
+            var startDate=Ext.getCmp("ResourceProbeHistoryCurve_from_date_Id").getValue();
 			if(startDate==""||startDate==null){
-				Ext.getCmp("DiagnosisData_from_date_Id").setValue(get_rawData.startDate);
+				Ext.getCmp("ResourceProbeHistoryCurve_from_date_Id").setValue(get_rawData.startDate);
 			}
-			DiagnosisDataCurveChartFn(get_rawData,itemName,itemCode,divId);
+			ResourceProbeHistoryCurveChartFn(get_rawData,itemName,itemCode,divId);
         },
         beforeload: function (store, options) {
-        	var tabPanel = Ext.getCmp("ProductionWellRealtimeAnalisisPanel");
-    		var activeId = tabPanel.getActiveTab().id;
-    		var gridPanelId="FSDiagramAnalysisSingleDetails_Id";
-    		var wellType=200;
-    		if(activeId=="RPCSingleDetailsInfoPanel_Id"){
-    			gridPanelId="FSDiagramAnalysisSingleDetails_Id";
-    			wellType=200;
-    		}else if(activeId=="PCPSingleDetailsInfoPanel_Id"){
-    			gridPanelId="ScrewPumpRTAnalysisWellList_Id";
-    			wellType=400;
-    		}
-        	var wellName  = Ext.getCmp(gridPanelId).getSelectionModel().getSelection()[0].data.wellName;
-        	var StartDate = Ext.getCmp('DiagnosisData_from_date_Id').rawValue;
-        	var EndDate = Ext.getCmp('DiagnosisData_end_date_Id').rawValue;
+        	
+        	var StartDate = Ext.getCmp('ResourceProbeHistoryCurve_from_date_Id').rawValue;
+        	var EndDate = Ext.getCmp('ResourceProbeHistoryCurve_end_date_Id').rawValue;
         	var itemName=Ext.getCmp('DiagnosisAnalysisCurveItem_Id').rawValue;
         	var itemCode=Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').rawValue;
         	var new_params = {
-        			wellName: wellName,
                     startDate:StartDate,
                     endDate:EndDate,
                     itemName:itemName,
-                    itemCode:itemCode,
-                    wellType:wellType
+                    itemCode:itemCode
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

@@ -32,10 +32,8 @@ String path = request.getContextPath();
     //跳转语句
     if(system.win||system.mac||system.x11){//转向后台登陆页面
         window.location.href = "login/toLogin";
-        //window.location.href = "mainManage/diagnosisOnly!toTouchLogin.action";
     }else{
     	window.location.href = "login/toLogin";
-        //window.location.href = "mainManage/diagnosisOnly!toTouchLogin.action";
     }
 </script>
   </head>

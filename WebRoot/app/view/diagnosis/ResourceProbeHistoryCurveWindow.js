@@ -23,6 +23,7 @@ Ext.define("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
         		{
                     xtype: 'datefield',
                     anchor: '100%',
+                    hidden: true,
                     fieldLabel: cosog.string.startDate,
                     labelWidth: 58,
                     width: 178,
@@ -31,12 +32,13 @@ Ext.define("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
                     value: 'new',
                     listeners: {
                     	select: function (combo, record, index) {
-//                    		Ext.create("AP.store.diagnosis.ResourceProbeHistoryCurveStore");
+                    		Ext.create("AP.store.diagnosis.ResourceProbeHistoryCurveStore");
                         }
                     }
                 }, {
                     xtype: 'datefield',
                     anchor: '100%',
+                    hidden: true,
                     fieldLabel: cosog.string.endDate,
                     labelWidth: 58,
                     width: 178,
@@ -45,7 +47,7 @@ Ext.define("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
                     value: new Date(),
                     listeners: {
                     	select: function (combo, record, index) {
-//                    		Ext.create("AP.store.diagnosis.ResourceProbeHistoryCurveStore");
+                    		Ext.create("AP.store.diagnosis.ResourceProbeHistoryCurveStore");
                         }
                     }
                 }

@@ -219,25 +219,34 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
         series += "{\"name\":\"" + legendName[i] + "\",";
         series += "\"data\":[";
         for (var j = 0; j < data.length; j++) {
-        	if(isNotVal(data[i].value)){
-        		var year = parseInt(data[j].acqTime.split(" ")[0].split("-")[0]);
-                var month = parseInt(data[j].acqTime.split(" ")[0].split("-")[1]);
-                var day = parseInt(data[j].acqTime.split(" ")[0].split("-")[2]);
-                var hour = parseInt(data[j].acqTime.split(" ")[1].split(":")[0]);
-                var minute = parseInt(data[j].acqTime.split(" ")[1].split(":")[1]);
-                var second = parseInt(data[j].acqTime.split(" ")[1].split(":")[2]);
-                if(itemCode.toUpperCase()=='cpuUsedPercent'.toUpperCase()){
-                	var values=data[i].value.split(";");
-                	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
-                }else{
-                	series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].value + "]";
-                }
-                
-                if (j != data.length - 1) {
-                    series += ",";
-                }
-        	}
-            
+        	
+    		var year = parseInt(data[j].acqTime.split(" ")[0].split("-")[0]);
+            var month = parseInt(data[j].acqTime.split(" ")[0].split("-")[1]);
+            var day = parseInt(data[j].acqTime.split(" ")[0].split("-")[2]);
+            var hour = parseInt(data[j].acqTime.split(" ")[1].split(":")[0]);
+            var minute = parseInt(data[j].acqTime.split(" ")[1].split(":")[1]);
+            var second = parseInt(data[j].acqTime.split(" ")[1].split(":")[2]);
+            if(itemCode.toUpperCase()=='cpuUsedPercent'.toUpperCase()){
+            	if(isNotVal(data[j].value)){
+            		var values=data[j].value.split(";");
+            		if(values.length>i){
+            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + values[i] + "]";
+            		}else{
+            			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            		}
+            	}else{
+            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+            	}
+            }else{
+            	if(isNotVal(data[j].value)){
+            		series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + data[j].value + "]";
+        		}else{
+        			series += "[" + Date.parse(data[j].acqTime.replace(/-/g, '/')) + "," + null + "]";
+        		}
+            }
+            if (j != data.length - 1) {
+                series += ",";
+            }
         }
         series += "]}";
         if (i != legendName.length - 1) {

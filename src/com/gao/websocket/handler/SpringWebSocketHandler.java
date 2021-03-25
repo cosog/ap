@@ -156,7 +156,7 @@ public class SpringWebSocketHandler implements WebSocketHandler {
                 	try {
                         if (clients.get(id).isOpen()) {
                         	clients.get(id).sendMessage(message);
-                        	System.out.println("WebSocket服务端向"+userId+"客户端发送数据："+message.toString());
+//                        	System.out.println("WebSocket服务端向"+userId+"客户端发送数据："+message.toString());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

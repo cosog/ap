@@ -52,8 +52,8 @@ public class SpringWebSocketHandler implements WebSocketHandler {
         System.out.println("接收到客户端连接:"+userId);
         System.out.println("当前线上用户数量:"+clients.size());
         //这块会实现自己业务，比如，当用户登录后，会把离线消息推送给用户
-        //TextMessage returnMessage = new TextMessage("成功建立socket连接，你将收到的离线");
-        //session.sendMessage(returnMessage);
+//        TextMessage returnMessage = new TextMessage("成功建立socket连接，");
+//        session.sendMessage(returnMessage);
 	}
 	
 	/**

@@ -1,8 +1,10 @@
 @2createTables.sql
 @3createViews.sql
 @4createProcedures.sql
-@5init.sql
-@6createSequences.sql
-@7createTriggers.sql
-@8createJobs.sql
+@5initModuleAndRole.sql
+@6initDataDictionary.sql
+@7initOthers.sql
+@8createSequences.sql
+@9createTriggers.sql
+@10createJobs.sql
 exit

@@ -935,6 +935,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_NoLiquidFullnessCoefficient in NUMBER,
        v_PlungerStroke in NUMBER,v_AvailablePlungerStroke in NUMBER,v_NoLiquidAvailableStroke  in NUMBER,
        v_UpperLoadLine in NUMBER,v_UpperLoadLineOfExact in NUMBER,v_LowerLoadLine in NUMBER,
+       v_SMaxIndex in NUMBER,v_SMinIndex in NUMBER,
        v_PumpFSDiagram in tbl_rpc_diagram_hist.PumpFSDiagram%TYPE,
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
@@ -1001,6 +1002,7 @@ begin
           t.noliquidfullnesscoefficient=v_NoLiquidFullnessCoefficient,
           t.plungerstroke=v_PlungerStroke,t.availableplungerstroke=v_AvailablePlungerStroke,t.noliquidavailableplungerstroke=v_NoLiquidAvailableStroke,
           t.upperloadline=v_UpperLoadLine,t.upperloadlineofexact=v_UpperLoadLineOfExact,t.lowerloadline=v_LowerLoadLine,
+          t.smaxindex=v_SMaxIndex,t.sminindex=v_SMinIndex,
           t.pumpfsdiagram=v_PumpFSDiagram,
           t.theoreticalproduction=v_TheoreticalProduction,
           t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
@@ -1044,6 +1046,7 @@ begin
           fullnesscoefficient,noliquidfullnesscoefficient,
           plungerstroke,availableplungerstroke,noliquidavailableplungerstroke,
           upperloadline,upperloadlineofexact,lowerloadline,
+          smaxindex,sminindex,
           pumpfsdiagram,
           theoreticalproduction,
           liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
@@ -1082,6 +1085,7 @@ begin
           v_FullnessCoefficient,v_NoLiquidFullnessCoefficient,
           v_PlungerStroke,v_AvailablePlungerStroke,v_NoLiquidAvailableStroke,
           v_UpperLoadLine,v_UpperLoadLineOfExact,v_LowerLoadLine,
+          v_SMaxIndex,v_SMinIndex,
           v_PumpFSDiagram,
           v_TheoreticalProduction,
           v_LiquidVolumetricProduction,v_OilVolumetricProduction,v_WaterVolumetricProduction,
@@ -1114,7 +1118,6 @@ begin
       commit;
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
-
 Exception
   When Others Then
     p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
@@ -1493,6 +1496,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramresult (
        v_NoLiquidFullnessCoefficient in NUMBER,
        v_PlungerStroke in NUMBER,v_AvailablePlungerStroke in NUMBER,v_NoLiquidAvailableStroke  in NUMBER,
        v_UpperLoadLine in NUMBER,v_UpperLoadLineOfExact in NUMBER,v_LowerLoadLine in NUMBER,
+       v_SMaxIndex in NUMBER,v_SMinIndex in NUMBER,
        v_PumpFSDiagram in tbl_rpc_diagram_hist.PumpFSDiagram%TYPE,
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
@@ -1538,6 +1542,7 @@ begin
           t.noliquidfullnesscoefficient=v_NoLiquidFullnessCoefficient,
           t.plungerstroke=v_PlungerStroke,t.availableplungerstroke=v_AvailablePlungerStroke,t.noliquidavailableplungerstroke=v_NoLiquidAvailableStroke,
           t.upperloadline=v_UpperLoadLine,t.upperloadlineofexact=v_UpperLoadLineOfExact,t.lowerloadline=v_LowerLoadLine,
+          t.smaxindex=v_SMaxIndex,t.sminindex=v_SMinIndex,
           t.pumpfsdiagram=v_PumpFSDiagram,
           t.theoreticalproduction=v_TheoreticalProduction,
           t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,

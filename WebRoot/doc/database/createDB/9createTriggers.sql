@@ -85,7 +85,7 @@ begin
        if recordCount=0 then
           insert into tbl_rpc_diagram_latest (
               wellid,AcqTime,
-              stroke,spm,fmax,fmin,
+              stroke,spm,fmax,fmin,smaxindex,sminindex,
               position_curve,angle_curve,load_curve,power_curve,current_curve,rpm_curve,
               rawpower_curve,rawcurrent_curve,rawrpm_curve,
               position360_curve,angle360_curve,load360_curve,
@@ -121,7 +121,7 @@ begin
               remark
           )values(
               :new.wellid,:new.AcqTime,
-              :new.stroke,:new.spm,:new.fmax,:new.fmin,
+              :new.stroke,:new.spm,:new.fmax,:new.fmin,:new.smaxindex,:new.sminindex,
               :new.position_curve,:new.angle_curve,:new.load_curve,:new.power_curve,:new.current_curve,:new.rpm_curve,
               :new.rawpower_curve,:new.rawcurrent_curve,:new.rawrpm_curve,
               :new.position360_curve,:new.angle360_curve,:new.load360_curve,
@@ -164,6 +164,7 @@ begin
              update tbl_rpc_diagram_latest t set
               t.AcqTime=:new.AcqTime,
               t.stroke=:new.stroke,t.spm=:new.spm,t.fmax=:new.fmax,t.fmin=:new.fmin,
+              t.smaxindex=:new.smaxindex,t.sminindex=:new.sminindex,
               t.position_curve=:new.position_curve,t.angle_curve=:new.angle_curve,t.load_curve=:new.load_curve,t.power_curve=:new.power_curve,t.current_curve=:new.current_curve,t.rpm_curve=:new.rpm_curve,
               t.rawpower_curve=:new.rawpower_curve,t.rawcurrent_curve=:new.rawcurrent_curve,t.rawrpm_curve=:new.rawrpm_curve,
               t.position360_curve=:new.position360_curve,t.angle360_curve=:new.angle360_curve,t.load360_curve=:new.load360_curve,

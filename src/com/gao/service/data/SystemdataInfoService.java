@@ -70,7 +70,7 @@ public class SystemdataInfoService extends BaseService<SystemdataInfo> {
 	 */
 	public boolean findResetSysDataCodeListById(User userInfo, String objId, String ename) throws Exception {
 		boolean result = false;
-		String sql = "select sys.sysdataid from tbl_dist_name sys where sys.ename=? and sys.status=0 and sys.tenantid=?";
+		String sql = "select sys.sysdataid from tbl_dist_name sys where sys.ename=?0 and sys.status=0 and sys.tenantid=?1";
 		List<?> esObjList = this.findCallSql(sql, new Object[] { ename, userInfo.getUserId() });
 		if (null != esObjList && esObjList.size() > 0) {
 			String jtl = (String) esObjList.get(0);

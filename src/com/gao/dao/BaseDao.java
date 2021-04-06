@@ -1772,7 +1772,7 @@ public class BaseDao extends HibernateDaoSupport {
 		conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		StringBuffer sb = new StringBuffer();
 		String jsgj = wtvo.getClsd() + "," + wtvo.getCzsd() + "," + wtvo.getJxj() + "," + wtvo.getFwj() + ";";
-		String sql = "update t_welltrajectory set jsgj=? where jbh=?";
+		String sql = "update t_welltrajectory set jsgj=?0 where jbh=?1";
 		if (wtvo != null) {
 			try {
 				String[] tracks = wtvo.getJsgj().split(";");
@@ -1888,9 +1888,9 @@ public class BaseDao extends HibernateDaoSupport {
 //				conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 //				conn.setAutoCommit(false);
 //				List<CallbackDataItems> GtList=new ArrayList<CallbackDataItems>();
-//				String sql="select jlbh from tbl_wellinformation where cjdybm=?";
+//				String sql="select jlbh from tbl_wellinformation where cjdybm=?0";
 //				String sql2="insert into tbl_rpc_diagram_hist (jbh,cjsj,gtsj) values (?,to_date(?,'yyyy-mm-dd hh24:mi:ss'),empty_blob())";
-//				String sql3="select gtsj from tbl_rpc_diagram_hist where jbh=? and cjsj=to_date(?,'yyyy-mm-dd hh24:mi:ss')";
+//				String sql3="select gtsj from tbl_rpc_diagram_hist where jbh=?0 and cjsj=to_date(?,'yyyy-mm-dd hh24:mi:ss')";
 //				for(int i=0;i<list.size();i++){
 //					if(list.get(i).TableName.equalsIgnoreCase("tbl_rpc_diagram_hist")){
 //						GtList.add(list.get(i));

@@ -1769,7 +1769,7 @@ public class NormalModbusProtocolThread extends ProtocolBasicThread{
     								stmt = conn.createStatement();
     								int result=stmt.executeUpdate(updateDiscreteData);
     								if(commResponseData!=null&&commResponseData.getResultStatus()==1&&timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-            							String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?,t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+            							String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0,t.runrange=?1 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
             							List<String> clobCont=new ArrayList<String>();
             							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
             							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
@@ -2163,7 +2163,7 @@ public class NormalModbusProtocolThread extends ProtocolBasicThread{
 				updateCommStatus+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 				int result=stmt.executeUpdate(updateCommStatus);
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					result=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, updateCommAndRunRangeClobSql, clobCont);

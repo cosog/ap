@@ -143,7 +143,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	 * @return
 	 */
 	public List<DataitemsInfo> findTableHeaderByListFaceId(String dataEname) {
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=? ) ";
+		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=?0 ) ";
 		List<DataitemsInfo> getDataitemsInfoList = null;
 		try {
 			getDataitemsInfoList = this.find(sqlData.toString(), new Object[] { dataEname });
@@ -160,7 +160,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 	 * @return
 	 */
 	public String findTableHeaderByColumnsFaceId(String dataEname) {
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=? ) order by sorts ";
+		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=?0 ) order by sorts ";
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("[");
@@ -211,7 +211,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		DataDictionary ddic = new DataDictionary();
 		strBuf.append("[");
 		sqlColumn.append("select ");
-		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=? ) order by dtm.sorts asc ";
+		String sqlData = "from DataitemsInfo dtm where dtm.status=1 and dtm.sysdataid in (select sys.sysdataid from SystemdataInfo sys where sys.status=0 and sys.ename=?0 ) order by dtm.sorts asc ";
 		try {
 			// 根据模块字典英文名称从数据库中找出该模块的字典数据信息
 			List<DataitemsInfo> dataWhereList = this.find(sqlData.toString(), new Object[] { dataEname });

@@ -81,7 +81,7 @@ public class UserLoginManagerController extends BaseController {
 		log.debug("userId" + username);
 		String userPass = URLDecoder.decode(userPwd, "UTF-8");
 		String code = URLDecoder.decode(imgCode, "UTF-8");
-		HttpSession session = ServletActionContext.getRequest().getSession(true);
+		HttpSession session = request.getSession(true);
 		// 功图图形服务内外网判断
 //		String picUrl = "";
 		String ip = request.getServerName();

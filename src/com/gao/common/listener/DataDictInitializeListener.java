@@ -3,6 +3,7 @@ package com.gao.common.listener;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -26,11 +27,11 @@ public class DataDictInitializeListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		cache=Config.getInstance().configFile.getOthers().getCache();
 		if(cache){
-		System.out.println("数据字典缓存启动中...");
-		ServletContext context = event.getServletContext();
-		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(context);
-		BaseController base = (BaseController) ctx.getBean("baseAction");
-		base.initDataDictionaryPutInCache();
+			System.out.println("数据字典缓存启动中...");
+			ServletContext context = event.getServletContext();
+			ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(context);
+			BaseController base = (BaseController) ctx.getBean("baseAction");
+			base.initDataDictionaryPutInCache();
 		}else{
 			System.out.println("数据字典缓存已经被禁用！");
 		}

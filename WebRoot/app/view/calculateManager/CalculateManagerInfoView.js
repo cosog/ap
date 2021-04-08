@@ -531,23 +531,26 @@ var CalculateManagerHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
-	                    if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
-	                    	if (visualColIndex >= 1 && visualColIndex <= 6) {
-								cellProperties.readOnly = true;
-								cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
-			                }
-						}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
-							if (visualColIndex >= 1 && visualColIndex <= 6) {
-								cellProperties.readOnly = true;
-								cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
-			                }
-						}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
-							if (visualColIndex >= 1 && visualColIndex <= 3) {
-								cellProperties.readOnly = true;
-								cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
-			                }
-						}
+	                    var tabPanel=Ext.getCmp("CalculateManagerTabPanel");
+	                    if (isNotVal(tabPanel)) {
+	                    	var tabPanelId = tabPanel.getActiveTab().id;
+		                    if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+		                    	if (visualColIndex >= 1 && visualColIndex <= 6) {
+									cellProperties.readOnly = true;
+									cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
+				                }
+							}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+								if (visualColIndex >= 1 && visualColIndex <= 6) {
+									cellProperties.readOnly = true;
+									cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
+				                }
+							}else if(tabPanelId=="ElectricInversionCalculateManagerPanel"){
+								if (visualColIndex >= 1 && visualColIndex <= 3) {
+									cellProperties.readOnly = true;
+									cellProperties.renderer = calculateManagerHandsontableHelper.addBoldBg;
+				                }
+							}
+	                    }
 	                    return cellProperties;
 	                },
 	                afterDestroy: function() {

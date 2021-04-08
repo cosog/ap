@@ -37,7 +37,7 @@ import com.google.gson.reflect.TypeToken;
 @Component("KafkaServerTast")  
 public class KafkaServerTask {
 //	public static  String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
-	public static  String HOST ="39.98.64.56:9092";
+	public static  String HOST ="";
     public static  String[] TOPIC = {"Up-NormData","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
     private static  String clientid = "apKafkaClient"+new Date().getTime();
     private static int receivedDataCount=0;
@@ -118,25 +118,27 @@ public class KafkaServerTask {
 	}
 	
 	public static void producerMsg(String topic,String title,String value){
-		System.out.println("Kafka下行，topic："+topic+",title:"+title+",value:"+value);
-		Properties props = new Properties();
-	    props.put("bootstrap.servers", HOST);
-	    //The "all" setting we have specified will result in blocking on the full commit of the record, the slowest but most durable setting.
-        //“所有”设置将导致记录的完整提交阻塞，最慢的，但最持久的设置。
-	    props.put("acks", "all");
-	    //如果请求失败，生产者也会自动重试，即使设置成0
-	    props.put("retries", 0);
-	    props.put("batch.size", 16384);
-	    //默认立即发送，这里这是延时毫秒数
-	    props.put("linger.ms", 1);
-	    //生产者缓冲大小，当缓冲区耗尽后，额外的发送调用将被阻塞。时间超过max.block.ms将抛出TimeoutException
-	    props.put("buffer.memory", 33554432);
-	    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-	    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		if(StringManagerUtils.isNotNull(HOST)){
+			System.out.println("Kafka下行，topic："+topic+",title:"+title+",value:"+value);
+			Properties props = new Properties();
+		    props.put("bootstrap.servers", HOST);
+		    //The "all" setting we have specified will result in blocking on the full commit of the record, the slowest but most durable setting.
+	        //“所有”设置将导致记录的完整提交阻塞，最慢的，但最持久的设置。
+		    props.put("acks", "all");
+		    //如果请求失败，生产者也会自动重试，即使设置成0
+		    props.put("retries", 0);
+		    props.put("batch.size", 16384);
+		    //默认立即发送，这里这是延时毫秒数
+		    props.put("linger.ms", 1);
+		    //生产者缓冲大小，当缓冲区耗尽后，额外的发送调用将被阻塞。时间超过max.block.ms将抛出TimeoutException
+		    props.put("buffer.memory", 33554432);
+		    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-	    Producer<String, String> producer = new KafkaProducer<String, String>(props);
-	    producer.send( new ProducerRecord<String, String>(topic, title, value) );
-	    producer.close();
+		    Producer<String, String> producer = new KafkaProducer<String, String>(props);
+		    producer.send( new ProducerRecord<String, String>(topic, title, value) );
+		    producer.close();
+		}
 	}
 	
 	@Bean//这个注解会从Spring容器拿出Bean

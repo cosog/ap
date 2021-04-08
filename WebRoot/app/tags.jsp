@@ -91,6 +91,8 @@ boolean isConnection=false;
 <!--<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/color/ColorField.js?timestamp=202103291430"></script>-->
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=202103291430"></script>
 <script type="text/javascript" src="<%=path%>/scripts/customMap/js/wellmap.js?timestamp=202103291430"></script>
+
+<!-- handsontable -->
 <script type="text/javascript" src="<%=path%>/scripts/handsontable/js/handsontable-pro.full.min.js?timestamp=202103291430"></script>
 
 <!-- reconnecting-websocket -->

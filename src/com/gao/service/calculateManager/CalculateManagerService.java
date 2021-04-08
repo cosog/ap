@@ -228,7 +228,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		
 		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+			sql+=" and  well.wellName = '" + wellName.trim() + "' ";
 		}
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			if("0".equals(calculateSign)){

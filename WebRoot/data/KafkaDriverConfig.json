@@ -3,7 +3,7 @@
     "DriverCode": "KafkaDrive",
     "Sort": 8,
     "Server": {
-        "IP": "39.98.64.56",
+        "IP": "39.99.42.182",
         "Port": 9092
     },
     "Topic": {

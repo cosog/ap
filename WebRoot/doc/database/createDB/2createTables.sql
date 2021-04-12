@@ -2487,8 +2487,6 @@ create index IDX_WELLINFORMATION_NAME on TBL_WELLINFORMATION (WELLNAME)
 /
 create index IDX_WELLINFORMATION_RESNAME on TBL_WELLINFORMATION (RESNAME)
 /
-create unique index PK_T_WELLINFORMATION on TBL_WELLINFORMATION (ID)
-/
 
 /*==============================================================*/
 /* Database package: MYPACKAGE                                  */

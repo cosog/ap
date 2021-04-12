@@ -32,16 +32,16 @@ create or replace view viw_pcp_comprehensive_hist as
 select
  t.id,well.wellName, well.id as wellid ,well.liftingType,
  t.AcqTime   as AcqTime,dis.AcqTime as AcqTime_d,
- dis.commStatus,decode(dis.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ dis.commStatus,decode(dis.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
       when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'è¿è¡Œ'
-                else decode(dis.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'ÔËĞĞ'
+                else decode(dis.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
  dis.commTime,dis.commRange,dis.commTimeEfficiency as commTimeEfficiency ,stat10.s_level as commtimeefficiencyLevel,
  dis.runTime,dis.runRange,dis.runTimeEfficiency as runTimeEfficiency,stat9.s_level as runtimeefficiencyLevel,
@@ -123,16 +123,16 @@ create or replace view viw_pcp_comprehensive_latest as
 select
  t.id,well.wellName, well.id as wellid ,well.liftingType,
  t.AcqTime as AcqTime,dis.AcqTime as AcqTime_d,
- dis.commStatus,decode(dis.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ dis.commStatus,decode(dis.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
       when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'è¿è¡Œ'
-                else decode(dis.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'ÔËĞĞ'
+                else decode(dis.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
  dis.commTime,dis.commRange,dis.commTimeEfficiency as commTimeEfficiency ,stat10.s_level as commtimeefficiencyLevel,
  dis.runTime,dis.runRange,dis.runTimeEfficiency as runTimeEfficiency,stat9.s_level as runtimeefficiencyLevel,
@@ -214,16 +214,16 @@ create or replace view viw_pcp_discrete_hist as
 select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,
  t.commstatus,
- decode(t.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ decode(t.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
       when well.runtimeefficiencysource=0 and t.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when t.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then 'è¿è¡Œ'
-                else decode(t.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and t.runtime>0 then 'ÔËĞĞ'
+                else decode(t.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
  t.commtime,t.commrange,t.commtimeefficiency as commtimeefficiency ,stat3.s_level as commtimeefficiencyLevel,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,stat2.s_level as runtimeefficiencyLevel,
@@ -282,16 +282,16 @@ where well.liftingtype>=400 and well.liftingtype<500;
 create or replace view viw_pcp_discrete_latest as
 select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,
- comm.commstatus,decode(comm.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ comm.commstatus,decode(comm.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
       when well.runtimeefficiencysource=0 and t.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when comm.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then 'è¿è¡Œ'
-                else decode(t.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and t.runtime>0 then 'ÔËĞĞ'
+                else decode(t.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
  t.commtime,t.commrange,t.commtimeefficiency as commtimeefficiency ,stat3.s_level as commtimeefficiencyLevel,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,stat2.s_level as runtimeefficiencyLevel,
@@ -480,11 +480,11 @@ create or replace view viw_pcp_total_day as
 select
  t.id,well.wellName,well.liftingtype,code1.itemname as liftingTypeName,well.id as wellid ,
  t.calculateDate,
- t.commstatus,decode(t.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
+ t.commstatus,decode(t.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  runStatus,
  case when t.commstatus=1 then
-           decode(t.runstatus,1,'è¿è¡Œ','åœæŠ½')
-      else 'ç¦»çº¿' end as runStatusName,
+           decode(t.runstatus,1,'ÔËĞĞ','Í£³é')
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
  t.commTime,t.commrange,t.commtimeefficiency as commtimeefficiency ,stat3.s_level as commtimeefficiencyLevel,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,stat2.s_level as runtimeefficiencyLevel,
@@ -492,20 +492,20 @@ select
  status.workingconditionname as workingconditionname,t.workingConditionString,status.optimizationsuggestion,
  decode(alarm.alarmsign,0,0,alarm.alarmlevel) as workingConditionAlarmLevel,
  t.liquidweightproduction,
- decode(stat7.s_level,null,'æ— æ•°æ®',stat7.s_level) as liquidWeightProductionlevel,
+ decode(stat7.s_level,null,'ÎŞÊı¾İ',stat7.s_level) as liquidWeightProductionlevel,
  t.oilweightproduction,t.waterweightproduction,
  t.watercut_w,
  t.liquidvolumetricproduction,
- decode(stat4.s_level,null,'æ— æ•°æ®',stat4.s_level) as liquidVolumeProductionlevel,
+ decode(stat4.s_level,null,'ÎŞÊı¾İ',stat4.s_level) as liquidVolumeProductionlevel,
  t.oilvolumetricproduction,t.watervolumetricproduction,
  t.watercut,
  t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,
  t.pumpeff*100 as pumpeff,
  t.pumpborediameter,t.pumpsettingdepth,t.producingfluidlevel,t.submergence,
  t.rpm,t.rpmmax,t.rpmmin,
- t.systemefficiency*100 as systemEfficiency,decode(stat8.s_level,null,'æ— æ•°æ®',stat8.s_level) as systemEfficiencyLevel,
+ t.systemefficiency*100 as systemEfficiency,decode(stat8.s_level,null,'ÎŞÊı¾İ',stat8.s_level) as systemEfficiencyLevel,
  t.powerConsumptionPerthm,
- t.todayKWattH,decode(stat1.s_level,null,'æ— æ•°æ®',stat1.s_level) as todayKWattHLevel,
+ t.todayKWattH,decode(stat1.s_level,null,'ÎŞÊı¾İ',stat1.s_level) as todayKWattHLevel,
  t.todaypKWattH,t.todaynKWattH,t.todayKVarH,t.todaypKVarH,t.todaynKVarH,t.todayKVAH,
  t.ia,t.iamax,t.iamin,t.iamax||'/'||t.iamin||'/'||t.ia as iastr,
  t.ib,t.ibmax,t.ibmin,t.ibmax||'/'||t.ibmin||'/'||t.ib as ibstr,
@@ -586,90 +586,90 @@ create or replace view viw_rpc_comprehensive_hist as
 select
  t.id,well.wellName, well.id as wellid ,well.liftingType,
  t.AcqTime as AcqTime,dis.AcqTime as AcqTime_d,
- dis.commStatus,decode(dis.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ dis.commStatus,decode(dis.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
       when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'è¿è¡Œ'
-                else decode(dis.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'ÔËĞĞ'
+                else decode(dis.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
  dis.commTime,dis.commRange,dis.commTimeEfficiency as commTimeEfficiency ,stat10.s_level as commtimeefficiencyLevel,
  dis.runTime,dis.runRange,dis.runTimeEfficiency as runTimeEfficiency,stat9.s_level as runtimeefficiencyLevel,
- decode(t.datasource,0,'åŠŸå›¾ä»ª',1,'ç”µå‚åæ¼”',null,'','äººå·¥ä¸Šä¼ ') as datasource,
+ decode(t.datasource,0,'¹¦Í¼ÒÇ',1,'µç²Î·´Ñİ',null,'','ÈË¹¤ÉÏ´«') as datasource,
  decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode) as workingconditioncode,
- --decode(t.resultstatus,1, status1.workingConditionName,'è®¡ç®—å¤±è´¥') as workingConditionName,
+ --decode(t.resultstatus,1, status1.workingConditionName,'¼ÆËãÊ§°Ü') as workingConditionName,
  status1.workingConditionName,
  status1.optimizationSuggestion,
  decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingConditionAlarmLevel,
  dis.workingconditioncode as workingconditioncode_E,
- case when dis.workingconditioncode=0 then 'æ­£å¸¸'
-      when dis.workingconditioncode=1 then 'ç”µå‹ç¼ºç›¸'
-      when dis.workingconditioncode=2 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=3 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=4 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=5 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=6 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=7 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=8 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=9 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=10 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=11 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=12 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=13 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=14 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=15 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=16 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=17 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=18 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=19 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=20 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=21 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=22 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=23 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=24 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=25 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=26 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=27 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=28 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=29 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=30 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=31 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=32 then 'ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=33 then 'ç”µå‹ç¼ºç›¸/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=34 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=35 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=36 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=37 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=38 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=39 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=40 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=41 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=42 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=43 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=44 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=45 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=46 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=47 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=48 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=49 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=50 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=51 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=52 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=53 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=54 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=55 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=56 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=57 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=58 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=59 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=60 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=61 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=62 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=63 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
+ case when dis.workingconditioncode=0 then 'Õı³£'
+      when dis.workingconditioncode=1 then 'µçÑ¹È±Ïà'
+      when dis.workingconditioncode=2 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=3 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=4 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=5 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=6 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=7 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=8 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=9 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=10 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=11 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=12 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=13 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=14 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=15 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=16 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=17 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=18 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=19 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=20 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=21 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=22 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=23 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=24 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=25 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=26 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=27 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=28 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=29 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=30 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=31 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=32 then 'µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=33 then 'µçÑ¹È±Ïà/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=34 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=35 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=36 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=37 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=38 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=39 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=40 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=41 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=42 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=43 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=44 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=45 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=46 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=47 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=48 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=49 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=50 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=51 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=52 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=53 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=54 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=55 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=56 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=57 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=58 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=59 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=60 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=61 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=62 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=63 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
       else status10.workingconditionname end as workingConditionName_E,
  case when dis.workingconditioncode=0 then 0
       when dis.workingconditioncode>=1 and dis.workingconditioncode<=63 then 100
@@ -690,9 +690,9 @@ select
  case when prod.producingfluidLevel>=0 then prod.producingfluidLevel
    when  prod.producingfluidLevel is null then prod.producingfluidLevel
    else t.inverproducingfluidlevel end as producingfluidLevel,
- case when prod.producingfluidLevel>=0 then 'åŠ¨æ¶²é¢ä»ª'
+ case when prod.producingfluidLevel>=0 then '¶¯ÒºÃæÒÇ'
    when prod.producingfluidLevel is null then ''
-   else 'æ³µåŠŸå›¾åæ¼”' end as producingfluidLevelDataSource,
+   else '±Ã¹¦Í¼·´Ñİ' end as producingfluidLevelDataSource,
  t.levelcorrectvalue,
  prod.pumpSettingDepth,
  --prod.pumpsettingdepth-prod.producingfluidLevel as submergence
@@ -766,16 +766,16 @@ select
  to_char(dis.pfa,'fm999990.00') ||'/'||to_char(dis.pfb,'fm999990.00')||'/'||to_char(dis.pfc,'fm999990.00') as pfstr,
  dis.frequencySetValue,dis.frequencyRunValue,
  dis.signal,dis.interval,dis.devicever,
- decode(dis.balanceControlMode,0,'æ‰‹åŠ¨',1,'è‡ªåŠ¨') as balanceControlMode,
- decode(dis.balanceCalculateMode,1,'ä¸‹è¡Œç¨‹æœ€å¤§å€¼/ä¸Šè¡Œç¨‹æœ€å¤§å€¼',2,'ä¸Šè¡Œç¨‹æœ€å¤§å€¼/ä¸‹è¡Œç¨‹æœ€å¤§å€¼') as balanceCalculateMode,
+ decode(dis.balanceControlMode,0,'ÊÖ¶¯',1,'×Ô¶¯') as balanceControlMode,
+ decode(dis.balanceCalculateMode,1,'ÏÂĞĞ³Ì×î´óÖµ/ÉÏĞĞ³Ì×î´óÖµ',2,'ÉÏĞĞ³Ì×î´óÖµ/ÏÂĞĞ³Ì×î´óÖµ') as balanceCalculateMode,
  dis.balanceAwayTime,dis.balanceCloseTime,
  dis.balanceAwayTimePerBeat,dis.balanceCloseTimePerBeat,
  dis.balanceStrokeCount,
  dis.balanceOperationUpLimit,dis.balanceOperationDownLimit,
- decode(dis.balanceAutoControl,0,'å…è®¸',1,'ç¦æ­¢') as balanceAutoControl,
- decode(dis.spmAutoControl,0,'å…è®¸',1,'ç¦æ­¢') as spmAutoControl,
- decode(dis.balanceFrontLimit,0,'é™ä½',1,'æœªé™ä½') as balanceFrontLimit,
- decode(dis.balanceAfterLimit,0,'é™ä½',1,'æœªé™ä½') as balanceAfterLimit,
+ decode(dis.balanceAutoControl,0,'ÔÊĞí',1,'½ûÖ¹') as balanceAutoControl,
+ decode(dis.spmAutoControl,0,'ÔÊĞí',1,'½ûÖ¹') as spmAutoControl,
+ decode(dis.balanceFrontLimit,0,'ÏŞÎ»',1,'Î´ÏŞÎ»') as balanceFrontLimit,
+ decode(dis.balanceAfterLimit,0,'ÏŞÎ»',1,'Î´ÏŞÎ»') as balanceAfterLimit,
  well.videourl,org.org_id,org.org_code, well.sortnum
 from
 tbl_wellinformation well
@@ -815,90 +815,90 @@ create or replace view viw_rpc_comprehensive_latest as
 select
  t.id,well.wellName, well.id as wellid ,well.liftingType,t.AcqTime as AcqTime,
  dis.AcqTime as AcqTime_d,
- dis.commStatus,decode(dis.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ dis.commStatus,decode(dis.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
       when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'è¿è¡Œ'
-                else decode(dis.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and dis.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and dis.runtime>0 then 'ÔËĞĞ'
+                else decode(dis.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
  dis.commTime,dis.commRange,dis.commTimeEfficiency as commTimeEfficiency ,stat10.s_level as commtimeefficiencyLevel,
  dis.runTime,dis.runRange,dis.runTimeEfficiency as runTimeEfficiency,stat9.s_level as runtimeefficiencyLevel,
- decode(t.datasource,0,'åŠŸå›¾ä»ª',1,'ç”µå‚åæ¼”',null,'','äººå·¥ä¸Šä¼ ') as datasource,
+ decode(t.datasource,0,'¹¦Í¼ÒÇ',1,'µç²Î·´Ñİ',null,'','ÈË¹¤ÉÏ´«') as datasource,
  decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode) as workingconditioncode,
- --decode(t.resultstatus,1, status1.workingConditionName,'è®¡ç®—å¤±è´¥') as workingConditionName,
+ --decode(t.resultstatus,1, status1.workingConditionName,'¼ÆËãÊ§°Ü') as workingConditionName,
  status1.workingConditionName,
  status1.optimizationSuggestion,
  decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingConditionAlarmLevel,
  dis.workingconditioncode as workingconditioncode_E,
- case when dis.workingconditioncode=0 then 'æ­£å¸¸'
-      when dis.workingconditioncode=1 then 'ç”µå‹ç¼ºç›¸'
-      when dis.workingconditioncode=2 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=3 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=4 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=5 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=6 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=7 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=8 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=9 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=10 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=11 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=12 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=13 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=14 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=15 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when dis.workingconditioncode=16 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=17 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=18 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=19 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=20 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=21 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=22 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=23 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=24 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=25 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=26 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=27 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=28 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=29 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=30 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=31 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when dis.workingconditioncode=32 then 'ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=33 then 'ç”µå‹ç¼ºç›¸/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=34 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=35 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=36 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=37 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=38 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=39 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=40 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=41 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=42 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=43 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=44 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=45 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=46 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=47 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=48 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=49 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=50 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=51 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=52 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=53 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=54 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=55 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=56 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=57 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=58 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=59 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=60 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=61 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=62 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when dis.workingconditioncode=63 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
+ case when dis.workingconditioncode=0 then 'Õı³£'
+      when dis.workingconditioncode=1 then 'µçÑ¹È±Ïà'
+      when dis.workingconditioncode=2 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=3 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=4 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=5 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=6 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=7 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=8 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=9 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=10 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=11 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=12 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=13 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=14 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=15 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when dis.workingconditioncode=16 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=17 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=18 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=19 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=20 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=21 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=22 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=23 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=24 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=25 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=26 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=27 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=28 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=29 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=30 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=31 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when dis.workingconditioncode=32 then 'µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=33 then 'µçÑ¹È±Ïà/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=34 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=35 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=36 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=37 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=38 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=39 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=40 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=41 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=42 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=43 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=44 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=45 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=46 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=47 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=48 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=49 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=50 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=51 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=52 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=53 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=54 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=55 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=56 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=57 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=58 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=59 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=60 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=61 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=62 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when dis.workingconditioncode=63 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
       else status10.workingconditionname end as workingConditionName_E,
  case when dis.workingconditioncode=0 then 0
       when dis.workingconditioncode>=1 and dis.workingconditioncode<=63 then 100
@@ -918,9 +918,9 @@ select
  case when prod.producingfluidLevel>=0 then prod.producingfluidLevel
    when  prod.producingfluidLevel is null then prod.producingfluidLevel
    else t.inverproducingfluidlevel end as producingfluidLevel,
- case when prod.producingfluidLevel>=0 then 'åŠ¨æ¶²é¢ä»ª'
+ case when prod.producingfluidLevel>=0 then '¶¯ÒºÃæÒÇ'
    when prod.producingfluidLevel is null then ''
-   else 'æ³µåŠŸå›¾åæ¼”' end as producingfluidLevelDataSource,
+   else '±Ã¹¦Í¼·´Ñİ' end as producingfluidLevelDataSource,
  t.levelcorrectvalue,
  prod.pumpSettingDepth,
  --prod.pumpsettingdepth-prod.producingfluidLevel as submergence,
@@ -994,16 +994,16 @@ select
  to_char(dis.pfa,'fm999990.00') ||'/'||to_char(dis.pfb,'fm999990.00')||'/'||to_char(dis.pfc,'fm999990.00') as pfstr,
  dis.frequencySetValue,dis.frequencyRunValue,
  dis.signal,dis.interval,dis.devicever,
- decode(dis.balanceControlMode,0,'æ‰‹åŠ¨',1,'è‡ªåŠ¨') as balanceControlMode,
- decode(dis.balanceCalculateMode,1,'ä¸‹è¡Œç¨‹æœ€å¤§å€¼/ä¸Šè¡Œç¨‹æœ€å¤§å€¼',2,'ä¸Šè¡Œç¨‹æœ€å¤§å€¼/ä¸‹è¡Œç¨‹æœ€å¤§å€¼') as balanceCalculateMode,
+ decode(dis.balanceControlMode,0,'ÊÖ¶¯',1,'×Ô¶¯') as balanceControlMode,
+ decode(dis.balanceCalculateMode,1,'ÏÂĞĞ³Ì×î´óÖµ/ÉÏĞĞ³Ì×î´óÖµ',2,'ÉÏĞĞ³Ì×î´óÖµ/ÏÂĞĞ³Ì×î´óÖµ') as balanceCalculateMode,
  dis.balanceAwayTime,dis.balanceCloseTime,
  dis.balanceAwayTimePerBeat,dis.balanceCloseTimePerBeat,
  dis.balanceStrokeCount,
  dis.balanceOperationUpLimit,dis.balanceOperationDownLimit,
- decode(dis.balanceAutoControl,0,'å…è®¸',1,'ç¦æ­¢') as balanceAutoControl,
- decode(dis.spmAutoControl,0,'å…è®¸',1,'ç¦æ­¢') as spmAutoControl,
- decode(dis.balanceFrontLimit,0,'é™ä½',1,'æœªé™ä½') as balanceFrontLimit,
- decode(dis.balanceAfterLimit,0,'é™ä½',1,'æœªé™ä½') as balanceAfterLimit,
+ decode(dis.balanceAutoControl,0,'ÔÊĞí',1,'½ûÖ¹') as balanceAutoControl,
+ decode(dis.spmAutoControl,0,'ÔÊĞí',1,'½ûÖ¹') as spmAutoControl,
+ decode(dis.balanceFrontLimit,0,'ÏŞÎ»',1,'Î´ÏŞÎ»') as balanceFrontLimit,
+ decode(dis.balanceAfterLimit,0,'ÏŞÎ»',1,'Î´ÏŞÎ»') as balanceAfterLimit,
  well.videourl,org.org_id,org.org_code, well.sortnum
 from
 tbl_wellinformation well
@@ -1106,7 +1106,7 @@ where well.liftingtype between 200 and 299;
 create or replace view viw_rpc_diagram_hist as
 select
  t.id,well.wellname, well.id as wellid ,well.liftingtype,well.driveraddr,t.AcqTime,
- comm.commstatus,decode(comm.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ comm.commstatus,decode(comm.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode) as workingconditioncode,status1.workingconditionname,status1.optimizationsuggestion,decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingconditionrunAlarmLevel,
  t.theoreticalproduction,
@@ -1191,7 +1191,7 @@ where well.liftingtype>=200 and well.liftingtype<300;
 create or replace view viw_rpc_diagram_latest as
 select
  t.id,well.wellname, well.id as wellid ,well.liftingtype,well.driveraddr,t.AcqTime,
- comm.commstatus,decode(comm.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ comm.commstatus,decode(comm.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode) as workingconditioncode,status1.workingconditionname,status1.optimizationsuggestion,decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingconditionrunAlarmLevel,
  t.theoreticalproduction,
@@ -1277,16 +1277,16 @@ create or replace view viw_rpc_discrete_hist as
 select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.driveraddr,
  t.commstatus,
- decode(t.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ decode(t.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
       when well.runtimeefficiencysource=0 and t.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when t.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then 'è¿è¡Œ'
-                else decode(t.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and t.runtime>0 then 'ÔËĞĞ'
+                else decode(t.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
  t.commtime,t.commrange,t.commtimeefficiency as commtimeefficiency ,stat3.s_level as commtimeefficiencyLevel,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,stat2.s_level as runtimeefficiencyLevel,
@@ -1294,70 +1294,70 @@ select
  t.acqcycle_diagram,t.acqcycle_discrete,
  decode(t.workingconditioncode,null,1100,t.workingconditioncode) as workingconditioncode,
  t.workingconditionstring as workingconditionstring,
- case when t.workingconditioncode=0 then 'æ­£å¸¸'
-      when t.workingconditioncode=1 then 'ç”µå‹ç¼ºç›¸'
-      when t.workingconditioncode=2 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=3 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=4 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=5 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=6 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=7 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=8 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=9 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=10 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=11 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=12 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=13 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=14 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=15 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=16 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=17 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=18 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=19 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=20 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=21 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=22 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=23 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=24 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=25 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=26 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=27 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=28 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=29 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=30 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=31 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=32 then 'ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=33 then 'ç”µå‹ç¼ºç›¸/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=34 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=35 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=36 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=37 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=38 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=39 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=40 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=41 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=42 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=43 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=44 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=45 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=46 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=47 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=48 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=49 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=50 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=51 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=52 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=53 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=54 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=55 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=56 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=57 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=58 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=59 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=60 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=61 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=62 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=63 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
+ case when t.workingconditioncode=0 then 'Õı³£'
+      when t.workingconditioncode=1 then 'µçÑ¹È±Ïà'
+      when t.workingconditioncode=2 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=3 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=4 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=5 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=6 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=7 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=8 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=9 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=10 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=11 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=12 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=13 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=14 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=15 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=16 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=17 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=18 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=19 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=20 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=21 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=22 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=23 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=24 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=25 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=26 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=27 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=28 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=29 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=30 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=31 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=32 then 'µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=33 then 'µçÑ¹È±Ïà/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=34 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=35 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=36 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=37 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=38 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=39 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=40 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=41 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=42 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=43 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=44 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=45 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=46 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=47 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=48 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=49 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=50 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=51 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=52 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=53 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=54 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=55 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=56 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=57 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=58 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=59 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=60 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=61 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=62 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=63 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
       else status1.workingconditionname end as workingconditionname,
  status1.optimizationsuggestion as optimizationsuggestion,
  case when t.workingconditioncode=0 then 0
@@ -1416,16 +1416,16 @@ where well.liftingtype>=200 and well.liftingtype<300;
 create or replace view viw_rpc_discrete_latest as
 select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.driveraddr,
- comm.commstatus,decode(comm.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,
+ comm.commstatus,decode(comm.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
       when well.runtimeefficiencysource=0 and t.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when comm.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'åœæŠ½'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then 'è¿è¡Œ'
-                else decode(t.runstatus,1,'è¿è¡Œ','åœæŠ½') end
-      else 'ç¦»çº¿' end as runStatusName,
+           case when well.runtimeefficiencysource=0 and t.runtime=0 then 'Í£³é'
+                when well.runtimeefficiencysource=0 and t.runtime>0 then 'ÔËĞĞ'
+                else decode(t.runstatus,1,'ÔËĞĞ','Í£³é') end
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
  t.commtime,t.commrange,t.commtimeefficiency as commtimeefficiency ,stat3.s_level as commtimeefficiencyLevel,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,stat2.s_level as runtimeefficiencyLevel,
@@ -1433,70 +1433,70 @@ select
  t.acqcycle_diagram,t.acqcycle_discrete,
  decode(t.workingconditioncode,null,1100,t.workingconditioncode) as workingconditioncode,
  t.workingconditionstring as workingconditionstring,
- case when t.workingconditioncode=0 then 'æ­£å¸¸'
-      when t.workingconditioncode=1 then 'ç”µå‹ç¼ºç›¸'
-      when t.workingconditioncode=2 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=3 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=4 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=5 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=6 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=7 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=8 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=9 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=10 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=11 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=12 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=13 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=14 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=15 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode=16 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=17 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=18 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=19 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=20 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=21 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=22 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=23 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=24 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=25 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=26 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=27 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=28 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=29 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=30 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=31 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode=32 then 'ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=33 then 'ç”µå‹ç¼ºç›¸/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=34 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=35 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=36 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=37 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=38 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=39 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=40 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=41 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=42 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=43 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=44 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=45 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=46 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=47 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=48 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=49 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=50 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=51 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=52 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=53 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=54 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=55 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=56 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=57 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=58 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=59 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=60 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=61 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=62 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode=63 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
+ case when t.workingconditioncode=0 then 'Õı³£'
+      when t.workingconditioncode=1 then 'µçÑ¹È±Ïà'
+      when t.workingconditioncode=2 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=3 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=4 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=5 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=6 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=7 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=8 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=9 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=10 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=11 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=12 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=13 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=14 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=15 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode=16 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=17 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=18 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=19 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=20 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=21 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=22 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=23 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=24 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=25 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=26 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=27 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=28 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=29 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=30 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=31 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode=32 then 'µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=33 then 'µçÑ¹È±Ïà/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=34 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=35 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=36 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=37 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=38 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=39 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=40 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=41 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=42 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=43 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=44 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=45 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=46 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=47 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=48 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=49 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=50 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=51 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=52 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=53 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=54 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=55 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=56 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=57 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=58 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=59 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=60 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=61 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=62 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode=63 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
       else status1.workingconditionname end as workingconditionname,
  status1.optimizationsuggestion as optimizationsuggestion,
  case when t.workingconditioncode=0 then 0
@@ -1621,11 +1621,11 @@ create or replace view viw_rpc_total_day as
 select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName,well.id as wellid ,well.driveraddr,
  t.calculateDate,t.calculateDate-t.extendeddays as acquisitionDate,
- t.commstatus,decode(t.commstatus,1,'åœ¨çº¿','ç¦»çº¿') as commStatusName,decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
+ t.commstatus,decode(t.commstatus,1,'ÔÚÏß','ÀëÏß') as commStatusName,decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  runStatus,
  case when t.commstatus=1 then
-           decode(t.runstatus,1,'è¿è¡Œ','åœæŠ½')
-      else 'ç¦»çº¿' end as runStatusName,
+           decode(t.runstatus,1,'ÔËĞĞ','Í£³é')
+      else 'ÀëÏß' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
  t.commtime,t.commrange,t.commtimeefficiency as commtimeefficiency ,stat3.s_level as commtimeefficiencyLevel,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,stat2.s_level as runtimeefficiencyLevel,
@@ -1633,70 +1633,70 @@ select
  status.workingconditionname as workingconditionname,t.workingConditionString,status.optimizationsuggestion,
  decode(alarm.alarmsign,0,0,alarm.alarmlevel) as workingConditionAlarmLevel,
  decode(t.workingconditioncode_e,null,1100,0,1100,t.workingconditioncode_e) as workingconditioncode_e,
- case when t.workingconditioncode_e=0 then 'æ­£å¸¸'
-      when t.workingconditioncode_e=1 then 'ç”µå‹ç¼ºç›¸'
-      when t.workingconditioncode_e=2 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=3 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=4 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=5 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=6 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=7 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=8 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=9 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=10 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=11 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=12 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=13 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=14 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=15 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦'
-      when t.workingconditioncode_e=16 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=17 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=18 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=19 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=20 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=21 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=22 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=23 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=24 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=25 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=26 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=27 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=28 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=29 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=30 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=31 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦'
-      when t.workingconditioncode_e=32 then 'ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=33 then 'ç”µå‹ç¼ºç›¸/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=34 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=35 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=36 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=37 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=38 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=39 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=40 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=41 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=42 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=43 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=44 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=45 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=46 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=47 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=48 then 'åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=49 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=50 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=51 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=52 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=53 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=54 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=55 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=56 then 'åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=57 then 'ç”µå‹ç¼ºç›¸/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=58 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=59 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=60 then 'ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=61 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=62 then 'ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
-      when t.workingconditioncode_e=63 then 'ç”µå‹ç¼ºç›¸/ç”µæµè¶…ä¸Šé™æŠ¥è­¦/ç”µæµè¶…ä¸‹é™æŠ¥è­¦/åŠŸç‡è¶…ä¸Šé™æŠ¥è­¦/åŠŸç‡è¶…ä¸‹é™æŠ¥è­¦/ç”µå‚æ¨¡å—æ•…éšœ'
+ case when t.workingconditioncode_e=0 then 'Õı³£'
+      when t.workingconditioncode_e=1 then 'µçÑ¹È±Ïà'
+      when t.workingconditioncode_e=2 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=3 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=4 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=5 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=6 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=7 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=8 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=9 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=10 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=11 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=12 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=13 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=14 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=15 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯'
+      when t.workingconditioncode_e=16 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=17 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=18 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=19 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=20 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=21 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=22 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=23 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=24 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=25 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=26 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=27 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=28 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=29 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=30 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=31 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯'
+      when t.workingconditioncode_e=32 then 'µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=33 then 'µçÑ¹È±Ïà/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=34 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=35 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=36 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=37 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=38 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=39 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=40 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=41 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=42 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=43 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=44 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=45 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=46 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=47 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=48 then '¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=49 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=50 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=51 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=52 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=53 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=54 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=55 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=56 then '¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=57 then 'µçÑ¹È±Ïà/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=58 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=59 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=60 then 'µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=61 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=62 then 'µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
+      when t.workingconditioncode_e=63 then 'µçÑ¹È±Ïà/µçÁ÷³¬ÉÏÏŞ±¨¾¯/µçÁ÷³¬ÏÂÏŞ±¨¾¯/¹¦ÂÊ³¬ÉÏÏŞ±¨¾¯/¹¦ÂÊ³¬ÏÂÏŞ±¨¾¯/µç²ÎÄ£¿é¹ÊÕÏ'
       else status1.workingconditionname end as workingconditionname_e,
  t.workingconditionstring_e,
  case when t.workingconditioncode_e=0 then 0
@@ -1792,8 +1792,8 @@ left outer join  tbl_org org  on t.orgid=org.org_id;
 create or replace view viw_wellinformation as
 select t.id,org.org_name as orgName,org.org_id as orgid,
 t.resname,t.wellname,t.liftingtype,t.driveraddr,t.driverid,
-t.acqcycle_diagram,decode(t.acqcycle_diagram,null,null,decode(t.acqCycleSetStatus_diagram,1,'å·²ä¸‹å‘',2,'å·²åŒæ­¥','ç­‰å¾…ä¸‹å‘')) as acqCycleSetStatus_diagram,
-t.acqcycle_discrete,decode(t.acqcycle_discrete,null,null,decode(t.acqCycleSetStatus_discrete,1,'å·²ä¸‹å‘',2,'å·²åŒæ­¥','ç­‰å¾…ä¸‹å‘')) as acqCycleSetStatus_discrete,
+t.acqcycle_diagram,decode(t.acqcycle_diagram,null,null,decode(t.acqCycleSetStatus_diagram,1,'ÒÑÏÂ·¢',2,'ÒÑÍ¬²½','µÈ´ıÏÂ·¢')) as acqCycleSetStatus_diagram,
+t.acqcycle_discrete,decode(t.acqcycle_discrete,null,null,decode(t.acqCycleSetStatus_discrete,1,'ÒÑÏÂ·¢',2,'ÒÑÍ¬²½','µÈ´ıÏÂ·¢')) as acqCycleSetStatus_discrete,
 t.savecycle_discrete,c2.itemname as RuntimeEfficiencySource,t.videourl,
 c1.itemname as LiftingTypeName,t.drivercode, t2.unit_name as AcquisitionUnit ,c3.itemname as protocol,
 t.sortnum

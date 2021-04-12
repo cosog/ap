@@ -2,14 +2,14 @@ drop tablespace agile_temp including contents and datafiles;
 drop tablespace agile_data including contents and datafiles;
 drop user agile cascade;
 create temporary tablespace agile_temp
-TEMPFILE 'F:\app\Administrator\oradata\orcl\agile_temp.dbf'
+TEMPFILE 'C:\oracle\oradata\ORCL\orclpdb\agile_temp.dbf'
 size 50m
 autoextend on
 next 50m maxsize unlimited
 extent management local;
 create tablespace agile_data
 logging
-DATAFILE 'F:\app\Administrator\oradata\orcl\agile_data.dbf'
+DATAFILE 'C:\oracle\oradata\ORCL\orclpdb\agile_data.dbf'
 size 350m
 autoextend on
 next 50m maxsize unlimited

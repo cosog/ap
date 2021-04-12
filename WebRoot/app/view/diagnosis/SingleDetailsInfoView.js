@@ -93,7 +93,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         xtype: 'textfield',
                         width:150,
                         value: '',
-                        hidden: false
+                        hidden: true
                     }]
                 },
                 items: [{
@@ -173,13 +173,13 @@ function probeWebsocketOnMessage(evt) {
 	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
 	
 	if (activeId === "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
-		Ext.getCmp("webSocketTest_Id").setValue(evt.data);
-//		var data=Ext.JSON.decode(evt.data);
-//		Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU利用率:"+data.cpuUsedPercent);
-//		Ext.getCmp("memUsedPercentLabel_id").setText("内存使用率:"+data.memUsedPercent);
-//		Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间大小:"+data.tableSpaceSize);
-//		Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK运行状态:"+data.appRunStatus);
-//		Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
+//		Ext.getCmp("webSocketTest_Id").setValue(evt.data);
+		var data=Ext.JSON.decode(evt.data);
+		Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU利用率:"+data.cpuUsedPercent);
+		Ext.getCmp("memUsedPercentLabel_id").setText("内存使用率:"+data.memUsedPercent);
+		Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间大小:"+data.tableSpaceSize);
+		Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK运行状态:"+data.appRunStatus);
+		Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
 	}
 }
 function probeWebsocketOnOpen() {

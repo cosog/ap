@@ -886,7 +886,7 @@ insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECOD
 values (251, 'BJLX', '采集报警', '', null, '200', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
-values (252, 'BJLX', '视频&RFID报警', '', null, '300', '');
+values (252, 'BJLX', '视频和RFID报警', '', null, '300', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
 values (253, 'BJLX', '视频报警', '', null, '301', '');
@@ -895,7 +895,7 @@ insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECOD
 values (254, 'BJLX', 'RFID报警', '', null, '302', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
-values (255, 'BJLX', '视频&RFID报警', '', null, '303', '');
+values (255, 'BJLX', '视频和RFID报警', '', null, '303', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
 values (256, 'BJLX', '工况报警', '', null, '400', '');

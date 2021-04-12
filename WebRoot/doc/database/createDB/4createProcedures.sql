@@ -22,14 +22,14 @@ END BlobToClob;
 create or replace function GETELEMENTFROMARRAYBYINDEX(Liststr in varchar2,sPlitVal in varchar2,iPos integer)
 return varchar2 is
   /*
-  Liststr--ä¼ å…¥å°†è¦è¢«åˆ†å‰²çš„å­—ç¬¦ä¸²
-  sPlitVal--ç”¨æ¥åˆ†å‰²çš„å­—ç¬¦ä¸²
-  iPos--è·å–åˆ†å‰²åçš„æ•°ç»„ä¸­è¯¥ä½ç½®çš„å…ƒç´ å€¼
+  Liststr--´«Èë½«Òª±»·Ö¸îµÄ×Ö·û´®
+  sPlitVal--ÓÃÀ´·Ö¸îµÄ×Ö·û´®
+  iPos--»ñÈ¡·Ö¸îºóµÄÊı×éÖĞ¸ÃÎ»ÖÃµÄÔªËØÖµ
 
   */
   type tt_type is table of varchar2(100) INDEX BY BINARY_INTEGER;
   V1 tt_type;
-  --FieldNamesè½¬åŒ–ä¸ºæ•°ç»„
+  --FieldNames×ª»¯ÎªÊı×é
   TmpStr varchar2(100);
   Str    varchar2(4000);
   j      integer;
@@ -50,13 +50,13 @@ begin
       j := j + 1;
     end loop;
     if not str is null then
-      --å°†æœ€åä¸€ä¸ªä¿å­˜
+      --½«×îºóÒ»¸ö±£´æ
       V1(j) := str;
       j := j + 1;
     end if;
   end if;
   if iPos > j - 1 or iPos < 0 then
-    --è¶…å‡ºæ•°ç»„é•¿åº¦
+    --³¬³öÊı×é³¤¶È
     return '';
   end if;
   return V1(ipos);
@@ -81,7 +81,7 @@ CREATE OR REPLACE PROCEDURE prd_change_wellname (v_oldWellName    in varchar2,
   p_msg varchar2(3000) := 'error';
   p_sql varchar2(3000);
 begin
-  --éªŒè¯æƒé™,æŸ¥è¯¢æ–°æ”¹äº•å·æ˜¯å¦å·²å­˜åœ¨ä¸å…¶ä»–ç»„ç»‡
+  --ÑéÖ¤È¨ÏŞ,²éÑ¯ĞÂ¸Ä¾®ºÅÊÇ·ñÒÑ´æÔÚÓëÆäËû×éÖ¯
   p_sql:='select count(*)  from tbl_wellinformation t where t.wellname='''||v_oldWellName||''' and t.orgid not in ('||v_orgId||')';
   dbms_output.put_line('p_sql:' || p_sql);
   EXECUTE IMMEDIATE p_sql into wellcount;
@@ -107,22 +107,22 @@ begin
            commit;
            delete tbl_wellinformation t where t.wellname=v_oldWellName;
            commit;
-           p_msg := 'æ–°äº•åå­˜åœ¨ï¼Œä¿®æ”¹æˆåŠŸ';
+           p_msg := 'ĞÂ¾®Ãû´æÔÚ£¬ĞŞ¸Ä³É¹¦';
         end if;
      elsif newwellcount=0 then
         update tbl_wellinformation t set t.wellname=v_newWellName where t.wellname=v_oldWellName;
         commit;
-         p_msg := 'æ–°äº•åä¸å­˜åœ¨ï¼Œä¿®æ”¹æˆåŠŸ';
+         p_msg := 'ĞÂ¾®Ãû²»´æÔÚ£¬ĞŞ¸Ä³É¹¦';
      end if;
 
   elsif wellcount>0 then
-     p_msg := 'è¯¥äº•å·å·²å­˜åœ¨äºå…¶ä»–ç»„ç»‡ä¸‹';
+     p_msg := '¸Ã¾®ºÅÒÑ´æÔÚÓÚÆäËû×éÖ¯ÏÂ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_change_wellname;
 /
@@ -144,7 +144,7 @@ END prd_reset_sequence;
 
 CREATE OR REPLACE PROCEDURE prd_clear_data is
 begin
---æ¸…ç©ºæ‰€æœ‰æ•°æ®
+--Çå¿ÕËùÓĞÊı¾İ
 EXECUTE IMMEDIATE 'truncate table tbl_org';
 
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_productiondata_latest';
@@ -170,7 +170,7 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcp_total_day';
 
 EXECUTE IMMEDIATE 'truncate table tbl_wellinformation';
 
---é‡ç½®æ‰€æœ‰åºåˆ—
+--ÖØÖÃËùÓĞĞòÁĞ
  prd_reset_sequence('seq_org');
 
  prd_reset_sequence('seq_outputwellproduction_rt');
@@ -242,7 +242,7 @@ begin
       where t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
       and t.deviceid=v_DeviceId;
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
   elsif p_recordNum=0 then
       insert into tbl_a9rawdata_hist(
           deviceid,AcqTime,
@@ -255,13 +255,13 @@ begin
           v_Watt_CURVE,v_I_CURVE
       );
       commit;
-      p_msg := 'æ·»åŠ æˆåŠŸ';
+      p_msg := 'Ìí¼Ó³É¹¦';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_a9RawData;
 /
@@ -295,12 +295,12 @@ begin
     Update tbl_code t1 set t1.itemname=opacity2 where t1.itemcode='BJYSTMD' and t1.itemvalue=200;
     Update tbl_code t1 set t1.itemname=opacity3 where t1.itemcode='BJYSTMD' and t1.itemvalue=300;
     commit;
-    p_msg := 'ä¿®æ”¹æˆåŠŸ';
+    p_msg := 'ĞŞ¸Ä³É¹¦';
 
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_alarmcolor;
 /
@@ -329,10 +329,10 @@ begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
      select id into p_wellid from tbl_wellinformation t where t.wellName=v_wellName and rownum=1;
-     --æŸ¥è¯¢æ˜¯å¦å·²å­˜åœ¨å½“å¤©è®¡ç®—è®°å½•
+     --²éÑ¯ÊÇ·ñÒÑ´æÔÚµ±Ìì¼ÆËã¼ÇÂ¼
     select count(*) into p_totalresultcount from tbl_pcp_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
-    --å¦‚ä¸å­˜åœ¨
+    --Èç²»´æÔÚ
     if p_totalresultcount=0 then
       insert into tbl_pcp_total_day (
          calculatedate,wellid,
@@ -361,7 +361,7 @@ begin
          v_VASum,v_VASumMax,v_VASumMin,
          v_PFSum,v_PFSumMax,v_PFSumMin
       );
-      p_msg := 'æ’å…¥æˆåŠŸ';
+      p_msg := '²åÈë³É¹¦';
       commit;
     elsif p_totalresultcount>0 then
       select t.id into p_totalresultid from tbl_pcp_total_day t,tbl_wellinformation t007
@@ -381,15 +381,15 @@ begin
       PFSum=v_PFSum,PFSumMax=v_PFSumMax,PFSumMin=v_PFSumMin
       where t.id=p_totalresultid;
       commit;
-      p_msg := 'æ›´æ–°æˆåŠŸ';
+      p_msg := '¸üĞÂ³É¹¦';
     end if;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_pcp_discretedaily;
 /
@@ -442,27 +442,27 @@ begin
   dbms_output.put_line('p_sql:' || p_sql);
   EXECUTE IMMEDIATE p_sql into p_wellcount;
   if p_wellcount>0 then
-    --è·å–äº•ç¼–å·
+    --»ñÈ¡¾®±àºÅ
     select t.id into p_wellid from tbl_wellinformation t where t.wellName=v_WellName;
     select count(1) into p_prodcount from tbl_pcp_productiondata_latest t where t.wellid=(select t2.id from tbl_wellinformation t2 where t2.wellName=v_WellName);
-    --é”šå®šçŠ¶æ€
+    --Ãª¶¨×´Ì¬
     select count(1) into p_AnchoringStateCount from tbl_code code5 where code5.itemcode='AnchoringState' and code5.itemname=v_AnchoringStateName;
     if p_AnchoringStateCount>0 then
       select code5.itemvalue into p_AnchoringState from tbl_code code5 where code5.itemcode='AnchoringState' and code5.itemname=v_AnchoringStateName;
     end if;
-    --æ³µç­’ç±»å‹
+    --±ÃÍ²ÀàĞÍ
     select count(1) into p_BarrelTypeCount from tbl_code code where code.itemcode='BarrelType' and code.itemname=v_BarrelTypeName;
     if p_BarrelTypeCount>0 then
       select code.itemvalue into p_BarrelType from tbl_code code where code.itemcode='BarrelType' and code.itemname=v_BarrelTypeName;
     end if;
-    --æ³µç±»å‹
+    --±ÃÀàĞÍ
     select count(1) into p_PumpTypeCount from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
     if p_PumpTypeCount>0 then
       select code.itemvalue into p_PumpType from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
     end if;
-    --æ›´æ–°æ•°æ®
+    --¸üĞÂÊı¾İ
     if p_prodcount>0 then
-      --å¼€å§‹æ›´æ–°
+      --¿ªÊ¼¸üĞÂ
       update tbl_pcp_productiondata_latest t
       set t.RunTime=v_RunTime,
           t.CrudeOilDensity=v_CrudeOilDensity,t.WaterDensity=v_WaterDensity,t.NaturalGasRelativeDensity=v_NaturalGasRelativeDensity,t.SaturationPressure=v_SaturationPressure,t.ReservoirDepth=v_ReservoirDepth,t.ReservoirTemperature=v_ReservoirTemperature,
@@ -480,7 +480,7 @@ begin
           t.NetGrossRatio=v_NetGrossRatio,t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
       where t.wellid=p_wellid;
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
     elsif p_prodcount=0 then
       insert into tbl_pcp_productiondata_latest(wellid,AcqTime,runtime,
              crudeoildensity,waterdensity,naturalgasrelativedensity,saturationpressure,reservoirdepth,reservoirtemperature,
@@ -511,15 +511,15 @@ begin
              v_NetGrossRatio
       );
       commit;
-      p_msg := 'æ·»åŠ æˆåŠŸ';
+      p_msg := 'Ìí¼Ó³É¹¦';
     end if;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_pcp_productiondata;
 /
@@ -558,7 +558,7 @@ begin
           t.rodstring=v_RodString
       where t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss') and t.wellid=( select t2.id from tbl_wellinformation t2 where t2.wellname=v_WellName );
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
   elsif p_recordNum=0 then
       select id into p_wellId from tbl_wellinformation t where t.wellname=v_WellName;
       insert into tbl_pcp_rpm_hist(
@@ -591,7 +591,7 @@ begin
           v_RodString
       );
       commit;
-      p_msg := 'æ·»åŠ æˆåŠŸ';
+      p_msg := 'Ìí¼Ó³É¹¦';
       update tbl_pcp_rpm_hist t
              set t.discretedataid=
              ( select id from (select id from tbl_pcp_discrete_hist dis where dis.wellid=p_wellId order by dis.AcqTime desc) where rownum=1 )
@@ -601,7 +601,7 @@ begin
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_pcp_rpm;
 /
@@ -648,10 +648,10 @@ begin
    if p_wellcount>0 then
      select id into p_wellid from tbl_wellinformation t where t.wellName=v_wellName and rownum=1;
 
-     --æŸ¥è¯¢æ˜¯å¦å·²å­˜åœ¨å½“å¤©è®¡ç®—è®°å½•
+     --²éÑ¯ÊÇ·ñÒÑ´æÔÚµ±Ìì¼ÆËã¼ÇÂ¼
     select count(*) into p_totalresultcount from tbl_pcp_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
-    --å¦‚ä¸å­˜åœ¨
+    --Èç²»´æÔÚ
     if p_totalresultcount=0 then
       insert into tbl_pcp_total_day (
          calculatedate,wellid,ResultStatus,
@@ -708,7 +708,7 @@ begin
          v_AvgWatt,v_AvgWattmax,v_AvgWattmin,
          v_WaterPower,v_WaterPowermax,v_WaterPowermin
       );
-      p_msg := 'æ’å…¥æˆåŠŸ';
+      p_msg := '²åÈë³É¹¦';
       commit;
     elsif p_totalresultcount>0 then
       select t.id into p_totalresultid from tbl_pcp_total_day t,tbl_wellinformation t007
@@ -745,15 +745,15 @@ begin
       --t.jsdjrcyldbd=p_jsdjrcyldbd,t.jsdjrcylfbd=p_jsdjrcylfbd,t.jsdjrcyldbdbfb=p_jsdjrcyldbdbfb,t.jsdjrcylfbdbfb=p_jsdjrcylfbdbfb
       where t.id=p_totalresultid;
       commit;
-      p_msg := 'æ›´æ–°æˆåŠŸ';
+      p_msg := '¸üĞÂ³É¹¦';
     end if;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_pcp_rpmdaily;
 /
@@ -778,12 +778,12 @@ begin
          v_memUsedPercent,
          v_tableSpaceSize
       );
-      p_msg := 'æ’å…¥æˆåŠŸ';
+      p_msg := '²åÈë³É¹¦';
       commit;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_resourcemonitoring;
 /
@@ -825,7 +825,7 @@ begin
            t.balanceweight=v_BalanceWeight
        where t.wellid=p_wellId;
        commit;
-    p_msg := 'ä¿®æ”¹æˆåŠŸ';
+    p_msg := 'ĞŞ¸Ä³É¹¦';
     elsif p_recordcount=0 then
        insert into tbl_rpcinformation(
              wellid,manufacturer,model,stroke,crankrotationdirection,offsetangleofcrank,
@@ -837,16 +837,16 @@ begin
             v_BalancePosition,v_BalanceWeight
             );
        commit;
-       p_msg := 'æ·»åŠ æˆåŠŸ';
+       p_msg := 'Ìí¼Ó³É¹¦';
     end if;
   end if;
-  --æ›´æ–°ä½ç½®æ‰­çŸ©å› æ•°
+  --¸üĞÂÎ»ÖÃÅ¤¾ØÒòÊı
   update tbl_rpcinformation t set t.prtf=v_prtf  where t.wellid=( select id from tbl_wellinformation where wellname=v_selectedWellName );
   commit;
-   p_msg := 'æ›´æ–°ä½ç½®æ‰­çŸ©å› æ•°æˆåŠŸ';
+   p_msg := '¸üĞÂÎ»ÖÃÅ¤¾ØÒòÊı³É¹¦';
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpcinformation;
 /
@@ -886,7 +886,7 @@ begin
            t.balanceweight=v_BalanceWeight
        where t.wellid=p_wellId;
        commit;
-    p_msg := 'ä¿®æ”¹æˆåŠŸ';
+    p_msg := 'ĞŞ¸Ä³É¹¦';
     elsif p_recordcount=0 then
        insert into tbl_rpcinformation(
              wellid,manufacturer,model,stroke,crankrotationdirection,offsetangleofcrank,
@@ -898,12 +898,12 @@ begin
             v_BalancePosition,v_BalanceWeight
             );
        commit;
-       p_msg := 'æ·»åŠ æˆåŠŸ';
+       p_msg := 'Ìí¼Ó³É¹¦';
     end if;
   end if;
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpcinformationNoPTF;
 /
@@ -1027,7 +1027,7 @@ begin
           t.signal=v_Signal,t.interval=v_InterVal,t.devicever=v_DeviceVer
       where t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss') and t.wellid=( select t2.id from tbl_wellinformation t2 where t2.wellname=v_WellName );
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
   elsif p_recordNum=0 then
       select id into p_wellId from tbl_wellinformation t where t.wellname=v_WellName;
       insert into tbl_rpc_diagram_hist(
@@ -1110,7 +1110,7 @@ begin
           v_Signal,v_InterVal,v_DeviceVer
       );
       commit;
-      p_msg := 'æ·»åŠ æˆåŠŸ';
+      p_msg := 'Ìí¼Ó³É¹¦';
       update tbl_rpc_diagram_hist t
              set t.discretedataid=
              ( select id from (select id from tbl_rpc_discrete_hist dis where dis.wellid=p_wellId order by dis.AcqTime desc) where rownum=1 )
@@ -1120,7 +1120,7 @@ begin
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_diagram;
 /
@@ -1220,10 +1220,10 @@ begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
      select id into p_wellid from tbl_wellinformation t where t.wellName=v_wellName and rownum=1;
-     --æŸ¥è¯¢æ˜¯å¦å·²å­˜åœ¨å½“å¤©è®¡ç®—è®°å½•
+     --²éÑ¯ÊÇ·ñÒÑ´æÔÚµ±Ìì¼ÆËã¼ÇÂ¼
     select count(*) into p_totalresultcount from tbl_rpc_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
-    --å¦‚ä¸å­˜åœ¨
+    --Èç²»´æÔÚ
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
          calculatedate,wellid,ResultStatus,
@@ -1383,7 +1383,7 @@ begin
          v_DownStrokeWattMax_Avg,v_DownStrokeWattMax_Max,v_DownStrokeWattMax_Min,
          v_DeltaRadius,v_DeltaRadiusMax,v_DeltaRadiusMin
       );
-      p_msg := 'æ’å…¥æˆåŠŸ';
+      p_msg := '²åÈë³É¹¦';
       commit;
     elsif p_totalresultcount>0 then
       select t.id into p_totalresultid from tbl_rpc_total_day t,tbl_wellinformation t007
@@ -1472,15 +1472,15 @@ begin
       t.deltaradius=v_DeltaRadius,t.deltaradiusmax=v_DeltaRadiusMax,t.deltaradiusmin=v_DeltaRadiusMin
       where t.id=p_totalresultid;
       commit;
-      p_msg := 'æ›´æ–°æˆåŠŸ';
+      p_msg := '¸üĞÂ³É¹¦';
     end if;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_diagramdaily;
 /
@@ -1566,12 +1566,12 @@ begin
           t.wellboreslice=v_wellboreSlice
       where t.id=v_id;
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
   dbms_output.put_line('p_msg:' || p_msg);
 
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_diagramresult;
 /
@@ -1608,10 +1608,10 @@ begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
      select id into p_wellid from tbl_wellinformation t where t.wellName=v_wellName and rownum=1;
-     --æŸ¥è¯¢æ˜¯å¦å·²å­˜åœ¨å½“å¤©è®¡ç®—è®°å½•
+     --²éÑ¯ÊÇ·ñÒÑ´æÔÚµ±Ìì¼ÆËã¼ÇÂ¼
     select count(*) into p_totalresultcount from tbl_rpc_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
-    --å¦‚ä¸å­˜åœ¨
+    --Èç²»´æÔÚ
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
          calculatedate,wellid,
@@ -1644,7 +1644,7 @@ begin
          v_VASum,v_VASumMax,v_VASumMin,
          v_PFSum,v_PFSumMax,v_PFSumMin
       );
-      p_msg := 'æ’å…¥æˆåŠŸ';
+      p_msg := '²åÈë³É¹¦';
       commit;
     elsif p_totalresultcount>0 then
       select t.id into p_totalresultid from tbl_rpc_total_day t,tbl_wellinformation t007
@@ -1666,15 +1666,15 @@ begin
       PFSum=v_PFSum,PFSumMax=v_PFSumMax,PFSumMin=v_PFSumMin
       where t.id=p_totalresultid;
       commit;
-      p_msg := 'æ›´æ–°æˆåŠŸ';
+      p_msg := '¸üĞÂ³É¹¦';
     end if;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_discretedaily;
 /
@@ -1705,10 +1705,10 @@ begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
      select t.id into p_wellId from tbl_wellinformation t where t.wellName=v_wellName and rownum=1;
-     --æŸ¥è¯¢æ˜¯å¦å·²å­˜åœ¨å½“å¤©è®¡ç®—è®°å½•
+     --²éÑ¯ÊÇ·ñÒÑ´æÔÚµ±Ìì¼ÆËã¼ÇÂ¼
     select count(*) into p_totalresultcount from tbl_rpc_total_day t
     where t.wellId =p_wellId and t.calculatedate=(to_date(v_date,'yyyy-mm-dd'));
-    --å¦‚ä¸å­˜åœ¨
+    --Èç²»´æÔÚ
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
          wellId,calculatedate,workingconditioncode_e,workingconditionstring_e,
@@ -1743,7 +1743,7 @@ begin
          v_IDegreeBalanceAvg,v_IDegreeBalanceMax,v_IDegreeBalanceMin,
          v_WattDegreeBalanceAvg,v_WattDegreeBalanceMax,v_WattDegreeBalanceMin
       );
-      p_msg := 'æ’å…¥æˆåŠŸ';
+      p_msg := '²åÈë³É¹¦';
       commit;
     elsif p_totalresultcount>0 then
       update tbl_rpc_total_day t set
@@ -1765,16 +1765,16 @@ begin
              t.savetime=sysdate
       where t.wellId =p_wellId and t.calculatedate=(to_date(v_date,'yyyy-mm-dd'));
       commit;
-      p_msg := 'æ›´æ–°æˆåŠŸ';
+      p_msg := '¸üĞÂ³É¹¦';
     end if;
     commit;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_inver_daily;
 /
@@ -1812,15 +1812,15 @@ begin
            t.filtertime_fsdiagram_r=v_FilterTime_FSDiagram_R
     where t.wellid=(select id from tbl_wellinformation where wellname=v_WellName);
     commit;
-    p_msg := 'æ›´æ–°æˆåŠŸ';
+    p_msg := '¸üĞÂ³É¹¦';
   elsif wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_inver_opt;
 /
@@ -1850,21 +1850,21 @@ begin
            t.beltpulleydiameter=v_BeltPulleyDiameter
        where t.wellId=p_wellId;
        commit;
-       p_msg := 'ä¿®æ”¹æˆåŠŸ';
+       p_msg := 'ĞŞ¸Ä³É¹¦';
     elsif p_recordcount=0 then
         insert into tbl_rpc_motor(wellId,manufacturer,model,synchrospeed,beltpulleydiameter)
         values(p_wellId,v_Manufacturer,v_Model,v_SynchroSpeed,v_BeltPulleyDiameter);
         commit;
-        p_msg := 'æ·»åŠ æˆåŠŸ';
+        p_msg := 'Ìí¼Ó³É¹¦';
     end if;
   end if;
-  --æ›´æ–°ä½ç½®æ‰­çŸ©å› æ•°
+  --¸üĞÂÎ»ÖÃÅ¤¾ØÒòÊı
   update tbl_rpc_motor t set t.performancecurver=v_PerformanceCurver  where t.wellId=( select id from tbl_wellinformation where wellname= v_selectedjh);
   commit;
-   p_msg := 'æ›´æ–°ä½ç½®æ‰­çŸ©å› æ•°æˆåŠŸ';
+   p_msg := '¸üĞÂÎ»ÖÃÅ¤¾ØÒòÊı³É¹¦';
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_motor;
 /
@@ -1916,28 +1916,28 @@ begin
   p_sql:='select count(*)  from tbl_wellinformation t where t.wellName='''||v_WellName||''' and t.orgid in ('||v_ids||')';
   EXECUTE IMMEDIATE p_sql into p_wellcount;
   if p_wellcount>0 then
-    --è·å–äº•ç¼–å·
+    --»ñÈ¡¾®±àºÅ
     select t.id into p_wellid from tbl_wellinformation t where t.wellName=v_WellName;
     select count(1) into p_prodcount from tbl_rpc_productiondata_latest t where t.wellid=(select t2.id from tbl_wellinformation t2 where t2.wellName=v_WellName);
 
-    --é”šå®šçŠ¶æ€
+    --Ãª¶¨×´Ì¬
     select count(1) into p_AnchoringStateCount from tbl_code code5 where code5.itemcode='AnchoringState' and code5.itemname=v_AnchoringStateName;
     if p_AnchoringStateCount>0 then
       select code5.itemvalue into p_AnchoringState from tbl_code code5 where code5.itemcode='AnchoringState' and code5.itemname=v_AnchoringStateName;
     end if;
-    --æ³µç­’ç±»å‹
+    --±ÃÍ²ÀàĞÍ
     select count(1) into p_BarrelTypeCount from tbl_code code where code.itemcode='BarrelType' and code.itemname=v_BarrelTypeName;
     if p_BarrelTypeCount>0 then
       select code.itemvalue into p_BarrelType from tbl_code code where code.itemcode='BarrelType' and code.itemname=v_BarrelTypeName;
     end if;
-    --æ³µç±»å‹
+    --±ÃÀàĞÍ
     select count(1) into p_PumpTypeCount from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
     if p_PumpTypeCount>0 then
       select code.itemvalue into p_PumpType from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
     end if;
-    --æ›´æ–°æ•°æ®
+    --¸üĞÂÊı¾İ
     if p_prodcount>0 then
-      --å¼€å§‹æ›´æ–°
+      --¿ªÊ¼¸üĞÂ
       update tbl_rpc_productiondata_latest t
       set t.RunTime=v_RunTime,
           t.CrudeOilDensity=v_CrudeOilDensity,t.WaterDensity=v_WaterDensity,t.NaturalGasRelativeDensity=v_NaturalGasRelativeDensity,t.SaturationPressure=v_SaturationPressure,t.ReservoirDepth=v_ReservoirDepth,t.ReservoirTemperature=v_ReservoirTemperature,
@@ -1955,7 +1955,7 @@ begin
           t.NetGrossRatio=v_NetGrossRatio,t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
       where t.wellid=p_wellid;
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
     elsif p_prodcount=0 then
       insert into tbl_rpc_productiondata_latest(wellid,AcqTime,runtime,
              crudeoildensity,waterdensity,naturalgasrelativedensity,saturationpressure,reservoirdepth,reservoirtemperature,
@@ -1986,15 +1986,15 @@ begin
              v_NetGrossRatio
       );
       commit;
-      p_msg := 'æ·»åŠ æˆåŠŸ';
+      p_msg := 'Ìí¼Ó³É¹¦';
     end if;
   elsif p_wellcount=0 then
-    p_msg := 'äº•å·ä¸å­˜åœ¨';
+    p_msg := '¾®ºÅ²»´æÔÚ';
   end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_productiondata;
 /
@@ -2046,12 +2046,12 @@ begin
       set t.resultstatus=2
       where t.productiondataid=( select t2.productiondataid from tbl_rpc_diagram_hist t2 where t2.id=v_id );
       commit;
-      p_msg := 'ä¿®æ”¹æˆåŠŸ';
+      p_msg := 'ĞŞ¸Ä³É¹¦';
       dbms_output.put_line('p_msg:' || p_msg);
 
 Exception
   When Others Then
-    p_msg :=p_msg||','|| Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_recalculateparam;
 /
@@ -2091,19 +2091,19 @@ begin
      t.resultstatus=2
      where t.id=v_recordId;
      commit;
-     p_msg:='æ›´æ–°æˆåŠŸå¹¶é‡ç½®è¯Šæ–­è®¡äº§æ ‡å¿—';
+     p_msg:='¸üĞÂ³É¹¦²¢ÖØÖÃÕï¶Ï¼Æ²ú±êÖ¾';
      dbms_output.put_line('p_msg:' || p_msg);
   elsif v_ResultStatus<>1 then
      update tbl_rpc_diagram_hist t set
      t.inverresultstatus=v_ResultStatus
      where t.id=v_recordId;
      commit;
-     p_msg:='æ›´æ–°åæ¼”è®¡ç®—å¤±è´¥ç»“æœ';
+     p_msg:='¸üĞÂ·´Ñİ¼ÆËãÊ§°Ü½á¹û';
      dbms_output.put_line('p_msg:' || p_msg);
   end if;
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_reinverdiagram;
 /
@@ -2132,7 +2132,7 @@ begin
       insert into tbl_rpc_diagram_hist(wellid,AcqTime,stroke,spm,position_curve,load_curve,power_curve,current_curve,datasource,productiondataid,resultstatus)
       values(p_wellId,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),v_stroke,v_spm,v_sData,v_fData,v_wattData,v_iData,2,p_productiondataId,0);
       commit;
-      p_msg := 'æ·»åŠ æˆåŠŸ';
+      p_msg := 'Ìí¼Ó³É¹¦';
     elsif p_diagramCount>0 then
       update tbl_rpc_diagram_hist t
       set t.stroke=v_stroke,t.spm=v_spm,
@@ -2142,14 +2142,14 @@ begin
           t.resultstatus=2
       where t.wellid=p_wellId and t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
       commit;
-      p_msg := 'æ›´æ–°æˆåŠŸ';
+      p_msg := '¸üĞÂ³É¹¦';
     end if;
   elsif p_wellCount=0 then
-    p_msg:='äº•å·ä¸å­˜åœ¨';
+    p_msg:='¾®ºÅ²»´æÔÚ';
   end if;
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_rpc_uploaddiagram;
 /
@@ -2180,20 +2180,20 @@ begin
            t.x=v_X,t.y=v_Y,t.z=v_Z,t.savetime=sysdate
        where t.wellId=p_wellId;
        commit;
-       p_msg := 'ä¿®æ”¹æˆåŠŸ';
+       p_msg := 'ĞŞ¸Ä³É¹¦';
     elsif p_recordcount=0 then
         insert into tbl_wellboretrajectory(wellId,resultstatus,
                measuringdepth,verticaldepth,deviationangle,azimuthangle,
                x,y,z)
         values(p_wellId,v_ResultStatus,v_measuringDepth,v_verticalDepth,v_deviationAngle,v_azimuthAngle,v_X,v_Y,v_Z);
         commit;
-        p_msg := 'æ·»åŠ æˆåŠŸ';
+        p_msg := 'Ìí¼Ó³É¹¦';
     end if;
   end if;
 
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_WellboreTrajectory;
 /
@@ -2225,7 +2225,7 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
   p_prototalCount number :=0;
 begin
 --EXECUTE IMMEDIATE 'delete from t_112_distretealarmlimit t where t.jbh in( '||v_ids||')';
-  --éªŒè¯æƒé™
+  --ÑéÖ¤È¨ÏŞ
   p_sql:='select count(*)  from tbl_org t where t.org_name is not null and  t.org_id='||v_orgId||' and t.org_id in ('||v_ids||')';
   dbms_output.put_line('p_sql:' || p_sql);
   select count(1) into wellamount from tbl_wellinformation;
@@ -2254,7 +2254,7 @@ begin
                t.sortnum=v_sortNum
            Where t.wellName=v_wellName;
            commit;
-           p_msg := 'ä¿®æ”¹æˆåŠŸ';
+           p_msg := 'ĞŞ¸Ä³É¹¦';
         elsif wellcount=0 then
               if wellamount<200 then
                   insert into tbl_wellinformation(wellName,drivercode,protocol,driveraddr,driverid,
@@ -2269,22 +2269,22 @@ begin
                      t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1)
                   Where t.wellName=v_wellName;
                   commit;
-                  --åŒæ—¶å‘8å·è¡¨å¢åŠ è®°å½•
+                  --Í¬Ê±Ïò8ºÅ±íÔö¼Ó¼ÇÂ¼
                   --insert into t_outputwellproduction_rt(wellid) select t2.id from tbl_wellinformation t2 where t2.wellName=v_wellName;
                   --commit;
-                  p_msg := 'æ·»åŠ æˆåŠŸ';
+                  p_msg := 'Ìí¼Ó³É¹¦';
               else
-                  p_msg := 'è¶…å‡ºäº•æ•°é™åˆ¶';
+                  p_msg := '³¬³ö¾®ÊıÏŞÖÆ';
               end if;
            end if;
         elsif orgcount=0 then
-           p_msg := 'æ— æƒé™';
+           p_msg := 'ÎŞÈ¨ÏŞ';
      end if;
   dbms_output.put_line('p_msg:' || p_msg);
 
 Exception
   When Others Then
-    p_msg := Sqlerrm || ',' || 'æ“ä½œå¤±è´¥';
+    p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_wellinformation;
 /

@@ -63,7 +63,7 @@ public class ResourceMonitoringTask {
 		String cpuUsedPercentValue="";
 		String memUsedPercent="";
 		String memUsedPercentValue="";
-		float tableSpaceSize=getTableSpaceSize();
+		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -109,7 +109,7 @@ public class ResourceMonitoringTask {
 			cs.setString(3, appVersion);
 			cs.setString(4, cpuUsedPercentValue);
 			cs.setString(5, memUsedPercentValue);
-			cs.setFloat(6, tableSpaceSize);
+			cs.setFloat(6, tableSpaceInfo.getUsed());
 			cs.executeUpdate();
 			if(cs!=null){
 				cs.close();
@@ -123,7 +123,8 @@ public class ResourceMonitoringTask {
 				+ "\"appVersion\":\""+appVersion+"\","
 				+ "\"cpuUsedPercent\":\""+cpuUsedPercent+"\","
 				+ "\"memUsedPercent\":\""+memUsedPercent+"\","
-				+ "\"tableSpaceSize\":\""+(tableSpaceSize+"Mb")+"\""
+				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
+				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent2()+"%")+"\""
 				+ "}";
 		infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
 	}
@@ -135,7 +136,9 @@ public class ResourceMonitoringTask {
 	
 	public static  float getTableSpaceSize() throws SQLException{  
         float result=0;
-        String sql="SELECT tablespace_name,file_id,file_name,round(bytes / (1024 * 1024), 2) total_space FROM dba_data_files where tablespace_name='AGILE_DATA'";
+        String sql="SELECT tablespace_name,file_id,file_name,round(bytes / (1024 * 1024), 2) total_space "
+        		+ " FROM dba_data_files t"
+        		+ " where tablespace_name='AGILE_DATA'";
         conn=OracleJdbcUtis.getConnection();
         if(conn==null){
         	return -1;
@@ -149,4 +152,96 @@ public class ResourceMonitoringTask {
         return result;
     }
 	
+	public static  TableSpaceInfo getTableSpaceInfo() throws SQLException{
+        String sql="SELECT a.tablespace_name,"
+        		+ "round(total / (1024 * 1024), 2) total,"
+        		+ "round(free / (1024 * 1024), 2) free,"
+        		+ "round((total - free) / (1024 * 1024), 2) used,"
+        		+ " round((total - free) / total, 4) * 100 usedpercent,"
+        		+ " round((total - free) / (1024*1024*1024*32), 4) * 100 usedpercent2 "
+        		+ " FROM  "
+        		+ " (SELECT tablespace_name, SUM(bytes) free FROM dba_free_space GROUP BY tablespace_name) a,  "
+        		+ " (SELECT file_id,tablespace_name, SUM(bytes) total FROM dba_data_files GROUP BY file_id,tablespace_name) b   "
+        		+ " WHERE a.tablespace_name = b.tablespace_name "
+        		+ " and Upper(a.tablespace_name) like 'AGILE_DATA%' "
+        		+ " order by b.file_id ";
+        TableSpaceInfo tableSpaceInfo=new TableSpaceInfo();
+        conn=OracleJdbcUtis.getConnection();
+        if(conn==null){
+        	return tableSpaceInfo;
+        }
+		pstmt = conn.prepareStatement(sql); 
+		rs=pstmt.executeQuery();
+		while(rs.next()){
+			tableSpaceInfo.setTableSpaceName(rs.getString(1));
+			tableSpaceInfo.setTotal(tableSpaceInfo.getTotal()+1024*32);
+			tableSpaceInfo.setFree(tableSpaceInfo.getFree()+rs.getFloat(3));
+			tableSpaceInfo.setUsed(tableSpaceInfo.getUsed()+rs.getFloat(4));
+			tableSpaceInfo.setUsedPercent2(StringManagerUtils.stringToFloat((tableSpaceInfo.getUsed()*100/tableSpaceInfo.getTotal())+"", 2));
+			
+//			tableSpaceInfo=new TableSpaceInfo(rs.getString(1),rs.getFloat(2),rs.getFloat(3),rs.getFloat(4),rs.getFloat(5),rs.getFloat(6));
+		}
+		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+        return tableSpaceInfo;
+    }
+	
+	public static class TableSpaceInfo{
+		public String tableSpaceName;
+		public float total=0;
+		public float free=0;
+		public float used=0;
+		public float usedPercent=0;
+		public float usedPercent2=0;
+		
+		public TableSpaceInfo() {
+			super();
+		}
+		public TableSpaceInfo(String tableSpaceName, float total, float free, float used, float usedPercent,
+				float usedPercent2) {
+			super();
+			this.tableSpaceName = tableSpaceName;
+			this.total = total;
+			this.free = free;
+			this.used = used;
+			this.usedPercent = usedPercent;
+			this.usedPercent2 = usedPercent2;
+		}
+		public float getUsedPercent2() {
+			return usedPercent2;
+		}
+		public void setUsedPercent2(float usedPercent2) {
+			this.usedPercent2 = usedPercent2;
+		}
+		public String getTableSpaceName() {
+			return tableSpaceName;
+		}
+		public void setTableSpaceName(String tableSpaceName) {
+			this.tableSpaceName = tableSpaceName;
+		}
+		public float getTotal() {
+			return total;
+		}
+		public void setTotal(float total) {
+			this.total = total;
+		}
+		public float getFree() {
+			return free;
+		}
+		public void setFree(float free) {
+			this.free = free;
+		}
+		public float getUsed() {
+			return used;
+		}
+		public void setUsed(float used) {
+			this.used = used;
+		}
+		public float getUsedPercent() {
+			return usedPercent;
+		}
+		public void setUsedPercent(float usedPercent) {
+			this.usedPercent = usedPercent;
+		}
+		
+	}
 }

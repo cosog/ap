@@ -1831,6 +1831,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	
 	public String getResourceProbeHistoryCurveData(String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
+		if("tableSpaceSize".equalsIgnoreCase(itemCode)){
+			itemCode="round("+itemCode+"/(1024*32),4)*100 as "+itemCode;
+		}
 	
 		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from tbl_resourcemonitoring t "
 				+ " where t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') +1 "

@@ -23,9 +23,9 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                 		xtype: 'button',
                 		width:180,
                         id:"CPUUsedPercentLabel_id",
-                        text: 'CPU利用率:',
+                        text: 'CPU使用率:',
                         handler: function (v, o) {
-                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("CPU利用率(%)");
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("CPU使用率(%)");
                             Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("cpuUsedPercent");
                             var itemCode= Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
@@ -51,9 +51,9 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                 		xtype: 'button',
                 		width:150,
                         id:"tableSpaceSizeProbeLabel_id",
-                        text: '表空间大小:',
+                        text: '表空间使用率:',
                         handler: function (v, o) {
-                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("表空间大小(Mb)");
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("表空间使用率(%)");
                             Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("tableSpaceSize");
                             var itemCode= Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
@@ -175,9 +175,9 @@ function probeWebsocketOnMessage(evt) {
 	if (activeId === "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
 //		Ext.getCmp("webSocketTest_Id").setValue(evt.data);
 		var data=Ext.JSON.decode(evt.data);
-		Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU利用率:"+data.cpuUsedPercent);
+		Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU使用率:"+data.cpuUsedPercent);
 		Ext.getCmp("memUsedPercentLabel_id").setText("内存使用率:"+data.memUsedPercent);
-		Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间大小:"+data.tableSpaceSize);
+		Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间使用率:"+data.tableSpaceUsedPercent);
 		Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK运行状态:"+data.appRunStatus);
 		Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
 	}
@@ -220,7 +220,7 @@ ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, di
     		
     	}
     	legend=true;
-    	ytitle='CPU利用率(%)';
+    	ytitle='CPU使用率(%)';
     }
     var series = "[";
     for (var i = 0; i < legendName.length; i++) {

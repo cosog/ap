@@ -223,16 +223,7 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     		            }
     		    	}); 
     				
-    				var curWwwPath=window.document.location.href;
-    				//获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
-    				var pathName=window.document.location.pathname;
-    				var pos=curWwwPath.indexOf(pathName);
-    				//获取主机地址，如： http://localhost:8083
-    				var localhostPaht=curWwwPath.substring(0,pos);
-    				//获取带"/"的项目名，如：/uimcardprj
-    				var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
-    				var baseRoot = localhostPaht+projectName;
-    				var baseUrl=baseRoot.replace("https","ws").replace("http","ws");
+    				var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
     				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
 //    				baseUrl="ws://127.0.0.1:16100/ap";
     				if ('WebSocket' in window) {

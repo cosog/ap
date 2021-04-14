@@ -312,13 +312,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
     				a9RawDataWebsocketClose(a9RawDataWebsocket);
     			},
     			afterrender: function ( panel, eOpts) {
-    				var curWwwPath=window.document.location.href;
-    				var pathName=window.document.location.pathname;
-    				var pos=curWwwPath.indexOf(pathName);
-    				var localhostPaht=curWwwPath.substring(0,pos);
-    				var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
-    				var baseRoot = localhostPaht+projectName;
-    				var baseUrl=baseRoot.replace("https","ws").replace("http","ws");
+    				var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
     				
     				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
     				if ('WebSocket' in window) {

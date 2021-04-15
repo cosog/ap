@@ -33,6 +33,7 @@ import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.config.WebSocketByJavax;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -126,12 +127,23 @@ public class ResourceMonitoringTask {
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent2()+"%")+"\""
 				+ "}";
-		infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
+		try {
+			infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
+			infoHandler2().sendMessageToBy("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", sendData);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Bean//这个注解会从Spring容器拿出Bean
     public static SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
+    }
+	
+	@Bean//这个注解会从Spring容器拿出Bean
+    public static WebSocketByJavax infoHandler2() {
+        return new WebSocketByJavax();
     }
 	
 	public static  float getTableSpaceSize() throws SQLException{  

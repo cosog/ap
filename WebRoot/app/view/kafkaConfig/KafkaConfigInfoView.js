@@ -225,10 +225,9 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     				
     				var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
     				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
-//    				baseUrl="ws://127.0.0.1:16100/ap";
     				if ('WebSocket' in window) {
-//    				    websocket = new WebSocket(baseUrl+"/websocket/socketServer?module_Code=kafkaConfig");
-    					websocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+//    					websocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+    					websocket = new ReconnectingWebSocket(baseUrl+"/websocketServer/"+moduleCode);
     					websocket.debug = true;
     					
     					websocket.reconnectInterval = 1000;
@@ -245,10 +244,12 @@ Ext.define('AP.view.kafkaConfig.KafkaConfigInfoView', {
     					
     				}
     				else if ('MozWebSocket' in window) {
-    				    websocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+//    				    websocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+    				    websocket = new MozWebSocket(baseUrl+"/websocketServer/"+moduleCode);
     				}
     				else {
-    				    websocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
+//    				    websocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
+    				    websocket = new SockJS(getBaseUrl()+"/websocketServer/"+moduleCode);
     				}
     				websocket.onopen = onOpen;
     				websocket.onmessage = onMessage;

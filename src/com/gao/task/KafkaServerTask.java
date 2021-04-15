@@ -1,6 +1,7 @@
 package com.gao.task;
 
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import com.gao.model.drive.KafkaConfig;
 import com.gao.utils.Config;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.config.WebSocketByJavax;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -145,6 +147,10 @@ public class KafkaServerTask {
     public static SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
     }
+	@Bean//这个注解会从Spring容器拿出Bean
+    public static WebSocketByJavax infoHandler2() {
+        return new WebSocketByJavax();
+    }
 	
 	public static class KafkaDataAnalysisThread extends Thread{
 		private ConsumerRecord<String, String> record;
@@ -258,16 +264,40 @@ public class KafkaServerTask {
         		}
         	}else if(UpConfigTopic.equalsIgnoreCase(record.topic())){
         		String sendData="1##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+        		try {
+        			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}else if(UpModelTopic.equalsIgnoreCase(record.topic())){
         		String sendData="7##"+record.key()+"##"+StringManagerUtils.jsonStringFormat(record.value());
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+        		try {
+        			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}else if(UpFreqTopic.equalsIgnoreCase(record.topic())){
         		String sendData="5##"+record.key()+"##"+record.value();
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+        		try {
+        			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}else if(UpRTCTopic.equalsIgnoreCase(record.topic())){
         		String sendData="6##"+record.key()+"##"+record.value();
-        		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+        		try {
+        			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
+					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         	}else if(UpOnlineTopic.equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
         		//上线数据
         		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();

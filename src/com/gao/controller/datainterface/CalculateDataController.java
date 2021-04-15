@@ -51,6 +51,7 @@ import com.gao.utils.Constants;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.config.WebSocketByJavax;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -78,6 +79,10 @@ public class CalculateDataController extends BaseController{
     public SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
     }	
+	@Bean//这个注解会从Spring容器拿出Bean
+    public static WebSocketByJavax infoHandler2() {
+        return new WebSocketByJavax();
+    }
 	
 	@RequestMapping("/getBatchCalculateTime")
 	public String getBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
@@ -571,6 +576,9 @@ public class CalculateDataController extends BaseController{
 		}
 		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 		infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+		
+		infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+		infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

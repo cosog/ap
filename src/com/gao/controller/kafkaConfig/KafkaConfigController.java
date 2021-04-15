@@ -32,6 +32,7 @@ import com.gao.utils.MarkdownEntity;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.config.WebSocketByJavax;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -61,6 +62,10 @@ public class KafkaConfigController extends BaseController {
 	@Bean//这个注解会从Spring容器拿出Bean
     public SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
+    }
+	@Bean//这个注解会从Spring容器拿出Bean
+    public static WebSocketByJavax infoHandler2() {
+        return new WebSocketByJavax();
     }
 	
 	@RequestMapping("/loadDeviceComboxList")

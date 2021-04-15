@@ -28,8 +28,22 @@ Ext.define('AP.view.websocketTest.WebSocketTestInfoView', {
     			handler: function (v, o) {
     				if('WebSocket' in window){
     					var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
-    					websocketTestClient = new WebSocket(baseUrl+"/websocketTest/user000");
-    					console.log("link success");
+//    					websocketTestClient = new WebSocket(baseUrl+"/websocketTest/user000");
+//    					console.log("link success");
+    					
+    					websocketTestClient = new ReconnectingWebSocket(baseUrl+"/websocketServer/user000");
+    					websocketTestClient.debug = true;
+    					
+    					websocketTestClient.reconnectInterval = 1000;
+    					websocketTestClient.timeoutInterval = 2000;
+    					
+    					websocketTestClient.maxReconnectInterval = 30000;
+    					
+    					websocketTestClient.reconnectDecay=1.5;
+    					
+    					websocketTestClient.automaticOpen = true;
+    					
+    					
     					//连接发生错误的回调方法
       			      websocketTestClient.onerror = function(){
       			          setMessageInnerHTML("error");

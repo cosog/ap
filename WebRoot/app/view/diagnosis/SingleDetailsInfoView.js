@@ -125,26 +125,22 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
         				var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
         				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
         				if ('WebSocket' in window) {
-        					probeWebsocketClient = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+//        					probeWebsocketClient = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+        					probeWebsocketClient = new ReconnectingWebSocket(baseUrl+"/websocketServer/"+moduleCode);
         					probeWebsocketClient.debug = true;
-        					
         					probeWebsocketClient.reconnectInterval = 1000;
         					probeWebsocketClient.timeoutInterval = 2000;
-        					
         					probeWebsocketClient.maxReconnectInterval = 30000;
-        					
         					probeWebsocketClient.reconnectDecay=1.5;
-        					
         					probeWebsocketClient.automaticOpen = true;
-        					
 //        					probeWebsocketClient.maxReconnectAttempts = 5;
-        					
-        					
         				}
         				else if ('MozWebSocket' in window) {
-        					probeWebsocketClient = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+//        					probeWebsocketClient = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+        					probeWebsocketClient = new MozWebSocket(baseUrl+"/websocketServer/"+moduleCode);
         				}else {
-        					probeWebsocketClient = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
+//        					probeWebsocketClient = new SockJS(getBaseUrl()+"/sockjs/socketServer?module_Code="+moduleCode);
+        					probeWebsocketClient = new SockJS(getBaseUrl()+"/websocketServer/"+moduleCode);
         				}
         				probeWebsocketClient.onopen = probeWebsocketOnOpen;
         				probeWebsocketClient.onmessage = probeWebsocketOnMessage;
@@ -167,12 +163,14 @@ function probeWebsocketOnMessage(evt) {
 	
 	if (activeId === "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
 //		Ext.getCmp("webSocketTest_Id").setValue(evt.data);
-		var data=Ext.JSON.decode(evt.data);
-		Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU使用率:"+data.cpuUsedPercent);
-		Ext.getCmp("memUsedPercentLabel_id").setText("内存使用率:"+data.memUsedPercent);
-		Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间使用率:"+data.tableSpaceUsedPercent);
-		Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK运行状态:"+data.appRunStatus);
-		Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
+		if(evt.data!='Connect successfully!'){
+			var data=Ext.JSON.decode(evt.data);
+			Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU使用率:"+data.cpuUsedPercent);
+			Ext.getCmp("memUsedPercentLabel_id").setText("内存使用率:"+data.memUsedPercent);
+			Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间使用率:"+data.tableSpaceUsedPercent);
+			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK运行状态:"+data.appRunStatus);
+			Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
+		}
 	}
 }
 function probeWebsocketOnOpen() {

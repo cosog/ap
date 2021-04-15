@@ -316,7 +316,8 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
     				
     				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
     				if ('WebSocket' in window) {
-    					a9RawDataWebsocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);//kafkaConfig_A9RawDataGridPanel
+//    					a9RawDataWebsocket = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+    					a9RawDataWebsocket = new ReconnectingWebSocket(baseUrl+"/websocketServer/"+moduleCode);
     					a9RawDataWebsocket.debug = true;
     					
     					a9RawDataWebsocket.reconnectInterval = 1000;
@@ -333,10 +334,12 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
     					
     				}
     				else if ('MozWebSocket' in window) {
-    					a9RawDataWebsocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+//    					a9RawDataWebsocket = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
+    					a9RawDataWebsocket = new MozWebSocket(baseUrl+"/websocketServer/"+moduleCode);
     				}
     				else {
-    					a9RawDataWebsocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
+//    					a9RawDataWebsocket = new SockJS(baseRoot+"/sockjs/socketServer?module_Code="+moduleCode);
+    					a9RawDataWebsocket = new SockJS(getBaseUrl()+"/websocketServer/"+moduleCode);
     				}
     				a9RawDataWebsocket.onopen = a9RawDataWebsocketOnOpen;
     				a9RawDataWebsocket.onmessage = a9RawDataWebsocketOnMessage;

@@ -74,6 +74,7 @@ import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.websocket.config.WebSocketByJavax;
 import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -113,6 +114,10 @@ public class GraphicalUploadController extends BaseController {
 	@Bean//这个注解会从Spring容器拿出Bean
     public SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
+    }
+	@Bean//这个注解会从Spring容器拿出Bean
+    public static WebSocketByJavax infoHandler2() {
+        return new WebSocketByJavax();
     }
 	
 	/**<p>描述：显示功图类型列表</p>
@@ -1429,6 +1434,9 @@ public class GraphicalUploadController extends BaseController {
 				
 				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+				
+				infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+				infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 			}
 			
 		}
@@ -1457,6 +1465,9 @@ public class GraphicalUploadController extends BaseController {
 			raphicalUploadService.saveKafkaUpRawData(kafkaUpRawData);
 			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 			infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+			
+			infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+			infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 		}
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -1548,6 +1559,9 @@ public class GraphicalUploadController extends BaseController {
 				}
 				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+				
+				infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+				infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 			}
 			
 		}
@@ -1640,6 +1654,9 @@ public class GraphicalUploadController extends BaseController {
 				
 				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+				
+				infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+				infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 			}
 			
 		}

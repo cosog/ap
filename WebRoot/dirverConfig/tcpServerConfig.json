@@ -1,0 +1,4 @@
+{
+    "Port": 19100,
+    "HeartbeatPacket":"AA01***********0D"
+}

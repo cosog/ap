@@ -391,7 +391,7 @@ public class KafkaConfigController extends BaseController {
 		if(driveConfig==null){
 			Gson gson = new Gson();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(driverConfigData, reflectType);
@@ -459,7 +459,7 @@ public class KafkaConfigController extends BaseController {
 		if(driveConfig==null){
 			Gson gson = new Gson();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(driverConfigData, reflectType);

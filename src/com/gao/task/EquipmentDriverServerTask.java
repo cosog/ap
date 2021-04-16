@@ -63,18 +63,16 @@ public class EquipmentDriverServerTask {
 	public static ServerSocket beeTechServerSocket;
 	public static ServerSocket sunMoonServerSocket;
 	public static boolean exit=false;
-	//单例模式
-	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
+	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
-		
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;
 		do{
@@ -83,14 +81,12 @@ public class EquipmentDriverServerTask {
 				Thread.sleep(5*1000);
 			}
 		}while(!reg);
-		
 		do{
 			reg=init();//初始化井信息
 			if(!reg){
 				Thread.sleep(5*1000);
 			}
 		}while(!reg);
-		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
@@ -126,8 +122,6 @@ public class EquipmentDriverServerTask {
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=200 and t.liftingType<300 "
-//				+ " and t.wellname='南V10-6'"
-//				+ " and t.orgid=321"
 				+ " order by t.sortNum";
 		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
@@ -143,7 +137,6 @@ public class EquipmentDriverServerTask {
 				+ " left outer join  tbl_pcp_rpm_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=400 and t.liftingType<500"
-//				+ " and t.orgid=321"
 				+ " order by t.sortNum";
 		String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String resetCommStatus="update tbl_rpc_discrete_latest t set t.commstatus=0  ";
@@ -157,7 +150,6 @@ public class EquipmentDriverServerTask {
 					try {
 						clientUnitList.get(i).socket.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						return false;
 					}
@@ -176,8 +168,8 @@ public class EquipmentDriverServerTask {
 		
 		try {
 			stmt=conn.createStatement();
-//			int result=stmt.executeUpdate(resetCommStatus);
-//			result=stmt.executeUpdate(resetPCPCommStatus);
+			int result=stmt.executeUpdate(resetCommStatus);
+			result=stmt.executeUpdate(resetPCPCommStatus);
 			System.out.println("读取井初始化信息");
 			pstmt = conn.prepareStatement(sql); 
 			System.out.println("读取抽油机井初始化信息成功");
@@ -211,7 +203,6 @@ public class EquipmentDriverServerTask {
 						}
 					}
 				}
-				
 				for(Entry<String, Object> entry:acquisitionUnitMap.entrySet()){
 					AcquisitionUnitData acquisitionUnitData=(AcquisitionUnitData)entry.getValue();
 					if(acquisitionUnitData.getAcquisitionUnitCode().equalsIgnoreCase(rs.getString(11))){
@@ -219,17 +210,15 @@ public class EquipmentDriverServerTask {
 						break;
 					}
 				}
-				
 				unit.lastDisAcqTime=rs.getString(12);
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
-				unit.lastCommRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(16));//rs.getString(16);
+				unit.lastCommRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(16));
 				unit.lastRunStatus=rs.getInt(17);
 				unit.lastRunTime=rs.getFloat(18);
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
-				unit.lastRunRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(20));//rs.getString(20);
-				
+				unit.lastRunRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(20));
 				unit.lastTotalKWattH=rs.getFloat(21);
 				unit.lastTotalPKWattH=rs.getFloat(22);
 				unit.lastTotalNKWattH=rs.getFloat(23);
@@ -247,9 +236,7 @@ public class EquipmentDriverServerTask {
 				unit.protocol=rs.getInt(35);
 				units.add(unit);
 				clientUnitList.add(clientUnit);
-				
 			}
-			
 			pstmt = conn.prepareStatement(pcpInitSql); 
 			System.out.println("读取螺杆泵井初始化信息成功");
 			rs=pstmt.executeQuery();
@@ -280,7 +267,6 @@ public class EquipmentDriverServerTask {
 						break;
 					}
 				}
-				
 				for(Entry<String, Object> entry:acquisitionUnitMap.entrySet()){
 					AcquisitionUnitData acquisitionUnitData=(AcquisitionUnitData)entry.getValue();
 					if(acquisitionUnitData.getAcquisitionUnitCode().equalsIgnoreCase(rs.getString(11))){
@@ -292,12 +278,11 @@ public class EquipmentDriverServerTask {
 				unit.lastCommStatus=rs.getInt(13);
 				unit.lastCommTime=rs.getFloat(14);
 				unit.lastCommTimeEfficiency=rs.getFloat(15);
-				unit.lastCommRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(16));//rs.getString(16);
+				unit.lastCommRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(16));
 				unit.lastRunStatus=rs.getInt(17);
 				unit.lastRunTime=rs.getFloat(18);
 				unit.lastRunTimeEfficiency=rs.getFloat(19);
-				unit.lastRunRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(20));//rs.getString(20);
-				
+				unit.lastRunRange=StringManagerUtils.CLOBtoString((CLOB) rs.getClob(20));
 				unit.lastTotalKWattH=rs.getFloat(21);
 				unit.lastTotalPKWattH=rs.getFloat(22);
 				unit.lastTotalNKWattH=rs.getFloat(23);
@@ -319,7 +304,6 @@ public class EquipmentDriverServerTask {
 				
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			OracleJdbcUtis.closeDBConnection(conn, stmt, pstmt, rs);
 			return false;
@@ -341,7 +325,6 @@ public class EquipmentDriverServerTask {
 				sunMoonServerSocket=null;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -360,7 +343,6 @@ public class EquipmentDriverServerTask {
 					wellList+="'"+wellHandsontableChangedData.getUpdatelist().get(i).getWellName()+"',";
 				}
 			}
-			
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
 					wellList+="'"+wellHandsontableChangedData.getInsertlist().get(i).getWellName()+"',";
@@ -370,7 +352,6 @@ public class EquipmentDriverServerTask {
 		if(wellList.endsWith(",")){
 			wellList=wellList.substring(0, wellList.length()-1);
 		}
-		
 		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,t.acqcycle_diagram,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.runtimeefficiencysource,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.drivercode,t.unitcode,t.protocol "
@@ -385,7 +366,6 @@ public class EquipmentDriverServerTask {
 		if(conn==null){
 			return 0;
 		}
-		
 		pstmt = conn.prepareStatement(sql); 
 		rs=pstmt.executeQuery();
 		while(units!=null&&rs.next()){
@@ -414,7 +394,6 @@ public class EquipmentDriverServerTask {
 							}
 						}
 					}
-					
 					units.get(i).driverAddr=rs.getString(3)==null?"":rs.getString(3);
 					units.get(i).dirverId=rs.getString(4)==null?"":rs.getString(4);
 					units.get(i).acqCycle_Diagram=60*1000*Short.parseShort(rs.getString(5));
@@ -437,7 +416,6 @@ public class EquipmentDriverServerTask {
 							}
 						}
 					}
-					
 					for(Entry<String, Object> entry:acquisitionUnitMap.entrySet()){
 						AcquisitionUnitData acquisitionUnitData=(AcquisitionUnitData)entry.getValue();
 						if(acquisitionUnitData.getAcquisitionUnitCode().equals(rs.getString(11))){
@@ -476,7 +454,6 @@ public class EquipmentDriverServerTask {
 						break;
 					}
 				}
-				
 				for(Entry<String, Object> entry:acquisitionUnitMap.entrySet()){
 					AcquisitionUnitData acquisitionUnitData=(AcquisitionUnitData)entry.getValue();
 					if(acquisitionUnitData.getAcquisitionUnitCode().equals(rs.getString(11))){
@@ -486,7 +463,6 @@ public class EquipmentDriverServerTask {
 				}
 				units.add(unit);
 				clientUnitList.add(clientUnit);
-				
 				for(int j=0;j<clientUnitList.size();j++){
 					boolean isExit=false;
 					if(clientUnitList.get(j).socket!=null){
@@ -536,56 +512,56 @@ public class EquipmentDriverServerTask {
 		String DriverConfigData="";
 		java.lang.reflect.Type type=null;
 		//添加安控驱动配置
-		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(EtrolRTUDrive.getDriverCode(), EtrolRTUDrive);
 		
 		//添加必创驱动配置
-		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
 		
 		//添加蚌埠日月驱动配置
-		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
 		
 		//添加中科奥维驱动配置
-		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
 		
 		//添加A11驱动配置
-		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
 		
 		//添加四化驱动配置
-		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
 		
 		//添加MQTT驱动配置
-		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
 		
 		//添加Kafka
-		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<KafkaConfig>() {}.getType();
 		KafkaConfig kafkaConfig=gson.fromJson(DriverConfigData, type);
@@ -603,7 +579,6 @@ public class EquipmentDriverServerTask {
 		if(conn==null){
 			return false;
 		}
-		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
@@ -618,10 +593,6 @@ public class EquipmentDriverServerTask {
 				}
 				acquisitionUnitData.setAcquisitionUnitCode(rs.getString(1));
 				acquisitionUnitData.setAcquisitionUnitName(rs.getString(2));
-//				String itemsSql="select t2.itemcode,t2.itemname "
-//						+ " from tbl_acq_item2group_conf t,tbl_acq_item_conf t2,tbl_acq_unit_conf t3 "
-//						+ " where t.itemid=t2.id and  t.unitid=t3.id and t3.unit_code= '"+acquisitionUnitData.getAcquisitionUnitCode()+"'  "
-//						+ " and t2.id not in(select t4.parentid from tbl_acq_item_conf t4 )  order by t2.id";
 				String itemsSql="select t.itemcode,t.itemname "
 						+ " from tbl_acq_item_conf t,tbl_acq_item2group_conf t2,tbl_acq_group_conf t3,tbl_acq_group2unit_conf t4,tbl_acq_unit_conf t5 "
 						+ " where t.id=t2.itemid and t2.groupid=t3.id and t3.id=t4.groupid and t4.unitid=t5.id "
@@ -632,7 +603,6 @@ public class EquipmentDriverServerTask {
 				while(itemRs.next()){
 					if("RunStatus".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setRunStatus(1);
-					
 					if("BalaceControlStatus".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setBalaceControlStatus(1);
 					if("BalanceControlMode".equalsIgnoreCase(itemRs.getString(1)))
@@ -653,7 +623,6 @@ public class EquipmentDriverServerTask {
 						acquisitionUnitData.setBalanceAwayTime(1);
 					if("BalanceCloseTime".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setBalanceCloseTime(1);
-					
 					else if("CurrentA".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setCurrentA(1);
 					else if("CurrentB".equalsIgnoreCase(itemRs.getString(1)))
@@ -678,12 +647,10 @@ public class EquipmentDriverServerTask {
 						acquisitionUnitData.setReversePower(1);
 					else if("PowerFactor".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setPowerFactor(1);
-					
 					else if("SetFrequency".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setSetFrequency(1);
 					else if("RunFrequency".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setRunFrequency(1);
-					
 					else if("TubingPressure".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setTubingPressure(1);
 					else if("CasingPressure".equalsIgnoreCase(itemRs.getString(1)))
@@ -696,12 +663,10 @@ public class EquipmentDriverServerTask {
 						acquisitionUnitData.setProducingfluidLevel(1);
 					else if("WaterCut".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setWaterCut(1);
-					
 					else if("RPM".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setRPM(1);
 					else if("Torque".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setTorque(1);
-					
 					else if("FSDiagramAcquisitionInterval".equalsIgnoreCase(itemRs.getString(1)))
 						acquisitionUnitData.setFSDiagramAcquisitionInterval(1);
 					else if("FSDiagramSetPointCount".equalsIgnoreCase(itemRs.getString(1)))
@@ -732,11 +697,9 @@ public class EquipmentDriverServerTask {
 			}
 		} catch (SQLException e) {
 			OracleJdbcUtis.closeDBConnection(conn, stmt, pstmt, rs);
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 
-		
+		}
 		OracleJdbcUtis.closeDBConnection(conn, stmt, pstmt, rs);
 		System.out.println("采集单元初始化结束");
 		return true;
@@ -1206,7 +1169,6 @@ public class EquipmentDriverServerTask {
 		public void setBalanceCloseTimePerBeat(int balanceCloseTimePerBeat) {
 			this.balanceCloseTimePerBeat = balanceCloseTimePerBeat;
 		}
-	    
 	}
 	
 	public static class UnitData{
@@ -1662,8 +1624,6 @@ public class EquipmentDriverServerTask {
 		public void setProtocol(int protocol) {
 			this.protocol = protocol;
 		}
-		
-		
 	}
 	
 	public static class ClientUnit{
@@ -1702,6 +1662,5 @@ public class EquipmentDriverServerTask {
 		public void setRevData(String revData) {
 			this.revData = revData;
 		}
-		
 	}
 }

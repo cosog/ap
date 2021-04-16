@@ -52,7 +52,7 @@ public class MQTTServerTask {
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void runMQTTServer() throws InstantiationException, IllegalAccessException, SQLException{
 		//将以前接收到的数据清空
 		Map<String, Object> map=MQTTRecvDataMap.getMapObject();
@@ -88,8 +88,6 @@ public class MQTTServerTask {
 	            //遗嘱        options.setWill(topic, "close".getBytes(), 2, true);
 	            client.connect(options);
 	            //订阅消息
-//	            int[] Qos  = {1,1,1};
-//	            String[] topic1 = {TOPIC1,TOPIC2,TOPIC3};
 	            client.subscribe(TOPIC, Qos);
 	            isConnected=true;
 	        } catch (Exception e) {
@@ -106,7 +104,6 @@ public class MQTTServerTask {
 				}
 	        }
 		}
-		
 	}
 	
 	public static void sendMessage(String topicStr,String messageStr,boolean retain){
@@ -121,13 +118,10 @@ public class MQTTServerTask {
 			token.waitForCompletion();  
 	        System.out.println("message is published completely! "+ token.isComplete()); 
 		} catch (MqttPersistenceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MqttException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
-        
+		}
 	}
 	
 	public static boolean initWellConfig() throws InstantiationException, IllegalAccessException, SQLException{
@@ -187,19 +181,14 @@ public class MQTTServerTask {
 				runMQTTServer();
 				System.out.println("MQTT重连成功。");
 			} catch (MqttException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	        
 	    }  
 
 	    public void deliveryComplete(IMqttDeliveryToken token) {  
@@ -230,15 +219,9 @@ public class MQTTServerTask {
 				String discreteUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDiscreteData";
 				String diagramUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDiagramData";
 				String dailyUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/PSToFSController/saveMQTTTransferElecDailyData";
-				
-//				if(topic.contains("173871d4f21c4715")){
-//					System.out.println("MQTT接收到数据：主题："+topic+",数据："+StringManagerUtils.bytesToHexString(recvData, recvData.length));
-//				}
-				
-				
+
 				int Qos=message.getQos();
 				if(
-//						topic.contains("412831d4f21c4715")&&
 						("Discrete".equals(topic)||"Diagram".equals(topic)||"Daily".equals(topic)
 						||topic.indexOf("Discrete/")==0||topic.indexOf("Diagram/")==0||topic.indexOf("Daily/")==0)){
 					try{
@@ -254,12 +237,8 @@ public class MQTTServerTask {
 						Number=(int)StringManagerUtils.getInt(recvData, 8);//当前编号 从1开始
 						CNT=(int)StringManagerUtils.getInt(recvData, 12);//总编号
 						Header=(int)StringManagerUtils.getInt(recvData, 16);//头大小
-						
-						
 						String jsonData=new String(StringManagerUtils.subBytes(recvData, Header, recvData.length-Header),"utf-8");//数据
 						String key=ID+"_"+topic+"_"+Timestamp;
-
-						
 						Map<String, Object> map=MQTTRecvDataMap.getMapObject();
 						//将该包数据添加到内存中
 						Map<Integer,String> valueMap=(Map<Integer, String>) map.get(key);
@@ -268,7 +247,6 @@ public class MQTTServerTask {
 						}
 						valueMap.put(Number, jsonData);
 						map.put(key, valueMap);
-						
 						valueMap=(Map<Integer, String>) map.get(key);
 						if(valueMap.size()==CNT){//判断数据数据是否接收完成
 							Iterator<Map.Entry<Integer, String>> entries = valueMap.entrySet().iterator();
@@ -278,10 +256,6 @@ public class MQTTServerTask {
 							}
 							//将数据取出后，从内存中删掉
 							map.remove(key);
-							
-//							if(topic.contains("173871d4f21c4715")){
-//								System.out.println("MQTT接收到的完整数据：key："+key+",数据："+recJsonBuff);
-//							}
 							String pubTimerCorrectionTopic="TimerCorrection/"+ID;//时间校正主题
 							String pubTransferDiscreteIntervalTopic="TransferDiscreteInterval/"+ID;//离散传输周期设置主题
 							String pubTransferDiagramIntervalTopic="TransferDiagramInterval/"+ID;//曲线传输周期设置主题
@@ -304,7 +278,6 @@ public class MQTTServerTask {
 											&&Math.abs(format.parse(currentTime).getTime()/1000-format.parse(transferDiscrete.getAcquisitionTime()).getTime()/1000)>Config.getInstance().configFile.getAgileCalculate().getESDiagram().getInversion().getTimerCorrectionLimit()){
 										//设置该设备时间校正标准，接收完当天日报后，进行校正
 										map.put(pubTimerCorrectionTopic, true);
-//										sendMessage(pubTimerCorrectionTopic,currentTime,false);
 									}
 									WellConfigInfo wellConfigInfo= getWellConfigData(ID);
 									if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Discrete()!=0&&wellConfigInfo.getAcqCycle_Discrete()!=transferDiscrete.getInterval2()){//如果采集间隔不一致
@@ -313,8 +286,6 @@ public class MQTTServerTask {
 										String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=2 where driveraddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}
-//									
-//									map.put("wellConfigData", list);
 								}
 					        }else if("Diagram".equals(topic)||topic.indexOf("Diagram/")==0){//曲线数据
 					        	java.lang.reflect.Type type = new TypeToken<TransferDiagram>() {}.getType();
@@ -382,7 +353,6 @@ public class MQTTServerTask {
 		public void setMessage(MqttMessage message) {
 			this.message = message;
 		}
-		
 	}
 	
 	public static class TransferDiscrete{

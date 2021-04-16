@@ -51,12 +51,11 @@ public class ResourceMonitoringTask {
     private static CallableStatement cs= null; 
     
 	@SuppressWarnings("static-access")
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, UnsupportedEncodingException, ParseException{
 		String probeAppUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
 		String probeMemUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getMem()[0];
 		String probeCPUUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getCpu()[0];
-		
 		String appRunStatus="停止";
 		int appRunStatusValue=0;
 		String appVersion="";
@@ -65,28 +64,21 @@ public class ResourceMonitoringTask {
 		String memUsedPercent="";
 		String memUsedPercentValue="";
 		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
-		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		
 		String appProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeAppUrl, "","utf-8");
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 		AppRunStatusProbeResonanceData appRunStatusProbeResonanceData=gson.fromJson(appProbeResponseDataStr, type);
-		
-		
 		if(appRunStatusProbeResonanceData!=null){
 			appRunStatus="运行";
 			appRunStatusValue=1;
 			appVersion=appRunStatusProbeResonanceData.getVer();
 			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8");
 			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8");
-			
 			type = new TypeToken<CPUProbeResponseData>() {}.getType();
 			CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
-			
 			type = new TypeToken<MemoryProbeResponseData>() {}.getType();
 			MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
-			
 			if(cpuProbeResponseData!=null){
 				for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
 					cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
@@ -131,17 +123,16 @@ public class ResourceMonitoringTask {
 			infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
 			infoHandler2().sendMessageToBy("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", sendData);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	@Bean//这个注解会从Spring容器拿出Bean
+	@Bean
     public static SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
     }
 	
-	@Bean//这个注解会从Spring容器拿出Bean
+	@Bean
     public static WebSocketByJavax infoHandler2() {
         return new WebSocketByJavax();
     }
@@ -190,8 +181,6 @@ public class ResourceMonitoringTask {
 			tableSpaceInfo.setFree(tableSpaceInfo.getFree()+rs.getFloat(3));
 			tableSpaceInfo.setUsed(tableSpaceInfo.getUsed()+rs.getFloat(4));
 			tableSpaceInfo.setUsedPercent2(StringManagerUtils.stringToFloat((tableSpaceInfo.getUsed()*100/tableSpaceInfo.getTotal())+"", 2));
-			
-//			tableSpaceInfo=new TableSpaceInfo(rs.getString(1),rs.getFloat(2),rs.getFloat(3),rs.getFloat(4),rs.getFloat(5),rs.getFloat(6));
 		}
 		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return tableSpaceInfo;
@@ -204,7 +193,6 @@ public class ResourceMonitoringTask {
 		public float used=0;
 		public float usedPercent=0;
 		public float usedPercent2=0;
-		
 		public TableSpaceInfo() {
 			super();
 		}
@@ -254,6 +242,5 @@ public class ResourceMonitoringTask {
 		public void setUsedPercent(float usedPercent) {
 			this.usedPercent = usedPercent;
 		}
-		
 	}
 }

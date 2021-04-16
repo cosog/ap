@@ -251,7 +251,7 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 		if(driveConfig==null){
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 			String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(DriverConfigData, type);

@@ -456,7 +456,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(fileName)&&StringManagerUtils.isNotNull(driverCode)){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)equipmentDriveMap.get(driverCode);
-				String path=stringManagerUtils.getFilePath(fileName,"data/");
+				String path=stringManagerUtils.getFilePath(fileName,"dirverConfig/");
 				if(driveConfig==null){
 					String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 					type = new TypeToken<RTUDriveConfig>() {}.getType();
@@ -584,7 +584,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 			
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 			if(driveConfig==null){
 				String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 				type = new TypeToken<KafkaConfig>() {}.getType();

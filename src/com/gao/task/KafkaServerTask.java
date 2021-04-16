@@ -1,6 +1,5 @@
 package com.gao.task;
 
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,19 +34,15 @@ import com.gao.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-
 @Component("KafkaServerTast")  
 public class KafkaServerTask {
-//	public static  String HOST =Config.getInstance().configFile.getKafka().getServer();//"39.98.64.56:9092";
 	public static  String HOST ="";
     public static  String[] TOPIC = {"Up-NormData","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
     private static  String clientid = "apKafkaClient"+new Date().getTime();
-    private static int receivedDataCount=0;
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
-    
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		clientid = "apKafkaClient"+new Date().getTime();
@@ -60,7 +55,7 @@ public class KafkaServerTask {
 		if(driveConfig==null){
 			Gson gson = new Gson();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(driverConfigData, type);
@@ -83,9 +78,7 @@ public class KafkaServerTask {
 	    props.put("group.id", clientid);
 	    props.put("enable.auto.commit", "true");
 	    props.put("auto.commit.interval.ms", "1000");
-	    
 	    props.put("auto.offset.reset", "latest");//latest,earliest,none
-	    
 	    props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 	    props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 	    final KafkaConsumer<String, String> consumer = new KafkaConsumer<String,String>(props);
@@ -102,16 +95,6 @@ public class KafkaServerTask {
 	    while (true) {
 	        ConsumerRecords<String, String> records = consumer.poll(100);
 	        for (ConsumerRecord<String, String> record : records){
-//	        	System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
-//	        	System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
-//	        	if("Up-NormData".equalsIgnoreCase(record.topic())){
-//	        		
-//	        	}else if("Up-Config".equalsIgnoreCase(record.topic())){
-//	        		
-//	        	}else if("Up-Model".equalsIgnoreCase(record.topic())){
-//	        		
-//	        	}
-	        	receivedDataCount++;
 	        	KafkaDataAnalysisThread kafkaDataAnalysisThread=new KafkaDataAnalysisThread(record);
 	        	kafkaDataAnalysisThread.start();
 	        }
@@ -136,30 +119,27 @@ public class KafkaServerTask {
 		    props.put("buffer.memory", 33554432);
 		    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-
 		    Producer<String, String> producer = new KafkaProducer<String, String>(props);
 		    producer.send( new ProducerRecord<String, String>(topic, title, value) );
 		    producer.close();
 		}
 	}
 	
-	@Bean//这个注解会从Spring容器拿出Bean
+	@Bean
     public static SpringWebSocketHandler infoHandler() {
         return new SpringWebSocketHandler();
     }
-	@Bean//这个注解会从Spring容器拿出Bean
+	@Bean
     public static WebSocketByJavax infoHandler2() {
         return new WebSocketByJavax();
     }
 	
 	public static class KafkaDataAnalysisThread extends Thread{
 		private ConsumerRecord<String, String> record;
-		
 		public KafkaDataAnalysisThread(ConsumerRecord<String, String> record) {
 			super();
 			this.record = record;
 		}
-
 		public void run(){
 			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
 			Gson gson = new Gson();
@@ -167,7 +147,6 @@ public class KafkaServerTask {
 			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
 			String saveAggrOnlineDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrOnlineData";
 			String saveAggrRunStatusDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrRunStatusData";
-			
 			String UpNormDataTopic="Up-NormData";
 			String UpRawDataTopic="Up-RawData";
 			String UpConfigTopic="Up-Config";
@@ -176,7 +155,6 @@ public class KafkaServerTask {
 			String UpRTCTopic="Up-RTC";
 			String UpOnlineTopic="Up-Online";
 			String UpRunStatusTopic="Up-RunStatus";
-			
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
 				EquipmentDriverServerTask.initDriverConfig();
@@ -185,7 +163,7 @@ public class KafkaServerTask {
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 			if(driveConfig==null){
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
-				String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","data/");
+				String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
 				String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 				java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
 				driveConfig=gson.fromJson(driverConfigData, type);
@@ -208,7 +186,6 @@ public class KafkaServerTask {
         			try {
         				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            			System.out.println("offset="+record.offset()+",采集时间:"+kafkaUpData.getAcqTime()+",系统时间:"+kafkaUpData.getSysTime());
             			//如果时间差达到半小时，校正时间
             			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpData.getSysTime()).getTime()/1000);
 						if(diffTime>60*30){
@@ -240,13 +217,11 @@ public class KafkaServerTask {
         			try {
         				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
             			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            			System.out.println("offset="+record.offset()+",采集时间:"+kafkaUpData.getAcqTime()+",系统时间:"+kafkaUpData.getSysTime());
             			//如果时间差达到半小时，校正时间
             			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
 						if(diffTime>60*30){
 							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+kafkaUpRawData.getSysTime()+",时间差:"+diffTime+"秒");
 							kafkaUpRawData.setAcqTime(currentTime);
-							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
 							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
@@ -268,7 +243,6 @@ public class KafkaServerTask {
         			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
 					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}else if(UpModelTopic.equalsIgnoreCase(record.topic())){
@@ -277,7 +251,6 @@ public class KafkaServerTask {
         			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
 					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}else if(UpFreqTopic.equalsIgnoreCase(record.topic())){
@@ -286,7 +259,6 @@ public class KafkaServerTask {
         			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
 					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}else if(UpRTCTopic.equalsIgnoreCase(record.topic())){
@@ -295,7 +267,6 @@ public class KafkaServerTask {
         			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage(sendData));
 					infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", sendData);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}else if(UpOnlineTopic.equalsIgnoreCase(record.topic())){//通信状态  设备启动后上传一次
@@ -310,13 +281,11 @@ public class KafkaServerTask {
             			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(aggrOnline2Kafka.getSysTime()).getTime()/1000);
 						if(diffTime>60*30){
 							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+aggrOnline2Kafka.getSysTime()+",时间差:"+diffTime+"秒");
-							//下行时间
 							String topic="Down-"+record.key()+"-RTC";
 							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
 						}
 						aggrOnline2Kafka.setKey(record.key());
 	        			StringManagerUtils.sendPostMethod(saveAggrOnlineDataUrl, gson.toJson(aggrOnline2Kafka),"utf-8");
-						
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println(record.value());
@@ -340,7 +309,6 @@ public class KafkaServerTask {
 						}
 						aggrRunStatus2Kafka.setKey(record.key());
 	        			StringManagerUtils.sendPostMethod(saveAggrRunStatusDataUrl, gson.toJson(aggrRunStatus2Kafka),"utf-8");
-						
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println(record.value());

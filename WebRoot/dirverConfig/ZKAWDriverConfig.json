@@ -1,9 +1,6 @@
 {
     "DriverName": "A11协议_中科奥维",
     "DriverCode": "ZKAWDrive",
-    "Port": 19300,
-    "Protocol": 1,
-    "HeartbeatPacket":"AA01***********0D",
     "Sort":4,
     "DataConfig": {
         "RunStatus": {

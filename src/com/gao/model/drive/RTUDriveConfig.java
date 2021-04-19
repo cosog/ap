@@ -1,17 +1,9 @@
 package com.gao.model.drive;
 
-import java.util.Comparator;
-
 public class RTUDriveConfig {
 	private String DriverName;
     
     private String DriverCode;
-
-    private int Port;
-
-    private int Protocol;
-    
-    private String HeartbeatPacket;
     
     private int Sort;
 
@@ -22,18 +14,6 @@ public class RTUDriveConfig {
     }
     public String getDriverName(){
         return this.DriverName;
-    }
-    public void setPort(int Port){
-        this.Port = Port;
-    }
-    public int getPort(){
-        return this.Port;
-    }
-    public void setProtocol(int Protocol){
-        this.Protocol = Protocol;
-    }
-    public int getProtocol(){
-        return this.Protocol;
     }
 	public int getSort() {
 		return Sort;
@@ -568,12 +548,4 @@ public class RTUDriveConfig {
 			ElectricDiagnosisResult = electricDiagnosisResult;
 		}
 	}
-
-	public String getHeartbeatPacket() {
-		return HeartbeatPacket;
-	}
-	public void setHeartbeatPacket(String heartbeatPacket) {
-		HeartbeatPacket = heartbeatPacket;
-	}
-
 }

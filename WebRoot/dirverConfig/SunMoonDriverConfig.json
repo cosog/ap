@@ -1,9 +1,6 @@
 {
     "DriverName": "A11协议_日月",
     "DriverCode": "SunMoonStandardDrive",
-    "Port": 19200,
-    "Protocol": 2,
-    "HeartbeatPacket":"AA01***********0D",
     "Sort":3,
     "DataConfig": {
         "DiscreteAcquisitionInterval": {

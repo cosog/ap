@@ -462,9 +462,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					type = new TypeToken<RTUDriveConfig>() {}.getType();
 					driveConfig=gson.fromJson(driverConfigData, type);
 				}
-				driveConfig.setPort(modbusDriverSaveData.getPort());
-				driveConfig.setProtocol("modbus-tcp".equalsIgnoreCase(modbusDriverSaveData.getProtocol())?1:2);
-				driveConfig.setHeartbeatPacket(modbusDriverSaveData.getHeartbeatPacket());
+//				driveConfig.setPort(modbusDriverSaveData.getPort());
+//				driveConfig.setProtocol("modbus-tcp".equalsIgnoreCase(modbusDriverSaveData.getProtocol())?1:2);
+//				driveConfig.setHeartbeatPacket(modbusDriverSaveData.getHeartbeatPacket());
 				
 				for(int i=0;i<modbusDriverSaveData.getDataConfig().size();i++){
 					int dataType=1;

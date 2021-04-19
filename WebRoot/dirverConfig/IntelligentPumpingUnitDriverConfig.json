@@ -1,9 +1,6 @@
 {
     "DriverName": "数字化抽油机",
     "DriverCode": "IntelligentPumpingUnitDrive",
-    "Port": 19200,
-    "Protocol": 2,
-    "HeartbeatPacket":"AA01***********0D",
     "Sort":3,
     "DataConfig": {
         "DiscreteAcquisitionInterval": {

@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -28,9 +31,10 @@ import com.gao.model.AlarmShowStyle;
 import com.gao.model.calculate.FA2FSResponseData;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.TcpServerConfig;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.thread.calculate.ProtocolModbusThread;
-import com.gao.thread.calculate.DriveServerThread;
+import com.gao.thread.calculate.IntelligentPumpingUnitThread;
 import com.gao.thread.calculate.ProtocolBasicThread;
 import com.gao.utils.AcquisitionUnitMap;
 import com.gao.utils.Config;
@@ -42,6 +46,7 @@ import com.gao.utils.MapSortUtil;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.SerialPortUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.utils.TcpServerConfigMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -63,6 +68,8 @@ public class EquipmentDriverServerTask {
 	public static ServerSocket beeTechServerSocket;
 	public static ServerSocket sunMoonServerSocket;
 	public static boolean exit=false;
+	
+	private ExecutorService pool = Executors.newCachedThreadPool();
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
@@ -87,20 +94,55 @@ public class EquipmentDriverServerTask {
 				Thread.sleep(5*1000);
 			}
 		}while(!reg);
-		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
-				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-				System.out.println(driveConfig.getDriverName());
-				if(driveConfig.getPort()>0){
-					try {
-						ServerSocket serverSocket = new ServerSocket(driveConfig.getPort());
-						DriveServerThread driveServerThread=new DriveServerThread(serverSocket,driveConfig);
-						driveServerThread.start();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+		
+		Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
+		if(tcpServerConfigMap==null){
+			
+		}else{
+			TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
+			if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
+				try {
+					ServerSocket serverSocket = new ServerSocket(tcpServerConfig.getPort());
+					while(EquipmentDriverServerTask.clientUnitList.size()>0){
+						for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
+							if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null){
+								System.out.println("等待客户端连接...");
+								try {
+									if(serverSocket==null){
+										serverSocket = new ServerSocket(tcpServerConfig.getPort());
+									}
+									Socket socket=serverSocket.accept();
+									EquipmentDriverServerTask.clientUnitList.get(i).socket=new Socket();
+									EquipmentDriverServerTask.clientUnitList.get(i).socket=socket;
+									
+									if(EquipmentDriverServerTask.clientUnitList.get(i).socket!=null){
+										System.out.println("TCPServer接收到客户端连接,thread:"+i+",IP:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getInetAddress()+",端口:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getPort());
+
+										EquipmentDriverServerTask.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTask.clientUnitList.get(i));
+										if(EquipmentDriverServerTask.clientUnitList.get(i).thread!=null){
+//											EquipmentDriverServerTast.clientUnitList.get(i).thread.start();
+											pool.submit(EquipmentDriverServerTask.clientUnitList.get(i).thread);
+											System.out.println("线程池中当前线程数："+((ThreadPoolExecutor)pool).getPoolSize());
+											System.out.println("线程池中当前活跃线程数："+((ThreadPoolExecutor)pool).getActiveCount());
+											break;
+										}
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+									break;
+								}
+							}
+						}
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

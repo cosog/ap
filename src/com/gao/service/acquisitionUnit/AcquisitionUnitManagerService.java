@@ -216,7 +216,7 @@ private CommonDataService service;
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getPDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getPDiagram().getZoom()+"}");
 				
 				driverConfigData.append("]");
-				result_json.append("{\"id\":1,\"driverName\":\""+driveConfig.getDriverName()+"\",\"protocol\":\""+(driveConfig.getProtocol()==1?"modbus-tcp":"modbus-rtu")+"\",\"port\":"+driveConfig.getPort()+",\"heartbeatPacket\":\""+driveConfig.getHeartbeatPacket()+"\",\"dataConfig\":"+driverConfigData.toString()+"},");
+				result_json.append("{\"id\":1,\"driverName\":\""+driveConfig.getDriverName()+"\",\"dataConfig\":"+driverConfigData.toString()+"},");
 			}
 			
 		}

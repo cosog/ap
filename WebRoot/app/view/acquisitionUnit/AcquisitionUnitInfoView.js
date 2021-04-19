@@ -153,5 +153,4 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
         });
         me.callParent(arguments);
     }
-
 });

@@ -38,15 +38,15 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 	private String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 	private String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 	private String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
-	private RTUDriveConfig driveConfig;
+//	private RTUDriveConfig driveConfig;
 	private InputStream is=null;
 	private OutputStream os=null;
 	private boolean releaseResourceSign=false;
-	public ProtocolModbusThread(int threadId, ClientUnit clientUnit,RTUDriveConfig driveConfig) {
+	public ProtocolModbusThread(int threadId, ClientUnit clientUnit) {
 		super();
 		this.threadId = threadId;
 		this.clientUnit = clientUnit;
-		this.driveConfig = driveConfig;
+//		this.driveConfig = driveConfig;
 		init(clientUnit.socket);
 	}
 	private void init(Socket socket){
@@ -68,11 +68,6 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         int readTimeout=1000*60;//socket read超时时间
         Gson gson = new Gson();
         byte[] writeCommand={0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
-        if(driveConfig.getProtocol()==1){
-        	writeCommand=new byte[]{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
-        }else if(driveConfig.getProtocol()==2){
-        	writeCommand=new byte[]{0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88,0x1F,(byte) 0xAC};
-        }
         while(!(isExit||this.interrupted()||is==null||os==null)){
         	//获取输入流，并读取客户端信息
             try {
@@ -89,42 +84,24 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         				break;
         			}
     				String revMacStr="";
-    				if("BeeTech".equalsIgnoreCase(driveConfig.getDriverCode())){
-    					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
-    						byte[] macByte=new byte[10];
-        					for(int i=0;i<10;i++){
-        						macByte[i]=recByte[i+2];
-        					}
-        					revMacStr=new String(macByte);
+    				if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
+						int end=0;
+						for(int i=0;i<recByte.length;i++){
+							if((recByte[i]&0xFF)==0x0D){
+								end=i+1;
+								break;
+							}
+						}
+						int l=rc-3;
+						if(rc>end){
+							l=end-3;
+						}
+						byte[] macByte=new byte[l];
+    					for(int i=0;i<macByte.length;i++){
+    						macByte[i]=recByte[i+2];
     					}
-    				}else if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
-    					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
-    						byte[] macByte=new byte[11];
-        					for(int i=0;i<11;i++){
-        						macByte[i]=recByte[i+2];
-        					}
-        					revMacStr=new String(macByte);
-    					}
-    				}else {
-    					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
-    						int end=0;
-    						for(int i=0;i<recByte.length;i++){
-    							if((recByte[i]&0xFF)==0x0D){
-    								end=i+1;
-    								break;
-    							}
-    						}
-    						int l=rc-3;
-    						if(rc>end){
-    							l=end-3;
-    						}
-    						byte[] macByte=new byte[l];
-        					for(int i=0;i<macByte.length;i++){
-        						macByte[i]=recByte[i+2];
-        					}
-        					revMacStr=new String(macByte);
-    					}
-    				}
+    					revMacStr=new String(macByte);
+					}
     				
     				if(StringManagerUtils.isNotNull(revMacStr)){//接收到注册包
     					boolean isRun=false;
@@ -193,21 +170,19 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     				continue;
     			}else{
     				//循环读取功图点数、采集时间、冲次、冲程数据 
-    				
-//    				if(isConnectionClose(clientUnit.socket)){
-//    					System.out.println("线程"+this.threadId+"通信关闭断开连接");
-//    					this.releaseResource(is,os);
-//        				wellReaded=false;
-//        				break;
-//    				}
     				for(int i=0;i<clientUnit.unitDataList.size();i++){
+    					if(clientUnit.unitDataList.get(i).getProtocol()==1){
+    			        	writeCommand=new byte[]{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88};
+    			        }else if(clientUnit.unitDataList.get(i).getProtocol()==2){
+    			        	writeCommand=new byte[]{0x01,0x06,0x00,0x03,(byte) 0x88,(byte) 0x88,0x1F,(byte) 0xAC};
+    			        }
     					String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
     					//启停井控制
     					if(clientUnit.unitDataList.get(i).runStatusControl!=0
     							&&clientUnit.unitDataList.get(i).runStatusControl!=1//不执行启抽操作
     							&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl().getAddress(), clientUnit.unitDataList.get(i).runStatusControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunControl().getAddress(), clientUnit.unitDataList.get(i).runStatusControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setRunStatusControl(0);
 							
 							//写操作口令验证
@@ -248,7 +223,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//功图采集周期控制
     					if(clientUnit.unitDataList.get(i).FSDiagramIntervalControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(i).FSDiagramIntervalControl,driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getAddress(), clientUnit.unitDataList.get(i).FSDiagramIntervalControl,clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setFSDiagramIntervalControl(0);;
 							
 							//写操作口令验证
@@ -285,7 +260,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//变频频率控制
     					if(clientUnit.unitDataList.get(i).FrequencyControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency()!=null){
     						wellReaded=true;
-							readByte=this.getWriteFloatData(clientUnit.unitDataList.get(i).UnitId, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency().getAddress(), clientUnit.unitDataList.get(i).FrequencyControl,driveConfig.getProtocol());
+							readByte=this.getWriteFloatData(clientUnit.unitDataList.get(i).UnitId, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency().getAddress(), clientUnit.unitDataList.get(i).FrequencyControl,clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
 							clientUnit.unitDataList.get(i).setFrequencyControl(0);
 							
 							//写操作口令验证
@@ -331,7 +306,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//平衡调节远程触发控制
     					if(clientUnit.unitDataList.get(i).balanceControlModeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceControlModeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceControlModeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceControlModeControl(0);
 							
 							//写操作口令验证
@@ -374,7 +349,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//平衡调节计算方式控制
     					if(clientUnit.unitDataList.get(i).balanceCalculateModeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceCalculateModeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getAddress(), clientUnit.unitDataList.get(i).getBalanceCalculateModeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceCalculateModeControl(0);
 							
 							//写操作口令验证
@@ -417,7 +392,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//重心远离支点每拍调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceAwayTimeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceAwayTimeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceAwayTimeControl(0);
 							
 							//写操作口令验证
@@ -460,7 +435,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//重心接近支点每拍调节时间控制
     					if(clientUnit.unitDataList.get(i).balanceCloseTimeControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimeControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getAddress(), clientUnit.unitDataList.get(i).getBalanceCloseTimeControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceCloseTimeControl(0);
 							
 							//写操作口令验证
@@ -503,7 +478,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//参与平衡计算冲程次数控制
     					if(clientUnit.unitDataList.get(i).balanceStrokeCountControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount().getAddress(), clientUnit.unitDataList.get(i).getBalanceStrokeCountControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount().getAddress(), clientUnit.unitDataList.get(i).getBalanceStrokeCountControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceStrokeCountControl(0);
 							
 							//写操作口令验证
@@ -546,7 +521,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//平衡调节上限控制
     					if(clientUnit.unitDataList.get(i).balanceOperationUpLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationUpLimitControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationUpLimitControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceOperationUpLimitControl(0);
 							
 							//写操作口令验证
@@ -589,7 +564,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					//平衡调节下限控制
     					if(clientUnit.unitDataList.get(i).balanceOperationDownLimitControl>0&&clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit()!=null){
     						wellReaded=true;
-							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationDownLimitControl(),driveConfig.getProtocol());
+							readByte=this.getWriteSingleRegisterByteData(clientUnit.unitDataList.get(i).UnitId,6, clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit().getAddress(), clientUnit.unitDataList.get(i).getBalanceOperationDownLimitControl(),clientUnit.unitDataList.get(i).getProtocol());
 							clientUnit.unitDataList.get(i).setBalanceOperationDownLimitControl(0);
 							
 							//写操作口令验证
@@ -708,7 +683,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramAcquisitionInterval().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图采集间隔发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -718,7 +693,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图采集间隔数据异常,rc="+rc);
         								break;
         							}else{
-        								acquisitionCycle=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								acquisitionCycle=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setAcquisitionCycle(acquisitionCycle);
         								updateDiscreteData+=",t.acqCycle_Diagram="+acquisitionCycle;
         							}
@@ -729,7 +704,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramSetPointCount().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramSetPointCount().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -739,7 +714,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数数据异常,rc="+rc);
         								break;
         							}else{
-        								FSDiagramSetPointCount=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								FSDiagramSetPointCount=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setFSDiagramSetPointCount(FSDiagramSetPointCount);
         							}
         						}
@@ -750,7 +725,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramPointCount().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFSDiagramPointCount().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -760,7 +735,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图点数数据异常,rc="+rc);
         								break;
         							}else{
-        								point=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								point=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setPoint(point);
         							}
         						}
@@ -770,7 +745,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getAcqTime().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getAcqTime().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图采集时间发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -780,7 +755,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图采集时间数据异常,rc="+rc);
         								break;
         							}else{
-        								diagramAcqTime=BCD2TimeString(recByte, driveConfig.getProtocol());
+        								diagramAcqTime=BCD2TimeString(recByte, clientUnit.unitDataList.get(i).getProtocol());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setGtcjsj(diagramAcqTime);
         							}
         						}
@@ -790,7 +765,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSPM().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSPM().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图冲次发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -800,7 +775,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图冲次数据异常,rc="+rc);
         								break;
         							}else{
-        								SPM=getFloat(recByte,0, driveConfig.getProtocol());
+        								SPM=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setSPM(SPM);
         							}
         						}
@@ -810,7 +785,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getStroke().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getStroke().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图冲程发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -820,7 +795,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图冲程数据异常,rc="+rc);
         								break;
         							}else{
-        								Stroke=getFloat(recByte,0, driveConfig.getProtocol());;
+        								Stroke=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());;
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setStroke(Stroke);
         							}
         						}
@@ -833,7 +808,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalaceControlStatus().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalaceControlStatus().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节远程状态发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -844,7 +819,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								break;
         							}else{
         								int index=0;
-        								if(clientUnit.unitDataList.get(i).getRtuDriveConfig().getProtocol()==1){
+        								if(clientUnit.unitDataList.get(i).getProtocol()==1){
         									index=10;
         								}else{
         									index=4;
@@ -870,7 +845,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceControlMode().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节远程触发控制发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -880,7 +855,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节远程触发控制数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceControlMode=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceControlMode=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceControlMode(balanceControlMode);
                     					updateDiscreteData+=",t.balanceControlMode="+balanceControlMode;
         							}
@@ -892,7 +867,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCalculateMode().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡计算方式发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -902,7 +877,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡计算方式数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceCalculateMode=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceCalculateMode=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCalculateMode(balanceCalculateMode);
                     					updateDiscreteData+=",t.balanceCalculateMode="+balanceCalculateMode;
         							}
@@ -914,7 +889,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTime().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -924,7 +899,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceAwayTime=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceAwayTime=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAwayTime(balanceAwayTime);
                     					updateDiscreteData+=",t.balanceAwayTime="+balanceAwayTime;
         							}
@@ -936,7 +911,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTime().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -946,7 +921,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceCloseTime=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceCloseTime=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCloseTime(balanceCloseTime);
                     					updateDiscreteData+=",t.balanceCloseTime="+balanceCloseTime;
         							}
@@ -958,7 +933,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceAwayTimePerBeat().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -968,7 +943,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心远离支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceAwayTimePerBeat=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceAwayTimePerBeat=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceAwayTimePerBeat(balanceAwayTimePerBeat);
                     					updateDiscreteData+=",t.balanceAwayTimePerBeat="+balanceAwayTimePerBeat;
         							}
@@ -980,7 +955,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceCloseTimePerBeat().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -990,7 +965,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取重心接近支点每拍调节时间数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceCloseTimePerBeat=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceCloseTimePerBeat=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceCloseTimePerBeat(balanceCloseTimePerBeat);
                     					updateDiscreteData+=",t.balanceCloseTimePerBeat="+balanceCloseTimePerBeat;
         							}
@@ -1002,7 +977,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceStrokeCount().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取参与平衡度计算的冲程次数发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -1012,7 +987,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取参与平衡度计算的冲程次数数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceStrokeCount=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceStrokeCount=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceStrokeCount(balanceStrokeCount);
                     					updateDiscreteData+=",t.balanceStrokeCount="+balanceStrokeCount;
         							}
@@ -1024,7 +999,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationUpLimit().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节上限发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -1034,7 +1009,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节上限数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceOperationUpLimit=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceOperationUpLimit=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceOperationUpLimit(balanceOperationUpLimit);
                     					updateDiscreteData+=",t.balanceOperationUpLimit="+balanceOperationUpLimit;
         							}
@@ -1046,7 +1021,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBalanceOperationDownLimit().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节下限发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -1056,7 +1031,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取平衡调节下限数据异常,rc="+rc);
         								break;
         							}else{
-        								balanceOperationDownLimit=getUnsignedShort(recByte,0, driveConfig.getProtocol());
+        								balanceOperationDownLimit=getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
                     					clientUnit.unitDataList.get(i).getAcquisitionData().setBalanceOperationDownLimit(balanceOperationDownLimit);
                     					updateDiscreteData+=",t.balanceOperationDownLimit="+balanceOperationDownLimit;
         							}
@@ -1069,7 +1044,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunStatus().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunStatus().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取运行状态发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1079,7 +1054,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取运行状态数据异常,rc="+rc);
     								break;
     							}else{
-    								runSatus= getUnsignedShort(recByte,0, driveConfig.getProtocol());
+    								runSatus= getUnsignedShort(recByte,0, clientUnit.unitDataList.get(i).getProtocol());
     							}
         					}
         					
@@ -1089,7 +1064,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getTubingPressure().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getTubingPressure().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取油压发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1099,7 +1074,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取油压数据异常,rc="+rc);
     								break;
     							}else{
-    								TubingPressure=getFloat(recByte,0, driveConfig.getProtocol());
+    								TubingPressure=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setTubingPressure(TubingPressure);
     								updateDiscreteData+=",t.TubingPressure="+TubingPressure;
     								updateProdData+=",t.tubingPressure="+TubingPressure;
@@ -1112,7 +1087,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCasingPressure().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCasingPressure().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取套压发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1122,7 +1097,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取套压数据异常,rc="+rc);
     								break;
     							}else{
-    								CasingPressure=getFloat(recByte,0, driveConfig.getProtocol());
+    								CasingPressure=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCasingPressure(CasingPressure);
     								updateDiscreteData+=",t.CasingPressure="+CasingPressure;
     								updateProdData+=",t.casingPressure="+CasingPressure;
@@ -1135,7 +1110,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBackPressure().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getBackPressure().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取回压发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1145,7 +1120,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取回压数据异常,rc="+rc);
     								break;
     							}else{
-    								BackPressure=getFloat(recByte,0, driveConfig.getProtocol());
+    								BackPressure=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setBackPressure(BackPressure);
     								updateDiscreteData+=",t.BackPressure="+BackPressure;
     								updateProdData+=",t.backPressure="+BackPressure;
@@ -1158,7 +1133,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getWellHeadFluidTemperature().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getWellHeadFluidTemperature().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取井口油温发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1168,7 +1143,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取井口油温数据异常,rc="+rc);
     								break;
     							}else{
-    								WellHeadFluidTemperature=getFloat(recByte,0, driveConfig.getProtocol());
+    								WellHeadFluidTemperature=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWellHeadFluidTemperature(WellHeadFluidTemperature);
     								updateDiscreteData+=",t.WellHeadFluidTemperature="+WellHeadFluidTemperature;
     								updateProdData+=",t.wellHeadFluidTemperature="+WellHeadFluidTemperature;
@@ -1181,7 +1156,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getProducingfluidLevel().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getProducingfluidLevel().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取动液面发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1191,7 +1166,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取动液面数据异常,rc="+rc);
     								break;
     							}else{
-    								ProducingfluidLevel=getFloat(recByte,0, driveConfig.getProtocol());
+    								ProducingfluidLevel=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setProducingfluidLevel(ProducingfluidLevel);
     								updateProdData+=",t.producingfluidLevel="+ProducingfluidLevel;
     								hasProData=true;
@@ -1203,7 +1178,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getWaterCut().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getWaterCut().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取含水率发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1213,7 +1188,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取含水率数据异常,rc="+rc);
     								break;
     							}else{
-    								WaterCut=getFloat(recByte,0, driveConfig.getProtocol());
+    								WaterCut=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setWaterCut(WaterCut);
     								updateProdData+=",t.waterCut="+WaterCut;
     								hasProData=true;
@@ -1227,7 +1202,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentA().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentA().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电流发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1237,7 +1212,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电流数据异常,rc="+rc);
     								break;
     							}else{
-    								CurrentA=getFloat(recByte,0, driveConfig.getProtocol());
+    								CurrentA=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentA(CurrentA);
     								updateDiscreteData+=",t.Ia="+CurrentA;
     							}
@@ -1248,7 +1223,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentB().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentB().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电流发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1258,7 +1233,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电流数据异常,rc="+rc);
     								break;
     							}else{
-    								CurrentB=getFloat(recByte,0, driveConfig.getProtocol());
+    								CurrentB=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentB(CurrentB);
     								updateDiscreteData+=",t.Ib="+CurrentB;
     							}
@@ -1269,7 +1244,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentC().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getCurrentC().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电流发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1279,7 +1254,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电流数据异常,rc="+rc);
     								break;
     							}else{
-    								CurrentC=getFloat(recByte,0, driveConfig.getProtocol());
+    								CurrentC=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setCurrentC(CurrentC);
     								updateDiscreteData+=",t.Ic="+CurrentC;
     							}
@@ -1290,7 +1265,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getVoltageA().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getVoltageA().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取A相电压发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1301,7 +1276,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								break;
     							}else{
     								
-    								VoltageA=getFloat(recByte,0, driveConfig.getProtocol());
+    								VoltageA=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								if(VoltageA<0){
     									VoltageA=0;
     								}else if(VoltageA>500){
@@ -1319,7 +1294,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getVoltageB().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getVoltageB().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电压发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1329,7 +1304,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取B相电压数据异常,rc="+rc);
     								break;
     							}else{
-    								VoltageB=getFloat(recByte,0, driveConfig.getProtocol());
+    								VoltageB=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								if(VoltageB<0){
     									VoltageB=0;
     								}else if(VoltageB>500){
@@ -1345,7 +1320,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getVoltageC().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getVoltageC().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电压发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1355,7 +1330,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取C相电压数据异常,rc="+rc);
     								break;
     							}else{
-    								VoltageC=getFloat(recByte,0, driveConfig.getProtocol());
+    								VoltageC=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								if(VoltageC<0){
     									VoltageC=0;
     								}else if(VoltageC>500){
@@ -1371,7 +1346,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getActivePowerConsumption().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getActivePowerConsumption().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取有功功耗发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1381,7 +1356,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取有功功耗数据异常,rc="+rc);
     								break;
     							}else{
-    								ActivePowerConsumption=getFloat(recByte,0, driveConfig.getProtocol());
+    								ActivePowerConsumption=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setActivePowerConsumption(ActivePowerConsumption);
     							}
         					}
@@ -1391,7 +1366,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getReactivePowerConsumption().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getReactivePowerConsumption().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取无功功耗发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1401,7 +1376,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取无功功耗数据异常,rc="+rc);
     								break;
     							}else{
-    								ReactivePowerConsumption=getFloat(recByte,0, driveConfig.getProtocol());
+    								ReactivePowerConsumption=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReactivePowerConsumption(ReactivePowerConsumption);
     							}
         					}
@@ -1411,7 +1386,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getActivePower().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getActivePower().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取有功功率发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1421,7 +1396,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取有功功率数据异常,rc="+rc);
     								break;
     							}else{
-    								ActivePower=getFloat(recByte,0, driveConfig.getProtocol());
+    								ActivePower=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setActivePower(ActivePower);
     								updateDiscreteData+=",t.wattSum="+ActivePower;
     							}
@@ -1432,7 +1407,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getReactivePower().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getReactivePower().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取无功功率发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1442,7 +1417,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取无功功率数据异常,rc="+rc);
     								break;
     							}else{
-    								ReactivePower=getFloat(recByte,0, driveConfig.getProtocol());
+    								ReactivePower=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReactivePower(ReactivePower);
     								updateDiscreteData+=",t.varSum="+ReactivePower;
     							}
@@ -1453,7 +1428,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getReversePower().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getReversePower().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取反向功率发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1463,7 +1438,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取反向功率数据异常,rc="+rc);
     								break;
     							}else{
-    								ReversePower=getFloat(recByte,0, driveConfig.getProtocol());
+    								ReversePower=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setReversePower(ReversePower);
     								updateDiscreteData+=",t.ReversePower="+ReversePower;
     							}
@@ -1474,7 +1449,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerFactor().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPowerFactor().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功率因数发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1484,7 +1459,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功率因数数据异常,rc="+rc);
     								break;
     							}else{
-    								PowerFactor=getFloat(recByte,0, driveConfig.getProtocol());
+    								PowerFactor=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setPowerFactor(PowerFactor);
     								updateDiscreteData+=",t.pfSum="+PowerFactor;
     							}
@@ -1497,7 +1472,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSetFrequency().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1507,7 +1482,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
     								break;
     							}else{
-    								SetFrequency=getFloat(recByte,0, driveConfig.getProtocol());
+    								SetFrequency=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setSetFrequency(SetFrequency);
     								updateDiscreteData+=",t.frequencySetValue="+SetFrequency;
     							}
@@ -1518,7 +1493,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunFrequency().getAddress(),
         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRunFrequency().getLength(),
-        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
     							if(rc==-1||rc==-2){
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率发送或接收失败,rc="+rc);
     								this.releaseResource(is,os);
@@ -1528,7 +1503,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
     								break;
     							}else{
-    								RunFrequency=getFloat(recByte,0, driveConfig.getProtocol());
+    								RunFrequency=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
     								clientUnit.unitDataList.get(i).getAcquisitionData().setRunFrequency(RunFrequency);
     								updateDiscreteData+=",t.frequencyRunValue="+RunFrequency;
     							}
@@ -1829,7 +1804,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRPM().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getRPM().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -1839,7 +1814,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
         								break;
         							}else{
-        								RPM=getFloat(recByte,0, driveConfig.getProtocol());
+        								RPM=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setRPM(RPM);
         								clientUnit.unitDataList.get(i).lastRPM=RPM;
         							}
@@ -1850,7 +1825,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getTorque().getAddress(),
             								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getTorque().getLength(),
-            								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+            								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
         							if(rc==-1||rc==-2){
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率发送或接收失败,rc="+rc);
         								this.releaseResource(is,os);
@@ -1860,7 +1835,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取变频设置频率据异常,rc="+rc);
         								break;
         							}else{
-        								Torque=getFloat(recByte,0, driveConfig.getProtocol());
+        								Torque=getFloat(recByte,0, clientUnit.unitDataList.get(i).getProtocol(),clientUnit.unitDataList.get(i).getRtuDriveConfig().getDriverCode());
         								clientUnit.unitDataList.get(i).getAcquisitionData().setTorque(Torque);
         							}
             					}
@@ -1973,7 +1948,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 							rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                     								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+j*100,
                     								length,
-                    								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                    								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							if(rc==-1||rc==-2){
                 								System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"读取功图位移数据发送或接收失败,rc="+rc);
                 								this.releaseResource(is,os);
@@ -1984,7 +1959,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								break;
                 							}else{
                 								for(int k=0;k<length;k++){
-                            						Float recvS=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getZoom());
+                            						Float recvS=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getZoom());
                             						recvSBuff.append(recvS+",");
                             					}
                 							}
@@ -2010,12 +1985,12 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+500+j*100,
                         								length,
-                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							}else{
                 								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getAddress()+j*100,
                         								length,
-                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							}
                 							
                 							if(rc==-1||rc==-2){
@@ -2028,7 +2003,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								break;
                 							}else{
                 								for(int k=0;k<length;k++){
-                            						Float recvF=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getZoom());
+                            						Float recvF=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getFDiagram().getZoom());
                             						recvFBuff.append(recvF+",");
                             					}
                 							}
@@ -2053,12 +2028,12 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+1000+j*100,
                         								length,
-                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							}else{
                 								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getAddress()+j*100,
                         								length,
-                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							}
                 							
                 							if(rc==-1||rc==-2){
@@ -2071,7 +2046,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								break;
                 							}else{
                 								for(int k=0;k<length;k++){
-                            						Float recvA=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getZoom());
+                            						Float recvA=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getADiagram().getZoom());
                             						recvABuff.append(recvA+",");
                             					}
                 							}
@@ -2096,12 +2071,12 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()+1500+j*100,
                         								length,
-                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							}else{
                 								rc=sendAndReadData(is,os,readTimeout,clientUnit.unitDataList.get(i).UnitId,03,
                         								clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getAddress()+j*100,
                         								length,
-                        								recByte,clientUnit.unitDataList.get(i),driveConfig.getProtocol());
+                        								recByte,clientUnit.unitDataList.get(i),clientUnit.unitDataList.get(i).getProtocol());
                 							}
                 							
                 							if(rc==-1||rc==-2){
@@ -2114,7 +2089,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
                 								break;
                 							}else{
                 								for(int k=0;k<length;k++){
-                            						Float recvP=(float) (getShort(recByte,k*2, driveConfig.getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getZoom());
+                            						Float recvP=(float) (getShort(recByte,k*2, clientUnit.unitDataList.get(i).getProtocol())*clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getPDiagram().getZoom());
                             						recvPBuff.append(recvP+",");
                             					}
                 							}
@@ -2312,7 +2287,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 		return readByte;
 	}
 	
-	public byte[] getWriteFloatData(int id,int startAddr,float data,int protocol){
+	public byte[] getWriteFloatData(int id,int startAddr,float data,int protocol,String driverCode){
 		byte startAddrArr[]=StringManagerUtils.getByteArray((short)(startAddr-40001));
 		byte dataArr[]=StringManagerUtils.getByteArray(data);
 		byte[] readByte=null;
@@ -2331,7 +2306,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 			readByte[10]=0x00;
 			readByte[11]=0x02;
 			readByte[12]=0x04;
-			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+			if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
 				readByte[13]=dataArr[3];
 				readByte[14]=dataArr[2];
 				readByte[15]=dataArr[1];
@@ -2352,7 +2327,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 			dataByte[4]=0x00;
 			dataByte[5]=0x02;
 			dataByte[6]=0x04;
-			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+			if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
 				dataByte[7]=dataArr[3];
 				dataByte[8]=dataArr[2];
 				dataByte[9]=dataArr[1];
@@ -2505,16 +2480,16 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         return result;
     }
     
-    public float getFloat(byte[] arr,int index, int protocol){  
+    public float getFloat(byte[] arr,int index, int protocol,String driverCode){  
     	float result=0;
     	if(protocol==1){
-    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    		if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
     			result=StringManagerUtils.getFloatLittle(arr, 9+index);
     		}else{
     			result=StringManagerUtils.getFloat(arr, 9+index);
     		}
     	}else if(protocol==2){
-    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    		if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
     			result=StringManagerUtils.getFloatLittle(arr, 3+index);
     		}else{
     			result=StringManagerUtils.getFloat(arr, 3+index);
@@ -2592,15 +2567,6 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 		this.clientUnit = clientUnit;
 	}
 
-
-	public RTUDriveConfig getDriveConfig() {
-		return driveConfig;
-	}
-
-
-	public void setDriveConfig(RTUDriveConfig driveConfig) {
-		this.driveConfig = driveConfig;
-	}
 	public boolean isExit() {
 		return isExit;
 	}

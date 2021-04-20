@@ -6,12 +6,23 @@ import java.util.ArrayList;
 public class ModbusDriverSaveData {
 
 	private String DriverName;
+	
+	private int TcpServerPort;
+	
+	public int getTcpServerPort() {
+		return TcpServerPort;
+	}
+	public void setTcpServerPort(int tcpServerPort) {
+		TcpServerPort = tcpServerPort;
+	}
+	public String getTcpServerHeartbeatPacket() {
+		return TcpServerHeartbeatPacket;
+	}
+	public void setTcpServerHeartbeatPacket(String tcpServerHeartbeatPacket) {
+		TcpServerHeartbeatPacket = tcpServerHeartbeatPacket;
+	}
 
-    private String Protocol;
-
-    private int Port;
-
-    private String HeartbeatPacket;
+	private String TcpServerHeartbeatPacket;
 
     private List<DataConfig> DataConfig;
     
@@ -20,24 +31,6 @@ public class ModbusDriverSaveData {
     }
     public String getDriverName(){
         return this.DriverName;
-    }
-    public void setProtocol(String Protocol){
-        this.Protocol = Protocol;
-    }
-    public String getProtocol(){
-        return this.Protocol;
-    }
-    public void setPort(int Port){
-        this.Port = Port;
-    }
-    public int getPort(){
-        return this.Port;
-    }
-    public void setHeartbeatPacket(String HeartbeatPacket){
-        this.HeartbeatPacket = HeartbeatPacket;
-    }
-    public String getHeartbeatPacket(){
-        return this.HeartbeatPacket;
     }
     public void setDataConfig(List<DataConfig> DataConfig){
         this.DataConfig = DataConfig;

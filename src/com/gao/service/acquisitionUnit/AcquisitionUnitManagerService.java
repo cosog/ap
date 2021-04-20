@@ -14,6 +14,7 @@ import com.gao.model.AcquisitionUnitGroup;
 import com.gao.model.AcquisitionGroupItem;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.TcpServerConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.task.EquipmentDriverServerTask;
@@ -21,7 +22,9 @@ import com.gao.utils.DataSourceConfig;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
+import com.gao.utils.TcpServerConfigMap;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * <p>描述：角色维护服务</p>
@@ -91,16 +94,6 @@ private CommonDataService service;
 		//驱动排序
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-//			if(entry.getKey().toUpperCase().contains("KAFKA")){
-//				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-//				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
-//			}else if(entry.getKey().toUpperCase().contains("MQTT")){
-//				
-//			}else{
-//				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-//				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
-//			}
-			
 			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
@@ -109,10 +102,7 @@ private CommonDataService service;
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"驱动名称\",\"dataIndex\":\"driverName\",width:120 ,children:[] },"
-				+ "{ \"header\":\"协议\",\"dataIndex\":\"protocol\",width:80 ,children:[] },"
-				+ "{ \"header\":\"端口\",\"dataIndex\":\"port\",width:80 ,children:[] },"
-				+ "{ \"header\":\"注册包/心跳包\",\"dataIndex\":\"heartbeatPacket\",width:80 ,children:[] }"
+				+ "{ \"header\":\"驱动名称\",\"dataIndex\":\"driverName\",width:120 ,children:[] }"
 				+ "]";
 		
 		String diagramTableColumns = "["
@@ -225,6 +215,35 @@ private CommonDataService service;
 		}
 		result_json.append("]");
 		result_json.append("}");
+		return result_json.toString();
+	}
+	
+	public String getTcpServerConfigData(){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
+		if(tcpServerConfigMap==null || tcpServerConfigMap.get("TcpServerConfig")==null){
+			String path="";
+			String TcpServerConfigData="";
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			path=stringManagerUtils.getFilePath("TcpServerConfig.json","dirverConfig/");
+			TcpServerConfigData=stringManagerUtils.readFile(path,"utf-8");
+			type = new TypeToken<TcpServerConfig>() {}.getType();
+			TcpServerConfig tcpServerConfig=gson.fromJson(TcpServerConfigData, type);
+			tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
+		}
+		TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"项\",\"dataIndex\":\"item\",width:120 ,children:[] },"
+				+ "{ \"header\":\"值\",\"dataIndex\":\"value\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		result_json.append("{\"id\":1,\"item\":\"端口\",\"value\":\""+tcpServerConfig.getPort()+"\"},");
+		result_json.append("{\"id\":2,\"item\":\"心跳\",\"value\":\""+tcpServerConfig.getHeartbeatPacket()+"\"}");
+		result_json.append("]}");
 		return result_json.toString();
 	}
 	

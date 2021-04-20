@@ -80,6 +80,7 @@ public class EquipmentDriverServerTask {
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		initDriverConfig();//初始化驱动配置
 		boolean reg=false;
 		do{
@@ -96,54 +97,60 @@ public class EquipmentDriverServerTask {
 		}while(!reg);
 		
 		Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
-		if(tcpServerConfigMap==null){
-			
-		}else{
-			TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
-			if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
-				try {
-					ServerSocket serverSocket = new ServerSocket(tcpServerConfig.getPort());
-					while(EquipmentDriverServerTask.clientUnitList.size()>0){
-						for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
-							if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null){
-								System.out.println("等待客户端连接...");
-								try {
-									if(serverSocket==null){
-										serverSocket = new ServerSocket(tcpServerConfig.getPort());
-									}
-									Socket socket=serverSocket.accept();
-									EquipmentDriverServerTask.clientUnitList.get(i).socket=new Socket();
-									EquipmentDriverServerTask.clientUnitList.get(i).socket=socket;
-									
-									if(EquipmentDriverServerTask.clientUnitList.get(i).socket!=null){
-										System.out.println("TCPServer接收到客户端连接,thread:"+i+",IP:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getInetAddress()+",端口:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getPort());
+		if(tcpServerConfigMap==null || tcpServerConfigMap.get("TcpServerConfig")==null){
+			String path="";
+			String TcpServerConfigData="";
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			path=stringManagerUtils.getFilePath("TcpServerConfig.json","dirverConfig/");
+			TcpServerConfigData=stringManagerUtils.readFile(path,"utf-8");
+			type = new TypeToken<TcpServerConfig>() {}.getType();
+			TcpServerConfig tcpServerConfig=gson.fromJson(TcpServerConfigData, type);
+			tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
+		}
 
-										EquipmentDriverServerTask.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTask.clientUnitList.get(i));
-										if(EquipmentDriverServerTask.clientUnitList.get(i).thread!=null){
-//											EquipmentDriverServerTast.clientUnitList.get(i).thread.start();
-											pool.submit(EquipmentDriverServerTask.clientUnitList.get(i).thread);
-											System.out.println("线程池中当前线程数："+((ThreadPoolExecutor)pool).getPoolSize());
-											System.out.println("线程池中当前活跃线程数："+((ThreadPoolExecutor)pool).getActiveCount());
-											break;
-										}
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-									break;
+		TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
+		if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
+			try {
+				ServerSocket serverSocket = new ServerSocket(tcpServerConfig.getPort());
+				while(EquipmentDriverServerTask.clientUnitList.size()>0){
+					for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
+						if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null){
+							System.out.println("等待客户端连接...");
+							try {
+								if(serverSocket==null){
+									serverSocket = new ServerSocket(tcpServerConfig.getPort());
 								}
+								Socket socket=serverSocket.accept();
+								EquipmentDriverServerTask.clientUnitList.get(i).socket=new Socket();
+								EquipmentDriverServerTask.clientUnitList.get(i).socket=socket;
+								
+								if(EquipmentDriverServerTask.clientUnitList.get(i).socket!=null){
+									System.out.println("TCPServer接收到客户端连接,thread:"+i+",IP:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getInetAddress()+",端口:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getPort());
+
+									EquipmentDriverServerTask.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTask.clientUnitList.get(i));
+									if(EquipmentDriverServerTask.clientUnitList.get(i).thread!=null){
+										pool.submit(EquipmentDriverServerTask.clientUnitList.get(i).thread);
+										System.out.println("线程池中当前线程数："+((ThreadPoolExecutor)pool).getPoolSize());
+										System.out.println("线程池中当前活跃线程数："+((ThreadPoolExecutor)pool).getActiveCount());
+										break;
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+								break;
 							}
 						}
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

@@ -32,6 +32,7 @@ import com.gao.model.RoleModule;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusDriverSaveData;
 import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.TcpServerConfig;
 import com.gao.model.drive.RTUDriveConfig.Item;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
 import com.gao.service.right.RoleManagerService;
@@ -44,6 +45,7 @@ import com.gao.utils.Page;
 import com.gao.utils.PagingConstants;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.StringManagerUtils;
+import com.gao.utils.TcpServerConfigMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -411,6 +413,22 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getTcpServerConfigData")
+	public String getTcpServerConfigData() throws Exception {
+		String json = "";
+		
+		json = acquisitionUnitItemManagerService.getTcpServerConfigData();
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveModbusDriverConfigData")
 	public String saveModbusDriverConfigData() throws Exception {
 		String json = "";
@@ -422,6 +440,24 @@ public class AcquisitionUnitManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		if(modbusDriverSaveData!=null){
+			String path=stringManagerUtils.getFilePath("TcpServerConfig.json","dirverConfig/");
+			Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
+			if(tcpServerConfigMap==null || tcpServerConfigMap.get("TcpServerConfig")==null){
+				String TcpServerConfigData="";
+				TcpServerConfigData=stringManagerUtils.readFile(path,"utf-8");
+				type = new TypeToken<TcpServerConfig>() {}.getType();
+				TcpServerConfig tcpServerConfig=gson.fromJson(TcpServerConfigData, type);
+				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
+			}
+			TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
+			if(tcpServerConfig.getPort()!=modbusDriverSaveData.getTcpServerPort() || !tcpServerConfig.getHeartbeatPacket().equals(modbusDriverSaveData.getTcpServerHeartbeatPacket())){
+				tcpServerConfig.setPort(modbusDriverSaveData.getTcpServerPort());
+				tcpServerConfig.setHeartbeatPacket(modbusDriverSaveData.getTcpServerHeartbeatPacket());
+				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(tcpServerConfig)));
+				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
+			}
+			
+			
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
 				EquipmentDriverServerTask.initDriverConfig();
@@ -456,15 +492,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(fileName)&&StringManagerUtils.isNotNull(driverCode)){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)equipmentDriveMap.get(driverCode);
-				String path=stringManagerUtils.getFilePath(fileName,"dirverConfig/");
+				path=stringManagerUtils.getFilePath(fileName,"dirverConfig/");
 				if(driveConfig==null){
 					String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 					type = new TypeToken<RTUDriveConfig>() {}.getType();
 					driveConfig=gson.fromJson(driverConfigData, type);
 				}
-//				driveConfig.setPort(modbusDriverSaveData.getPort());
-//				driveConfig.setProtocol("modbus-tcp".equalsIgnoreCase(modbusDriverSaveData.getProtocol())?1:2);
-//				driveConfig.setHeartbeatPacket(modbusDriverSaveData.getHeartbeatPacket());
 				
 				for(int i=0;i<modbusDriverSaveData.getDataConfig().size();i++){
 					int dataType=1;

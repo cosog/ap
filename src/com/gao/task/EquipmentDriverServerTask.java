@@ -57,7 +57,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
 
-@Component("BeeTechDriverServerTast")  
+@Component("EquipmentDriverServerTask")  
 public class EquipmentDriverServerTask {
 	public static Connection conn = null;   
 	public static PreparedStatement pstmt = null;  
@@ -68,7 +68,8 @@ public class EquipmentDriverServerTask {
 	public static ServerSocket beeTechServerSocket;
 	public static ServerSocket sunMoonServerSocket;
 	public static boolean exit=false;
-	
+	public static TcpServerConfig tcpServerConfig=null;
+	public static ServerSocket serverSocket=null;
 	private ExecutorService pool = Executors.newCachedThreadPool();
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
@@ -77,7 +78,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -108,25 +109,26 @@ public class EquipmentDriverServerTask {
 			tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
 		}
 
-		TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
-		if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
-			try {
-				ServerSocket serverSocket = new ServerSocket(tcpServerConfig.getPort());
-				while(EquipmentDriverServerTask.clientUnitList.size()>0){
+		while(EquipmentDriverServerTask.clientUnitList.size()>0){
+			tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
+			if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
+				try {
+					if(serverSocket==null || serverSocket.isClosed()){
+						serverSocket = new ServerSocket(tcpServerConfig.getPort());
+					}
 					for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
 						if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null){
-							System.out.println("等待客户端连接...");
 							try {
-								if(serverSocket==null){
+								if(serverSocket==null || serverSocket.isClosed()){
 									serverSocket = new ServerSocket(tcpServerConfig.getPort());
 								}
+								System.out.println("TcpServer等待客户端连接...");
 								Socket socket=serverSocket.accept();
-								EquipmentDriverServerTask.clientUnitList.get(i).socket=new Socket();
-								EquipmentDriverServerTask.clientUnitList.get(i).socket=socket;
-								
+//								EquipmentDriverServerTask.clientUnitList.get(i).socket=new Socket();
+//								EquipmentDriverServerTask.clientUnitList.get(i).socket=socket;
+								EquipmentDriverServerTask.clientUnitList.get(i).setSocket(socket);
 								if(EquipmentDriverServerTask.clientUnitList.get(i).socket!=null){
 									System.out.println("TCPServer接收到客户端连接,thread:"+i+",IP:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getInetAddress()+",端口:"+EquipmentDriverServerTask.clientUnitList.get(i).socket.getPort());
-
 									EquipmentDriverServerTask.clientUnitList.get(i).thread=new ProtocolModbusThread(i,EquipmentDriverServerTask.clientUnitList.get(i));
 									if(EquipmentDriverServerTask.clientUnitList.get(i).thread!=null){
 										pool.submit(EquipmentDriverServerTask.clientUnitList.get(i).thread);
@@ -137,18 +139,21 @@ public class EquipmentDriverServerTask {
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
+								if(serverSocket!=null&& !serverSocket.isClosed()){
+									serverSocket.close();
+								}
 								break;
 							}
 						}
 					}
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

@@ -2459,16 +2459,11 @@ create table TBL_WELLINFORMATION
   LIFTINGTYPE                NUMBER(10) default 200,
   DRIVERADDR                 VARCHAR2(200),
   DRIVERID                   VARCHAR2(200),
-  ACQCYCLE_DIAGRAM           NUMBER(10) default 60,
-  ACQCYCLE_DISCRETE          NUMBER(10) default 1,
-  SAVECYCLE_DISCRETE         NUMBER(10) default 5,
   DRIVERCODE                 VARCHAR2(50),
   UNITCODE                   VARCHAR2(50),
   RUNTIMEEFFICIENCYSOURCE    NUMBER(2),
   VIDEOURL                   VARCHAR2(400),
   SORTNUM                    NUMBER(10) default 9999,
-  ACQCYCLESETSTATUS_DIAGRAM  NUMBER(2) default 0,
-  ACQCYCLESETSTATUS_DISCRETE NUMBER(2) default 0,
   LEVELCORRECTVALUE          NUMBER(2) default 0,
   PROTOCOL                   NUMBER(2) default 1
 )

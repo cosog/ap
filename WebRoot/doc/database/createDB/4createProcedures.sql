@@ -2207,9 +2207,6 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
                                                     v_acquisitionUnit   in varchar2,
                                                     v_driverAddr    in varchar2,
                                                     v_driverId   in varchar2,
-                                                    v_acqcycle_diagram in NUMBER,
-                                                    v_acqcycle_discrete in NUMBER,
-                                                    v_savecycle_discrete in NUMBER,
                                                     v_runtimeEfficiencySource  in varchar2,
                                                     v_videoUrl   in varchar2,
                                                     v_sortNum  in NUMBER,
@@ -2224,7 +2221,6 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
   p_prototal number :=null;
   p_prototalCount number :=0;
 begin
---EXECUTE IMMEDIATE 'delete from t_112_distretealarmlimit t where t.jbh in( '||v_ids||')';
   --验证权限
   p_sql:='select count(*)  from tbl_org t where t.org_name is not null and  t.org_id='||v_orgId||' and t.org_id in ('||v_ids||')';
   dbms_output.put_line('p_sql:' || p_sql);
@@ -2233,12 +2229,10 @@ begin
      select t.org_name into p_orgName from tbl_org t where t.org_id=v_orgId;
      if orgcount>0 and p_orgName=v_orgname then
         select count(*) into wellcount from tbl_wellinformation t where t.wellName=v_wellName;
-        
         select count(*) into p_prototalCount from tbl_code code where code.itemcode='PROTOCOL' and code.itemname=v_protocol;
         if p_prototalCount>0 then
            select code.itemvalue into p_prototal from tbl_code code where code.itemcode='PROTOCOL' and code.itemname=v_protocol;
         end if;
-        
         if wellcount>0 then
            Update tbl_wellinformation t
            Set t.orgid   = v_orgId,
@@ -2248,7 +2242,6 @@ begin
                t.protocol=p_prototal,
                t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1),
                t.driveraddr=v_driverAddr,t.driverid=v_driverId,
-               t.acqcycle_diagram=v_acqcycle_diagram,t.acqcycle_discrete=v_acqcycle_discrete,t.savecycle_discrete=v_savecycle_discrete,
                t.videourl=v_videourl,
                t.runtimeefficiencysource   = (select code3.itemvalue from tbl_code code3 where code3.itemcode='RuntimeEfficiencySource' and code3.itemname=v_runtimeEfficiencySource),
                t.sortnum=v_sortNum
@@ -2258,8 +2251,8 @@ begin
         elsif wellcount=0 then
               if wellamount<200 then
                   insert into tbl_wellinformation(wellName,drivercode,protocol,driveraddr,driverid,
-                  acqcycle_diagram,acqcycle_discrete,savecycle_discrete,videourl,Sortnum)
-                  values(v_wellName,v_driverCode,p_prototal,v_driverAddr,v_driverId,v_acqcycle_diagram,v_acqcycle_discrete,v_savecycle_discrete,v_videourl,v_sortNum);
+                  videourl,Sortnum)
+                  values(v_wellName,v_driverCode,p_prototal,v_driverAddr,v_driverId,v_videourl,v_sortNum);
                   commit;
                   update tbl_wellinformation t set
                      orgId   = v_orgId,
@@ -2269,9 +2262,6 @@ begin
                      t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1)
                   Where t.wellName=v_wellName;
                   commit;
-                  --同时向8号表增加记录
-                  --insert into t_outputwellproduction_rt(wellid) select t2.id from tbl_wellinformation t2 where t2.wellName=v_wellName;
-                  --commit;
                   p_msg := '添加成功';
               else
                   p_msg := '超出井数限制';
@@ -2281,7 +2271,6 @@ begin
            p_msg := '无权限';
      end if;
   dbms_output.put_line('p_msg:' || p_msg);
-
 Exception
   When Others Then
     p_msg := Sqlerrm || ',' || '操作失败';

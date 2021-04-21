@@ -48,6 +48,7 @@ import com.gao.utils.StringManagerUtils;
 import com.gao.utils.TcpServerConfigMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.gao.task.EquipmentDriverServerTask;
 
 /** <p>描述：角色维护管理Action</p>
  * 
@@ -455,6 +456,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 				tcpServerConfig.setHeartbeatPacket(modbusDriverSaveData.getTcpServerHeartbeatPacket());
 				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(tcpServerConfig)));
 				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
+				
+				if(EquipmentDriverServerTask.serverSocket!=null && !EquipmentDriverServerTask.serverSocket.isClosed()){
+					EquipmentDriverServerTask.serverSocket.close();
+				}
 			}
 			
 			

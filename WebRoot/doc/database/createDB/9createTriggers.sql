@@ -478,17 +478,6 @@ begin
 end;
 /
 
-create or replace trigger trg_a_wellinformation_u   before  update  on TBL_WELLINFORMATION FOR EACH ROW
-begin
-  if :new.acqcycle_diagram <> :old.acqcycle_diagram then
-               :new.acqcyclesetstatus_diagram := 0;
-            end if;
-            if :new.acqcycle_discrete <> :old.acqcycle_discrete then
-               :new.acqCycleSetStatus_discrete := 0;
-            end if;
-end;
-/
-
 create or replace trigger trg_b_a9rawdata_hist_i   before  insert on tbl_a9rawdata_hist FOR EACH ROW
 BEGIN
   SELECT Seq_A9rawdata_hist.nextval INTO :new.id FROM dual;

@@ -4107,58 +4107,43 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116643', '', '86dc8dff3f634944a2b7ee35ec6e5953', '沉没度(m)', 'submergence', '', 39, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114888', '', '87808f225d7240f68c2ab879347d818a', '序号', 'id', 'width:50', 1, 1, '', '', null, null);
+values ('114888', null, '87808f225d7240f68c2ab879347d818a', '序号', 'id', 'width:50', 1, 1, null, null, null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114865', 'sys', '87808f225d7240f68c2ab879347d818a', '单位名称', 'orgName', '', 2, 1, 'sys', '系统管理员', to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114865', 'sys', '87808f225d7240f68c2ab879347d818a', '单位名称', 'orgName', null, 2, 1, 'sys', '系统管理员', to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114866', 'sys', '87808f225d7240f68c2ab879347d818a', '区块名称', 'resName', '', 3, 1, 'sys', '系统管理员', to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114866', 'sys', '87808f225d7240f68c2ab879347d818a', '区块名称', 'resName', null, 3, 1, 'sys', '系统管理员', to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114867', 'sys', '87808f225d7240f68c2ab879347d818a', '井名', 'wellName', '', 4, 1, 'sys', '系统管理员', to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114867', 'sys', '87808f225d7240f68c2ab879347d818a', '井名', 'wellName', null, 4, 1, 'sys', '系统管理员', to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 13:34:03', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114895', '', '87808f225d7240f68c2ab879347d818a', '举升方式', 'liftingTypeName', '', 5, 1, '', '', null, null);
+values ('114895', null, '87808f225d7240f68c2ab879347d818a', '举升方式', 'liftingTypeName', null, 5, 1, null, null, null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116688', '', '87808f225d7240f68c2ab879347d818a', '驱动名称', 'driverName', 'width:120', 6, 1, '', '系统管理员', to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116688', null, '87808f225d7240f68c2ab879347d818a', '驱动名称', 'driverName', 'width:120', 6, 1, null, '系统管理员', to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('118320', '', '87808f225d7240f68c2ab879347d818a', '通信协议', 'protocol', '', 7, 1, '', '', to_date('12-03-2021 10:23:43', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-03-2021 10:23:43', 'dd-mm-yyyy hh24:mi:ss'));
+values ('118320', null, '87808f225d7240f68c2ab879347d818a', '通信协议', 'protocol', null, 7, 1, null, null, to_date('12-03-2021 10:23:43', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-03-2021 10:23:43', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116689', '', '87808f225d7240f68c2ab879347d818a', '采集类型', 'acquisitionUnit', '', 8, 1, '', '', to_date('08-11-2018 14:59:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-11-2018 14:59:54', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116689', null, '87808f225d7240f68c2ab879347d818a', '采集类型', 'acquisitionUnit', null, 8, 1, null, null, to_date('08-11-2018 14:59:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-11-2018 14:59:54', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114915', '', '87808f225d7240f68c2ab879347d818a', '设备地址', 'driverAddr', '', 9, 1, '', '', to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114915', null, '87808f225d7240f68c2ab879347d818a', '设备地址', 'driverAddr', null, 9, 1, null, null, to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114916', '', '87808f225d7240f68c2ab879347d818a', '设备编号', 'driverId', '', 10, 1, '', '', to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114916', null, '87808f225d7240f68c2ab879347d818a', '设备编号', 'driverId', null, 10, 1, null, null, to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114917', '', '87808f225d7240f68c2ab879347d818a', '功图采集间隔(min)', 'acqcycle_diagram', '', 11, 1, '', '', to_date('27-06-2018 14:07:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-06-2018 14:07:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116087', null, '87808f225d7240f68c2ab879347d818a', '时率来源', 'runtimeEfficiencySource', null, 11, 1, null, null, to_date('27-08-2018 14:57:22', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-08-2018 14:57:22', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116858', '', '87808f225d7240f68c2ab879347d818a', '状态', 'acqCycleSetStatus_diagram', '', 12, 0, '', '', to_date('24-12-2019 18:05:36', 'dd-mm-yyyy hh24:mi:ss'), to_date('24-12-2019 18:05:36', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116922', null, '87808f225d7240f68c2ab879347d818a', '视频路径', 'videoUrl', null, 12, 0, null, null, to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116682', '', '87808f225d7240f68c2ab879347d818a', '离散采集间隔(min)', 'acqcycle_discrete', '', 13, 1, '', '电参分析管理员', to_date('17-12-2019 16:50:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-12-2019 16:50:56', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116859', '', '87808f225d7240f68c2ab879347d818a', '状态', 'acqCycleSetStatus_discrete', '', 14, 0, '', '', to_date('24-12-2019 18:05:36', 'dd-mm-yyyy hh24:mi:ss'), to_date('24-12-2019 18:05:36', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116683', '', '87808f225d7240f68c2ab879347d818a', '数据保存间隔(min)', 'savecycle_discrete', '', 15, 1, '', '', to_date('31-10-2018 14:23:03', 'dd-mm-yyyy hh24:mi:ss'), to_date('31-10-2018 14:23:03', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116087', '', '87808f225d7240f68c2ab879347d818a', '时率来源', 'runtimeEfficiencySource', '', 16, 1, '', '', to_date('27-08-2018 14:57:22', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-08-2018 14:57:22', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116922', '', '87808f225d7240f68c2ab879347d818a', '视频路径', 'videoUrl', '', 17, 0, '', '', to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116923', '', '87808f225d7240f68c2ab879347d818a', '排序编号', 'sortNum', '', 18, 1, '', '', to_date('31-12-2019 13:05:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('31-12-2019 13:05:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116923', null, '87808f225d7240f68c2ab879347d818a', '排序编号', 'sortNum', null, 13, 1, null, null, to_date('31-12-2019 13:05:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('31-12-2019 13:05:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114832', 'sys', '8ab792e089494533be910699d426c7d5', '单位名称', 'text', '', 1, 1, 'sys', '系统管理员', to_date('16-06-2014 14:26:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 14:26:30', 'dd-mm-yyyy hh24:mi:ss'));

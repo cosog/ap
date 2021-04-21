@@ -7,19 +7,19 @@ tbl_wellinformation well
 left outer join
 (select t.wellid, (sysdate- t.savetime)*24*60 as interval2,t.interval,
        case when t.commstatus=0 or t.savetime is null
-       or (sysdate- t.savetime)*24*60 >decode(t.interval,null,decode(t2.acqcycle_discrete,null,5,t2.acqcycle_discrete),0,decode(t2.acqcycle_discrete,null,5,t2.acqcycle_discrete),t.interval)*1.5 then 0
+       or (sysdate- t.savetime)*24*60 >decode(t.interval,null,1,t.interval)*1.5 then 0
        else 1 end as commstatus
 from tbl_rpc_discrete_latest t,tbl_wellinformation t2 where t.wellid=t2.id) v on well.id=v.wellid
 left outer join
 (select t.wellid, (sysdate- t.savetime)*24*60 as interval2,t.interval,
        case when t.savetime is null
-       or (sysdate- t.savetime)*24*60 >decode(t.interval,null,decode(t2.acqcycle_diagram,null,5,t2.acqcycle_diagram),0,decode(t2.acqcycle_diagram,null,5,t2.acqcycle_diagram),t.interval)*1.5 then 0
+       or (sysdate- t.savetime)*24*60 >decode(t.interval,null,1,t.interval)*1.5 then 0
        else 1 end as commstatus
 from tbl_rpc_diagram_latest t,tbl_wellinformation t2 where t.wellid=t2.id) v2 on well.id=v2.wellid
 left outer join
 (select t2.id as wellid, (sysdate- t.AcqTime)*24*60 as interval2,t.TransferIntervel,
        case when t.AcqTime is null
-       or (sysdate- t.AcqTime)*24*60 >decode(t.TransferIntervel,null,decode(t2.acqcycle_diagram,null,5,t2.acqcycle_diagram),0,decode(t2.acqcycle_diagram,null,5,t2.acqcycle_diagram),t.TransferIntervel)*1.5 then 0
+       or (sysdate- t.AcqTime)*24*60 >decode(t.TransferIntervel,null,1,t.TransferIntervel)*1.5 then 0
        else 1 end as commstatus
 from tbl_a9rawdata_latest t,tbl_wellinformation t2 where t.deviceId=t2.driveraddr) v3 on well.id=v3.wellid
 where well.drivercode='MQTTDrive' or well.drivercode='KafkaDrive';
@@ -1792,9 +1792,7 @@ left outer join  tbl_org org  on t.orgid=org.org_id;
 create or replace view viw_wellinformation as
 select t.id,org.org_name as orgName,org.org_id as orgid,
 t.resname,t.wellname,t.liftingtype,t.driveraddr,t.driverid,
-t.acqcycle_diagram,decode(t.acqcycle_diagram,null,null,decode(t.acqCycleSetStatus_diagram,1,'已下发',2,'已同步','等待下发')) as acqCycleSetStatus_diagram,
-t.acqcycle_discrete,decode(t.acqcycle_discrete,null,null,decode(t.acqCycleSetStatus_discrete,1,'已下发',2,'已同步','等待下发')) as acqCycleSetStatus_discrete,
-t.savecycle_discrete,c2.itemname as RuntimeEfficiencySource,t.videourl,
+c2.itemname as RuntimeEfficiencySource,t.videourl,
 c1.itemname as LiftingTypeName,t.drivercode, t2.unit_name as AcquisitionUnit ,c3.itemname as protocol,
 t.sortnum
 from tbl_wellinformation t

@@ -50,12 +50,6 @@ public class WellHandsontableChangedData {
 	    private String driverAddr="";
 
 	    private String driverId="";
-
-	    private String acqcycle_diagram="";
-
-	    private String acqcycle_discrete="";
-	    
-	    private String savecycle_discrete="";
 	    
 	    private String runtimeEfficiencySource="";
 	    
@@ -133,30 +127,6 @@ public class WellHandsontableChangedData {
 
 		public void setDriverId(String driverId) {
 			this.driverId = driverId;
-		}
-
-		public String getAcqcycle_diagram() {
-			return acqcycle_diagram;
-		}
-
-		public void setAcqcycle_diagram(String acqcycle_diagram) {
-			this.acqcycle_diagram = acqcycle_diagram;
-		}
-
-		public String getAcqcycle_discrete() {
-			return acqcycle_discrete;
-		}
-
-		public void setAcqcycle_discrete(String acqcycle_discrete) {
-			this.acqcycle_discrete = acqcycle_discrete;
-		}
-
-		public String getSavecycle_discrete() {
-			return savecycle_discrete;
-		}
-
-		public void setSavecycle_discrete(String savecycle_discrete) {
-			this.savecycle_discrete = savecycle_discrete;
 		}
 
 		public String getRuntimeEfficiencySource() {

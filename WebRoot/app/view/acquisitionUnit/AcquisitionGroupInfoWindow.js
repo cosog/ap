@@ -40,6 +40,20 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 value: ''
                 
             }, {
+                id: 'formAcquisitionGroupAcqCycle_Id',
+                name: "acquisitionGroup.acqCycle",
+                fieldLabel: '采集周期(min)',
+                anchor: '100%',
+                value: ''
+                
+            }, {
+                id: 'formAcquisitionGroupSaveCycle_Id',
+                name: "acquisitionGroup.saveCycle",
+                fieldLabel: '保存周期(min)',
+                anchor: '100%',
+                value: ''
+                
+            }, {
             	id: 'acquisitionGroupRemark_Id',
             	name: "acquisitionGroup.remark",
                 fieldLabel: '组描述',

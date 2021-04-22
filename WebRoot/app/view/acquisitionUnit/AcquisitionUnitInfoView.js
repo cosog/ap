@@ -11,7 +11,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
         		region:'west',
         		title:'采集单元配置',
         		id:'acquisitionUnitListPanel_Id',
-        		width:'40%',
+        		width:'35%',
         		layout: "fit",
         		tbar: [{
                     id: 'acquisitionUnitName_Id',
@@ -66,7 +66,6 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
         		region:'center',
         		title:'采集组配置',
         		id:'acquisitionGroupListPanel_Id',
-        		width:'40%',
         		layout: "fit",
         		tbar: [{
                     id: 'acquisitionGroupName_Id',
@@ -105,7 +104,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
                     disabled: true,
                     iconCls: 'edit',
                     handler: function () {
-//                    	modifyAcquisitionGroupInfo();
+                    	modifyAcquisitionGroupInfo();
                     }
              }, "-", {
                     xtype: 'button',
@@ -114,7 +113,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoView", {
                     text: cosog.string.del,
                     iconCls: 'delete',
                     handler: function () {
-//                    	delAcquisitionGroupInfo();
+                    	delAcquisitionGroupInfo();
                     }
              }],
              bbar: ['->', {

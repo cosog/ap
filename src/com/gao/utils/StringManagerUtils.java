@@ -840,7 +840,8 @@ public class StringManagerUtils {
 		String arrays[] = { "id", "wellName", "jhh", "bj", "bjbz", "bjlx", "userType", "userTitle", "userOrgid",
 				"userNo", "userPhone", "userPwd", "userName","orgName","resName","jlxName","jslxName","ssjwName","sszcdyName", "userInEmail", "userId", "zjs", "ygbh", "blx","shzt","roleCode",
 				"dwbh", "yqcbh","hfbz", "rfidkh", "bmbh", "roleFlag","roleId","jlx","ssjw","sszcdy","jslx","qtlx","sfpfcl","ccjzt","bjb","yjgjb","ejgjb","sjgjb","mdzt","jbh",
-				"ygbh", "bjjb", "", "gklx", "jlbh", "bdbjlx", "bdbjjb", "ssgldw", "bz","dmx","dmy","showLevel","pxbh","driverAddr","driverId","cycle","userQuickLogin","gtcjsj","jsbz","ExtendedDays" };
+				"ygbh", "bjjb", "", "gklx", "jlbh", "bdbjlx", "bdbjjb", "ssgldw", "bz","dmx","dmy","showLevel","pxbh","driverAddr","driverId","cycle","userQuickLogin","gtcjsj","jsbz","ExtendedDays",
+				"acqCycle","saveCycle" };
 		for (String str : arrays) {
 			if (value.equalsIgnoreCase(str)) {
 				flag = true;

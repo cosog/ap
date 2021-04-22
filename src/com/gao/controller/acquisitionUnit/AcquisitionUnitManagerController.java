@@ -118,24 +118,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/doAcquisitionUnitAdd")
-	public String doAcquisitionUnitAdd(@ModelAttribute AcquisitionUnit acquisitionUnit) throws IOException {
-		String result = "";
-		PrintWriter out = response.getWriter();
-		try {
-			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
-			EquipmentDriverServerTask.initAcquisitionUnit();
-			result = "{success:true,msg:true}";
-			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			out.print(result);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			result = "{success:false,msg:false}";
-			out.print(result);
-		}
-		return null;
-	}
+	
 	
 	@RequestMapping("/doAcquisitionGroupAdd")
 	public String doAcquisitionGroupAdd(@ModelAttribute AcquisitionGroup acquisitionGroup) throws IOException {
@@ -156,7 +139,59 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doAcquisitionGroupEdit")
+	public String doAcquisitionGroupEdit(@ModelAttribute AcquisitionGroup acquisitionGroup) {
+		String result ="{success:true,msg:false}";
+		try {
+			this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			response.setHeader("Cache-Control", "no-cache");
+			PrintWriter pw = response.getWriter();
+			result= "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			response.getWriter().print(result);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
+	@RequestMapping("/doAcquisitionGroupBulkDelete")
+	public String doAcquisitionGroupBulkDelete() {
+		try {
+			String ids = ParamUtils.getParameter(request, "paramsId");
+			this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(ids);
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			String result = "{success:true,flag:true}";
+			response.getWriter().print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/doAcquisitionUnitAdd")
+	public String doAcquisitionUnitAdd(@ModelAttribute AcquisitionUnit acquisitionUnit) throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		try {
+			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
+			EquipmentDriverServerTask.initAcquisitionUnit();
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
 	
 	@RequestMapping("/doAcquisitionUnitEdit")
 	public String doAcquisitionUnitEdit(@ModelAttribute AcquisitionUnit acquisitionUnit) {

@@ -61,7 +61,8 @@ private CommonDataService service;
 	public String doAcquisitionGroupShow(Map map,Page pager) {
 		String groupName = (String) map.get("groupName");
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select t.id as id,t.group_code as groupCode,t.group_name as groupName,t.remark from tbl_acq_group_conf t where 1=1");
+		sqlBuffer.append("select t.id as id,t.group_code as groupCode,t.group_name as groupName,"
+				+ "t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark from tbl_acq_group_conf t where 1=1");
 		if (StringManagerUtils.isNotNull(groupName)) {
 			sqlBuffer.append(" and t.group_name like '%" + groupName + "%' ");
 		}
@@ -72,6 +73,8 @@ private CommonDataService service;
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
 				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
+				+ "{ \"header\":\"采集周期(min)\",\"dataIndex\":\"acqCycle\" ,children:[] },"
+				+ "{ \"header\":\"保存周期(min)\",\"dataIndex\":\"saveCycle\" ,children:[] },"
 				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
 		try {
@@ -319,12 +322,21 @@ private CommonDataService service;
 	}
 	
 	
-	public void doAcquisitionUnitAdd(T acquisitionUnit) throws Exception {
-		getBaseDao().addObject(acquisitionUnit);
-	}
-	
 	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {
 		getBaseDao().addObject(acquisitionGroup);
+	}
+	
+	public void doAcquisitionGroupEdit(AcquisitionGroup acquisitionGroup) throws Exception {
+		getBaseDao().updateObject(acquisitionGroup);
+	}
+	
+	public void doAcquisitionGroupBulkDelete(final String ids) throws Exception {
+		final String hql = "DELETE AcquisitionGroup u where u.id in (" + ids + ")";
+		super.bulkObjectDelete(hql);
+	}
+	
+	public void doAcquisitionUnitAdd(T acquisitionUnit) throws Exception {
+		getBaseDao().addObject(acquisitionUnit);
 	}
 	
 	public void doAcquisitionUnitEdit(T acquisitionUnit) throws Exception {

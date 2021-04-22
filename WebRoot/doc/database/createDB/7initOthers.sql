@@ -179,32 +179,32 @@ values (61, 80, '重心接近支点每拍调节时间', 'BalanceCloseTimePerBeat', null, nul
 /*==============================================================*/
 /* 初始化tbl_acq_group_conf数据                                          */
 /*==============================================================*/
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (1, 'group1', '电参', '电参数据');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (1, 'group1', '电参', '电参数据', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (2, 'group2', '功图', '功图数据');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (2, 'group2', '功图', '功图数据', 60, 60);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (21, 'group3', '变频', '变频数据');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (21, 'group3', '变频', '变频数据', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (41, 'group4', '运行状态', '运行状态');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (41, 'group4', '运行状态', '运行状态', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (61, 'group5', '压力、温度', '油压、套压、井口油温');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (61, 'group5', '压力、温度', '油压、套压、井口油温', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (62, 'group6', '螺杆泵转速、扭矩', '螺杆泵转速、扭矩');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (62, 'group6', '螺杆泵转速、扭矩', '螺杆泵转速、扭矩', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (63, 'group20', '启停控制', '启停控制');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (63, 'group20', '启停控制', '启停控制', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (64, 'group21', '变频控制', '变频控制');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (64, 'group21', '变频控制', '变频控制', 1, 5);
 
-insert into tbl_acq_group_conf (ID, GROUP_CODE, GROUP_NAME, REMARK)
-values (65, 'group30', '数字抽油机', '数字抽油机');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
+values (65, 'group30', '数字抽油机', '数字抽油机', 1, 5);
 
 /*==============================================================*/
 /* 初始化tbl_acq_unit_conf数据                                    */

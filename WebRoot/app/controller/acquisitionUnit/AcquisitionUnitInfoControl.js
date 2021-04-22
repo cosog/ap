@@ -31,20 +31,20 @@ function addAcquisitionGroupInfo() {
     return false;
 };
 
-//窗体创建按钮事件
-var SaveAcquisitionUnitSubmitBtnForm = function () {
-    var saveAcquisitionUnitWinForm = Ext.getCmp("acquisitionUnit_editWin_Id").down('form');
+//采集组窗体创建按钮事件
+var SaveAcquisitionGroupSubmitBtnForm = function () {
+    var saveAcquisitionGroupWinForm = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-    if (saveAcquisitionUnitWinForm.getForm().isValid()) {
-        saveAcquisitionUnitWinForm.getForm().submit({
-            url: context + '/acquisitionUnitManagerController/doAcquisitionUnitAdd',
+    if (saveAcquisitionGroupWinForm.getForm().isValid()) {
+        saveAcquisitionGroupWinForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doAcquisitionGroupAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
             waitMsg: cosog.string.sendServer,
             waitTitle: 'Please Wait...',
             success: function (response, action) {
-                Ext.getCmp('acquisitionUnit_editWin_Id').close();
-                Ext.getCmp("AcquisitionUnitInfoGridPanel_Id").getStore().load();
+                Ext.getCmp('acquisitionGroup_editWin_Id').close();
+                Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
                 }
@@ -64,20 +64,106 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
     return false;
 };
 
-//采集组窗体创建按钮事件
-var SaveAcquisitionGroupSubmitBtnForm = function () {
-    var saveAcquisitionGroupWinForm = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
+//窗体上的修改按钮事件
+function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
+    var getGroupUpdateDataInfoSubmitBtnFormId = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-    if (saveAcquisitionGroupWinForm.getForm().isValid()) {
-        saveAcquisitionGroupWinForm.getForm().submit({
-            url: context + '/acquisitionUnitManagerController/doAcquisitionGroupAdd',
+    if (getGroupUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
+        Ext.getCmp("acquisitionGroup_editWin_Id").el.mask(cosog.string.updatewait).show();
+        getGroupUpdateDataInfoSubmitBtnFormId.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doAcquisitionGroupEdit',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            success: function (response, action) {
+                Ext.getCmp("acquisitionGroup_editWin_Id").getEl().unmask();
+                Ext.getCmp('acquisitionGroup_editWin_Id').close();
+                Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getStore().load();
+
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts,
+                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                }
+            },
+            failure: function () {
+                Ext.getCmp("acquisitionGroup_editWin_Id").getEl().unmask();
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    }
+    return false;
+};
+
+function modifyAcquisitionGroupInfo() {
+	var gridPanel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+    var selectedModel = gridPanel.getSelectionModel();
+    var _record = selectedModel.getSelection();
+    if (_record.length>0) {
+    	var editWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
+            title: '编辑采集组'
+        });
+    	editWindow.show();
+        Ext.getCmp("addFormAcquisitionGroup_Id").hide();
+        Ext.getCmp("updateFormaAquisitionGroup_Id").show();
+        SelectAcquisitionGroupDataAttrInfoGridPanel();
+    }else {
+        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+    }
+    return false;
+}
+
+//复值
+SelectAcquisitionGroupDataAttrInfoGridPanel = function () {
+    var dataattr_row = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getSelectionModel().getSelection();
+    var id = dataattr_row[0].data.id;
+    var groupName = dataattr_row[0].data.groupName;
+    var groupCode = dataattr_row[0].data.groupCode;
+    var acqCycle = dataattr_row[0].data.acqCycle;
+    var saveCycle = dataattr_row[0].data.saveCycle;
+    var remark = dataattr_row[0].data.remark;
+    Ext.getCmp('formAcquisitionGroupJlbh_Id').setValue(id);
+    Ext.getCmp('formAcquisitionGroupName_Id').setValue(groupName);
+    Ext.getCmp('formAcquisitionGroupCode_Id').setValue(groupCode);
+    Ext.getCmp('formAcquisitionGroupAcqCycle_Id').setValue(acqCycle);
+    Ext.getCmp('formAcquisitionGroupSaveCycle_Id').setValue(saveCycle);
+    Ext.getCmp('acquisitionGroupRemark_Id').setValue(remark);
+};
+
+function delAcquisitionGroupInfo() {
+    var gridPanel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+    var selectionModel = gridPanel.getSelectionModel();
+    var _record = selectionModel.getSelection();
+    var delUrl = context + '/acquisitionUnitManagerController/doAcquisitionGroupBulkDelete'
+    if (_record.length>0) {
+    	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+            if (btn == "yes") {
+                ExtDel_ObjectInfo("AcquisitionGroupInfoGridPanel_Id", _record,"id", delUrl);
+            }
+        });
+        
+    } else {
+        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+    }
+}
+
+//窗体创建按钮事件
+var SaveAcquisitionUnitSubmitBtnForm = function () {
+    var saveAcquisitionUnitWinForm = Ext.getCmp("acquisitionUnit_editWin_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (saveAcquisitionUnitWinForm.getForm().isValid()) {
+        saveAcquisitionUnitWinForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doAcquisitionUnitAdd',
             clientValidation: true, // 进行客户端验证
             method: "POST",
             waitMsg: cosog.string.sendServer,
             waitTitle: 'Please Wait...',
             success: function (response, action) {
-                Ext.getCmp('acquisitionGroup_editWin_Id').close();
-                Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getStore().load();
+                Ext.getCmp('acquisitionUnit_editWin_Id').close();
+                Ext.getCmp("AcquisitionUnitInfoGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
                 }
@@ -135,7 +221,7 @@ function modifyAcquisitionUnitInfo() {
     var _record = AcquisitionUnit_model.getSelection();
     if (_record.length>0) {
     	var AcquisitionUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
-            title: '创建采集类型'
+            title: '编辑采集单元'
         });
         AcquisitionUnitInfoWindow.show();
         Ext.getCmp("addFormAcquisitionUnit_Id").hide();

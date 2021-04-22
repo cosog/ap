@@ -22,6 +22,9 @@ public class AcquisitionGroup implements java.io.Serializable {
 	private Integer id;
 	private String groupCode;
 	private String groupName;
+	private Integer acqCycle;
+	private Integer saveCycle;
+	
 	private String remark;
 
 	// Constructors
@@ -64,6 +67,24 @@ public class AcquisitionGroup implements java.io.Serializable {
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+	
+	@Column(name = "acq_Cycle", precision = 22, scale = 0)
+	public Integer getAcqCycle() {
+		return acqCycle;
+	}
+
+	public void setAcqCycle(Integer acqCycle) {
+		this.acqCycle = acqCycle;
+	}
+
+	@Column(name = "save_Cycle", precision = 22, scale = 0)
+	public Integer getSaveCycle() {
+		return saveCycle;
+	}
+
+	public void setSaveCycle(Integer saveCycle) {
+		this.saveCycle = saveCycle;
 	}
 	
 	@Column(name = "REMARK", nullable = false, length = 10)

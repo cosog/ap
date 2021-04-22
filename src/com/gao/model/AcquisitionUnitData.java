@@ -94,6 +94,18 @@ public class AcquisitionUnitData {
 
     private int PDiagram=0;
     
+    private int acqCycle_discrete=1*60*1000;
+    
+    private int saveCycle_discrete=5*60*1000;
+    
+    private int acqCycle_diagram=60*60*1000;
+    
+    private int saveCycle_diagram=60*60*1000;
+    
+    private int acqCycle_SPM=60*60*1000;
+    
+    private int saveCycle_SPM=60*60*1000;
+    
     public void init(){
     	this.RunStatus=0;
 
@@ -162,6 +174,18 @@ public class AcquisitionUnitData {
         this.ADiagram=0;
 
         this.PDiagram=0;
+        
+        this.acqCycle_discrete=1*60*1000;
+        
+        this.saveCycle_discrete=5*60*1000;
+        
+        this.acqCycle_diagram=60*60*1000;
+        
+        this.saveCycle_diagram=60*60*1000;
+        
+        this.acqCycle_SPM=60*60*1000;
+        
+        this.saveCycle_SPM=60*60*1000;
     }
 
     public void setAcquisitionUnitName(String AcquisitionUnitName){
@@ -459,5 +483,53 @@ public class AcquisitionUnitData {
 
 	public void setBalanceCloseTimePerBeat(int balanceCloseTimePerBeat) {
 		BalanceCloseTimePerBeat = balanceCloseTimePerBeat;
+	}
+
+	public int getAcqCycle_discrete() {
+		return acqCycle_discrete;
+	}
+
+	public void setAcqCycle_discrete(int acqCycle_discrete) {
+		this.acqCycle_discrete = acqCycle_discrete;
+	}
+
+	public int getSaveCycle_discrete() {
+		return saveCycle_discrete;
+	}
+
+	public void setSaveCycle_discrete(int saveCycle_discrete) {
+		this.saveCycle_discrete = saveCycle_discrete;
+	}
+
+	public int getAcqCycle_diagram() {
+		return acqCycle_diagram;
+	}
+
+	public void setAcqCycle_diagram(int acqCycle_diagram) {
+		this.acqCycle_diagram = acqCycle_diagram;
+	}
+
+	public int getSaveCycle_diagram() {
+		return saveCycle_diagram;
+	}
+
+	public void setSaveCycle_diagram(int saveCycle_diagram) {
+		this.saveCycle_diagram = saveCycle_diagram;
+	}
+
+	public int getAcqCycle_SPM() {
+		return acqCycle_SPM;
+	}
+
+	public void setAcqCycle_SPM(int acqCycle_SPM) {
+		this.acqCycle_SPM = acqCycle_SPM;
+	}
+
+	public int getSaveCycle_SPM() {
+		return saveCycle_SPM;
+	}
+
+	public void setSaveCycle_SPM(int saveCycle_SPM) {
+		this.saveCycle_SPM = saveCycle_SPM;
 	}
 }

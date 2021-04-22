@@ -616,7 +616,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 //							System.out.println("采集周期："+clientUnit.unitDataList.get(i).getAcqCycle_Discrete());
 //						}
 						
-    					if(format.parse(AcqTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcqCycle_Discrete()){
+    					if(format.parse(AcqTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getSaveCycle_discrete()){
     						clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime(AcqTime);
     						int runSatus=0;
         					float TubingPressure=0;
@@ -1693,7 +1693,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     						}
     						if(commResponseData!=null&&timeEffResponseData!=null&&
         							(RunStatus!=clientUnit.unitDataList.get(i).acquisitionData.runStatus//运行状态发生改变
-        							||format.parse(AcqTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getSaveCycle_Discrete()//比上次保存时间大于5分钟
+        							||format.parse(AcqTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getSaveCycle_discrete()//比上次保存时间大于5分钟
         							)
         						){
         						clientUnit.unitDataList.get(i).acquisitionData.setRunStatus(RunStatus);
@@ -1844,7 +1844,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         							screwPumpLastSaveTime=format.parse(clientUnit.unitDataList.get(i).getAcquisitionData().getScrewPumpSaveTime()).getTime();
         						}
         						//当前采集时间与上次保存时间差值大于保存时间时，保存螺杆泵数据
-            					if(format.parse(AcqTime).getTime()-screwPumpLastSaveTime>=clientUnit.unitDataList.get(i).getScrewPumpDataSaveInterval()){
+            					if(format.parse(AcqTime).getTime()-screwPumpLastSaveTime>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getSaveCycle_SPM()){
             						recvBuff=new StringBuffer();
             						StringBuffer proParamsBuff=new StringBuffer();
             						StringBuffer elecBuff=new StringBuffer();
@@ -1890,7 +1890,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
             					
 //            					System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"RTU中功图采集时间："+diagramAcqTime+",当前功图采集时间："+clientUnit.unitDataList.get(i).getDiagramAcqTime());
             					
-            					if(newTimelong>currentTimelong&&newTimelong-currentTimelong>=clientUnit.unitDataList.get(i).getAcqCycle_Diagram()){//发现新功图
+            					if(newTimelong>currentTimelong&&newTimelong-currentTimelong>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getAcqCycle_diagram()){//发现新功图
             						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"发现新功图");
             						clientUnit.unitDataList.get(i).setDiagramAcqTime(diagramAcqTime);
             						recvBuff=new StringBuffer();

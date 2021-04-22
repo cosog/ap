@@ -104,6 +104,8 @@ create table TBL_ACQ_GROUP_CONF
   ID         NUMBER(10) not null,
   GROUP_CODE VARCHAR2(50) not null,
   GROUP_NAME VARCHAR2(50),
+  acq_cycle  NUMBER(10) default 1,
+  save_cycle NUMBER(10) default 5,
   REMARK     VARCHAR2(2000)
 )
 tablespace AGILE_DATA

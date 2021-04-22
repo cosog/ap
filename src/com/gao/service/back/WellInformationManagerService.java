@@ -345,9 +345,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			liftingType_Str = " and t.liftingtype like '%" + liftingType.substring(0, 1)+ "%'";
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
-				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
+				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,"
 				+ " t.runtimeefficiencysource,t.videourl,t.sortnum,"
-				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
+				+ " t.protocol "
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
@@ -363,24 +363,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			unitDropdownData.deleteCharAt(unitDropdownData.length() - 1);
 		}
 		unitDropdownData.append("]");
-		
 		driverDropdownData.append("[");
 		
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 			if(entry.getKey().toUpperCase().contains("KAFKA")){
 				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-//				boolean a=( driveConfig instanceof KafkaConfig );
 				
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
 			}else{
 				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
 			}
-			
-			
-			
-//			driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
 		}
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 			if( ( entry.getValue() instanceof RTUDriveConfig ) ){
@@ -433,15 +427,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
 			result_json.append("\"driverAddr\":\""+obj[8]+"\",");
 			result_json.append("\"driverId\":\""+obj[9]+"\",");
-			result_json.append("\"acqcycle_diagram\":\""+obj[10]+"\",");
-			result_json.append("\"acqcycle_discrete\":\""+obj[11]+"\",");
-			result_json.append("\"savecycle_discrete\":\""+obj[12]+"\",");
-			result_json.append("\"runtimeEfficiencySource\":\""+obj[13]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[15]+"\",");
-			result_json.append("\"acqCycleSetStatus_diagram\":\""+obj[16]+"\",");
-			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[17]+"\",");
-			result_json.append("\"protocol\":\""+obj[18]+"\"},");
+			result_json.append("\"runtimeEfficiencySource\":\""+obj[10]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+			result_json.append("\"sortNum\":\""+obj[12]+"\",");
+			result_json.append("\"protocol\":\""+obj[13]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");

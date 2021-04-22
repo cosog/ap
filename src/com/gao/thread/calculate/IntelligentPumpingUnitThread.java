@@ -980,7 +980,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 							readTime=format.parse(clientUnit.unitDataList.get(i).getAcquisitionData().getReadTime()).getTime();
 						}
 						//当前采集时间与上次读取时间差值大于离散数据采集周期时，读取离散数据
-    					if(format.parse(AcqTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcqCycle_Discrete()){
+    					if(format.parse(AcqTime).getTime()-readTime>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getAcqCycle_discrete()){
     						clientUnit.unitDataList.get(i).getAcquisitionData().setReadTime(AcqTime);
     						int runSatus=0;
     						int DiscreteAcquisitionInterval=0;
@@ -1453,7 +1453,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     						}
     						if(commResponseData!=null&&timeEffResponseData!=null&&
         							(RunStatus!=clientUnit.unitDataList.get(i).acquisitionData.runStatus//运行状态发生改变
-        							||format.parse(AcqTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getSaveCycle_Discrete()//比上次保存时间大于5分钟
+        							||format.parse(AcqTime).getTime()-hisDataInterval>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getSaveCycle_discrete()//比上次保存时间大于5分钟
         							)
         						){
         						clientUnit.unitDataList.get(i).acquisitionData.setRunStatus(RunStatus);
@@ -1559,16 +1559,13 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     								}
     							}
         					}
-
-
     						//读取功图
-
     						long currentTimelong=0;
         					if(clientUnit.unitDataList.get(i).getDiagramAcqTime()!=null){
         						currentTimelong = format.parse(clientUnit.unitDataList.get(i).getDiagramAcqTime()).getTime();//数据库中最新功图采集时间
         					}
         					long newTimelong = format.parse(diagramAcqTime).getTime();
-        					if(newTimelong>currentTimelong){//发现新功图
+        					if(newTimelong>currentTimelong&&newTimelong-currentTimelong>=clientUnit.unitDataList.get(i).getAcquisitionUnitData().getAcqCycle_diagram()){//发现新功图
         						System.out.println("线程"+this.threadId+",井:"+clientUnit.unitDataList.get(i).getWellName()+"发现新功图");
         						clientUnit.unitDataList.get(i).setDiagramAcqTime(diagramAcqTime);
         						recvBuff=new StringBuffer();
@@ -1585,14 +1582,12 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
         						recvSBuff.append("\"S\": [");
         						recvABuff.append("\"A\": [");
         						recvPBuff.append("\"P\": [");
-        						
         						recvIaBuff.append("\"Ia\": [");
         						recvIbBuff.append("\"Ib\": [");
         						recvIcBuff.append("\"Ic\": [");
         						proParamsBuff.append("\"ProductionParameter\": {");
         						elecBuff.append("\"Electric\": {");
         						recvBuff.append("{\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",\"LiftingType\":"+clientUnit.unitDataList.get(i).getLiftingType()+",\"AcqTime\":\""+diagramAcqTime+"\",");
-        						
         						
             					proParamsBuff.append("\"TubingPressure\":"+TubingPressure+",");
             					proParamsBuff.append("\"CasingPressure\":"+CasingPressure+",");
@@ -1629,7 +1624,6 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
             							+"\"DownStrokeWattMax\":"+DownStrokeWattMax+","
             							+"\"WattDegreeBalance\":"+WattDegreeBalance+","
             							);
-            					
         						//读取功图位移数据
             					if(clientUnit.unitDataList.get(i).getRtuDriveConfig().getDataConfig().getSDiagram().getAddress()>40000){
             						if(point==0)

@@ -43,6 +43,8 @@ public class RTUDriveConfig {
 	    private int Length;
 
 	    private float Zoom;
+	    
+	    private boolean Initiative;
 
 	    public void setAddress(int Address){
 	        this.Address = Address;
@@ -68,6 +70,12 @@ public class RTUDriveConfig {
 	    public float getZoom(){
 	        return this.Zoom;
 	    }
+		public boolean getInitiative() {
+			return Initiative;
+		}
+		public void setInitiative(boolean initiative) {
+			Initiative = initiative;
+		}
 	}
 	
 	public static class DataConfig

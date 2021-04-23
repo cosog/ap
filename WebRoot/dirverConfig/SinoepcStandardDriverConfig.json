@@ -7,205 +7,239 @@
             "Address": 40317,
             "DataType": 1,
             "Length": 1,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "RunControl": {
             "Address": 40320,
             "DataType": 1,
             "Length": 1,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "CurrentA": {
             "Address": 40351,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "CurrentB": {
             "Address": 40353,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "CurrentC": {
             "Address": 40355,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "VoltageA": {
             "Address": 40357,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "VoltageB": {
             "Address": 40359,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "VoltageC": {
             "Address": 40361,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "ActivePowerConsumption": {
             "Address": 40363,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "ReactivePowerConsumption": {
             "Address": 40365,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "ActivePower": {
             "Address": 40367,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "ReactivePower": {
             "Address": 40369,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "ReversePower": {
             "Address": 40371,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "PowerFactor": {
             "Address": 40373,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "TubingPressure": {
             "Address": 40300,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "CasingPressure": {
             "Address": 40302,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "BackPressure": {
             "Address": 40304,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "WellHeadFluidTemperature": {
             "Address": 40306,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "ProducingfluidLevel": {
             "Address": 0,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "WaterCut": {
             "Address": 0,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "SetFrequency": {
             "Address": 40402,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "RunFrequency": {
             "Address": 40404,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "RPM": {
             "Address": 40430,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "Torque": {
             "Address": 40432,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "FSDiagramAcquisitionInterval": {
             "Address": 40981,
             "DataType": 1,
             "Length": 1,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "FSDiagramSetPointCount": {
             "Address": 40983,
             "DataType": 1,
             "Length": 1,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "FSDiagramPointCount": {
             "Address": 40984,
             "DataType": 1,
             "Length": 1,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "AcqTime": {
             "Address": 40985,
             "DataType": 3,
             "Length": 6,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "SPM": {
             "Address": 40991,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "Stroke": {
             "Address": 40993,
             "DataType": 2,
             "Length": 2,
-            "Zoom": 1
+            "Zoom": 1,
+            "Initiative":true
         },
         "SDiagram": {
             "Address": 41001,
             "DataType": 1,
             "Length": 250,
-            "Zoom": 0.01
+            "Zoom": 0.01,
+            "Initiative":true
         },
         "FDiagram": {
             "Address": 41251,
             "DataType": 1,
             "Length": 250,
-            "Zoom": 0.01
+            "Zoom": 0.01,
+            "Initiative":true
         },
         "ADiagram": {
             "Address": 41501,
             "DataType": 1,
             "Length": 250,
-            "Zoom": 0.01
+            "Zoom": 0.01,
+            "Initiative":true
         },
         "PDiagram": {
             "Address": 41751,
             "DataType": 1,
             "Length": 250,
-            "Zoom": 0.01
+            "Zoom": 0.01,
+            "Initiative":true
         }
     }
 }

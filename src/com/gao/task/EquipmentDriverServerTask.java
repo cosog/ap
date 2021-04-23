@@ -115,12 +115,14 @@ public class EquipmentDriverServerTask {
 				try {
 					if(serverSocket==null || serverSocket.isClosed()){
 						serverSocket = new ServerSocket(tcpServerConfig.getPort());
+						System.out.println("启动TCPServer,端口:"+tcpServerConfig.getPort());
 					}
 					for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
 						if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null){
 							try {
 								if(serverSocket==null || serverSocket.isClosed()){
 									serverSocket = new ServerSocket(tcpServerConfig.getPort());
+									System.out.println("启动TCPServer,端口:"+tcpServerConfig.getPort());
 								}
 								System.out.println("TcpServer等待客户端连接...");
 								Socket socket=serverSocket.accept();
@@ -638,15 +640,17 @@ public class EquipmentDriverServerTask {
 				pstmt = conn.prepareStatement(itemsSql); 
 				itemRs=pstmt.executeQuery();
 				while(itemRs.next()){
-					if("SDiagram".equalsIgnoreCase(itemRs.getString(1)) || "FDiagram".equalsIgnoreCase(itemRs.getString(1)) || "ADiagram".equalsIgnoreCase(itemRs.getString(1)) || "PDiagram".equalsIgnoreCase(itemRs.getString(1))){
-						acquisitionUnitData.setAcqCycle_diagram(rs.getInt(3));
-						acquisitionUnitData.setSaveCycle_diagram(rs.getInt(4));
+					if("SDiagram".equalsIgnoreCase(itemRs.getString(1)) || "FDiagram".equalsIgnoreCase(itemRs.getString(1)) || "ADiagram".equalsIgnoreCase(itemRs.getString(1)) || "PDiagram".equalsIgnoreCase(itemRs.getString(1))
+							|| "FSDiagramAcquisitionInterval".equalsIgnoreCase(itemRs.getString(1)) || "FSDiagramSetPointCount".equalsIgnoreCase(itemRs.getString(1)) || "FSDiagramPointCount".equalsIgnoreCase(itemRs.getString(1)) || "AcqTime".equalsIgnoreCase(itemRs.getString(1))
+							|| "SPM".equalsIgnoreCase(itemRs.getString(1)) || "Stroke".equalsIgnoreCase(itemRs.getString(1))){
+						acquisitionUnitData.setAcqCycle_diagram(itemRs.getInt(3));
+						acquisitionUnitData.setSaveCycle_diagram(itemRs.getInt(4));
 					}else if("SPM".equalsIgnoreCase(itemRs.getString(1))){
-						acquisitionUnitData.setAcqCycle_SPM(rs.getInt(3));
-						acquisitionUnitData.setSaveCycle_SPM(rs.getInt(4));
+						acquisitionUnitData.setAcqCycle_SPM(itemRs.getInt(3));
+						acquisitionUnitData.setSaveCycle_SPM(itemRs.getInt(4));
 					}else{
-						acquisitionUnitData.setAcqCycle_discrete(rs.getInt(3));
-						acquisitionUnitData.setSaveCycle_discrete(rs.getInt(4));
+						acquisitionUnitData.setAcqCycle_discrete(itemRs.getInt(3));
+						acquisitionUnitData.setSaveCycle_discrete(itemRs.getInt(4));
 					}
 					
 					if("RunStatus".equalsIgnoreCase(itemRs.getString(1)))

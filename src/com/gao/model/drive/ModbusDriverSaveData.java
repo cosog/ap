@@ -8,19 +8,6 @@ public class ModbusDriverSaveData {
 	private String DriverName;
 	
 	private int TcpServerPort;
-	
-	public int getTcpServerPort() {
-		return TcpServerPort;
-	}
-	public void setTcpServerPort(int tcpServerPort) {
-		TcpServerPort = tcpServerPort;
-	}
-	public String getTcpServerHeartbeatPacket() {
-		return TcpServerHeartbeatPacket;
-	}
-	public void setTcpServerHeartbeatPacket(String tcpServerHeartbeatPacket) {
-		TcpServerHeartbeatPacket = tcpServerHeartbeatPacket;
-	}
 
 	private String TcpServerHeartbeatPacket;
 
@@ -32,6 +19,18 @@ public class ModbusDriverSaveData {
     public String getDriverName(){
         return this.DriverName;
     }
+    public int getTcpServerPort() {
+		return TcpServerPort;
+	}
+	public void setTcpServerPort(int tcpServerPort) {
+		TcpServerPort = tcpServerPort;
+	}
+	public String getTcpServerHeartbeatPacket() {
+		return TcpServerHeartbeatPacket;
+	}
+	public void setTcpServerHeartbeatPacket(String tcpServerHeartbeatPacket) {
+		TcpServerHeartbeatPacket = tcpServerHeartbeatPacket;
+	}
     public void setDataConfig(List<DataConfig> DataConfig){
         this.DataConfig = DataConfig;
     }
@@ -50,6 +49,8 @@ public class ModbusDriverSaveData {
 	    private String DataType;
 
 	    private float Zoom;
+	    
+	    private String Initiative;
 
 	    public void setName(String Name){
 	        this.Name = Name;
@@ -81,5 +82,11 @@ public class ModbusDriverSaveData {
 	    public float getZoom(){
 	        return this.Zoom;
 	    }
+		public String getInitiative() {
+			return Initiative;
+		}
+		public void setInitiative(String initiative) {
+			Initiative = initiative;
+		}
 	}
 }

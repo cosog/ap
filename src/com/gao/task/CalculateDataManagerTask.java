@@ -40,7 +40,7 @@ public class CalculateDataManagerTask {
     private static ResultSet rs_outer = null; 
 	
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断SDK是否启动
 		String probeUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
@@ -59,14 +59,14 @@ public class CalculateDataManagerTask {
 	/**
 	 * 汇总计算
 	 * */
-//	@Scheduled(cron = "0 0 1/24 * * ?")
+	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/dailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
 	
 	//离散数据实时汇总
-//	@Scheduled(cron = "0 30 0/1 * * ?")
+	@Scheduled(cron = "0 30 0/1 * * ?")
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
 		@SuppressWarnings("static-access")
@@ -81,7 +81,7 @@ public class CalculateDataManagerTask {
 	
 	//订阅发布模式通信计算
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0 0/1 * * * ?")
 	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/pubSubModelCommCalculation";
 		String result="";

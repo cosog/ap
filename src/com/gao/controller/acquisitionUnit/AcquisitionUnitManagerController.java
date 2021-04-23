@@ -118,8 +118,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	
-	
 	@RequestMapping("/doAcquisitionGroupAdd")
 	public String doAcquisitionGroupAdd(@ModelAttribute AcquisitionGroup acquisitionGroup) throws IOException {
 		String result = "";
@@ -274,9 +272,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if (acquisitionItem.getParentid() == 0) {
 				flag = true;
 				json = r.recursionAcquisitionItemTreeFn(acquisitionItemlist, acquisitionItem);
-//				break;
 			}
-
 		}
 		json = r.modifyStr(json);
 		response.setContentType("application/json;charset=utf-8");
@@ -297,7 +293,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 */
 	@RequestMapping("/showAcquisitionGroupOwnItems")
 	public String showAcquisitionGroupOwnItems() throws IOException {
-		// Gson g = new Gson();
 		String groupId = ParamUtils.getParameter(request, "groupId");
 		Gson g = new Gson();
 		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionGroupOwnItems(AcquisitionGroupItem.class, groupId);
@@ -321,7 +316,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 */
 	@RequestMapping("/showAcquisitionUnitOwnGroups")
 	public String showAcquisitionUnitOwnGroups() throws IOException {
-		// Gson g = new Gson();
 		String unitId = ParamUtils.getParameter(request, "unitId");
 		Gson g = new Gson();
 		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnGroups(AcquisitionUnitGroup.class, unitId);
@@ -352,9 +346,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String groupId = ParamUtils.getParameter(request, "groupId");
 			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
-			
 			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
-			//String oldModuleId[] = StringManagerUtils.split(oldModuleIds, ",");
 			if (groupIds.length > 0 && groupId != null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
 				if (matrixCodes != "" || matrixCodes != null) {
@@ -371,7 +363,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
-
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -400,9 +391,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
 			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
-			
 			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
-			//String oldModuleId[] = StringManagerUtils.split(oldModuleIds, ",");
 			if (groupIds.length > 0 && unitId != null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionUnitOwnGroups(unitId);
 				if (matrixCodes != "" || matrixCodes != null) {
@@ -419,7 +408,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
-
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -436,11 +424,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getDriverConfigData")
 	public String getDriverConfigData() throws Exception {
 		String json = "";
-		
 		json = acquisitionUnitItemManagerService.getDriverConfigData();
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -452,11 +437,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getTcpServerConfigData")
 	public String getTcpServerConfigData() throws Exception {
 		String json = "";
-		
 		json = acquisitionUnitItemManagerService.getTcpServerConfigData();
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -491,13 +473,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 				tcpServerConfig.setHeartbeatPacket(modbusDriverSaveData.getTcpServerHeartbeatPacket());
 				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(tcpServerConfig)));
 				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
-				
 				if(EquipmentDriverServerTask.serverSocket!=null && !EquipmentDriverServerTask.serverSocket.isClosed()){
 					EquipmentDriverServerTask.serverSocket.close();
 				}
 			}
-			
-			
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
 				EquipmentDriverServerTask.initDriverConfig();
@@ -548,11 +527,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}else if("BCD码".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getDataType())){
 						dataType=3;
 					}
+					boolean initiative=true;
+					if("主动轮询".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getInitiative())){
+						initiative=true;
+					}else if("被动接收".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getInitiative())){
+						initiative=false;
+					}
 					RTUDriveConfig.Item item=new Item();
 					item.setAddress(modbusDriverSaveData.getDataConfig().get(i).getAddress());
 					item.setLength(modbusDriverSaveData.getDataConfig().get(i).getLength());
 					item.setZoom(modbusDriverSaveData.getDataConfig().get(i).getZoom());
 					item.setDataType(dataType);
+					item.setInitiative(initiative);
 					if("运行状态".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setRunStatus(item);
 					}else if("启停控制".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
@@ -626,13 +612,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));
 				equipmentDriveMap.put(driveConfig.getDriverCode(), driveConfig);
 			}
-			
-			
 		}
-		
 		json ="{success:true}";
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -665,16 +647,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			driveConfig.setServer(KafkaConfigSaveData.getServer());
 			driveConfig.setTopic(KafkaConfigSaveData.getTopic());
-			
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));
 			equipmentDriveMap.put(driveConfig.getDriverCode(), driveConfig);
-
-//			System.out.println(((KafkaConfig)equipmentDriveMap.get("KafkaDrive")).getServer().getPort());
 		}
-		
 		json ="{success:true}";
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -686,11 +663,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/getKafkaDriverConfigData")
 	public String getKafkaDriverConfigData() throws Exception {
 		String json = "";
-		
 		json = acquisitionUnitItemManagerService.getKafkaDriverConfigData();
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -698,7 +672,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
-	
 
 	public String getLimit() {
 		return limit;

@@ -63,13 +63,6 @@ begin
 end;
 /
 
-CREATE OR REPLACE PROCEDURE prd_clearResourceProbeData is
-begin
-    delete from tbl_resourcemonitoring t where t.acqtime<to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd');
-    commit;
-end prd_clearResourceProbeData;
-/
-
 CREATE OR REPLACE PROCEDURE prd_change_wellname (v_oldWellName    in varchar2,
                                                     v_newWellName    in varchar2,
                                                     v_orgId     in varchar2) as
@@ -767,8 +760,29 @@ CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_tableSpaceSize in number
   ) is
   p_msg varchar2(3000) := 'error';
+  counts number :=0;
 begin
-  insert into tbl_resourcemonitoring (
+  select count(1) into counts from tbl_resourcemonitoring;
+  if counts>1000 then
+    delete from TBL_RESOURCEMONITORING where id not in (select id from (select id from TBL_RESOURCEMONITORING t order by t.acqtime desc) v where rownum <=1000);
+    commit;
+    update TBL_RESOURCEMONITORING t
+    set t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
+        t.apprunstatus=v_appRunStatus,t.appversion=v_appVersion,t.cpuusedpercent=v_cpuUsedPercent,
+        t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize
+    where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
+    commit;
+     p_msg := '删除多余记录并更新成功';
+  elsif counts=1000 then
+    update TBL_RESOURCEMONITORING t
+    set t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
+        t.apprunstatus=v_appRunStatus,t.appversion=v_appVersion,t.cpuusedpercent=v_cpuUsedPercent,
+        t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize
+    where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
+    commit;
+    p_msg := '更新成功';
+   elsif counts<1000 then
+     insert into tbl_resourcemonitoring (
          acqtime,apprunstatus,appversion,cpuusedpercent,memusedpercent,tablespacesize
       )values(
          to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
@@ -778,8 +792,9 @@ begin
          v_memUsedPercent,
          v_tableSpaceSize
       );
-      p_msg := '插入成功';
       commit;
+      p_msg := '插入成功';
+  end if;
   dbms_output.put_line('p_msg:' || p_msg);
 Exception
   When Others Then

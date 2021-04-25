@@ -115,7 +115,7 @@ private CommonDataService service;
 				+ "{ \"header\":\"寄存器长度\",\"dataIndex\":\"length\",width:80 ,children:[] },"
 				+ "{ \"header\":\"数据类型\",\"dataIndex\":\"dataType\",width:80 ,children:[] },"
 				+ "{ \"header\":\"单位换算系数\",\"dataIndex\":\"zoom\",width:80 ,children:[] },"
-				+ "{ \"header\":\"方式\",\"dataIndex\":\"initiative\",width:80 ,children:[] }"
+				+ "{ \"header\":\"模式\",\"dataIndex\":\"initiative\",width:80 ,children:[] }"
 				+ "]";
 		
 		

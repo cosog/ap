@@ -42,7 +42,7 @@ public class KafkaServerTask {
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		clientid = "apKafkaClient"+new Date().getTime();

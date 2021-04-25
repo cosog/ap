@@ -128,8 +128,7 @@ public class MobileController extends BaseController{
 		/******
 		 * 饼图及柱状图需要的data信息
 		 * ***/
-//		json = mobileService.getPumpingRealtimeStatisticsDataByOrgName(orgName,liftingType);
-		//HttpServletResponse response = ServletActionContext.getResponse();
+		json = mobileService.getPumpingRealtimeStatisticsDataByOrgName(orgName,liftingType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -154,8 +153,7 @@ public class MobileController extends BaseController{
 			liftingType="1";//默认为抽油机
 		}
 		
-//		String json = mobileService.getPumpingRealtimeWellListDataByOrgName(orgName, statType, statValue,wellName,liftingType);
-		String json = "{}";
+		String json = mobileService.getPumpingRealtimeWellListDataByOrgName(orgName, statType, statValue,wellName,liftingType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -177,9 +175,7 @@ public class MobileController extends BaseController{
 		if(!StringManagerUtils.isNotNull(orgId)){
 			
 		}
-		orgId="246,247";
-//		String json = mobileService.getPumpingRealtimeWellStatusData(orgId);
-		String json = "{}";
+		String json = mobileService.getPumpingRealtimeWellStatusData(orgId);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -199,8 +195,7 @@ public class MobileController extends BaseController{
 	public String getPumpingRealtimeWellAnalysisData()throws Exception{
 		String wellName = URLDecoder.decode(ParamUtils.getParameter(request, "wellName"), "UTF-8"); 
 		String json = "{}";
-//		json = this.mobileService.getPumpingRealtimeWellAnalysisData(wellName);
-		//HttpServletResponse response = ServletActionContext.getResponse();
+		json = this.mobileService.getPumpingRealtimeWellAnalysisData(wellName);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

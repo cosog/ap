@@ -774,6 +774,11 @@ BEGIN
   SELECT SEQ_indicatordiagram_RT.nextval INTO :new.id FROM dual;
 end;
 /
+CREATE OR REPLACE TRIGGER trg_b_rpc_diagram_total_i   before  insert on TBL_RPC_DIAGRAM_TOTAL FOR EACH ROW
+BEGIN
+  SELECT seq_rpc_diagram_total.nextval INTO :new.id FROM dual;
+end;
+/
 
 create or replace trigger trg_b_rpc_discrete_hist_i   before  insert on TBL_RPC_DISCRETE_HIST FOR EACH ROW
 BEGIN

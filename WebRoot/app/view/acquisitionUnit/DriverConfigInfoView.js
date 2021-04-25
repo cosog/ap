@@ -424,7 +424,7 @@ var DriverConfigHandsontableHelper = {
 
 function CreateDriverConfigItemsInfoTable(data){
 	driverConfigItemsHandsontableHelper = DriverConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
-	var colHeaders="['序号','名称','地址','寄存器长度','数据类型','单位换算系数','方式']";
+	var colHeaders="['序号','名称','地址','寄存器长度','数据类型','单位换算系数','模式']";
 	var columns="[{data:'id'},{data:'item'},"
 		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}},"
 			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}}," 

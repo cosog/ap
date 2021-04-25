@@ -1501,6 +1501,53 @@ create index IDX_T_FSDIAGRAM_R_WELLID on TBL_RPC_DIAGRAM_LATEST (WELLID)
 /
 
 /*==============================================================*/
+/* Table: TBL_RPC_DIAGRAM_TOTAL                                    */
+/*==============================================================*/
+(
+  id                         NUMBER(10) not null,
+  wellid                     NUMBER(10),
+  acqtime                    DATE,
+  resultcode                 NUMBER(4),
+  stroke                     NUMBER(8,2),
+  spm                        NUMBER(8,2),
+  fmax                       NUMBER(8,2),
+  fmin                       NUMBER(8,2),
+  fullnesscoefficient        NUMBER(10,4),
+  liquidvolumetricproduction NUMBER(8,2),
+  oilvolumetricproduction    NUMBER(8,2),
+  watervolumetricproduction  NUMBER(8,2),
+  volumewatercut             NUMBER(10,4),
+  liquidweightproduction     NUMBER(8,2),
+  oilweightproduction        NUMBER(8,2),
+  waterweightproduction      NUMBER(8,2),
+  weightwatercut             NUMBER(10,4),
+  wattdegreebalance          NUMBER(8,2),
+  idegreebalance             NUMBER(8,2),
+  deltaradius                NUMBER(8,2),
+  systemefficiency           NUMBER(10,4),
+  surfacesystemefficiency    NUMBER(10,4),
+  welldownsystemefficiency   NUMBER(10,4),
+  energyper100mlift          NUMBER(8,2),
+  pumpeff                    NUMBER(10,4)
+)
+tablespace AGILE_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table AGILE.TBL_RPC_DIAGRAM_TOTAL add constraint PK_TBL_RPC_DIAGRAM_TOTAL primary key (ID)
+/
+create index AGILE.IDX_RPC_DIAGRAM_TOTAL_ACQTIME on AGILE.TBL_RPC_DIAGRAM_TOTAL (ACQTIME)
+/
+create index AGILE.IDX_RPC_DIAGRAM_TOTAL_CODE on AGILE.TBL_RPC_DIAGRAM_TOTAL (RESULTCODE)
+/
+create index AGILE.IDX_RPC_DIAGRAM_TOTAL_WELLID on AGILE.TBL_RPC_DIAGRAM_TOTAL (WELLID)
+/
+
+/*==============================================================*/
 /* Table: TBL_RPC_DISCRETE_HIST                                    */
 /*==============================================================*/
 create table TBL_RPC_DISCRETE_HIST

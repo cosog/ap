@@ -11,10 +11,17 @@ import org.springframework.stereotype.Component;
 
 import com.gao.dao.BaseDao;
 import com.gao.model.Org;
+import com.gao.model.data.DataDictionary;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
+import com.gao.service.data.DataitemsInfoService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
+import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
 
 import org.hibernate.engine.jdbc.SerializableClobProxy;
@@ -28,6 +35,8 @@ public class MobileService<T> extends BaseService<T> {
 	@SuppressWarnings("unused")
 	@Autowired
 	private CommonDataService service;
+	@Autowired
+	private DataitemsInfoService dataitemsInfoService;
 	
 	public List<T> getOrganizationData(Class<Org> class1, String userAccount) {
 		String queryString="";
@@ -46,329 +55,236 @@ public class MobileService<T> extends BaseService<T> {
 		return getBaseDao().getSqlToHqlOrgObjects(queryString);
 	}
 	
-	public String getPumpingRealtimeStatisticsDataByOrgName(String orgName,String liftingType){
-		String orgArr[]=orgName.split(",");
-		String orgIdSql="";
-		if(orgArr.length==1){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgName+"'";
-		}else if(orgArr.length==2){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[1]+"' and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[0]+"' )";
-		}else if(orgArr.length==3){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[2]+"' "
-					+ "and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[1]+"' "
-					+ "and t2.org_parent=(select t3.org_id from tbl_org t3 where t3.org_name='"+orgArr[0]+"') )";
-		}else if(orgArr.length==4){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[3]+"' "
-					+ "and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[2]+"' "
-					+ "and t2.org_parent=(select t3.org_id from tbl_org t3 where t3.org_name='"+orgArr[1]+"' "
-					+ "and t3.org_parent=(select t4.org_id from tbl_org t4 where t4.org_name='"+orgArr[0]+"')  ) )";
-		}else if(orgArr.length==5){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[4]+"' "
-					+ "and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[3]+"' "
-					+ "and t2.org_parent=(select t3.org_id from tbl_org t3 where t3.org_name='"+orgArr[2]+"' "
-					+ "and t3.org_parent=(select t4.org_id from tbl_org t4 where t4.org_name='"+orgArr[1]+"' "
-					+ "and t4.org_parent=(select t5.org_id from tbl_org t5 where t5.org_name='"+orgArr[0]+"') )  ) )";
-		}
-		List<?> orgList=null;
-		orgList = this.findCallSql(orgIdSql);
-		String orgId="1";
-		if(orgList!=null&&orgList.size()==1){
-			orgId=orgList.get(0).toString();
-		}else{
-			return "";
-		}
-		
-		
+	public String getPumpingRealtimeStatisticsDataByWellList(String data){
+		StringBuffer wells= new StringBuffer();
 		StringBuffer result_json = new StringBuffer();
-		String gkmcSql="select  t.gkmc ,count(id) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				gkmcSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				gkmcSql+=" and jslxcode>=200 and jslxcode<300";
-			}
+		ConfigFile configFile=Config.getInstance().configFile;
+		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+		int liftingType=jsonObject.getInt("LiftingType");
+		int type=jsonObject.getInt("StatType");
+		JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+		for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+			wells.append("'"+jsonArray.getString(i)+"',");
 		}
-		
-		gkmcSql+=" group by t.gkmc";
-		
-		
-		String eGkmcSql="select  t.egkmc ,count(id) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				eGkmcSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				eGkmcSql+=" and jslxcode>=200 and jslxcode<300";
-			}
+		if(wells.toString().endsWith(",")){
+			wells.deleteCharAt(wells.length() - 1);
 		}
-		eGkmcSql+=" group by t.egkmc";
-		
-		String yxztSql="select  t.yxztname ,count(id) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				yxztSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				yxztSql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		
-		yxztSql+=" group by t.yxztname";
-		
-		String totalSql="select count(1) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				totalSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				totalSql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		int amount = getTotalCountRows(totalSql);//获取总记录数
-		
-		List<?> gkmcList=null;
-		if(!"2".equals(liftingType)){//举升方式为抽油机时
-			gkmcList = this.findCallSql(gkmcSql);
-		}
-		List<?> eGkmcList = this.findCallSql(eGkmcSql);
-		List<?> yxztList = this.findCallSql(yxztSql);
-		
-		int running=0,stopped=0,offLine=0;
-		for(int i=0;i<yxztList.size();i++){
-			Object[] obj=(Object[]) yxztList.get(i);
-			if("运行".equals(obj[0]+"")){
-				running=StringManagerUtils.stringToInteger(obj[1]+"");
-			}else if("停止".equals(obj[0]+"")||"停抽".equals(obj[0]+"")){
-				stopped=StringManagerUtils.stringToInteger(obj[1]+"");
-			}else if("无数据".equals(obj[0]+"")||"离线".equals(obj[0]+"")){
-				offLine=StringManagerUtils.stringToInteger(obj[1]+"");
-			}
-		}
-		
-		
-		result_json.append("{\"LiftingType\":"+liftingType+",\"Amount\":"+amount+",");
-		result_json.append("\"Status\":{\"Running\":"+running+",\"Stopped\":"+stopped+",\"OffLine\":"+offLine+"},");
-		
-		if(!"2".equals(liftingType)){//举升方式为抽油机时
-			result_json.append("\"FSWorkingCondition\":[");
-			for(int i=0;i<gkmcList.size();i++){
-				Object[] obj=(Object[]) gkmcList.get(i);
-				if(StringManagerUtils.isNotNull(obj[0]+"")){
-					result_json.append("{\"WorkingCondition\":\""+obj[0]+"\",");
-					result_json.append("\"Wells\":"+obj[1]+"},");
-				}
-			}
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			result_json.append("],");
-		}
-		result_json.append("\"ETWorkingCondition\":[");
-		for(int i=0;i<eGkmcList.size();i++){
-			Object[] obj=(Object[]) eGkmcList.get(i);
-			if(StringManagerUtils.isNotNull(obj[0]+"")){
-				result_json.append("{\"WorkingCondition\":\""+obj[0]+"\",");
-				result_json.append("\"Wells\":"+obj[1]+"},");
-			}
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	
-	public String getPumpingRealtimeStatisticsData(String orgId,String liftingType){
-		StringBuffer result_json = new StringBuffer();
-		String gkmcSql="select  t.gkmc ,count(id) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				gkmcSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				gkmcSql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		
-		gkmcSql+=" group by t.gkmc";
-		
-		
-		String eGkmcSql="select  t.egkmc ,count(id) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				eGkmcSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				eGkmcSql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		eGkmcSql+=" group by t.egkmc";
-		
-		String yxztSql="select  t.yxztname ,count(id) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				yxztSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				yxztSql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		
-		yxztSql+=" group by t.yxztname";
-		
-		String totalSql="select count(1) from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				totalSql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				totalSql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		int amount = getTotalCountRows(totalSql);//获取总记录数
-		
-		List<?> gkmcList=null;
-		if(!"2".equals(liftingType)){//举升方式为抽油机时
-			gkmcList = this.findCallSql(gkmcSql);
-		}
-		List<?> eGkmcList = this.findCallSql(eGkmcSql);
-		List<?> yxztList = this.findCallSql(yxztSql);
-		
-		int running=0,stopped=0,offLine=0;
-		for(int i=0;i<yxztList.size();i++){
-			Object[] obj=(Object[]) yxztList.get(i);
-			if("运行".equals(obj[0]+"")){
-				running=StringManagerUtils.stringToInteger(obj[1]+"");
-			}else if("停止".equals(obj[0]+"")||"停抽".equals(obj[0]+"")){
-				stopped=StringManagerUtils.stringToInteger(obj[1]+"");
-			}else if("无数据".equals(obj[0]+"")||"离线".equals(obj[0]+"")){
-				offLine=StringManagerUtils.stringToInteger(obj[1]+"");
-			}
-		}
-		
-		
-		result_json.append("{\"LiftingType\":"+liftingType+",\"Amount\":"+amount+",");
-		result_json.append("\"Status\":{\"Running\":"+running+",\"Stopped\":"+stopped+",\"OffLine\":"+offLine+"},");
-		
-		if(!"2".equals(liftingType)){//举升方式为抽油机时
-			result_json.append("\"FSWorkingCondition\":[");
-			for(int i=0;i<gkmcList.size();i++){
-				Object[] obj=(Object[]) gkmcList.get(i);
-				if(StringManagerUtils.isNotNull(obj[0]+"")){
-					result_json.append("{\"WorkingCondition\":\""+obj[0]+"\",");
-					result_json.append("\"Wells\":"+obj[1]+"},");
-				}
-			}
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			result_json.append("],");
-		}
-		result_json.append("\"ETWorkingCondition\":[");
-		for(int i=0;i<eGkmcList.size();i++){
-			Object[] obj=(Object[]) eGkmcList.get(i);
-			if(StringManagerUtils.isNotNull(obj[0]+"")){
-				result_json.append("{\"WorkingCondition\":\""+obj[0]+"\",");
-				result_json.append("\"Wells\":"+obj[1]+"},");
-			}
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
-	}
-	
-	public String getPumpingRealtimeWellListDataByOrgName(String orgName,String statType,String statValue,String wellName,String liftingType)throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String orgArr[]=orgName.split(",");
-		String orgIdSql="";
-		if(orgArr.length==1){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgName+"'";
-		}else if(orgArr.length==2){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[1]+"' and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[0]+"' )";
-		}else if(orgArr.length==3){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[2]+"' "
-					+ "and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[1]+"' "
-					+ "and t2.org_parent=(select t3.org_id from tbl_org t3 where t3.org_name='"+orgArr[0]+"') )";
-		}else if(orgArr.length==4){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[3]+"' "
-					+ "and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[2]+"' "
-					+ "and t2.org_parent=(select t3.org_id from tbl_org t3 where t3.org_name='"+orgArr[1]+"' "
-					+ "and t3.org_parent=(select t4.org_id from tbl_org t4 where t4.org_name='"+orgArr[0]+"')  ) )";
-		}else if(orgArr.length==5){
-			orgIdSql="select t.org_id from tbl_org t where t.org_name='"+orgArr[4]+"' "
-					+ "and t.org_parent=( select t2.org_id from tbl_org t2 where t2.org_name='"+orgArr[3]+"' "
-					+ "and t2.org_parent=(select t3.org_id from tbl_org t3 where t3.org_name='"+orgArr[2]+"' "
-					+ "and t3.org_parent=(select t4.org_id from tbl_org t4 where t4.org_name='"+orgArr[1]+"' "
-					+ "and t4.org_parent=(select t5.org_id from tbl_org t5 where t5.org_name='"+orgArr[0]+"') )  ) )";
-		}
-		List<?> orgList=null;
-		orgList = this.findCallSql(orgIdSql);
-		String orgId="1";
-		if(orgList!=null&&orgList.size()==1){
-			orgId=orgList.get(0).toString();
-		}else{
-			return "";
-		}
-		
 		
 		String sql="";
-		sql="select jh,yxztname,gkmc,egkmc from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
+		String statType="workingConditionName";
+		String tableName="viw_rpc_comprehensive_latest";
+		if(type==1||type==0){
+			if(liftingType!=2){
+				statType="workingConditionName";
+			}else{
+				statType="workingConditionName_E";
+			}
+		}else if(type==2){
+			statType="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				statType="liquidVolumeProductionlevel";
+			}
+		}else if(type==3){
+			statType="wattDegreeBalanceName";
+		}else if(type==4){
+			statType="iDegreeBalanceName";
+		}else if(type==5){
+			statType="systemEfficiencyLevel";
+		}else if(type==6){
+			statType="surfaceSystemEfficiencyLevel";
+		}else if(type==7){
+			statType="wellDownSystemEfficiencyLevel";
+		}else if(type==8){
+			statType="todayKWattHLevel";
+		}else if(type==9){
+			statType="commStatusName";
+		}else if(type==10){
+			statType="commtimeefficiencyLevel";
+		}else if(type==11){
+			statType="runStatusName";
+		}else if(type==12){
+			statType="runtimeEfficiencyLevel";
+		}
+		if(liftingType!=2){
+			tableName="viw_rpc_comprehensive_latest";
+		}else{
+			tableName="viw_pcp_comprehensive_latest";
+		}
+		sql="select "+statType+",count(1) from "+tableName+" t where 1=1 ";
+		if(StringManagerUtils.isNotNull(wells.toString())){
+			sql+=" and  t.wellName in("+wells.toString()+")";
+		}
+		sql+=" group by "+statType;
 		
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				sql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				sql+=" and jslxcode>=200 and jslxcode<300";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"Success\":true,");
+		result_json.append("\"TotalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				result_json.append("{\"Item\":\""+obj[0]+"\",");
+				result_json.append("\"Count\":"+obj[1]+"},");
 			}
 		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public String getOilWellRealtimeWellListData(String data,Page pager)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer wells= new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+		int liftingType=jsonObject.getInt("LiftingType");
+		int type=jsonObject.getInt("StatType");
+		String statValue=jsonObject.getString("StatValue");
+		JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+		for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+			wells.append("'"+jsonArray.getString(i)+"',");
+		}
+		if(wells.toString().endsWith(",")){
+			wells.deleteCharAt(wells.length() - 1);
+		}
+		
+		DataDictionary ddic = null;
+		String columns= "";
+		String sql="";
+		String finalSql="";
+		String sqlAll="";
+		String ddicName="";
+		String tableName_latest="viw_rpc_comprehensive_latest";
+		String tableName_hist="viw_rpc_comprehensive_hist";
+		String typeColumnName="workingConditionName";
+		if(type==1){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeFSDiagram";
+			}
+			typeColumnName="workingConditionName";
+		}else if(type==2){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeProdDist";
+			}else{//默认为抽油机
+				ddicName="realtimeProdDist";
+			}
+			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
+		}else if(type==3){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimePowerBalance";
+			}
+			typeColumnName="wattDegreeBalanceName";
+		}else if(type==4){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeCurrentBalance";
+			}
+			typeColumnName="iDegreeBalanceName";
+		}else if(type==5){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeRunStatus";
+			}else{//默认为抽油机
+				ddicName="realtimeRunStatus";
+			}
+			typeColumnName="runStatusName";
+		}else if(type==6){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeTimeDist";
+			}else{//默认为抽油机
+				ddicName="realtimeTimeDist";
+			}
+			typeColumnName="runtimeEfficiencyLevel";
+		}else if(type==7){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeSystemEff";
+			}else{//默认为抽油机
+				ddicName="realtimeSystemEff";
+			}
+			typeColumnName="systemEfficiencyLevel";
+		}else if(type==8){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeSurfaceEff";
+			}
+			typeColumnName="surfaceSystemEfficiencyLevel";
+		}else if(type==9){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeDownholeEff";
+			}
+			typeColumnName="wellDownSystemEfficiencyLevel";
+		}else if(type==10){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimePowerDist";
+			}else{//默认为抽油机
+				ddicName="realtimePowerDist";
+			}
+			typeColumnName="todayKWattHLevel";
+		}else if(type==11){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeCommStatus";
+			}else{//默认为抽油机
+				ddicName="realtimeCommStatus";
+			}
+			typeColumnName="commStatusName";
+		}else if(type==12){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeCommDist";
+			}else{//默认为抽油机
+				ddicName="realtimeCommDist";
+			}
+			typeColumnName="commtimeefficiencyLevel";
+		}else{
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpRealtimeETValue";
+			}else{//默认为抽油机
+				ddicName="realtimeFSDiagram";
+			}
+			typeColumnName="workingConditionName";
+		}
+		
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		
+		columns = ddic.getTableHeader();
+		
+		if(liftingType==2){//螺杆泵井
+			tableName_latest="viw_pcp_comprehensive_latest";
+			tableName_hist="viw_pcp_comprehensive_hist";
+			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		}else{//默认为抽油机
+			tableName_latest="viw_rpc_comprehensive_latest";
+			tableName_hist="viw_rpc_comprehensive_hist";
+			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+		}
+		
+		
+		sql+= " from "+tableName_latest+" t where t.wellName in("+wells.toString()+")";
 		
 		
 		if(StringManagerUtils.isNotNull(statValue)){
-			if("0".equalsIgnoreCase(statType)){
-				if("0".equalsIgnoreCase(statValue)){
-					sql+=" and yxztname='停止' ";
-				}else if("1".equalsIgnoreCase(statValue)){
-					sql+=" and yxztname='运行' ";
-				}else if("2".equalsIgnoreCase(statValue)){
-					sql+=" and yxztname='离线' ";
-				}
-			}else if("1".equalsIgnoreCase(statType)){
-				sql+=" and gkmc='"+statValue+"' ";
-			}else if("2".equalsIgnoreCase(statType)){
-				sql+=" and egkmc='"+statValue+"' ";
-			}
+			sql+=" and "+typeColumnName+"='"+statValue+"' ";
 		}
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and jh like '%"+wellName+"%' ";
-		}
+		sql+=" order by t.sortNum, t.wellName";
+		sqlAll=sql;
 		
-		sql+=" order by t.pxbh, t.jh";
-		
-		int amount=this.getTotalCountRows(sql);
-		List<?> list = this.findCallSql(sql);
-		
-		result_json.append("{\"LiftingType\":"+liftingType+",\"Amount\":"+amount+",");
-		result_json.append("\"List\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"WellName\":\""+obj[0]+"\",");
-			result_json.append("\"Status\":\""+obj[1]+"\",");
-			if(!"2".equals(liftingType)){//举升方式为抽油机时
-				result_json.append("\"FSWorkingCondition\":\""+obj[2]+"\",");
-			}
-			result_json.append("\"ETWorkingCondition\":\""+obj[3]+"\"},");
-			
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
+//		int maxvalue=pager.getLimit()+pager.getStart();
+//		finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		finalSql=sqlAll;
+		String getResult = this.findCustomPageBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
+		return getResult;
 	}
 	
 	public String getPumpingRealtimeWellStatusData(String orgId)throws Exception {
@@ -391,64 +307,6 @@ public class MobileService<T> extends BaseService<T> {
 			result_json.append("\"AStatusOfBalanceStatus\":\""+obj[6]+"\",");
 			result_json.append("\"PStatusOfBalance\":\""+obj[7]+"\",");
 			result_json.append("\"PStatusOfBalanceStatus\":\""+obj[8]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
-	}
-
-	public String getPumpingRealtimeWellListData(String orgId,String statType,String statValue,String wellName,String liftingType)throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql="";
-		sql="select jh,yxztname,gkmc,egkmc from v_analysisrealtime t "
-				+ " where  t.org_id in (SELECT u.org_id FROM tbl_org u   start with u.org_id="+orgId+"   connect by u.org_parent= prior u.org_id) ";
-		
-		if(StringManagerUtils.isNotNull(liftingType)){
-			if("2".equals(liftingType)){//举升方式为螺杆泵
-				sql+=" and jslxcode>=400 and jslxcode<500";
-			}else{//举升方式为抽油机
-				sql+=" and jslxcode>=200 and jslxcode<300";
-			}
-		}
-		
-		
-		if(StringManagerUtils.isNotNull(statValue)){
-			if("0".equalsIgnoreCase(statType)){
-				if("0".equalsIgnoreCase(statValue)){
-					sql+=" and yxztname='停止' ";
-				}else if("1".equalsIgnoreCase(statValue)){
-					sql+=" and yxztname='运行' ";
-				}else if("2".equalsIgnoreCase(statValue)){
-					sql+=" and yxztname='离线' ";
-				}
-			}else if("1".equalsIgnoreCase(statType)){
-				sql+=" and gkmc='"+statValue+"' ";
-			}else if("2".equalsIgnoreCase(statType)){
-				sql+=" and egkmc='"+statValue+"' ";
-			}
-		}
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and jh like '%"+wellName+"%' ";
-		}
-		
-		sql+=" order by t.pxbh, t.jh";
-		
-		int amount=this.getTotalCountRows(sql);
-		List<?> list = this.findCallSql(sql);
-		
-		result_json.append("{\"LiftingType\":"+liftingType+",\"Amount\":"+amount+",");
-		result_json.append("\"List\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"WellName\":\""+obj[0]+"\",");
-			result_json.append("\"Status\":\""+obj[1]+"\",");
-			if(!"2".equals(liftingType)){//举升方式为抽油机时
-				result_json.append("\"FSWorkingCondition\":\""+obj[2]+"\",");
-			}
-			result_json.append("\"ETWorkingCondition\":\""+obj[3]+"\"},");
-			
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

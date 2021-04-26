@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
@@ -27,7 +28,10 @@ import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
 import com.gao.utils.Recursion;
 import com.gao.utils.StringManagerUtils;
-import com.gao.utils.UnixPwdCrypt;;
+import com.gao.utils.UnixPwdCrypt;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;;
 
 /**
  * <P> 描述：移动端接口</p>
@@ -112,23 +116,14 @@ public class MobileController extends BaseController{
 		return null;
 	}
 	
+	/******
+	 * 统计饼图及柱状图需要的data信息
+	 * ***/
 	@RequestMapping("/oilWell/realtime/statisticsData")
 	public String getPumpingRealtimeStatisticsData() throws Exception {
-		String orgId=URLDecoder.decode(ParamUtils.getParameter(request, "orgId"), "UTF-8");
-		String orgName=URLDecoder.decode(ParamUtils.getParameter(request, "orgName"), "UTF-8");
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			orgId="1";
-		}
-		String liftingType = ParamUtils.getParameter(request, "liftingType");
-		if (!StringManagerUtils.isNotNull(liftingType)) {
-			liftingType="1";//默认为抽油机
-		}
-		String json = "{}";
-		
-		/******
-		 * 饼图及柱状图需要的data信息
-		 * ***/
-		json = mobileService.getPumpingRealtimeStatisticsDataByOrgName(orgName,liftingType);
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -138,22 +133,16 @@ public class MobileController extends BaseController{
 		return null;
 	}
 	
+	/******
+	 * 查询处于某种统计值下的井列表及数据
+	 * ***/
 	@RequestMapping("/oilWell/realtime/wellListData")
-	public String getPumpingRealtimeWellListData() throws Exception {
-		String orgId = URLDecoder.decode(ParamUtils.getParameter(request, "orgId"), "UTF-8");
-		String orgName=URLDecoder.decode(ParamUtils.getParameter(request, "orgName"), "UTF-8");
-		String statType = URLDecoder.decode(ParamUtils.getParameter(request, "statType"), "UTF-8");
-		String statValue = URLDecoder.decode(ParamUtils.getParameter(request, "statValue"), "UTF-8");
-		String wellName = URLDecoder.decode(ParamUtils.getParameter(request, "wellName"), "UTF-8");
-		String liftingType = URLDecoder.decode(ParamUtils.getParameter(request, "liftingType"), "UTF-8"); 
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			orgId="1";
-		}
-		if (!StringManagerUtils.isNotNull(liftingType)) {
-			liftingType="1";//默认为抽油机
-		}
+	public String getOilWellRealtimeWellListData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		this.pager = new Page("pagerForm", request);
+		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
 		
-		String json = mobileService.getPumpingRealtimeWellListDataByOrgName(orgName, statType, statValue,wellName,liftingType);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

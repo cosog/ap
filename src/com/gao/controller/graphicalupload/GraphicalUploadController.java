@@ -1121,7 +1121,7 @@ public class GraphicalUploadController extends BaseController {
 		String totalDate = StringManagerUtils.getCurrentTime();
 		String totalUrl="";
 		ServletInputStream ss = request.getInputStream();
-		String data=convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<WellAcquisitionData>() {}.getType();
 		WellAcquisitionData wellAcquisitionData = gson.fromJson(data, type);
 		if(wellAcquisitionData!=null){
@@ -1184,7 +1184,7 @@ public class GraphicalUploadController extends BaseController {
 		String FSdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
 		ServletInputStream ss = request.getInputStream();
 		boolean ifAddDay=false;
-		String data=convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<KafkaUpData>() {}.getType();
 		KafkaUpData kafkaUpData=gson.fromJson(data, type);
 		if(kafkaUpData!=null){
@@ -1458,7 +1458,7 @@ public class GraphicalUploadController extends BaseController {
 		Gson gson=new Gson();
 		
 		ServletInputStream ss = request.getInputStream();
-		String data=convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<KafkaUpRawData>() {}.getType();
 		KafkaUpRawData kafkaUpRawData=gson.fromJson(data, type);
 		if(kafkaUpRawData!=null){
@@ -1485,7 +1485,7 @@ public class GraphicalUploadController extends BaseController {
 		Gson gson=new Gson();
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		ServletInputStream ss = request.getInputStream();
-		String data=convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<AggrOnline2Kafka>() {}.getType();
 		AggrOnline2Kafka aggrOnline2Kafka=gson.fromJson(data, type);
 		if(aggrOnline2Kafka!=null){
@@ -1581,7 +1581,7 @@ public class GraphicalUploadController extends BaseController {
 		Gson gson=new Gson();
 		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		ServletInputStream ss = request.getInputStream();
-		String data=convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		java.lang.reflect.Type type = new TypeToken<AggrRunStatus2Kafka>() {}.getType();
 		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(data, type);
 		if(aggrRunStatus2Kafka!=null){
@@ -1669,28 +1669,6 @@ public class GraphicalUploadController extends BaseController {
 		pw.close();
 		return null;
 	}
-	
-	public static String convertStreamToString(InputStream is,String encoding) {      
-		StringBuilder sb = new StringBuilder();
-       try {
-    	   BufferedReader reader = new BufferedReader(new InputStreamReader(is,encoding));
-           String line = null;    
-           while ((line = reader.readLine()) != null) {      
-                sb.append(line + "\n");      
-            }      
-        } catch (IOException e) {      
-            e.printStackTrace();      
-        } finally {      
-           try {      
-                is.close();      
-            } catch (IOException e) {      
-                e.printStackTrace();      
-            }      
-        }      
-    
-       return sb.toString();      
-    }
-
 	
 	@RequestMapping("/downLoadFSdiagramUploadExcelModel")
     public void downLoadFSdiagramUploadExcelModel(){

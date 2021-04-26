@@ -1653,7 +1653,6 @@ public class BaseDao extends HibernateDaoSupport {
 				String sql="delete from tbl_rpc_statistics_conf t where t.s_type='"+statType+"'";
 				int updatecount=st.executeUpdate(sql);
 			}
-			
 			for(int i=0;i<jsonArray.size();i++){
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
 				String statitem=everydata.getString("statitem");

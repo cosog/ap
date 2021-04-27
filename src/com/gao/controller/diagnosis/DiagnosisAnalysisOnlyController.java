@@ -311,85 +311,6 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		}
 		return null;
 	}
-	
-	@SuppressWarnings("rawtypes")
-	@RequestMapping("/getResourceProbeHistoryCurveData")
-	public String getResourceProbeHistoryCurveData() throws Exception {
-		String json = "";
-		String endDate = ParamUtils.getParameter(request, "endDate");
-		String startDate = ParamUtils.getParameter(request, "startDate");
-		String itemName = ParamUtils.getParameter(request, "itemName");
-		String itemCode = ParamUtils.getParameter(request, "itemCode");
-		
-		this.pager = new Page("pagerForm", request);
-		if(!StringManagerUtils.isNotNull(endDate)){
-			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_resourcemonitoring t ";
-			List list = this.service.reportDateJssj(sql);
-			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
-				endDate = list.get(0).toString();
-			} else {
-				endDate = StringManagerUtils.getCurrentTime();
-			}
-		}
-		
-		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
-		}
-		
-		pager.setStart_date(startDate);
-		pager.setEnd_date(endDate);
-		json =  this.diagnosisAnalysisOnlyService.getResourceProbeHistoryCurveData(startDate,endDate,itemName,itemCode);
-		
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw;
-		try {
-			pw = response.getWriter();
-			pw.write(json);
-			pw.flush();
-			pw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@RequestMapping("/showIndex")
-	public String showIndex() throws Exception {
-		return "app/page/home";
-	}
-	@RequestMapping("/showBackIndex")
-	public String showBackIndex() throws Exception {
-		return "app/page/backHome";
-	}
-	@RequestMapping("/toLogin")
-	public String toLogin() throws Exception {
-//		return "HYTXLogin";
-		return "Login";
-	}
-	@RequestMapping("/toTouchLogin")
-	public String toTouchLogin() throws Exception {
-		return "touchLogin";
-	}
-	@RequestMapping("/toMain")
-	public String toMain() throws Exception {
-		return "app/main";
-	}
-	@RequestMapping("/toTouchMain")
-	public String toTouchMain() throws Exception {
-		return "toTouchMain";
-	}
-	@RequestMapping("/toBackLogin")
-	public String toBackLogin() throws Exception {
-		return "AdminLogin";
-	}
-	@RequestMapping("/toBackMain")
-	public String toBackMain() throws Exception {
-		return "app/back";
-	}
-	
 	/**
 	 * 描述：查询单井工况诊断的泵功图
 	 */
@@ -644,6 +565,84 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/getResourceProbeHistoryCurveData")
+	public String getResourceProbeHistoryCurveData() throws Exception {
+		String json = "";
+		String endDate = ParamUtils.getParameter(request, "endDate");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String itemName = ParamUtils.getParameter(request, "itemName");
+		String itemCode = ParamUtils.getParameter(request, "itemCode");
+		
+		this.pager = new Page("pagerForm", request);
+		if(!StringManagerUtils.isNotNull(endDate)){
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_resourcemonitoring t ";
+			List list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+		}
+		
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),0);
+		}
+		
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		json =  this.diagnosisAnalysisOnlyService.getResourceProbeHistoryCurveData(startDate,endDate,itemName,itemCode);
+		
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@RequestMapping("/showIndex")
+	public String showIndex() throws Exception {
+		return "app/page/home";
+	}
+	@RequestMapping("/showBackIndex")
+	public String showBackIndex() throws Exception {
+		return "app/page/backHome";
+	}
+	@RequestMapping("/toLogin")
+	public String toLogin() throws Exception {
+//		return "HYTXLogin";
+		return "Login";
+	}
+	@RequestMapping("/toTouchLogin")
+	public String toTouchLogin() throws Exception {
+		return "touchLogin";
+	}
+	@RequestMapping("/toMain")
+	public String toMain() throws Exception {
+		return "app/main";
+	}
+	@RequestMapping("/toTouchMain")
+	public String toTouchMain() throws Exception {
+		return "toTouchMain";
+	}
+	@RequestMapping("/toBackLogin")
+	public String toBackLogin() throws Exception {
+		return "AdminLogin";
+	}
+	@RequestMapping("/toBackMain")
+	public String toBackMain() throws Exception {
+		return "app/back";
 	}
 	
 	public DiagnosisAnalysisOnly getDiagnosisAnalysisOnly() {

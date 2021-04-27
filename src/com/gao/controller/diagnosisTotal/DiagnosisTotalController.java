@@ -172,7 +172,7 @@ public class DiagnosisTotalController extends BaseController {
 		return null;
 	}
 	
-	/**<p>描述：获取前天评价工况统计和产量波动统计数据</p>
+	/**<p>描述：获取全天评价统计数据</p>
 	 * 
 	 * @return
 	 * @throws Exception

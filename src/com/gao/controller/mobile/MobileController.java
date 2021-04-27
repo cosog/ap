@@ -134,7 +134,7 @@ public class MobileController extends BaseController{
 	}
 	
 	/******
-	 * 查询处于某种统计值下的井列表及数据
+	 * 查询处于某种统计值下的实时井列表及数据
 	 * ***/
 	@RequestMapping("/oilWell/realtime/wellListData")
 	public String getOilWellRealtimeWellListData() throws Exception {
@@ -142,7 +142,6 @@ public class MobileController extends BaseController{
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
-		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -158,13 +157,15 @@ public class MobileController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/oilWell/realtime/wellStatus")
-	public String getPumpingRealtimeWellStatusData() throws Exception {
-		String orgId = URLDecoder.decode(ParamUtils.getParameter(request, "orgId"), "UTF-8");
-		if(!StringManagerUtils.isNotNull(orgId)){
-			
-		}
-		String json = mobileService.getPumpingRealtimeWellStatusData(orgId);
+	/******
+	 * 查询处于某种统计值下的井历史数据
+	 * ***/
+	@RequestMapping("/oilWell/realtime/wellHistoryData")
+	public String getOilWellRealtimeWellHistoryData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		this.pager = new Page("pagerForm", request);
+		String json = mobileService.getOilWellRealtimeWellHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -181,16 +182,81 @@ public class MobileController extends BaseController{
 	}
 	
 	@RequestMapping("/oilWell/realtime/wellAnalysisData")
-	public String getPumpingRealtimeWellAnalysisData()throws Exception{
-		String wellName = URLDecoder.decode(ParamUtils.getParameter(request, "wellName"), "UTF-8"); 
-		String json = "{}";
-		json = this.mobileService.getPumpingRealtimeWellAnalysisData(wellName);
+	public String getOilWellRealtimeWellAnalysisData()throws Exception{
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String json = this.mobileService.getOilWellRealtimeWellAnalysisData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	/******
+	 * 全天统计饼图及柱状图需要的data信息
+	 * ***/
+	@RequestMapping("/oilWell/total/statisticsData")
+	public String getOilWellTotalStatisticsData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String json = mobileService.getOilWellTotalStatisticsData(data);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	/******
+	 * 查询某天处于某种统计值下的全天井列表及数据
+	 * ***/
+	@RequestMapping("/oilWell/total/wellListData")
+	public String getOilWellTotalWellListData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		this.pager = new Page("pagerForm", request);
+		String json = mobileService.getOilWellTotalWellListData(data,pager);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/******
+	 * 查询处于某种统计值下的井全天历史数据
+	 * ***/
+	@RequestMapping("/oilWell/total/wellHistoryData")
+	public String getOilWellTotalHistoryData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		this.pager = new Page("pagerForm", request);
+		String json = mobileService.getOilWellTotalHistoryData(data,pager);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

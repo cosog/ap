@@ -59,17 +59,25 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer wells= new StringBuffer();
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		int liftingType=jsonObject.getInt("LiftingType");
-		int type=jsonObject.getInt("StatType");
-		JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-		for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-			wells.append("'"+jsonArray.getString(i)+"',");
+		int liftingType=1;
+		int type=1;
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				
+				liftingType=jsonObject.getInt("LiftingType");
+				type=jsonObject.getInt("StatType");
+				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+					wells.append("'"+jsonArray.getString(i)+"',");
+				}
+				if(wells.toString().endsWith(",")){
+					wells.deleteCharAt(wells.length() - 1);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
-		if(wells.toString().endsWith(",")){
-			wells.deleteCharAt(wells.length() - 1);
-		}
-		
 		String sql="";
 		String statType="workingConditionName";
 		String tableName="viw_rpc_comprehensive_latest";
@@ -137,18 +145,24 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer wells= new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		int liftingType=jsonObject.getInt("LiftingType");
-		int type=jsonObject.getInt("StatType");
-		String statValue=jsonObject.getString("StatValue");
-		JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-		for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-			wells.append("'"+jsonArray.getString(i)+"',");
+		int liftingType=1;
+		int type=1;
+		String statValue="";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			liftingType=jsonObject.getInt("LiftingType");
+			type=jsonObject.getInt("StatType");
+			statValue=jsonObject.getString("StatValue");
+			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+				wells.append("'"+jsonArray.getString(i)+"',");
+			}
+			if(wells.toString().endsWith(",")){
+				wells.deleteCharAt(wells.length() - 1);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		if(wells.toString().endsWith(",")){
-			wells.deleteCharAt(wells.length() - 1);
-		}
-		
 		DataDictionary ddic = null;
 		String columns= "";
 		String sql="";
@@ -266,7 +280,10 @@ public class MobileService<T> extends BaseService<T> {
 			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
-		sql+= " from "+tableName_latest+" t where t.wellName in("+wells.toString()+")";
+		sql+= " from "+tableName_latest+" t where 1=1 ";
+		if(StringManagerUtils.isNotNull(wells.toString())){
+			sql+= " and t.wellName in("+wells.toString()+")";
+		}	
 		if(StringManagerUtils.isNotNull(statValue)){
 			sql+=" and "+typeColumnName+"='"+statValue+"' ";
 		}
@@ -275,21 +292,32 @@ public class MobileService<T> extends BaseService<T> {
 //		int maxvalue=pager.getLimit()+pager.getStart();
 //		finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		finalSql=sqlAll;
-		String getResult = this.findCustomPageBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
+		String getResult = this.findExportDataBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
+		getResult="{\"totalRoot\":"+getResult+"}";
 		return getResult;
 	}
 	
 	public String getOilWellRealtimeWellHistoryData(String data,Page pager)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		int liftingType=jsonObject.getInt("LiftingType");
-		int type=jsonObject.getInt("StatType");
-		String statValue=jsonObject.getString("StatValue");
-		String wellName=jsonObject.getString("WellName");
-		String startDate=jsonObject.getString("StartDate");
-		String endDate=jsonObject.getString("EndDate");
 		
+		int liftingType=1;
+		int type=1;
+		String statValue="";
+		String wellName="";
+		String startDate=StringManagerUtils.getCurrentTime();
+		String endDate=StringManagerUtils.getCurrentTime();
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			liftingType=jsonObject.getInt("LiftingType");
+			type=jsonObject.getInt("StatType");
+			statValue=jsonObject.getString("StatValue");
+			wellName=jsonObject.getString("WellName");
+			startDate=jsonObject.getString("StartDate");
+			endDate=jsonObject.getString("EndDate");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		DataDictionary ddic = null;
 		String columns= "";
 		String sql="";
@@ -408,31 +436,32 @@ public class MobileService<T> extends BaseService<T> {
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
 		sql+= " from "+tableName_hist+" t where 1=1";
-		sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') + 1 "
-				+ "and  t.wellName = '" + wellName.trim() + "' order by t.acqTime desc";
+		sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') + 1 ";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and  t.wellName = '" + wellName.trim() + "'";
+		}
+		sql+= " order by t.acqTime desc";
 		sqlAll=sql;
 //		int maxvalue=pager.getLimit()+pager.getStart();
 //		finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		finalSql=sqlAll;
-		String getResult = this.findCustomPageBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
+		String getResult = this.findExportDataBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
+		getResult="{\"totalRoot\":"+getResult+"}";
 		return getResult;
 	}
 	
 	public String getOilWellRealtimeWellAnalysisData(String data) throws SQLException, IOException{
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 		String json="";
-		if(jsonObject!=null){
-			int liftingType=jsonObject.getInt("LiftingType");
-			if(liftingType!=2){
-				json=getPumpunitRealtimeWellAnalysisData(data);
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			if(jsonObject!=null){
+				int liftingType=jsonObject.getInt("LiftingType");
+				if(liftingType!=2){
+					json=getPumpunitRealtimeWellAnalysisData(data);
+				}
 			}
-			int type=jsonObject.getInt("StatType");
-			String statValue=jsonObject.getString("StatValue");
-			String wellName=jsonObject.getString("WellName");
-			String startDate=jsonObject.getString("StartDate");
-			String endDate=jsonObject.getString("EndDate");
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		return json;
 	}
@@ -440,107 +469,112 @@ public class MobileService<T> extends BaseService<T> {
 	public String getPumpunitRealtimeWellAnalysisData(String data) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		String json="";
-		if(jsonObject!=null){
-			int liftingType=jsonObject.getInt("LiftingType");
-			String wellName=jsonObject.getString("WellName");
-			String acqTime=jsonObject.getString("AcqTime");
-			String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,waterCut_W,"
-					+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
-			if(configFile.getOthers().getProductionUnit()!=0){
-				prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,waterCut,"
-						+ " availablePlungerstrokeProd_V,pumpClearanceLeakProd_V,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_V,";;
+		String wellName="";
+		String acqTime="";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			String json="";
+			if(jsonObject!=null){
+				wellName=jsonObject.getString("WellName");
+				acqTime=jsonObject.getString("AcqTime");
+				if(StringManagerUtils.isNotNull(wellName) && StringManagerUtils.isNotNull(acqTime)){
+					String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,waterCut_W,"
+							+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
+					if(configFile.getOthers().getProductionUnit()!=0){
+						prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,waterCut,"
+								+ " availablePlungerstrokeProd_V,pumpClearanceLeakProd_V,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_V,";;
+					}
+					String tableName="viw_rpc_comprehensive_hist";
+					String sql="select workingConditionName,"
+							+ " wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
+							+ prodCol
+							+ " theoreticalProduction,"
+							+ " plungerstroke,availableplungerstroke,"
+							+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
+							+ " stroke,spm,fmax,fmin,deltaF,deltaLoadLine,fsDiagramArea,"
+							+ " motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
+							+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
+							+ " rodFlexLength,tubingFlexLength,inertiaLength,"
+							+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
+							+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo"
+							+ " from "+tableName+" t where wellname='"+wellName+"' and t.acqtime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
+					List<?> list = this.findCallSql(sql);
+					DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAnalysis");
+					String analysisDataList = ddic.getTableHeader();
+					ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAcquisition");
+					String acquisitionDataList = ddic.getTableHeader();
+					result_json.append("{ \"success\":true,");
+					if(list.size()>0){
+						Object[] obj=(Object[]) list.get(0);
+						result_json.append("\"resultName\":\""+obj[0]+"\",");
+						
+						result_json.append("\"wattDegreeBalance\":\""+obj[1]+"\",");
+						result_json.append("\"wattRatio\":\""+obj[2]+"\",");
+						result_json.append("\"iDegreeBalance\":\""+obj[3]+"\",");
+						result_json.append("\"iRatio\":\""+obj[4]+"\",");
+						result_json.append("\"deltaRadius\":\""+obj[5]+"\",");
+						
+						result_json.append("\"liquidProduction\":\""+obj[6]+"\",");
+						result_json.append("\"oilProduction\":\""+obj[7]+"\",");
+						result_json.append("\"waterProduction\":\""+obj[8]+"\",");
+						result_json.append("\"waterCut\":\""+obj[9]+"\",");
+						
+						result_json.append("\"availablePlungerstrokeProd\":\""+obj[10]+"\",");
+						result_json.append("\"pumpClearanceLeakProd\":\""+obj[11]+"\",");
+						result_json.append("\"tvleakProduction\":\""+obj[12]+"\",");
+						result_json.append("\"svleakProduction\":\""+obj[13]+"\",");
+						result_json.append("\"gasInfluenceProd\":\""+obj[14]+"\",");
+						
+						result_json.append("\"theoreticalProduction\":\""+obj[15]+"\",");
+						result_json.append("\"plungerStroke\":\""+obj[16]+"\",");
+						result_json.append("\"availablePlungerStroke\":\""+obj[17]+"\",");
+						
+						result_json.append("\"pumpBoreDiameter\":\""+obj[18]+"\",");
+						result_json.append("\"pumpSettingDepth\":\""+obj[19]+"\",");
+						result_json.append("\"producingFluidLevel\":\""+obj[20]+"\",");
+						result_json.append("\"submergence\":\""+obj[21]+"\",");
+						
+						result_json.append("\"stroke\":\""+obj[22]+"\",");
+						result_json.append("\"spm\":\""+obj[23]+"\",");
+						result_json.append("\"fmax\":\""+obj[24]+"\",");
+						result_json.append("\"fmin\":\""+obj[25]+"\",");
+						result_json.append("\"deltaF\":\""+obj[26]+"\",");
+						result_json.append("\"deltaLoadLine\":\""+obj[27]+"\",");
+						result_json.append("\"fsDiagramArea\":\""+obj[28]+"\",");
+						
+						result_json.append("\"averageWatt\":\""+obj[29]+"\",");
+						result_json.append("\"polishrodPower\":\""+obj[30]+"\",");
+						result_json.append("\"waterPower\":\""+obj[31]+"\",");
+						result_json.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
+						result_json.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
+						result_json.append("\"systemEfficiency\":\""+obj[34]+"\",");
+						result_json.append("\"powerConsumptionPerthm\":\""+obj[35]+"\",");
+						result_json.append("\"pumpEff1\":\""+obj[36]+"\",");
+						result_json.append("\"pumpEff2\":\""+obj[37]+"\",");
+						result_json.append("\"pumpEff3\":\""+obj[38]+"\",");
+						result_json.append("\"pumpEff4\":\""+obj[39]+"\",");
+						result_json.append("\"pumpEff\":\""+obj[40]+"\",");
+						result_json.append("\"rodFlexLength\":\""+obj[41]+"\",");
+						result_json.append("\"tubingFlexLength\":\""+obj[42]+"\",");
+						result_json.append("\"inertiaLength\":\""+obj[43]+"\",");
+						
+						result_json.append("\"pumpIntakeP\":\""+obj[44]+"\",");
+						result_json.append("\"pumpIntakeT\":\""+obj[45]+"\",");
+						result_json.append("\"pumpIntakeGOL\":\""+obj[46]+"\",");
+						result_json.append("\"pumpIntakeVisl\":\""+obj[47]+"\",");
+						result_json.append("\"pumpIntakeBo\":\""+obj[48]+"\",");
+						
+						result_json.append("\"pumpOutletP\":\""+obj[49]+"\",");
+						result_json.append("\"pumpOutletT\":\""+obj[50]+"\",");
+						result_json.append("\"pumpOutletGOL\":\""+obj[51]+"\",");
+						result_json.append("\"pumpOutletVisl\":\""+obj[52]+"\",");
+						result_json.append("\"pumpOutletBo\":\""+obj[53]+"\"");
+					}
+					result_json.append("}");
+				}
 			}
-			String tableName="viw_rpc_comprehensive_hist";
-			String sql="select workingConditionName,"
-					+ " wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
-					+ prodCol
-					+ " theoreticalProduction,"
-					+ " plungerstroke,availableplungerstroke,"
-					+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
-					+ " stroke,spm,fmax,fmin,deltaF,deltaLoadLine,fsDiagramArea,"
-					+ " motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
-					+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
-					+ " rodFlexLength,tubingFlexLength,inertiaLength,"
-					+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
-					+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo"
-					+ " from "+tableName+" t where wellname='"+wellName+"' and t.acqtime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-			List<?> list = this.findCallSql(sql);
-			DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAnalysis");
-			String analysisDataList = ddic.getTableHeader();
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAcquisition");
-			String acquisitionDataList = ddic.getTableHeader();
-			
-			
-			result_json.append("{ \"success\":true,");
-			if(list.size()>0){
-				Object[] obj=(Object[]) list.get(0);
-				result_json.append("\"resultName\":\""+obj[0]+"\",");
-				
-				result_json.append("\"wattDegreeBalance\":\""+obj[1]+"\",");
-				result_json.append("\"wattRatio\":\""+obj[2]+"\",");
-				result_json.append("\"iDegreeBalance\":\""+obj[3]+"\",");
-				result_json.append("\"iRatio\":\""+obj[4]+"\",");
-				result_json.append("\"deltaRadius\":\""+obj[5]+"\",");
-				
-				result_json.append("\"liquidProduction\":\""+obj[6]+"\",");
-				result_json.append("\"oilProduction\":\""+obj[7]+"\",");
-				result_json.append("\"waterProduction\":\""+obj[8]+"\",");
-				result_json.append("\"waterCut\":\""+obj[9]+"\",");
-				
-				result_json.append("\"availablePlungerstrokeProd\":\""+obj[10]+"\",");
-				result_json.append("\"pumpClearanceLeakProd\":\""+obj[11]+"\",");
-				result_json.append("\"tvleakProduction\":\""+obj[12]+"\",");
-				result_json.append("\"svleakProduction\":\""+obj[13]+"\",");
-				result_json.append("\"gasInfluenceProd\":\""+obj[14]+"\",");
-				
-				result_json.append("\"theoreticalProduction\":\""+obj[15]+"\",");
-				result_json.append("\"plungerStroke\":\""+obj[16]+"\",");
-				result_json.append("\"availablePlungerStroke\":\""+obj[17]+"\",");
-				
-				result_json.append("\"pumpBoreDiameter\":\""+obj[18]+"\",");
-				result_json.append("\"pumpSettingDepth\":\""+obj[19]+"\",");
-				result_json.append("\"producingFluidLevel\":\""+obj[20]+"\",");
-				result_json.append("\"submergence\":\""+obj[21]+"\",");
-				
-				result_json.append("\"stroke\":\""+obj[22]+"\",");
-				result_json.append("\"spm\":\""+obj[23]+"\",");
-				result_json.append("\"fmax\":\""+obj[24]+"\",");
-				result_json.append("\"fmin\":\""+obj[25]+"\",");
-				result_json.append("\"deltaF\":\""+obj[26]+"\",");
-				result_json.append("\"deltaLoadLine\":\""+obj[27]+"\",");
-				result_json.append("\"fsDiagramArea\":\""+obj[28]+"\",");
-				
-				result_json.append("\"averageWatt\":\""+obj[29]+"\",");
-				result_json.append("\"polishrodPower\":\""+obj[30]+"\",");
-				result_json.append("\"waterPower\":\""+obj[31]+"\",");
-				result_json.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
-				result_json.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
-				result_json.append("\"systemEfficiency\":\""+obj[34]+"\",");
-				result_json.append("\"powerConsumptionPerthm\":\""+obj[35]+"\",");
-				result_json.append("\"pumpEff1\":\""+obj[36]+"\",");
-				result_json.append("\"pumpEff2\":\""+obj[37]+"\",");
-				result_json.append("\"pumpEff3\":\""+obj[38]+"\",");
-				result_json.append("\"pumpEff4\":\""+obj[39]+"\",");
-				result_json.append("\"pumpEff\":\""+obj[40]+"\",");
-				result_json.append("\"rodFlexLength\":\""+obj[41]+"\",");
-				result_json.append("\"tubingFlexLength\":\""+obj[42]+"\",");
-				result_json.append("\"inertiaLength\":\""+obj[43]+"\",");
-				
-				result_json.append("\"pumpIntakeP\":\""+obj[44]+"\",");
-				result_json.append("\"pumpIntakeT\":\""+obj[45]+"\",");
-				result_json.append("\"pumpIntakeGOL\":\""+obj[46]+"\",");
-				result_json.append("\"pumpIntakeVisl\":\""+obj[47]+"\",");
-				result_json.append("\"pumpIntakeBo\":\""+obj[48]+"\",");
-				
-				result_json.append("\"pumpOutletP\":\""+obj[49]+"\",");
-				result_json.append("\"pumpOutletT\":\""+obj[50]+"\",");
-				result_json.append("\"pumpOutletGOL\":\""+obj[51]+"\",");
-				result_json.append("\"pumpOutletVisl\":\""+obj[52]+"\",");
-				result_json.append("\"pumpOutletBo\":\""+obj[53]+"\"");
-			}
-			result_json.append("}");
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -549,11 +583,14 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer wells= new StringBuffer();
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		if(jsonObject!=null){
-			int liftingType=jsonObject.getInt("LiftingType");
-			int type=jsonObject.getInt("StatType");
-			String date=jsonObject.getString("Date");
+		int liftingType=1;
+		int type=1;
+		String date=StringManagerUtils.getCurrentTime();
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			liftingType=jsonObject.getInt("LiftingType");
+			type=jsonObject.getInt("StatType");
+			date=jsonObject.getString("Date");
 			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
 			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
 				wells.append("'"+jsonArray.getString(i)+"',");
@@ -561,65 +598,66 @@ public class MobileService<T> extends BaseService<T> {
 			if(wells.toString().endsWith(",")){
 				wells.deleteCharAt(wells.length() - 1);
 			}
-			
-			String sql="";
-			String tableName="viw_rpc_total_day";
-			String statType="workingConditionName";
-			if(type==1){
-				statType="workingConditionName";
-			}else if(type==2){
-				statType="liquidWeightProductionlevel";
-				if(configFile.getOthers().getProductionUnit()!=0){
-					statType="liquidVolumeProductionlevel";
-				}
-			}else if(type==3){
-				statType="wattdegreebalanceLevel";
-			}else if(type==4){
-				statType="idegreebalanceLevel";
-			}else if(type==5){
-				statType="systemEfficiencyLevel";
-			}else if(type==6){
-				statType="surfaceSystemEfficiencyLevel";
-			}else if(type==7){
-				statType="wellDownSystemEfficiencyLevel";
-			}else if(type==8){
-				statType="todayKWattHLevel";
-			}else if(type==9){
-				statType="runStatusName";
-			}else if(type==10){
-				statType="runtimeEfficiencyLevel";
-			}else if(type==11){
-				statType="commStatusName";
-			}else if(type==12){
-				statType="commtimeefficiencyLevel";
-			}
-			if(liftingType!=2){
-				tableName="viw_rpc_total_day";
-			}else{
-				tableName="viw_pcp_total_day";
-			}
-			sql="select "+statType+", count(1) from "+tableName+" t where calculateDate=to_date('"+date+"','yyyy-mm-dd') ";
-			if(StringManagerUtils.isNotNull(wells.toString())){
-				sql+= " and wellname in ("+wells.toString()+")";
-			}
-			sql+=" group by rollup("+statType+")";
-			List<?> list = this.findCallSql(sql);
-			result_json.append("{ \"success\":true,\"totalDate\":\""+date+"\",");
-			result_json.append("\"List\":[");
-			int totalCount=0;
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[]) list.get(i);
-				if(StringManagerUtils.isNotNull(obj[0]+"")){
-					result_json.append("{\"item\":\""+obj[0]+"\",");
-					result_json.append("\"count\":"+obj[1]+"},");
-					totalCount+=StringManagerUtils.stringToInteger(obj[1]+"");
-				}
-			}
-			if(result_json.toString().endsWith(",")){
-				result_json.deleteCharAt(result_json.length() - 1);
-			}
-			result_json.append("]}");
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+		String sql="";
+		String tableName="viw_rpc_total_day";
+		String statType="workingConditionName";
+		if(type==1){
+			statType="workingConditionName";
+		}else if(type==2){
+			statType="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				statType="liquidVolumeProductionlevel";
+			}
+		}else if(type==3){
+			statType="wattdegreebalanceLevel";
+		}else if(type==4){
+			statType="idegreebalanceLevel";
+		}else if(type==5){
+			statType="systemEfficiencyLevel";
+		}else if(type==6){
+			statType="surfaceSystemEfficiencyLevel";
+		}else if(type==7){
+			statType="wellDownSystemEfficiencyLevel";
+		}else if(type==8){
+			statType="todayKWattHLevel";
+		}else if(type==9){
+			statType="runStatusName";
+		}else if(type==10){
+			statType="runtimeEfficiencyLevel";
+		}else if(type==11){
+			statType="commStatusName";
+		}else if(type==12){
+			statType="commtimeefficiencyLevel";
+		}
+		if(liftingType!=2){
+			tableName="viw_rpc_total_day";
+		}else{
+			tableName="viw_pcp_total_day";
+		}
+		sql="select "+statType+", count(1) from "+tableName+" t where calculateDate=to_date('"+date+"','yyyy-mm-dd') ";
+		if(StringManagerUtils.isNotNull(wells.toString())){
+			sql+= " and wellname in ("+wells.toString()+")";
+		}
+		sql+=" group by rollup("+statType+")";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,\"totalDate\":\""+date+"\",");
+		result_json.append("\"List\":[");
+		int totalCount=0;
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				result_json.append("{\"item\":\""+obj[0]+"\",");
+				result_json.append("\"count\":"+obj[1]+"},");
+				totalCount+=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
 		return result_json.toString();
 	}
 	
@@ -627,12 +665,16 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer wells= new StringBuffer();
 		String getResult="";
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		if(jsonObject!=null){
-			int liftingType=jsonObject.getInt("LiftingType");
-			String date=jsonObject.getString("Date");
-			int type=jsonObject.getInt("StatType");
-			String statValue=jsonObject.getString("StatValue");
+		int liftingType=1;
+		String date=StringManagerUtils.getCurrentTime();
+		int type=1;
+		String statValue="";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			liftingType=jsonObject.getInt("LiftingType");
+			date=jsonObject.getString("Date");
+			type=jsonObject.getInt("StatType");
+			statValue=jsonObject.getString("StatValue");
 			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
 			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
 				wells.append("'"+jsonArray.getString(i)+"',");
@@ -640,139 +682,128 @@ public class MobileService<T> extends BaseService<T> {
 			if(wells.toString().endsWith(",")){
 				wells.deleteCharAt(wells.length() - 1);
 			}
-			
-			String columns= "";
-			DataDictionary ddic = null;
-			String ddicName="";
-			String tableName="viw_rpc_total_day";
-			String typeColumnName="workingConditionName";
-			if(type==1){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyETValue";
-				}else{//默认为抽油机
-					ddicName="dailyFSDiagram";
-				}
-				typeColumnName="workingConditionName";
-			}else if(type==2){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyProdDist";
-				}else{//默认为抽油机
-					ddicName="dailyProdDist";
-				}
-				typeColumnName="liquidWeightProductionlevel";
-				if(configFile.getOthers().getProductionUnit()!=0){
-					typeColumnName="liquidVolumeProductionlevel";
-				}
-			}else if(type==3){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyETValue";
-				}else{//默认为抽油机
-					ddicName="dailyPowerBalance";
-				}
-				typeColumnName="wattdegreebalanceLevel";
-			}else if(type==4){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyETValue";
-				}else{//默认为抽油机
-					ddicName="dailyCurrentBalance";
-				}
-				typeColumnName="idegreebalanceLevel";
-			}else if(type==5){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailySystemEff";
-				}else{//默认为抽油机
-					ddicName="dailySystemEff";
-				}
-				typeColumnName="systemEfficiencyLevel";
-			}else if(type==6){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailySystemEff";
-				}else{//默认为抽油机
-					ddicName="dailySurfaceEff";
-				}
-				typeColumnName="surfaceSystemEfficiencyLevel";
-			}else if(type==7){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailySystemEff";
-				}else{//默认为抽油机
-					ddicName="dailyDownholeEff";
-				}
-				typeColumnName="wellDownSystemEfficiencyLevel";
-			}else if(type==8){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyPowerDist";
-				}else{//默认为抽油机
-					ddicName="dailyPowertDist";
-				}
-				typeColumnName="todayKWattHLevel";
-			}else if(type==9){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyRunStatus";
-				}else{//默认为抽油机
-					ddicName="dailyRunStatus";
-				}
-				typeColumnName="runStatusName";
-			}else if(type==10){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyTimeDist";
-				}else{//默认为抽油机
-					ddicName="dailyTimeDist";
-				}
-				typeColumnName="runtimeEfficiencyLevel";
-			}else if(type==11){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyCommStatus";
-				}else{//默认为抽油机
-					ddicName="dailyCommStatus";
-				}
-				typeColumnName="commStatusName";
-			}else if(type==12){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyCommDist";
-				}else{//默认为抽油机
-					ddicName="dailyCommDist";
-				}
-				typeColumnName="commtimeefficiencyLevel";
-			}
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			columns = ddic.getTableHeader();
-			String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
-					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
-			if(liftingType!=2){
-				sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
-				tableName="viw_rpc_total_day";
-			}else{
-				tableName="viw_pcp_total_day";
-			}
-					
-			sql+= " from "+tableName+" t where 1=1";
-			if(StringManagerUtils.isNotNull(wells.toString())){
-				sql+= "t.wellname in ("+wells.toString()+") ";
-			}
-			
-			sql+=" and t.calculateDate=to_date('"+date+"','yyyy-mm-dd') ";
-			if(StringManagerUtils.isNotNull(statValue)){
-				sql+=" and "+typeColumnName+"='"+statValue+"'";
-			}
-			sql+=" order by t.sortnum, t.wellName";
-					
-//			if(StringManagerUtils.isNotNull(wellName)){
-//				sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-//					+ " and  t.wellName='"+wellName+"' "
-//					+ " order by t.calculateDate desc";
-//			}else{
-//				sql+=" and t.calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
-//				if(StringManagerUtils.isNotNull(statValue)){
-//					sql+=" and "+typeColumnName+"='"+statValue+"'";
-//				}
-//				sql+=" order by t.sortnum, t.wellName";
-//			}
-			
-//			int maxvalue=pager.getLimit()+pager.getStart();
-//			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-			String finalSql=sql;
-			getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+		String columns= "";
+		DataDictionary ddic = null;
+		String ddicName="";
+		String tableName="viw_rpc_total_day";
+		String typeColumnName="workingConditionName";
+		if(type==1){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyFSDiagram";
+			}
+			typeColumnName="workingConditionName";
+		}else if(type==2){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyProdDist";
+			}else{//默认为抽油机
+				ddicName="dailyProdDist";
+			}
+			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
+		}else if(type==3){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyPowerBalance";
+			}
+			typeColumnName="wattdegreebalanceLevel";
+		}else if(type==4){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyCurrentBalance";
+			}
+			typeColumnName="idegreebalanceLevel";
+		}else if(type==5){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailySystemEff";
+			}else{//默认为抽油机
+				ddicName="dailySystemEff";
+			}
+			typeColumnName="systemEfficiencyLevel";
+		}else if(type==6){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailySystemEff";
+			}else{//默认为抽油机
+				ddicName="dailySurfaceEff";
+			}
+			typeColumnName="surfaceSystemEfficiencyLevel";
+		}else if(type==7){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailySystemEff";
+			}else{//默认为抽油机
+				ddicName="dailyDownholeEff";
+			}
+			typeColumnName="wellDownSystemEfficiencyLevel";
+		}else if(type==8){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyPowerDist";
+			}else{//默认为抽油机
+				ddicName="dailyPowertDist";
+			}
+			typeColumnName="todayKWattHLevel";
+		}else if(type==9){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyRunStatus";
+			}else{//默认为抽油机
+				ddicName="dailyRunStatus";
+			}
+			typeColumnName="runStatusName";
+		}else if(type==10){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyTimeDist";
+			}else{//默认为抽油机
+				ddicName="dailyTimeDist";
+			}
+			typeColumnName="runtimeEfficiencyLevel";
+		}else if(type==11){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyCommStatus";
+			}else{//默认为抽油机
+				ddicName="dailyCommStatus";
+			}
+			typeColumnName="commStatusName";
+		}else if(type==12){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyCommDist";
+			}else{//默认为抽油机
+				ddicName="dailyCommDist";
+			}
+			typeColumnName="commtimeefficiencyLevel";
+		}
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		columns = ddic.getTableHeader();
+		String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
+				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		if(liftingType!=2){
+			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			tableName="viw_rpc_total_day";
+		}else{
+			tableName="viw_pcp_total_day";
+		}
+				
+		sql+= " from "+tableName+" t where 1=1 ";
+		if(StringManagerUtils.isNotNull(wells.toString())){
+			sql+= " and t.wellname in ("+wells.toString()+") ";
+		}
+		
+		sql+=" and t.calculateDate=to_date('"+date+"','yyyy-mm-dd') ";
+		if(StringManagerUtils.isNotNull(statValue)){
+			sql+=" and "+typeColumnName+"='"+statValue+"'";
+		}
+		sql+=" order by t.sortnum, t.wellName";
+//		int maxvalue=pager.getLimit()+pager.getStart();
+//		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		String finalSql=sql;
+		getResult = this.findExportDataBySqlEntity(sql,finalSql, columns, 20 + "", pager);
+		getResult="{\"totalRoot\":"+getResult+"}";
 		return getResult.replaceAll("null", "").replaceAll("//", "");
 	}
 	
@@ -780,14 +811,21 @@ public class MobileService<T> extends BaseService<T> {
 		StringBuffer wells= new StringBuffer();
 		String getResult="";
 		ConfigFile configFile=Config.getInstance().configFile;
-		JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-		if(jsonObject!=null){
-			int liftingType=jsonObject.getInt("LiftingType");
-			String startDate=jsonObject.getString("StartDate");
-			String endDate=jsonObject.getString("EndDate");
-			String wellName=jsonObject.getString("WellName");
-			int type=jsonObject.getInt("StatType");
-			String statValue=jsonObject.getString("StatValue");
+		int liftingType=1;
+		String startDate=StringManagerUtils.getCurrentTime();
+		String endDate=StringManagerUtils.getCurrentTime();
+		String wellName="";
+		int type=1;
+		String statValue="";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+
+			liftingType=jsonObject.getInt("LiftingType");
+			startDate=jsonObject.getString("StartDate");
+			endDate=jsonObject.getString("EndDate");
+			wellName=jsonObject.getString("WellName");
+			type=jsonObject.getInt("StatType");
+			statValue=jsonObject.getString("StatValue");
 			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
 			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
 				wells.append("'"+jsonArray.getString(i)+"',");
@@ -795,128 +833,132 @@ public class MobileService<T> extends BaseService<T> {
 			if(wells.toString().endsWith(",")){
 				wells.deleteCharAt(wells.length() - 1);
 			}
-			
-			String columns= "";
-			DataDictionary ddic = null;
-			String ddicName="";
-			String tableName="viw_rpc_total_day";
-			String typeColumnName="workingConditionName";
-			if(type==1){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyETValue";
-				}else{//默认为抽油机
-					ddicName="dailyFSDiagram";
-				}
-				typeColumnName="workingConditionName";
-			}else if(type==2){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyProdDist";
-				}else{//默认为抽油机
-					ddicName="dailyProdDist";
-				}
-				typeColumnName="liquidWeightProductionlevel";
-				if(configFile.getOthers().getProductionUnit()!=0){
-					typeColumnName="liquidVolumeProductionlevel";
-				}
-			}else if(type==3){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyETValue";
-				}else{//默认为抽油机
-					ddicName="dailyPowerBalance";
-				}
-				typeColumnName="wattdegreebalanceLevel";
-			}else if(type==4){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyETValue";
-				}else{//默认为抽油机
-					ddicName="dailyCurrentBalance";
-				}
-				typeColumnName="idegreebalanceLevel";
-			}else if(type==5){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailySystemEff";
-				}else{//默认为抽油机
-					ddicName="dailySystemEff";
-				}
-				typeColumnName="systemEfficiencyLevel";
-			}else if(type==6){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailySystemEff";
-				}else{//默认为抽油机
-					ddicName="dailySurfaceEff";
-				}
-				typeColumnName="surfaceSystemEfficiencyLevel";
-			}else if(type==7){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailySystemEff";
-				}else{//默认为抽油机
-					ddicName="dailyDownholeEff";
-				}
-				typeColumnName="wellDownSystemEfficiencyLevel";
-			}else if(type==8){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyPowerDist";
-				}else{//默认为抽油机
-					ddicName="dailyPowertDist";
-				}
-				typeColumnName="todayKWattHLevel";
-			}else if(type==9){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyRunStatus";
-				}else{//默认为抽油机
-					ddicName="dailyRunStatus";
-				}
-				typeColumnName="runStatusName";
-			}else if(type==10){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyTimeDist";
-				}else{//默认为抽油机
-					ddicName="dailyTimeDist";
-				}
-				typeColumnName="runtimeEfficiencyLevel";
-			}else if(type==11){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyCommStatus";
-				}else{//默认为抽油机
-					ddicName="dailyCommStatus";
-				}
-				typeColumnName="commStatusName";
-			}else if(type==12){
-				if(liftingType==2){//螺杆泵井
-					ddicName="screwPumpDailyCommDist";
-				}else{//默认为抽油机
-					ddicName="dailyCommDist";
-				}
-				typeColumnName="commtimeefficiencyLevel";
-			}
-			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-			columns = ddic.getTableHeader();
-			String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
-					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
-			if(liftingType!=2){
-				sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
-				tableName="viw_rpc_total_day";
-			}else{
-				tableName="viw_pcp_total_day";
-			}
-					
-			sql+= " from "+tableName+" t where 1=1";
-			if(StringManagerUtils.isNotNull(wells.toString())){
-				sql+= "t.wellname in ("+wells.toString()+") ";
-			}
-			
-			if(StringManagerUtils.isNotNull(statValue)){
-				sql+=" and "+typeColumnName+"='"+statValue+"'";
-			}
-			sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') "
-				+ " and  t.wellName='"+wellName+"' "
-				+ " order by t.calculateDate desc";
-			
-//			int maxvalue=pager.getLimit()+pager.getStart();
-//			String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-			String finalSql=sql;
-			getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+		String columns= "";
+		DataDictionary ddic = null;
+		String ddicName="";
+		String tableName="viw_rpc_total_day";
+		String typeColumnName="workingConditionName";
+		if(type==1){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyFSDiagram";
+			}
+			typeColumnName="workingConditionName";
+		}else if(type==2){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyProdDist";
+			}else{//默认为抽油机
+				ddicName="dailyProdDist";
+			}
+			typeColumnName="liquidWeightProductionlevel";
+			if(configFile.getOthers().getProductionUnit()!=0){
+				typeColumnName="liquidVolumeProductionlevel";
+			}
+		}else if(type==3){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyPowerBalance";
+			}
+			typeColumnName="wattdegreebalanceLevel";
+		}else if(type==4){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyETValue";
+			}else{//默认为抽油机
+				ddicName="dailyCurrentBalance";
+			}
+			typeColumnName="idegreebalanceLevel";
+		}else if(type==5){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailySystemEff";
+			}else{//默认为抽油机
+				ddicName="dailySystemEff";
+			}
+			typeColumnName="systemEfficiencyLevel";
+		}else if(type==6){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailySystemEff";
+			}else{//默认为抽油机
+				ddicName="dailySurfaceEff";
+			}
+			typeColumnName="surfaceSystemEfficiencyLevel";
+		}else if(type==7){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailySystemEff";
+			}else{//默认为抽油机
+				ddicName="dailyDownholeEff";
+			}
+			typeColumnName="wellDownSystemEfficiencyLevel";
+		}else if(type==8){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyPowerDist";
+			}else{//默认为抽油机
+				ddicName="dailyPowertDist";
+			}
+			typeColumnName="todayKWattHLevel";
+		}else if(type==9){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyRunStatus";
+			}else{//默认为抽油机
+				ddicName="dailyRunStatus";
+			}
+			typeColumnName="runStatusName";
+		}else if(type==10){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyTimeDist";
+			}else{//默认为抽油机
+				ddicName="dailyTimeDist";
+			}
+			typeColumnName="runtimeEfficiencyLevel";
+		}else if(type==11){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyCommStatus";
+			}else{//默认为抽油机
+				ddicName="dailyCommStatus";
+			}
+			typeColumnName="commStatusName";
+		}else if(type==12){
+			if(liftingType==2){//螺杆泵井
+				ddicName="screwPumpDailyCommDist";
+			}else{//默认为抽油机
+				ddicName="dailyCommDist";
+			}
+			typeColumnName="commtimeefficiencyLevel";
+		}
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		columns = ddic.getTableHeader();
+		String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
+				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		if(liftingType!=2){
+			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			tableName="viw_rpc_total_day";
+		}else{
+			tableName="viw_pcp_total_day";
+		}
+				
+		sql+= " from "+tableName+" t where 1=1 ";
+		if(StringManagerUtils.isNotNull(wells.toString())){
+			sql+= " and t.wellname in ("+wells.toString()+") ";
+		}
+		
+		if(StringManagerUtils.isNotNull(statValue)){
+			sql+=" and "+typeColumnName+"='"+statValue+"'";
+		}
+		sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') ";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+= " and  t.wellName='"+wellName+"' ";
+		}
+		sql+= " order by t.calculateDate desc";
+		
+//		int maxvalue=pager.getLimit()+pager.getStart();
+//		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		String finalSql=sql;
+		getResult = this.findExportDataBySqlEntity(sql,finalSql, columns, 20 + "", pager);
+		getResult="{\"totalRoot\":"+getResult+"}";
 		return getResult.replaceAll("null", "").replaceAll("//", "");
 	}
 }

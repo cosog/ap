@@ -85,17 +85,19 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t.reservoirdepth,t.reservoirtemperature,"
 					+ " t.rodstring,"
 					+ " t.tubingstringinsidediameter,"
-					+ " t.pumptype,t.pumpgrade,t.plungerlength,t.pumpborediameter,"
+					+ " t.pumptype,t.barreltype,t.pumpgrade,t.plungerlength,t.pumpborediameter,"
 					+ " t.casingstringinsidediameter,"
-					+ " t.watercut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,t.producingfluidlevel,t.pumpsettingdepth,"
-					+ " t.netgrossratio,"
+					+ " t.watercut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,"
+					+ " t.producingfluidlevel,t.pumpsettingdepth,"
 					+ " t3.levelcorrectvalue,"
+					+ " t.netgrossratio,"
 					+ " t.wellid "
 					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
 					+ " where t.wellid=t2.wellid and t.acqTime=t2.acqTime and t.wellid=t3.id"
 					+ " and t3.wellName='"+wellAcquisitionData.getWellName()+"'";
 			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
-					+ " t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,"
+					+ " t2.offsetangleofcrank,t2.crankgravityradius,"
+					+ " t2.singlecrankweight,t2.singlecrankpinweight,"
 					+ " t2.structuralunbalance,"
 					+ " t2.balanceposition,t2.balanceweight,t2.prtf"
 					+ " from  tbl_wellinformation t,tbl_rpcinformation t2"
@@ -216,15 +218,15 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				//抽油泵参数
 				calculateRequestData.setPump(new RPCCalculateRequestData.Pump());
 				calculateRequestData.getPump().setPumpType(object[9]+"");
-				calculateRequestData.getPump().setBarrelType("L");
-				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[10]+""));
-				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[11]+""));
-				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[12]+"")/1000);
+				calculateRequestData.getPump().setBarrelType(object[10]+"");
+				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[11]+""));
+				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[12]+""));
+				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[13]+"")/1000);
 				
 				
 				//套管数据
 				RPCCalculateRequestData.EveryCasing  everyCasing=new RPCCalculateRequestData.EveryCasing();
-				everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[13]+"")/1000);
+				everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[14]+"")/1000);
 				calculateRequestData.setCasingString(new RPCCalculateRequestData.CasingString());
 				calculateRequestData.getCasingString().setEveryCasing(new ArrayList<RPCCalculateRequestData.EveryCasing>());
 				calculateRequestData.getCasingString().getEveryCasing().add(everyCasing);
@@ -239,10 +241,11 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(rpcObject[3]+""));
 					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(rpcObject[4]+""));
 					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(rpcObject[5]+""));
-					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[7]+""));
 					
-					String[] BalancePositionArr=(rpcObject[7]+"").split(",");
-    				String[] BalanceWeightArr=(rpcObject[8]+"").split(",");
+					String[] BalancePositionArr=(rpcObject[8]+"").split(",");
+    				String[] BalanceWeightArr=(rpcObject[9]+"").split(",");
     				calculateRequestData.getPumpingUnit().setBalance(new RPCCalculateRequestData.Balance());
     				calculateRequestData.getPumpingUnit().getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
     				for(int j=0;BalanceWeightArr!=null&&j<BalanceWeightArr.length;j++){
@@ -254,14 +257,14 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				
 				//生产数据
 				calculateRequestData.setProduction(new RPCCalculateRequestData.Production());
-				calculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(object[14]+""));
-				calculateRequestData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[15]+""));
-				calculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(object[16]+""));
-				calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[17]+""));
-				calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[18]+""));
-				calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[19]+""));
+				calculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(object[15]+""));
+				calculateRequestData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[16]+""));
+				calculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(object[17]+""));
+				calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[18]+""));
+				calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[19]+""));
+				calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[20]+""));
+				calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[21]+""));
 				calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[22]+""));
-				calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[20]+""));
 				
 				//功图数据
 				if(wellAcquisitionData.getDiagram()!=null){
@@ -296,7 +299,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 		        
 		      //人工干预
 		        calculateRequestData.setManualIntervention(new RPCCalculateRequestData.ManualIntervention());
-		        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[21]+""));
+		        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[23]+""));
 			}
 			
 			
@@ -321,17 +324,18 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					+ " t.reservoirdepth,t.reservoirtemperature,"
 					+ " t.rodstring,"
 					+ " t.tubingstringinsidediameter,"
-					+ " t.pumptype,t.pumpgrade,t.plungerlength,t.pumpborediameter,"
+					+ " t.pumptype,t.barreltype,t.pumpgrade,t.plungerlength,t.pumpborediameter,"
 					+ " t.casingstringinsidediameter,"
 					+ " t.watercut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,t.producingfluidlevel,t.pumpsettingdepth,"
-					+ " t.netgrossratio,"
 					+ " t3.levelcorrectvalue,"
+					+ " t.netgrossratio,"
 					+ " t.wellid "
 					+ " from tbl_rpc_productiondata_hist t,tbl_rpc_productiondata_latest t2,  tbl_wellinformation t3 "
 					+ " where t.wellid=t2.wellid and t.acqTime=t2.acqTime and t.wellid=t3.id"
 					+ " and t3.wellName='"+kafkaUpData.getWellName()+"'";
 			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
-					+ " t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,"
+					+ " t2.offsetangleofcrank,t2.crankgravityradius,"
+					+ " t2.singlecrankweight,t2.singlecrankpinweight,"
 					+ " t2.structuralunbalance,"
 					+ " t2.balanceposition,t2.balanceweight,t2.prtf"
 					+ " from  tbl_wellinformation t,tbl_rpcinformation t2"
@@ -452,15 +456,15 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				//抽油泵参数
 				calculateRequestData.setPump(new RPCCalculateRequestData.Pump());
 				calculateRequestData.getPump().setPumpType(object[9]+"");
-				calculateRequestData.getPump().setBarrelType("L");
-				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[10]+""));
-				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[11]+""));
-				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[12]+"")/1000);
+				calculateRequestData.getPump().setBarrelType(object[10]+"");
+				calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[11]+""));
+				calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[12]+""));
+				calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[13]+"")/1000);
 				
 				
 				//套管数据
 				RPCCalculateRequestData.EveryCasing  everyCasing=new RPCCalculateRequestData.EveryCasing();
-				everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[13]+"")/1000);
+				everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[14]+"")/1000);
 				calculateRequestData.setCasingString(new RPCCalculateRequestData.CasingString());
 				calculateRequestData.getCasingString().setEveryCasing(new ArrayList<RPCCalculateRequestData.EveryCasing>());
 				calculateRequestData.getCasingString().getEveryCasing().add(everyCasing);
@@ -475,10 +479,11 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 					calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(rpcObject[3]+""));
 					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(rpcObject[4]+""));
 					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(rpcObject[5]+""));
-					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[7]+""));
 					
-					String[] BalancePositionArr=(rpcObject[7]+"").split(",");
-    				String[] BalanceWeightArr=(rpcObject[8]+"").split(",");
+					String[] BalancePositionArr=(rpcObject[8]+"").split(",");
+    				String[] BalanceWeightArr=(rpcObject[9]+"").split(",");
     				calculateRequestData.getPumpingUnit().setBalance(new RPCCalculateRequestData.Balance());
     				calculateRequestData.getPumpingUnit().getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
     				for(int j=0;BalanceWeightArr!=null&&j<BalanceWeightArr.length;j++){
@@ -490,15 +495,14 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 				
 				//生产数据
 				calculateRequestData.setProduction(new RPCCalculateRequestData.Production());
-				calculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(object[14]+""));
-				calculateRequestData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[15]+""));
-				calculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(object[16]+""));
-				calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[17]+""));
-				calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[18]+""));
-				calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[19]+""));
+				calculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(object[15]+""));
+				calculateRequestData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[16]+""));
+				calculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(object[17]+""));
+				calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[18]+""));
+				calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[19]+""));
+				calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[20]+""));
+				calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[21]+""));
 				calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[22]+""));
-				calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[20]+""));
-				
 				//功图数据
 				if(kafkaUpData.getS()!=null&&kafkaUpData.getS().size()>0){
 			        calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
@@ -540,7 +544,7 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 		        
 		      //人工干预
 		        calculateRequestData.setManualIntervention(new RPCCalculateRequestData.ManualIntervention());
-		        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[21]+""));
+		        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[23]+""));
 			}
 			
 			

@@ -113,14 +113,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.crudeoilDensity,t.waterDensity,t.naturalGasRelativeDensity,"
 			+ "t.saturationPressure,t.reservoirDepth,t.reservoirTemperature,"
 			+ "t.tubingPressure,t.casingPressure,t.wellHeadFluidTemperature,t.waterCut,t.productionGasOilRatio,t.producingFluidLevel,"
-			+ "t.pumpSettingDepth,t.pumpGrade,t.pumpboreDiameter,t.plungerLength,"
+			+ "t.pumpSettingDepth,"
+			+ "t.pumpTypeName,t.barrelTypeName,"
+			+ "t.pumpGrade,t.pumpboreDiameter,t.plungerLength,"
 			+ "t.tubingStringInsideDiameter,t.casingStringInsideDiameter,"
-			+ "t.anchoringStateName,t.netGrossRatio,t.resultStatus,"
+			+ "t.anchoringStateName,t.netGrossRatio,decode(t.resultStatus,1,'计算成功',0,'为计算',2,'未计算','计算失败'),"
 			+ "t.rodstring"
 			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
 			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		
-		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
@@ -141,7 +141,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String rodString=obj[27]+"";
+			String rodString=obj[29]+"";
 			String[] rodStringArr={};
 			if(StringManagerUtils.isNotNull(rodString)){
 				rodStringArr=rodString.split(";");
@@ -170,11 +170,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"productionGasOilRatio\":\""+obj[16]+"\",");
 			result_json.append("\"producingFluidLevel\":\""+obj[17]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[18]+"\",");
-			result_json.append("\"pumpGrade\":\""+obj[19]+"\",");
-			result_json.append("\"pumpboreDiameter\":\""+obj[20]+"\",");
-			result_json.append("\"plungerLength\":\""+obj[21]+"\",");
-			result_json.append("\"tubingStringInsideDiameter\":\""+obj[22]+"\",");
-			result_json.append("\"casingStringInsideDiameter\":\""+obj[23]+"\",");
+			result_json.append("\"pumpTypeName\":\""+obj[19]+"\",");
+			result_json.append("\"barrelTypeName\":\""+obj[20]+"\",");
+			result_json.append("\"pumpGrade\":\""+obj[21]+"\",");
+			result_json.append("\"pumpboreDiameter\":\""+obj[22]+"\",");
+			result_json.append("\"plungerLength\":\""+obj[23]+"\",");
+			result_json.append("\"tubingStringInsideDiameter\":\""+obj[24]+"\",");
+			result_json.append("\"casingStringInsideDiameter\":\""+obj[25]+"\",");
 			
 			for(int j=0;j<rodStringArr.length;j++){
 				String[] everyRod=rodStringArr[j].split(",");
@@ -185,9 +187,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				result_json.append("\"rodLength"+(j+1)+"\":\""+(arrLength>=4?everyRod[3]:"")+"\",");
 			}
 			
-			result_json.append("\"anchoringStateName\":\""+obj[24]+"\",");
-			result_json.append("\"netGrossRatio\":\""+obj[25]+"\",");
-			result_json.append("\"resultStatus\":\""+obj[26]+"\"},");
+			result_json.append("\"anchoringStateName\":\""+obj[26]+"\",");
+			result_json.append("\"netGrossRatio\":\""+obj[27]+"\",");
+			result_json.append("\"resultStatus\":\""+obj[28]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json = result_json.deleteCharAt(result_json.length() - 1);
@@ -608,7 +610,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
 				+ " t2.rodstring,"
 				+ " t2.tubingstringinsidediameter,"
-				+ " t2.pumptype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
+				+ " t2.pumptype,t2.barreltype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
 				+ " t2.casingstringinsidediameter,"
 				+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,"
 				+ " t2.producingfluidlevel,t2.pumpsettingdepth,"

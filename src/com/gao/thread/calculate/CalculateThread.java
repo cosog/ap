@@ -41,7 +41,7 @@ public class CalculateThread extends Thread{
 				+ " t2.crudeOilDensity,t2.waterDensity,t2.naturalGasRelativeDensity,t2.saturationPressure,t2.reservoirdepth,t2.reservoirtemperature,"
 				+ " t2.rodstring,"
 				+ " t2.tubingstringinsidediameter,"
-				+ " t2.pumptype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
+				+ " t2.pumptype,t2.barreltype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
 				+ " t2.casingstringinsidediameter,"
 				+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,"
 				+ " t2.producingfluidlevel,t2.pumpsettingdepth,"

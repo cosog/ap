@@ -62,8 +62,12 @@ public class CalculateManagerHandsontableChangedData {
 	    private String producingFluidLevel;
 
 	    private String pumpSettingDepth;
-
+	    
 	    private String pumpGrade="1";
+	    
+	    private String pumpTypeName="管式泵";
+
+	    private String barrelTypeName="整筒泵";
 
 	    private String pumpboreDiameter="38";
 
@@ -469,6 +473,22 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setResultStatus(String resultStatus) {
 			this.resultStatus = resultStatus;
+		}
+
+		public String getPumpTypeName() {
+			return pumpTypeName;
+		}
+
+		public void setPumpTypeName(String pumpTypeName) {
+			this.pumpTypeName = pumpTypeName;
+		}
+
+		public String getBarrelTypeName() {
+			return barrelTypeName;
+		}
+
+		public void setBarrelTypeName(String barrelTypeName) {
+			this.barrelTypeName = barrelTypeName;
 		}
 	}
 }

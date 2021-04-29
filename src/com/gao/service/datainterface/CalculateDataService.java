@@ -90,7 +90,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 		
 		try{
 			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
-					+ " t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,"
+					+ " t2.offsetangleofcrank,t2.crankgravityradius,"
+					+ " t2.singlecrankweight,t2.singlecrankpinweight,"
 					+ " t2.structuralunbalance,"
 					+ " t2.balanceposition,t2.balanceweight,t2.prtf"
 					+ " from  tbl_wellinformation t,tbl_rpcinformation t2"
@@ -201,15 +202,15 @@ public class CalculateDataService<T> extends BaseService<T> {
 			//抽油泵参数
 			calculateRequestData.setPump(new RPCCalculateRequestData.Pump());
 			calculateRequestData.getPump().setPumpType(object[11]+"");
-			calculateRequestData.getPump().setBarrelType("L");
-			calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[12]+""));
-			calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[13]+""));
-			calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[14]+"")/1000);
+			calculateRequestData.getPump().setBarrelType(object[12]+"");
+			calculateRequestData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(object[13]+""));
+			calculateRequestData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(object[14]+""));
+			calculateRequestData.getPump().setPumpBoreDiameter(StringManagerUtils.stringToFloat(object[15]+"")/1000);
 			
 			
 			//套管数据
 			RPCCalculateRequestData.EveryCasing  everyCasing=new RPCCalculateRequestData.EveryCasing();
-			everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[15]+"")/1000);
+			everyCasing.setInsideDiameter(StringManagerUtils.stringToFloat(object[16]+"")/1000);
 			calculateRequestData.setCasingString(new RPCCalculateRequestData.CasingString());
 			calculateRequestData.getCasingString().setEveryCasing(new ArrayList<RPCCalculateRequestData.EveryCasing>());
 			calculateRequestData.getCasingString().getEveryCasing().add(everyCasing);
@@ -225,10 +226,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 				calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(rpcObject[3]+""));
 				calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(rpcObject[4]+""));
 				calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(rpcObject[5]+""));
-				calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+				calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+				calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[7]+""));
 				
-				String[] BalancePositionArr=(rpcObject[7]+"").split(",");
-				String[] BalanceWeightArr=(rpcObject[8]+"").split(",");
+				String[] BalancePositionArr=(rpcObject[8]+"").split(",");
+				String[] BalanceWeightArr=(rpcObject[9]+"").split(",");
 				calculateRequestData.getPumpingUnit().setBalance(new RPCCalculateRequestData.Balance());
 				calculateRequestData.getPumpingUnit().getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
 				for(int j=0;BalanceWeightArr!=null&&j<BalanceWeightArr.length;j++){
@@ -240,21 +242,21 @@ public class CalculateDataService<T> extends BaseService<T> {
 			
 			//生产数据
 			calculateRequestData.setProduction(new RPCCalculateRequestData.Production());
-			calculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(object[16]+""));
-			calculateRequestData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[17]+""));
-			calculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(object[18]+""));
-			calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[19]+""));
-			calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[20]+""));
-			calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[21]+""));
-			calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[22]+""));
-			calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[23]+""));
+			calculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(object[17]+""));
+			calculateRequestData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(object[18]+""));
+			calculateRequestData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(object[19]+""));
+			calculateRequestData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(object[20]+""));
+			calculateRequestData.getProduction().setWellHeadFluidTemperature(StringManagerUtils.stringToFloat(object[21]+""));
+			calculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(object[22]+""));
+			calculateRequestData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(object[23]+""));
+			calculateRequestData.getProduction().setLevelCorrectValue(StringManagerUtils.stringToFloat(object[24]+""));
 			
 			//功图数据
 			calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
-			calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[31]+""));
+			calculateRequestData.getFESDiagram().setSrc(StringManagerUtils.stringToInteger(object[32]+""));
 	        calculateRequestData.getFESDiagram().setAcqTime(object[2]+"");
-	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[25]+""));
-	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[26]+""));
+	        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(object[26]+""));
+	        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(object[27]+""));
 			
 	        List<Float> F=new ArrayList<Float>();
 	        List<Float> S=new ArrayList<Float>();
@@ -264,8 +266,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        CLOB realClob =null;
 	        String clobStr="";
 	        String[] curveData=null;
-	        if(object[27]!=null){//位移曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[27]);
+	        if(object[28]!=null){//位移曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[28]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				curveData=clobStr.split(",");
@@ -273,8 +275,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					S.add(StringManagerUtils.stringToFloat(curveData[i]));
 				}
 	        }
-	        if(object[28]!=null){//载荷曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[28]);
+	        if(object[29]!=null){//载荷曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[29]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				curveData=clobStr.split(",");
@@ -282,8 +284,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					F.add(StringManagerUtils.stringToFloat(curveData[i]));
 				}
 	        }
-	        if(object[29]!=null){//功率曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[29]);
+	        if(object[30]!=null){//功率曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[30]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(clobStr)){
@@ -293,8 +295,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 					}
 				}
 	        }
-	        if(object[30]!=null){//电流曲线
-	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[30]);
+	        if(object[31]!=null){//电流曲线
+	        	proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[31]);
 				realClob = (CLOB) proxy.getWrappedClob();
 				clobStr=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(clobStr)){
@@ -314,8 +316,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 	        
 	        //人工干预
 	        calculateRequestData.setManualIntervention(new RPCCalculateRequestData.ManualIntervention());
-	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[32]+""));
-	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[24]+""));
+	        calculateRequestData.getManualIntervention().setCode(StringManagerUtils.stringToInteger(object[33]+""));
+	        calculateRequestData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(object[25]+""));
 		}catch(Exception e){
 			e.printStackTrace();
 			return "";

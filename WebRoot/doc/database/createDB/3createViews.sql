@@ -355,7 +355,7 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        op.crudeOilDensity,op.waterDensity,op.naturalGasRelativeDensity,op.saturationPressure,op.reservoirDepth,op.reservoirTemperature,
        op.waterCut_W,op.watercut,
        op.TubingPressure,op.CasingPressure, op.BackPressure,op.WellHeadFluidTemperature,op.ProducingfluidLevel,op.PumpSettingDepth,op.ProductionGasOilRatio,
-       op.PumpBoreDiameter,op.PumpType, op.PumpGrade,op.PlungerLength,op.BarrelType,
+       op.PumpBoreDiameter,op.PumpType,c3.itemname as PumpTypeName, op.PumpGrade,op.PlungerLength,op.BarrelType,c2.itemname as BarrelTypeName,
        op.BarrelLength,op.BarrelSeries,op.RotorDiameter,op.QPR,
        op.TubingStringInsideDiameter,op.CasingStringInsideDiameter,
        op.rodstring,
@@ -364,10 +364,16 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        w.sortnum,o.org_id
 from
        tbl_code c1 ,
+       tbl_code c2 ,
+       tbl_code c3 ,
+       tbl_code c4,
        tbl_pcp_productiondata_hist op
 left outer join  tbl_wellinformation  w  on w.id = op.wellid
 left outer join  tbl_org o    on  o.org_id=w.orgid
 where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
+      and c2.itemcode='BarrelType' and c2.itemvalue=op.BarrelType
+      and c3.itemcode='PumpType' and c3.itemvalue=op.PumpType
+      and c4.itemcode='PumpGrade' and c4.itemvalue=op.PumpGrade
       and w.liftingtype>=400 and w.liftingtype<500;
 /
 
@@ -381,7 +387,7 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        op.crudeOilDensity,op.waterDensity,op.naturalGasRelativeDensity,op.saturationPressure,op.reservoirDepth,op.reservoirTemperature,
        op.waterCut_W,op.watercut,
        op.TubingPressure,op.CasingPressure, op.BackPressure,op.WellHeadFluidTemperature,op.ProducingfluidLevel,op.PumpSettingDepth,op.ProductionGasOilRatio,
-       op.PumpBoreDiameter,op.PumpType, op.PumpGrade,op.PlungerLength,op.BarrelType,
+       op.PumpBoreDiameter,op.PumpType,c3.itemname as PumpTypeName, op.PumpGrade,op.PlungerLength,op.BarrelType,c2.itemname as BarrelTypeName,
        op.BarrelLength,op.BarrelSeries,op.RotorDiameter,op.QPR,
        op.TubingStringInsideDiameter,op.CasingStringInsideDiameter,
        op.rodstring,
@@ -390,10 +396,16 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        w.sortnum,o.org_id
 from
        tbl_code c1 ,
+       tbl_code c2 ,
+       tbl_code c3 ,
+       tbl_code c4,
        tbl_pcp_productiondata_latest op
 left outer join  tbl_wellinformation  w  on w.id = op.wellid
 left outer join  tbl_org o    on  o.org_id=w.orgid
 where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
+      and c2.itemcode='BarrelType' and c2.itemvalue=op.BarrelType
+      and c3.itemcode='PumpType' and c3.itemvalue=op.PumpType
+      and c4.itemcode='PumpGrade' and c4.itemvalue=op.PumpGrade
       and w.liftingtype>=400 and w.liftingtype<500;
 /
 
@@ -547,7 +559,10 @@ t.liquidVolumetricProduction,t.oilVolumetricProduction,
 prod.crudeoilDensity,prod.waterDensity,prod.naturalGasRelativeDensity,
 prod.saturationPressure,prod.reservoirDepth,prod.reservoirTemperature,
 prod.tubingPressure,prod.casingPressure,prod.wellHeadFluidTemperature,prod.watercut_w as waterCut,prod.productionGasOilRatio,prod.producingFluidLevel,
-prod.pumpSettingDepth,prod.pumpGrade,prod.pumpboreDiameter,prod.plungerLength,
+prod.pumpSettingDepth,
+prod.pumptype,code3.itemname as PumpTypeName,
+prod.barreltype,code2.itemname as BarrelTypeName,
+prod.pumpGrade,prod.pumpboreDiameter,prod.plungerLength,
 prod.tubingStringInsideDiameter,prod.casingStringInsideDiameter,
 prod.rodstring,
 code.itemname as anchoringStateName, prod.netGrossRatio,t.resultStatus,
@@ -557,6 +572,8 @@ left outer join tbl_wellinformation well on t.wellid=well.id
 left outer join tbl_rpc_worktype ws on  t.workingconditioncode=ws.workingconditioncode
 left outer join tbl_rpc_productiondata_hist prod on prod.id=t.productiondataid
 left outer join tbl_code code on code.itemvalue=prod.anchoringstate and code.itemcode='AnchoringState'
+left outer join tbl_code code2 on code2.itemvalue=prod.barreltype and code2.itemcode='BarrelType'
+left outer join tbl_code code3 on code3.itemvalue=prod.pumptype and code3.itemcode='PumpType'
 where well.liftingtype>=200 and well.liftingtype<300;
 /
 

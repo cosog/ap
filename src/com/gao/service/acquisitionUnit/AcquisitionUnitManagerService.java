@@ -105,7 +105,7 @@ private CommonDataService service;
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"驱动名称\",\"dataIndex\":\"driverName\",width:120 ,children:[] }"
+				+ "{ \"header\":\"协议名称\",\"dataIndex\":\"driverName\",width:120 ,children:[] }"
 				+ "]";
 		
 		String diagramTableColumns = "["
@@ -210,7 +210,7 @@ private CommonDataService service;
 				driverConfigData.append("{\"id\":26,\"item\":\"功图设置点数\",\"address\":"+driveConfig.getDataConfig().getFSDiagramSetPointCount().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFSDiagramSetPointCount().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFSDiagramSetPointCount().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFSDiagramSetPointCount().getZoom()+","
 						+"\"initiative\":\""+(driveConfig.getDataConfig().getFSDiagramSetPointCount().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"id\":27,\"item\":\"功图点数\",\"address\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getLength()+","
+				driverConfigData.append("{\"id\":27,\"item\":\"功图实测点数\",\"address\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFSDiagramPointCount().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getZoom()+","
 						+"\"initiative\":\""+(driveConfig.getDataConfig().getFSDiagramPointCount().getInitiative()?"主动轮询":"被动接收")+"\"},");
 				driverConfigData.append("{\"id\":28,\"item\":\"功图采集时间\",\"address\":"+driveConfig.getDataConfig().getAcqTime().getAddress()+",\"length\":"+driveConfig.getDataConfig().getAcqTime().getLength()+","
@@ -228,10 +228,10 @@ private CommonDataService service;
 				driverConfigData.append("{\"id\":32,\"item\":\"功图数据-载荷\",\"address\":"+driveConfig.getDataConfig().getFDiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFDiagram().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFDiagram().getZoom()+","
 						+"\"initiative\":\""+(driveConfig.getDataConfig().getFDiagram().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"id\":33,\"item\":\"电流曲线\",\"address\":"+driveConfig.getDataConfig().getADiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getADiagram().getLength()+","
+				driverConfigData.append("{\"id\":33,\"item\":\"功图数据-电流\",\"address\":"+driveConfig.getDataConfig().getADiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getADiagram().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getADiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getADiagram().getZoom()+","
 						+"\"initiative\":\""+(driveConfig.getDataConfig().getADiagram().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"id\":34,\"item\":\"功率曲线\",\"address\":"+driveConfig.getDataConfig().getPDiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getPDiagram().getLength()+","
+				driverConfigData.append("{\"id\":34,\"item\":\"功图数据-功率\",\"address\":"+driveConfig.getDataConfig().getPDiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getPDiagram().getLength()+","
 						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getPDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getPDiagram().getZoom()+","
 						+"\"initiative\":\""+(driveConfig.getDataConfig().getPDiagram().getInitiative()?"主动轮询":"被动接收")+"\"}");
 				

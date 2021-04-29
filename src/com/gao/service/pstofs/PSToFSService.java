@@ -61,7 +61,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	public String getPSToFSPumpingUnitData(String orgId) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.id,t2.wellName,t.manufacturer,t.model,t.stroke,t.crankrotationdirection,"
-				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,"
+				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
 				+ " t.structuralunbalance,"
 				+ " t.balanceposition,t.balanceweight,t.prtf "
 				+ " from tbl_rpcinformation t,tbl_wellinformation t2,tbl_org org "
@@ -75,13 +75,11 @@ public class PSToFSService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			String prtf="[]";
-			if(obj[12]!=null){
-				SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[12]);
+			if(obj[13]!=null){
+				SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[13]);
 				CLOB realClob = (CLOB) proxy.getWrappedClob(); 
 				prtf=StringManagerUtils.CLOBtoString(realClob);
 			}
-			
-			
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"WellName\":\""+obj[1]+"\",");
 			result_json.append("\"Manufacturer\":\""+obj[2]+"\",");
@@ -91,9 +89,10 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"OffsetAngleOfCrank\":\""+obj[6]+"\",");
 			result_json.append("\"CrankGravityRadius\":\""+obj[7]+"\",");
 			result_json.append("\"SingleCrankWeight\":\""+obj[8]+"\",");
-			result_json.append("\"StructuralUnbalance\":\""+obj[9]+"\",");
-			result_json.append("\"BalancePosition\":\""+obj[10]+"\",");
-			result_json.append("\"BalanceWeight\":\""+obj[11]+"\",");
+			result_json.append("\"SingleCrankPinWeight\":\""+obj[9]+"\",");
+			result_json.append("\"StructuralUnbalance\":\""+obj[10]+"\",");
+			result_json.append("\"BalancePosition\":\""+obj[11]+"\",");
+			result_json.append("\"BalanceWeight\":\""+obj[12]+"\",");
 			result_json.append("\"prtf\":"+prtf+"},");
 		}
 		
@@ -531,6 +530,7 @@ public class PSToFSService<T> extends BaseService<T> {
 						pumpingUnit.setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(everydata.getString("OffsetAngleOfCrank")));
 						pumpingUnit.setCrankGravityRadius(StringManagerUtils.stringToFloat(everydata.getString("CrankGravityRadius")));
 						pumpingUnit.setSingleCrankWeight(StringManagerUtils.stringToFloat(everydata.getString("SingleCrankWeight")));
+						pumpingUnit.setSingleCrankPinWeight(StringManagerUtils.stringToFloat(everydata.getString("SingleCrankPinWeight")));
 						pumpingUnit.setStructuralUnbalance(StringManagerUtils.stringToFloat(everydata.getString("StructuralUnbalance")));
 						
 						String[] BalanceWeightArr=(everydata.getString("BalanceWeight")).split(",");

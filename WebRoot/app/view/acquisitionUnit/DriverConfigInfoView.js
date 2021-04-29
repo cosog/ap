@@ -57,7 +57,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                         }
                     },{
                         region: 'center',
-                        title:'驱动配置',
+                        title:'协议配置',
                         border: false,
                         layout: 'fit',
                         html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
@@ -68,7 +68,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                         }
                     }, {
                         region: 'east',
-                        title:'数据项配置',
+                        title:'采控项配置',
                         layout: 'fit',
                         width: '60%',
                         collapsible: true,

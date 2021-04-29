@@ -7,7 +7,6 @@ Ext.define("AP.view.PSToFS.PumpingUnitInfoView", {
     border: false,
     initComponent: function () {
         var me = this;
-
         Ext.apply(me, {
             items: [{
                 layout: "border",
@@ -145,15 +144,15 @@ function CreateAndLoadFSToPSPumpingUnitTable(isNew){
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			fsToPSPumpingUnitHandsontableHelper = FSToPSPumpingUnitHandsontableHelper.createNew("FSToPSPumpingUnitInfoDiv_Id");
-			var colHeaders="['序号','井名','抽油机厂家','抽油机型号','冲程(m)','旋转方向','曲柄偏置角(°)','曲柄重心半径(m)','单块曲柄重量(kN)','结构不平衡重(kN)','平衡块位置(m)','平衡块重量(kN)']";
-			var columns="[{data:'id'},{data:'WellName'},{data:'Manufacturer'},{data:'Model'},{data:'Stroke'},{data:'CrankRotationDirection'},{data:'OffsetAngleOfCrank'},{data:'CrankGravityRadius'},{data:'SingleCrankWeight'},{data:'StructuralUnbalance'},{data:'BalancePosition'},{data:'BalanceWeight'}," 
+			var colHeaders="['序号','井名','抽油机厂家','抽油机型号','冲程(m)','旋转方向','曲柄偏置角(°)','曲柄重心半径(m)','单块曲柄重量(kN)','单块曲柄销重量(kN)','结构不平衡重(kN)','平衡块位置(m)','平衡块重量(kN)']";
+			var columns="[{data:'id'},{data:'WellName'},{data:'Manufacturer'},{data:'Model'},{data:'Stroke'},{data:'CrankRotationDirection'},{data:'OffsetAngleOfCrank'},{data:'CrankGravityRadius'},{data:'SingleCrankWeight'},{data:'SingleCrankPinWeight'},{data:'StructuralUnbalance'},{data:'BalancePosition'},{data:'BalanceWeight'}," 
 				+"{data:'prtf'}]";
 			fsToPSPumpingUnitHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 			fsToPSPumpingUnitHandsontableHelper.columns=Ext.JSON.decode(columns);
 			fsToPSPumpingUnitHandsontableHelper.createTable(result.totalRoot);
 			
 			var row1=fsToPSPumpingUnitHandsontableHelper.hot.getDataAtRow(0);
-			CreateAndLoadFSToPSPumpingUnitPTFTable(row1[12])
+			CreateAndLoadFSToPSPumpingUnitPTFTable(row1[13])
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -180,7 +179,7 @@ var FSToPSPumpingUnitHandsontableHelper = {
 	        	fsToPSPumpingUnitHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0,12],
+	                    columns: [0,13],
 	                    indicators: true
 	                },
 	                columns:fsToPSPumpingUnitHandsontableHelper.columns,
@@ -196,15 +195,15 @@ var FSToPSPumpingUnitHandsontableHelper = {
 	                renderAllRows: true,
 	                search: true,
 	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	var jh=fsToPSPumpingUnitHandsontableHelper.hot.getDataAtCell(row,1);
+	                	var wellName=fsToPSPumpingUnitHandsontableHelper.hot.getDataAtCell(row,1);
 	                	var row1=fsToPSPumpingUnitHandsontableHelper.hot.getDataAtRow(row);
 	                	Ext.getCmp("fsToPSPumpingUnitTableSelectedRow_Id").setValue(row);
-	                	if(jh!=null){
-		                	if(row1[12]!=null&&row1[12]!=undefined){
-		                		CreateAndLoadFSToPSPumpingUnitPTFTable(row1[12]);
+	                	if(wellName!=null){
+		                	if(row1[13]!=null&&row1[13]!=undefined){
+		                		CreateAndLoadFSToPSPumpingUnitPTFTable(row1[13]);
 		                	}
 	                	}else{
-	                		CreateAndLoadFSToPSPumpingUnitPTFTable(row1[12]);
+	                		CreateAndLoadFSToPSPumpingUnitPTFTable(row1[13]);
 	                	}
 	                }
 	        	});

@@ -460,9 +460,17 @@ function CreateAndLoadCalculateManagerTable(isNew,result,divid){
     			
     		}else if(result.columns[i].dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";
+        	}else if(result.columns[i].dataIndex.toUpperCase()==="barrelTypeName".toUpperCase()){
+        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']";
+        	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpTypeName".toUpperCase()){
+        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
         	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
-        		columns+=",type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_PumpGrade(val, callback,this.row, this.col,calculateManagerHandsontableHelper);}";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
+        		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']";
+        	}
+//        	else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
+//        		columns+=",type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_PumpGrade(val, callback,this.row, this.col,calculateManagerHandsontableHelper);}";
+//        	}
+        	else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
         		columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,calculateManagerHandsontableHelper);}";
         	}else{
     			columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,calculateManagerHandsontableHelper);}";
@@ -649,7 +657,7 @@ var CalculateManagerHandsontableHelper = {
 	            		success:function(response) {
 	            			var rdata=Ext.JSON.decode(response.responseText);
 	            			if (rdata.success) {
-	                        	var successInfo='保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列数值，无0和2时，计算完成。';
+	                        	var successInfo='保存成功，开始重新计算，点击左下角刷新按钮查看计算状态列，无未计算记录时，计算完成。';
 	                            //保存以后重置全局容器
 	                            calculateManagerHandsontableHelper.clearContainer();
 	                            var bbarId="pumpingCalculateManagerBbar";

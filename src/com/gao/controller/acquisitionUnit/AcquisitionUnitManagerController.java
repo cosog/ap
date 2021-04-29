@@ -591,7 +591,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						driveConfig.getDataConfig().setFSDiagramAcquisitionInterval(item);
 					}else if("功图设置点数".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setFSDiagramSetPointCount(item);
-					}else if("功图点数".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
+					}else if("功图实测点数".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setFSDiagramPointCount(item);
 					}else if("功图采集时间".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setAcqTime(item);
@@ -603,9 +603,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 						driveConfig.getDataConfig().setSDiagram(item);
 					}else if("功图数据-载荷".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setFDiagram(item);
-					}else if("电流曲线".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
+					}else if("功图数据-电流".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setADiagram(item);
-					}else if("功率曲线".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
+					}else if("功图数据-功率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setPDiagram(item);
 					}
 				}

@@ -225,7 +225,7 @@ function CreateAndLoadWellInfoTable(isNew){
 		        var columns="[";
 		       
 	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].header==='驱动名称'){
+	            	if(result.columns[i].header==='协议名称'){
 	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
 	            	}else{
 	            		colHeaders+="'"+result.columns[i].header+"'";

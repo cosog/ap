@@ -16,7 +16,7 @@ Ext.define("AP.view.acquisitionUnit.ScadaConfigInfoView", {
                 border: false,
                 tabPosition: 'bottom',
                 items: [{
-                    title: '驱动配置',
+                    title: '协议配置',
                     id:'DriverConfigInfoPanel_Id',
                     layout: "fit",
                     border: false,

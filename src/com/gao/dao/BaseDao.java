@@ -1453,6 +1453,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,?,?,"
 					+ "?,?,?,"
 					+ "?,?,"
+					+ "?,?,"
 					+ "?,"
 					+ "?,?)}");
 			if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
@@ -1493,17 +1494,19 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(13, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel());
 						cs.setString(14, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());
 						
-						cs.setString(15, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade());
-						cs.setString(16, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter());
-						cs.setString(17, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength());
+						cs.setString(15, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName());
+						cs.setString(16, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName());
+						cs.setString(17, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade());
+						cs.setString(18, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter());
+						cs.setString(19, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength());
 						
-						cs.setString(18, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter());
-						cs.setString(19, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter());
+						cs.setString(20, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter());
+						cs.setString(21, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter());
 						
-						cs.setString(20, rodString);
+						cs.setString(22, rodString);
 						
-						cs.setString(21, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
-						cs.setString(22, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
+						cs.setString(23, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
+						cs.setString(24, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
 						cs.executeUpdate();
 					}
 				}
@@ -5360,7 +5363,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PTFClob = oracle.sql.CLOB.createTemporary(conn,false,1);
 		PTFClob.putString(1, PumpingUnitPTRData);
 		try {
-			cs = conn.prepareCall("{call prd_save_rpcinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpcinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			for(int i=0;i<jsonArray.size();i++){
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
 				cs.setString(1, everydata.getString("WellName"));
@@ -5371,11 +5374,12 @@ public class BaseDao extends HibernateDaoSupport {
 				cs.setString(6, everydata.getString("OffsetAngleOfCrank"));
 				cs.setString(7, everydata.getString("CrankGravityRadius"));
 				cs.setString(8, everydata.getString("SingleCrankWeight"));
-				cs.setString(9, everydata.getString("StructuralUnbalance"));
-				cs.setString(10, everydata.getString("BalancePosition"));
-				cs.setString(11, everydata.getString("BalanceWeight"));
-				cs.setString(12, wellName);
-				cs.setClob(13, PTFClob);
+				cs.setString(9, everydata.getString("SingleCrankPinWeight"));
+				cs.setString(10, everydata.getString("StructuralUnbalance"));
+				cs.setString(11, everydata.getString("BalancePosition"));
+				cs.setString(12, everydata.getString("BalanceWeight"));
+				cs.setString(13, wellName);
+				cs.setClob(14, PTFClob);
 				cs.executeUpdate();
 			}
 			

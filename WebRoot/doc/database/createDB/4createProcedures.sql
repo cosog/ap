@@ -811,6 +811,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpcinformation (v_wellname  in varchar2,
                                               v_OffsetAngleOfCrank in varchar2,
                                               v_CrankGravityRadius in varchar2,
                                               v_SingleCrankWeight in varchar2,
+                                              v_SingleCrankPinWeight in varchar2,
                                               v_StructuralUnbalance in varchar2,
                                               v_BalancePosition in varchar2,
                                               v_BalanceWeight in varchar2,
@@ -835,6 +836,7 @@ begin
            t.offsetangleofcrank=v_OffsetAngleOfCrank,
            t.crankgravityradius=v_CrankGravityRadius,
            t.singlecrankweight=v_SingleCrankWeight,
+           t.singlecrankpinweight=v_SingleCrankPinWeight,
            t.structuralunbalance=v_StructuralUnbalance,
            t.balanceposition=v_BalancePosition,
            t.balanceweight=v_BalanceWeight
@@ -844,11 +846,11 @@ begin
     elsif p_recordcount=0 then
        insert into tbl_rpcinformation(
              wellid,manufacturer,model,stroke,crankrotationdirection,offsetangleofcrank,
-             crankgravityradius,singlecrankweight,structuralunbalance,
+             crankgravityradius,singlecrankweight,singlecrankpinweight,structuralunbalance,
              balanceposition,balanceweight
              )
        values(p_wellId,v_Manufacturer,v_Model,v_Stroke,v_CrankRotationDirection,v_OffsetAngleOfCrank,
-            v_CrankGravityRadius,v_SingleCrankWeight,v_StructuralUnbalance,
+            v_CrankGravityRadius,v_SingleCrankWeight,v_SingleCrankPinWeight,v_StructuralUnbalance,
             v_BalancePosition,v_BalanceWeight
             );
        commit;
@@ -2028,6 +2030,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_recalculateparam (v_id   in varchar2,
                                                       v_ProductionGasOilRatio    in NUMBER,
                                                       v_ProducingfluidLevel    in NUMBER,
                                                       v_PumpSettingDepth    in NUMBER,
+                                                      v_PumpTypeName    in varchar2,
+                                                      v_BarrelTypeName    in varchar2,
                                                       v_PumpGrade    in NUMBER,
                                                       v_PumpBoreDiameter    in NUMBER,
                                                       v_PlungerLength    in NUMBER,
@@ -2049,6 +2053,8 @@ begin
           t.TubingPressure=v_TubingPressure,t.CasingPressure=v_CasingPressure,t.WellHeadFluidTemperature=v_WellHeadFluidTemperature,
           t.WaterCut_W=v_WaterCut_W,t.WaterCut=v_WaterCut,t.ProductionGasOilRatio=v_ProductionGasOilRatio,
           t.ProducingfluidLevel=v_ProducingfluidLevel,t.PumpSettingDepth=v_PumpSettingDepth,
+          t.pumptype=(select code.itemvalue from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName),
+          t.barreltype=(select code.itemvalue from tbl_code code where code.itemcode='BarrelType' and code.itemname=v_BarrelTypeName),
           t.PumpGrade=v_PumpGrade,t.PumpBoreDiameter=v_PumpBoreDiameter,t.PlungerLength=v_PlungerLength,
           t.TubingStringInsideDiameter=v_TubingStringInsideDiameter,t.CasingStringInsideDiameter=v_CasingStringInsideDiameter,
           t.rodstring=v_RodString,
@@ -2056,14 +2062,12 @@ begin
           t.NetGrossRatio=v_NetGrossRatio
       where t.id=( select t2.productiondataid from tbl_rpc_diagram_hist t2 where t2.id=v_id );
       commit;
-
       update tbl_rpc_diagram_hist t
       set t.resultstatus=2
       where t.productiondataid=( select t2.productiondataid from tbl_rpc_diagram_hist t2 where t2.id=v_id );
       commit;
       p_msg := '修改成功';
       dbms_output.put_line('p_msg:' || p_msg);
-
 Exception
   When Others Then
     p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';

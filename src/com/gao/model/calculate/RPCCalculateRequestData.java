@@ -536,6 +536,8 @@ public class RPCCalculateRequestData {
 	    private float CrankGravityRadius;
 
 	    private float SingleCrankWeight;
+	    
+	    private float SingleCrankPinWeight;
 
 	    private float StructuralUnbalance;
 
@@ -603,6 +605,12 @@ public class RPCCalculateRequestData {
 	    public Motor getMotor(){
 	        return this.Motor;
 	    }
+		public float getSingleCrankPinWeight() {
+			return SingleCrankPinWeight;
+		}
+		public void setSingleCrankPinWeight(float singleCrankPinWeight) {
+			SingleCrankPinWeight = singleCrankPinWeight;
+		}
 	}
 
 	public static class Production

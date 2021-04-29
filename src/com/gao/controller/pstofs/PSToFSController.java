@@ -86,7 +86,6 @@ public class PSToFSController extends BaseController {
 			}
 		}
 		String json = PSToFSService.getPSToFSPumpingUnitData(orgId);
-		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

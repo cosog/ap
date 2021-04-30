@@ -2,9 +2,9 @@ package com.gao.model.drive;
 
 public class KafkaConfig {
 	
-	private String DriverName;
+	private String ProtocolName;
 
-    private String DriverCode;
+    private String ProtocolCode;
 
     private int Sort;
 
@@ -12,17 +12,17 @@ public class KafkaConfig {
 
     private Topic Topic;
 
-    public void setDriverName(String DriverName){
-        this.DriverName = DriverName;
+    public void setProtocolName(String ProtocolName){
+        this.ProtocolName = ProtocolName;
     }
-    public String getDriverName(){
-        return this.DriverName;
+    public String getProtocolName(){
+        return this.ProtocolName;
     }
-    public void setDriverCode(String DriverCode){
-        this.DriverCode = DriverCode;
+    public void setProtocolCode(String ProtocolCode){
+        this.ProtocolCode = ProtocolCode;
     }
-    public String getDriverCode(){
-        return this.DriverCode;
+    public String getProtocolCode(){
+        return this.ProtocolCode;
     }
     public void setSort(int Sort){
         this.Sort = Sort;

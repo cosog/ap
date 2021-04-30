@@ -102,7 +102,7 @@ public class EquipmentDriverServerTask {
 			String path="";
 			String TcpServerConfigData="";
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			path=stringManagerUtils.getFilePath("TcpServerConfig.json","dirverConfig/");
+			path=stringManagerUtils.getFilePath("TcpServerConfig.json","protocolConfig/");
 			TcpServerConfigData=stringManagerUtils.readFile(path,"utf-8");
 			type = new TypeToken<TcpServerConfig>() {}.getType();
 			TcpServerConfig tcpServerConfig=gson.fromJson(TcpServerConfigData, type);
@@ -165,9 +165,9 @@ public class EquipmentDriverServerTask {
 	public static boolean init(){
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
-		String sql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+		String sql="select t.wellName,t.liftingType,t.deviceAddr,t.deviceId,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.runtimeefficiencysource,"
-				+ " t.drivercode,t.unitcode,"
+				+ " t.protocolcode,t.unitcode,"
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
@@ -179,9 +179,9 @@ public class EquipmentDriverServerTask {
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " where t.liftingType>=200 and t.liftingType<300 "
 				+ " order by t.sortNum";
-		String pcpInitSql="select t.wellName,t.liftingType,t.driverAddr,t.driverId,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+		String pcpInitSql="select t.wellName,t.liftingType,t.deviceAddr,t.deviceId,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.runtimeefficiencysource,"
-				+ " t.drivercode,t.unitcode,"
+				+ " t.protocolcode,t.unitcode,"
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange,"
@@ -235,11 +235,11 @@ public class EquipmentDriverServerTask {
 				ClientUnit clientUnit=new ClientUnit();
 				unit.wellName=rs.getString(1);
 				unit.liftingType=rs.getInt(2);
-				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
-				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
+				unit.deviceAddr=rs.getString(3)==null?"":rs.getString(3);
+				unit.deviceId=rs.getString(4)==null?"":rs.getString(4);
 				unit.diagramAcqTime=rs.getString(5);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
-				unit.dirverName="";
+				unit.protocolName="";
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
 				unit.acquisitionData.setRunStatus(0);
@@ -248,9 +248,9 @@ public class EquipmentDriverServerTask {
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 					if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
 						RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-						if(driveConfig.getDriverCode().equalsIgnoreCase(rs.getString(7))){
+						if(driveConfig.getProtocolCode().equalsIgnoreCase(rs.getString(7))){
 							unit.setRtuDriveConfig(driveConfig);
-							unit.setDirverName(driveConfig.getDriverName());
+							unit.setProtocolName(driveConfig.getProtocolName());
 							break;
 						}
 					}
@@ -297,11 +297,11 @@ public class EquipmentDriverServerTask {
 				ClientUnit clientUnit=new ClientUnit();
 				unit.wellName=rs.getString(1);
 				unit.liftingType=rs.getInt(2);
-				unit.driverAddr=rs.getString(3)==null?"":rs.getString(3);
-				unit.dirverId=rs.getString(4)==null?"":rs.getString(4);
+				unit.deviceAddr=rs.getString(3)==null?"":rs.getString(3);
+				unit.deviceId=rs.getString(4)==null?"":rs.getString(4);
 				unit.diagramAcqTime=rs.getString(5);
 				unit.UnitId=Integer.parseInt(rs.getString(4)==null?"0":rs.getString(4));
-				unit.dirverName="必创";
+				unit.protocolName="必创";
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
 				unit.acquisitionData.setRunStatus(0);
@@ -309,9 +309,9 @@ public class EquipmentDriverServerTask {
 				unit.runStatusControl=0;
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-					if(driveConfig.getDriverCode().equalsIgnoreCase(rs.getString(7))){
+					if(driveConfig.getProtocolCode().equalsIgnoreCase(rs.getString(7))){
 						unit.setRtuDriveConfig(driveConfig);
-						unit.setDirverName(driveConfig.getDriverName());
+						unit.setProtocolName(driveConfig.getProtocolName());
 						break;
 					}
 				}
@@ -399,9 +399,9 @@ public class EquipmentDriverServerTask {
 		if(wellList.endsWith(",")){
 			wellList=wellList.substring(0, wellList.length()-1);
 		}
-		String sql="select t.wellName,t.liftingType,t.driveraddr,t.driverid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+		String sql="select t.wellName,t.liftingType,t.deviceaddr,t.deviceid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.runtimeefficiencysource,"
-				+ " t.drivercode,t.unitcode,t.protocol "
+				+ " t.protocolcode,t.unitcode,t.protocol "
 				+ " from tbl_wellinformation t "
 				+ " left join tbl_rpc_diagram_latest t2 on t2.wellId=t.id "
 				+ " where 1=1  ";
@@ -420,15 +420,15 @@ public class EquipmentDriverServerTask {
 			for(int i=0;i<units.size();i++){
 				if(units.get(i).wellName.equals(rs.getString(1))){//遍历目前内存中的井列表
 					units.get(i).liftingType=rs.getInt(2);
-					if(!units.get(i).driverAddr.equals(rs.getString(3)==null?"":rs.getString(3))
-							||!units.get(i).dirverId.equals(rs.getString(4)==null?"":rs.getString(4))){//驱动信息发生改变
+					if(!units.get(i).deviceAddr.equals(rs.getString(3)==null?"":rs.getString(3))
+							||!units.get(i).deviceId.equals(rs.getString(4)==null?"":rs.getString(4))){//驱动信息发生改变
 						System.out.println("配置发生变化");
 						for(int j=0;j<clientUnitList.size();j++){//遍历已连接的客户端
 							boolean isExit=false;
 							if(clientUnitList.get(j).socket!=null){//如果已连接
 								for(int k=0;k<clientUnitList.get(j).unitDataList.size();k++){
-									if(units.get(i).driverAddr.equals(clientUnitList.get(j).unitDataList.get(k).driverAddr)
-											||(rs.getString(3)==null?"":rs.getString(3)).equals(clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
+									if(units.get(i).deviceAddr.equals(clientUnitList.get(j).unitDataList.get(k).deviceAddr)
+											||(rs.getString(3)==null?"":rs.getString(3)).equals(clientUnitList.get(j).unitDataList.get(k).deviceAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
 										if(clientUnitList.get(j).thread!=null){
 											clientUnitList.get(j).thread.interrupt();
 										}
@@ -441,8 +441,8 @@ public class EquipmentDriverServerTask {
 							}
 						}
 					}
-					units.get(i).driverAddr=rs.getString(3)==null?"":rs.getString(3);
-					units.get(i).dirverId=rs.getString(4)==null?"":rs.getString(4);
+					units.get(i).deviceAddr=rs.getString(3)==null?"":rs.getString(3);
+					units.get(i).deviceId=rs.getString(4)==null?"":rs.getString(4);
 					units.get(i).diagramAcqTime=rs.getString(5);
 					units.get(i).UnitId=Integer.parseInt(rs.getString(4)==null?"01":rs.getString(4));
 					units.get(i).commStatus=0;
@@ -452,9 +452,9 @@ public class EquipmentDriverServerTask {
 					for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 						if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
 							RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-							if(driveConfig.getDriverCode().equals(rs.getString(7))){
+							if(driveConfig.getProtocolCode().equals(rs.getString(7))){
 								units.get(i).setRtuDriveConfig(driveConfig);
-								units.get(i).setDirverName(driveConfig.getDriverName());
+								units.get(i).setProtocolName(driveConfig.getProtocolName());
 								break;
 							}
 						}
@@ -475,10 +475,10 @@ public class EquipmentDriverServerTask {
 				ClientUnit clientUnit=new ClientUnit();
 				unit.wellName=rs.getString(1);
 				unit.liftingType=rs.getInt(2);
-				unit.driverAddr=rs.getString(3);
-				unit.dirverId=rs.getString(4);
+				unit.deviceAddr=rs.getString(3);
+				unit.deviceId=rs.getString(4);
 				unit.diagramAcqTime=rs.getString(5);
-				unit.UnitId=Integer.parseInt(unit.dirverId);
+				unit.UnitId=Integer.parseInt(unit.deviceId);
 				unit.commStatus=0;
 				unit.acquisitionData=new AcquisitionData();
 				unit.acquisitionData.setRunStatus(0);
@@ -487,9 +487,9 @@ public class EquipmentDriverServerTask {
 				unit.protocol=rs.getInt(9);
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-					if(driveConfig.getDriverCode().equals(rs.getString(7))){
+					if(driveConfig.getProtocolCode().equals(rs.getString(7))){
 						unit.setRtuDriveConfig(driveConfig);
-						unit.setDirverName(driveConfig.getDriverName());
+						unit.setProtocolName(driveConfig.getProtocolName());
 						break;
 					}
 				}
@@ -506,7 +506,7 @@ public class EquipmentDriverServerTask {
 					boolean isExit=false;
 					if(clientUnitList.get(j).socket!=null){
 						for(int k=0;k<clientUnitList.get(j).unitDataList.size();k++){
-							if(unit.driverAddr.equals(clientUnitList.get(j).unitDataList.get(k).driverAddr)){
+							if(unit.deviceAddr.equals(clientUnitList.get(j).unitDataList.get(k).deviceAddr)){
 								if(clientUnitList.get(j).thread!=null){
 									clientUnitList.get(j).thread.interrupt();
 								}
@@ -551,60 +551,60 @@ public class EquipmentDriverServerTask {
 		String DriverConfigData="";
 		java.lang.reflect.Type type=null;
 		//添加安控驱动配置
-		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(EtrolRTUDrive.getDriverCode(), EtrolRTUDrive);
+		equipmentDriveMap.put(EtrolRTUDrive.getProtocolCode(), EtrolRTUDrive);
 		
 		//添加必创驱动配置
-		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(BeeTechRTUDrive.getDriverCode(), BeeTechRTUDrive);
+		equipmentDriveMap.put(BeeTechRTUDrive.getProtocolCode(), BeeTechRTUDrive);
 		
 		//添加蚌埠日月驱动配置
-		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(SunMoonStandardDriver.getDriverCode(), SunMoonStandardDriver);
+		equipmentDriveMap.put(SunMoonStandardDriver.getProtocolCode(), SunMoonStandardDriver);
 		
 		//添加中科奥维驱动配置
-		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(ZKAWDRTUDrive.getDriverCode(), ZKAWDRTUDrive);
+		equipmentDriveMap.put(ZKAWDRTUDrive.getProtocolCode(), ZKAWDRTUDrive);
 		
 		//添加A11驱动配置
-		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(CNPCStandardDriver.getDriverCode(), CNPCStandardDriver);
+		equipmentDriveMap.put(CNPCStandardDriver.getProtocolCode(), CNPCStandardDriver);
 		
 		//添加四化驱动配置
-		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(SinoepcStandardDriver.getDriverCode(), SinoepcStandardDriver);
+		equipmentDriveMap.put(SinoepcStandardDriver.getProtocolCode(), SinoepcStandardDriver);
 		
 		//添加MQTT驱动配置
-		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<RTUDriveConfig>() {}.getType();
 		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(MqttDriver.getDriverCode(), MqttDriver);
+		equipmentDriveMap.put(MqttDriver.getProtocolCode(), MqttDriver);
 		
 		//添加Kafka
-		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<KafkaConfig>() {}.getType();
 		KafkaConfig kafkaConfig=gson.fromJson(DriverConfigData, type);
-		equipmentDriveMap.put(kafkaConfig.getDriverCode(), kafkaConfig);
+		equipmentDriveMap.put(kafkaConfig.getProtocolCode(), kafkaConfig);
 		
 		System.out.println("驱动初始化结束");
 	}
@@ -1248,9 +1248,9 @@ public class EquipmentDriverServerTask {
 		public int PowerDownLimitControl=-999999999;//功率下限设置
 		public int ImmediatelyAcquisitionControl=-999999999;//离散数据即时采集设置
 		
-		public  String driverAddr;
-		public  String dirverId;
-		public  String dirverName;
+		public  String deviceAddr;
+		public  String deviceId;
+		public  String protocolName;
 		public  int protocol;
 		
 		public  String diagramAcqTime;
@@ -1411,24 +1411,7 @@ public class EquipmentDriverServerTask {
 		public void setFrequencyControl(float frequencyControl) {
 			FrequencyControl = frequencyControl;
 		}
-		public String getDriverAddr() {
-			return driverAddr;
-		}
-		public void setDriverAddr(String driverAddr) {
-			this.driverAddr = driverAddr;
-		}
-		public String getDirverId() {
-			return dirverId;
-		}
-		public void setDirverId(String dirverId) {
-			this.dirverId = dirverId;
-		}
-		public String getDirverName() {
-			return dirverName;
-		}
-		public void setDirverName(String dirverName) {
-			this.dirverName = dirverName;
-		}
+		
 		public int getCommStatus() {
 			return commStatus;
 		}
@@ -1650,6 +1633,24 @@ public class EquipmentDriverServerTask {
 		}
 		public void setProtocol(int protocol) {
 			this.protocol = protocol;
+		}
+		public String getDeviceAddr() {
+			return deviceAddr;
+		}
+		public void setDeviceAddr(String deviceAddr) {
+			this.deviceAddr = deviceAddr;
+		}
+		public String getDeviceId() {
+			return deviceId;
+		}
+		public void setDeviceId(String deviceId) {
+			this.deviceId = deviceId;
+		}
+		public String getProtocolName() {
+			return protocolName;
+		}
+		public void setProtocolName(String protocolName) {
+			this.protocolName = protocolName;
 		}
 	}
 	

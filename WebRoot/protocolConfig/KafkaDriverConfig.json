@@ -1,6 +1,6 @@
 {
-    "DriverName": "Kafka",
-    "DriverCode": "KafkaDrive",
+    "ProtocolName": "Kafka",
+    "ProtocolCode": "KafkaDrive",
     "Sort": 8,
     "Server": {
         "IP": "39.99.42.182",

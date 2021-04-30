@@ -1,13 +1,15 @@
 {
-    "DriverName": "A11协议_安控",
-    "DriverCode": "EtrolDrive",
-    "Sort":1,
+    "ProtocolName": "A11协议_必创",
+    "ProtocolCode": "BeeTech",
+    "Sort":2,
     "DataConfig": {
         "RunStatus": {
-            "Address": 40317,
+            "Address": 40318,
             "DataType": 1,
             "Length": 1,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"",
             "Initiative":true
         },
         "RunControl": {
@@ -15,6 +17,8 @@
             "DataType": 1,
             "Length": 1,
             "Zoom": 1,
+            "Readonly":false,
+            "Unit":"",
             "Initiative":true
         },
         "CurrentA": {
@@ -22,6 +26,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"A",
             "Initiative":true
         },
         "CurrentB": {
@@ -29,6 +35,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"A",
             "Initiative":true
         },
         "CurrentC": {
@@ -36,6 +44,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"A",
             "Initiative":true
         },
         "VoltageA": {
@@ -43,6 +53,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"V",
             "Initiative":true
         },
         "VoltageB": {
@@ -50,6 +62,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"V",
             "Initiative":true
         },
         "VoltageC": {
@@ -57,6 +71,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"V",
             "Initiative":true
         },
         "ActivePowerConsumption": {
@@ -64,6 +80,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"kW·h",
             "Initiative":true
         },
         "ReactivePowerConsumption": {
@@ -71,6 +89,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"kVar·h",
             "Initiative":true
         },
         "ActivePower": {
@@ -78,6 +98,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"kW",
             "Initiative":true
         },
         "ReactivePower": {
@@ -85,6 +107,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"kVar",
             "Initiative":true
         },
         "ReversePower": {
@@ -92,6 +116,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"kW",
             "Initiative":true
         },
         "PowerFactor": {
@@ -99,6 +125,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"",
             "Initiative":true
         },
         "TubingPressure": {
@@ -106,6 +134,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"MPa",
             "Initiative":true
         },
         "CasingPressure": {
@@ -113,6 +143,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"MPa",
             "Initiative":true
         },
         "BackPressure": {
@@ -120,6 +152,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"MPa",
             "Initiative":true
         },
         "WellHeadFluidTemperature": {
@@ -127,6 +161,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"℃",
             "Initiative":true
         },
         "ProducingfluidLevel": {
@@ -134,6 +170,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"m",
             "Initiative":true
         },
         "WaterCut": {
@@ -141,6 +179,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"%",
             "Initiative":true
         },
         "SetFrequency": {
@@ -148,6 +188,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":false,
+            "Unit":"Hz",
             "Initiative":true
         },
         "RunFrequency": {
@@ -155,6 +197,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"Hz",
             "Initiative":true
         },
         "RPM": {
@@ -162,6 +206,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"r/min",
             "Initiative":true
         },
         "Torque": {
@@ -169,6 +215,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"kN·m",
             "Initiative":true
         },
         "FSDiagramAcquisitionInterval": {
@@ -176,6 +224,8 @@
             "DataType": 1,
             "Length": 1,
             "Zoom": 1,
+            "Readonly":false,
+            "Unit":"min",
             "Initiative":true
         },
         "FSDiagramSetPointCount": {
@@ -183,6 +233,8 @@
             "DataType": 1,
             "Length": 1,
             "Zoom": 1,
+            "Readonly":false,
+            "Unit":"",
             "Initiative":true
         },
         "FSDiagramPointCount": {
@@ -190,6 +242,8 @@
             "DataType": 1,
             "Length": 1,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"",
             "Initiative":true
         },
         "AcqTime": {
@@ -197,6 +251,8 @@
             "DataType": 3,
             "Length": 6,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"",
             "Initiative":true
         },
         "SPM": {
@@ -204,6 +260,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"次/min",
             "Initiative":true
         },
         "Stroke": {
@@ -211,6 +269,8 @@
             "DataType": 2,
             "Length": 2,
             "Zoom": 1,
+            "Readonly":true,
+            "Unit":"m",
             "Initiative":true
         },
         "SDiagram": {
@@ -218,6 +278,8 @@
             "DataType": 1,
             "Length": 250,
             "Zoom": 0.01,
+            "Readonly":true,
+            "Unit":"0.01m",
             "Initiative":true
         },
         "FDiagram": {
@@ -225,6 +287,8 @@
             "DataType": 1,
             "Length": 250,
             "Zoom": 0.01,
+            "Readonly":true,
+            "Unit":"0.01kN",
             "Initiative":true
         },
         "ADiagram": {
@@ -232,6 +296,8 @@
             "DataType": 1,
             "Length": 250,
             "Zoom": 0.01,
+            "Readonly":true,
+            "Unit":"0.01A",
             "Initiative":true
         },
         "PDiagram": {
@@ -239,6 +305,8 @@
             "DataType": 1,
             "Length": 250,
             "Zoom": 0.01,
+            "Readonly":true,
+            "Unit":"0.01kW",
             "Initiative":true
         }
     }

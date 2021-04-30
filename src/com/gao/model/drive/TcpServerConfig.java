@@ -2,8 +2,10 @@ package com.gao.model.drive;
 
 public class TcpServerConfig {
 	private int Port;
-
-    private String HeartbeatPacket;
+    
+    private String HeartbeatPrefix;
+    
+    private String HeartbeatSuffix;
 
     public void setPort(int Port){
         this.Port = Port;
@@ -11,10 +13,16 @@ public class TcpServerConfig {
     public int getPort(){
         return this.Port;
     }
-    public void setHeartbeatPacket(String HeartbeatPacket){
-        this.HeartbeatPacket = HeartbeatPacket;
-    }
-    public String getHeartbeatPacket(){
-        return this.HeartbeatPacket;
-    }
+	public String getHeartbeatPrefix() {
+		return HeartbeatPrefix;
+	}
+	public void setHeartbeatPrefix(String heartbeatPrefix) {
+		HeartbeatPrefix = heartbeatPrefix;
+	}
+	public String getHeartbeatSuffix() {
+		return HeartbeatSuffix;
+	}
+	public void setHeartbeatSuffix(String heartbeatSuffix) {
+		HeartbeatSuffix = heartbeatSuffix;
+	}
 }

@@ -662,7 +662,7 @@ public class PSToFSController extends BaseController {
 		if(transferDiscrete!=null){
 //			transferDiscrete.setacqTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 			String wellName="";
-			String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiscrete.getID()+")', 'i')";//不区分ID大小写
+			String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.deviceaddr, '("+transferDiscrete.getID()+")', 'i')";//不区分ID大小写
 			List list = this.commonDataService.reportDateJssj(sql);
 			
 			if(list.size()>0){
@@ -699,7 +699,7 @@ public class PSToFSController extends BaseController {
     	if(transferDiagram!=null){
 //    		transferDiagram.setacqTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
     		String wellName="";
-    		String wellSql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDiagram.getID()+")', 'i')";//不区分ID大小写
+    		String wellSql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.deviceaddr, '("+transferDiagram.getID()+")', 'i')";//不区分ID大小写
     		List list = this.commonDataService.reportDateJssj(wellSql);
     		
     		if(list.size()>0){
@@ -927,7 +927,7 @@ public class PSToFSController extends BaseController {
 		TransferDaily transferDaily=gson.fromJson(data, type);
     	
 		String wellName="";
-		String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.driveraddr, '("+transferDaily.getID()+")', 'i')";//不区分ID大小写
+		String sql="select t.wellName from tbl_wellinformation t where REGEXP_LIKE(t.deviceaddr, '("+transferDaily.getID()+")', 'i')";//不区分ID大小写
 		List list = this.commonDataService.reportDateJssj(sql);
 		
 		if(list.size()>0){

@@ -108,7 +108,7 @@ public class ProtocolRDSSThread extends Thread{
 						}
 						
 						if(revData[5]==0x01){//数据传输完成
-							String querySql="select jh,jslx,slly from tbl_wellinformation t where t.driveraddr='"+terminalNo+"'";
+							String querySql="select jh,jslx,slly from tbl_wellinformation t where t.deviceaddr='"+terminalNo+"'";
 							conn=OracleJdbcUtis.getConnection();
 							if(conn!=null){
 								pstmt = conn.prepareStatement(querySql);

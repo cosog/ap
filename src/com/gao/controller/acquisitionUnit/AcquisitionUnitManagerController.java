@@ -458,7 +458,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		if(modbusDriverSaveData!=null){
-			String path=stringManagerUtils.getFilePath("TcpServerConfig.json","dirverConfig/");
+			String path=stringManagerUtils.getFilePath("TcpServerConfig.json","protocolConfig/");
 			Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
 			if(tcpServerConfigMap==null || tcpServerConfigMap.get("TcpServerConfig")==null){
 				String TcpServerConfigData="";
@@ -468,9 +468,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
 			}
 			TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
-			if(tcpServerConfig.getPort()!=modbusDriverSaveData.getTcpServerPort() || !tcpServerConfig.getHeartbeatPacket().equals(modbusDriverSaveData.getTcpServerHeartbeatPacket())){
+			if(tcpServerConfig.getPort()!=modbusDriverSaveData.getTcpServerPort() 
+					|| !tcpServerConfig.getHeartbeatPrefix().equals(modbusDriverSaveData.getTcpServerHeartbeatPrefix())
+					|| !tcpServerConfig.getHeartbeatSuffix().equals(modbusDriverSaveData.getTcpServerHeartbeatSuffix())
+					){
 				tcpServerConfig.setPort(modbusDriverSaveData.getTcpServerPort());
-				tcpServerConfig.setHeartbeatPacket(modbusDriverSaveData.getTcpServerHeartbeatPacket());
+				
+				tcpServerConfig.setHeartbeatPrefix(modbusDriverSaveData.getTcpServerHeartbeatPrefix());
+				tcpServerConfig.setHeartbeatSuffix(modbusDriverSaveData.getTcpServerHeartbeatSuffix());
+				
+				
 				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(tcpServerConfig)));
 				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
 				if(EquipmentDriverServerTask.serverSocket!=null && !EquipmentDriverServerTask.serverSocket.isClosed()){
@@ -511,7 +518,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			
 			if(StringManagerUtils.isNotNull(fileName)&&StringManagerUtils.isNotNull(driverCode)){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)equipmentDriveMap.get(driverCode);
-				path=stringManagerUtils.getFilePath(fileName,"dirverConfig/");
+				path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
 				if(driveConfig==null){
 					String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 					type = new TypeToken<RTUDriveConfig>() {}.getType();
@@ -533,11 +540,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}else if("被动接收".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getInitiative())){
 						initiative=false;
 					}
+					boolean readonly=true;
+					if("读写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getReadonly())){
+						readonly=false;
+					}else if("只读".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getReadonly())){
+						readonly=true;
+					}
 					RTUDriveConfig.Item item=new Item();
 					item.setAddress(modbusDriverSaveData.getDataConfig().get(i).getAddress());
 					item.setLength(modbusDriverSaveData.getDataConfig().get(i).getLength());
+					item.setUnit(modbusDriverSaveData.getDataConfig().get(i).getUnit());
 					item.setZoom(modbusDriverSaveData.getDataConfig().get(i).getZoom());
 					item.setDataType(dataType);
+					item.setReadonly(readonly);
 					item.setInitiative(initiative);
 					if("运行状态".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
 						driveConfig.getDataConfig().setRunStatus(item);
@@ -610,7 +625,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));
-				equipmentDriveMap.put(driveConfig.getDriverCode(), driveConfig);
+				equipmentDriveMap.put(driveConfig.getProtocolCode(), driveConfig);
 			}
 		}
 		json ="{success:true}";
@@ -639,7 +654,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 			
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 			if(driveConfig==null){
 				String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 				type = new TypeToken<KafkaConfig>() {}.getType();
@@ -648,7 +663,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			driveConfig.setServer(KafkaConfigSaveData.getServer());
 			driveConfig.setTopic(KafkaConfigSaveData.getTopic());
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));
-			equipmentDriveMap.put(driveConfig.getDriverCode(), driveConfig);
+			equipmentDriveMap.put(driveConfig.getProtocolCode(), driveConfig);
 		}
 		json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

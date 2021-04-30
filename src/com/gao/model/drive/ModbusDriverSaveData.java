@@ -8,8 +8,10 @@ public class ModbusDriverSaveData {
 	private String DriverName;
 	
 	private int TcpServerPort;
-
-	private String TcpServerHeartbeatPacket;
+	
+	private String TcpServerHeartbeatPrefix;
+	
+	private String TcpServerHeartbeatSuffix;
 
     private List<DataConfig> DataConfig;
     
@@ -24,12 +26,6 @@ public class ModbusDriverSaveData {
 	}
 	public void setTcpServerPort(int tcpServerPort) {
 		TcpServerPort = tcpServerPort;
-	}
-	public String getTcpServerHeartbeatPacket() {
-		return TcpServerHeartbeatPacket;
-	}
-	public void setTcpServerHeartbeatPacket(String tcpServerHeartbeatPacket) {
-		TcpServerHeartbeatPacket = tcpServerHeartbeatPacket;
 	}
     public void setDataConfig(List<DataConfig> DataConfig){
         this.DataConfig = DataConfig;
@@ -47,6 +43,10 @@ public class ModbusDriverSaveData {
 	    private int Length;
 
 	    private String DataType;
+	    
+	    private String Readonly;
+	    
+	    private String Unit;
 
 	    private float Zoom;
 	    
@@ -88,5 +88,30 @@ public class ModbusDriverSaveData {
 		public void setInitiative(String initiative) {
 			Initiative = initiative;
 		}
+		public String getReadonly() {
+			return Readonly;
+		}
+		public void setReadonly(String readonly) {
+			Readonly = readonly;
+		}
+		public String getUnit() {
+			return Unit;
+		}
+		public void setUnit(String unit) {
+			Unit = unit;
+		}
+	}
+
+	public String getTcpServerHeartbeatPrefix() {
+		return TcpServerHeartbeatPrefix;
+	}
+	public void setTcpServerHeartbeatPrefix(String tcpServerHeartbeatPrefix) {
+		TcpServerHeartbeatPrefix = tcpServerHeartbeatPrefix;
+	}
+	public String getTcpServerHeartbeatSuffix() {
+		return TcpServerHeartbeatSuffix;
+	}
+	public void setTcpServerHeartbeatSuffix(String tcpServerHeartbeatSuffix) {
+		TcpServerHeartbeatSuffix = tcpServerHeartbeatSuffix;
 	}
 }

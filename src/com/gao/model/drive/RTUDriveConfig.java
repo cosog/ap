@@ -1,19 +1,19 @@
 package com.gao.model.drive;
 
 public class RTUDriveConfig {
-	private String DriverName;
+	private String ProtocolName;
     
-    private String DriverCode;
+    private String ProtocolCode;
     
     private int Sort;
 
     private DataConfig DataConfig;
     
-    public void setDriverName(String DriverName){
-        this.DriverName = DriverName;
+    public void setProtocolName(String protocolName){
+        this.ProtocolName = protocolName;
     }
-    public String getDriverName(){
-        return this.DriverName;
+    public String getProtocolName(){
+        return this.ProtocolName;
     }
 	public int getSort() {
 		return Sort;
@@ -27,11 +27,11 @@ public class RTUDriveConfig {
     public DataConfig getDataConfig(){
         return this.DataConfig;
     }
-	public String getDriverCode() {
-		return DriverCode;
+	public String getProtocolCode() {
+		return ProtocolCode;
 	}
-	public void setDriverCode(String driverCode) {
-		DriverCode = driverCode;
+	public void setProtocolCode(String protocolCode) {
+		ProtocolCode = protocolCode;
 	}
 	
 	public static class Item
@@ -39,10 +39,14 @@ public class RTUDriveConfig {
 	    private int Address;
 
 	    private int DataType;
+	    
+	    private boolean Readonly;
 
 	    private int Length;
 
 	    private float Zoom;
+	    
+	    private String Unit;
 	    
 	    private boolean Initiative;
 
@@ -75,6 +79,18 @@ public class RTUDriveConfig {
 		}
 		public void setInitiative(boolean initiative) {
 			Initiative = initiative;
+		}
+		public boolean getReadonly() {
+			return Readonly;
+		}
+		public void setReadonly(boolean readonly) {
+			Readonly = readonly;
+		}
+		public String getUnit() {
+			return Unit;
+		}
+		public void setUnit(String unit) {
+			Unit = unit;
 		}
 	}
 	

@@ -1338,19 +1338,19 @@ public class BaseDao extends HibernateDaoSupport {
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						String driverName=wellHandsontableChangedData.getUpdatelist().get(i).getDriverName();
+						String driverName=wellHandsontableChangedData.getUpdatelist().get(i).getProtocolName();
 						String driverCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 							if(entry.getKey().toUpperCase().contains("KAFKA")){
 								KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getDriverName())){
-									driverCode=driveConfig.getDriverCode();
+								if(driverName.equals(driveConfig.getProtocolName())){
+									driverCode=driveConfig.getProtocolCode();
 									break;
 								}
 							}else{
 								RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getDriverName())){
-									driverCode=driveConfig.getDriverCode();
+								if(driverName.equals(driveConfig.getProtocolName())){
+									driverCode=driveConfig.getProtocolCode();
 									break;
 								}
 							}
@@ -1363,8 +1363,8 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(5, driverCode);
 						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getProtocol());
 						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAcquisitionUnit());
-						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getDriverAddr());
-						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getDriverId());
+						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceAddr());
+						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceId());
 						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getRuntimeEfficiencySource());
 						cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl());
 						cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
@@ -1377,20 +1377,20 @@ public class BaseDao extends HibernateDaoSupport {
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						String driverName=wellHandsontableChangedData.getInsertlist().get(i).getDriverName();
+						String driverName=wellHandsontableChangedData.getInsertlist().get(i).getProtocolName();
 						String driverCode="";
 						
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 							if(entry.getKey().toUpperCase().contains("KAFKA")){
 								KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getDriverName())){
-									driverCode=driveConfig.getDriverCode();
+								if(driverName.equals(driveConfig.getProtocolName())){
+									driverCode=driveConfig.getProtocolCode();
 									break;
 								}
 							}else{
 								RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getDriverName())){
-									driverCode=driveConfig.getDriverCode();
+								if(driverName.equals(driveConfig.getProtocolName())){
+									driverCode=driveConfig.getProtocolCode();
 									break;
 								}
 							}
@@ -1403,8 +1403,8 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(5, driverCode);
 						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getProtocol());
 						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAcquisitionUnit());
-						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getDriverAddr());
-						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getDriverId());
+						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getDeviceAddr());
+						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getDeviceId());
 						cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getRuntimeEfficiencySource());
 						cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl());
 						cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());

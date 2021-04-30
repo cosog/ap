@@ -377,7 +377,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         		activeTab: 0,
         		tabPosition: 'bottom',
         		items: [{
-        				title: '功图诊断计产',
+        				title: '功图软件',
         				layout: "fit",
         				id:'PumpingUnitCalculateManagerPanel',
         				border: false,

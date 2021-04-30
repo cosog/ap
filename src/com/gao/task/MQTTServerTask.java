@@ -125,7 +125,7 @@ public class MQTTServerTask {
 	}
 	
 	public static boolean initWellConfig() throws InstantiationException, IllegalAccessException, SQLException{
-		String sql="select wellname,driveraddr,"
+		String sql="select wellname,deviceaddr,"
 				+ "acqcycle_diagram,acqCycleSetStatus_diagram,"
 				+ "acqcycle_discrete,acqCycleSetStatus_discrete  from tbl_wellinformation t ";
 		List<WellConfigInfo> list=JDBCUtil.getListCommBean(sql, WellConfigInfo.class, null);
@@ -134,12 +134,12 @@ public class MQTTServerTask {
 		return true;
 	}
 	
-	public static WellConfigInfo getWellConfigData(String driverAddr){
-		String sql="select wellname,driveraddr,"
+	public static WellConfigInfo getWellConfigData(String deviceAddr){
+		String sql="select wellname,deviceaddr,"
 				+ " acqcycle_diagram,acqCycleSetStatus_diagram,"
 				+ " acqcycle_discrete,acqCycleSetStatus_discrete  "
 				+ " from tbl_wellinformation t "
-				+ " where t.driveraddr='"+driverAddr+"'";
+				+ " where t.deviceaddr='"+deviceAddr+"'";
 		WellConfigInfo wellConfigInfo=null;
 		try {
 			wellConfigInfo = (WellConfigInfo)JDBCUtil.getResultBean(sql, WellConfigInfo.class, null);
@@ -283,7 +283,7 @@ public class MQTTServerTask {
 									if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Discrete()!=0&&wellConfigInfo.getAcqCycle_Discrete()!=transferDiscrete.getInterval2()){//如果采集间隔不一致
 										map.put(pubTransferDiscreteIntervalTopic, wellConfigInfo.getAcqCycle_Discrete());
 									}else if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Discrete()!=0&&wellConfigInfo.getAcqCycle_Discrete()==transferDiscrete.getInterval2()&&wellConfigInfo.getAcqCycleSetStatus_discrete()!=2){//如果一致，更新状态
-										String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=2 where driveraddr='"+ID+"'";
+										String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=2 where deviceaddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}
 								}
@@ -303,10 +303,10 @@ public class MQTTServerTask {
 									WellConfigInfo wellConfigInfo= getWellConfigData(ID);
 									if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Diagram()!=0&&wellConfigInfo.getAcqCycle_Diagram()!=transferDiagram.getInterval2()&&wellConfigInfo.getAcqCycleSetStatus_diagram()!=1){//如果采集间隔不一致
 										sendMessage(pubTransferDiagramIntervalTopic,wellConfigInfo.getAcqCycle_Diagram()+"",false);
-										String updateSql="update tbl_wellinformation set acqCycleSetStatus_diagram=1 where driveraddr='"+ID+"'";
+										String updateSql="update tbl_wellinformation set acqCycleSetStatus_diagram=1 where deviceaddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}else if(wellConfigInfo!=null&&wellConfigInfo.getAcqCycle_Diagram()!=0&&wellConfigInfo.getAcqCycle_Diagram()==transferDiagram.getInterval2()&&wellConfigInfo.getAcqCycleSetStatus_diagram()!=2){//如果一致，更新状态
-										String updateSql="update tbl_wellinformation set acqCycleSetStatus_diagram=2 where driveraddr='"+ID+"'";
+										String updateSql="update tbl_wellinformation set acqCycleSetStatus_diagram=2 where deviceaddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 									}
 					        	}
@@ -328,7 +328,7 @@ public class MQTTServerTask {
 				        				sendMessage(pubTransferDiscreteIntervalTopic,TransferDiscreteIntervalSetSign+"",false);
 				        				map.remove(pubTransferDiscreteIntervalTopic);
 				        				//更新状态 已下发
-				        				String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=1 where driveraddr='"+ID+"'";
+				        				String updateSql="update tbl_wellinformation set acqCycleSetStatus_discrete=1 where deviceaddr='"+ID+"'";
 										JDBCUtil.updateRecord(updateSql, null);
 				        			}
 					        	}
@@ -1765,7 +1765,7 @@ public class MQTTServerTask {
 	
 	public static class WellConfigInfo{
 		private String wellName;
-		private String driverAddr;
+		private String deviceAddr;
 		private int acqCycle_Diagram;
 		private int acqCycleSetStatus_diagram;
 		private int acqCycle_Discrete;
@@ -1777,11 +1777,11 @@ public class MQTTServerTask {
 		public void setWellName(String wellName) {
 			this.wellName = wellName;
 		}
-		public String getDriverAddr() {
-			return driverAddr;
+		public String getDeviceAddr() {
+			return deviceAddr;
 		}
-		public void setDriverAddr(String driverAddr) {
-			this.driverAddr = driverAddr;
+		public void setDeviceAddr(String deviceAddr) {
+			this.deviceAddr = deviceAddr;
 		}
 		public int getAcqCycle_Diagram() {
 			return acqCycle_Diagram;

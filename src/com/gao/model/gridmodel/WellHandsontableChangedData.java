@@ -41,15 +41,15 @@ public class WellHandsontableChangedData {
 
 	    private String liftingTypeName="抽油机";
 
-	    private String driverName="";
+	    private String protocolName="";
 	    
 	    private String protocol="";
 
 	    private String acquisitionUnit="";
 
-	    private String driverAddr="";
+	    private String deviceAddr="";
 
-	    private String driverId="";
+	    private String deviceId="";
 	    
 	    private String runtimeEfficiencySource="";
 	    
@@ -97,36 +97,12 @@ public class WellHandsontableChangedData {
 			this.liftingTypeName = liftingTypeName;
 		}
 
-		public String getDriverName() {
-			return driverName;
-		}
-
-		public void setDriverName(String driverName) {
-			this.driverName = driverName;
-		}
-
 		public String getAcquisitionUnit() {
 			return acquisitionUnit;
 		}
 
 		public void setAcquisitionUnit(String acquisitionUnit) {
 			this.acquisitionUnit = acquisitionUnit;
-		}
-
-		public String getDriverAddr() {
-			return driverAddr;
-		}
-
-		public void setDriverAddr(String driverAddr) {
-			this.driverAddr = driverAddr;
-		}
-
-		public String getDriverId() {
-			return driverId;
-		}
-
-		public void setDriverId(String driverId) {
-			this.driverId = driverId;
 		}
 
 		public String getRuntimeEfficiencySource() {
@@ -159,6 +135,30 @@ public class WellHandsontableChangedData {
 
 		public void setProtocol(String protocol) {
 			this.protocol = protocol;
+		}
+
+		public String getProtocolName() {
+			return protocolName;
+		}
+
+		public void setProtocolName(String protocolName) {
+			this.protocolName = protocolName;
+		}
+
+		public String getDeviceAddr() {
+			return deviceAddr;
+		}
+
+		public void setDeviceAddr(String deviceAddr) {
+			this.deviceAddr = deviceAddr;
+		}
+
+		public String getDeviceId() {
+			return deviceId;
+		}
+
+		public void setDeviceId(String deviceId) {
+			this.deviceId = deviceId;
 		}
 	    
 	}

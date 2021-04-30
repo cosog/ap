@@ -380,7 +380,7 @@ public class KafkaConfigController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String data = ParamUtils.getParameter(request, "data");
-		String sql="select t.drivercode, t.driveraddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
+		String sql="select t.protocolcode,t.deviceaddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
 		List list = this.commonDataService.findCallSql(sql);
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
@@ -391,7 +391,7 @@ public class KafkaConfigController extends BaseController {
 		if(driveConfig==null){
 			Gson gson = new Gson();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(driverConfigData, reflectType);
@@ -459,7 +459,7 @@ public class KafkaConfigController extends BaseController {
 		if(driveConfig==null){
 			Gson gson = new Gson();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(driverConfigData, reflectType);

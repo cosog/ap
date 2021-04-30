@@ -424,11 +424,13 @@ var DriverConfigHandsontableHelper = {
 
 function CreateDriverConfigItemsInfoTable(data){
 	driverConfigItemsHandsontableHelper = DriverConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
-	var colHeaders="['序号','名称','地址','寄存器长度','数据类型','单位换算系数','模式']";
+	var colHeaders="['序号','名称','地址','寄存器长度','数据类型','读写类型','单位','单位换算系数','模式']";
 	var columns="[{data:'id'},{data:'item'},"
 		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}},"
 			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}}," 
 			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['整型', '实型','BCD码']}," 
+			+"{data:'readonly',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
+			+"{data:'unit'}," 
 			+"{data:'zoom',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}}," 
 			+"{data:'initiative',type:'dropdown',strict:true,allowInvalid:false,source:['主动轮询', '被动接收']}" 
 			+"]";
@@ -849,7 +851,8 @@ function SaveModbusDriverConfigData(){
 		var tcpServerConfigItemsData=tcpServerConfigHandsontableHelper.hot.getData();
 		var configInfo={};
 		configInfo.TcpServerPort=tcpServerConfigItemsData[0][2];
-		configInfo.TcpServerHeartbeatPacket=tcpServerConfigItemsData[1][2];
+		configInfo.TcpServerHeartbeatPrefix=tcpServerConfigItemsData[1][2];
+		configInfo.TcpServerHeartbeatSuffix=tcpServerConfigItemsData[2][2];
 		configInfo.DriverName=driverConfigData[1];
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
@@ -858,8 +861,10 @@ function SaveModbusDriverConfigData(){
 			item.Address=parseInt(driverConfigItemsData[i][2]);
 			item.Length=parseInt(driverConfigItemsData[i][3]);
 			item.DataType=driverConfigItemsData[i][4];
-			item.Zoom=parseFloat(driverConfigItemsData[i][5]);
-			item.Initiative=driverConfigItemsData[i][6];
+			item.Readonly=driverConfigItemsData[i][5];
+			item.Unit=driverConfigItemsData[i][6];
+			item.Zoom=parseFloat(driverConfigItemsData[i][7]);
+			item.Initiative=driverConfigItemsData[i][8];
 			configInfo.DataConfig.push(item);
 		}
 //		alert(JSON.stringify(configInfo));

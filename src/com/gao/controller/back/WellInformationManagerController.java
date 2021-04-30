@@ -100,8 +100,6 @@ public class WellInformationManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		//wellInformationName = new String(wellInformationName.getBytes("iso-8859-1"), "utf-8");
-//		String orgId=this.findCurrentUserOrgIdInfo("");
 		wellInformationName = ParamUtils.getParameter(request, "wellInformationName");
 		liftingType=ParamUtils.getParameter(request, "liftingType");
 		orgId=ParamUtils.getParameter(request, "orgId");

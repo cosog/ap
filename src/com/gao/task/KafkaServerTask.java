@@ -55,7 +55,7 @@ public class KafkaServerTask {
 		if(driveConfig==null){
 			Gson gson = new Gson();
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(driverConfigData, type);
@@ -163,7 +163,7 @@ public class KafkaServerTask {
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 			if(driveConfig==null){
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
-				String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+				String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 				String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
 				java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
 				driveConfig=gson.fromJson(driverConfigData, type);

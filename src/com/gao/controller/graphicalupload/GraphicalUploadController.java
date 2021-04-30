@@ -1194,7 +1194,7 @@ public class GraphicalUploadController extends BaseController {
 					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
 					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH "
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and upper(t.drivercode) like '%KAFKA%' and t.driverAddr='"+kafkaUpData.getKey()+"'";
+					+ " where t2.wellId=t.id and upper(t.drivercode) like '%KAFKA%' and t.deviceAddr='"+kafkaUpData.getKey()+"'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -1492,7 +1492,7 @@ public class GraphicalUploadController extends BaseController {
 			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and t.driverAddr='"+aggrOnline2Kafka.getKey()+"'";
+					+ " where t2.wellId=t.id and t.deviceAddr='"+aggrOnline2Kafka.getKey()+"'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -1588,7 +1588,7 @@ public class GraphicalUploadController extends BaseController {
 			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange"
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and t.driverAddr='"+aggrRunStatus2Kafka.getKey()+"'";
+					+ " where t2.wellId=t.id and t.deviceAddr='"+aggrRunStatus2Kafka.getKey()+"'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);

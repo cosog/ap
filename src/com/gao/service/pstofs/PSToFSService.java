@@ -503,7 +503,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 		if(driveConfig==null){
-			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","dirverConfig/");
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 			String DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
 			java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
 			driveConfig=gson.fromJson(DriverConfigData, type);
@@ -513,13 +513,13 @@ public class PSToFSService<T> extends BaseService<T> {
 			JSONArray jsonArray = jsonObject.getJSONArray("data");
 			for(int i=0;i<jsonArray.size();i++){
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-				String sql="select t.drivercode,t.driveraddr from tbl_wellinformation t where t.wellname='"+everydata.getString("WellName")+"'";
+				String sql="select t.protocolcode,t.deviceaddr from tbl_wellinformation t where t.wellname='"+everydata.getString("WellName")+"'";
 				List list = this.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String driverCode=obj[0].toString();
+					String protocolCode=obj[0].toString();
 					String ID=obj[1].toString();
-					if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+					if(protocolCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 						String topic=driveConfig.getTopic().getDown().getModel_PumpingUnit().replace("-ID-", "-"+ID+"-");
 						RPCCalculateRequestData.PumpingUnit pumpingUnit=new RPCCalculateRequestData.PumpingUnit();
 						
@@ -1287,7 +1287,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		}
         String sql="select  t."+type+" ,count(id) from "+tableName+" t "
         		+ " where   liftingtype>=200 and liftingtype<400 "
-        		+ " and length(t.driveraddr)=16"
+        		+ " and length(t.deviceaddr)=16"
         		+ " and t.org_id in("+orgId+")  group by t."+type+""
         		+ " order by t."+type;
 		List<?> list=this.findCallSql(sql);
@@ -1316,10 +1316,10 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getElectricAnalysisRealtimeProfileData(String orgId) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
-        String runWellCountSql="select count(1) from viw_rpc_discrete_latest t where  length(t.driveraddr)=16 and t.commstatus=1 and t.runStatus=1 and t.org_id in ("+orgId+")";
-        String stopWellCountSql="select count(1) from viw_rpc_discrete_latest t where length(t.driveraddr)=16 and t.commstatus=1 and t.runStatus=0 and t.org_id in ("+orgId+")";
+        String runWellCountSql="select count(1) from viw_rpc_discrete_latest t where  length(t.deviceaddr)=16 and t.commstatus=1 and t.runStatus=1 and t.org_id in ("+orgId+")";
+        String stopWellCountSql="select count(1) from viw_rpc_discrete_latest t where length(t.deviceaddr)=16 and t.commstatus=1 and t.runStatus=0 and t.org_id in ("+orgId+")";
         String warnningWellCountSql="select count(1) from viw_rpc_discrete_latest t,viw_rpc_diagram_latest t2 "
-        		+ " where t.wellId=t2.wellId and length(t.driveraddr)=16"
+        		+ " where t.wellId=t2.wellId and length(t.deviceaddr)=16"
         		+ " and (t.workingconditionAlarmLevel>0  or t.commAlarmLevel>0 or t.runAlarmLevel>0 or t2.iDegreeBalanceAlarmLevel>0 or t2.wattDegreeBalanceAlarmlevel>0)  "
         		+ " and t.org_id in ("+orgId+")";
         int runWellCount=this.getTotalCountRows(runWellCountSql);
@@ -1361,7 +1361,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
 				+ " frequencyRunValue,signal,interval,deviceVer "
 				+ " from viw_rpc_discrete_latest t "
-				+ " where t.org_id in("+orgId+") and length(t.driveraddr)=16 ";
+				+ " where t.org_id in("+orgId+") and length(t.deviceaddr)=16 ";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sourcesql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+100) ";
@@ -1568,9 +1568,9 @@ public class PSToFSService<T> extends BaseService<T> {
 	
 	public String getElectricAnalysisDailyProfileData(String orgId,String date) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
-        String runWellCountSql="select count(1) from viw_rpc_total_day t where length(t.driveraddr)=16 and  t.runStatus=1 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
-        String stopWellCountSql="select count(1) from viw_rpc_total_day t where length(t.driveraddr)=16 and  t.runStatus=0 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
-        String warnningWellCountSql="select count(1) from viw_rpc_total_day t where length(t.driveraddr)=16 and (t.workingConditionAlarmLevel_E>0  or commAlarmLevel>0 or runAlarmLevel>0 or idegreebalanceAlarmLevel>0 or wattdegreebalanceAlarmLevel>0)  and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String runWellCountSql="select count(1) from viw_rpc_total_day t where length(t.deviceaddr)=16 and  t.runStatus=1 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String stopWellCountSql="select count(1) from viw_rpc_total_day t where length(t.deviceaddr)=16 and  t.runStatus=0 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String warnningWellCountSql="select count(1) from viw_rpc_total_day t where length(t.deviceaddr)=16 and (t.workingConditionAlarmLevel_E>0  or commAlarmLevel>0 or runAlarmLevel>0 or idegreebalanceAlarmLevel>0 or wattdegreebalanceAlarmLevel>0)  and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
         int runWellCount=this.getTotalCountRows(runWellCountSql);
         int stopWellCount=this.getTotalCountRows(stopWellCountSql);
         int warnningWellCount=this.getTotalCountRows(warnningWellCountSql);
@@ -1587,7 +1587,7 @@ public class PSToFSService<T> extends BaseService<T> {
 	public String getElectricAnalysisDailyProfilePieData(String orgId,String date,String type) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
         String sql="select  t."+type+" ,count(id) from viw_rpc_total_day t "
-        		+ " where length(t.driveraddr)=16 "
+        		+ " where length(t.deviceaddr)=16 "
         		+ " and t.org_id in("+orgId+") "
         		+ " and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')"
         		+ " group by t."+type+"";
@@ -1643,7 +1643,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
 				+ " signalMax,signalMin,signal,signalStr"
 				+ " from viw_rpc_total_day t "
-				+ " where t.org_id in("+orgId+") and length(t.driveraddr)=16";
+				+ " where t.org_id in("+orgId+") and length(t.deviceaddr)=16";
 		
 		if(StringManagerUtils.isNotNull(wellType)){
 			sourcesql+=" and liftingtype>="+wellType+" and liftingtype<("+wellType+"+100) ";

@@ -345,7 +345,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			liftingType_Str = " and t.liftingtype like '%" + liftingType.substring(0, 1)+ "%'";
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
-				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,"
+				+ " t.protocolcode,t.acquisitionunit,t.deviceaddr,t.deviceid,"
 				+ " t.runtimeefficiencysource,t.videourl,t.sortnum,"
 				+ " t.protocol "
 				+ " from viw_wellinformation t where 1=1"
@@ -379,10 +379,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 			if( ( entry.getValue() instanceof RTUDriveConfig ) ){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-				driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
+				driverDropdownData.append("'"+driveConfig.getProtocolName()+"',");
 			}else if( ( entry.getValue() instanceof KafkaConfig ) ){
 				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-				driverDropdownData.append("'"+driveConfig.getDriverName()+"',");
+				driverDropdownData.append("'"+driveConfig.getProtocolName()+"',");
 			}
 			
 		}
@@ -399,19 +399,19 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"driverDropdownData\":"+driverDropdownData.toString()+",\"unitDropdownData\":"+unitDropdownData.toString()+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String driverName="";
+			String protocolName="";
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 				if( ( entry.getValue() instanceof RTUDriveConfig ) ){
 					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-					if(driverCode.equals(driveConfig.getDriverCode())){
-						driverName=driveConfig.getDriverName();
+					if(driverCode.equals(driveConfig.getProtocolCode())){
+						protocolName=driveConfig.getProtocolName();
 						break;
 					}
 				}else if( ( entry.getValue() instanceof KafkaConfig ) ){
 					KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-					if(driverCode.equals(driveConfig.getDriverCode())){
-						driverName=driveConfig.getDriverName();
+					if(driverCode.equals(driveConfig.getProtocolCode())){
+						protocolName=driveConfig.getProtocolName();
 						break;
 					}
 				}
@@ -422,11 +422,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[3]+"\",");
 			result_json.append("\"liftingType\":\""+obj[4]+"\",");
 			result_json.append("\"liftingTypeName\":\""+obj[5]+"\",");
-			result_json.append("\"driverCode\":\""+obj[6]+"\",");
-			result_json.append("\"driverName\":\""+driverName+"\",");
+			result_json.append("\"protocolCode\":\""+obj[6]+"\",");
+			result_json.append("\"protocolName\":\""+protocolName+"\",");
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
-			result_json.append("\"driverAddr\":\""+obj[8]+"\",");
-			result_json.append("\"driverId\":\""+obj[9]+"\",");
+			result_json.append("\"deviceAddr\":\""+obj[8]+"\",");
+			result_json.append("\"deviceId\":\""+obj[9]+"\",");
 			result_json.append("\"runtimeEfficiencySource\":\""+obj[10]+"\",");
 			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
 			result_json.append("\"sortNum\":\""+obj[12]+"\",");
@@ -469,7 +469,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			liftingType_Str = " and t.liftingtype like '%" + liftingType.substring(0, 1)+ "%'";
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
-				+ " t.drivercode,t.acquisitionunit,t.driveraddr,t.driverid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
+				+ " t.protocolcode,t.acquisitionunit,t.deviceaddr,t.deviceid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.runtimeefficiencysource,t.videourl,t.sortnum, "
 				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
 				+ " from viw_wellinformation t where 1=1"
@@ -482,12 +482,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String driverName="";
+			String protocolName="";
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
-				if(driverCode.equals(driveConfig.getDriverCode())){
-					driverName=driveConfig.getDriverName();
+				if(driverCode.equals(driveConfig.getProtocolCode())){
+					protocolName=driveConfig.getProtocolName();
 					break;
 				}
 			}
@@ -497,11 +497,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[3]+"\",");
 			result_json.append("\"liftingType\":\""+obj[4]+"\",");
 			result_json.append("\"liftingTypeName\":\""+obj[5]+"\",");
-			result_json.append("\"driverCode\":\""+obj[6]+"\",");
-			result_json.append("\"driverName\":\""+driverName+"\",");
+			result_json.append("\"protocolCode\":\""+obj[6]+"\",");
+			result_json.append("\"protocolName\":\""+protocolName+"\",");
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
-			result_json.append("\"driverAddr\":\""+obj[8]+"\",");
-			result_json.append("\"driverId\":\""+obj[9]+"\",");
+			result_json.append("\"deviceAddr\":\""+obj[8]+"\",");
+			result_json.append("\"deviceId\":\""+obj[9]+"\",");
 			result_json.append("\"acqcycle_diagram\":\""+obj[10]+"\",");
 			result_json.append("\"acqcycle_discrete\":\""+obj[11]+"\",");
 			result_json.append("\"savecycle_discrete\":\""+obj[12]+"\",");

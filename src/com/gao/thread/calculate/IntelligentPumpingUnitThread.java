@@ -85,7 +85,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
         				break;
         			}
     				String revMacStr="";
-    				if("BeeTech".equalsIgnoreCase(driveConfig.getDriverCode())){
+    				if("BeeTech".equalsIgnoreCase(driveConfig.getProtocolCode())){
     					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
     						byte[] macByte=new byte[10];
         					for(int i=0;i<10;i++){
@@ -93,7 +93,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
         					}
         					revMacStr=new String(macByte);
     					}
-    				}else if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    				}else if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getProtocolCode())){
     					if((recByte[0]&0xFF)==0xAA&&(recByte[1]&0xFF)==0x01){
     						byte[] macByte=new byte[11];
         					for(int i=0;i<11;i++){
@@ -117,7 +117,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 						for(int j=0;j<EquipmentDriverServerTask.clientUnitList.size();j++){//遍历已连接的客户端
 							if(EquipmentDriverServerTask.clientUnitList.get(j).socket!=null){//如果已连接
 								for(int k=0;k<EquipmentDriverServerTask.clientUnitList.get(j).unitDataList.size();k++){
-									if(revMacStr.equals(EquipmentDriverServerTask.clientUnitList.get(j).unitDataList.get(k).driverAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
+									if(revMacStr.equals(EquipmentDriverServerTask.clientUnitList.get(j).unitDataList.get(k).deviceAddr)){//查询原有设备地址和新地址的连接，如存在断开资源，释放资源
 										if(EquipmentDriverServerTask.clientUnitList.get(j).thread!=null){
 											EquipmentDriverServerTask.clientUnitList.get(j).thread.interrupt();
 											EquipmentDriverServerTask.clientUnitList.get(j).thread.isExit=true;
@@ -132,7 +132,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 							}
 						}
     					for(int i=0;i<EquipmentDriverServerTask.units.size();i++){
-    						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).driverAddr)){
+    						if(revMacStr.equalsIgnoreCase(beeTechDriverServerTast.units.get(i).deviceAddr)){
     							System.out.println(beeTechDriverServerTast.units.get(i).wellName+"上线");
     							clientUnit.unitDataList.add(beeTechDriverServerTast.units.get(i));
     							clientUnit.unitDataList.get(clientUnit.unitDataList.size()-1).setCommStatus(1);
@@ -151,7 +151,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     					}else{
     						String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 							String updateDiscreteComm="update tbl_rpc_discrete_latest t set t.commstatus=1,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')  "
-									+ " where t.wellId in (select well.id from tbl_wellinformation well where well.driveraddr='"+revMacStr+"') ";
+									+ " where t.wellId in (select well.id from tbl_wellinformation well where well.deviceaddr='"+revMacStr+"') ";
 							Connection conn=OracleJdbcUtis.getConnection();
 							Statement stmt=null;
 							try {
@@ -2078,7 +2078,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 			readByte[10]=0x00;
 			readByte[11]=0x02;
 			readByte[12]=0x04;
-			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getProtocolCode())){
 				readByte[13]=dataArr[3];
 				readByte[14]=dataArr[2];
 				readByte[15]=dataArr[1];
@@ -2099,7 +2099,7 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 			dataByte[4]=0x00;
 			dataByte[5]=0x02;
 			dataByte[6]=0x04;
-			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+			if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getProtocolCode())){
 				dataByte[7]=dataArr[3];
 				dataByte[8]=dataArr[2];
 				dataByte[9]=dataArr[1];
@@ -2256,13 +2256,13 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
     public float getFloat(byte[] arr,int index, int protocol){  
     	float result=0;
     	if(protocol==1){
-    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getProtocolCode())){
     			result=StringManagerUtils.getFloatLittle(arr, 9+index);
     		}else{
     			result=StringManagerUtils.getFloat(arr, 9+index);
     		}
     	}else if(protocol==2){
-    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getDriverCode())){
+    		if("SunMoonStandardDrive".equalsIgnoreCase(driveConfig.getProtocolCode())){
     			result=StringManagerUtils.getFloatLittle(arr, 3+index);
     		}else{
     			result=StringManagerUtils.getFloat(arr, 3+index);

@@ -648,7 +648,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 //		return requestDataList;
 //	}
 	
-	public List<String> getFSDiagramDailyCalculationRequestData(String tatalDate,String wellId) throws ParseException{
+	public List<String> getFSDiagramDailyCalculationRequestData(String tatalDate,String wellId,String endAcqTime) throws ParseException{
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
@@ -697,6 +697,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" and t.resultstatus=1 "
 //											+" and t.workingconditioncode<>1232 "
 											+" and t.acqTime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+		if(StringManagerUtils.isNotNull(endAcqTime)){
+			singleCalculateResuleSql+=" and t.acqTime<to_date('"+endAcqTime+"','yyyy-mm-dd hh24:mi:ss')";
+		}
 		String statusSql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
@@ -1042,6 +1045,11 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("{\"AKString\":\"\",");
 				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
 				dataSbf.append("\"Date\":\""+date+"\",");
+				if(StringManagerUtils.isNotNull(endAcqTime)){
+					dataSbf.append("\"EndAcqTime\":\""+endAcqTime+"\",");
+				}else{
+					dataSbf.append("\"EndAcqTime\":\""+acqTimeList.get(acqTimeList.size()-1)+"\",");
+				}
 				dataSbf.append("\"OffsetHour\":0,");
 				
 				dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");

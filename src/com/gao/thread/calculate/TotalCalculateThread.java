@@ -17,14 +17,16 @@ public class TotalCalculateThread extends Thread{
 	private int wellNo;
 	private int liftingType;
 	private String tatalDate;
+	private String endAcqTime;
 	private CalculateDataService<?> calculateDataService=null;
-	public TotalCalculateThread(int threadId, int wellNo, int liftingType,String tatalDate,
+	public TotalCalculateThread(int threadId, int wellNo, int liftingType,String tatalDate,String endAcqTime,
 			CalculateDataService<?> calculateDataService) {
 		super();
 		this.threadId = threadId;
 		this.wellNo = wellNo;
 		this.liftingType = liftingType;
 		this.tatalDate=tatalDate;
+		this.endAcqTime=endAcqTime;
 		this.calculateDataService = calculateDataService;
 	}
 	
@@ -36,7 +38,7 @@ public class TotalCalculateThread extends Thread{
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		try {
 			if(liftingType>=200 && liftingType<300){//抽油机
-				requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellNo+"");
+				requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellNo+"",endAcqTime);
 				discreteRequestDataList=calculateDataService.getDiscreteDailyCalculation(tatalDate,wellNo+"");
 			}else{//螺杆泵
 				requestDataList=calculateDataService.getPCPRPMDailyCalculationRequestData(tatalDate,wellNo+"");

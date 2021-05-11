@@ -9,6 +9,8 @@ public class TotalAnalysisRequestData {
     private String WellName;
     
     private String Date;
+    
+    private String EndAcqTime;
 
     private List<EveryTime> EveryTime;
 
@@ -932,5 +934,11 @@ public class TotalAnalysisRequestData {
 	}
 	public void setDate(String date) {
 		Date = date;
+	}
+	public String getEndAcqTime() {
+		return EndAcqTime;
+	}
+	public void setEndAcqTime(String endAcqTime) {
+		EndAcqTime = endAcqTime;
 	}
 }

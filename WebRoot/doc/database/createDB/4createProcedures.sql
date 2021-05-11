@@ -1226,13 +1226,14 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_commRange in tbl_rpc_total_day.commrange%TYPE,
   v_runStatus in number,v_runTime in number,v_runTimeEfficiency in number,
   v_runRange tbl_rpc_total_day.runrange%TYPE,
-  v_calDate in varchar2
+  v_calDate in varchar2,v_endAcqTime in varchar2
   ) is
   p_msg varchar2(3000) := 'error';
   p_wellid number:=0;
   p_wellcount number:=0;
   p_totalresultcount number:=0;
   p_totalresultid number:=0;
+  p_singleDiagramCount number:=0;
 begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
@@ -1240,6 +1241,8 @@ begin
      --查询是否已存在当天计算记录
     select count(*) into p_totalresultcount from tbl_rpc_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
+    --查询最新功图时间
+    select count(1) into p_singleDiagramCount from tbl_rpc_diagram_total t where t.wellid= p_wellid and t.acqtime=to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss');
     --如不存在
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
@@ -1490,6 +1493,42 @@ begin
       where t.id=p_totalresultid;
       commit;
       p_msg := '更新成功';
+      if p_singleDiagramCount =0 then
+        insert into tbl_rpc_diagram_total(wellid,acqtime,
+        resultcode,stroke,spm,fmax,fmin,
+        fullnesscoefficient,
+        liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,volumewatercut,
+        liquidweightproduction,oilweightproduction,waterweightproduction,weightwatercut,
+        wattdegreebalance,idegreebalance,deltaradius,
+        systemefficiency,surfacesystemefficiency,welldownsystemefficiency,
+        energyper100mlift,
+        pumpeff
+        )values(p_wellid,to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss'),
+        v_workingconditioncode,v_Stroke,v_SPM,v_FMax_Avg,v_FMin_Avg,
+        v_fullnessCoefficient,
+        v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_waterCut,
+        v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_waterCut_w,
+        v_wattDegreeBalance,v_iDegreeBalance,v_DeltaRadius,
+        v_systemEfficiency,v_surfaceSystemEfficiency,v_wellDownSystemEfficiency,
+        v_powerConsumptionPerTHM,
+        v_pumpEff
+        );
+        commit;
+        p_msg := '单张功图汇总插入成功';
+      elsif p_singleDiagramCount>0 then
+        update tbl_rpc_diagram_total t
+        set t.resultcode=v_workingconditioncode,t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax_Avg,t.fmin=v_FMin_Avg,
+        t.fullnesscoefficient=v_fullnessCoefficient,
+        t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_waterCut,
+        t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_waterCut_w,
+        t.wattdegreebalance=v_wattDegreeBalance,t.idegreebalance=v_iDegreeBalance,t.deltaradius=v_DeltaRadius,
+        t.systemefficiency=v_systemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,t.welldownsystemefficiency=v_wellDownSystemEfficiency,
+        t.energyper100mlift=v_powerConsumptionPerTHM,
+        t.pumpeff=v_pumpEff
+        where t.wellid=p_wellid and t.acqtime=to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss');
+        commit;
+        p_msg := '单张功图汇总更新成功';
+      end if;
     end if;
   elsif p_wellcount=0 then
     p_msg := '井号不存在';
@@ -2221,11 +2260,11 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
                                                     v_resname    in varchar2,
                                                     v_wellName    in varchar2,
                                                     v_liftingTypeName   in varchar2,
-                                                    v_driverCode    in varchar2,
+                                                    v_protocolCode    in varchar2,
                                                     v_protocol    in varchar2,
                                                     v_acquisitionUnit   in varchar2,
-                                                    v_driverAddr    in varchar2,
-                                                    v_driverId   in varchar2,
+                                                    v_deviceAddr    in varchar2,
+                                                    v_deviceId   in varchar2,
                                                     v_runtimeEfficiencySource  in varchar2,
                                                     v_videoUrl   in varchar2,
                                                     v_sortNum  in NUMBER,
@@ -2257,10 +2296,10 @@ begin
            Set t.orgid   = v_orgId,
                t.resname  =v_resname,
                t.liftingtype   = (select code2.itemvalue from tbl_code code2 where code2.itemcode='LiftingType' and code2.itemname=v_liftingTypeName),
-               t.drivercode=v_driverCode,
+               t.protocolcode=v_protocolCode,
                t.protocol=p_prototal,
                t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1),
-               t.driveraddr=v_driverAddr,t.driverid=v_driverId,
+               t.deviceaddr=v_deviceAddr,t.deviceid=v_deviceId,
                t.videourl=v_videourl,
                t.runtimeefficiencysource   = (select code3.itemvalue from tbl_code code3 where code3.itemcode='RuntimeEfficiencySource' and code3.itemname=v_runtimeEfficiencySource),
                t.sortnum=v_sortNum
@@ -2269,9 +2308,9 @@ begin
            p_msg := '修改成功';
         elsif wellcount=0 then
               if wellamount<200 then
-                  insert into tbl_wellinformation(wellName,drivercode,protocol,driveraddr,driverid,
+                  insert into tbl_wellinformation(wellName,protocolcode,protocol,deviceaddr,deviceid,
                   videourl,Sortnum)
-                  values(v_wellName,v_driverCode,p_prototal,v_driverAddr,v_driverId,v_videourl,v_sortNum);
+                  values(v_wellName,v_protocolCode,p_prototal,v_deviceAddr,v_deviceId,v_videourl,v_sortNum);
                   commit;
                   update tbl_wellinformation t set
                      orgId   = v_orgId,

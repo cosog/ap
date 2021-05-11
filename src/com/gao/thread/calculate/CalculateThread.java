@@ -89,6 +89,11 @@ public class CalculateThread extends Thread{
 						System.out.println("记录:"+jlbh+"计算无数据返回");
 					}
 					calculateDataService.saveCalculateResult(jlbh,calculateResponseData);
+					String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+					totalUrl+="?date="+(obj[1]+"").split(" ")[0];
+					totalUrl+="&wellId="+wellNo;
+					totalUrl+="&endAcqTime="+obj[1];
+					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 				}
 			}catch(Exception e){
 				continue;
@@ -108,18 +113,9 @@ public class CalculateThread extends Thread{
 				totalUrl+="?date="+totalDateList.get(i);
 				totalUrl+="&wellId="+wellNo;
 				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
-			}
-			
-			remainSql="select count(1)"
-					+ " from tbl_rpc_diagram_hist t,tbl_rpc_productiondata_hist t2,tbl_wellinformation t3"
-					+ " where t.wellid=t3.id and t.productiondataid=t2.id  "
-					+ " and t.resultstatus in (0,2)  "
-					+ " and t.wellid="+wellNo+"";
-			remainTotals=calculateDataService.getTotalCountRows(remainSql);
-			if(remainTotals==0){//如果该口井全部计算完成，汇总当天数据
-				String totalDate = StringManagerUtils.getCurrentTime();
-				String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
-				totalUrl+="?date="+totalDate;
+				
+				totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
+				totalUrl+="?date="+StringManagerUtils.getCurrentTime();
 				totalUrl+="&wellId="+wellNo;
 				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 			}

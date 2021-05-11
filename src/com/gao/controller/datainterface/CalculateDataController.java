@@ -222,6 +222,7 @@ public class CalculateDataController extends BaseController{
 	public String DailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
+		String endAcqTime=ParamUtils.getParameter(request, "endAcqTime");
 		if(StringManagerUtils.isNotNull(tatalDate)){
 			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
 		}else{
@@ -251,7 +252,7 @@ public class CalculateDataController extends BaseController{
 			while(!isCal){
 				for(int j=0;j<totalCalculateThreadList.length;j++){
 					if(totalCalculateThreadList[j]==null || !(totalCalculateThreadList[j].isAlive())){
-						totalCalculateThreadList[j]=new TotalCalculateThread(j,StringManagerUtils.stringToInteger(wellObj[0]+""),StringManagerUtils.stringToInteger(wellObj[1]+""),tatalDate,calculateDataService);
+						totalCalculateThreadList[j]=new TotalCalculateThread(j,StringManagerUtils.stringToInteger(wellObj[0]+""),StringManagerUtils.stringToInteger(wellObj[1]+""),tatalDate,endAcqTime,calculateDataService);
 						totalCalculateThreadList[j].start();
 						isCal=true;
 						break;
@@ -293,12 +294,13 @@ public class CalculateDataController extends BaseController{
 	public String FSDiagramDailyCalculation() throws ParseException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
+		String endAcqTime=ParamUtils.getParameter(request, "endAcqTime");
 		if(StringManagerUtils.isNotNull(tatalDate)){
 			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
 		}else{
 			tatalDate=StringManagerUtils.getCurrentTime();
 		}
-		List<String> requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
+		List<String> requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {

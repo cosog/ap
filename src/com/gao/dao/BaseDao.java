@@ -4509,7 +4509,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"                       //21
 					+ "?,?,?,?,"                                                         //4
 					+ "?,?,?,?,"                                                         //4
-					+ "?)}");                                                            //1
+					+ "?,?)}");                                                          //2
 			cs.setString(1, totalAnalysisRequestData.getWellName());//井名
 			cs.setInt(2, totalAnalysisResponseData.getResultStatus());//计算状态
 			
@@ -4782,6 +4782,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(241, totalAnalysisResponseData.getRunRange());//运行区间
 			
 			cs.setString(242, tatalDate);//汇总日期
+			cs.setString(243, totalAnalysisRequestData.getEndAcqTime());//汇总最后一条记录的采集时间
 			cs.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();

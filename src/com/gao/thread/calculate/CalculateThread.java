@@ -90,9 +90,9 @@ public class CalculateThread extends Thread{
 					}
 					calculateDataService.saveCalculateResult(jlbh,calculateResponseData);
 					String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
-					totalUrl+="?date="+(obj[1]+"").split(" ")[0];
+					totalUrl+="?date="+(obj[2]+"").split(" ")[0];
 					totalUrl+="&wellId="+wellNo;
-					totalUrl+="&endAcqTime="+obj[1];
+					totalUrl+="&endAcqTime="+obj[2];
 					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 				}
 			}catch(Exception e){

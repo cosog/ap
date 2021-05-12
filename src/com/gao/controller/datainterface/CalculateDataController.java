@@ -304,7 +304,7 @@ public class CalculateDataController extends BaseController{
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
-//				System.out.println(requestDataList.get(i));
+				System.out.println(requestDataList.get(i));
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
@@ -313,12 +313,7 @@ public class CalculateDataController extends BaseController{
 				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
 //				System.out.println(responseData);
-				
-				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-//					if(totalAnalysisResponseData.getResultString().length()>2000){
-//						totalAnalysisResponseData.stringLengthManage();
-//					}
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 				}else{
 					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));

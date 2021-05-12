@@ -1252,10 +1252,14 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	public String getAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,waterCut_W,"
+		String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
+				+ " liquidWeightProduction_l,oilWeightProduction_l,waterWeightProduction_l,"
+				+ " waterCut_W,"
 				+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
 		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,waterCut,"
+			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
+					+ " liquidVolumetricProduction_l,oilVolumetricProduction_l,waterVolumetricProduction_l,"
+					+ " waterCut,"
 					+ " availablePlungerstrokeProd_V,pumpClearanceLeakProd_V,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_V,";;
 		}
 		String tableName="viw_rpc_comprehensive_latest";
@@ -1276,11 +1280,6 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " and t.wellname='"+selectedWellName+"' "
 				+ " and t4.operationtype=2 "
 				+ " order by t4.seq";
-//		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
-//				+ " from tbl_wellinformation t,tbl_acq_group_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
-//				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t3.id=t4.itemid "
-//				+ " and t.wellname='"+selectedWellName+"' "
-//				+ " order by t3.seq";
 		String sql="select wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
 				+ prodCol
 				+ " theoreticalProduction,"
@@ -1347,141 +1346,144 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"liquidProduction\":\""+obj[5]+"\",");
 			result_json.append("\"oilProduction\":\""+obj[6]+"\",");
 			result_json.append("\"waterProduction\":\""+obj[7]+"\",");
-			result_json.append("\"waterCut\":\""+obj[8]+"\",");
+			result_json.append("\"liquidProduction_L\":\""+obj[8]+"\",");
+			result_json.append("\"oilProduction_L\":\""+obj[9]+"\",");
+			result_json.append("\"waterProduction_L\":\""+obj[10]+"\",");
+			result_json.append("\"waterCut\":\""+obj[11]+"\",");
 			
-			result_json.append("\"availablePlungerstrokeProd\":\""+obj[9]+"\",");
-			result_json.append("\"pumpClearanceLeakProd\":\""+obj[10]+"\",");
-			result_json.append("\"tvleakProduction\":\""+obj[11]+"\",");
-			result_json.append("\"svleakProduction\":\""+obj[12]+"\",");
-			result_json.append("\"gasInfluenceProd\":\""+obj[13]+"\",");
+			result_json.append("\"availablePlungerstrokeProd\":\""+obj[12]+"\",");
+			result_json.append("\"pumpClearanceLeakProd\":\""+obj[13]+"\",");
+			result_json.append("\"tvleakProduction\":\""+obj[14]+"\",");
+			result_json.append("\"svleakProduction\":\""+obj[15]+"\",");
+			result_json.append("\"gasInfluenceProd\":\""+obj[16]+"\",");
 			
-			result_json.append("\"theoreticalProduction\":\""+obj[14]+"\",");
-			result_json.append("\"plungerStroke\":\""+obj[15]+"\",");
-			result_json.append("\"availablePlungerStroke\":\""+obj[16]+"\",");
+			result_json.append("\"theoreticalProduction\":\""+obj[17]+"\",");
+			result_json.append("\"plungerStroke\":\""+obj[18]+"\",");
+			result_json.append("\"availablePlungerStroke\":\""+obj[19]+"\",");
 			
-			result_json.append("\"pumpBoreDiameter\":\""+obj[17]+"\",");
-			result_json.append("\"pumpSettingDepth\":\""+obj[18]+"\",");
-			result_json.append("\"producingFluidLevel\":\""+obj[19]+"\",");
-			result_json.append("\"submergence\":\""+obj[20]+"\",");
+			result_json.append("\"pumpBoreDiameter\":\""+obj[20]+"\",");
+			result_json.append("\"pumpSettingDepth\":\""+obj[21]+"\",");
+			result_json.append("\"producingFluidLevel\":\""+obj[22]+"\",");
+			result_json.append("\"submergence\":\""+obj[23]+"\",");
 			
-			result_json.append("\"stroke\":\""+obj[21]+"\",");
-			result_json.append("\"spm\":\""+obj[22]+"\",");
-			result_json.append("\"fmax\":\""+obj[23]+"\",");
-			result_json.append("\"fmin\":\""+obj[24]+"\",");
-			result_json.append("\"deltaF\":\""+obj[25]+"\",");
-			result_json.append("\"deltaLoadLine\":\""+obj[26]+"\",");
-			result_json.append("\"fsDiagramArea\":\""+obj[27]+"\",");
+			result_json.append("\"stroke\":\""+obj[24]+"\",");
+			result_json.append("\"spm\":\""+obj[25]+"\",");
+			result_json.append("\"fmax\":\""+obj[26]+"\",");
+			result_json.append("\"fmin\":\""+obj[27]+"\",");
+			result_json.append("\"deltaF\":\""+obj[28]+"\",");
+			result_json.append("\"deltaLoadLine\":\""+obj[29]+"\",");
+			result_json.append("\"fsDiagramArea\":\""+obj[30]+"\",");
 			
-			result_json.append("\"motorInputActivePower\":\""+obj[28]+"\",");
-			result_json.append("\"polishrodPower\":\""+obj[29]+"\",");
-			result_json.append("\"waterPower\":\""+obj[30]+"\",");
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[31]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[32]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[33]+"\",");
-			result_json.append("\"powerConsumptionPerthm\":\""+obj[34]+"\",");
-			result_json.append("\"pumpEff1\":\""+obj[35]+"\",");
-			result_json.append("\"pumpEff2\":\""+obj[36]+"\",");
-			result_json.append("\"pumpEff3\":\""+obj[37]+"\",");
-			result_json.append("\"pumpEff4\":\""+obj[38]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[39]+"\",");
-			result_json.append("\"rodFlexLength\":\""+obj[40]+"\",");
-			result_json.append("\"tubingFlexLength\":\""+obj[41]+"\",");
-			result_json.append("\"inertiaLength\":\""+obj[42]+"\",");
+			result_json.append("\"motorInputActivePower\":\""+obj[31]+"\",");
+			result_json.append("\"polishrodPower\":\""+obj[32]+"\",");
+			result_json.append("\"waterPower\":\""+obj[33]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[36]+"\",");
+			result_json.append("\"powerConsumptionPerthm\":\""+obj[37]+"\",");
+			result_json.append("\"pumpEff1\":\""+obj[38]+"\",");
+			result_json.append("\"pumpEff2\":\""+obj[39]+"\",");
+			result_json.append("\"pumpEff3\":\""+obj[40]+"\",");
+			result_json.append("\"pumpEff4\":\""+obj[41]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[42]+"\",");
+			result_json.append("\"rodFlexLength\":\""+obj[43]+"\",");
+			result_json.append("\"tubingFlexLength\":\""+obj[44]+"\",");
+			result_json.append("\"inertiaLength\":\""+obj[45]+"\",");
 			
-			result_json.append("\"pumpIntakeP\":\""+obj[43]+"\",");
-			result_json.append("\"pumpIntakeT\":\""+obj[44]+"\",");
-			result_json.append("\"pumpIntakeGOL\":\""+obj[45]+"\",");
-			result_json.append("\"pumpIntakeVisl\":\""+obj[46]+"\",");
-			result_json.append("\"pumpIntakeBo\":\""+obj[47]+"\",");
+			result_json.append("\"pumpIntakeP\":\""+obj[46]+"\",");
+			result_json.append("\"pumpIntakeT\":\""+obj[47]+"\",");
+			result_json.append("\"pumpIntakeGOL\":\""+obj[48]+"\",");
+			result_json.append("\"pumpIntakeVisl\":\""+obj[49]+"\",");
+			result_json.append("\"pumpIntakeBo\":\""+obj[50]+"\",");
 			
-			result_json.append("\"pumpOutletP\":\""+obj[48]+"\",");
-			result_json.append("\"pumpOutletT\":\""+obj[49]+"\",");
-			result_json.append("\"pumpOutletGOL\":\""+obj[50]+"\",");
-			result_json.append("\"pumpOutletVisl\":\""+obj[51]+"\",");
-			result_json.append("\"pumpOutletBo\":\""+obj[52]+"\",");
+			result_json.append("\"pumpOutletP\":\""+obj[51]+"\",");
+			result_json.append("\"pumpOutletT\":\""+obj[52]+"\",");
+			result_json.append("\"pumpOutletGOL\":\""+obj[53]+"\",");
+			result_json.append("\"pumpOutletVisl\":\""+obj[54]+"\",");
+			result_json.append("\"pumpOutletBo\":\""+obj[55]+"\",");
 			
-			result_json.append("\"rodString\":\""+obj[53]+"\",");
+			result_json.append("\"rodString\":\""+obj[56]+"\",");
 			
-			result_json.append("\"upperLoadLineOfExact\":\""+obj[54]+"\",");
+			result_json.append("\"upperLoadLineOfExact\":\""+obj[57]+"\",");
 			
-			result_json.append("\"tubingPressure\":\""+obj[55]+"\",");
-			result_json.append("\"casingPressure\":\""+obj[56]+"\",");
-			result_json.append("\"wellHeadFluidTemperature\":\""+obj[57]+"\",");
-			result_json.append("\"productionGasOilRatio\":\""+obj[58]+"\",");
+			result_json.append("\"tubingPressure\":\""+obj[58]+"\",");
+			result_json.append("\"casingPressure\":\""+obj[59]+"\",");
+			result_json.append("\"wellHeadFluidTemperature\":\""+obj[60]+"\",");
+			result_json.append("\"productionGasOilRatio\":\""+obj[61]+"\",");
 			
-			result_json.append("\"acqTime_d\":\""+obj[59]+"\",");
-			result_json.append("\"commStatus\":\""+obj[60]+"\",");
-			result_json.append("\"runStatus\":\""+obj[61]+"\",");
-			result_json.append("\"Ia\":\""+obj[62]+"\",");
-			result_json.append("\"Ib\":\""+obj[63]+"\",");
-			result_json.append("\"Ic\":\""+obj[64]+"\",");
-			result_json.append("\"Va\":\""+obj[65]+"\",");
-			result_json.append("\"Vb\":\""+obj[66]+"\",");
-			result_json.append("\"Vc\":\""+obj[67]+"\",");
-			result_json.append("\"totalKWattH\":\""+obj[68]+"\",");
-			result_json.append("\"totalKVarH\":\""+obj[69]+"\",");
-			result_json.append("\"totalKVAH\":\""+obj[70]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[71]+"\",");
-			result_json.append("\"todayKVarH\":\""+obj[72]+"\",");
-			result_json.append("\"todayKVAH\":\""+obj[73]+"\",");
+			result_json.append("\"acqTime_d\":\""+obj[62]+"\",");
+			result_json.append("\"commStatus\":\""+obj[63]+"\",");
+			result_json.append("\"runStatus\":\""+obj[64]+"\",");
+			result_json.append("\"Ia\":\""+obj[65]+"\",");
+			result_json.append("\"Ib\":\""+obj[66]+"\",");
+			result_json.append("\"Ic\":\""+obj[67]+"\",");
+			result_json.append("\"Va\":\""+obj[68]+"\",");
+			result_json.append("\"Vb\":\""+obj[69]+"\",");
+			result_json.append("\"Vc\":\""+obj[70]+"\",");
+			result_json.append("\"totalKWattH\":\""+obj[71]+"\",");
+			result_json.append("\"totalKVarH\":\""+obj[72]+"\",");
+			result_json.append("\"totalKVAH\":\""+obj[73]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[74]+"\",");
+			result_json.append("\"todayKVarH\":\""+obj[75]+"\",");
+			result_json.append("\"todayKVAH\":\""+obj[76]+"\",");
 			
-			result_json.append("\"wattSum\":\""+obj[74]+"\",");
-			result_json.append("\"varSum\":\""+obj[75]+"\",");
-			result_json.append("\"reversePower\":\""+obj[76]+"\",");
-			result_json.append("\"vaSum\":\""+obj[77]+"\",");
-			result_json.append("\"pfSum\":\""+obj[78]+"\",");
+			result_json.append("\"wattSum\":\""+obj[77]+"\",");
+			result_json.append("\"varSum\":\""+obj[78]+"\",");
+			result_json.append("\"reversePower\":\""+obj[79]+"\",");
+			result_json.append("\"vaSum\":\""+obj[80]+"\",");
+			result_json.append("\"pfSum\":\""+obj[81]+"\",");
 			
-			result_json.append("\"IaUpLimit\":\""+obj[79]+"\",");
-			result_json.append("\"IaDownLimit\":\""+obj[80]+"\",");
-			result_json.append("\"wattUpLimit\":\""+obj[81]+"\",");
-			result_json.append("\"wattDownLimit\":\""+obj[82]+"\",");
-			result_json.append("\"IaMax\":\""+obj[83]+"\",");
-			result_json.append("\"IaMin\":\""+obj[84]+"\",");
-			result_json.append("\"IbMax\":\""+obj[85]+"\",");
-			result_json.append("\"IbMin\":\""+obj[86]+"\",");
-			result_json.append("\"IcMax\":\""+obj[87]+"\",");
-			result_json.append("\"IcMin\":\""+obj[88]+"\",");
+			result_json.append("\"IaUpLimit\":\""+obj[82]+"\",");
+			result_json.append("\"IaDownLimit\":\""+obj[83]+"\",");
+			result_json.append("\"wattUpLimit\":\""+obj[84]+"\",");
+			result_json.append("\"wattDownLimit\":\""+obj[85]+"\",");
+			result_json.append("\"IaMax\":\""+obj[86]+"\",");
+			result_json.append("\"IaMin\":\""+obj[87]+"\",");
+			result_json.append("\"IbMax\":\""+obj[88]+"\",");
+			result_json.append("\"IbMin\":\""+obj[89]+"\",");
+			result_json.append("\"IcMax\":\""+obj[90]+"\",");
+			result_json.append("\"IcMin\":\""+obj[91]+"\",");
 			
-			result_json.append("\"frequencySetValue\":\""+obj[89]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[90]+"\",");
+			result_json.append("\"frequencySetValue\":\""+obj[92]+"\",");
+			result_json.append("\"frequencyRunValue\":\""+obj[93]+"\",");
 			
-			result_json.append("\"balanceControlMode\":\""+obj[91]+"\",");
-			result_json.append("\"balanceCalculateMode\":\""+obj[92]+"\",");
+			result_json.append("\"balanceControlMode\":\""+obj[94]+"\",");
+			result_json.append("\"balanceCalculateMode\":\""+obj[95]+"\",");
 			
-			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[93]+"");
+			int balanceAwayTime=StringManagerUtils.stringToInteger(obj[96]+"");
 			int deltaRadius1=(int)(balanceAwayTime/1000*3.6/10+0.5);
 			
-			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[94]+"");
+			int balanceCloseTime=StringManagerUtils.stringToInteger(obj[97]+"");
 			int deltaRadius2=(int)(balanceCloseTime/1000*3.6/10+0.5);
 			
 			result_json.append("\"balanceAwayTime\":\""+deltaRadius1+"\",");
 			result_json.append("\"balanceCloseTime\":\""+deltaRadius2+"\",");
 			
-			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[95]+"\",");
-			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[96]+"\",");
+			result_json.append("\"balanceAwayTimePerBeat\":\""+obj[98]+"\",");
+			result_json.append("\"balanceCloseTimePerBeat\":\""+obj[99]+"\",");
 			
-			result_json.append("\"balanceStrokeCount\":\""+obj[97]+"\",");
-			result_json.append("\"balanceOperationUpLimit\":\""+obj[98]+"\",");
-			result_json.append("\"balanceOperationDownLimit\":\""+obj[99]+"\",");
-			result_json.append("\"balanceAutoControl\":\""+obj[100]+"\",");
-			result_json.append("\"spmAutoControl\":\""+obj[101]+"\",");
-			result_json.append("\"balanceFrontLimit\":\""+obj[102]+"\",");
-			result_json.append("\"balanceAfterLimit\":\""+obj[103]+"\",");
+			result_json.append("\"balanceStrokeCount\":\""+obj[100]+"\",");
+			result_json.append("\"balanceOperationUpLimit\":\""+obj[101]+"\",");
+			result_json.append("\"balanceOperationDownLimit\":\""+obj[102]+"\",");
+			result_json.append("\"balanceAutoControl\":\""+obj[103]+"\",");
+			result_json.append("\"spmAutoControl\":\""+obj[104]+"\",");
+			result_json.append("\"balanceFrontLimit\":\""+obj[105]+"\",");
+			result_json.append("\"balanceAfterLimit\":\""+obj[106]+"\",");
 			
-			result_json.append("\"acqcycle_diagram\":\""+obj[104]+"\",");
+			result_json.append("\"acqcycle_diagram\":\""+obj[107]+"\",");
 			
-			int acqcycle_discrete1=StringManagerUtils.stringToInteger(obj[105]+"");
+			int acqcycle_discrete1=StringManagerUtils.stringToInteger(obj[108]+"");
 			float acqcycle_discrete=(float)acqcycle_discrete1/60;
 			result_json.append("\"acqcycle_discrete\":\""+acqcycle_discrete+"\",");
 			
-			result_json.append("\"signal\":\""+obj[106]+"\",");
-			result_json.append("\"deviceVer\":\""+obj[107]+"\",");
+			result_json.append("\"signal\":\""+obj[109]+"\",");
+			result_json.append("\"deviceVer\":\""+obj[110]+"\",");
 			
-			result_json.append("\"videourl\":\""+obj[108]+"\",");
-			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[109])+"\",");
-			result_json.append("\"levelCorrectValue\":\""+obj[110]+"\",");
-			result_json.append("\"noLiquidAvailablePlungerStroke\":\""+obj[111]+"\",");
-			result_json.append("\"noLiquidFullnessCoefficient\":\""+obj[112]+"\"");
+			result_json.append("\"videourl\":\""+obj[111]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[112])+"\",");
+			result_json.append("\"levelCorrectValue\":\""+obj[113]+"\",");
+			result_json.append("\"noLiquidAvailablePlungerStroke\":\""+obj[114]+"\",");
+			result_json.append("\"noLiquidFullnessCoefficient\":\""+obj[115]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");

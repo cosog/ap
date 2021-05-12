@@ -393,13 +393,13 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}
 		
 		
-		String prodCol="liquidWeightProduction";
+		String prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol="liquidVolumetricProduction";
+			prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
 		}
 		
 		String sql="select t.id,t.wellname,to_char(t.acqTime,'hh24:mi:ss'),"
-				+ " t.workingConditionName,t.workingConditionAlarmLevel,t."+prodCol+","
+				+ " t.workingConditionName,t.workingConditionAlarmLevel,"+prodCol+","
 				+ " t.stroke,t.spm,t.fmax,t.fmin,t.upperloadline,t.lowerloadline,"
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
@@ -421,22 +421,22 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				CLOB realClob=null;
 				Object[] obj = (Object[]) list.get(i);
 				if(obj[18]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					positionCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
 				if(obj[19]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[20]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					loadCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
 				if(obj[20]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[20]);
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[21]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					powerCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
 				if(obj[21]!=null){
-					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[21]);
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[22]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					currentCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
@@ -445,19 +445,20 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				dynSbf.append("\"calculateDate\":\"" + obj[2] + "\",");
 				dynSbf.append("\"workingConditionName\":\""+obj[3]+"\",");
 				dynSbf.append("\"workingConditionAlarmLevel\":\""+obj[4]+"\",");
-				dynSbf.append("\""+prodCol+"\":\""+obj[5]+"\",");
-				dynSbf.append("\"stroke\":\""+obj[6]+"\",");
-				dynSbf.append("\"spm\":\""+obj[7]+"\",");
-				dynSbf.append("\"fmax\":\""+obj[8]+"\",");
-				dynSbf.append("\"fmin\":\""+obj[9]+"\",");
-				dynSbf.append("\"upperLoadLine\":\""+obj[10]+"\",");
-				dynSbf.append("\"lowerLoadLine\":\""+obj[11]+"\",");
-				dynSbf.append("\"iDegreeBalanceLevel\":\"" + obj[12] + "\",");
-				dynSbf.append("\"iDegreeBalance\":\"" + obj[13] + "\",");
-				dynSbf.append("\"iDegreeBalanceAlarmLevel\":\"" + obj[14] + "\",");
-				dynSbf.append("\"wattDegreeBalanceLevel\":\"" + obj[15] + "\",");
-				dynSbf.append("\"wattDegreeBalance\":\"" + obj[16] + "\",");
-				dynSbf.append("\"wattDegreeBalanceAlarmLevel\":\"" + obj[17] + "\",");
+				dynSbf.append("\""+(prodCol.split(",")[0])+"\":\""+obj[5]+"\",");
+				dynSbf.append("\""+(prodCol.split(",")[1])+"\":\""+obj[6]+"\",");
+				dynSbf.append("\"stroke\":\""+obj[7]+"\",");
+				dynSbf.append("\"spm\":\""+obj[8]+"\",");
+				dynSbf.append("\"fmax\":\""+obj[9]+"\",");
+				dynSbf.append("\"fmin\":\""+obj[10]+"\",");
+				dynSbf.append("\"upperLoadLine\":\""+obj[11]+"\",");
+				dynSbf.append("\"lowerLoadLine\":\""+obj[12]+"\",");
+				dynSbf.append("\"iDegreeBalanceLevel\":\"" + obj[13] + "\",");
+				dynSbf.append("\"iDegreeBalance\":\"" + obj[14] + "\",");
+				dynSbf.append("\"iDegreeBalanceAlarmLevel\":\"" + obj[15] + "\",");
+				dynSbf.append("\"wattDegreeBalanceLevel\":\"" + obj[16] + "\",");
+				dynSbf.append("\"wattDegreeBalance\":\"" + obj[17] + "\",");
+				dynSbf.append("\"wattDegreeBalanceAlarmLevel\":\"" + obj[18] + "\",");
 				dynSbf.append("\"positionCurveData\":\"" + positionCurveData + "\",");
 				dynSbf.append("\"loadCurveData\":\"" + loadCurveData + "\",");
 				dynSbf.append("\"powerCurveData\":\"" + powerCurveData + "\",");

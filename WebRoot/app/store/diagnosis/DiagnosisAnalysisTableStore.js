@@ -52,6 +52,17 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "waterWeightProduction".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterProduction+"\",\"curve\":\"\"},";
         			break;
+        			
+    			case "liquidWeightProduction_L".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"liquidWeightProduction_L\",\"value\":\""+get_rawData.liquidProduction_L+"\",\"curve\":\"\"},";
+        			break;
+    			case "oilWeightProduction_L".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"oilWeightProduction_L\",\"value\":\""+get_rawData.oilProduction_L+"\",\"curve\":\"\"},";
+        			break;
+    			case "waterWeightProduction_L".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterWeightProduction_L\",\"value\":\""+get_rawData.waterProduction_L+"\",\"curve\":\"\"},";
+        			break;
+        			
     			case "waterCut_W".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
         			break;

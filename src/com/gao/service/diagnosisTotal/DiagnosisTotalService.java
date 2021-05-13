@@ -352,9 +352,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			tableName="viw_pcp_total_day";
 		}
 		sql="select "+statType+", count(1) from "+tableName+" t where  org_id in ("+orgId+") and calculateDate=to_date('"+totalDate+"','yyyy-mm-dd') ";
-		
 		sql+=" group by rollup("+statType+")";
-		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,\"totalDate\":\""+totalDate+"\",");
 		result_json.append("\"List\":[");
@@ -391,13 +389,10 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		if(startDateList.size()>0&&startDateList.get(0)!=null){
 			startDate=startDateList.get(0)+"";
 		}
-		
-		
 		String prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
 		}
-		
 		String sql="select t.id,t.wellname,to_char(t.acqTime,'hh24:mi:ss'),"
 				+ " t.workingConditionName,t.workingConditionAlarmLevel,"+prodCol+","
 				+ " t.stroke,t.spm,t.fmax,t.fmin,t.upperloadline,t.lowerloadline,"
@@ -409,7 +404,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+calculateDate+"','yyyy-mm-dd')+1 "
 				+ " and t.wellname='"+wellName+"' "
 				+ " order by t.acqTime desc";
-		
 		List<?> list=this.findCallSql(sql);
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyDiagramOverlay");
 		String columns = ddic.getTableHeader();
@@ -472,7 +466,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
-	
 	public String getDiagnosisTotalCurveData(Page pager,String orgId,String jh,String startDate,String endDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		String sql="select t.id, to_char(t.jssj,'yyyy-mm-dd'),t.jsdjrcyl,t.jsdjrcyl1,t.hsld,t.jsdjrcylbd "
@@ -482,9 +475,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);
-		
-		
-		
 		dynSbf.append("{\"success\":true,\"totalCount\":" + totals + ",\"jh\":\""+jh+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
@@ -504,13 +494,11 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getDiagnosisTotalDynamicCurveData(String wellName,String selectedWellName,String calculateDate, String startDate,String endDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		
 		ConfigFile configFile=Config.getInstance().configFile;
 		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";;
 		}
-		
 		String sql="select well.wellname,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ prodCol
 				+ " t.stroke,t.spm,t.wellheadfluidtemperature,t.tubingpressure,t.casingpressure,"
@@ -522,10 +510,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}else{
 			sql+="and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd')-30 and to_date('"+calculateDate+"','yyyy-mm-dd')";
 		}
-		
 		sql+= " and well.wellname='"+wellName+"' "+ " order by t.calculateDate";
 		List<?> list=this.findCallSql(sql);
-		
 		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
@@ -543,7 +529,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				dynSbf.append("\"producingFluidLevel\":"+obj[11]+",");
 				dynSbf.append("\"pumpSettingDepth\":"+obj[12]+",");
 				dynSbf.append("\"submergence\":"+obj[13]+"},");
-				
 			}
 		}
 		if(dynSbf.toString().endsWith(",")){
@@ -651,8 +636,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String analysisDataList = ddic.getTableHeader();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyAcquisition");
 		String acquisitionDataList = ddic.getTableHeader();
-		
-		
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"analysisDataList\":"+analysisDataList+",");
 		result_json.append("\"acquisitionDataList\":"+acquisitionDataList+",");
@@ -660,7 +643,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			Object[] obj=(Object[]) list.get(0);
 			result_json.append("\"runTime\":\""+obj[0]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[1]+"\",");
-			
 			result_json.append("\"iDegreeBalance\":\""+obj[2]+"\",");
 			result_json.append("\"iDegreeBalanceMax\":\""+obj[3]+"\",");
 			result_json.append("\"iDegreeBalanceMin\":\""+obj[4]+"\",");
@@ -670,8 +652,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"downStrokeIMax_Avg\":\""+obj[8]+"\",");
 			result_json.append("\"downStrokeIMax_Max\":\""+obj[9]+"\",");
 			result_json.append("\"downStrokeIMax_Min\":\""+obj[10]+"\",");
-			
-			
 			result_json.append("\"wattDegreeBalance\":\""+obj[11]+"\",");
 			result_json.append("\"wattDegreeBalanceMax\":\""+obj[12]+"\",");
 			result_json.append("\"wattDegreeBalanceMin\":\""+obj[13]+"\",");
@@ -681,15 +661,12 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"downStrokeWattMax_Avg\":\""+obj[17]+"\",");
 			result_json.append("\"downStrokeWattMax_Max\":\""+obj[18]+"\",");
 			result_json.append("\"downStrokeWattMax_Min\":\""+obj[19]+"\",");
-			
 			result_json.append("\"deltaRadius\":\""+obj[20]+"\",");
 			result_json.append("\"deltaRadiusMax\":\""+obj[21]+"\",");
 			result_json.append("\"deltaRadiusMin\":\""+obj[22]+"\",");
-			
 			result_json.append("\"theoreticalProduction\":\""+obj[23]+"\",");
 			result_json.append("\"theoreticalProductionMax\":\""+obj[24]+"\",");
 			result_json.append("\"theoreticalProductionMin\":\""+obj[25]+"\",");
-			
 			result_json.append("\"liquidProduction\":\""+obj[26]+"\",");
 			result_json.append("\"liquidProductionMax\":\""+obj[27]+"\",");
 			result_json.append("\"liquidProductionMin\":\""+obj[28]+"\",");
@@ -717,7 +694,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"gasInfluenceProd\":\""+obj[50]+"\",");
 			result_json.append("\"gasInfluenceProdMax\":\""+obj[51]+"\",");
 			result_json.append("\"gasInfluenceProdMin\":\""+obj[52]+"\",");
-			
 			result_json.append("\"stroke\":\""+obj[53]+"\",");
 			result_json.append("\"strokeMax\":\""+obj[54]+"\",");
 			result_json.append("\"strokeMin\":\""+obj[55]+"\",");
@@ -760,7 +736,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"fullnesscoEfficient\":\""+obj[92]+"\",");
 			result_json.append("\"fullnesscoEfficientMax\":\""+obj[93]+"\",");
 			result_json.append("\"fullnesscoEfficientMin\":\""+obj[94]+"\",");
-			
 			result_json.append("\"pumpEff\":\""+obj[95]+"\",");
 			result_json.append("\"pumpEffMax\":\""+obj[96]+"\",");
 			result_json.append("\"pumpEffMin\":\""+obj[97]+"\",");
@@ -785,7 +760,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"inertiaLength\":\""+obj[116]+"\",");
 			result_json.append("\"inertiaLengthMax\":\""+obj[117]+"\",");
 			result_json.append("\"inertiaLengthMin\":\""+obj[118]+"\",");
-			
 			result_json.append("\"systemEfficiency\":\""+obj[119]+"\",");
 			result_json.append("\"systemEfficiencyMax\":\""+obj[120]+"\",");
 			result_json.append("\"systemEfficiencyMin\":\""+obj[121]+"\",");
@@ -807,7 +781,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"waterPower\":\""+obj[137]+"\",");
 			result_json.append("\"waterPowerMax\":\""+obj[138]+"\",");
 			result_json.append("\"waterPowerMin\":\""+obj[139]+"\",");
-			
 			result_json.append("\"pumpIntakeP\":\""+obj[140]+"\",");
 			result_json.append("\"pumpIntakePMax\":\""+obj[141]+"\",");
 			result_json.append("\"pumpIntakePMin\":\""+obj[142]+"\",");
@@ -838,7 +811,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"pumpOutletBo\":\""+obj[167]+"\",");
 			result_json.append("\"pumpOutletBoMax\":\""+obj[168]+"\",");
 			result_json.append("\"pumpOutletBoMin\":\""+obj[169]+"\",");
-			
 			result_json.append("\"pumpBoreDiameter\":\""+obj[170]+"\",");
 			result_json.append("\"pumpBoreDiameterMax\":\""+obj[171]+"\",");
 			result_json.append("\"pumpBoreDiameterMin\":\""+obj[172]+"\",");
@@ -851,7 +823,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"submergence\":\""+obj[179]+"\",");
 			result_json.append("\"submergenceMax\":\""+obj[180]+"\",");
 			result_json.append("\"submergenceMin\":\""+obj[181]+"\",");
-			
 			result_json.append("\"tubingPressure\":\""+obj[182]+"\",");
 			result_json.append("\"tubingPressureMax\":\""+obj[183]+"\",");
 			result_json.append("\"tubingPressureMin\":\""+obj[184]+"\",");
@@ -864,7 +835,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"productionGasOilRatio\":\""+obj[191]+"\",");
 			result_json.append("\"productionGasOilRatioMax\":\""+obj[192]+"\",");
 			result_json.append("\"productionGasOilRatioMin\":\""+obj[193]+"\",");
-			
 			result_json.append("\"Ia\":\""+obj[194]+"\",");
 			result_json.append("\"IaMax\":\""+obj[195]+"\",");
 			result_json.append("\"IaMin\":\""+obj[196]+"\",");
@@ -883,7 +853,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"Vc\":\""+obj[209]+"\",");
 			result_json.append("\"VcMax\":\""+obj[210]+"\",");
 			result_json.append("\"VcMin\":\""+obj[211]+"\",");
-			
 			result_json.append("\"wattSum\":\""+obj[212]+"\",");
 			result_json.append("\"wattSumMax\":\""+obj[213]+"\",");
 			result_json.append("\"wattSumMin\":\""+obj[214]+"\",");
@@ -896,35 +865,26 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"PFSum\":\""+obj[221]+"\",");
 			result_json.append("\"PFSumMax\":\""+obj[222]+"\",");
 			result_json.append("\"PFSumMin\":\""+obj[223]+"\",");
-			
 			result_json.append("\"todayKWattH\":\""+obj[224]+"\",");
 			result_json.append("\"todayKVarH\":\""+obj[225]+"\",");
 			result_json.append("\"todayKVAH\":\""+obj[226]+"\",");
-			
 			result_json.append("\"signal\":\""+obj[227]+"\",");
 			result_json.append("\"signalMax\":\""+obj[228]+"\",");
 			result_json.append("\"signalMin\":\""+obj[229]+"\",");
-			
 			result_json.append("\"frequency\":\""+obj[230]+"\",");
 			result_json.append("\"frequencyMax\":\""+obj[231]+"\",");
 			result_json.append("\"frequencyMin\":\""+obj[232]+"\",");
-			
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[233])+"\",");
 			result_json.append("\"workingConditionString\":\""+(StringManagerUtils.CLOBObjectToString(obj[234])+"").replaceAll("<br/>", ";")+"\",");
-			
 			result_json.append("\"levelCorrectValue\":\""+obj[235]+"\",");
 			result_json.append("\"levelCorrectValueMax\":\""+obj[236]+"\",");
 			result_json.append("\"levelCorrectValueMin\":\""+obj[237]+"\",");
-			
 			result_json.append("\"noLiquidAvailableStroke\":\""+obj[238]+"\",");
 			result_json.append("\"noLiquidAvailableStrokeMax\":\""+obj[239]+"\",");
 			result_json.append("\"noLiquidAvailableStrokeMin\":\""+obj[240]+"\",");
-			
 			result_json.append("\"noLiquidFullnessCoefficient\":\""+obj[241]+"\",");
 			result_json.append("\"noLiquidFullnessCoefficientMax\":\""+obj[242]+"\",");
 			result_json.append("\"noLiquidFullnessCoefficientMin\":\""+obj[243]+"\"");
-			
-			
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
@@ -976,8 +936,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String analysisDataList = ddic.getTableHeader();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpDailyAcquisition");
 		String acquisitionDataList = ddic.getTableHeader();
-		
-		
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"analysisDataList\":"+analysisDataList+",");
 		result_json.append("\"acquisitionDataList\":"+acquisitionDataList+",");
@@ -1093,7 +1051,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[98])+"\",");
 			result_json.append("\"workingConditionString\":\""+(StringManagerUtils.CLOBObjectToString(obj[99])+"").replaceAll("<br/>", ";")+"\"");
-			
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
@@ -1123,10 +1080,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}
 		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_rpc_total_day t,tbl_wellinformation t007 "
 				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
-		
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);
-		
 		dynSbf.append("{\"success\":true,\"totalCount\":" + totals+",\"itemNum\":"+itemCode.split(",").length + ",\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
@@ -1147,21 +1102,6 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	
 	public String getPCPDiagnosisDailyCurveData(String wellName,String startDate,String endDate,String itemName,String itemCode) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-//		if(itemCode.indexOf("WeightProduction")>=0){
-//			itemCode=itemCode.replace("WeightProduction", "VolumetricProduction");
-//		}
-//		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)&&!"todayKWattH".equalsIgnoreCase(itemCode)){
-//			if("pumpEff".equalsIgnoreCase(itemCode)||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)){
-//				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
-//			}else{
-//				itemCode="t."+itemCode+",t."+itemCode+"Max,t."+itemCode+"Min";
-//			}
-//		}else{
-//			itemCode="t."+itemCode;
-//		}
-//		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_pcp_total_day t,tbl_wellinformation t007 "
-//				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
-//		
 		if(!"runTime".equalsIgnoreCase(itemCode)&&!"runTimeEfficiency".equalsIgnoreCase(itemCode)
 				&&!"todayKWattH".equalsIgnoreCase(itemCode)
 				&&!"todayKVarH".equalsIgnoreCase(itemCode)
@@ -1184,11 +1124,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}
 		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),"+itemCode+" from tbl_pcp_total_day t,tbl_wellinformation t007 "
 				+ " where t.wellid=t007.id and  t007.wellName='"+wellName+"' and t.calculateDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.calculateDate";
-		
-		
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);
-		
 		dynSbf.append("{\"success\":true,\"totalCount\":" + totals+",\"itemNum\":"+itemCode.split(",").length + ",\"wellName\":\""+wellName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
@@ -1207,17 +1144,13 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
-	
 	public String getScrewPumpDailyAnalysiCurveData(String calculateDate,String wellName) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
-		
 		String sql="select to_char(t.calculateDate,'yyyy-mm-dd'),t.rpm,t.ia,t.ib,t.ic,t.va,t.vb,t.vc "
 				+ " from viw_pcp_total_day t "
 				+ " where t.wellName='"+wellName+"' and t.calculateDate between to_date('"+calculateDate+"','yyyy-mm-dd')-30 and to_date('"+calculateDate+"','yyyy-mm-dd') "
 				+ " order by t.calculateDate";
-		
 		List<?> list=this.findCallSql(sql);
-		
 		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+wellName+"\",\"calculateDate\":\""+calculateDate+"\",\"totalRoot\":[");
 		if (list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {

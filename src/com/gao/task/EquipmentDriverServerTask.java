@@ -78,8 +78,14 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+		byte[] aa={0x40,(byte) 0x99,(byte) 0xEB,(byte)0x85};
+		byte[] bb={(byte)0x85,(byte) 0xEB,(byte) 0x99,0x40};
+		
+		float f1=StringManagerUtils.getFloat(aa, 0);
+		float f2=StringManagerUtils.getFloatLittle(bb, 0);
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		initDriverConfig();//初始化驱动配置

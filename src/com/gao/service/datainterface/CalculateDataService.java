@@ -408,23 +408,30 @@ public class CalculateDataService<T> extends BaseService<T> {
 											+" (select max(to_date(to_char(t2.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd')) "
 											+" from tbl_rpc_diagram_hist t2 where t2.wellId=t.wellid and t2.resultstatus=1 "
 											+" and t2.acqTime< to_date('"+tatalDate+"','yyyy-mm-dd')) "
-											+" and t.resultstatus=1 "
-//											+" and t.workingconditioncode<>1232 "
-											+" and t.acqTime<to_date('"+tatalDate+"','yyyy-mm-dd')";
+											+" and t.resultstatus=1 ";
 		if(StringManagerUtils.isNotNull(endAcqTime)){
-			singleCalculateResuleSql+=" and t.acqTime<to_date('"+endAcqTime+"','yyyy-mm-dd hh24:mi:ss')";
+			singleCalculateResuleSql+=" and t.acqTime<=to_date('"+endAcqTime+"','yyyy-mm-dd hh24:mi:ss')";
+		}else{
+			singleCalculateResuleSql+=" and t.acqTime<to_date('"+tatalDate+"','yyyy-mm-dd')";
 		}
 		String statusSql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
 				+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
 				+ " from tbl_rpc_discrete_hist t,tbl_wellinformation well "
 				+ " where t.wellid=well.id and t.acqTime=( select max(t2.acqTime) from tbl_rpc_discrete_hist t2 where t2.wellid=t.wellid and t2.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd'))";
+		if(StringManagerUtils.isNotNull(endAcqTime)){
+			statusSql="select well.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+					+ "t.commstatus,t.commtimeefficiency,t.commtime,t.commrange,"
+					+ "t.runstatus,t.runtimeefficiency,t.runtime,t.runrange "
+					+ " from tbl_rpc_discrete_hist t,tbl_wellinformation well,tbl_rpc_diagram_hist t2 "
+					+ " where t.wellid=well.id and t2.wellid=well.id and t2.discretedataid=t.id"
+					+ " and t2.acqtime=to_date('"+endAcqTime+"','yyyy-mm-dd hh24:ni:ss')";
+		}
 		if(StringManagerUtils.isNotNull(wellId)){
 			wellinformationSql+=" and t.id in ("+wellId+")";
 			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
 			statusSql+=" and t.wellid in("+wellId+")";
 		}
-		
 		singleCalculateResuleSql+=" order by t007.sortnum,t.acqTime";
 		wellinformationSql+=" order by t.sortnum";
 		statusSql+=" order by well.sortnum";
@@ -459,7 +466,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"Efficiency\": "+statusObj[3]+","
 									+ "\"Time\": "+statusObj[4]+","
 									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[5]))+""
-//									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[5]+"")+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"
@@ -477,7 +483,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "\"Efficiency\": "+statusObj[7]+","
 									+ "\"Time\": "+statusObj[8]+","
 									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(statusObj[9]))+""
-//									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(statusObj[9]+"")+""
 									+ "}"
 									+ "},"
 									+ "\"Current\": {"

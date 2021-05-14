@@ -1241,8 +1241,6 @@ begin
      --查询是否已存在当天计算记录
     select count(*) into p_totalresultcount from tbl_rpc_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
-    --查询最新功图时间
-    select count(1) into p_singleDiagramCount from tbl_rpc_diagram_total t where t.wellid= p_wellid and t.acqtime=to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss');
     --如不存在
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
@@ -1493,6 +1491,10 @@ begin
       where t.id=p_totalresultid;
       commit;
       p_msg := '更新成功';
+    end if;
+    --查询最新功图时间
+    if v_endAcqTime is not null then
+      select count(1) into p_singleDiagramCount from tbl_rpc_diagram_total t where t.wellid= p_wellid and t.acqtime=to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss');
       if p_singleDiagramCount =0 then
         insert into tbl_rpc_diagram_total(wellid,acqtime,
         resultcode,stroke,spm,fmax,fmin,
@@ -1502,7 +1504,9 @@ begin
         wattdegreebalance,idegreebalance,deltaradius,
         systemefficiency,surfacesystemefficiency,welldownsystemefficiency,
         energyper100mlift,
-        pumpeff
+        pumpeff,
+        commstatus,commtime,commtimeefficiency,commrange,
+        runstatus,runtime,runtimeefficiency,runrange
         )values(p_wellid,to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss'),
         v_workingconditioncode,v_Stroke,v_SPM,v_FMax_Avg,v_FMin_Avg,
         v_fullnessCoefficient,
@@ -1511,7 +1515,9 @@ begin
         v_wattDegreeBalance,v_iDegreeBalance,v_DeltaRadius,
         v_systemEfficiency,v_surfaceSystemEfficiency,v_wellDownSystemEfficiency,
         v_powerConsumptionPerTHM,
-        v_pumpEff
+        v_pumpEff,
+        v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
+        v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
         );
         commit;
         p_msg := '单张功图汇总插入成功';
@@ -1524,7 +1530,9 @@ begin
         t.wattdegreebalance=v_wattDegreeBalance,t.idegreebalance=v_iDegreeBalance,t.deltaradius=v_DeltaRadius,
         t.systemefficiency=v_systemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,t.welldownsystemefficiency=v_wellDownSystemEfficiency,
         t.energyper100mlift=v_powerConsumptionPerTHM,
-        t.pumpeff=v_pumpEff
+        t.pumpeff=v_pumpEff,
+        commstatus=v_commStatus,commtime=v_commTime,commtimeefficiency=v_commTimeEfficiency,commrange=v_commRange,
+        runstatus=v_runStatus,runtime=v_runTime,runtimeefficiency=v_runTimeEfficiency,runrange=v_runRange
         where t.wellid=p_wellid and t.acqtime=to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss');
         commit;
         p_msg := '单张功图汇总更新成功';

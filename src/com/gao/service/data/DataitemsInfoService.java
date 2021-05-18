@@ -1,5 +1,6 @@
 package com.gao.service.data;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,12 @@ import com.gao.model.User;
 import com.gao.model.data.DataDictionary;
 import com.gao.model.data.DataitemsInfo;
 import com.gao.service.base.BaseService;
+import com.gao.utils.Config;
+import com.gao.utils.ConfigFile;
 import com.gao.utils.DataDicUtils;
 import com.gao.utils.DateUtils;
 import com.gao.utils.Page;
+import com.gao.utils.StringManagerUtils;
 
 /**
  * 系统数据字典数据项值管理
@@ -304,5 +308,82 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		ddic.setOrder(sqlOrderBy);
 		ddic.setGroup(sqlGroupBy);
 		return ddic;
+	}
+	
+	/**
+	 * 根据配置的产量单位，初始化数据字典
+	 * 
+	 * @return
+	 * @throws SQLException 
+	 */
+	public String initProductionDataDictionary() throws SQLException {
+		StringBuffer strBuf = new StringBuffer();
+		StringBuffer weightItemIds= new StringBuffer();
+		StringBuffer volumetricItemIds= new StringBuffer();
+		int productionUnit=Config.getInstance().configFile.getOthers().getProductionUnit();//0-t/d 1-m^3/d
+		String weightItemSql="select t.dataitemid,t.sysdataid,t.cname,t.ename,t.status from TBL_DIST_ITEM t"
+				+ " where t.cname like '%t/d%'";
+		String showWeightItemSql=weightItemSql+" and t.status=1";
+		String volumetricItemSql="select t.dataitemid,t.sysdataid,t.cname,t.ename,t.status from TBL_DIST_ITEM t"
+				+ " where t.cname like '%m^3/d%' and t.cname<>'理论排量(m^3/d)' and t.cname<>'生产气油比(m^3/d)'";
+		String showVolumetricItemSql=volumetricItemSql+" and t.status=1";
+		
+		int showWeightItemCount=this.getTotalCountRows(showWeightItemSql);
+		int showVolumetricItemCount=this.getTotalCountRows(showVolumetricItemSql);
+		
+		if(productionUnit==0&&showVolumetricItemCount>showWeightItemCount){//如果配置的时重量
+			List<?> weightItemList = this.findCallSql(weightItemSql);
+			List<?> volumetricItemList = this.findCallSql(volumetricItemSql);
+			for(int i=0;i<volumetricItemList.size();i++){
+				Object[] volumetricItemObj = (Object[])volumetricItemList.get(i);
+				if("1".equals(volumetricItemObj[4]+"")){
+					volumetricItemIds.append(volumetricItemObj[0]+",");
+					for(int j=0;j<weightItemList.size();j++){
+						Object[] weightItemObj = (Object[])weightItemList.get(j);
+						if((weightItemObj[1]+"").equalsIgnoreCase((volumetricItemObj[1]+"")) && 
+								(weightItemObj[2]+"").split("\\(")[0].equals((volumetricItemObj[2]+"").split("\\(")[0])){
+							weightItemIds.append(weightItemObj[0]+",");
+						}
+					}
+				}
+			}
+		}else if(productionUnit!=0&&showWeightItemCount>showVolumetricItemCount){//如果配置体积
+			List<?> weightItemList = this.findCallSql(weightItemSql);
+			List<?> volumetricItemList = this.findCallSql(volumetricItemSql);
+			for(int i=0;i<weightItemList.size();i++){
+				Object[] weightItemObj = (Object[])weightItemList.get(i);
+				if("1".equals(weightItemObj[4]+"")){
+					weightItemIds.append(weightItemObj[0]+",");
+					for(int j=0;j<volumetricItemList.size();j++){
+						Object[] volumetricItemObj = (Object[])volumetricItemList.get(j);
+						if((volumetricItemObj[1]+"").equalsIgnoreCase((weightItemObj[1]+"")) && 
+								(volumetricItemObj[2]+"").split("\\(")[0].equals((weightItemObj[2]+"").split("\\(")[0])){
+							volumetricItemIds.append(volumetricItemObj[0]+",");
+						}
+					}
+				}
+			}
+		}
+		if(weightItemIds.toString().endsWith(",")){
+			weightItemIds.deleteCharAt(weightItemIds.length() - 1);
+		}
+		if(volumetricItemIds.toString().endsWith(",")){
+			volumetricItemIds.deleteCharAt(volumetricItemIds.length() - 1);
+		}
+		
+		
+		if(productionUnit==0&&showVolumetricItemCount>showWeightItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置的时重量
+			String updateWeightItemsSql="update from TBL_DIST_ITEM t set t.status=1 where t.sysdataid in("+weightItemIds+")";
+			String updateVolumetricItemsSql="update from TBL_DIST_ITEM t set t.status=0 where t.sysdataid in("+volumetricItemIds+")";
+			this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
+			this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
+		}else if(productionUnit!=0&&showWeightItemCount>showVolumetricItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置体积
+			String updateWeightItemsSql="update from TBL_DIST_ITEM t set t.status=0 where t.sysdataid in("+weightItemIds+")";
+			String updateVolumetricItemsSql="update from TBL_DIST_ITEM t set t.status=1 where t.sysdataid in("+volumetricItemIds+")";
+			this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
+			this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
+		}
+		
+		return strBuf.toString();
 	}
 }

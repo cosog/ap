@@ -92,7 +92,7 @@ public class CalculateThread extends Thread{
 					String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation";
 					totalUrl+="?date="+(obj[2]+"").split(" ")[0];
 					totalUrl+="&wellId="+wellNo;
-					totalUrl+="&endAcqTime="+obj[2];
+					totalUrl+="&endAcqTime="+java.net.URLEncoder.encode(obj[2]+"", "UTF-8");
 					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 				}
 			}catch(Exception e){

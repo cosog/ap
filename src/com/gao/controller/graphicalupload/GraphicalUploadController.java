@@ -1153,6 +1153,7 @@ public class GraphicalUploadController extends BaseController {
 			if((rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1)
 					||(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&pcpCalculateResponseData.getCalculationStatus().getResultCode()!=1232)){
 				totalUrl+="&wellId="+wellAcquisitionData.getWellId();
+				totalUrl+="&endAcqTime="+java.net.URLEncoder.encode(wellAcquisitionData.getAcqTime(), "UTF-8");
 				StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 			}
 			
@@ -1429,6 +1430,7 @@ public class GraphicalUploadController extends BaseController {
 						StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 					}
 					totalUrl+="&date="+totalDate;
+					totalUrl+="&endAcqTime="+java.net.URLEncoder.encode(kafkaUpData.getAcqTime(), "UTF-8");
 					StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");
 				}
 				

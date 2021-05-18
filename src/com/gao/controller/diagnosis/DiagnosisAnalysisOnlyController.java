@@ -70,7 +70,6 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		orgId = ParamUtils.getParameter(request, "orgId");
 		orgId = findCurrentUserOrgIdInfo(orgId);
 		wellName = ParamUtils.getParameter(request, "wellName");
-		
 		String type = ParamUtils.getParameter(request, "type");
 		String wellType = ParamUtils.getParameter(request, "wellType");
 		String startDate = ParamUtils.getParameter(request, "startDate");
@@ -101,12 +100,8 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 				startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 			}
 		}
-		
-		
-		
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		
 		String json = diagnosisAnalysisOnlyService.getProductionWellRTAnalysisWellList(orgId, wellName, pager,type,wellType,startDate,endDate,statValue);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

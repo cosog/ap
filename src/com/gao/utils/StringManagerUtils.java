@@ -1156,6 +1156,9 @@ public class StringManagerUtils {
 	        BufferedReader in = null;
 	        HttpURLConnection conn=null;
 	        String result = "";
+	        if(!StringManagerUtils.isNotNull(encoding)){
+	        	encoding="utf-8";
+	        }
 	        try {
 	            URL realUrl = new URL(url);
 	            // 打开和URL之间的连接

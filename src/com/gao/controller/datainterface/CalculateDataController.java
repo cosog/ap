@@ -291,18 +291,23 @@ public class CalculateDataController extends BaseController{
 	}
 	
 	@RequestMapping("/FSDiagramDailyCalculation")
-	public String FSDiagramDailyCalculation() throws ParseException{
+	public String FSDiagramDailyCalculation() throws ParseException, SQLException, IOException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
-		String endAcqTime=ParamUtils.getParameter(request, "endAcqTime");
+		List<String> requestDataList=null;
+		String endAcqTime=java.net.URLDecoder.decode(ParamUtils.getParameter(request, "endAcqTime"),"utf-8");
 		if(StringManagerUtils.isNotNull(tatalDate)){
 			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
 		}else{
 			tatalDate=StringManagerUtils.getCurrentTime();
 		}
-		List<String> requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
+		if(StringManagerUtils.isNotNull(endAcqTime) && StringManagerUtils.isNotNull(wellId)){
+			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
+		}else{
+			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
+		}
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
-		for(int i=0;i<requestDataList.size();i++){//TotalCalculateResponseData
+		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
 				System.out.println(requestDataList.get(i));
 				Gson gson = new Gson();

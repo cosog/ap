@@ -1,5 +1,7 @@
 package com.gao.controller.data;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -174,5 +176,24 @@ public class DataitemsInfoController extends BaseController {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	@RequestMapping("/initProductionDataDictionary")
+	public String initProductionDataDictionary() throws Exception {
+		String json = "";
+		json=dataitemsInfoService.initProductionDataDictionary();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

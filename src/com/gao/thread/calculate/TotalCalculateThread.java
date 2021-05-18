@@ -1,5 +1,6 @@
 package com.gao.thread.calculate;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
@@ -38,7 +39,11 @@ public class TotalCalculateThread extends Thread{
 		String url=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell()[0];
 		try {
 			if(liftingType>=200 && liftingType<300){//抽油机
-				requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellNo+"",endAcqTime);
+				if(StringManagerUtils.isNotNull(endAcqTime)){
+					requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellNo+"",endAcqTime);
+				}else{
+					requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellNo+"");
+				}
 				discreteRequestDataList=calculateDataService.getDiscreteDailyCalculation(tatalDate,wellNo+"");
 			}else{//螺杆泵
 				requestDataList=calculateDataService.getPCPRPMDailyCalculationRequestData(tatalDate,wellNo+"");
@@ -84,6 +89,9 @@ public class TotalCalculateThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

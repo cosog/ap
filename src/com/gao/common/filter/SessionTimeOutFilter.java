@@ -120,6 +120,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("saveKafkaUpAggrRunStatusData")
 						||urlString.equals("reTotalCalculation")
 						||urlString.equals("pubSubModelCommCalculation")
+						||urlString.equals("initProductionDataDictionary")
 						||path.contains("mobileController")
 						){
 					chain.doFilter(request, response);

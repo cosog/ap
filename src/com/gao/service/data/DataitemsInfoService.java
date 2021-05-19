@@ -320,6 +320,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		StringBuffer strBuf = new StringBuffer();
 		StringBuffer weightItemIds= new StringBuffer();
 		StringBuffer volumetricItemIds= new StringBuffer();
+		int r=0;
 		int productionUnit=Config.getInstance().configFile.getOthers().getProductionUnit();//0-t/d 1-m^3/d
 		String weightItemSql="select t.dataitemid,t.sysdataid,t.cname,t.ename,t.status from TBL_DIST_ITEM t"
 				+ " where t.cname like '%t/d%'";
@@ -366,24 +367,25 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		}
 		if(weightItemIds.toString().endsWith(",")){
 			weightItemIds.deleteCharAt(weightItemIds.length() - 1);
+//			System.out.println(weightItemIds.toString().split(",").length);
 		}
 		if(volumetricItemIds.toString().endsWith(",")){
 			volumetricItemIds.deleteCharAt(volumetricItemIds.length() - 1);
+//			System.out.println(volumetricItemIds.toString().split(",").length);
 		}
 		
 		
 		if(productionUnit==0&&showVolumetricItemCount>showWeightItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置的时重量
-			String updateWeightItemsSql="update from TBL_DIST_ITEM t set t.status=1 where t.sysdataid in("+weightItemIds+")";
-			String updateVolumetricItemsSql="update from TBL_DIST_ITEM t set t.status=0 where t.sysdataid in("+volumetricItemIds+")";
-			this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
-			this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
+			String updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+weightItemIds+")";
+			String updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+volumetricItemIds+")";
+			r=this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
+			r=this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
 		}else if(productionUnit!=0&&showWeightItemCount>showVolumetricItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置体积
-			String updateWeightItemsSql="update from TBL_DIST_ITEM t set t.status=0 where t.sysdataid in("+weightItemIds+")";
-			String updateVolumetricItemsSql="update from TBL_DIST_ITEM t set t.status=1 where t.sysdataid in("+volumetricItemIds+")";
-			this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
-			this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
+			String updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+weightItemIds+")";
+			String updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+volumetricItemIds+")";
+			r=this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
+			r=this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
 		}
-		
 		return strBuf.toString();
 	}
 }

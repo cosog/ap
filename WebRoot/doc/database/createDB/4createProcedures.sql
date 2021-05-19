@@ -2273,11 +2273,11 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
                                                     v_acquisitionUnit   in varchar2,
                                                     v_deviceAddr    in varchar2,
                                                     v_deviceId   in varchar2,
-                                                    v_runtimeEfficiencySource  in varchar2,
                                                     v_videoUrl   in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_ids    in varchar2,
-                                                    v_orgId in varchar2) as
+                                                    v_orgId in varchar2,
+                                                    v_license  in NUMBER) as
   wellcount number :=0;
   wellamount number :=0;
   orgcount number :=0;
@@ -2291,6 +2291,10 @@ begin
   p_sql:='select count(*)  from tbl_org t where t.org_name is not null and  t.org_id='||v_orgId||' and t.org_id in ('||v_ids||')';
   dbms_output.put_line('p_sql:' || p_sql);
   select count(1) into wellamount from tbl_wellinformation;
+  if wellamount>v_license then
+    delete from tbl_wellinformation where id not in (select id from( select t.id from tbl_wellinformation t order by t.id) where rownum <= v_license);
+    commit;
+  end if;
      EXECUTE IMMEDIATE p_sql into orgcount;
      select t.org_name into p_orgName from tbl_org t where t.org_id=v_orgId;
      if orgcount>0 and p_orgName=v_orgname then
@@ -2309,13 +2313,12 @@ begin
                t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1),
                t.deviceaddr=v_deviceAddr,t.deviceid=v_deviceId,
                t.videourl=v_videourl,
-               t.runtimeefficiencysource   = (select code3.itemvalue from tbl_code code3 where code3.itemcode='RuntimeEfficiencySource' and code3.itemname=v_runtimeEfficiencySource),
                t.sortnum=v_sortNum
            Where t.wellName=v_wellName;
            commit;
            p_msg := 'ÐÞ¸Ä³É¹¦';
         elsif wellcount=0 then
-              if wellamount<200 then
+              if wellamount<v_license then
                   insert into tbl_wellinformation(wellName,protocolcode,protocol,deviceaddr,deviceid,
                   videourl,Sortnum)
                   values(v_wellName,v_protocolCode,p_prototal,v_deviceAddr,v_deviceId,v_videourl,v_sortNum);
@@ -2324,7 +2327,6 @@ begin
                      orgId   = v_orgId,
                      resname  =v_resname,
                      t.liftingtype   = (select code2.itemvalue from tbl_code code2 where code2.itemcode='LiftingType' and code2.itemname=v_liftingTypeName),
-                     t.runtimeefficiencysource   = (select code3.itemvalue from tbl_code code3 where code3.itemcode='RuntimeEfficiencySource' and code3.itemname=v_runtimeEfficiencySource),
                      t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1)
                   Where t.wellName=v_wellName;
                   commit;

@@ -9,7 +9,7 @@ cache 20;
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 118635
+start with 118655
 increment by 1
 cache 20;
 /

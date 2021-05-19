@@ -179,7 +179,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
 			+ "rodString,"
-			+ "anchoringStateName,netGrossRatio,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') "
+			+ "anchoringStateName,netGrossRatio,runtimeEfficiencySourceName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') "
 			+ "from "+tableName+" t "
 			+ "where t.org_id in("+orgId+")  "
 			+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
@@ -239,7 +239,8 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			
 			result_json.append("\"anchoringStateName\":\""+obj[29]+"\",");
 			result_json.append("\"netGrossRatio\":\""+obj[30]+"\",");
-			result_json.append("\"acqTime\":\""+obj[31]+"\"},");
+			result_json.append("\"runtimeEfficiencySourceName\":\""+obj[31]+"\",");
+			result_json.append("\"acqTime\":\""+obj[32]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");

@@ -51,8 +51,6 @@ public class WellHandsontableChangedData {
 
 	    private String deviceId="";
 	    
-	    private String runtimeEfficiencySource="";
-	    
 	    private String videoUrl="";
 	    
 	    private String sortNum="";
@@ -103,14 +101,6 @@ public class WellHandsontableChangedData {
 
 		public void setAcquisitionUnit(String acquisitionUnit) {
 			this.acquisitionUnit = acquisitionUnit;
-		}
-
-		public String getRuntimeEfficiencySource() {
-			return runtimeEfficiencySource;
-		}
-
-		public void setRuntimeEfficiencySource(String runtimeEfficiencySource) {
-			this.runtimeEfficiencySource = runtimeEfficiencySource;
 		}
 
 		public String getVideoUrl() {

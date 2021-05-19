@@ -371,7 +371,7 @@ begin
 end;
 /
 
-create or replace trigger trg_a_rpc_proddata_latest_i_u
+CREATE OR REPLACE TRIGGER trg_a_rpc_proddata_latest_i_u
     before update or insert  on TBL_RPC_PRODUCTIONDATA_LATEST
     for each row
 declare
@@ -409,7 +409,7 @@ begin
         producingfluidlevel,pumpsettingdepth,productiongasoilratio,
         tubingstringinsidediameter,casingstringinsidediameter,rodstring,
         pumpgrade,pumpborediameter,plungerlength,pumptype,barreltype,barrellength,barrelseries,rotordiameter,qpr,
-        manualintervention,netgrossratio,anchoringstate,remark
+        manualintervention,netgrossratio,anchoringstate,runtimeefficiencysource,remark
       )values(
         :new.wellid,:new.AcqTime,:new.liftingtype,:new.displacementtype,:new.runtime,
         :new.crudeoildensity,:new.waterdensity,:new.naturalgasrelativedensity,:new.saturationpressure,:new.reservoirdepth,:new.reservoirtemperature,
@@ -417,7 +417,7 @@ begin
         :new.producingfluidlevel,:new.pumpsettingdepth,:new.productiongasoilratio,
         :new.tubingstringinsidediameter,:new.casingstringinsidediameter,:new.rodstring,
         :new.pumpgrade,:new.pumpborediameter,:new.plungerlength,:new.pumptype,:new.barreltype,:new.barrellength,:new.barrelseries,:new.rotordiameter,:new.qpr,
-        :new.manualintervention,:new.netgrossratio,:new.anchoringstate,:new.remark
+        :new.manualintervention,:new.netgrossratio,:new.anchoringstate,:new.runtimeefficiencysource,:new.remark
       );
 end;
 /
@@ -667,7 +667,7 @@ BEGIN
 END;
 /
 
-create or replace trigger trg_b_pcp_proddata_latest_i
+CREATE OR REPLACE TRIGGER trg_b_pcp_proddata_latest_i
 before  insert or update on tbl_pcp_productiondata_latest
 FOR EACH ROW
   
@@ -708,7 +708,7 @@ BEGIN
         producingfluidlevel,pumpsettingdepth,productiongasoilratio,
         tubingstringinsidediameter,casingstringinsidediameter,rodstring,
         pumpgrade,pumpborediameter,plungerlength,pumptype,barreltype,barrellength,barrelseries,rotordiameter,qpr,
-        manualintervention,netgrossratio,anchoringstate,remark
+        manualintervention,netgrossratio,anchoringstate,runtimeefficiencysource,remark
       )values(
         :new.wellid,:new.AcqTime,:new.liftingtype,:new.displacementtype,:new.runtime,
         :new.crudeoildensity,:new.waterdensity,:new.naturalgasrelativedensity,:new.saturationpressure,:new.reservoirdepth,:new.reservoirtemperature,
@@ -716,7 +716,7 @@ BEGIN
         :new.producingfluidlevel,:new.pumpsettingdepth,:new.productiongasoilratio,
         :new.tubingstringinsidediameter,:new.casingstringinsidediameter,:new.rodstring,
         :new.pumpgrade,:new.pumpborediameter,:new.plungerlength,:new.pumptype,:new.barreltype,:new.barrellength,:new.barrelseries,:new.rotordiameter,:new.qpr,
-        :new.manualintervention,:new.netgrossratio,:new.anchoringstate,:new.remark
+        :new.manualintervention,:new.netgrossratio,:new.anchoringstate,:new.runtimeefficiencysource,:new.remark
       );
 END;
 /

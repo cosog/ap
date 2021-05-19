@@ -695,10 +695,11 @@ create table TBL_PCP_PRODUCTIONDATA_HIST
   MANUALINTERVENTION         NUMBER(4) default 0,
   NETGROSSRATIO              NUMBER(8,2) default 1,
   ANCHORINGSTATE             NUMBER(1) default 1,
-  REMARK                     VARCHAR2(200),
   PUMPGRADE                  NUMBER(1) default 1,
   PUMPBOREDIAMETER           NUMBER(8,2) default 38,
-  PLUNGERLENGTH              NUMBER(8,2) default 1.2
+  PLUNGERLENGTH              NUMBER(8,2) default 1.2,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
+  REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
   storage
@@ -756,10 +757,11 @@ create table TBL_PCP_PRODUCTIONDATA_LATEST
   MANUALINTERVENTION         NUMBER(4) default 0,
   NETGROSSRATIO              NUMBER(8,2) default 1,
   ANCHORINGSTATE             NUMBER(1) default 1,
-  REMARK                     VARCHAR2(200),
   PUMPGRADE                  NUMBER(1) default 1,
   PUMPBOREDIAMETER           NUMBER(8,2) default 38,
-  PLUNGERLENGTH              NUMBER(8,2) default 1.2
+  PLUNGERLENGTH              NUMBER(8,2) default 1.2,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
+  REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
   storage
@@ -1940,6 +1942,7 @@ create table TBL_RPC_PRODUCTIONDATA_HIST
   MANUALINTERVENTION         NUMBER(4) default 0,
   NETGROSSRATIO              NUMBER(8,2) default 1,
   ANCHORINGSTATE             NUMBER(1) default 1,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
   REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
@@ -2001,6 +2004,7 @@ create table TBL_RPC_PRODUCTIONDATA_LATEST
   MANUALINTERVENTION         NUMBER(4) default 0,
   NETGROSSRATIO              NUMBER(8,2) default 1,
   ANCHORINGSTATE             NUMBER(1) default 1,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
   REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
@@ -2519,7 +2523,6 @@ create table TBL_WELLINFORMATION
   DEVICEID                   VARCHAR2(200),
   PROTOCOLCODE               VARCHAR2(50),
   UNITCODE                   VARCHAR2(50),
-  RUNTIMEEFFICIENCYSOURCE    NUMBER(2),
   VIDEOURL                   VARCHAR2(400),
   SORTNUM                    NUMBER(10) default 9999,
   LEVELCORRECTVALUE          NUMBER(2) default 0,

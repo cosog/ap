@@ -351,19 +351,16 @@ public class WellInformationManagerController extends BaseController {
 	@SuppressWarnings("static-access")
 	@RequestMapping("/saveWellHandsontableData")
 	public String saveWellHandsontableData() throws Exception {
-
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String orgids=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
-//		System.out.println(data);
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		this.wellInformationManagerService.saveWellEditerGridData(wellHandsontableChangedData, orgids,orgId);
 		String json ="{success:true}";
-		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -371,10 +368,8 @@ public class WellInformationManagerController extends BaseController {
 		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
-		
 		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
 		beeTechDriverServerTast.updateWellConfif(wellHandsontableChangedData);
-		
 		return null;
 	}
 	

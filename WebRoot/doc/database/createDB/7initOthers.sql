@@ -1807,13 +1807,13 @@ insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECOD
 values (755, 'RuntimeEfficiencySource', '人工录入', '', null, '0', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
-values (756, 'RuntimeEfficiencySource', 'DI信号', '', null, '1', '');
+values (756, 'RuntimeEfficiencySource', '软件计算', '', null, '1', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
-values (757, 'RuntimeEfficiencySource', '电参计算', '', null, '2', '');
+values (757, 'RuntimeEfficiencySource', '组态直读', '', null, '2', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
-values (775, 'RuntimeEfficiencySource', '转速计算', '', null, '3', '');
+values (775, 'RuntimeEfficiencySource', '数据库直读', '', null, '3', '');
 
 insert into tbl_code (ID, ITEMCODE, ITEMNAME, REMARK, STATE, ITEMVALUE, TABLECODE)
 values (205, 'SFPFCL', '不劈分', '', null, '1', '');

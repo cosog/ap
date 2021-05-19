@@ -34,12 +34,12 @@ select
  t.AcqTime   as AcqTime,dis.AcqTime as AcqTime_d,
  dis.commStatus,decode(dis.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(dis.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
@@ -125,12 +125,12 @@ select
  t.AcqTime as AcqTime,dis.AcqTime as AcqTime_d,
  dis.commStatus,decode(dis.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(dis.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
@@ -216,12 +216,12 @@ select
  t.commstatus,
  decode(t.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and t.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when t.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(t.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
@@ -264,6 +264,7 @@ tbl_wellinformation well
 left outer join  tbl_org org  on well.orgid=org.org_id
 left outer join  tbl_code code1  on  code1.itemvalue=well.liftingtype and code1.itemcode='LiftingType'
 left outer join  tbl_pcp_discrete_hist t  on t.wellid=well.id
+left outer join  tbl_pcp_productiondata_latest prod  on prod.wellid=well.id
 left outer join  tbl_rpc_worktype status1  on  status1.workingconditioncode=decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode)
 left outer join  tbl_rpc_alarmtype_conf t031_1  on  status1.workingconditioncode=t031_1.workingconditioncode
 left outer join  tbl_rpc_worktype status2  on  status2.workingconditioncode= decode(t.commstatus,1,1102,1101)
@@ -284,12 +285,12 @@ select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,
  comm.commstatus,decode(comm.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and t.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when comm.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(t.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
@@ -332,6 +333,7 @@ tbl_wellinformation well
 left outer join  tbl_org org  on well.orgid=org.org_id
 left outer join  tbl_code code1  on  code1.itemvalue=well.liftingtype and code1.itemcode='LiftingType'
 left outer join  tbl_pcp_discrete_latest t  on t.wellid=well.id
+left outer join  tbl_pcp_productiondata_latest prod  on prod.wellid=well.id
 left outer join  viw_commstatus comm on comm.id=well.id
 left outer join  tbl_rpc_worktype status1  on  status1.workingconditioncode=decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode)
 left outer join  tbl_rpc_alarmtype_conf t031_1  on  status1.workingconditioncode=t031_1.workingconditioncode
@@ -361,12 +363,14 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        op.rodstring,
        op.AnchoringState,c1.itemname as AnchoringStateName,
        op.NetGrossRatio,op.manualintervention,
+       op.runtimeefficiencysource,c5.itemname as RuntimeEfficiencySourceName,
        w.sortnum,o.org_id
 from
        tbl_code c1 ,
        tbl_code c2 ,
        tbl_code c3 ,
        tbl_code c4,
+       tbl_code c5,
        tbl_pcp_productiondata_hist op
 left outer join  tbl_wellinformation  w  on w.id = op.wellid
 left outer join  tbl_org o    on  o.org_id=w.orgid
@@ -374,6 +378,7 @@ where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
       and c2.itemcode='BarrelType' and c2.itemvalue=op.BarrelType
       and c3.itemcode='PumpType' and c3.itemvalue=op.PumpType
       and c4.itemcode='PumpGrade' and c4.itemvalue=op.PumpGrade
+      and c5.itemcode='RuntimeEfficiencySource' and c5.itemvalue=op.runtimeefficiencysource
       and w.liftingtype>=400 and w.liftingtype<500;
 /
 
@@ -393,12 +398,14 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        op.rodstring,
        op.AnchoringState,c1.itemname as AnchoringStateName,
        op.NetGrossRatio,op.manualintervention,
+       op.runtimeefficiencysource,c5.itemname as RuntimeEfficiencySourceName,
        w.sortnum,o.org_id
 from
        tbl_code c1 ,
        tbl_code c2 ,
        tbl_code c3 ,
        tbl_code c4,
+       tbl_code c5,
        tbl_pcp_productiondata_latest op
 left outer join  tbl_wellinformation  w  on w.id = op.wellid
 left outer join  tbl_org o    on  o.org_id=w.orgid
@@ -406,6 +413,7 @@ where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
       and c2.itemcode='BarrelType' and c2.itemvalue=op.BarrelType
       and c3.itemcode='PumpType' and c3.itemvalue=op.PumpType
       and c4.itemcode='PumpGrade' and c4.itemvalue=op.PumpGrade
+      and c5.itemcode='RuntimeEfficiencySource' and c5.itemvalue=op.runtimeefficiencysource
       and w.liftingtype>=400 and w.liftingtype<500;
 /
 
@@ -605,12 +613,12 @@ select
  t.AcqTime as AcqTime,dis.AcqTime as AcqTime_d,
  dis.commStatus,decode(dis.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(dis.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
@@ -835,12 +843,12 @@ select
  dis.AcqTime as AcqTime_d,
  dis.commStatus,decode(dis.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and dis.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and dis.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else dis.runstatus end as runStatus,
  case when dis.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and dis.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and dis.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(dis.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_9.alarmsign,0,0,t031_9.alarmlevel) as runAlarmLevel,
@@ -1307,12 +1315,12 @@ select
  t.commstatus,
  decode(t.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and t.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when t.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(t.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
@@ -1426,6 +1434,7 @@ tbl_wellinformation well
 left outer join  tbl_org org  on well.orgid=org.org_id
 left outer join  tbl_code code1  on  code1.itemvalue=well.liftingtype and code1.itemcode='LiftingType'
 left outer join  tbl_rpc_discrete_hist t  on t.wellid=well.id
+left outer join  tbl_pcp_productiondata_latest prod  on prod.wellid=well.id
 left outer join  tbl_rpc_worktype status1  on  status1.workingconditioncode=decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode)
 left outer join  tbl_rpc_alarmtype_conf t031_1  on  status1.workingconditioncode=t031_1.workingconditioncode
 left outer join  tbl_rpc_worktype status2  on  status2.workingconditioncode= decode(t.commstatus,1,1102,1101)
@@ -1446,12 +1455,12 @@ select
  t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.deviceaddr,
  comm.commstatus,decode(comm.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
- case when well.runtimeefficiencysource=0 and t.runtime=0 then 0
-      when well.runtimeefficiencysource=0 and t.runtime>0 then 1
+ case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
+      when prod.runtimeefficiencysource=0 and prod.runtime>0 then 1
       else t.runstatus end as runStatus,
  case when comm.commstatus=1 then
-           case when well.runtimeefficiencysource=0 and t.runtime=0 then '停抽'
-                when well.runtimeefficiencysource=0 and t.runtime>0 then '运行'
+           case when prod.runtimeefficiencysource=0 and prod.runtime=0 then '停抽'
+                when prod.runtimeefficiencysource=0 and prod.runtime>0 then '运行'
                 else decode(t.runstatus,1,'运行','停抽') end
       else '离线' end as runStatusName,
  decode(t031_3.alarmsign,0,0,t031_3.alarmlevel) as runAlarmLevel,
@@ -1565,6 +1574,7 @@ tbl_wellinformation well
 left outer join  tbl_org org  on well.orgid=org.org_id
 left outer join  tbl_code code1  on  code1.itemvalue=well.liftingtype and code1.itemcode='LiftingType'
 left outer join  tbl_rpc_discrete_latest t  on t.wellid=well.id
+left outer join  tbl_pcp_productiondata_latest prod  on prod.wellid=well.id
 left outer join  viw_commstatus comm on comm.id=well.id
 left outer join  tbl_rpc_worktype status1  on  status1.workingconditioncode=decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode)
 left outer join  tbl_rpc_alarmtype_conf t031_1  on  status1.workingconditioncode=t031_1.workingconditioncode
@@ -1594,12 +1604,14 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        op.rodstring,
        op.AnchoringState,c1.itemname as AnchoringStateName,
        op.NetGrossRatio,op.manualintervention,
+       op.runtimeefficiencysource,c5.itemname as RuntimeEfficiencySourceName,
        w.sortnum,o.org_id
 from
        tbl_code c1 ,
        tbl_code c2 ,
        tbl_code c3 ,
        tbl_code c4,
+       tbl_code c5,
        tbl_rpc_productiondata_hist op
 left outer join  tbl_wellinformation  w  on w.id = op.wellid
 left outer join  tbl_org o    on  o.org_id=w.orgid
@@ -1607,6 +1619,7 @@ where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
       and c2.itemcode='BarrelType' and c2.itemvalue=op.BarrelType
       and c3.itemcode='PumpType' and c3.itemvalue=op.PumpType
       and c4.itemcode='PumpGrade' and c4.itemvalue=op.PumpGrade
+      and c5.itemcode='RuntimeEfficiencySource' and c5.itemvalue=op.runtimeefficiencysource
       and w.liftingtype>=200 and w.liftingtype<300;
 /
 
@@ -1626,12 +1639,14 @@ select op.id,w.wellname,w.id as wellId,w.liftingtype,
        op.rodstring,
        op.AnchoringState,c1.itemname as AnchoringStateName,
        op.NetGrossRatio,op.manualintervention,
+       op.runtimeefficiencysource,c5.itemname as RuntimeEfficiencySourceName,
        w.sortnum,o.org_id
 from
        tbl_code c1 ,
        tbl_code c2 ,
        tbl_code c3 ,
        tbl_code c4,
+       tbl_code c5,
        tbl_rpc_productiondata_latest op
 left outer join  tbl_wellinformation  w  on w.id = op.wellid
 left outer join  tbl_org o    on  o.org_id=w.orgid
@@ -1639,6 +1654,7 @@ where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
       and c2.itemcode='BarrelType' and c2.itemvalue=op.BarrelType
       and c3.itemcode='PumpType' and c3.itemvalue=op.PumpType
       and c4.itemcode='PumpGrade' and c4.itemvalue=op.PumpGrade
+      and c5.itemcode='RuntimeEfficiencySource' and c5.itemvalue=op.runtimeefficiencysource
       and w.liftingtype>=200 and w.liftingtype<300;
 /
 
@@ -1820,13 +1836,12 @@ left outer join  tbl_org org  on t.orgid=org.org_id;
 create or replace view viw_wellinformation as
 select t.id,org.org_name as orgName,org.org_id as orgid,
 t.resname,t.wellname,t.liftingtype,t.deviceaddr,t.deviceid,
-c2.itemname as RuntimeEfficiencySource,t.videourl,
-c1.itemname as LiftingTypeName,t.protocolcode, t2.unit_name as AcquisitionUnit ,c3.itemname as protocol,
+t.videourl,
+c1.itemname as LiftingTypeName,t.protocolcode, t2.unit_name as AcquisitionUnit ,c2.itemname as protocol,
 t.sortnum
 from tbl_wellinformation t
 left outer join tbl_code c1 on c1.itemcode='LiftingType' and c1.itemvalue=t.liftingtype
-left outer join tbl_code c2 on c2.itemcode='RuntimeEfficiencySource' and c2.itemvalue=t.runtimeefficiencysource
-left outer join tbl_code c3 on c3.itemcode='PROTOCOL' and c3.itemvalue=t.protocol
+left outer join tbl_code c2 on c2.itemcode='PROTOCOL' and c2.itemvalue=t.protocol
 left outer join  tbl_org org  on t.orgid=org.org_id
 left outer join tbl_acq_unit_conf t2 on t2.unit_code=t.unitcode;
 /

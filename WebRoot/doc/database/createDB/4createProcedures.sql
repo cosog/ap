@@ -417,6 +417,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_productiondata (v_WellName   in varchar
                                                       v_RodString    in varchar2,
                                                       v_AnchoringStateName in varchar2,
                                                       v_NetGrossRatio  in NUMBER,
+                                                      v_RuntimeEfficiencySourceName in varchar2,
                                                       v_AcqTime in varchar2,
                                                       v_ids    in varchar2) as
   p_wellcount number :=0;
@@ -430,6 +431,8 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_productiondata (v_WellName   in varchar
   p_BarrelTypeCount number :=0;
   p_PumpType varchar2(20) :='T';
   p_PumpTypeCount number :=0;
+  p_RuntimeEfficiencySource number :=1;
+  p_RuntimeEfficiencySourceCount number :=0;
 begin
   p_sql:='select count(*)  from tbl_wellinformation t where t.wellName='''||v_WellName||''' and t.orgid in ('||v_ids||')';
   dbms_output.put_line('p_sql:' || p_sql);
@@ -453,6 +456,11 @@ begin
     if p_PumpTypeCount>0 then
       select code.itemvalue into p_PumpType from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
     end if;
+    --时率来源
+    select count(1) into p_RuntimeEfficiencySourceCount from tbl_code code where code.itemcode='RuntimeEfficiencySource' and code.itemname=v_RuntimeEfficiencySourceName;
+    if p_RuntimeEfficiencySourceCount>0 then
+      select code.itemvalue into p_RuntimeEfficiencySource from tbl_code code where code.itemcode='RuntimeEfficiencySource' and code.itemname=v_RuntimeEfficiencySourceName;
+    end if;
     --更新数据
     if p_prodcount>0 then
       --开始更新
@@ -470,7 +478,8 @@ begin
           t.TubingStringInsideDiameter=v_TubingStringInsideDiameter,t.CasingStringInsideDiameter=v_CasingStringInsideDiameter,
           t.rodstring=v_RodString,
           t.AnchoringState=p_AnchoringState,
-          t.NetGrossRatio=v_NetGrossRatio,t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
+          t.NetGrossRatio=v_NetGrossRatio,t.runtimeefficiencysource=p_RuntimeEfficiencySource,
+          t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
       where t.wellid=p_wellid;
       commit;
       p_msg := '修改成功';
@@ -487,7 +496,7 @@ begin
              barrellength,barrelseries,rotordiameter,qpr,
              tubingstringinsidediameter,casingstringinsidediameter,
              rodstring,
-             anchoringstate,netgrossratio) values (
+             anchoringstate,netgrossratio,runtimeefficiencysource) values (
              p_wellid,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),v_RunTime,
              v_CrudeOilDensity,v_WaterDensity,v_NaturalGasRelativeDensity,v_SaturationPressure,v_ReservoirDepth,v_ReservoirTemperature,
              v_TubingPressure,v_CasingPressure,v_WellHeadFluidTemperature,
@@ -501,7 +510,8 @@ begin
              v_TubingStringInsideDiameter,v_CasingStringInsideDiameter,
              v_RodString,
              p_AnchoringState,
-             v_NetGrossRatio
+             v_NetGrossRatio,
+             p_RuntimeEfficiencySource
       );
       commit;
       p_msg := '添加成功';
@@ -1963,6 +1973,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_productiondata (v_WellName   in varchar
                                                       v_RodString    in varchar2,
                                                       v_AnchoringStateName in varchar2,
                                                       v_NetGrossRatio  in NUMBER,
+                                                      v_RuntimeEfficiencySourceName in varchar2,
                                                       v_AcqTime in varchar2,
                                                       v_ids    in varchar2) as
   p_wellcount number :=0;
@@ -1976,6 +1987,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_productiondata (v_WellName   in varchar
   p_BarrelTypeCount number :=0;
   p_PumpType varchar2(20) :='T';
   p_PumpTypeCount number :=0;
+  p_RuntimeEfficiencySource number :=1;
+  p_RuntimeEfficiencySourceCount number :=0;
 begin
   p_sql:='select count(*)  from tbl_wellinformation t where t.wellName='''||v_WellName||''' and t.orgid in ('||v_ids||')';
   EXECUTE IMMEDIATE p_sql into p_wellcount;
@@ -1983,7 +1996,6 @@ begin
     --获取井编号
     select t.id into p_wellid from tbl_wellinformation t where t.wellName=v_WellName;
     select count(1) into p_prodcount from tbl_rpc_productiondata_latest t where t.wellid=(select t2.id from tbl_wellinformation t2 where t2.wellName=v_WellName);
-
     --锚定状态
     select count(1) into p_AnchoringStateCount from tbl_code code5 where code5.itemcode='AnchoringState' and code5.itemname=v_AnchoringStateName;
     if p_AnchoringStateCount>0 then
@@ -1998,6 +2010,11 @@ begin
     select count(1) into p_PumpTypeCount from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
     if p_PumpTypeCount>0 then
       select code.itemvalue into p_PumpType from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName;
+    end if;
+    --时率来源
+    select count(1) into p_RuntimeEfficiencySourceCount from tbl_code code where code.itemcode='RuntimeEfficiencySource' and code.itemname=v_RuntimeEfficiencySourceName;
+    if p_RuntimeEfficiencySourceCount>0 then
+      select code.itemvalue into p_RuntimeEfficiencySource from tbl_code code where code.itemcode='RuntimeEfficiencySource' and code.itemname=v_RuntimeEfficiencySourceName;
     end if;
     --更新数据
     if p_prodcount>0 then
@@ -2016,7 +2033,8 @@ begin
           t.TubingStringInsideDiameter=v_TubingStringInsideDiameter,t.CasingStringInsideDiameter=v_CasingStringInsideDiameter,
           t.rodstring=v_RodString,
           t.AnchoringState=p_AnchoringState,
-          t.NetGrossRatio=v_NetGrossRatio,t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
+          t.NetGrossRatio=v_NetGrossRatio,t.runtimeefficiencysource=p_RuntimeEfficiencySource,
+          t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
       where t.wellid=p_wellid;
       commit;
       p_msg := '修改成功';
@@ -2033,7 +2051,7 @@ begin
              barrellength,barrelseries,rotordiameter,qpr,
              tubingstringinsidediameter,casingstringinsidediameter,
              rodstring,
-             anchoringstate,netgrossratio) values (
+             anchoringstate,netgrossratio,runtimeefficiencysource) values (
              p_wellid,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),v_RunTime,
              v_CrudeOilDensity,v_WaterDensity,v_NaturalGasRelativeDensity,v_SaturationPressure,v_ReservoirDepth,v_ReservoirTemperature,
              v_TubingPressure,v_CasingPressure,v_WellHeadFluidTemperature,
@@ -2047,7 +2065,8 @@ begin
              v_TubingStringInsideDiameter,v_CasingStringInsideDiameter,
              v_RodString,
              p_AnchoringState,
-             v_NetGrossRatio
+             v_NetGrossRatio,
+             p_RuntimeEfficiencySource
       );
       commit;
       p_msg := '添加成功';

@@ -4088,7 +4088,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('114916', null, '87808f225d7240f68c2ab879347d818a', 'Éè±¸±àºÅ', 'deviceId', null, 10, 1, null, null, to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-06-2018 14:07:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116922', null, '87808f225d7240f68c2ab879347d818a', 'ÊÓÆµÂ·¾¶', 'videoUrl', null, 12, 0, null, null, to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116922', null, '87808f225d7240f68c2ab879347d818a', 'ÊÓÆµÂ·¾¶', 'videoUrl', null, 12, 1, null, null, to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'), to_date('27-07-2018 08:54:53', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116923', null, '87808f225d7240f68c2ab879347d818a', 'ÅÅÐò±àºÅ', 'sortNum', null, 13, 1, null, null, to_date('31-12-2019 13:05:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('31-12-2019 13:05:41', 'dd-mm-yyyy hh24:mi:ss'));

@@ -123,6 +123,8 @@ public class WellProHandsontableChangedData {
 	    
 	    private String netGrossRatio;
 	    
+	    private String runtimeEfficiencySourceName;
+	    
 	    private String acqTime;
 
 		public String getId() {
@@ -499,6 +501,14 @@ public class WellProHandsontableChangedData {
 
 		public void setPumpTypeName(String pumpTypeName) {
 			this.pumpTypeName = pumpTypeName;
+		}
+
+		public String getRuntimeEfficiencySourceName() {
+			return runtimeEfficiencySourceName;
+		}
+
+		public void setRuntimeEfficiencySourceName(String runtimeEfficiencySourceName) {
+			this.runtimeEfficiencySourceName = runtimeEfficiencySourceName;
 		}
 	}
 }

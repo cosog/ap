@@ -1128,7 +1128,7 @@ public class BaseDao extends HibernateDaoSupport {
 			prdName="prd_save_pcp_productiondata";
 		}
 		try {
-			cs = conn.prepareCall("{call "+prdName+"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call "+prdName+"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellProHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
@@ -1191,8 +1191,9 @@ public class BaseDao extends HibernateDaoSupport {
 						
 						cs.setString(29, wellProHandsontableChangedData.getUpdatelist().get(i).getAnchoringStateName());
 						cs.setString(30, wellProHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio());
-						cs.setString(31, currentTime);
-						cs.setString(32, ids);
+						cs.setString(31, wellProHandsontableChangedData.getUpdatelist().get(i).getRuntimeEfficiencySourceName());
+						cs.setString(32, currentTime);
+						cs.setString(33, ids);
 						cs.executeUpdate();
 					}
 				}
@@ -1260,8 +1261,9 @@ public class BaseDao extends HibernateDaoSupport {
 						
 						cs.setString(29, wellProHandsontableChangedData.getInsertlist().get(i).getAnchoringStateName());
 						cs.setString(30, wellProHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio());
-						cs.setString(31, currentTime);
-						cs.setString(32, ids);
+						cs.setString(31, wellProHandsontableChangedData.getInsertlist().get(i).getRuntimeEfficiencySourceName());
+						cs.setString(32, currentTime);
+						cs.setString(33, ids);
 					}
 				}
 			}

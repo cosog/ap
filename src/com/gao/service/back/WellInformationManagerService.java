@@ -346,7 +346,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
 				+ " t.protocolcode,t.acquisitionunit,t.deviceaddr,t.deviceid,"
-				+ " t.runtimeefficiencysource,t.videourl,t.sortnum,"
+				+ " t.videourl,t.sortnum,"
 				+ " t.protocol "
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
@@ -427,10 +427,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
 			result_json.append("\"deviceAddr\":\""+obj[8]+"\",");
 			result_json.append("\"deviceId\":\""+obj[9]+"\",");
-			result_json.append("\"runtimeEfficiencySource\":\""+obj[10]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
-			result_json.append("\"sortNum\":\""+obj[12]+"\",");
-			result_json.append("\"protocol\":\""+obj[13]+"\"},");
+			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
+			result_json.append("\"sortNum\":\""+obj[11]+"\",");
+			result_json.append("\"protocol\":\""+obj[12]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -440,12 +439,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]}");
 		json=result_json.toString().replaceAll("null", "");
-//		try {
-//			String columns=service.showTableHeadersColumns("wellInfo");
-//			json=this.findPageBySqlEntity(recordCount,sql, columns, pager);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 		return json;
 	}
 	
@@ -470,7 +463,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
 				+ " t.protocolcode,t.acquisitionunit,t.deviceaddr,t.deviceid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
-				+ " t.runtimeefficiencysource,t.videourl,t.sortnum, "
+				+ " t.videourl,t.sortnum, "
 				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
@@ -505,12 +498,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"acqcycle_diagram\":\""+obj[10]+"\",");
 			result_json.append("\"acqcycle_discrete\":\""+obj[11]+"\",");
 			result_json.append("\"savecycle_discrete\":\""+obj[12]+"\",");
-			result_json.append("\"runtimeEfficiencySource\":\""+obj[13]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[15]+"\",");
-			result_json.append("\"acqCycleSetStatus_diagram\":\""+obj[16]+"\",");
-			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[17]+"\",");
-			result_json.append("\"protocol\":\""+obj[18]+"\"},");
+			result_json.append("\"videoUrl\":\""+obj[13]+"\",");
+			result_json.append("\"sortNum\":\""+obj[14]+"\",");
+			result_json.append("\"acqCycleSetStatus_diagram\":\""+obj[15]+"\",");
+			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[16]+"\",");
+			result_json.append("\"protocol\":\""+obj[17]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

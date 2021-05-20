@@ -240,13 +240,7 @@ function CreateAndLoadWellInfoTable(isNew){
 	            		}
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="runtimeEfficiencySource".toUpperCase()){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算','转速计算']}";
-	            		}
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="driverName".toUpperCase()){
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
 	            		var source="[";
 	            		for(var j=0;j<result.driverDropdownData.length;j++){
 	            			source+="\'"+result.driverDropdownData[j]+"\'";

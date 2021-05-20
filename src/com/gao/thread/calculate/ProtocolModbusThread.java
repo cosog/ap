@@ -146,7 +146,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     					}else{
     						String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 							String updateDiscreteComm="update tbl_rpc_discrete_latest t set t.commstatus=1,t.acqTime=to_date('"+AcqTime+"','yyyy-mm-dd hh24:mi:ss')  "
-									+ " where t.wellId in (select well.id from tbl_wellinformation well where upper(well.drivercode) not like '%KAFKA%' and well.deviceaddr='"+revMacStr+"') ";
+									+ " where t.wellId in (select well.id from tbl_wellinformation well where upper(well.protocolcode) not like '%KAFKA%' and well.deviceaddr='"+revMacStr+"') ";
 							Connection conn=OracleJdbcUtis.getConnection();
 							Statement stmt=null;
 							try {
@@ -1560,19 +1560,19 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         					TimeEffResponseData timeEffResponseData=null;
         					int RunStatus=runSatus;
         					//时率来源为电参计算时，运行状态取电参计算结果
-        					if(clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==2){//时率来源为电参时
-        						if(CurrentA<2&&CurrentB<2&&CurrentB<2){
-        							RunStatus=0;
-        						}else{
-        							RunStatus=1;
-        						}
-        					}else if(clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==3){//时率来源为转速计算时
-        						if (clientUnit.unitDataList.get(i).lastRPM>0){
-        							RunStatus=1;
-        						}else{
-        							RunStatus=0;
-        						}
-        					}
+//        					if(clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==2){//时率来源为电参时
+//        						if(CurrentA<2&&CurrentB<2&&CurrentB<2){
+//        							RunStatus=0;
+//        						}else{
+//        							RunStatus=1;
+//        						}
+//        					}else if(clientUnit.unitDataList.get(i).getRunTimeEfficiencySource()==3){//时率来源为转速计算时
+//        						if (clientUnit.unitDataList.get(i).lastRPM>0){
+//        							RunStatus=1;
+//        						}else{
+//        							RunStatus=0;
+//        						}
+//        					}
         					String tiemEffRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+clientUnit.unitDataList.get(i).getWellName()+"\",";
@@ -1759,7 +1759,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     								stmt = conn.createStatement();
     								int result=stmt.executeUpdate(updateDiscreteData);
     								if(commResponseData!=null&&commResponseData.getResultStatus()==1&&timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-            							String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0,t.runrange=?1 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+            							String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?,t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
             							List<String> clobCont=new ArrayList<String>();
             							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
             							clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
@@ -2187,7 +2187,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 				updateCommStatus+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 				int result=stmt.executeUpdate(updateCommStatus);
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
+					String updateCommAndRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+clientUnit.unitDataList.get(i).wellName+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					ps=conn.prepareStatement(updateCommAndRunRangeClobSql);
@@ -2287,7 +2287,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 		return readByte;
 	}
 	
-	public byte[] getWriteFloatData(int id,int startAddr,float data,int protocol,String driverCode){
+	public byte[] getWriteFloatData(int id,int startAddr,float data,int protocol,String protocolCode){
 		byte startAddrArr[]=StringManagerUtils.getByteArray((short)(startAddr-40001));
 		byte dataArr[]=StringManagerUtils.getByteArray(data);
 		byte[] readByte=null;
@@ -2306,7 +2306,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 			readByte[10]=0x00;
 			readByte[11]=0x02;
 			readByte[12]=0x04;
-			if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
+			if("SunMoonStandardDrive".equalsIgnoreCase(protocolCode)){
 				readByte[13]=dataArr[3];
 				readByte[14]=dataArr[2];
 				readByte[15]=dataArr[1];
@@ -2317,7 +2317,6 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     			readByte[15]=dataArr[2];
     			readByte[16]=dataArr[3];
     		}
-			
 		}else if(protocol==2){
 			byte[] dataByte=new byte[11];
 			dataByte[0]=(byte)id;
@@ -2327,7 +2326,7 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 			dataByte[4]=0x00;
 			dataByte[5]=0x02;
 			dataByte[6]=0x04;
-			if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
+			if("SunMoonStandardDrive".equalsIgnoreCase(protocolCode)){
 				dataByte[7]=dataArr[3];
 				dataByte[8]=dataArr[2];
 				dataByte[9]=dataArr[1];
@@ -2338,7 +2337,6 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
     			dataByte[9]=dataArr[2];
     			dataByte[10]=dataArr[3];
     		}
-			
 			byte[] CRC16=StringManagerUtils.getCRC16(dataByte);
 			readByte=StringManagerUtils.linlByteArray(dataByte,CRC16);
 		}
@@ -2480,16 +2478,16 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
         return result;
     }
     
-    public float getFloat(byte[] arr,int index, int protocol,String driverCode){  
+    public float getFloat(byte[] arr,int index, int protocol,String protocolCode){  
     	float result=0;
     	if(protocol==1){
-    		if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
+    		if("SunMoonStandardDrive".equalsIgnoreCase(protocolCode)){
     			result=StringManagerUtils.getFloatLittle(arr, 9+index);
     		}else{
     			result=StringManagerUtils.getFloat(arr, 9+index);
     		}
     	}else if(protocol==2){
-    		if("SunMoonStandardDrive".equalsIgnoreCase(driverCode)){
+    		if("SunMoonStandardDrive".equalsIgnoreCase(protocolCode)){
     			result=StringManagerUtils.getFloatLittle(arr, 3+index);
     		}else{
     			result=StringManagerUtils.getFloat(arr, 3+index);
@@ -2549,7 +2547,6 @@ public class ProtocolModbusThread extends ProtocolBasicThread{
 //		}
     	return true;
     }
-
 
 	public int getThreadId() {
 		return threadId;

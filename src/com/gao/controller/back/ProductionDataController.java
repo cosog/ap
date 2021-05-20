@@ -124,7 +124,6 @@ public class ProductionDataController extends BaseController {
 	 */
 	@RequestMapping("/saveWellProHandsontableData")
 	public String saveWellProHandsontableData() throws Exception {
-
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String orgid=user.getUserorgids();

@@ -698,7 +698,7 @@ create table TBL_PCP_PRODUCTIONDATA_HIST
   PUMPGRADE                  NUMBER(1) default 1,
   PUMPBOREDIAMETER           NUMBER(8,2) default 38,
   PLUNGERLENGTH              NUMBER(8,2) default 1.2,
-  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
@@ -760,7 +760,7 @@ create table TBL_PCP_PRODUCTIONDATA_LATEST
   PUMPGRADE                  NUMBER(1) default 1,
   PUMPBOREDIAMETER           NUMBER(8,2) default 38,
   PLUNGERLENGTH              NUMBER(8,2) default 1.2,
-  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
@@ -1144,7 +1144,7 @@ create table TBL_RPCINFORMATION
   OFFSETANGLEOFCRANK            NUMBER(8,2),
   CRANKGRAVITYRADIUS            NUMBER(10,4),
   SINGLECRANKWEIGHT             NUMBER(8,2),
-  SINGLECRANKPINWEIGHT          NUMBER(10,4)
+  SINGLECRANKPINWEIGHT          NUMBER(10,4),
   STRUCTURALUNBALANCE           NUMBER(8,2),
   GEARREDUCERRATIO              NUMBER(10,4),
   GEARREDUCERBELTPULLEYDIAMETER NUMBER(10,4),
@@ -1159,6 +1159,9 @@ tablespace AGILE_DATA
     minextents 1
     maxextents unlimited
   )
+/
+alter table TBL_RPCINFORMATION
+  add constraint PK_TBL_RPCINFORMATION primary key (ID)
 /
 
 /*==============================================================*/
@@ -1506,6 +1509,7 @@ create index IDX_T_FSDIAGRAM_R_WELLID on TBL_RPC_DIAGRAM_LATEST (WELLID)
 /*==============================================================*/
 /* Table: TBL_RPC_DIAGRAM_TOTAL                                    */
 /*==============================================================*/
+create table TBL_RPC_DIAGRAM_TOTAL
 (
   id                         NUMBER(10) not null,
   wellid                     NUMBER(10),
@@ -1942,7 +1946,7 @@ create table TBL_RPC_PRODUCTIONDATA_HIST
   MANUALINTERVENTION         NUMBER(4) default 0,
   NETGROSSRATIO              NUMBER(8,2) default 1,
   ANCHORINGSTATE             NUMBER(1) default 1,
-  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA
@@ -2004,7 +2008,7 @@ create table TBL_RPC_PRODUCTIONDATA_LATEST
   MANUALINTERVENTION         NUMBER(4) default 0,
   NETGROSSRATIO              NUMBER(8,2) default 1,
   ANCHORINGSTATE             NUMBER(1) default 1,
-  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 0,
+  RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
 tablespace AGILE_DATA

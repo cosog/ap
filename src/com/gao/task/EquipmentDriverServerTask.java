@@ -78,7 +78,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		byte[] aa={0x40,(byte) 0x99,(byte) 0xEB,(byte)0x85};
 		byte[] bb={(byte)0x85,(byte) 0xEB,(byte) 0x99,0x40};
@@ -115,7 +115,7 @@ public class EquipmentDriverServerTask {
 			tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
 		}
 
-		while(EquipmentDriverServerTask.clientUnitList.size()>0){
+		while(true){
 			tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
 			if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
 				try {
@@ -124,7 +124,7 @@ public class EquipmentDriverServerTask {
 						System.out.println("启动TCPServer,端口:"+tcpServerConfig.getPort());
 					}
 					for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
-						if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null){
+						if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null || EquipmentDriverServerTask.clientUnitList.get(i).socket.isClosed()){
 							try {
 								if(serverSocket==null || serverSocket.isClosed()){
 									serverSocket = new ServerSocket(tcpServerConfig.getPort());
@@ -132,6 +132,9 @@ public class EquipmentDriverServerTask {
 								}
 								System.out.println("TcpServer等待客户端连接...");
 								Socket socket=serverSocket.accept();
+								if(EquipmentDriverServerTask.clientUnitList.get(i).socket.isClosed()){
+									EquipmentDriverServerTask.clientUnitList.get(i).socket=null;
+								}
 //								EquipmentDriverServerTask.clientUnitList.get(i).socket=new Socket();
 //								EquipmentDriverServerTask.clientUnitList.get(i).socket=socket;
 								EquipmentDriverServerTask.clientUnitList.get(i).setSocket(socket);
@@ -172,7 +175,7 @@ public class EquipmentDriverServerTask {
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		Map<String, Object> acquisitionUnitMap = AcquisitionUnitMap.getMapObject();
 		String sql="select t.wellName,t.liftingType,t.deviceAddr,t.deviceId,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
-				+ " t.runtimeefficiencysource,"
+				+ " t4.runtimeefficiencysource,"
 				+ " t.protocolcode,t.unitcode,"
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
@@ -183,10 +186,11 @@ public class EquipmentDriverServerTask {
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_rpc_diagram_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
+				+ " left outer join  tbl_rpc_productiondata_latest  t4 on t4.wellId=t.id"
 				+ " where t.liftingType>=200 and t.liftingType<300 "
 				+ " order by t.sortNum";
 		String pcpInitSql="select t.wellName,t.liftingType,t.deviceAddr,t.deviceId,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
-				+ " t.runtimeefficiencysource,"
+				+ " t4.runtimeefficiencysource,"
 				+ " t.protocolcode,t.unitcode,"
 				+ " to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') as disAcqTime,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
@@ -198,6 +202,7 @@ public class EquipmentDriverServerTask {
 				+ " from tbl_wellinformation t "
 				+ " left outer join  tbl_pcp_rpm_latest t2 on t2.wellId=t.id"
 				+ " left outer join  tbl_pcp_discrete_latest  t3 on t3.wellId=t.id"
+				+ " left outer join  tbl_pcp_productiondata_latest  t4 on t4.wellId=t.id"
 				+ " where t.liftingType>=400 and t.liftingType<500"
 				+ " order by t.sortNum";
 		String AcqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -406,10 +411,11 @@ public class EquipmentDriverServerTask {
 			wellList=wellList.substring(0, wellList.length()-1);
 		}
 		String sql="select t.wellName,t.liftingType,t.deviceaddr,t.deviceid,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
-				+ " t.runtimeefficiencysource,"
+				+ " t3.runtimeefficiencysource,"
 				+ " t.protocolcode,t.unitcode,t.protocol "
 				+ " from tbl_wellinformation t "
-				+ " left join tbl_rpc_diagram_latest t2 on t2.wellId=t.id "
+				+ " left outer join tbl_rpc_diagram_latest t2 on t2.wellId=t.id "
+				+ " left outer join  tbl_rpc_productiondata_latest  t3 on t3.wellId=t.id"
 				+ " where 1=1  ";
 		if(StringManagerUtils.isNotNull(wellList)){
 			sql+=" and t.wellName in("+wellList+")";

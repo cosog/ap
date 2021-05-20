@@ -263,7 +263,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
 			+ "rodString,"
-			+ "anchoringStateName,netGrossRatio,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') "
+			+ "anchoringStateName,netGrossRatio,runtimeEfficiencySourceName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') "
 			+ "from viw_rpc_productiondata_latest t "
 			+ "where t.org_id in("+orgId+")  "
 			+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";
@@ -320,7 +320,8 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			
 			result_json.append("\"anchoringStateName\":\""+obj[26]+"\",");
 			result_json.append("\"netGrossRatio\":\""+obj[27]+"\",");
-			result_json.append("\"acqTime\":\""+obj[28]+"\"},");
+			result_json.append("\"runtimeEfficiencySourceName\":\""+obj[28]+"\",");
+			result_json.append("\"acqTime\":\""+obj[29]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json = result_json.deleteCharAt(result_json.length() - 1);

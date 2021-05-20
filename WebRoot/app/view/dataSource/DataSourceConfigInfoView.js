@@ -99,11 +99,7 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
 	            		}
 	            	}else if(result.columns[i].dataIndex==="runtimeEfficiencySource"){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['人工录入','DI信号', '电参计算','转速计算']}";
-	            		}
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['软件计算','组态直读', '数据库直读','人工录入']}";
 	            	}else if(result.columns[i].dataIndex==="driverName"){
 	            		var source="[";
 	            		for(var j=0;j<result.driverDropdownData.length;j++){

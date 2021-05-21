@@ -303,8 +303,6 @@ begin
               :new.iamax,:new.iamin,:new.ibmax,:new.ibmin,:new.icmax,:new.icmin,
               :new.savetime
           );
-          update tbl_rpc_diagram_hist t set t.discretedataid=( select id from tbl_rpc_discrete_hist dis where dis.wellid=:new.wellid and dis.AcqTime=:new.AcqTime )
-          where t.wellid=:new.wellid and t.AcqTime=( select max(t2.AcqTime) from tbl_rpc_diagram_hist t2 where t2.wellid=t.wellid );
        elsif recordCount>0 then
            update tbl_rpc_discrete_hist t set
               t.commstatus=:new.commstatus,t.commtime=:new.commtime,t.commtimeefficiency=:new.commtimeefficiency,t.commrange=:new.commrange,

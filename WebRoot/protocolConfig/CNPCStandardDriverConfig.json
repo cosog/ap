@@ -1,6 +1,10 @@
 {
     "ProtocolName": "A11协议",
     "ProtocolCode": "CNPCStandardDrive",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":5,
     "DataConfig": {
         "RunStatus": {

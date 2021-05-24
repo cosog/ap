@@ -31,7 +31,6 @@ import com.gao.model.AlarmShowStyle;
 import com.gao.model.calculate.FA2FSResponseData;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.RTUDriveConfig;
-import com.gao.model.drive.TcpServerConfig;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.thread.calculate.ProtocolModbusThread;
 import com.gao.thread.calculate.IntelligentPumpingUnitThread;
@@ -68,7 +67,6 @@ public class EquipmentDriverServerTask {
 	public static ServerSocket beeTechServerSocket;
 	public static ServerSocket sunMoonServerSocket;
 	public static boolean exit=false;
-	public static TcpServerConfig tcpServerConfig=null;
 	public static ServerSocket serverSocket=null;
 	private ExecutorService pool = Executors.newCachedThreadPool();
 	
@@ -80,12 +78,6 @@ public class EquipmentDriverServerTask {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-		byte[] aa={0x40,(byte) 0x99,(byte) 0xEB,(byte)0x85};
-		byte[] bb={(byte)0x85,(byte) 0xEB,(byte) 0x99,0x40};
-		
-		float f1=StringManagerUtils.getFloat(aa, 0);
-		float f2=StringManagerUtils.getFloatLittle(bb, 0);
-		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		initDriverConfig();//初始化驱动配置
@@ -102,33 +94,21 @@ public class EquipmentDriverServerTask {
 				Thread.sleep(5*1000);
 			}
 		}while(!reg);
-		
-		Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
-		if(tcpServerConfigMap==null || tcpServerConfigMap.get("TcpServerConfig")==null){
-			String path="";
-			String TcpServerConfigData="";
-			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-			path=stringManagerUtils.getFilePath("TcpServerConfig.json","protocolConfig/");
-			TcpServerConfigData=stringManagerUtils.readFile(path,"utf-8");
-			type = new TypeToken<TcpServerConfig>() {}.getType();
-			TcpServerConfig tcpServerConfig=gson.fromJson(TcpServerConfigData, type);
-			tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
-		}
 
+		int tcpServerPort=Config.getInstance().configFile.getTcpServer().getPort();
 		while(true){
-			tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
-			if(tcpServerConfig!=null&&tcpServerConfig.getPort()>0){
+			if(tcpServerPort>0){
 				try {
 					if(serverSocket==null || serverSocket.isClosed()){
-						serverSocket = new ServerSocket(tcpServerConfig.getPort());
-						System.out.println("启动TCPServer,端口:"+tcpServerConfig.getPort());
+						serverSocket = new ServerSocket(tcpServerPort);
+						System.out.println("启动TCPServer,端口:"+tcpServerPort);
 					}
 					for(int i=0;i<EquipmentDriverServerTask.clientUnitList.size();i++){
 						if(EquipmentDriverServerTask.clientUnitList.get(i).socket==null || EquipmentDriverServerTask.clientUnitList.get(i).socket.isClosed()){
 							try {
 								if(serverSocket==null || serverSocket.isClosed()){
-									serverSocket = new ServerSocket(tcpServerConfig.getPort());
-									System.out.println("启动TCPServer,端口:"+tcpServerConfig.getPort());
+									serverSocket = new ServerSocket(tcpServerPort);
+									System.out.println("启动TCPServer,端口:"+tcpServerPort);
 								}
 								System.out.println("TcpServer等待客户端连接...");
 								Socket socket=serverSocket.accept();

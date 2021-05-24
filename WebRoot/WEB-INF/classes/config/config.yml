@@ -64,6 +64,8 @@ agileCalculate:
    plugin: 
       wellboreTrajectory: http://8.130.30.138:18100/api/calc/plugin/2xyz
       fa2fs: http://8.130.30.138:18100/api/plugin/fa2fs
+tcpServer:
+   port: 19100
 mqtt:
    server: tcp://dq1c6knb.hinnotek.cn:1883
    userName: hinnotekClient1

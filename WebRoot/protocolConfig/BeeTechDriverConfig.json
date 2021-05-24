@@ -1,6 +1,10 @@
 {
     "ProtocolName": "A11协议_必创",
     "ProtocolCode": "BeeTech",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":2,
     "DataConfig": {
         "RunStatus": {

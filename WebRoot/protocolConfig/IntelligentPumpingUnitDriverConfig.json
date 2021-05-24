@@ -1,6 +1,10 @@
 {
     "ProtocolName": "数字化抽油机",
     "ProtocolCode": "IntelligentPumpingUnitDrive",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":3,
     "DataConfig": {
         "DiscreteAcquisitionInterval": {

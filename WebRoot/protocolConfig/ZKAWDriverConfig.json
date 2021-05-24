@@ -1,6 +1,10 @@
 {
     "ProtocolName": "A11协议_中科奥维",
     "ProtocolCode": "ZKAWDrive",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":4,
     "DataConfig": {
         "RunStatus": {

@@ -1,6 +1,10 @@
 {
     "ProtocolName": "四化协议",
     "ProtocolCode": "SinoepcStandardDrive",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":6,
     "DataConfig": {
         "RunStatus": {

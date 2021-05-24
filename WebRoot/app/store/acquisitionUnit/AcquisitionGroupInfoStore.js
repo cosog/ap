@@ -55,7 +55,7 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionGroupInfoStore', {
                         		Ext.getCmp("acquisitionGroupUpdateBtn_Id").enable();
                         		Ext.getCmp("acquisitionGroupDeleteBtn_Id").enable();
                         		Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(selected[0].data.id);
-                        		Ext.getCmp("acquisitionItemsTreeGridPanel_Id").getStore().load();
+//                        		Ext.getCmp("acquisitionItemsTreeGridPanel_Id").getStore().load();
                         	}else{
                         		Ext.getCmp("acquisitionGroupUpdateBtn_Id").disable();
                         		Ext.getCmp("acquisitionGroupDeleteBtn_Id").disable();

@@ -15,6 +15,8 @@ public class ConfigFile {
     private Mqtt mqtt;
     
     private Kafka kafka;
+    
+    private TcpServer tcpServer;
 
     private ViewInformation viewInformation;
 
@@ -386,6 +388,18 @@ public class ConfigFile {
 			this.probe = probe;
 		}
 	}
+	
+	public static class TcpServer{
+		private int port;
+
+		public int getPort() {
+			return port;
+		}
+
+		public void setPort(int port) {
+			this.port = port;
+		}
+	}
 
 	public static class Mqtt
 	{
@@ -569,5 +583,12 @@ public class ConfigFile {
 		public void setElectrical(boolean electrical) {
 			this.electrical = electrical;
 		}
+	}
+
+	public TcpServer getTcpServer() {
+		return tcpServer;
+	}
+	public void setTcpServer(TcpServer tcpServer) {
+		this.tcpServer = tcpServer;
 	}
 }

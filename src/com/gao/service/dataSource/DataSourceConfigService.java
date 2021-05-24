@@ -54,14 +54,6 @@ public class DataSourceConfigService<T> extends BaseService<T>  {
 			result_json.append("{\"id\":5,\"item\":\"数据库名称\",\"value\":\""+dataSourceConfig.getInstanceName()+"\"},");
 			result_json.append("{\"id\":6,\"item\":\"用户名\",\"value\":\""+dataSourceConfig.getUser()+"\"},");
 			result_json.append("{\"id\":7,\"item\":\"密码\",\"value\":\""+dataSourceConfig.getPassword()+"\"}");
-			
-//			result_json.append("{\"id\":7,\"item\":\"功图数据表\",\"value\":\""+dataSourceConfig.getDiagramTable().getName()+"\"},");
-//			result_json.append("{\"id\":8,\"item\":\"油层数据表\",\"value\":\""+dataSourceConfig.getReservoirTable().getName()+"\"},");
-//			result_json.append("{\"id\":9,\"item\":\"杆柱组合数据表\",\"value\":\""+dataSourceConfig.getRodStringTable().getName()+"\"},");
-//			result_json.append("{\"id\":10,\"item\":\"油管数据表\",\"value\":\""+dataSourceConfig.getTubingStringTable().getName()+"\"},");
-//			result_json.append("{\"id\":11,\"item\":\"套管数据表\",\"value\":\""+dataSourceConfig.getCasingStringTable().getName()+"\"},");
-//			result_json.append("{\"id\":12,\"item\":\"动态数据表\",\"value\":\""+dataSourceConfig.getProductionTable().getName()+"\"},");
-//			result_json.append("{\"id\":13,\"item\":\"泵数据表\",\"value\":\""+dataSourceConfig.getPumpTable().getName()+"\"}");
 		}
 		result_json.append("],");
 		result_json.append("\"columnRoot\":[");

@@ -1,6 +1,10 @@
 {
     "ProtocolName": "A11协议_日月",
     "ProtocolCode": "SunMoonStandardDrive",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":3,
     "DataConfig": {
         "RunStatus": {

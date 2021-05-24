@@ -1,7 +1,6 @@
 var driverConfigHandsontableHelper=null;
 var driverConfigItemsHandsontableHelper=null;
 var kafkaDriverConfigHandsontableHelper=null;
-var tcpServerConfigHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.driverConfigInfoView',
@@ -10,6 +9,8 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
     border: false,
     initComponent: function () {
     	var me = this;
+    	var AcquisitionUnitInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionUnitInfoStore');
+		var AcquisitionGroupInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionGroupInfoStore');
     	Ext.apply(me, {
     		items: [{
                 tbar:['->',{
@@ -43,41 +44,167 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                 	layout: "border",
                     border: false,
                     items: [{
-                    	region: 'west',
-                        title:'TCPServer配置',
-                        width: '25%',
-                        layout: 'fit',
-                        collapsible: true,
-                        split: true,
-                        html:'<div class="TcpServerConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="TcpServerConfigInfoInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            	CreateTcpServerConfigInfoTable(true);
-                            }
-                        }
-                    },{
-                        region: 'center',
-                        title:'协议配置',
+                    	region: 'center',
+                    	layout: "border",
                         border: false,
-                        layout: 'fit',
-                        html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            	CreateDriverConfigInfoTable(true);
+                        items: [{
+                            region: 'center',
+                            title:'协议配置',
+                            border: false,
+                            layout: 'fit',
+                            html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                	CreateDriverConfigInfoTable(true);
+                                }
                             }
-                        }
-                    }, {
-                        region: 'east',
-                        title:'采控项配置',
-                        layout: 'fit',
-                        width: '60%',
+                        }, {
+                            region: 'east',
+                            title:'采控项配置',
+                            layout: 'fit',
+                            width: '60%',
+                            collapsible: true,
+                            split: true,
+                            html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                }
+                            }
+                        }]
+                    },{
+                    	region: 'south',
+                    	height:'50%',
+                    	layout: "border",
+                        border: false,
+                        header: false,
                         collapsible: true,
                         split: true,
-                        html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            }
-                        }
+                        items: [{
+                            region: 'center',
+                            title:'采集单元配置',
+                            border: false,
+                            layout: 'fit',
+                            id:'acquisitionUnitListPanel_Id',
+                            tbar: [{
+                                id: 'acquisitionUnitName_Id',
+                                fieldLabel: '单元名称',
+                                name: 'unitName',
+                                emptyText: '查询采集单元...',
+                                labelWidth: 60,
+                                width: 165,
+                                labelAlign: 'right',
+                                xtype: 'textfield'
+                                         }, {
+                                xtype: 'button',
+                                text: cosog.string.search,
+                                pressed: true,
+                                iconCls: 'search',
+                                handler: function () {
+                                    AcquisitionUnitInfoStore.load();
+                                }
+                                         }, {
+                                id: 'selectedAcquisitionUnitCode_Id', // 分配权限时，存放当前选中的角色编码
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                                         }, '->', {
+                                xtype: 'button',
+                                id: 'acquisitionUnitAddBtn_Id',
+                                text: cosog.string.add,
+                                iconCls: 'add',
+                                handler: function () {
+                                    addAcquisitionUnitInfo();
+                                }
+                                         }, "-", {
+                                xtype: 'button',
+                                id: 'acquisitionUnitUpdateBtn_Id',
+                                text: cosog.string.update,
+                                disabled: true,
+                                iconCls: 'edit',
+                                handler: function () {
+                                    modifyAcquisitionUnitInfo();
+                                }
+                                         }, "-", {
+                                xtype: 'button',
+                                id: 'acquisitionUnitDeleteBtn_Id',
+                                disabled: true,
+                                text: cosog.string.del,
+                                iconCls: 'delete',
+                                handler: function () {
+                                    delAcquisitionUnitInfo();
+                                }
+                            }]
+                        }, {
+                            region: 'east',
+                            title:'采集组配置',
+                            layout: 'fit',
+                            width: '60%',
+                            collapsible: true,
+                            split: true,
+                            id:'acquisitionGroupListPanel_Id',
+                            tbar: [{
+                                id: 'acquisitionGroupName_Id',
+                                fieldLabel: '组名称',
+                                name: 'groupName',
+                                emptyText: '查询采集组...',
+                                labelWidth: 45,
+                                width: 150,
+                                labelAlign: 'right',
+                                xtype: 'textfield'
+                            }, {
+                                xtype: 'button',
+                                text: cosog.string.search,
+                                pressed: true,
+                                iconCls: 'search',
+                                handler: function () {
+                                    //                    	AcquisitionUnitInfoStore.load();
+                                }
+                            }, {
+                                id: 'selectedAcquisitionGroupCode_Id', // 分配权限时，存放当前选中的角色编码
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                            }, '->', {
+                                xtype: 'button',
+                                id: 'acquisitionGroupAddBtn_Id',
+                                text: cosog.string.add,
+                                iconCls: 'add',
+                                handler: function () {
+                                    addAcquisitionGroupInfo();
+                                }
+                            }, "-", {
+                                xtype: 'button',
+                                id: 'acquisitionGroupUpdateBtn_Id',
+                                text: cosog.string.update,
+                                disabled: true,
+                                iconCls: 'edit',
+                                handler: function () {
+                                    modifyAcquisitionGroupInfo();
+                                }
+                            }, "-", {
+                                xtype: 'button',
+                                id: 'acquisitionGroupDeleteBtn_Id',
+                                disabled: true,
+                                text: cosog.string.del,
+                                iconCls: 'delete',
+                                handler: function () {
+                                    delAcquisitionGroupInfo();
+                                }
+                            }],
+                            bbar: ['->', {
+                                xtype: 'button',
+                                id: 'saveAcquisitionGroupToUnitBtn_Id',
+                                text: '保存',
+                                iconCls: 'save',
+                                pressed: true,
+                                handler: function () {
+                                	grantAcquisitionGroupsPermission();
+                                }
+                    		}, {
+                                xtype: 'tbspacer',
+                                flex: 1
+                    		}]
+                        }]
                     }]
                 },{
                 	title:'Kafka',
@@ -132,10 +259,10 @@ function CreateDriverConfigInfoTable(isNew){
 		       
 	            for(var i=0;i<result.columns.length;i++){
 	            	colHeaders+="'"+result.columns[i].header+"'";
-	            	if(result.columns[i].dataIndex==="protocol"){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['Modbus-TCP', 'Modbus-RTU']}";
-	            	}else if(result.columns[i].dataIndex==="port"){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigHandsontableHelper);}}";
+	            	if(result.columns[i].dataIndex.toUpperCase()==="ProtocolType".toUpperCase()){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="StoreMode".toUpperCase()){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['大端', '小端']}";
 	            	}else{
 	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 	            	}
@@ -157,7 +284,7 @@ function CreateDriverConfigInfoTable(isNew){
 			}
 			
 			var row1=driverConfigHandsontableHelper.hot.getDataAtRow(0);
-			CreateDriverConfigItemsInfoTable(row1[2])
+			CreateDriverConfigItemsInfoTable(row1[6])
 //			if(driverConfigItemsHandsontableHelper==null){
 //				CreateDriverConfigItemsInfoTable(result);
 //			}else{
@@ -207,7 +334,7 @@ var DriverConfigHandsontableHelper = {
 	        	driverConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0,2],
+	                    columns: [0,6],
 	                    indicators: true
 	                },
 	                columns:driverConfigHandsontableHelper.columns,
@@ -235,7 +362,7 @@ var DriverConfigHandsontableHelper = {
 	                },
 	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=driverConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	CreateDriverConfigItemsInfoTable(row1[2]);
+	                	CreateDriverConfigItemsInfoTable(row1[6]);
 	                	
 	                	Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").setValue(row);
 	                },
@@ -422,10 +549,14 @@ var DriverConfigHandsontableHelper = {
 	    }
 };
 
+//else if(result.diagramTableColumns[i].dataIndex==="checked"){
+//	columns+="{data:'"+result.diagramTableColumns[i].dataIndex+"',type:'checkbox'}";
+//}
+
 function CreateDriverConfigItemsInfoTable(data){
 	driverConfigItemsHandsontableHelper = DriverConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
-	var colHeaders="['序号','名称','地址','寄存器长度','数据类型','读写类型','单位','单位换算系数','模式']";
-	var columns="[{data:'id'},{data:'item'},"
+	var colHeaders="['','序号','名称','地址','寄存器数量','数据类型','读写类型','单位','单位换算系数','模式']";
+	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'item'},"
 		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}},"
 			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}}," 
 			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['整型', '实型','BCD码']}," 
@@ -469,14 +600,14 @@ var DriverConfigItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+driverConfigItemsHandsontableHelper.divid);
 	        	driverConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
-	                hiddenColumns: {
-	                    columns: [0],
-	                    indicators: true
-	                },
+//	                hiddenColumns: {
+//	                    columns: [0],
+//	                    indicators: true
+//	                },
 	                columns:driverConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true,//显示行头
+	                rowHeaders: false,//显示行头
 	                colHeaders:driverConfigItemsHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
@@ -699,148 +830,6 @@ var KafkaDriverConfigHandsontableHelper = {
 	    }
 	};
 
-function CreateTcpServerConfigInfoTable(isNew){
-	if(isNew&&tcpServerConfigHandsontableHelper!=null){
-		tcpServerConfigHandsontableHelper.clearContainer();
-		tcpServerConfigHandsontableHelper.hot.destroy();
-		tcpServerConfigHandsontableHelper=null;
-	}
-	
-	Ext.Ajax.request({
-		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getTcpServerConfigData',
-		success:function(response) {
-			var result =  Ext.JSON.decode(response.responseText);
-			if(tcpServerConfigHandsontableHelper==null){
-				tcpServerConfigHandsontableHelper = TcpServerConfigHandsontableHelper.createNew("TcpServerConfigInfoInfoDiv_id");
-				var colHeaders="[";
-		        var columns="[";
-		       
-	            for(var i=0;i<result.columns.length;i++){
-	            	colHeaders+="'"+result.columns[i].header+"'";
-	            	columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	if(i<result.columns.length-1){
-	            		colHeaders+=",";
-	                	columns+=",";
-	            	}
-	            }
-	            colHeaders+="]";
-	        	columns+="]";
-	        	tcpServerConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	        	tcpServerConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-	        	tcpServerConfigHandsontableHelper.createTable(result.totalRoot);
-			}else{
-				tcpServerConfigHandsontableHelper.hot.loadData(result.totalRoot);
-			}
-		},
-		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-            
-        }
-	});
-};
-
-var TcpServerConfigHandsontableHelper = {
-	    createNew: function (divid) {
-	        var tcpServerConfigHandsontableHelper = {};
-	        tcpServerConfigHandsontableHelper.hot = '';
-	        tcpServerConfigHandsontableHelper.divid = divid;
-	        tcpServerConfigHandsontableHelper.validresult=true;//数据校验
-	        tcpServerConfigHandsontableHelper.colHeaders=[];
-	        tcpServerConfigHandsontableHelper.columns=[];
-	        
-	        tcpServerConfigHandsontableHelper.AllData={};
-	        tcpServerConfigHandsontableHelper.updatelist=[];
-	        tcpServerConfigHandsontableHelper.delidslist=[];
-	        tcpServerConfigHandsontableHelper.insertlist=[];
-	        tcpServerConfigHandsontableHelper.editWellNameList=[];
-	        
-	        tcpServerConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        tcpServerConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
-	        }
-	        
-	        tcpServerConfigHandsontableHelper.createTable = function (data) {
-	        	$('#'+tcpServerConfigHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+tcpServerConfigHandsontableHelper.divid);
-	        	tcpServerConfigHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		data: data,
-	                hiddenColumns: {
-	                    columns: [0],
-	                    indicators: true
-	                },
-	                columns:tcpServerConfigHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: true,//显示行头
-	                colHeaders:tcpServerConfigHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-//	                dropdownMenu: ['filter_by_condition', 'filter_by_value', 'filter_action_bar'],
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==1) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = tcpServerConfigHandsontableHelper.addBoldBg;
-		                }
-	                    return cellProperties;
-	                },
-	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	
-	                },
-	                afterDestroy: function() {
-	                	
-	                },
-	                beforeRemoveRow: function (index, amount) {
-	                	
-	                },
-	                afterChange: function (changes, source) {
-	                	
-	                }
-	        	});
-	        }
-	      //插入的数据的获取
-	        tcpServerConfigHandsontableHelper.insertExpressCount=function() {}
-	        //保存数据
-	        tcpServerConfigHandsontableHelper.saveData = function () {}
-	        
-	      //删除的优先级最高
-	        tcpServerConfigHandsontableHelper.delExpressCount=function(ids) {}
-
-	        //updatelist数据更新
-	        tcpServerConfigHandsontableHelper.screening=function() {}
-	        
-	      //更新数据
-	        tcpServerConfigHandsontableHelper.updateExpressCount=function(data) {}
-	        
-	        tcpServerConfigHandsontableHelper.clearContainer = function () {
-	        	tcpServerConfigHandsontableHelper.AllData = {};
-	        	tcpServerConfigHandsontableHelper.updatelist = [];
-	        	tcpServerConfigHandsontableHelper.delidslist = [];
-	        	tcpServerConfigHandsontableHelper.insertlist = [];
-	        	tcpServerConfigHandsontableHelper.editWellNameList=[];
-	        }
-	        
-	        return tcpServerConfigHandsontableHelper;
-	    }
-};
-
-
-
 function SaveModbusDriverConfigData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
@@ -848,12 +837,12 @@ function SaveModbusDriverConfigData(){
 		var driverConfigItemsSaveData=[];
 		var driverConfigData=driverConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
 		var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
-		var tcpServerConfigItemsData=tcpServerConfigHandsontableHelper.hot.getData();
 		var configInfo={};
-		configInfo.TcpServerPort=tcpServerConfigItemsData[0][2];
-		configInfo.TcpServerHeartbeatPrefix=tcpServerConfigItemsData[1][2];
-		configInfo.TcpServerHeartbeatSuffix=tcpServerConfigItemsData[2][2];
-		configInfo.DriverName=driverConfigData[1];
+		configInfo.ProtocolName=driverConfigData[1];
+		configInfo.ProtocolType=driverConfigData[2];
+		configInfo.StoreMode=driverConfigData[3];
+		configInfo.HeartbeatPrefix=driverConfigData[4];
+		configInfo.HeartbeatSuffix=driverConfigData[5];
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};
@@ -867,8 +856,6 @@ function SaveModbusDriverConfigData(){
 			item.Initiative=driverConfigItemsData[i][8];
 			configInfo.DataConfig.push(item);
 		}
-//		alert(JSON.stringify(configInfo));
-//		alert(configInfo.DriverName);
 		
 		Ext.Ajax.request({
     		method:'POST',

@@ -1,6 +1,10 @@
 {
     "ProtocolName": "A11协议_安控",
     "ProtocolCode": "EtrolDrive",
+    "ProtocolType":0,
+    "StoreMode":0,
+    "HeartbeatPrefix":"AA01",
+    "HeartbeatSuffix":"0D",
     "Sort":1,
     "DataConfig": {
         "RunStatus": {

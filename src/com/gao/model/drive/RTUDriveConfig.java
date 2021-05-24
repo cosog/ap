@@ -5,6 +5,14 @@ public class RTUDriveConfig {
     
     private String ProtocolCode;
     
+    private int ProtocolType;
+    
+    private int StoreMode;
+    
+    private String HeartbeatPrefix;
+    
+    private String HeartbeatSuffix;
+    
     private int Sort;
 
     private DataConfig DataConfig;
@@ -571,5 +579,30 @@ public class RTUDriveConfig {
 		public void setElectricDiagnosisResult(Item electricDiagnosisResult) {
 			ElectricDiagnosisResult = electricDiagnosisResult;
 		}
+	}
+
+	public int getProtocolType() {
+		return ProtocolType;
+	}
+	public void setProtocolType(int protocolType) {
+		ProtocolType = protocolType;
+	}
+	public int getStoreMode() {
+		return StoreMode;
+	}
+	public void setStoreMode(int storeMode) {
+		StoreMode = storeMode;
+	}
+	public String getHeartbeatPrefix() {
+		return HeartbeatPrefix;
+	}
+	public void setHeartbeatPrefix(String heartbeatPrefix) {
+		HeartbeatPrefix = heartbeatPrefix;
+	}
+	public String getHeartbeatSuffix() {
+		return HeartbeatSuffix;
+	}
+	public void setHeartbeatSuffix(String heartbeatSuffix) {
+		HeartbeatSuffix = heartbeatSuffix;
 	}
 }

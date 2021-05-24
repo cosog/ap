@@ -32,7 +32,6 @@ import com.gao.model.RoleModule;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusDriverSaveData;
 import com.gao.model.drive.RTUDriveConfig;
-import com.gao.model.drive.TcpServerConfig;
 import com.gao.model.drive.RTUDriveConfig.Item;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
 import com.gao.service.right.RoleManagerService;
@@ -434,19 +433,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getTcpServerConfigData")
-	public String getTcpServerConfigData() throws Exception {
-		String json = "";
-		json = acquisitionUnitItemManagerService.getTcpServerConfigData();
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/saveModbusDriverConfigData")
 	public String saveModbusDriverConfigData() throws Exception {
 		String json = "";
@@ -458,38 +444,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		if(modbusDriverSaveData!=null){
-			String path=stringManagerUtils.getFilePath("TcpServerConfig.json","protocolConfig/");
-			Map<String, Object> tcpServerConfigMap = TcpServerConfigMap.getMapObject();
-			if(tcpServerConfigMap==null || tcpServerConfigMap.get("TcpServerConfig")==null){
-				String TcpServerConfigData="";
-				TcpServerConfigData=stringManagerUtils.readFile(path,"utf-8");
-				type = new TypeToken<TcpServerConfig>() {}.getType();
-				TcpServerConfig tcpServerConfig=gson.fromJson(TcpServerConfigData, type);
-				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
-			}
-			TcpServerConfig tcpServerConfig=(TcpServerConfig) tcpServerConfigMap.get("TcpServerConfig");
-			if(tcpServerConfig.getPort()!=modbusDriverSaveData.getTcpServerPort() 
-					|| !tcpServerConfig.getHeartbeatPrefix().equals(modbusDriverSaveData.getTcpServerHeartbeatPrefix())
-					|| !tcpServerConfig.getHeartbeatSuffix().equals(modbusDriverSaveData.getTcpServerHeartbeatSuffix())
-					){
-				tcpServerConfig.setPort(modbusDriverSaveData.getTcpServerPort());
-				
-				tcpServerConfig.setHeartbeatPrefix(modbusDriverSaveData.getTcpServerHeartbeatPrefix());
-				tcpServerConfig.setHeartbeatSuffix(modbusDriverSaveData.getTcpServerHeartbeatSuffix());
-				
-				
-				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(tcpServerConfig)));
-				tcpServerConfigMap.put("TcpServerConfig", tcpServerConfig);
-				if(EquipmentDriverServerTask.serverSocket!=null && !EquipmentDriverServerTask.serverSocket.isClosed()){
-					EquipmentDriverServerTask.serverSocket.close();
-				}
-			}
+			String path="";
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
 				EquipmentDriverServerTask.initDriverConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
-			switch (modbusDriverSaveData.getDriverName()){
+			switch (modbusDriverSaveData.getProtocolName()){
 			case "A11协议_安控":
 				fileName="EtrolDriverConfig.json";
 				driverCode="EtrolDrive";
@@ -524,6 +485,20 @@ public class AcquisitionUnitManagerController extends BaseController {
 					type = new TypeToken<RTUDriveConfig>() {}.getType();
 					driveConfig=gson.fromJson(driverConfigData, type);
 				}
+				if(modbusDriverSaveData.getProtocolType().equalsIgnoreCase("modbus-tcp")){
+					driveConfig.setProtocolType(0);
+				}else{
+					driveConfig.setProtocolType(1);
+				}
+				
+				if(modbusDriverSaveData.getStoreMode().equalsIgnoreCase("大端")){
+					driveConfig.setStoreMode(0);;
+				}else{
+					driveConfig.setStoreMode(1);
+				}
+				
+				driveConfig.setHeartbeatPrefix(modbusDriverSaveData.getHeartbeatPrefix());
+				driveConfig.setHeartbeatSuffix(modbusDriverSaveData.getHeartbeatSuffix());
 				
 				for(int i=0;i<modbusDriverSaveData.getDataConfig().size();i++){
 					int dataType=1;

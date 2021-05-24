@@ -5,28 +5,25 @@ import java.util.ArrayList;
 
 public class ModbusDriverSaveData {
 
-	private String DriverName;
+	private String ProtocolName;
 	
-	private int TcpServerPort;
+	private String ProtocolType;
 	
-	private String TcpServerHeartbeatPrefix;
+	private String StoreMode;
 	
-	private String TcpServerHeartbeatSuffix;
+	private String HeartbeatPrefix;
+	
+	private String HeartbeatSuffix;
 
     private List<DataConfig> DataConfig;
     
-    public void setDriverName(String DriverName){
-        this.DriverName = DriverName;
+    public void setProtocolName(String ProtocolName){
+        this.ProtocolName = ProtocolName;
     }
-    public String getDriverName(){
-        return this.DriverName;
+    public String getProtocolName(){
+        return this.ProtocolName;
     }
-    public int getTcpServerPort() {
-		return TcpServerPort;
-	}
-	public void setTcpServerPort(int tcpServerPort) {
-		TcpServerPort = tcpServerPort;
-	}
+    
     public void setDataConfig(List<DataConfig> DataConfig){
         this.DataConfig = DataConfig;
     }
@@ -102,16 +99,29 @@ public class ModbusDriverSaveData {
 		}
 	}
 
-	public String getTcpServerHeartbeatPrefix() {
-		return TcpServerHeartbeatPrefix;
+	public String getProtocolType() {
+		return ProtocolType;
 	}
-	public void setTcpServerHeartbeatPrefix(String tcpServerHeartbeatPrefix) {
-		TcpServerHeartbeatPrefix = tcpServerHeartbeatPrefix;
+	public void setProtocolType(String protocolType) {
+		ProtocolType = protocolType;
 	}
-	public String getTcpServerHeartbeatSuffix() {
-		return TcpServerHeartbeatSuffix;
+	public String getStoreMode() {
+		return StoreMode;
 	}
-	public void setTcpServerHeartbeatSuffix(String tcpServerHeartbeatSuffix) {
-		TcpServerHeartbeatSuffix = tcpServerHeartbeatSuffix;
+	public void setStoreMode(String storeMode) {
+		StoreMode = storeMode;
 	}
+	public String getHeartbeatPrefix() {
+		return HeartbeatPrefix;
+	}
+	public void setHeartbeatPrefix(String heartbeatPrefix) {
+		HeartbeatPrefix = heartbeatPrefix;
+	}
+	public String getHeartbeatSuffix() {
+		return HeartbeatSuffix;
+	}
+	public void setHeartbeatSuffix(String heartbeatSuffix) {
+		HeartbeatSuffix = heartbeatSuffix;
+	}
+	
 }

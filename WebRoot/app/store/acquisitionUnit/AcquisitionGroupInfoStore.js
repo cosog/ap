@@ -56,9 +56,16 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionGroupInfoStore', {
                         		Ext.getCmp("acquisitionGroupDeleteBtn_Id").enable();
                         		Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(selected[0].data.id);
 //                        		Ext.getCmp("acquisitionItemsTreeGridPanel_Id").getStore().load();
+                        		showAcquisitionGroupOwnItems();
                         	}else{
                         		Ext.getCmp("acquisitionGroupUpdateBtn_Id").disable();
                         		Ext.getCmp("acquisitionGroupDeleteBtn_Id").disable();
+                        		if(driverConfigItemsHandsontableHelper!=null){
+                                	var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
+                                	for(var j=0;j<driverConfigItemsData.length;j++){
+                                		driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
+                            		}
+                                }
                         	}
                         },
                         itemdblclick: function () {
@@ -71,6 +78,12 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionGroupInfoStore', {
             }
             showAcquisitionUnitOwnGroups(store);
 
+            if(driverConfigItemsHandsontableHelper!=null){
+            	var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
+            	for(var j=0;j<driverConfigItemsData.length;j++){
+            		driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
+        		}
+            }
         },
         beforeload: function (store, options) {
             var groupName= Ext.getCmp('acquisitionGroupName_Id').getValue();

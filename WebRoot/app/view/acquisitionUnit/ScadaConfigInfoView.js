@@ -7,7 +7,7 @@ Ext.define("AP.view.acquisitionUnit.ScadaConfigInfoView", {
     referenceHolder: true,
     initComponent: function () {
 //    	var AcquisitionUnitInfoView = Ext.create('AP.view.acquisitionUnit.AcquisitionUnitInfoView');
-        var DriverConfigInfoView = Ext.create('AP.view.acquisitionUnit.DriverConfigInfoView');
+        var ProtocolConfigInfoView = Ext.create('AP.view.acquisitionUnit.ProtocolConfigInfoView');
         Ext.apply(this, {
             items: [{
                 xtype: 'tabpanel',
@@ -20,7 +20,7 @@ Ext.define("AP.view.acquisitionUnit.ScadaConfigInfoView", {
                     id:'DriverConfigInfoPanel_Id',
                     layout: "fit",
                     border: false,
-                    items:DriverConfigInfoView
+                    items:ProtocolConfigInfoView
                 }
 //                ,{
 //                    title: '单元配置',

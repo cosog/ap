@@ -1,8 +1,8 @@
-Ext.define('AP.view.scadaConfig.SCADADriverConfigInfoView', {
+Ext.define('AP.view.scadaConfig.ProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.SCADADriverConfigInfoView',
+    alias: 'widget.SCADAProtocolConfigInfoView',
     layout: "fit",
-    id:'SCADADriverConfigInfoViewId',
+    id:'SCADAProtocolConfigInfoViewId',
     border: false,
     initComponent: function () {
     	var me = this;

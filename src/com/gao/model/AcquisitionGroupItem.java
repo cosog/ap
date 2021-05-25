@@ -15,6 +15,8 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 	private Integer id;
 	private Integer groupId;
 	private Integer itemId;
+	private String itemName;
+	private String itemCode;
 	private String matrix;
 
 	
@@ -67,6 +69,24 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 	
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
+	}
+
+	@Column(name = "itemName", nullable = false, length = 8)
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	@Column(name = "itemCode", nullable = false, length = 8)
+	public String getItemCode() {
+		return itemCode;
+	}
+
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
 	}
 
 	

@@ -1,11 +1,11 @@
 var driverConfigHandsontableHelper=null;
 var driverConfigItemsHandsontableHelper=null;
 var kafkaDriverConfigHandsontableHelper=null;
-Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
+Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.driverConfigInfoView',
+    alias: 'widget.protocolConfigInfoView',
     layout: "fit",
-    id:'driverConfigInfoViewId',
+    id:'protocolConfigInfoViewId',
     border: false,
     initComponent: function () {
     	var me = this;
@@ -65,6 +65,18 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                             width: '60%',
                             collapsible: true,
                             split: true,
+                            bbar: ['->', {
+                                xtype: 'button',
+                                text: '保存',
+                                iconCls: 'save',
+                                pressed: true,
+                                handler: function () {
+                                	grantAcquisitionItemsPermission();
+                                }
+                    		}, {
+                                xtype: 'tbspacer',
+                                flex: 1
+                    		}],
                             html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -94,7 +106,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                                 width: 165,
                                 labelAlign: 'right',
                                 xtype: 'textfield'
-                                         }, {
+                            }, {
                                 xtype: 'button',
                                 text: cosog.string.search,
                                 pressed: true,
@@ -102,7 +114,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                                 handler: function () {
                                     AcquisitionUnitInfoStore.load();
                                 }
-                                         }, {
+                            }, {
                                 id: 'selectedAcquisitionUnitCode_Id', // 分配权限时，存放当前选中的角色编码
                                 xtype: 'textfield',
                                 value: '',
@@ -115,7 +127,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                                 handler: function () {
                                     addAcquisitionUnitInfo();
                                 }
-                                         }, "-", {
+                            }, "-", {
                                 xtype: 'button',
                                 id: 'acquisitionUnitUpdateBtn_Id',
                                 text: cosog.string.update,
@@ -124,7 +136,7 @@ Ext.define('AP.view.acquisitionUnit.DriverConfigInfoView', {
                                 handler: function () {
                                     modifyAcquisitionUnitInfo();
                                 }
-                                         }, "-", {
+                            }, "-", {
                                 xtype: 'button',
                                 id: 'acquisitionUnitDeleteBtn_Id',
                                 disabled: true,
@@ -549,10 +561,6 @@ var DriverConfigHandsontableHelper = {
 	    }
 };
 
-//else if(result.diagramTableColumns[i].dataIndex==="checked"){
-//	columns+="{data:'"+result.diagramTableColumns[i].dataIndex+"',type:'checkbox'}";
-//}
-
 function CreateDriverConfigItemsInfoTable(data){
 	driverConfigItemsHandsontableHelper = DriverConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
 	var colHeaders="['','序号','名称','地址','寄存器数量','数据类型','读写类型','单位','单位换算系数','模式']";
@@ -572,6 +580,13 @@ function CreateDriverConfigItemsInfoTable(data){
 	}else{
 		driverConfigItemsHandsontableHelper.createTable(data);
 	}
+	
+//	$('#'+driverConfigItemsHandsontableHelper.divid).on('mouseup', 'input.checker', function (event) { 
+//	    var current = !$('input.checker').is(':checked'); //returns boolean 
+//	     for (var i = 0; i < data.length; i++) { 
+//	    	 driverConfigItemsHandsontableHelper.hot.setDataAtCell(i, 0, current);
+//	     }
+//	});
 };
 
 
@@ -600,6 +615,7 @@ var DriverConfigItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+driverConfigItemsHandsontableHelper.divid);
 	        	driverConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
+	        		colWidths: [25,50,80,80,80,80,80,80,80,80],
 //	                hiddenColumns: {
 //	                    columns: [0],
 //	                    indicators: true
@@ -626,6 +642,17 @@ var DriverConfigItemsHandsontableHelper = {
 		                }
 	                    return cellProperties;
 	                }
+//	        		,colHeaders: function (col) { 
+//	                    switch (col) { 
+//	                     case 0: 
+//	                      var txt = "<input type='checkbox' class='checker' "; 
+//	                      txt += isChecked(data) ? 'checked="checked"' : ''; 
+//	                      txt += "> 全选"; 
+//	                      return txt; 
+//	                     default:
+//	                    	 return driverConfigItemsHandsontableHelper.colHeaders[col]; 
+//	                    } 
+//	                 }
 	        	});
 	        }
 	        //保存数据
@@ -636,6 +663,15 @@ var DriverConfigItemsHandsontableHelper = {
 	        return driverConfigItemsHandsontableHelper;
 	    }
 };
+
+//function isChecked(data) { 
+//    for (var i = 0; i < data.length; i++) { 
+//     if (!data.checked) { 
+//      return false; 
+//     } 
+//    } 
+//    return true; 
+//} 
 
 function CreateKafkaConfigInfoTable(){
 	Ext.Ajax.request({
@@ -747,8 +783,6 @@ var KafkaDriverConfigHandsontableHelper = {
 	            td.style.backgroundColor = 'rgb(184, 184, 184)';
 	        }
 	        
-	        
-	        
 	        kafkaDriverConfigHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
@@ -846,14 +880,14 @@ function SaveModbusDriverConfigData(){
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};
-			item.Name=driverConfigItemsData[i][1];
-			item.Address=parseInt(driverConfigItemsData[i][2]);
-			item.Length=parseInt(driverConfigItemsData[i][3]);
-			item.DataType=driverConfigItemsData[i][4];
-			item.Readonly=driverConfigItemsData[i][5];
-			item.Unit=driverConfigItemsData[i][6];
-			item.Zoom=parseFloat(driverConfigItemsData[i][7]);
-			item.Initiative=driverConfigItemsData[i][8];
+			item.Name=driverConfigItemsData[i][2];
+			item.Address=parseInt(driverConfigItemsData[i][3]);
+			item.Length=parseInt(driverConfigItemsData[i][4]);
+			item.DataType=driverConfigItemsData[i][5];
+			item.Readonly=driverConfigItemsData[i][6];
+			item.Unit=driverConfigItemsData[i][7];
+			item.Zoom=parseFloat(driverConfigItemsData[i][8]);
+			item.Initiative=driverConfigItemsData[i][9];
 			configInfo.DataConfig.push(item);
 		}
 		

@@ -317,7 +317,7 @@ function checkSelectedAcquisitionGroupsCombox(node, root) {
     return false;
 };
 
-showAcquisitionGroupOwnItems = function (store_) {
+showAcquisitionGroupOwnItems2 = function (store_) {
     var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
     Ext.Ajax.request({
         method: 'POST',
@@ -329,6 +329,40 @@ showAcquisitionGroupOwnItems = function (store_) {
                 var getNode = store_.root.childNodes;
                 checkSelectedAcquisitionItemsCombox(getNode, items);
             }
+        },
+        failure: function (response, opts) {
+            Ext.Msg.alert("信息提示", "后台获取数据失败！");
+        }
+    });
+    return false;
+}
+
+showAcquisitionGroupOwnItems = function () {
+    var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
+    Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/showAcquisitionGroupOwnItems?groupId=' + selectedAcquisitionGroupCode,
+        success: function (response, opts) {
+            // 处理后
+            var items = Ext.decode(response.responseText);
+            if(driverConfigItemsHandsontableHelper!=null){
+            	var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
+            	for(var j=0;j<driverConfigItemsData.length;j++){
+            		driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
+        		}
+            	for(var i=0;i<items.length;i++){
+            		for(var j=0;j<driverConfigItemsData.length;j++){
+            			if(items[i].itemName===driverConfigItemsData[j][2]){
+            				driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, true);
+            				break;
+            			}
+            		}
+            	}
+            }
+//            if (null != items && items != "") {
+//                var getNode = store_.root.childNodes;
+//                checkSelectedAcquisitionItemsCombox(getNode, items);
+//            }
         },
         failure: function (response, opts) {
             Ext.Msg.alert("信息提示", "后台获取数据失败！");
@@ -368,6 +402,69 @@ showAcquisitionUnitOwnGroups = function (store_) {
 }
 
 //为当前采集组安排采集项
+var grantAcquisitionItemsPermission2 = function () {
+    var treeGridPanel = Ext.getCmp("acquisitionItemsTreeGridPanel_Id");
+    _record = treeGridPanel.getChecked();
+    var addUrl = context + '/acquisitionUnitManagerController/grantAcquisitionItemsPermission'
+        // 添加条件
+    var addjson = [];
+    var matrixData = "";
+    var matrixDataArr = "";
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    var groupId = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
+    if (!isNotVal(groupId)) {
+        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
+        return false
+    }
+    if (_record.length > 0) {
+        Ext.Array.each(_record, function (name, index, countriesItSelf) {
+            var group_item_id = _record[index].get('id')
+            addjson.push(group_item_id);
+            var matrix_value = "";
+            matrix_value = '0,0,0,';
+            if (matrix_value != "" || matrix_value != null) {
+                matrix_value = matrix_value.substring(0,matrix_value.length - 1);
+            }
+            matrixData += group_item_id + ":" + matrix_value + "|";
+
+        });
+
+        matrixData = matrixData.substring(0, matrixData.length - 1);
+        var addparamsId = "" + addjson.join(",");
+        var matrixCodes_ = "" + matrixData;
+
+        // AJAX提交方式
+        Ext.Ajax.request({
+            url: addUrl,
+            method: "POST",
+            // 提交参数
+            params: {
+                paramsId: addparamsId,
+                groupId: groupId,
+                matrixCodes: matrixCodes_
+            },
+            success: function (response) {
+                var result = Ext.JSON.decode(response.responseText);
+                if (result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + _record.length + "" + '个采集项' + "。");
+                }
+                if (result.msg == false) {
+                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+                }
+                // 刷新Grid
+                Ext.getCmp("acquisitionItemsTreeGridPanel_Id").getStore().load();
+            },
+            failure: function () {
+                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            }
+        });
+
+    } else {
+        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '请先选择一个采集组!' + '！</font>');
+    }
+    return false;
+}
+
 var grantAcquisitionItemsPermission = function () {
     var treeGridPanel = Ext.getCmp("acquisitionItemsTreeGridPanel_Id");
     _record = treeGridPanel.getChecked();

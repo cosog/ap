@@ -6,7 +6,7 @@ Ext.define('AP.controller.acquisitionUnit.AcquisitionUnitInfoControl', {
    }],
     init: function () {
         this.control({
-            
+
         })
     }
 });
@@ -97,18 +97,18 @@ function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
 };
 
 function modifyAcquisitionGroupInfo() {
-	var gridPanel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+    var gridPanel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
     var selectedModel = gridPanel.getSelectionModel();
     var _record = selectedModel.getSelection();
-    if (_record.length>0) {
-    	var editWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
+    if (_record.length > 0) {
+        var editWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
             title: '编辑采集组'
         });
-    	editWindow.show();
+        editWindow.show();
         Ext.getCmp("addFormAcquisitionGroup_Id").hide();
         Ext.getCmp("updateFormaAquisitionGroup_Id").show();
         SelectAcquisitionGroupDataAttrInfoGridPanel();
-    }else {
+    } else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
     return false;
@@ -136,15 +136,15 @@ function delAcquisitionGroupInfo() {
     var selectionModel = gridPanel.getSelectionModel();
     var _record = selectionModel.getSelection();
     var delUrl = context + '/acquisitionUnitManagerController/doAcquisitionGroupBulkDelete'
-    if (_record.length>0) {
-    	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (_record.length > 0) {
+        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
         Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
             if (btn == "yes") {
-                ExtDel_ObjectInfo("AcquisitionGroupInfoGridPanel_Id", _record,"id", delUrl);
+                ExtDel_ObjectInfo("AcquisitionGroupInfoGridPanel_Id", _record, "id", delUrl);
             }
         });
-        
+
     } else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
@@ -216,18 +216,18 @@ function UpdateAcquisitionUnitDataInfoSubmitBtnForm() {
 };
 
 function modifyAcquisitionUnitInfo() {
-	var AcquisitionUnit_panel = Ext.getCmp("AcquisitionUnitInfoGridPanel_Id");
+    var AcquisitionUnit_panel = Ext.getCmp("AcquisitionUnitInfoGridPanel_Id");
     var AcquisitionUnit_model = AcquisitionUnit_panel.getSelectionModel();
     var _record = AcquisitionUnit_model.getSelection();
-    if (_record.length>0) {
-    	var AcquisitionUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
+    if (_record.length > 0) {
+        var AcquisitionUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             title: '编辑采集单元'
         });
         AcquisitionUnitInfoWindow.show();
         Ext.getCmp("addFormAcquisitionUnit_Id").hide();
         Ext.getCmp("updateFormaAquisitionUnit_Id").show();
         SelectAcquisitionUnitDataAttrInfoGridPanel();
-    }else {
+    } else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
     return false;
@@ -251,15 +251,15 @@ function delAcquisitionUnitInfo() {
     var selectionModel = gridPanel.getSelectionModel();
     var _record = selectionModel.getSelection();
     var delUrl = context + '/acquisitionUnitManagerController/doAcquisitionUnitBulkDelete'
-    if (_record.length>0) {
-    	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (_record.length > 0) {
+        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
         Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
         Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
             if (btn == "yes") {
-                ExtDel_ObjectInfo("AcquisitionUnitInfoGridPanel_Id", _record,"id", delUrl);
+                ExtDel_ObjectInfo("AcquisitionUnitInfoGridPanel_Id", _record, "id", delUrl);
             }
         });
-        
+
     } else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
@@ -272,7 +272,7 @@ function checkSelectedAcquisitionItemsCombox(node, root) {
             Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
                 var x_node_seId = chlidArray[index].data.id;
 
-                Ext.Array.each(root, function (name, index,countriesItSelf) {
+                Ext.Array.each(root, function (name, index, countriesItSelf) {
                     var menuselectid = root[index].itemId;
 
                     // 处理已选择的节点
@@ -283,7 +283,7 @@ function checkSelectedAcquisitionItemsCombox(node, root) {
                 });
                 // 递归
                 if (childArrNode.childNodes != null) {
-                	checkSelectedAcquisitionItemsCombox(childArrNode.childNodes, root);
+                    checkSelectedAcquisitionItemsCombox(childArrNode.childNodes, root);
                 }
             });
         }
@@ -298,7 +298,7 @@ function checkSelectedAcquisitionGroupsCombox(node, root) {
             Ext.Array.each(chlidArray, function (childArrNode, index, fog) {
                 var x_node_seId = chlidArray[index].data.id;
 
-                Ext.Array.each(root, function (name, index,countriesItSelf) {
+                Ext.Array.each(root, function (name, index, countriesItSelf) {
                     var menuselectid = root[index].groupId;
 
                     // 处理已选择的节点
@@ -309,7 +309,7 @@ function checkSelectedAcquisitionGroupsCombox(node, root) {
                 });
                 // 递归
                 if (childArrNode.childNodes != null) {
-                	checkSelectedAcquisitionGroupsCombox(childArrNode.childNodes, root);
+                    checkSelectedAcquisitionGroupsCombox(childArrNode.childNodes, root);
                 }
             });
         }
@@ -337,32 +337,32 @@ showAcquisitionGroupOwnItems2 = function (store_) {
     return false;
 }
 
-showAcquisitionGroupOwnItems = function () {
-    var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
+showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
+//    var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/showAcquisitionGroupOwnItems?groupId=' + selectedAcquisitionGroupCode,
         success: function (response, opts) {
             // 处理后
             var items = Ext.decode(response.responseText);
-            if(driverConfigItemsHandsontableHelper!=null){
-            	var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
-            	for(var j=0;j<driverConfigItemsData.length;j++){
-            		driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
-        		}
-            	for(var i=0;i<items.length;i++){
-            		for(var j=0;j<driverConfigItemsData.length;j++){
-            			if(items[i].itemName===driverConfigItemsData[j][2]){
-            				driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, true);
-            				break;
-            			}
-            		}
-            	}
+            if (driverConfigItemsHandsontableHelper != null) {
+                var driverConfigItemsData = driverConfigItemsHandsontableHelper.hot.getData();
+                for (var j = 0; j < driverConfigItemsData.length; j++) {
+                    driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
+                }
+                for (var i = 0; i < items.length; i++) {
+                    for (var j = 0; j < driverConfigItemsData.length; j++) {
+                        if (items[i].itemName === driverConfigItemsData[j][2]) {
+                            driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, true);
+                            break;
+                        }
+                    }
+                }
             }
-//            if (null != items && items != "") {
-//                var getNode = store_.root.childNodes;
-//                checkSelectedAcquisitionItemsCombox(getNode, items);
-//            }
+            //            if (null != items && items != "") {
+            //                var getNode = store_.root.childNodes;
+            //                checkSelectedAcquisitionItemsCombox(getNode, items);
+            //            }
         },
         failure: function (response, opts) {
             Ext.Msg.alert("信息提示", "后台获取数据失败！");
@@ -375,22 +375,22 @@ showAcquisitionUnitOwnGroups = function (store_) {
     var selectedAcquisitionUnitId = Ext.getCmp("selectedAcquisitionUnitCode_Id").getValue();
     var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
     panel.getSelectionModel().deselectAll(true);
-    if(selectedAcquisitionUnitId!==""){
-    	Ext.Ajax.request({
+    if (selectedAcquisitionUnitId !== "") {
+        Ext.Ajax.request({
             method: 'POST',
             url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitId=' + selectedAcquisitionUnitId,
             success: function (response, opts) {
                 // 处理后
                 var groups = Ext.decode(response.responseText);
-//                var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
-                var model = store_.getRange(0,store_.getCount());
-                for(var i=0;i<groups.length;i++){
-                	for(var j=0;j<model.length;j++){
-                		if(groups[i].groupId==model[j].data.id){
-                			panel.getSelectionModel().select(j, true);
-                			break;
-                		}
-                	}
+                //                var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
+                var model = store_.getRange(0, store_.getCount());
+                for (var i = 0; i < groups.length; i++) {
+                    for (var j = 0; j < model.length; j++) {
+                        if (groups[i].groupId == model[j].data.id) {
+                            panel.getSelectionModel().select(j, true);
+                            break;
+                        }
+                    }
                 }
             },
             failure: function (response, opts) {
@@ -406,7 +406,7 @@ var grantAcquisitionItemsPermission2 = function () {
     var treeGridPanel = Ext.getCmp("acquisitionItemsTreeGridPanel_Id");
     _record = treeGridPanel.getChecked();
     var addUrl = context + '/acquisitionUnitManagerController/grantAcquisitionItemsPermission'
-        // 添加条件
+    // 添加条件
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
@@ -423,7 +423,7 @@ var grantAcquisitionItemsPermission2 = function () {
             var matrix_value = "";
             matrix_value = '0,0,0,';
             if (matrix_value != "" || matrix_value != null) {
-                matrix_value = matrix_value.substring(0,matrix_value.length - 1);
+                matrix_value = matrix_value.substring(0, matrix_value.length - 1);
             }
             matrixData += group_item_id + ":" + matrix_value + "|";
 
@@ -466,10 +466,12 @@ var grantAcquisitionItemsPermission2 = function () {
 }
 
 var grantAcquisitionItemsPermission = function () {
-    var treeGridPanel = Ext.getCmp("acquisitionItemsTreeGridPanel_Id");
-    _record = treeGridPanel.getChecked();
+    if (driverConfigItemsHandsontableHelper == null) {
+        return false;
+    }
+    var driverConfigItemsData = driverConfigItemsHandsontableHelper.hot.getData();
     var addUrl = context + '/acquisitionUnitManagerController/grantAcquisitionItemsPermission'
-        // 添加条件
+    // 添加条件
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
@@ -479,51 +481,49 @@ var grantAcquisitionItemsPermission = function () {
         Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
         return false
     }
-    if (_record.length > 0) {
-        Ext.Array.each(_record, function (name, index, countriesItSelf) {
-            var group_item_id = _record[index].get('id')
-            addjson.push(group_item_id);
-            var matrix_value = "";
-            matrix_value = '0,0,0,';
-            if (matrix_value != "" || matrix_value != null) {
-                matrix_value = matrix_value.substring(0,matrix_value.length - 1);
-            }
-            matrixData += group_item_id + ":" + matrix_value + "|";
-
-        });
-
-        matrixData = matrixData.substring(0, matrixData.length - 1);
-        var addparamsId = "" + addjson.join(",");
-        var matrixCodes_ = "" + matrixData;
-
-        // AJAX提交方式
-        Ext.Ajax.request({
-            url: addUrl,
-            method: "POST",
-            // 提交参数
-            params: {
-                paramsId: addparamsId,
-                groupId: groupId,
-                matrixCodes: matrixCodes_
-            },
-            success: function (response) {
-                var result = Ext.JSON.decode(response.responseText);
-                if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + _record.length + "" + '个采集项' + "。");
+    if (driverConfigItemsData.length > 0) {
+        Ext.Array.each(driverConfigItemsData, function (name, index, countriesItSelf) {
+            if (driverConfigItemsData[index][0]) {
+                var itemName = driverConfigItemsData[index][2];
+                addjson.push(itemName);
+                var matrix_value = "";
+                matrix_value = '0,0,0,';
+                if (matrix_value != "" || matrix_value != null) {
+                    matrix_value = matrix_value.substring(0, matrix_value.length - 1);
                 }
-                if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
-                }
-                // 刷新Grid
-                Ext.getCmp("acquisitionItemsTreeGridPanel_Id").getStore().load();
-            },
-            failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                matrixData += itemName + ":" + matrix_value + "|";
             }
         });
-
+        if (addjson.length > 0) {
+            matrixData = matrixData.substring(0, matrixData.length - 1);
+            var addparams = "" + addjson.join(",");
+            var matrixCodes_ = "" + matrixData;
+            Ext.Ajax.request({
+                url: addUrl,
+                method: "POST",
+                params: {
+                    params: addparams,
+                    groupId: groupId,
+                    matrixCodes: matrixCodes_
+                },
+                success: function (response) {
+                    var result = Ext.JSON.decode(response.responseText);
+                    if (result.msg == true) {
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采集项' + "。");
+                    }
+                    if (result.msg == false) {
+                        Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+                    }
+                },
+                failure: function () {
+                    Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+                }
+            });
+        } else {
+            Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采集项!' + '！</font>');
+        }
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '请先选择一个采集组!' + '！</font>');
+        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采集项!' + '！</font>');
     }
     return false;
 }
@@ -533,7 +533,7 @@ var grantAcquisitionGroupsPermission = function () {
     var gridPanel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
     _record = gridPanel.getSelectionModel().getSelection();
     var addUrl = context + '/acquisitionUnitManagerController/grantAcquisitionGroupsPermission'
-        // 添加条件
+    // 添加条件
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
@@ -550,21 +550,17 @@ var grantAcquisitionGroupsPermission = function () {
             var matrix_value = "";
             matrix_value = '0,0,0,';
             if (matrix_value != "" || matrix_value != null) {
-                matrix_value = matrix_value.substring(0,matrix_value.length - 1);
+                matrix_value = matrix_value.substring(0, matrix_value.length - 1);
             }
             matrixData += unit_group_id + ":" + matrix_value + "|";
-
         });
-
         matrixData = matrixData.substring(0, matrixData.length - 1);
         var addparamsId = "" + addjson.join(",");
         var matrixCodes_ = "" + matrixData;
 
-        // AJAX提交方式
         Ext.Ajax.request({
             url: addUrl,
             method: "POST",
-            // 提交参数
             params: {
                 paramsId: addparamsId,
                 unitId: unitId,
@@ -578,14 +574,12 @@ var grantAcquisitionGroupsPermission = function () {
                 if (result.msg == false) {
                     Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集组安排失败' + "。</font>");
                 }
-                // 刷新Grid
                 Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getStore().load();
             },
             failure: function () {
                 Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
             }
         });
-
     } else {
         Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '请先选择一个采集单元!' + '！</font>');
     }

@@ -45,7 +45,7 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "matrix", nullable = false, length = 8)
+	@Column(name = "matrix", nullable = true, length = 8)
 	public String getMatrix() {
 		return this.matrix;
 	}
@@ -62,7 +62,7 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 		this.groupId = groupId;
 	}
 	
-	@Column(name = "itemid", nullable = false, precision = 22, scale = 0)
+	@Column(name = "itemid", nullable = true, precision = 22, scale = 0)
 	public Integer getItemId() {
 		return this.itemId;
 	}
@@ -71,7 +71,7 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 		this.itemId = itemId;
 	}
 
-	@Column(name = "itemName", nullable = false, length = 8)
+	@Column(name = "itemName", nullable = true, length = 8)
 	public String getItemName() {
 		return itemName;
 	}
@@ -80,7 +80,7 @@ public class AcquisitionGroupItem implements java.io.Serializable {
 		this.itemName = itemName;
 	}
 
-	@Column(name = "itemCode", nullable = false, length = 8)
+	@Column(name = "itemCode", nullable = true, length = 8)
 	public String getItemCode() {
 		return itemCode;
 	}

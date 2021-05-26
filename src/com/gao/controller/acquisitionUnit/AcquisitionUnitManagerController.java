@@ -335,8 +335,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 * @throws IOException
 	 *             为当前采集组安排采集项
 	 */
-	@RequestMapping("/grantAcquisitionItemsPermission")
-	public String grantAcquisitionItemsPermission() throws IOException {
+	@RequestMapping("/grantAcquisitionItemsPermission2")
+	public String grantAcquisitionItemsPermission2() throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		AcquisitionGroupItem r = null;
@@ -356,6 +356,47 @@ public class AcquisitionUnitManagerController extends BaseController {
 						r.setGroupId(Integer.parseInt(groupId));
 						log.debug("unitId==" + groupId);
 						r.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
+						r.setMatrix(module_[1]);
+						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(r);
+
+					}
+					EquipmentDriverServerTask.initAcquisitionUnit();
+				}
+			}
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/grantAcquisitionItemsPermission")
+	public String grantAcquisitionItemsPermission() throws IOException {
+		String result = "";
+		PrintWriter out = response.getWriter();
+		AcquisitionGroupItem r = null;
+		try {
+			String params = ParamUtils.getParameter(request, "params");
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
+			String groupId = ParamUtils.getParameter(request, "groupId");
+			log.debug("grantAcquisitionItemsPermission paramsIds==" + params);
+			String itemNames[] = StringManagerUtils.split(params, ",");
+			if (itemNames.length > 0 && groupId != null) {
+				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
+				if (matrixCodes != "" || matrixCodes != null) {
+					String module_matrix[] = matrixCodes.split("\\|");
+					for (int i = 0; i < module_matrix.length; i++) {
+						String module_[] = module_matrix[i].split("\\:");
+						r = new AcquisitionGroupItem();
+						r.setGroupId(Integer.parseInt(groupId));
+						log.debug("unitId==" + groupId);
+						r.setItemName(module_[0]);
+//						r.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
 						r.setMatrix(module_[1]);
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(r);
 

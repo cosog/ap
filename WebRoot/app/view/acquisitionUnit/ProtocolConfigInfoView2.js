@@ -1,10 +1,6 @@
 var driverConfigHandsontableHelper=null;
 var driverConfigItemsHandsontableHelper=null;
 var kafkaDriverConfigHandsontableHelper=null;
-
-var acquisitionUnitConfigHandsontableHelper=null;
-var acquisitionGroupConfigHandsontableHelper=null;
-
 Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.protocolConfigInfoView',
@@ -13,8 +9,8 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     border: false,
     initComponent: function () {
     	var me = this;
-//    	var AcquisitionUnitInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionUnitInfoStore');
-//		var AcquisitionGroupInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionGroupInfoStore');
+    	var AcquisitionUnitInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionUnitInfoStore');
+		var AcquisitionGroupInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionGroupInfoStore');
     	Ext.apply(me, {
     		items: [{
                 tbar:['->',{
@@ -100,11 +96,56 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             title:'采集单元配置',
                             border: false,
                             layout: 'fit',
-                            html:'<div class="AcquisitionUnitConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionUnitConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            id:'acquisitionUnitListPanel_Id',
+                            tbar: [{
+                                id: 'acquisitionUnitName_Id',
+                                fieldLabel: '单元名称',
+                                name: 'unitName',
+                                emptyText: '查询采集单元...',
+                                labelWidth: 60,
+                                width: 165,
+                                labelAlign: 'right',
+                                xtype: 'textfield'
+                            }, {
+                                xtype: 'button',
+                                text: cosog.string.search,
+                                pressed: true,
+                                iconCls: 'search',
+                                handler: function () {
+                                    AcquisitionUnitInfoStore.load();
                                 }
-                            }
+                            }, {
+                                id: 'selectedAcquisitionUnitCode_Id', // 分配权限时，存放当前选中的角色编码
+                                xtype: 'textfield',
+                                value: '',
+                                hidden: true
+                                         }, '->', {
+                                xtype: 'button',
+                                id: 'acquisitionUnitAddBtn_Id',
+                                text: cosog.string.add,
+                                iconCls: 'add',
+                                handler: function () {
+                                    addAcquisitionUnitInfo();
+                                }
+                            }, "-", {
+                                xtype: 'button',
+                                id: 'acquisitionUnitUpdateBtn_Id',
+                                text: cosog.string.update,
+                                disabled: true,
+                                iconCls: 'edit',
+                                handler: function () {
+                                    modifyAcquisitionUnitInfo();
+                                }
+                            }, "-", {
+                                xtype: 'button',
+                                id: 'acquisitionUnitDeleteBtn_Id',
+                                disabled: true,
+                                text: cosog.string.del,
+                                iconCls: 'delete',
+                                handler: function () {
+                                    delAcquisitionUnitInfo();
+                                }
+                            }]
                         }, {
                             region: 'east',
                             title:'采集组配置',
@@ -112,6 +153,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             width: '60%',
                             collapsible: true,
                             split: true,
+                            id:'acquisitionGroupListPanel_Id',
                             tbar: [{
                                 id: 'acquisitionGroupName_Id',
                                 fieldLabel: '组名称',
@@ -161,11 +203,19 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                                     delAcquisitionGroupInfo();
                                 }
                             }],
-                            html:'<div class="AcquisitionGroupConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionGroupConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            bbar: ['->', {
+                                xtype: 'button',
+                                id: 'saveAcquisitionGroupToUnitBtn_Id',
+                                text: '保存',
+                                iconCls: 'save',
+                                pressed: true,
+                                handler: function () {
+                                	grantAcquisitionGroupsPermission();
                                 }
-                            }
+                    		}, {
+                                xtype: 'tbspacer',
+                                flex: 1
+                    		}]
                         }]
                     }]
                 },{
@@ -247,13 +297,14 @@ function CreateDriverConfigInfoTable(isNew){
 			
 			var row1=driverConfigHandsontableHelper.hot.getDataAtRow(0);
 			CreateDriverConfigItemsInfoTable(row1[6])
-			CreateAcquisitionUnitConfigInfoTable(true);
-			CreateAcquisitionGroupConfigInfoTable(true);
 //			if(driverConfigItemsHandsontableHelper==null){
 //				CreateDriverConfigItemsInfoTable(result);
 //			}else{
 //				driverConfigItemsHandsontableHelper.hot.loadData(result.columnRoot);
 //			}
+			
+			
+			
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -585,7 +636,7 @@ var DriverConfigItemsHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==1 || visualColIndex ==2) {
+	                    if (visualColIndex ==1) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = driverConfigItemsHandsontableHelper.addBoldBg;
 		                }
@@ -929,690 +980,4 @@ function SaveScadaKafkaDriverConfigData(){
 			KafkaData:JSON.stringify(KafkaData)
         }
 	}); 
-};
-
-function CreateAcquisitionUnitConfigInfoTable(isNew){
-	if(isNew&&acquisitionUnitConfigHandsontableHelper!=null){
-        acquisitionUnitConfigHandsontableHelper.clearContainer();
-        acquisitionUnitConfigHandsontableHelper.hot.destroy();
-        acquisitionUnitConfigHandsontableHelper=null;
-	}
-	
-	Ext.Ajax.request({
-		method:'POST',
-		url: context + '/acquisitionUnitManagerController/doAcquisitionUnitShow',
-		success:function(response) {
-			var result =  Ext.JSON.decode(response.responseText);
-			if(acquisitionUnitConfigHandsontableHelper==null){
-				acquisitionUnitConfigHandsontableHelper = AcquisitionUnitConfigHandsontableHelper.createNew("AcquisitionUnitConfigTableInfoDiv_id");
-				var colHeaders="[";
-		        var columns="[";
-		       
-	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].header==='协议名称'){
-	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
-	            	}else{
-	            		colHeaders+="'"+result.columns[i].header+"'";
-	            	}
-	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,acquisitionUnitConfigHandsontableHelper);}}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="liftingTypeName".toUpperCase()){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
-	            		}
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.driverDropdownData.length;j++){
-	            			source+="\'"+result.driverDropdownData[j]+"\'";
-	            			if(j<result.driverDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="acquisitionUnit".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.unitDropdownData.length;j++){
-	            			source+="\'"+result.unitDropdownData[j]+"\'";
-	            			if(j<result.unitDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,acquisitionUnitConfigHandsontableHelper);}}";
-	            	}else{
-	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	}
-	            	if(i<result.columns.length-1){
-	            		colHeaders+=",";
-	                	columns+=",";
-	            	}
-	            }
-	            colHeaders+="]";
-	        	columns+="]";
-	        	acquisitionUnitConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	        	acquisitionUnitConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-				acquisitionUnitConfigHandsontableHelper.createTable(result.totalRoot);
-			}else{
-				acquisitionUnitConfigHandsontableHelper.hot.loadData(result.totalRoot);
-			}
-			Ext.getCmp("ProductionWellTotalCount_Id").update({count: result.totalCount});
-		},
-		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-        }
-	});
-};
-
-var AcquisitionUnitConfigHandsontableHelper = {
-	    createNew: function (divid) {
-	        var acquisitionUnitConfigHandsontableHelper = {};
-	        acquisitionUnitConfigHandsontableHelper.hot = '';
-	        acquisitionUnitConfigHandsontableHelper.divid = divid;
-	        acquisitionUnitConfigHandsontableHelper.validresult=true;//数据校验
-	        acquisitionUnitConfigHandsontableHelper.colHeaders=[];
-	        acquisitionUnitConfigHandsontableHelper.columns=[];
-	        
-	        acquisitionUnitConfigHandsontableHelper.AllData={};
-	        acquisitionUnitConfigHandsontableHelper.updatelist=[];
-	        acquisitionUnitConfigHandsontableHelper.delidslist=[];
-	        acquisitionUnitConfigHandsontableHelper.insertlist=[];
-	        acquisitionUnitConfigHandsontableHelper.editWellNameList=[];
-	        
-	        acquisitionUnitConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
-	             Handsontable.renderers.TextRenderer.apply(this, arguments);
-	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
-	        }
-	        
-	        acquisitionUnitConfigHandsontableHelper.createTable = function (data) {
-	        	$('#'+acquisitionUnitConfigHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+acquisitionUnitConfigHandsontableHelper.divid);
-	        	acquisitionUnitConfigHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		data: data,
-	                hiddenColumns: {
-	                    columns: [0],
-	                    indicators: true
-	                },
-	                columns:acquisitionUnitConfigHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: true,//显示行头
-	                colHeaders:acquisitionUnitConfigHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-//	                colWidths:[50,90,75, 80,100,70, 80,100,70, 140,120, 80,80,80,80,80, 80,80,80,80,80,  80,80,80,120, 80, 75],
-//	                colWidths:50,
-	                contextMenu: {
-	                	items: {
-	                	    "row_above": {
-	                	      name: '向上插入一行',
-	                	    },
-	                	    "row_below": {
-	                	      name: '向下插入一行',
-	                	    },
-	                	    "col_left": {
-	                	      name: '向左插入一列',
-	                	    },
-	                	    "col_right": {
-	                	      name: '向右插入一列',
-	                	    },
-	                	    "remove_row": {
-	                	      name: '删除行',
-	                	    },
-	                	    "remove_col": {
-	                	      name: '删除列',
-	                	    },
-	                	    "merge_cell": {
-	                	      name: '合并单元格',
-	                	    },
-	                	    "copy": {
-	                	      name: '复制',
-	                	    },
-	                	    "cut": {
-	                	      name: '剪切',
-	                	    },
-	                	    "paste": {
-	                	      name: '粘贴',
-	                	      disabled: function() {
-//	                	        return self.clipboardCache.length === 0;
-	                	      },
-	                	      callback: function() {
-//	                	        var plugin = this.getPlugin('copyPaste');
-//	                	        this.listen();
-//	                	        plugin.paste(self.clipboardCache);
-	                	      }
-	                	    }
-	                	}
-	                },//右键菜单展示
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-//	                dropdownMenu: ['filter_by_condition', 'filter_by_value', 'filter_action_bar'],
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                },
-	                afterDestroy: function() {
-	                },
-	                beforeRemoveRow: function (index, amount) {
-	                    var ids = [];
-	                    if (amount != 0) {
-	                        for (var i = index; i < amount + index; i++) {
-	                            var rowdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(i);
-	                            ids.push(rowdata[0]);
-	                        }
-	                        acquisitionUnitConfigHandsontableHelper.delExpressCount(ids);
-	                        acquisitionUnitConfigHandsontableHelper.screening();
-	                    }
-	                },
-	                afterChange: function (changes, source) {
-	                    if (changes != null) {
-	                    	for(var i=0;i<changes.length;i++){
-	                    		var params = [];
-	                    		var index = changes[i][0]; //行号码
-		                        var rowdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(index);
-		                        params.push(rowdata[0]);
-		                        params.push(changes[i][1]);
-		                        params.push(changes[i][2]);
-		                        params.push(changes[i][3]);
-		                        //仅当单元格发生改变的时候,id!=null,说明是更新
-		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
-		                        	var data="{";
-		                        	for(var j=0;j<acquisitionUnitConfigHandsontableHelper.columns.length;j++){
-		                        		data+=acquisitionUnitConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-		                        		if(j<acquisitionUnitConfigHandsontableHelper.columns.length-1){
-		                        			data+=","
-		                        		}
-		                        	}
-		                        	data+="}"
-		                            acquisitionUnitConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
-		                        }
-	                    	}
-	                    }
-	                }
-	        	});
-	        }
-	      //插入的数据的获取
-	        acquisitionUnitConfigHandsontableHelper.insertExpressCount=function() {
-	            var idsdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtCol(0);
-	            for (var i = 0; i < idsdata.length; i++) {
-	                if (idsdata[i] == null||idsdata[i]<0) {
-	                    var rowdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(i);
-	                    if (rowdata != null) {
-	                    	var data="{";
-                        	for(var j=0;j<acquisitionUnitConfigHandsontableHelper.columns.length;j++){
-                        		data+=acquisitionUnitConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-                        		if(j<acquisitionUnitConfigHandsontableHelper.columns.length-1){
-                        			data+=","
-                        		}
-                        	}
-                        	data+="}"
-	                        acquisitionUnitConfigHandsontableHelper.insertlist.push(Ext.JSON.decode(data));
-	                    }
-	                }
-	            }
-	            if (acquisitionUnitConfigHandsontableHelper.insertlist.length != 0) {
-	            	acquisitionUnitConfigHandsontableHelper.AllData.insertlist = acquisitionUnitConfigHandsontableHelper.insertlist;
-	            }
-	        }
-	        //保存数据
-	        acquisitionUnitConfigHandsontableHelper.saveData = function () {
-	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
-		        	acquisitionUnitConfigHandsontableHelper.insertExpressCount();
-		        	var orgId=IframeViewSelection[0].data.orgId;
-		            if (JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData) != "{}" && acquisitionUnitConfigHandsontableHelper.validresult) {
-		            	Ext.Ajax.request({
-		            		method:'POST',
-		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-		            		success:function(response) {
-		            			rdata=Ext.JSON.decode(response.responseText);
-		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert("信息","保存成功");
-		                            //保存以后重置全局容器
-		                            acquisitionUnitConfigHandsontableHelper.clearContainer();
-		                            CreateAcquisitionUnitConfigInfoTable();
-		                        } else {
-		                        	Ext.MessageBox.alert("信息","数据保存失败");
-		                        }
-		            		},
-		            		failure:function(){
-		            			Ext.MessageBox.alert("信息","请求失败");
-		                        acquisitionUnitConfigHandsontableHelper.clearContainer();
-		            		},
-		            		params: {
-		                    	data: JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData),
-		                    	orgId:orgId
-		                    }
-		            	}); 
-		            } else {
-		                if (!acquisitionUnitConfigHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert("信息","数据类型错误");
-		                } else {
-		                	Ext.MessageBox.alert("信息","无数据变化");
-		                }
-		            }
-	        	}else{
-	        		Ext.MessageBox.alert("信息","请先选择组织节点");
-	        	}
-	        }
-	        acquisitionUnitConfigHandsontableHelper.delExpressCount=function(ids) {
-	            //传入的ids.length不可能为0
-	            $.each(ids, function (index, id) {
-	                if (id != null) {
-	                	acquisitionUnitConfigHandsontableHelper.delidslist.push(id);
-	                }
-	            });
-	            acquisitionUnitConfigHandsontableHelper.AllData.delidslist = acquisitionUnitConfigHandsontableHelper.delidslist;
-	        }
-	        acquisitionUnitConfigHandsontableHelper.screening=function() {
-	            if (acquisitionUnitConfigHandsontableHelper.updatelist.length != 0 && acquisitionUnitConfigHandsontableHelper.delidslist.lentgh != 0) {
-	                for (var i = 0; i < acquisitionUnitConfigHandsontableHelper.delidslist.length; i++) {
-	                    for (var j = 0; j < acquisitionUnitConfigHandsontableHelper.updatelist.length; j++) {
-	                        if (acquisitionUnitConfigHandsontableHelper.updatelist[j].id == acquisitionUnitConfigHandsontableHelper.delidslist[i]) {
-	                        	acquisitionUnitConfigHandsontableHelper.updatelist.splice(j, 1);
-	                        }
-	                    }
-	                }
-	                acquisitionUnitConfigHandsontableHelper.AllData.updatelist = acquisitionUnitConfigHandsontableHelper.updatelist;
-	            }
-	        }
-	        acquisitionUnitConfigHandsontableHelper.updateExpressCount=function(data) {
-	            if (JSON.stringify(data) != "{}") {
-	                var flag = true;
-	                //判断记录是否存在,更新数据     
-	                $.each(acquisitionUnitConfigHandsontableHelper.updatelist, function (index, node) {
-	                    if (node.id == data.id) {
-	                        //此记录已经有了
-	                        flag = false;
-	                        //用新得到的记录替换原来的,不用新增
-	                        acquisitionUnitConfigHandsontableHelper.updatelist[index] = data;
-	                    }
-	                });
-	                flag && acquisitionUnitConfigHandsontableHelper.updatelist.push(data);
-	                //封装
-	                acquisitionUnitConfigHandsontableHelper.AllData.updatelist = acquisitionUnitConfigHandsontableHelper.updatelist;
-	            }
-	        }
-	        
-	        acquisitionUnitConfigHandsontableHelper.clearContainer = function () {
-	        	acquisitionUnitConfigHandsontableHelper.AllData = {};
-	        	acquisitionUnitConfigHandsontableHelper.updatelist = [];
-	        	acquisitionUnitConfigHandsontableHelper.delidslist = [];
-	        	acquisitionUnitConfigHandsontableHelper.insertlist = [];
-	        	acquisitionUnitConfigHandsontableHelper.editWellNameList=[];
-	        }
-	        
-	        return acquisitionUnitConfigHandsontableHelper;
-	    }
-};
-
-function CreateAcquisitionGroupConfigInfoTable(isNew){
-	if(isNew&&acquisitionGroupConfigHandsontableHelper!=null){
-        acquisitionGroupConfigHandsontableHelper.clearContainer();
-        acquisitionGroupConfigHandsontableHelper.hot.destroy();
-        acquisitionGroupConfigHandsontableHelper=null;
-	}
-	
-	Ext.Ajax.request({
-		method:'POST',
-		url: context + '/acquisitionUnitManagerController/doAcquisitionGroupShow',
-		success:function(response) {
-			var result =  Ext.JSON.decode(response.responseText);
-			for(var i=0;i<result.totalRoot;i++){
-        		totalRoot[i].checked=false;
-        	}
-			if(acquisitionGroupConfigHandsontableHelper==null){
-				acquisitionGroupConfigHandsontableHelper = AcquisitionGroupConfigHandsontableHelper.createNew("AcquisitionGroupConfigTableInfoDiv_id");
-				var colHeaders="['',";
-		        var columns="[{data:'checked',type:'checkbox'},";
-		       
-	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].header==='协议名称'){
-	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
-	            	}else{
-	            		colHeaders+="'"+result.columns[i].header+"'";
-	            	}
-	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,acquisitionGroupConfigHandsontableHelper);}}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="liftingTypeName".toUpperCase()){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
-	            		}
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.driverDropdownData.length;j++){
-	            			source+="\'"+result.driverDropdownData[j]+"\'";
-	            			if(j<result.driverDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="acquisitionUnit".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.unitDropdownData.length;j++){
-	            			source+="\'"+result.unitDropdownData[j]+"\'";
-	            			if(j<result.unitDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,acquisitionGroupConfigHandsontableHelper);}}";
-	            	}else{
-	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	}
-	            	if(i<result.columns.length-1){
-	            		colHeaders+=",";
-	                	columns+=",";
-	            	}
-	            }
-	            colHeaders+="]";
-	        	columns+="]";
-	        	acquisitionGroupConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	        	acquisitionGroupConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-	        	
-				acquisitionGroupConfigHandsontableHelper.createTable(result.totalRoot);
-			}else{
-				acquisitionGroupConfigHandsontableHelper.hot.loadData(result.totalRoot);
-			}
-			Ext.getCmp("ProductionWellTotalCount_Id").update({count: result.totalCount});
-		},
-		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-        }
-	});
-};
-
-var AcquisitionGroupConfigHandsontableHelper = {
-	    createNew: function (divid) {
-	        var acquisitionGroupConfigHandsontableHelper = {};
-	        acquisitionGroupConfigHandsontableHelper.hot = '';
-	        acquisitionGroupConfigHandsontableHelper.divid = divid;
-	        acquisitionGroupConfigHandsontableHelper.validresult=true;//数据校验
-	        acquisitionGroupConfigHandsontableHelper.colHeaders=[];
-	        acquisitionGroupConfigHandsontableHelper.columns=[];
-	        
-	        acquisitionGroupConfigHandsontableHelper.AllData={};
-	        acquisitionGroupConfigHandsontableHelper.updatelist=[];
-	        acquisitionGroupConfigHandsontableHelper.delidslist=[];
-	        acquisitionGroupConfigHandsontableHelper.insertlist=[];
-	        acquisitionGroupConfigHandsontableHelper.editWellNameList=[];
-	        
-	        
-	        acquisitionGroupConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
-	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
-	        }
-	        
-	        acquisitionGroupConfigHandsontableHelper.createTable = function (data) {
-	        	$('#'+acquisitionGroupConfigHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+acquisitionGroupConfigHandsontableHelper.divid);
-	        	acquisitionGroupConfigHandsontableHelper.hot = new Handsontable(hotElement, {
-	        		data: data,
-//	                hiddenColumns: {
-//	                    columns: [0],
-//	                    indicators: true
-//	                },
-	        		colWidths: [25,50,100,80,80,80,100],
-	                columns:acquisitionGroupConfigHandsontableHelper.columns,
-	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
-	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
-	                colHeaders:acquisitionGroupConfigHandsontableHelper.colHeaders,//显示列头
-	                columnSorting: true,//允许排序
-//	                colWidths:[50,90,75, 80,100,70, 80,100,70, 140,120, 80,80,80,80,80, 80,80,80,80,80,  80,80,80,120, 80, 75],
-//	                colWidths:50,
-	                contextMenu: {
-	                	items: {
-	                	    "row_above": {
-	                	      name: '向上插入一行',
-	                	    },
-	                	    "row_below": {
-	                	      name: '向下插入一行',
-	                	    },
-	                	    "col_left": {
-	                	      name: '向左插入一列',
-	                	    },
-	                	    "col_right": {
-	                	      name: '向右插入一列',
-	                	    },
-	                	    "remove_row": {
-	                	      name: '删除行',
-	                	    },
-	                	    "remove_col": {
-	                	      name: '删除列',
-	                	    },
-	                	    "merge_cell": {
-	                	      name: '合并单元格',
-	                	    },
-	                	    "copy": {
-	                	      name: '复制',
-	                	    },
-	                	    "cut": {
-	                	      name: '剪切',
-	                	    },
-	                	    "paste": {
-	                	      name: '粘贴',
-	                	      disabled: function() {
-//	                	        return self.clipboardCache.length === 0;
-	                	      },
-	                	      callback: function() {
-//	                	        var plugin = this.getPlugin('copyPaste');
-//	                	        this.listen();
-//	                	        plugin.paste(self.clipboardCache);
-	                	      }
-	                	    }
-	                	}
-	                },//右键菜单展示
-	                sortIndicator: true,
-	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-	                filters: true,
-	                renderAllRows: true,
-	                search: true,
-	                cells: function (row, col, prop) {
-	                	var cellProperties = {};
-	                    var visualRowIndex = this.instance.toVisualRow(row);
-	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==1 || visualColIndex ==2) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = acquisitionGroupConfigHandsontableHelper.addBoldBg;
-		                }
-	                    return cellProperties;
-	                },
-	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	var row1=acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(row1[1]);
-	                	showAcquisitionGroupOwnItems(row1[1]);
-	                },
-	                afterDestroy: function() {
-	                },
-	                beforeRemoveRow: function (index, amount) {
-	                    var ids = [];
-	                    if (amount != 0) {
-	                        for (var i = index; i < amount + index; i++) {
-	                            var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(i);
-	                            ids.push(rowdata[0]);
-	                        }
-	                        acquisitionGroupConfigHandsontableHelper.delExpressCount(ids);
-	                        acquisitionGroupConfigHandsontableHelper.screening();
-	                    }
-	                },
-	                afterChange: function (changes, source) {
-	                    if (changes != null) {
-	                    	for(var i=0;i<changes.length;i++){
-	                    		var params = [];
-	                    		var index = changes[i][0]; //行号码
-		                        var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(index);
-		                        params.push(rowdata[0]);
-		                        params.push(changes[i][1]);
-		                        params.push(changes[i][2]);
-		                        params.push(changes[i][3]);
-		                        
-		                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
-		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
-		                        	acquisitionGroupConfigHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
-		                        }
-
-		                        //仅当单元格发生改变的时候,id!=null,说明是更新
-		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
-		                        	var data="{";
-		                        	for(var j=0;j<acquisitionGroupConfigHandsontableHelper.columns.length;j++){
-		                        		data+=acquisitionGroupConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-		                        		if(j<acquisitionGroupConfigHandsontableHelper.columns.length-1){
-		                        			data+=","
-		                        		}
-		                        	}
-		                        	data+="}"
-		                            acquisitionGroupConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
-		                        }
-	                    	}
-	                    }
-	                }
-	        	});
-	        }
-	      //插入的数据的获取
-	        acquisitionGroupConfigHandsontableHelper.insertExpressCount=function() {
-	            var idsdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
-	            for (var i = 0; i < idsdata.length; i++) {
-	                //id=null时,是插入数据,此时的i正好是行号
-	                if (idsdata[i] == null||idsdata[i]<0) {
-	                    //获得id=null时的所有数据封装进data
-	                    var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(i);
-	                    //var collength = hot.countCols();
-	                    if (rowdata != null) {
-	                    	var data="{";
-                        	for(var j=0;j<acquisitionGroupConfigHandsontableHelper.columns.length;j++){
-                        		data+=acquisitionGroupConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-                        		if(j<acquisitionGroupConfigHandsontableHelper.columns.length-1){
-                        			data+=","
-                        		}
-                        	}
-                        	data+="}"
-	                        acquisitionGroupConfigHandsontableHelper.insertlist.push(Ext.JSON.decode(data));
-	                    }
-	                }
-	            }
-	            if (acquisitionGroupConfigHandsontableHelper.insertlist.length != 0) {
-	            	acquisitionGroupConfigHandsontableHelper.AllData.insertlist = acquisitionGroupConfigHandsontableHelper.insertlist;
-	            }
-	        }
-	        //保存数据
-	        acquisitionGroupConfigHandsontableHelper.saveData = function () {
-	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
-	        		//插入的数据的获取
-		        	acquisitionGroupConfigHandsontableHelper.insertExpressCount();
-		        	var orgId=IframeViewSelection[0].data.orgId;
-		            if (JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData) != "{}" && acquisitionGroupConfigHandsontableHelper.validresult) {
-		            	Ext.Ajax.request({
-		            		method:'POST',
-		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-		            		success:function(response) {
-		            			rdata=Ext.JSON.decode(response.responseText);
-		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert("信息","保存成功");
-		                            acquisitionGroupConfigHandsontableHelper.clearContainer();
-		                        } else {
-		                        	Ext.MessageBox.alert("信息","数据保存失败");
-
-		                        }
-		            		},
-		            		failure:function(){
-		            			Ext.MessageBox.alert("信息","请求失败");
-		                        acquisitionGroupConfigHandsontableHelper.clearContainer();
-		            		},
-		            		params: {
-		                    	data: JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData),
-		                    	orgId:orgId
-		                    }
-		            	}); 
-		            } else {
-		                if (!acquisitionGroupConfigHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert("信息","数据类型错误");
-		                } else {
-		                	Ext.MessageBox.alert("信息","无数据变化");
-		                }
-		            }
-	        	}else{
-	        		Ext.MessageBox.alert("信息","请先选择组织节点");
-	        	}
-	        }
-	        
-	      //删除的优先级最高
-	        acquisitionGroupConfigHandsontableHelper.delExpressCount=function(ids) {
-	            //传入的ids.length不可能为0
-	            $.each(ids, function (index, id) {
-	                if (id != null) {
-	                	acquisitionGroupConfigHandsontableHelper.delidslist.push(id);
-	                }
-	            });
-	            acquisitionGroupConfigHandsontableHelper.AllData.delidslist = acquisitionGroupConfigHandsontableHelper.delidslist;
-	        }
-
-	        //updatelist数据更新
-	        acquisitionGroupConfigHandsontableHelper.screening=function() {
-	            if (acquisitionGroupConfigHandsontableHelper.updatelist.length != 0 && acquisitionGroupConfigHandsontableHelper.delidslist.lentgh != 0) {
-	                for (var i = 0; i < acquisitionGroupConfigHandsontableHelper.delidslist.length; i++) {
-	                    for (var j = 0; j < acquisitionGroupConfigHandsontableHelper.updatelist.length; j++) {
-	                        if (acquisitionGroupConfigHandsontableHelper.updatelist[j].id == acquisitionGroupConfigHandsontableHelper.delidslist[i]) {
-	                            //更新updatelist
-	                        	acquisitionGroupConfigHandsontableHelper.updatelist.splice(j, 1);
-	                        }
-	                    }
-	                }
-	                //把updatelist封装进AllData
-	                acquisitionGroupConfigHandsontableHelper.AllData.updatelist = acquisitionGroupConfigHandsontableHelper.updatelist;
-	            }
-	        }
-	        
-	      //更新数据
-	        acquisitionGroupConfigHandsontableHelper.updateExpressCount=function(data) {
-	            if (JSON.stringify(data) != "{}") {
-	                var flag = true;
-	                //判断记录是否存在,更新数据     
-	                $.each(acquisitionGroupConfigHandsontableHelper.updatelist, function (index, node) {
-	                    if (node.id == data.id) {
-	                        //此记录已经有了
-	                        flag = false;
-	                        //用新得到的记录替换原来的,不用新增
-	                        acquisitionGroupConfigHandsontableHelper.updatelist[index] = data;
-	                    }
-	                });
-	                flag && acquisitionGroupConfigHandsontableHelper.updatelist.push(data);
-	                //封装
-	                acquisitionGroupConfigHandsontableHelper.AllData.updatelist = acquisitionGroupConfigHandsontableHelper.updatelist;
-	            }
-	        }
-	        
-	        acquisitionGroupConfigHandsontableHelper.clearContainer = function () {
-	        	acquisitionGroupConfigHandsontableHelper.AllData = {};
-	        	acquisitionGroupConfigHandsontableHelper.updatelist = [];
-	        	acquisitionGroupConfigHandsontableHelper.delidslist = [];
-	        	acquisitionGroupConfigHandsontableHelper.insertlist = [];
-	        	acquisitionGroupConfigHandsontableHelper.editWellNameList=[];
-	        }
-	        
-	        return acquisitionGroupConfigHandsontableHelper;
-	    }
 };

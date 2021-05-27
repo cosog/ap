@@ -1,6 +1,6 @@
-var driverConfigHandsontableHelper=null;
-var driverConfigItemsHandsontableHelper=null;
-var kafkaDriverConfigHandsontableHelper=null;
+var protocolConfigHandsontableHelper=null;
+var protocolConfigItemsHandsontableHelper=null;
+var kafkaProtocolConfigHandsontableHelper=null;
 
 var acquisitionUnitConfigHandsontableHelper=null;
 var acquisitionGroupConfigHandsontableHelper=null;
@@ -13,8 +13,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     border: false,
     initComponent: function () {
     	var me = this;
-//    	var AcquisitionUnitInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionUnitInfoStore');
-//		var AcquisitionGroupInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionGroupInfoStore');
     	Ext.apply(me, {
     		items: [{
                 tbar:['->',{
@@ -32,9 +30,19 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
         				}
         			}
                 },{
-                    id: 'ScadaDriverModbusConfigSelectRow_Id', //选择查看曲线的数据项名称
+                    id: 'ScadaProtocolModbusConfigSelectRow_Id',
                     xtype: 'textfield',
                     value: 0,
+                    hidden: true
+                },{
+                    id: 'ScadaAcquisitionUnitConfigSelectRow_Id',
+                    xtype: 'textfield',
+                    value: 0,
+                    hidden: true
+                },{
+                    id: 'selectedAcquisitionGroupCode_Id',
+                    xtype: 'textfield',
+                    value: '',
                     hidden: true
                 }],
                 xtype: 'tabpanel',
@@ -112,55 +120,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             width: '60%',
                             collapsible: true,
                             split: true,
-                            tbar: [{
-                                id: 'acquisitionGroupName_Id',
-                                fieldLabel: '组名称',
-                                name: 'groupName',
-                                emptyText: '查询采集组...',
-                                labelWidth: 45,
-                                width: 150,
-                                labelAlign: 'right',
-                                xtype: 'textfield'
-                            }, {
-                                xtype: 'button',
-                                text: cosog.string.search,
-                                pressed: true,
-                                iconCls: 'search',
-                                handler: function () {
-                                    //                    	AcquisitionUnitInfoStore.load();
-                                }
-                            }, {
-                                id: 'selectedAcquisitionGroupCode_Id', // 分配权限时，存放当前选中的角色编码
-                                xtype: 'textfield',
-                                value: '',
-                                hidden: true
-                            }, '->', {
-                                xtype: 'button',
-                                id: 'acquisitionGroupAddBtn_Id',
-                                text: cosog.string.add,
-                                iconCls: 'add',
-                                handler: function () {
-                                    addAcquisitionGroupInfo();
-                                }
-                            }, "-", {
-                                xtype: 'button',
-                                id: 'acquisitionGroupUpdateBtn_Id',
-                                text: cosog.string.update,
-                                disabled: true,
-                                iconCls: 'edit',
-                                handler: function () {
-                                    modifyAcquisitionGroupInfo();
-                                }
-                            }, "-", {
-                                xtype: 'button',
-                                id: 'acquisitionGroupDeleteBtn_Id',
-                                disabled: true,
-                                text: cosog.string.del,
-                                iconCls: 'delete',
-                                handler: function () {
-                                    delAcquisitionGroupInfo();
-                                }
-                            }],
                             html:'<div class="AcquisitionGroupConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionGroupConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -194,19 +153,18 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     		}
         });
         this.callParent(arguments);
-
     }
 });
 
 function CreateDriverConfigInfoTable(isNew){
-	if(isNew&&driverConfigHandsontableHelper!=null){
-        driverConfigHandsontableHelper.clearContainer();
-        driverConfigHandsontableHelper.hot.destroy();
-        driverConfigHandsontableHelper=null;
+	if(isNew&&protocolConfigHandsontableHelper!=null){
+        protocolConfigHandsontableHelper.clearContainer();
+        protocolConfigHandsontableHelper.hot.destroy();
+        protocolConfigHandsontableHelper=null;
 	}
-	if(isNew&&driverConfigItemsHandsontableHelper!=null){
-		driverConfigItemsHandsontableHelper.hot.destroy();
-		driverConfigItemsHandsontableHelper=null;
+	if(isNew&&protocolConfigItemsHandsontableHelper!=null){
+		protocolConfigItemsHandsontableHelper.hot.destroy();
+		protocolConfigItemsHandsontableHelper=null;
 	}
 	
 	Ext.Ajax.request({
@@ -214,8 +172,8 @@ function CreateDriverConfigInfoTable(isNew){
 		url:context + '/acquisitionUnitManagerController/getDriverConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			if(driverConfigHandsontableHelper==null){
-				driverConfigHandsontableHelper = DriverConfigHandsontableHelper.createNew("DriverConfigInfoInfoDiv_id");
+			if(protocolConfigHandsontableHelper==null){
+				protocolConfigHandsontableHelper = DriverConfigHandsontableHelper.createNew("DriverConfigInfoInfoDiv_id");
 				var colHeaders="[";
 		        var columns="[";
 		       
@@ -238,22 +196,16 @@ function CreateDriverConfigInfoTable(isNew){
 	            columns+=",{data:'dataConfig'}";
 	            
 	        	columns+="]";
-	        	driverConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	        	driverConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-				driverConfigHandsontableHelper.createTable(result.totalRoot);
+	        	protocolConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+	        	protocolConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+				protocolConfigHandsontableHelper.createTable(result.totalRoot);
 			}else{
-				driverConfigHandsontableHelper.hot.loadData(result.totalRoot);
+				protocolConfigHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 			
-			var row1=driverConfigHandsontableHelper.hot.getDataAtRow(0);
-			CreateDriverConfigItemsInfoTable(row1[6])
+			var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(0);
+			CreateDriverConfigItemsInfoTable(row1[6]);
 			CreateAcquisitionUnitConfigInfoTable(true);
-			CreateAcquisitionGroupConfigInfoTable(true);
-//			if(driverConfigItemsHandsontableHelper==null){
-//				CreateDriverConfigItemsInfoTable(result);
-//			}else{
-//				driverConfigItemsHandsontableHelper.hot.loadData(result.columnRoot);
-//			}
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -266,43 +218,43 @@ function CreateDriverConfigInfoTable(isNew){
 
 var DriverConfigHandsontableHelper = {
 	    createNew: function (divid) {
-	        var driverConfigHandsontableHelper = {};
-	        driverConfigHandsontableHelper.hot = '';
-	        driverConfigHandsontableHelper.divid = divid;
-	        driverConfigHandsontableHelper.validresult=true;//数据校验
-	        driverConfigHandsontableHelper.colHeaders=[];
-	        driverConfigHandsontableHelper.columns=[];
+	        var protocolConfigHandsontableHelper = {};
+	        protocolConfigHandsontableHelper.hot = '';
+	        protocolConfigHandsontableHelper.divid = divid;
+	        protocolConfigHandsontableHelper.validresult=true;//数据校验
+	        protocolConfigHandsontableHelper.colHeaders=[];
+	        protocolConfigHandsontableHelper.columns=[];
 	        
-	        driverConfigHandsontableHelper.AllData={};
-	        driverConfigHandsontableHelper.updatelist=[];
-	        driverConfigHandsontableHelper.delidslist=[];
-	        driverConfigHandsontableHelper.insertlist=[];
-	        driverConfigHandsontableHelper.editWellNameList=[];
+	        protocolConfigHandsontableHelper.AllData={};
+	        protocolConfigHandsontableHelper.updatelist=[];
+	        protocolConfigHandsontableHelper.delidslist=[];
+	        protocolConfigHandsontableHelper.insertlist=[];
+	        protocolConfigHandsontableHelper.editWellNameList=[];
 	        
-	        driverConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
 	        }
 	        
-	        driverConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(184, 184, 184)';
 	        }
 	        
-	        driverConfigHandsontableHelper.createTable = function (data) {
-	        	$('#'+driverConfigHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+driverConfigHandsontableHelper.divid);
-	        	driverConfigHandsontableHelper.hot = new Handsontable(hotElement, {
+	        protocolConfigHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolConfigHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolConfigHandsontableHelper.divid);
+	        	protocolConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: [0,6],
 	                    indicators: true
 	                },
-	                columns:driverConfigHandsontableHelper.columns,
+	                columns:protocolConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: true,//显示行头
-	                colHeaders:driverConfigHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:protocolConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -317,15 +269,15 @@ var DriverConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if (visualColIndex ==1) {
 							cellProperties.readOnly = true;
-							cellProperties.renderer = driverConfigHandsontableHelper.addBoldBg;
+							cellProperties.renderer = protocolConfigHandsontableHelper.addBoldBg;
 		                }
 	                    return cellProperties;
 	                },
-	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	var row1=driverConfigHandsontableHelper.hot.getDataAtRow(row);
+	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").setValue(row);
+	                	var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(row);
 	                	CreateDriverConfigItemsInfoTable(row1[6]);
-	                	
-	                	Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").setValue(row);
+	                	CreateAcquisitionUnitConfigInfoTable();
 	                },
 	                afterDestroy: function() {
 	                    // 移除事件
@@ -337,11 +289,11 @@ var DriverConfigHandsontableHelper = {
 	                    //封装id成array传入后台
 	                    if (amount != 0) {
 	                        for (var i = index; i < amount + index; i++) {
-	                            var rowdata = driverConfigHandsontableHelper.hot.getDataAtRow(i);
+	                            var rowdata = protocolConfigHandsontableHelper.hot.getDataAtRow(i);
 	                            ids.push(rowdata[0]);
 	                        }
-	                        driverConfigHandsontableHelper.delExpressCount(ids);
-	                        driverConfigHandsontableHelper.screening();
+	                        protocolConfigHandsontableHelper.delExpressCount(ids);
+	                        protocolConfigHandsontableHelper.screening();
 	                    }
 	                },
 	                afterChange: function (changes, source) {
@@ -351,7 +303,7 @@ var DriverConfigHandsontableHelper = {
 	                    	for(var i=0;i<changes.length;i++){
 	                    		var params = [];
 	                    		var index = changes[i][0]; //行号码
-		                        var rowdata = driverConfigHandsontableHelper.hot.getDataAtRow(index);
+		                        var rowdata = protocolConfigHandsontableHelper.hot.getDataAtRow(index);
 		                        params.push(rowdata[0]);
 		                        params.push(changes[i][1]);
 		                        params.push(changes[i][2]);
@@ -359,20 +311,20 @@ var DriverConfigHandsontableHelper = {
 		                        
 		                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
 		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
-		                        	driverConfigHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
+		                        	protocolConfigHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
 		                        }
 
 		                        //仅当单元格发生改变的时候,id!=null,说明是更新
 		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
 		                        	var data="{";
-		                        	for(var j=0;j<driverConfigHandsontableHelper.columns.length;j++){
-		                        		data+=driverConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-		                        		if(j<driverConfigHandsontableHelper.columns.length-1){
+		                        	for(var j=0;j<protocolConfigHandsontableHelper.columns.length;j++){
+		                        		data+=protocolConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
+		                        		if(j<protocolConfigHandsontableHelper.columns.length-1){
 		                        			data+=","
 		                        		}
 		                        	}
 		                        	data+="}"
-		                            driverConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
+		                            protocolConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
 		                        }
 	                    	}
 	                        
@@ -381,40 +333,40 @@ var DriverConfigHandsontableHelper = {
 	        	});
 	        }
 	      //插入的数据的获取
-	        driverConfigHandsontableHelper.insertExpressCount=function() {
-	            var idsdata = driverConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
+	        protocolConfigHandsontableHelper.insertExpressCount=function() {
+	            var idsdata = protocolConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
 	            for (var i = 0; i < idsdata.length; i++) {
 	                //id=null时,是插入数据,此时的i正好是行号
 	                if (idsdata[i] == null||idsdata[i]<0) {
 	                    //获得id=null时的所有数据封装进data
-	                    var rowdata = driverConfigHandsontableHelper.hot.getDataAtRow(i);
+	                    var rowdata = protocolConfigHandsontableHelper.hot.getDataAtRow(i);
 	                    //var collength = hot.countCols();
 	                    if (rowdata != null) {
 	                    	var data="{";
-                        	for(var j=0;j<driverConfigHandsontableHelper.columns.length;j++){
-                        		data+=driverConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-                        		if(j<driverConfigHandsontableHelper.columns.length-1){
+                        	for(var j=0;j<protocolConfigHandsontableHelper.columns.length;j++){
+                        		data+=protocolConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
+                        		if(j<protocolConfigHandsontableHelper.columns.length-1){
                         			data+=","
                         		}
                         	}
                         	data+="}"
-	                        driverConfigHandsontableHelper.insertlist.push(Ext.JSON.decode(data));
+	                        protocolConfigHandsontableHelper.insertlist.push(Ext.JSON.decode(data));
 	                    }
 	                }
 	            }
-	            if (driverConfigHandsontableHelper.insertlist.length != 0) {
-	            	driverConfigHandsontableHelper.AllData.insertlist = driverConfigHandsontableHelper.insertlist;
+	            if (protocolConfigHandsontableHelper.insertlist.length != 0) {
+	            	protocolConfigHandsontableHelper.AllData.insertlist = protocolConfigHandsontableHelper.insertlist;
 	            }
 	        }
 	        //保存数据
-	        driverConfigHandsontableHelper.saveData = function () {
+	        protocolConfigHandsontableHelper.saveData = function () {
 	        	
 	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
 	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
 	        		//插入的数据的获取
-		        	driverConfigHandsontableHelper.insertExpressCount();
+		        	protocolConfigHandsontableHelper.insertExpressCount();
 		        	var orgId=IframeViewSelection[0].data.orgId;
-		            if (JSON.stringify(driverConfigHandsontableHelper.AllData) != "{}" && driverConfigHandsontableHelper.validresult) {
+		            if (JSON.stringify(protocolConfigHandsontableHelper.AllData) != "{}" && protocolConfigHandsontableHelper.validresult) {
 		            	Ext.Ajax.request({
 		            		method:'POST',
 		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -423,7 +375,7 @@ var DriverConfigHandsontableHelper = {
 		            			if (rdata.success) {
 		                        	Ext.MessageBox.alert("信息","保存成功");
 		                            //保存以后重置全局容器
-		                            driverConfigHandsontableHelper.clearContainer();
+		                            protocolConfigHandsontableHelper.clearContainer();
 		                            CreateDriverConfigInfoTable();
 		                        } else {
 		                        	Ext.MessageBox.alert("信息","数据保存失败");
@@ -432,15 +384,15 @@ var DriverConfigHandsontableHelper = {
 		            		},
 		            		failure:function(){
 		            			Ext.MessageBox.alert("信息","请求失败");
-		                        driverConfigHandsontableHelper.clearContainer();
+		                        protocolConfigHandsontableHelper.clearContainer();
 		            		},
 		            		params: {
-		                    	data: JSON.stringify(driverConfigHandsontableHelper.AllData),
+		                    	data: JSON.stringify(protocolConfigHandsontableHelper.AllData),
 		                    	orgId:orgId
 		                    }
 		            	}); 
 		            } else {
-		                if (!driverConfigHandsontableHelper.validresult) {
+		                if (!protocolConfigHandsontableHelper.validresult) {
 		                	Ext.MessageBox.alert("信息","数据类型错误");
 		                } else {
 		                	Ext.MessageBox.alert("信息","无数据变化");
@@ -453,127 +405,127 @@ var DriverConfigHandsontableHelper = {
 	        }
 	        
 	      //删除的优先级最高
-	        driverConfigHandsontableHelper.delExpressCount=function(ids) {
+	        protocolConfigHandsontableHelper.delExpressCount=function(ids) {
 	            //传入的ids.length不可能为0
 	            $.each(ids, function (index, id) {
 	                if (id != null) {
-	                	driverConfigHandsontableHelper.delidslist.push(id);
+	                	protocolConfigHandsontableHelper.delidslist.push(id);
 	                }
 	            });
-	            driverConfigHandsontableHelper.AllData.delidslist = driverConfigHandsontableHelper.delidslist;
+	            protocolConfigHandsontableHelper.AllData.delidslist = protocolConfigHandsontableHelper.delidslist;
 	        }
 
 	        //updatelist数据更新
-	        driverConfigHandsontableHelper.screening=function() {
-	            if (driverConfigHandsontableHelper.updatelist.length != 0 && driverConfigHandsontableHelper.delidslist.lentgh != 0) {
-	                for (var i = 0; i < driverConfigHandsontableHelper.delidslist.length; i++) {
-	                    for (var j = 0; j < driverConfigHandsontableHelper.updatelist.length; j++) {
-	                        if (driverConfigHandsontableHelper.updatelist[j].id == driverConfigHandsontableHelper.delidslist[i]) {
+	        protocolConfigHandsontableHelper.screening=function() {
+	            if (protocolConfigHandsontableHelper.updatelist.length != 0 && protocolConfigHandsontableHelper.delidslist.lentgh != 0) {
+	                for (var i = 0; i < protocolConfigHandsontableHelper.delidslist.length; i++) {
+	                    for (var j = 0; j < protocolConfigHandsontableHelper.updatelist.length; j++) {
+	                        if (protocolConfigHandsontableHelper.updatelist[j].id == protocolConfigHandsontableHelper.delidslist[i]) {
 	                            //更新updatelist
-	                        	driverConfigHandsontableHelper.updatelist.splice(j, 1);
+	                        	protocolConfigHandsontableHelper.updatelist.splice(j, 1);
 	                        }
 	                    }
 	                }
 	                //把updatelist封装进AllData
-	                driverConfigHandsontableHelper.AllData.updatelist = driverConfigHandsontableHelper.updatelist;
+	                protocolConfigHandsontableHelper.AllData.updatelist = protocolConfigHandsontableHelper.updatelist;
 	            }
 	        }
 	        
 	      //更新数据
-	        driverConfigHandsontableHelper.updateExpressCount=function(data) {
+	        protocolConfigHandsontableHelper.updateExpressCount=function(data) {
 	            if (JSON.stringify(data) != "{}") {
 	                var flag = true;
 	                //判断记录是否存在,更新数据     
-	                $.each(driverConfigHandsontableHelper.updatelist, function (index, node) {
+	                $.each(protocolConfigHandsontableHelper.updatelist, function (index, node) {
 	                    if (node.id == data.id) {
 	                        //此记录已经有了
 	                        flag = false;
 	                        //用新得到的记录替换原来的,不用新增
-	                        driverConfigHandsontableHelper.updatelist[index] = data;
+	                        protocolConfigHandsontableHelper.updatelist[index] = data;
 	                    }
 	                });
-	                flag && driverConfigHandsontableHelper.updatelist.push(data);
+	                flag && protocolConfigHandsontableHelper.updatelist.push(data);
 	                //封装
-	                driverConfigHandsontableHelper.AllData.updatelist = driverConfigHandsontableHelper.updatelist;
+	                protocolConfigHandsontableHelper.AllData.updatelist = protocolConfigHandsontableHelper.updatelist;
 	            }
 	        }
 	        
-	        driverConfigHandsontableHelper.clearContainer = function () {
-	        	driverConfigHandsontableHelper.AllData = {};
-	        	driverConfigHandsontableHelper.updatelist = [];
-	        	driverConfigHandsontableHelper.delidslist = [];
-	        	driverConfigHandsontableHelper.insertlist = [];
-	        	driverConfigHandsontableHelper.editWellNameList=[];
+	        protocolConfigHandsontableHelper.clearContainer = function () {
+	        	protocolConfigHandsontableHelper.AllData = {};
+	        	protocolConfigHandsontableHelper.updatelist = [];
+	        	protocolConfigHandsontableHelper.delidslist = [];
+	        	protocolConfigHandsontableHelper.insertlist = [];
+	        	protocolConfigHandsontableHelper.editWellNameList=[];
 	        }
 	        
-	        return driverConfigHandsontableHelper;
+	        return protocolConfigHandsontableHelper;
 	    }
 };
 
 function CreateDriverConfigItemsInfoTable(data){
-	driverConfigItemsHandsontableHelper = DriverConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
+	protocolConfigItemsHandsontableHelper = ProtocolConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
 	var colHeaders="['','序号','名称','地址','寄存器数量','数据类型','读写类型','单位','单位换算系数','模式']";
 	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'item'},"
-		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}},"
-			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}}," 
+		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
+			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
 			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['整型', '实型','BCD码']}," 
 			+"{data:'readonly',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 			+"{data:'unit'}," 
-			+"{data:'zoom',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,driverConfigItemsHandsontableHelper);}}," 
+			+"{data:'zoom',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
 			+"{data:'initiative',type:'dropdown',strict:true,allowInvalid:false,source:['主动轮询', '被动接收']}" 
 			+"]";
-	driverConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	driverConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
+	protocolConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+	protocolConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 	if(data==undefined||data==null||data.length==0){
-		driverConfigItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+		protocolConfigItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 	}else{
-		driverConfigItemsHandsontableHelper.createTable(data);
+		protocolConfigItemsHandsontableHelper.createTable(data);
 	}
 	
-//	$('#'+driverConfigItemsHandsontableHelper.divid).on('mouseup', 'input.checker', function (event) { 
+//	$('#'+protocolConfigItemsHandsontableHelper.divid).on('mouseup', 'input.checker', function (event) { 
 //	    var current = !$('input.checker').is(':checked'); //returns boolean 
 //	     for (var i = 0; i < data.length; i++) { 
-//	    	 driverConfigItemsHandsontableHelper.hot.setDataAtCell(i, 0, current);
+//	    	 protocolConfigItemsHandsontableHelper.hot.setDataAtCell(i, 0, current);
 //	     }
 //	});
 };
 
 
-var DriverConfigItemsHandsontableHelper = {
+var ProtocolConfigItemsHandsontableHelper = {
 		createNew: function (divid) {
-	        var driverConfigItemsHandsontableHelper = {};
-	        driverConfigItemsHandsontableHelper.hot1 = '';
-	        driverConfigItemsHandsontableHelper.divid = divid;
-	        driverConfigItemsHandsontableHelper.validresult=true;//数据校验
-	        driverConfigItemsHandsontableHelper.colHeaders=[];
-	        driverConfigItemsHandsontableHelper.columns=[];
-	        driverConfigItemsHandsontableHelper.AllData=[];
+	        var protocolConfigItemsHandsontableHelper = {};
+	        protocolConfigItemsHandsontableHelper.hot1 = '';
+	        protocolConfigItemsHandsontableHelper.divid = divid;
+	        protocolConfigItemsHandsontableHelper.validresult=true;//数据校验
+	        protocolConfigItemsHandsontableHelper.colHeaders=[];
+	        protocolConfigItemsHandsontableHelper.columns=[];
+	        protocolConfigItemsHandsontableHelper.AllData=[];
 	        
-	        driverConfigItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolConfigItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
 	        }
 	        
-	        driverConfigItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        protocolConfigItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(184, 184, 184)';
 	        }
 	        
-	        driverConfigItemsHandsontableHelper.createTable = function (data) {
-	        	$('#'+driverConfigItemsHandsontableHelper.divid).empty();
-	        	var hotElement = document.querySelector('#'+driverConfigItemsHandsontableHelper.divid);
-	        	driverConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
+	        protocolConfigItemsHandsontableHelper.createTable = function (data) {
+	        	$('#'+protocolConfigItemsHandsontableHelper.divid).empty();
+	        	var hotElement = document.querySelector('#'+protocolConfigItemsHandsontableHelper.divid);
+	        	protocolConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	        		colWidths: [25,50,80,80,80,80,80,80,80,80],
 //	                hiddenColumns: {
 //	                    columns: [0],
 //	                    indicators: true
 //	                },
-	                columns:driverConfigItemsHandsontableHelper.columns,
+	                columns:protocolConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
 	                rowHeaders: false,//显示行头
-	                colHeaders:driverConfigItemsHandsontableHelper.colHeaders,//显示列头
+	                colHeaders:protocolConfigItemsHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -587,7 +539,7 @@ var DriverConfigItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if (visualColIndex ==1 || visualColIndex ==2) {
 							cellProperties.readOnly = true;
-							cellProperties.renderer = driverConfigItemsHandsontableHelper.addBoldBg;
+							cellProperties.renderer = protocolConfigItemsHandsontableHelper.addBoldBg;
 		                }
 	                    return cellProperties;
 	                }
@@ -599,17 +551,17 @@ var DriverConfigItemsHandsontableHelper = {
 //	                      txt += "> 全选"; 
 //	                      return txt; 
 //	                     default:
-//	                    	 return driverConfigItemsHandsontableHelper.colHeaders[col]; 
+//	                    	 return protocolConfigItemsHandsontableHelper.colHeaders[col]; 
 //	                    } 
 //	                 }
 	        	});
 	        }
 	        //保存数据
-	        driverConfigItemsHandsontableHelper.saveData = function () {}
-	        driverConfigItemsHandsontableHelper.clearContainer = function () {
-	        	driverConfigItemsHandsontableHelper.AllData = [];
+	        protocolConfigItemsHandsontableHelper.saveData = function () {}
+	        protocolConfigItemsHandsontableHelper.clearContainer = function () {
+	        	protocolConfigItemsHandsontableHelper.AllData = [];
 	        }
-	        return driverConfigItemsHandsontableHelper;
+	        return protocolConfigItemsHandsontableHelper;
 	    }
 };
 
@@ -630,10 +582,10 @@ function CreateKafkaConfigInfoTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			
 			
-			if(kafkaDriverConfigHandsontableHelper==null){
+			if(kafkaProtocolConfigHandsontableHelper==null){
 				CreateKafkaConfigItemsInfoTable(result);
 			}else{
-				kafkaDriverConfigHandsontableHelper.hot.loadData(result.totalRoot);
+				kafkaProtocolConfigHandsontableHelper.hot.loadData(result.totalRoot);
 			}
 			
 		},
@@ -652,7 +604,7 @@ function CreateKafkaConfigItemsInfoTable(result){
 		if(result.columns[i].dataIndex==="columnType"){
 			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['date','varchar2','number']}";
     	}else if(result.columns[i].dataIndex==="columnName"){
-    		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,kafkaDriverConfigHandsontableHelper);}}";
+    		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,kafkaProtocolConfigHandsontableHelper);}}";
         }else if(result.columns[i].dataIndex==="checked"){
     		columns+="{data:'"+result.columns[i].dataIndex+"',type:'checkbox'}";
     	}else{
@@ -663,40 +615,40 @@ function CreateKafkaConfigItemsInfoTable(result){
     	}
 	}
 	columns+="]";
-	kafkaDriverConfigHandsontableHelper = KafkaDriverConfigHandsontableHelper.createNew("ScadaKafkaConfigTableInfoDiv_id","ScadaKafkaConfigTableInfoContainer");
-	kafkaDriverConfigHandsontableHelper.getData(result);
-	kafkaDriverConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-	kafkaDriverConfigHandsontableHelper.createTable();
+	kafkaProtocolConfigHandsontableHelper = KafkaProtocolConfigHandsontableHelper.createNew("ScadaKafkaConfigTableInfoDiv_id","ScadaKafkaConfigTableInfoContainer");
+	kafkaProtocolConfigHandsontableHelper.getData(result);
+	kafkaProtocolConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+	kafkaProtocolConfigHandsontableHelper.createTable();
 };
 
 
-var KafkaDriverConfigHandsontableHelper = {
+var KafkaProtocolConfigHandsontableHelper = {
 	    createNew: function (divid, containerid) {
-	        var kafkaDriverConfigHandsontableHelper = {};
-	        kafkaDriverConfigHandsontableHelper.get_data = {};
-	        kafkaDriverConfigHandsontableHelper.hot = '';
-	        kafkaDriverConfigHandsontableHelper.container = document.getElementById(divid);
-	        kafkaDriverConfigHandsontableHelper.last_index = 0;
-	        kafkaDriverConfigHandsontableHelper.calculation_type_computer = [];
-	        kafkaDriverConfigHandsontableHelper.calculation_type_not_computer = [];
-	        kafkaDriverConfigHandsontableHelper.editable = 0;
-	        kafkaDriverConfigHandsontableHelper.sum = 0;
-	        kafkaDriverConfigHandsontableHelper.editRecords = [];
-	        kafkaDriverConfigHandsontableHelper.columns=[];
-	        kafkaDriverConfigHandsontableHelper.my_data = [
+	        var kafkaProtocolConfigHandsontableHelper = {};
+	        kafkaProtocolConfigHandsontableHelper.get_data = {};
+	        kafkaProtocolConfigHandsontableHelper.hot = '';
+	        kafkaProtocolConfigHandsontableHelper.container = document.getElementById(divid);
+	        kafkaProtocolConfigHandsontableHelper.last_index = 0;
+	        kafkaProtocolConfigHandsontableHelper.calculation_type_computer = [];
+	        kafkaProtocolConfigHandsontableHelper.calculation_type_not_computer = [];
+	        kafkaProtocolConfigHandsontableHelper.editable = 0;
+	        kafkaProtocolConfigHandsontableHelper.sum = 0;
+	        kafkaProtocolConfigHandsontableHelper.editRecords = [];
+	        kafkaProtocolConfigHandsontableHelper.columns=[];
+	        kafkaProtocolConfigHandsontableHelper.my_data = [
 
 	        ];
-	        kafkaDriverConfigHandsontableHelper.updateArray = function () {
-	            for (var i = 0; i < kafkaDriverConfigHandsontableHelper.sum; i++) {
-	                kafkaDriverConfigHandsontableHelper.my_data.splice(i+1, 0, ['', '', '']);
+	        kafkaProtocolConfigHandsontableHelper.updateArray = function () {
+	            for (var i = 0; i < kafkaProtocolConfigHandsontableHelper.sum; i++) {
+	                kafkaProtocolConfigHandsontableHelper.my_data.splice(i+1, 0, ['', '', '']);
 	            }
 	        }
-	        kafkaDriverConfigHandsontableHelper.clearArray = function () {
-	            kafkaDriverConfigHandsontableHelper.hot.loadData(kafkaDriverConfigHandsontableHelper.table_header);
+	        kafkaProtocolConfigHandsontableHelper.clearArray = function () {
+	            kafkaProtocolConfigHandsontableHelper.hot.loadData(kafkaProtocolConfigHandsontableHelper.table_header);
 
 	        }
 
-	        kafkaDriverConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        kafkaProtocolConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
                 td.style.fontWeight = 'bold';
@@ -705,7 +657,7 @@ var KafkaDriverConfigHandsontableHelper = {
 				td.style.fontFamily = 'SimSun';//SimHei-黑体 SimSun-宋体
 	        }
 			
-			kafkaDriverConfigHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
+			kafkaProtocolConfigHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
 				Handsontable.renderers.TextRenderer.apply(this, arguments);
                 td.style.fontWeight = 'bold';
 		        td.style.fontSize = '13px';
@@ -713,7 +665,7 @@ var KafkaDriverConfigHandsontableHelper = {
 //		        td.style.height = '50px';  
 	        }
 			
-			kafkaDriverConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+			kafkaProtocolConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';
 	             td.style.fontWeight = 'bold';
@@ -722,30 +674,30 @@ var KafkaDriverConfigHandsontableHelper = {
 	        }
 			
 
-	        kafkaDriverConfigHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
+	        kafkaProtocolConfigHandsontableHelper.addBgBlue = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(183, 222, 232)';
 	        }
 
-	        kafkaDriverConfigHandsontableHelper.addContentReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
+	        kafkaProtocolConfigHandsontableHelper.addContentReadOnlyBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(184, 184, 184)';
 	        }
 	        
-	        kafkaDriverConfigHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
+	        kafkaProtocolConfigHandsontableHelper.hiddenColumn = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.display = 'none';
 	        }
 
 	        // 实现标题居中
-	        kafkaDriverConfigHandsontableHelper.titleCenter = function () {
+	        kafkaProtocolConfigHandsontableHelper.titleCenter = function () {
 	            $(containerid).width($($('.wtHider')[0]).width());
 	        }
 
-	        kafkaDriverConfigHandsontableHelper.createTable = function () {
-//	            kafkaDriverConfigHandsontableHelper.container.innerHTML = "";
-	            kafkaDriverConfigHandsontableHelper.hot = new Handsontable(kafkaDriverConfigHandsontableHelper.container, {
-	                data: kafkaDriverConfigHandsontableHelper.my_data,
+	        kafkaProtocolConfigHandsontableHelper.createTable = function () {
+//	            kafkaProtocolConfigHandsontableHelper.container.innerHTML = "";
+	            kafkaProtocolConfigHandsontableHelper.hot = new Handsontable(kafkaProtocolConfigHandsontableHelper.container, {
+	                data: kafkaProtocolConfigHandsontableHelper.my_data,
 //	                fixedRowsTop:0, //固定顶部多少行不能垂直滚动
 //	                fixedRowsBottom: 0,//固定底部多少行不能垂直滚动
 //	                fixedColumnsLeft:0, //固定左侧多少列不能水平滚动
@@ -754,7 +706,7 @@ var KafkaDriverConfigHandsontableHelper = {
 //					rowHeights: [50],
 					colWidths:[1,6,10],
 					stretchH: 'all',
-					columns:kafkaDriverConfigHandsontableHelper.columns,
+					columns:kafkaProtocolConfigHandsontableHelper.columns,
 	                mergeCells: [
 	                    {
 	                        "row": 1,
@@ -788,7 +740,7 @@ var KafkaDriverConfigHandsontableHelper = {
 										|| (visualRowIndex>=5&&visualRowIndex<=12)
 										|| (visualRowIndex>=14&&visualRowIndex<=37)
 							)) {
-							cellProperties.renderer = kafkaDriverConfigHandsontableHelper.addContentReadOnlyBg;
+							cellProperties.renderer = kafkaProtocolConfigHandsontableHelper.addContentReadOnlyBg;
 							cellProperties.readOnly = true;
 		                }
 	                    return cellProperties;
@@ -796,36 +748,36 @@ var KafkaDriverConfigHandsontableHelper = {
 	                afterChange:function(changes, source){}
 	            });
 	        }
-	        kafkaDriverConfigHandsontableHelper.getData = function (data) {
-	            kafkaDriverConfigHandsontableHelper.get_data = data;
+	        kafkaProtocolConfigHandsontableHelper.getData = function (data) {
+	            kafkaProtocolConfigHandsontableHelper.get_data = data;
 	            
 	            
 	            var totalRoot = data.totalRoot;
-	            kafkaDriverConfigHandsontableHelper.sum = totalRoot.length;
-	            kafkaDriverConfigHandsontableHelper.updateArray();
-	            kafkaDriverConfigHandsontableHelper.my_data=totalRoot;
+	            kafkaProtocolConfigHandsontableHelper.sum = totalRoot.length;
+	            kafkaProtocolConfigHandsontableHelper.updateArray();
+	            kafkaProtocolConfigHandsontableHelper.my_data=totalRoot;
 	            
 	        }
 	        var init = function () {
 	        }
 	        init();
-	        return kafkaDriverConfigHandsontableHelper;
+	        return kafkaProtocolConfigHandsontableHelper;
 	    }
 	};
 
 function SaveModbusDriverConfigData(){
-	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaDriverModbusConfigSelectRow_Id").getValue();
+	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
 		var driverConfigSaveData=[];
 		var driverConfigItemsSaveData=[];
-		var driverConfigData=driverConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
-		var driverConfigItemsData=driverConfigItemsHandsontableHelper.hot.getData();
+		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
 		var configInfo={};
-		configInfo.ProtocolName=driverConfigData[1];
-		configInfo.ProtocolType=driverConfigData[2];
-		configInfo.StoreMode=driverConfigData[3];
-		configInfo.HeartbeatPrefix=driverConfigData[4];
-		configInfo.HeartbeatSuffix=driverConfigData[5];
+		configInfo.ProtocolName=protocolConfigData[1];
+		configInfo.ProtocolType=protocolConfigData[2];
+		configInfo.StoreMode=protocolConfigData[3];
+		configInfo.HeartbeatPrefix=protocolConfigData[4];
+		configInfo.HeartbeatSuffix=protocolConfigData[5];
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};
@@ -865,49 +817,49 @@ function SaveModbusDriverConfigData(){
 
 function SaveScadaKafkaDriverConfigData(){
 
-	var driverConfigData=kafkaDriverConfigHandsontableHelper.hot.getData();
+	var protocolConfigData=kafkaProtocolConfigHandsontableHelper.hot.getData();
 	var configInfo={};
 	var KafkaData={};
 	KafkaData.Server={};
-	KafkaData.Server.IP=driverConfigData[2][2];
-	KafkaData.Server.Port=parseInt(driverConfigData[3][2]);
+	KafkaData.Server.IP=protocolConfigData[2][2];
+	KafkaData.Server.Port=parseInt(protocolConfigData[3][2]);
 	
 	KafkaData.Topic={};
 	KafkaData.Topic.Up={};
-	KafkaData.Topic.Up.NormData=driverConfigData[5][2];
-	KafkaData.Topic.Up.RawData=driverConfigData[6][2];
-	KafkaData.Topic.Up.Config=driverConfigData[7][2];
-	KafkaData.Topic.Up.Model=driverConfigData[8][2];
-	KafkaData.Topic.Up.Freq=driverConfigData[9][2];
-	KafkaData.Topic.Up.RTC=driverConfigData[10][2];
-	KafkaData.Topic.Up.Online=driverConfigData[11][2];
-	KafkaData.Topic.Up.RunStatus=driverConfigData[12][2];
+	KafkaData.Topic.Up.NormData=protocolConfigData[5][2];
+	KafkaData.Topic.Up.RawData=protocolConfigData[6][2];
+	KafkaData.Topic.Up.Config=protocolConfigData[7][2];
+	KafkaData.Topic.Up.Model=protocolConfigData[8][2];
+	KafkaData.Topic.Up.Freq=protocolConfigData[9][2];
+	KafkaData.Topic.Up.RTC=protocolConfigData[10][2];
+	KafkaData.Topic.Up.Online=protocolConfigData[11][2];
+	KafkaData.Topic.Up.RunStatus=protocolConfigData[12][2];
 	
 	KafkaData.Topic.Down={};
-	KafkaData.Topic.Down.Model=driverConfigData[14][2];
-	KafkaData.Topic.Down.Model_FluidPVT=driverConfigData[15][2];
-	KafkaData.Topic.Down.Model_Reservoir=driverConfigData[16][2];
-	KafkaData.Topic.Down.Model_WellboreTrajectory=driverConfigData[17][2];
-	KafkaData.Topic.Down.Model_RodString=driverConfigData[18][2];
-	KafkaData.Topic.Down.Model_TubingString=driverConfigData[19][2];
-	KafkaData.Topic.Down.Model_Pump=driverConfigData[20][2];
-	KafkaData.Topic.Down.Model_TailtubingString=driverConfigData[21][2];
-	KafkaData.Topic.Down.Model_CasingString=driverConfigData[22][2];
-	KafkaData.Topic.Down.Model_PumpingUnit=driverConfigData[23][2];
-	KafkaData.Topic.Down.Model_SystemEfficiency=driverConfigData[24][2];
-	KafkaData.Topic.Down.Model_Production=driverConfigData[25][2];
-	KafkaData.Topic.Down.Model_FeatureDB=driverConfigData[26][2];
-	KafkaData.Topic.Down.Model_CalculationMethod=driverConfigData[27][2];
-	KafkaData.Topic.Down.Model_ManualIntervention=driverConfigData[28][2];
-	KafkaData.Topic.Down.Config=driverConfigData[29][2];
-	KafkaData.Topic.Down.StartRPC=driverConfigData[30][2];
-	KafkaData.Topic.Down.StopRPC=driverConfigData[31][2];
-	KafkaData.Topic.Down.DogRestart=driverConfigData[32][2];
-	KafkaData.Topic.Down.Freq=driverConfigData[33][2];
-	KafkaData.Topic.Down.RTC=driverConfigData[34][2];
-	KafkaData.Topic.Down.Req=driverConfigData[35][2];
-	KafkaData.Topic.Down.A9=driverConfigData[36][2];
-	KafkaData.Topic.Down.AC=driverConfigData[37][2];
+	KafkaData.Topic.Down.Model=protocolConfigData[14][2];
+	KafkaData.Topic.Down.Model_FluidPVT=protocolConfigData[15][2];
+	KafkaData.Topic.Down.Model_Reservoir=protocolConfigData[16][2];
+	KafkaData.Topic.Down.Model_WellboreTrajectory=protocolConfigData[17][2];
+	KafkaData.Topic.Down.Model_RodString=protocolConfigData[18][2];
+	KafkaData.Topic.Down.Model_TubingString=protocolConfigData[19][2];
+	KafkaData.Topic.Down.Model_Pump=protocolConfigData[20][2];
+	KafkaData.Topic.Down.Model_TailtubingString=protocolConfigData[21][2];
+	KafkaData.Topic.Down.Model_CasingString=protocolConfigData[22][2];
+	KafkaData.Topic.Down.Model_PumpingUnit=protocolConfigData[23][2];
+	KafkaData.Topic.Down.Model_SystemEfficiency=protocolConfigData[24][2];
+	KafkaData.Topic.Down.Model_Production=protocolConfigData[25][2];
+	KafkaData.Topic.Down.Model_FeatureDB=protocolConfigData[26][2];
+	KafkaData.Topic.Down.Model_CalculationMethod=protocolConfigData[27][2];
+	KafkaData.Topic.Down.Model_ManualIntervention=protocolConfigData[28][2];
+	KafkaData.Topic.Down.Config=protocolConfigData[29][2];
+	KafkaData.Topic.Down.StartRPC=protocolConfigData[30][2];
+	KafkaData.Topic.Down.StopRPC=protocolConfigData[31][2];
+	KafkaData.Topic.Down.DogRestart=protocolConfigData[32][2];
+	KafkaData.Topic.Down.Freq=protocolConfigData[33][2];
+	KafkaData.Topic.Down.RTC=protocolConfigData[34][2];
+	KafkaData.Topic.Down.Req=protocolConfigData[35][2];
+	KafkaData.Topic.Down.A9=protocolConfigData[36][2];
+	KafkaData.Topic.Down.AC=protocolConfigData[37][2];
 
 	Ext.Ajax.request({
 		method:'POST',
@@ -937,79 +889,55 @@ function CreateAcquisitionUnitConfigInfoTable(isNew){
         acquisitionUnitConfigHandsontableHelper.hot.destroy();
         acquisitionUnitConfigHandsontableHelper=null;
 	}
+	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
+	if(ScadaDriverModbusConfigSelectRow!=''){
+		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+		var protocolName=protocolConfigData[1];
+		Ext.Ajax.request({
+			method:'POST',
+			url: context + '/acquisitionUnitManagerController/doAcquisitionUnitShow',
+			success:function(response) {
+				var result =  Ext.JSON.decode(response.responseText);
+				if(result.totalRoot.length===0){
+					result.totalRoot=[{},{},{},{},{},{},{},{},{},{}];
+				}
+				if(acquisitionUnitConfigHandsontableHelper==null){
+					acquisitionUnitConfigHandsontableHelper = AcquisitionUnitConfigHandsontableHelper.createNew("AcquisitionUnitConfigTableInfoDiv_id");
+					var colHeaders="[";
+			        var columns="[";
+			       
+		            for(var i=0;i<result.columns.length;i++){
+		            	colHeaders+="'"+result.columns[i].header+"'";
+		            	if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
+		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
+		            	}else{
+		            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
+		            	}
+		            	if(i<result.columns.length-1){
+		            		colHeaders+=",";
+		                	columns+=",";
+		            	}
+		            }
+		            colHeaders+="]";
+		        	columns+="]";
+		        	acquisitionUnitConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+		        	acquisitionUnitConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+					acquisitionUnitConfigHandsontableHelper.createTable(result.totalRoot);
+				}else{
+					acquisitionUnitConfigHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+				CreateAcquisitionGroupConfigInfoTable(true);
+			},
+			failure:function(){
+				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			},
+			params: {
+				protocolName:protocolName
+	        }
+		});
+	}
 	
-	Ext.Ajax.request({
-		method:'POST',
-		url: context + '/acquisitionUnitManagerController/doAcquisitionUnitShow',
-		success:function(response) {
-			var result =  Ext.JSON.decode(response.responseText);
-			if(acquisitionUnitConfigHandsontableHelper==null){
-				acquisitionUnitConfigHandsontableHelper = AcquisitionUnitConfigHandsontableHelper.createNew("AcquisitionUnitConfigTableInfoDiv_id");
-				var colHeaders="[";
-		        var columns="[";
-		       
-	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].header==='协议名称'){
-	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
-	            	}else{
-	            		colHeaders+="'"+result.columns[i].header+"'";
-	            	}
-	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,acquisitionUnitConfigHandsontableHelper);}}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="liftingTypeName".toUpperCase()){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
-	            		}
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.driverDropdownData.length;j++){
-	            			source+="\'"+result.driverDropdownData[j]+"\'";
-	            			if(j<result.driverDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="acquisitionUnit".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.unitDropdownData.length;j++){
-	            			source+="\'"+result.unitDropdownData[j]+"\'";
-	            			if(j<result.unitDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,acquisitionUnitConfigHandsontableHelper);}}";
-	            	}else{
-	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	}
-	            	if(i<result.columns.length-1){
-	            		colHeaders+=",";
-	                	columns+=",";
-	            	}
-	            }
-	            colHeaders+="]";
-	        	columns+="]";
-	        	acquisitionUnitConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	        	acquisitionUnitConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-				acquisitionUnitConfigHandsontableHelper.createTable(result.totalRoot);
-			}else{
-				acquisitionUnitConfigHandsontableHelper.hot.loadData(result.totalRoot);
-			}
-			Ext.getCmp("ProductionWellTotalCount_Id").update({count: result.totalCount});
-		},
-		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-        }
-	});
+	
 };
 
 var AcquisitionUnitConfigHandsontableHelper = {
@@ -1103,6 +1031,10 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                },
+	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	Ext.getCmp("ScadaAcquisitionUnitConfigSelectRow_Id").setValue(row);
+	                	CreateAcquisitionGroupConfigInfoTable();
+	                },
 	                afterDestroy: function() {
 	                },
 	                beforeRemoveRow: function (index, amount) {
@@ -1120,13 +1052,12 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	                    if (changes != null) {
 	                    	for(var i=0;i<changes.length;i++){
 	                    		var params = [];
-	                    		var index = changes[i][0]; //行号码
+	                    		var index = changes[i][0]; 
 		                        var rowdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(index);
 		                        params.push(rowdata[0]);
 		                        params.push(changes[i][1]);
 		                        params.push(changes[i][2]);
 		                        params.push(changes[i][3]);
-		                        //仅当单元格发生改变的时候,id!=null,说明是更新
 		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
 		                        	var data="{";
 		                        	for(var j=0;j<acquisitionUnitConfigHandsontableHelper.columns.length;j++){
@@ -1143,7 +1074,6 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	                }
 	        	});
 	        }
-	      //插入的数据的获取
 	        acquisitionUnitConfigHandsontableHelper.insertExpressCount=function() {
 	            var idsdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtCol(0);
 	            for (var i = 0; i < idsdata.length; i++) {
@@ -1166,7 +1096,6 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	            	acquisitionUnitConfigHandsontableHelper.AllData.insertlist = acquisitionUnitConfigHandsontableHelper.insertlist;
 	            }
 	        }
-	        //保存数据
 	        acquisitionUnitConfigHandsontableHelper.saveData = function () {
 	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
 	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
@@ -1180,7 +1109,6 @@ var AcquisitionUnitConfigHandsontableHelper = {
 		            			rdata=Ext.JSON.decode(response.responseText);
 		            			if (rdata.success) {
 		                        	Ext.MessageBox.alert("信息","保存成功");
-		                            //保存以后重置全局容器
 		                            acquisitionUnitConfigHandsontableHelper.clearContainer();
 		                            CreateAcquisitionUnitConfigInfoTable();
 		                        } else {
@@ -1208,7 +1136,6 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	        	}
 	        }
 	        acquisitionUnitConfigHandsontableHelper.delExpressCount=function(ids) {
-	            //传入的ids.length不可能为0
 	            $.each(ids, function (index, id) {
 	                if (id != null) {
 	                	acquisitionUnitConfigHandsontableHelper.delidslist.push(id);
@@ -1231,17 +1158,13 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	        acquisitionUnitConfigHandsontableHelper.updateExpressCount=function(data) {
 	            if (JSON.stringify(data) != "{}") {
 	                var flag = true;
-	                //判断记录是否存在,更新数据     
 	                $.each(acquisitionUnitConfigHandsontableHelper.updatelist, function (index, node) {
 	                    if (node.id == data.id) {
-	                        //此记录已经有了
 	                        flag = false;
-	                        //用新得到的记录替换原来的,不用新增
 	                        acquisitionUnitConfigHandsontableHelper.updatelist[index] = data;
 	                    }
 	                });
 	                flag && acquisitionUnitConfigHandsontableHelper.updatelist.push(data);
-	                //封装
 	                acquisitionUnitConfigHandsontableHelper.AllData.updatelist = acquisitionUnitConfigHandsontableHelper.updatelist;
 	            }
 	        }
@@ -1264,83 +1187,52 @@ function CreateAcquisitionGroupConfigInfoTable(isNew){
         acquisitionGroupConfigHandsontableHelper.hot.destroy();
         acquisitionGroupConfigHandsontableHelper=null;
 	}
-	
-	Ext.Ajax.request({
-		method:'POST',
-		url: context + '/acquisitionUnitManagerController/doAcquisitionGroupShow',
-		success:function(response) {
-			var result =  Ext.JSON.decode(response.responseText);
-			for(var i=0;i<result.totalRoot;i++){
-        		totalRoot[i].checked=false;
-        	}
-			if(acquisitionGroupConfigHandsontableHelper==null){
-				acquisitionGroupConfigHandsontableHelper = AcquisitionGroupConfigHandsontableHelper.createNew("AcquisitionGroupConfigTableInfoDiv_id");
-				var colHeaders="['',";
-		        var columns="[{data:'checked',type:'checkbox'},";
-		       
-	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].header==='协议名称'){
-	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
-	            	}else{
-	            		colHeaders+="'"+result.columns[i].header+"'";
-	            	}
-	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,acquisitionGroupConfigHandsontableHelper);}}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="liftingTypeName".toUpperCase()){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
-	            		}
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.driverDropdownData.length;j++){
-	            			source+="\'"+result.driverDropdownData[j]+"\'";
-	            			if(j<result.driverDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="acquisitionUnit".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.unitDropdownData.length;j++){
-	            			source+="\'"+result.unitDropdownData[j]+"\'";
-	            			if(j<result.unitDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,acquisitionGroupConfigHandsontableHelper);}}";
-	            	}else{
-	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	}
-	            	if(i<result.columns.length-1){
-	            		colHeaders+=",";
-	                	columns+=",";
-	            	}
-	            }
-	            colHeaders+="]";
-	        	columns+="]";
-	        	acquisitionGroupConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-	        	acquisitionGroupConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
-	        	
-				acquisitionGroupConfigHandsontableHelper.createTable(result.totalRoot);
-			}else{
-				acquisitionGroupConfigHandsontableHelper.hot.loadData(result.totalRoot);
-			}
-			Ext.getCmp("ProductionWellTotalCount_Id").update({count: result.totalCount});
-		},
-		failure:function(){
-			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-		},
-		params: {
-        }
-	});
+	var AcquisitionUnitConfigSelectRow= Ext.getCmp("ScadaAcquisitionUnitConfigSelectRow_Id").getValue();
+	if(AcquisitionUnitConfigSelectRow!=''){
+		var AcquisitionUnitData=acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(AcquisitionUnitConfigSelectRow);
+		var unitName=AcquisitionUnitData[1];
+		Ext.Ajax.request({
+			method:'POST',
+			url: context + '/acquisitionUnitManagerController/doAcquisitionGroupShow',
+			success:function(response) {
+				var result =  Ext.JSON.decode(response.responseText);
+				if(result.totalRoot.length===0){
+					result.totalRoot=[{},{},{},{},{},{},{},{},{},{}];
+				}
+				for(var i=0;i<result.totalRoot;i++){
+	        		totalRoot[i].checked=false;
+	        	}
+				if(acquisitionGroupConfigHandsontableHelper==null){
+					acquisitionGroupConfigHandsontableHelper = AcquisitionGroupConfigHandsontableHelper.createNew("AcquisitionGroupConfigTableInfoDiv_id");
+//					var colHeaders="['',";
+//			        var columns="[{data:'checked',type:'checkbox'},";
+					var colHeaders="[";
+			        var columns="[";
+		            for(var i=0;i<result.columns.length;i++){
+		            	colHeaders+="'"+result.columns[i].header+"'";
+		            	columns+="{data:'"+result.columns[i].dataIndex+"'}";
+		            	if(i<result.columns.length-1){
+		            		colHeaders+=",";
+		                	columns+=",";
+		            	}
+		            }
+		            colHeaders+="]";
+		        	columns+="]";
+		        	acquisitionGroupConfigHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+		        	acquisitionGroupConfigHandsontableHelper.columns=Ext.JSON.decode(columns);
+					acquisitionGroupConfigHandsontableHelper.createTable(result.totalRoot);
+				}else{
+					acquisitionGroupConfigHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			},
+			failure:function(){
+				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+			},
+			params: {
+				unitName:unitName
+	        }
+		});
+	}
 };
 
 var AcquisitionGroupConfigHandsontableHelper = {
@@ -1369,19 +1261,17 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+acquisitionGroupConfigHandsontableHelper.divid);
 	        	acquisitionGroupConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
-//	                hiddenColumns: {
-//	                    columns: [0],
-//	                    indicators: true
-//	                },
+	                hiddenColumns: {
+	                    columns: [0],
+	                    indicators: true
+	                },
 	        		colWidths: [25,50,100,80,80,80,100],
 	                columns:acquisitionGroupConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: false,//显示行头
+	                rowHeaders: true,//显示行头
 	                colHeaders:acquisitionGroupConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
-//	                colWidths:[50,90,75, 80,100,70, 80,100,70, 140,120, 80,80,80,80,80, 80,80,80,80,80,  80,80,80,120, 80, 75],
-//	                colWidths:50,
 	                contextMenu: {
 	                	items: {
 	                	    "row_above": {
@@ -1434,16 +1324,17 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==1 || visualColIndex ==2) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = acquisitionGroupConfigHandsontableHelper.addBoldBg;
-		                }
+//	                    if (visualColIndex ==1 || visualColIndex ==2) {
+//							cellProperties.readOnly = true;
+//							cellProperties.renderer = acquisitionGroupConfigHandsontableHelper.addBoldBg;
+//		                }
 	                    return cellProperties;
 	                },
-	                afterSelection: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(row1[1]);
-	                	showAcquisitionGroupOwnItems(row1[1]);
+	                	Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(row1[2]);
+	                	showAcquisitionGroupOwnItems(row1[2]);
+//	                	alert(row1[1]);
 	                },
 	                afterDestroy: function() {
 	                },
@@ -1462,19 +1353,16 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                    if (changes != null) {
 	                    	for(var i=0;i<changes.length;i++){
 	                    		var params = [];
-	                    		var index = changes[i][0]; //行号码
+	                    		var index = changes[i][0]; 
 		                        var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(index);
 		                        params.push(rowdata[0]);
 		                        params.push(changes[i][1]);
 		                        params.push(changes[i][2]);
 		                        params.push(changes[i][3]);
-		                        
 		                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
 		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
 		                        	acquisitionGroupConfigHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
 		                        }
-
-		                        //仅当单元格发生改变的时候,id!=null,说明是更新
 		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
 		                        	var data="{";
 		                        	for(var j=0;j<acquisitionGroupConfigHandsontableHelper.columns.length;j++){
@@ -1495,11 +1383,8 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        acquisitionGroupConfigHandsontableHelper.insertExpressCount=function() {
 	            var idsdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
 	            for (var i = 0; i < idsdata.length; i++) {
-	                //id=null时,是插入数据,此时的i正好是行号
 	                if (idsdata[i] == null||idsdata[i]<0) {
-	                    //获得id=null时的所有数据封装进data
 	                    var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(i);
-	                    //var collength = hot.countCols();
 	                    if (rowdata != null) {
 	                    	var data="{";
                         	for(var j=0;j<acquisitionGroupConfigHandsontableHelper.columns.length;j++){
@@ -1521,7 +1406,6 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        acquisitionGroupConfigHandsontableHelper.saveData = function () {
 	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
 	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
-	        		//插入的数据的获取
 		        	acquisitionGroupConfigHandsontableHelper.insertExpressCount();
 		        	var orgId=IframeViewSelection[0].data.orgId;
 		            if (JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData) != "{}" && acquisitionGroupConfigHandsontableHelper.validresult) {
@@ -1535,7 +1419,6 @@ var AcquisitionGroupConfigHandsontableHelper = {
 		                            acquisitionGroupConfigHandsontableHelper.clearContainer();
 		                        } else {
 		                        	Ext.MessageBox.alert("信息","数据保存失败");
-
 		                        }
 		            		},
 		            		failure:function(){
@@ -1559,9 +1442,7 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        	}
 	        }
 	        
-	      //删除的优先级最高
 	        acquisitionGroupConfigHandsontableHelper.delExpressCount=function(ids) {
-	            //传入的ids.length不可能为0
 	            $.each(ids, function (index, id) {
 	                if (id != null) {
 	                	acquisitionGroupConfigHandsontableHelper.delidslist.push(id);
@@ -1570,41 +1451,31 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	            acquisitionGroupConfigHandsontableHelper.AllData.delidslist = acquisitionGroupConfigHandsontableHelper.delidslist;
 	        }
 
-	        //updatelist数据更新
 	        acquisitionGroupConfigHandsontableHelper.screening=function() {
 	            if (acquisitionGroupConfigHandsontableHelper.updatelist.length != 0 && acquisitionGroupConfigHandsontableHelper.delidslist.lentgh != 0) {
 	                for (var i = 0; i < acquisitionGroupConfigHandsontableHelper.delidslist.length; i++) {
 	                    for (var j = 0; j < acquisitionGroupConfigHandsontableHelper.updatelist.length; j++) {
 	                        if (acquisitionGroupConfigHandsontableHelper.updatelist[j].id == acquisitionGroupConfigHandsontableHelper.delidslist[i]) {
-	                            //更新updatelist
 	                        	acquisitionGroupConfigHandsontableHelper.updatelist.splice(j, 1);
 	                        }
 	                    }
 	                }
-	                //把updatelist封装进AllData
 	                acquisitionGroupConfigHandsontableHelper.AllData.updatelist = acquisitionGroupConfigHandsontableHelper.updatelist;
 	            }
 	        }
-	        
-	      //更新数据
 	        acquisitionGroupConfigHandsontableHelper.updateExpressCount=function(data) {
 	            if (JSON.stringify(data) != "{}") {
 	                var flag = true;
-	                //判断记录是否存在,更新数据     
 	                $.each(acquisitionGroupConfigHandsontableHelper.updatelist, function (index, node) {
 	                    if (node.id == data.id) {
-	                        //此记录已经有了
 	                        flag = false;
-	                        //用新得到的记录替换原来的,不用新增
 	                        acquisitionGroupConfigHandsontableHelper.updatelist[index] = data;
 	                    }
 	                });
 	                flag && acquisitionGroupConfigHandsontableHelper.updatelist.push(data);
-	                //封装
 	                acquisitionGroupConfigHandsontableHelper.AllData.updatelist = acquisitionGroupConfigHandsontableHelper.updatelist;
 	            }
 	        }
-	        
 	        acquisitionGroupConfigHandsontableHelper.clearContainer = function () {
 	        	acquisitionGroupConfigHandsontableHelper.AllData = {};
 	        	acquisitionGroupConfigHandsontableHelper.updatelist = [];
@@ -1612,7 +1483,6 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        	acquisitionGroupConfigHandsontableHelper.insertlist = [];
 	        	acquisitionGroupConfigHandsontableHelper.editWellNameList=[];
 	        }
-	        
 	        return acquisitionGroupConfigHandsontableHelper;
 	    }
 };

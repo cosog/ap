@@ -341,19 +341,19 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
 //    var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
     Ext.Ajax.request({
         method: 'POST',
-        url: context + '/acquisitionUnitManagerController/showAcquisitionGroupOwnItems?groupId=' + selectedAcquisitionGroupCode,
+        url: context + '/acquisitionUnitManagerController/showAcquisitionGroupOwnItems?groupCode=' + selectedAcquisitionGroupCode,
         success: function (response, opts) {
             // 处理后
             var items = Ext.decode(response.responseText);
-            if (driverConfigItemsHandsontableHelper != null) {
-                var driverConfigItemsData = driverConfigItemsHandsontableHelper.hot.getData();
+            if (protocolConfigItemsHandsontableHelper != null) {
+                var driverConfigItemsData = protocolConfigItemsHandsontableHelper.hot.getData();
                 for (var j = 0; j < driverConfigItemsData.length; j++) {
-                    driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
+                    protocolConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
                 }
                 for (var i = 0; i < items.length; i++) {
                     for (var j = 0; j < driverConfigItemsData.length; j++) {
                         if (items[i].itemName === driverConfigItemsData[j][2]) {
-                            driverConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, true);
+                            protocolConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, true);
                             break;
                         }
                     }
@@ -411,8 +411,8 @@ var grantAcquisitionItemsPermission2 = function () {
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-    var groupId = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
-    if (!isNotVal(groupId)) {
+    var groupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
+    if (!isNotVal(groupCode)) {
         Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
         return false
     }
@@ -440,7 +440,7 @@ var grantAcquisitionItemsPermission2 = function () {
             // 提交参数
             params: {
                 paramsId: addparamsId,
-                groupId: groupId,
+                groupCode: groupCode,
                 matrixCodes: matrixCodes_
             },
             success: function (response) {
@@ -466,18 +466,18 @@ var grantAcquisitionItemsPermission2 = function () {
 }
 
 var grantAcquisitionItemsPermission = function () {
-    if (driverConfigItemsHandsontableHelper == null) {
+    if (protocolConfigItemsHandsontableHelper == null) {
         return false;
     }
-    var driverConfigItemsData = driverConfigItemsHandsontableHelper.hot.getData();
+    var driverConfigItemsData = protocolConfigItemsHandsontableHelper.hot.getData();
     var addUrl = context + '/acquisitionUnitManagerController/grantAcquisitionItemsPermission'
     // 添加条件
     var addjson = [];
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-    var groupId = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
-    if (!isNotVal(groupId)) {
+    var groupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
+    if (!isNotVal(groupCode)) {
         Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
         return false
     }
@@ -503,7 +503,7 @@ var grantAcquisitionItemsPermission = function () {
                 method: "POST",
                 params: {
                     params: addparams,
-                    groupId: groupId,
+                    groupCode: groupCode,
                     matrixCodes: matrixCodes_
                 },
                 success: function (response) {

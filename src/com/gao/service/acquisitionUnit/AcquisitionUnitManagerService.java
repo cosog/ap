@@ -39,11 +39,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 private CommonDataService service;
 
 	public String getAcquisitionUnitList(Map map,Page pager) {
-		String unitName = (String) map.get("unitName");
+		String protocolName = (String) map.get("protocolName");
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark from tbl_acq_unit_conf t where 1=1");
-		if (StringManagerUtils.isNotNull(unitName)) {
-			sqlBuffer.append(" and t.unit_name like '%" + unitName + "%' ");
+		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark "
+				+ " from tbl_acq_unit_conf t where 1=1");
+		if (StringManagerUtils.isNotNull(protocolName)) {
+			sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
 		}
 		sqlBuffer.append(" order by t.id  asc");
 		String json = "";
@@ -59,9 +60,13 @@ private CommonDataService service;
 	
 	public String doAcquisitionGroupShow(Map map,Page pager) {
 		String groupName = (String) map.get("groupName");
+		String unitName = (String) map.get("unitName");
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("select t.id as id,t.group_code as groupCode,t.group_name as groupName,"
-				+ "t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark from tbl_acq_group_conf t where 1=1");
+				+ " t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark "
+				+ " from tbl_acq_group_conf t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3"
+				+ " where t.id=t3.groupid and t3.unitid=t2.id");
+		sqlBuffer.append(" and t2.unit_name='"+unitName+"'");
 		if (StringManagerUtils.isNotNull(groupName)) {
 			sqlBuffer.append(" and t.group_name like '%" + groupName + "%' ");
 		}
@@ -433,11 +438,11 @@ private CommonDataService service;
 		return getBaseDao().find(queryString);
 	}
 	
-	public List<T> showAcquisitionGroupOwnItems(Class<AcquisitionGroupItem> class1, String groupId) {
-		if(!StringManagerUtils.isNotNull(groupId)){
-			groupId="0";
-		}
-		String queryString = "select u FROM AcquisitionGroupItem u where   u.groupId=" + groupId + " order by u.id asc";
+	public List<T> showAcquisitionGroupOwnItems(Class<AcquisitionGroupItem> class1, String groupCode) {
+//		if(!StringManagerUtils.isNotNull(groupId)){
+//			groupId="0";
+//		}
+		String queryString = "select u FROM AcquisitionGroupItem u,AcquisitionGroup u2 where u.groupId= u2.id and  u2.groupCode='" + groupCode + "' order by u.id asc";
 		return getBaseDao().find(queryString);
 	}
 	
@@ -450,7 +455,7 @@ private CommonDataService service;
 	}
 	
 	public void deleteCurrentAcquisitionGroupOwnItems(final String groupId) throws Exception {
-		final String hql = "DELETE AcquisitionGroupItem u where u.groupId = " + groupId + "";
+		final String hql = "DELETE AcquisitionGroupItem u where u.groupId ="+groupId+"";
 		getBaseDao().bulkObjectDelete(hql);
 	}
 	
@@ -466,6 +471,8 @@ private CommonDataService service;
 	public void grantAcquisitionGroupsPermission(AcquisitionUnitGroup r) throws Exception {
 		getBaseDao().saveOrUpdateObject(r);
 	}
+	
+	
 	
 	public static String getDataItemsType(int type){
 		String dataType="";

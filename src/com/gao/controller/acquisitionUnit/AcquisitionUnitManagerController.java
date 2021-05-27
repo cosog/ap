@@ -34,6 +34,7 @@ import com.gao.model.drive.ModbusDriverSaveData;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.model.drive.RTUDriveConfig.Item;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
+import com.gao.service.base.CommonDataService;
 import com.gao.service.right.RoleManagerService;
 import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.AcquisitionItemRecursion;
@@ -69,6 +70,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 	private AcquisitionUnitManagerService<AcquisitionItem> acquisitionItemManagerService;
 	@Autowired
 	private AcquisitionUnitManagerService<AcquisitionGroupItem> acquisitionUnitItemManagerService;
+	@Autowired
+	private CommonDataService service;
 	private List<AcquisitionUnit> list;
 	private AcquisitionUnit acquisitionUnit;
 	private AcquisitionItem acquisitionItem;
@@ -97,14 +100,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 	@RequestMapping("/doAcquisitionUnitShow")
 	public String doAcquisitionUnitShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		unitName = ParamUtils.getParameter(request, "unitName");
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
 		int offset = (intPage - 1) * pageSize;
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
-		map.put("unitName", unitName);
+		map.put("protocolName", protocolName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager);
@@ -234,6 +237,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doAcquisitionGroupShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		groupName = ParamUtils.getParameter(request, "groupName");
+		String unitName=ParamUtils.getParameter(request, "unitName");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
 		int offset = (intPage - 1) * pageSize;
@@ -241,6 +245,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("groupName", groupName);
+		map.put("unitName", unitName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json = this.acquisitionUnitManagerService.doAcquisitionGroupShow(map,pager);
@@ -292,9 +297,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 */
 	@RequestMapping("/showAcquisitionGroupOwnItems")
 	public String showAcquisitionGroupOwnItems() throws IOException {
-		String groupId = ParamUtils.getParameter(request, "groupId");
+		String groupCode = ParamUtils.getParameter(request, "groupCode");
 		Gson g = new Gson();
-		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionGroupOwnItems(AcquisitionGroupItem.class, groupId);
+		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionGroupOwnItems(AcquisitionGroupItem.class, groupCode);
 		String json = "";
 		json = g.toJson(list);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -339,26 +344,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String grantAcquisitionItemsPermission2() throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
-		AcquisitionGroupItem r = null;
+		AcquisitionGroupItem acquisitionGroupItem = null;
 		try {
 			String paramsIds = ParamUtils.getParameter(request, "paramsId");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			String groupId = ParamUtils.getParameter(request, "groupId");
+			String groupCode = ParamUtils.getParameter(request, "groupCode");
 			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
-			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
-			if (groupIds.length > 0 && groupId != null) {
+			String ids[] = StringManagerUtils.split(paramsIds, ",");
+			String groupId="";
+			String groupIdSql="select t.id from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
+			List list = this.service.findCallSql(groupIdSql);
+			if(list.size()>0){
+				groupId=list.get(0).toString();
+			}
+			if (ids.length > 0 && StringManagerUtils.isNotNull(groupId)) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
 				if (matrixCodes != "" || matrixCodes != null) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");
-						r = new AcquisitionGroupItem();
-						r.setGroupId(Integer.parseInt(groupId));
-						log.debug("unitId==" + groupId);
-						r.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
-						r.setMatrix(module_[1]);
-						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(r);
-
+						acquisitionGroupItem = new AcquisitionGroupItem();
+						acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
+						log.debug("groupCode==" + groupCode);
+						acquisitionGroupItem.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
+						acquisitionGroupItem.setMatrix(module_[1]);
+						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
@@ -379,27 +389,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String grantAcquisitionItemsPermission() throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
-		AcquisitionGroupItem r = null;
+		AcquisitionGroupItem acquisitionGroupItem = null;
 		try {
 			String params = ParamUtils.getParameter(request, "params");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			String groupId = ParamUtils.getParameter(request, "groupId");
-			log.debug("grantAcquisitionItemsPermission paramsIds==" + params);
-			String itemNames[] = StringManagerUtils.split(params, ",");
-			if (itemNames.length > 0 && groupId != null) {
+			String groupCode = ParamUtils.getParameter(request, "groupCode");
+			log.debug("grantAcquisitionItemsPermission params==" + params);
+			String paramsArr[] = StringManagerUtils.split(params, ",");
+			String groupId="";
+			String groupIdSql="select t.id from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
+			List list = this.service.findCallSql(groupIdSql);
+			if(list.size()>0){
+				groupId=list.get(0).toString();
+			}
+			if (paramsArr.length > 0 && StringManagerUtils.isNotNull(groupId)) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
 				if (matrixCodes != "" || matrixCodes != null) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");
-						r = new AcquisitionGroupItem();
-						r.setGroupId(Integer.parseInt(groupId));
-						log.debug("unitId==" + groupId);
-						r.setItemName(module_[0]);
-//						r.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
-						r.setMatrix(module_[1]);
-						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(r);
-
+						acquisitionGroupItem = new AcquisitionGroupItem();
+						acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
+						log.debug("groupCode==" + groupCode);
+						acquisitionGroupItem.setItemName(module_[0]);
+						acquisitionGroupItem.setMatrix(module_[1]);
+						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 					EquipmentDriverServerTask.initAcquisitionUnit();
 				}

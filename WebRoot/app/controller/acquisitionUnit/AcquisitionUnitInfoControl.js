@@ -317,28 +317,7 @@ function checkSelectedAcquisitionGroupsCombox(node, root) {
     return false;
 };
 
-showAcquisitionGroupOwnItems2 = function (store_) {
-    var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
-    Ext.Ajax.request({
-        method: 'POST',
-        url: context + '/acquisitionUnitManagerController/showAcquisitionGroupOwnItems?groupId=' + selectedAcquisitionGroupCode,
-        success: function (response, opts) {
-            // 处理后
-            var items = Ext.decode(response.responseText);
-            if (null != items && items != "") {
-                var getNode = store_.root.childNodes;
-                checkSelectedAcquisitionItemsCombox(getNode, items);
-            }
-        },
-        failure: function (response, opts) {
-            Ext.Msg.alert("信息提示", "后台获取数据失败！");
-        }
-    });
-    return false;
-}
-
 showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
-//    var selectedAcquisitionGroupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/acquisitionUnitManagerController/showAcquisitionGroupOwnItems?groupCode=' + selectedAcquisitionGroupCode,
@@ -347,8 +326,10 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
             var items = Ext.decode(response.responseText);
             if (protocolConfigItemsHandsontableHelper != null) {
                 var driverConfigItemsData = protocolConfigItemsHandsontableHelper.hot.getData();
-                for (var j = 0; j < driverConfigItemsData.length; j++) {
-                    protocolConfigItemsHandsontableHelper.hot.setDataAtCell(j, 0, false);
+                for (var i = 0; i < driverConfigItemsData.length; i++) {
+                	if(driverConfigItemsData[i][0]){
+                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(i, 0, false);
+                	}
                 }
                 for (var i = 0; i < items.length; i++) {
                     for (var j = 0; j < driverConfigItemsData.length; j++) {
@@ -359,10 +340,6 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
                     }
                 }
             }
-            //            if (null != items && items != "") {
-            //                var getNode = store_.root.childNodes;
-            //                checkSelectedAcquisitionItemsCombox(getNode, items);
-            //            }
         },
         failure: function (response, opts) {
             Ext.Msg.alert("信息提示", "后台获取数据失败！");
@@ -371,33 +348,43 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
     return false;
 }
 
-showAcquisitionUnitOwnGroups = function (store_) {
-    var selectedAcquisitionUnitId = Ext.getCmp("selectedAcquisitionUnitCode_Id").getValue();
-    var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
-    panel.getSelectionModel().deselectAll(true);
-    if (selectedAcquisitionUnitId !== "") {
-        Ext.Ajax.request({
-            method: 'POST',
-            url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitId=' + selectedAcquisitionUnitId,
-            success: function (response, opts) {
-                // 处理后
-                var groups = Ext.decode(response.responseText);
-                //                var panel = Ext.getCmp("AcquisitionGroupInfoGridPanel_Id");
-                var model = store_.getRange(0, store_.getCount());
-                for (var i = 0; i < groups.length; i++) {
-                    for (var j = 0; j < model.length; j++) {
-                        if (groups[i].groupId == model[j].data.id) {
-                            panel.getSelectionModel().select(j, true);
+showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitCode) {
+	Ext.Ajax.request({
+        method: 'POST',
+        url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitCode=' + selectedAcquisitionUnitCode,
+        success: function (response, opts) {
+        	var items = Ext.decode(response.responseText);
+            if (acquisitionGroupConfigHandsontableHelper != null) {
+                var acquisitionGroupData = acquisitionGroupConfigHandsontableHelper.hot.getData();
+                for (var i = 0; i < acquisitionGroupData.length; i++) {
+                	if(acquisitionGroupData[i][0]){
+                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(i, 0, false);
+                	}
+                }
+                for (var i = 0; i < items.length; i++) {
+                    for (var j =0; j<acquisitionGroupData.length; j++) {
+                        if (items[i].groupCode === acquisitionGroupData[j][3]) {
+                        	acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(j, 0, true);
                             break;
                         }
                     }
                 }
-            },
-            failure: function (response, opts) {
-                Ext.Msg.alert("信息提示", "后台获取数据失败！");
+                
+                acquisitionGroupData = acquisitionGroupConfigHandsontableHelper.hot.getData();
+                for (var i = 0; i < acquisitionGroupData.length; i++) {
+                	if(acquisitionGroupData[i][0]){
+                		var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(i);
+                		Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(rowdata[3]);
+                		showAcquisitionGroupOwnItems(rowdata[3]);
+                		break;
+                	}
+                }
             }
-        });
-    }
+        },
+        failure: function (response, opts) {
+            Ext.Msg.alert("信息提示", "后台获取数据失败！");
+        }
+    });
     return false;
 }
 

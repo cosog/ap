@@ -237,7 +237,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doAcquisitionGroupShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		groupName = ParamUtils.getParameter(request, "groupName");
-		String unitName=ParamUtils.getParameter(request, "unitName");
+		String protocolName=ParamUtils.getParameter(request, "protocolName");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
 		int offset = (intPage - 1) * pageSize;
@@ -245,7 +245,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("groupName", groupName);
-		map.put("unitName", unitName);
+		map.put("protocolName", protocolName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json = this.acquisitionUnitManagerService.doAcquisitionGroupShow(map,pager);
@@ -320,9 +320,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 */
 	@RequestMapping("/showAcquisitionUnitOwnGroups")
 	public String showAcquisitionUnitOwnGroups() throws IOException {
-		String unitId = ParamUtils.getParameter(request, "unitId");
+		String unitCode = ParamUtils.getParameter(request, "unitCode");
 		Gson g = new Gson();
-		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnGroups(AcquisitionUnitGroup.class, unitId);
+		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnGroups(AcquisitionUnitGroup.class, unitCode);
 		String json = "";
 		json = g.toJson(list);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -488,8 +488,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/saveModbusDriverConfigData")
-	public String saveModbusDriverConfigData() throws Exception {
+	@RequestMapping("/SaveModbusProtocolConfigData")
+	public String SaveModbusProtocolConfigData() throws Exception {
 		String json = "";
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();

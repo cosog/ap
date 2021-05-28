@@ -60,13 +60,14 @@ private CommonDataService service;
 	
 	public String doAcquisitionGroupShow(Map map,Page pager) {
 		String groupName = (String) map.get("groupName");
-		String unitName = (String) map.get("unitName");
+		String protocolName = (String) map.get("protocolName");
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("select t.id as id,t.group_code as groupCode,t.group_name as groupName,"
+		StringBuffer jsonBuffer = new StringBuffer();
+		sqlBuffer.append("select t.id as id,t.group_name as groupName,t.group_code as groupCode,"
 				+ " t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark "
-				+ " from tbl_acq_group_conf t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3"
-				+ " where t.id=t3.groupid and t3.unitid=t2.id");
-		sqlBuffer.append(" and t2.unit_name='"+unitName+"'");
+				+ " from tbl_acq_group_conf t"
+				+ " where 1=1");
+		sqlBuffer.append(" and t.protocol='"+protocolName+"'");
 		if (StringManagerUtils.isNotNull(groupName)) {
 			sqlBuffer.append(" and t.group_name like '%" + groupName + "%' ");
 		}
@@ -74,6 +75,7 @@ private CommonDataService service;
 		String json = "";
 //		String columns=service.showTableHeadersColumns("acquisitionUnit");
 		String columns="["
+				+ "{ \"header\":\"\",\"dataIndex\":\"checked\",width:50 ,children:[] },"
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
 				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
@@ -81,13 +83,29 @@ private CommonDataService service;
 				+ "{ \"header\":\"保存周期(min)\",\"dataIndex\":\"saveCycle\" ,children:[] },"
 				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
-		try {
-			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		List<?> list=this.findCallSql(sqlBuffer.toString());
+		jsonBuffer.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			jsonBuffer.append("{\"checked\":false,");
+			jsonBuffer.append("\"id\":\""+obj[0]+"\",");
+			jsonBuffer.append("\"groupName\":\""+obj[1]+"\",");
+			jsonBuffer.append("\"groupCode\":\""+obj[2]+"\",");
+			jsonBuffer.append("\"acqCycle\":\""+obj[3]+"\",");
+			jsonBuffer.append("\"saveCycle\":\""+obj[4]+"\",");
+			jsonBuffer.append("\"remark\":\""+obj[5]+"\"},");
 		}
-		return json;
+		if(jsonBuffer.toString().endsWith(",")){
+			jsonBuffer.deleteCharAt(jsonBuffer.length() - 1);
+		}
+		jsonBuffer.append("]}");
+//		try {
+//			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return jsonBuffer.toString();
 	}
 	
 	public String getDriverConfigData(){
@@ -439,18 +457,13 @@ private CommonDataService service;
 	}
 	
 	public List<T> showAcquisitionGroupOwnItems(Class<AcquisitionGroupItem> class1, String groupCode) {
-//		if(!StringManagerUtils.isNotNull(groupId)){
-//			groupId="0";
-//		}
 		String queryString = "select u FROM AcquisitionGroupItem u,AcquisitionGroup u2 where u.groupId= u2.id and  u2.groupCode='" + groupCode + "' order by u.id asc";
 		return getBaseDao().find(queryString);
 	}
 	
-	public List<T> showAcquisitionUnitOwnGroups(Class<AcquisitionUnitGroup> class1, String unitId) {
-		if(!StringManagerUtils.isNotNull(unitId)){
-			unitId="0";
-		}
-		String queryString = "select u FROM AcquisitionUnitGroup u where   u.unitId=" + unitId + " order by u.id asc";
+	public List<T> showAcquisitionUnitOwnGroups(Class<AcquisitionUnitGroup> class1, String unitCode) {
+		String queryString = "select u FROM AcquisitionGroup u, AcquisitionUnitGroup u2,AcquisitionUnit u3 "
+				+ "where u.id=u2.groupId and u2.unitId= u3.id and    u3.unitCode='" + unitCode + "' order by u.id asc";
 		return getBaseDao().find(queryString);
 	}
 	

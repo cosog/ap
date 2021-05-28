@@ -24,6 +24,7 @@ public class AcquisitionGroup implements java.io.Serializable {
 	private String groupName;
 	private Integer acqCycle;
 	private Integer saveCycle;
+	private String protocol;
 	
 	private String remark;
 
@@ -87,13 +88,22 @@ public class AcquisitionGroup implements java.io.Serializable {
 		this.saveCycle = saveCycle;
 	}
 	
-	@Column(name = "REMARK", nullable = false, length = 10)
+	@Column(name = "REMARK", nullable = true, length = 10)
 	public String getRemark() {
 		return this.remark;
 	}
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+	
+	@Column(name = "protocol", nullable = true, length = 10)
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 
 }

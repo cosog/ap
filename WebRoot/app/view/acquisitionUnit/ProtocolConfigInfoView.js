@@ -24,7 +24,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
         				var tabPanel = Ext.getCmp("ScadaDriverConfigTabPanel_Id");
         				var activeId = tabPanel.getActiveTab().id;
         				if(activeId=="ScadaDriverModbusConfigTabPanel_Id"){
-        					SaveModbusDriverConfigData();
+        					SaveModbusProtocolConfigData();
         				}else if(activeId=="ScadaDriverKafkaConfigTabPanel_Id"){
         					SaveScadaKafkaDriverConfigData();
         				}
@@ -35,9 +35,9 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
-                    id: 'ScadaAcquisitionUnitConfigSelectRow_Id',
+                    id: 'selectedAcquisitionUnitCode_Id',
                     xtype: 'textfield',
-                    value: 0,
+                    value: '',
                     hidden: true
                 },{
                     id: 'selectedAcquisitionGroupCode_Id',
@@ -77,18 +77,18 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             width: '60%',
                             collapsible: true,
                             split: true,
-                            bbar: ['->', {
-                                xtype: 'button',
-                                text: '保存',
-                                iconCls: 'save',
-                                pressed: true,
-                                handler: function () {
-                                	grantAcquisitionItemsPermission();
-                                }
-                    		}, {
-                                xtype: 'tbspacer',
-                                flex: 1
-                    		}],
+//                            bbar: ['->', {
+//                                xtype: 'button',
+//                                text: '保存',
+//                                iconCls: 'save',
+//                                pressed: true,
+//                                handler: function () {
+//                                	grantAcquisitionItemsPermission();
+//                                }
+//                    		}, {
+//                                xtype: 'tbspacer',
+//                                flex: 1
+//                    		}],
                             html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -206,6 +206,7 @@ function CreateDriverConfigInfoTable(isNew){
 			var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(0);
 			CreateDriverConfigItemsInfoTable(row1[6]);
 			CreateAcquisitionUnitConfigInfoTable(true);
+			CreateAcquisitionGroupConfigInfoTable(true);
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -278,6 +279,7 @@ var DriverConfigHandsontableHelper = {
 	                	var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(row);
 	                	CreateDriverConfigItemsInfoTable(row1[6]);
 	                	CreateAcquisitionUnitConfigInfoTable();
+	                	CreateAcquisitionGroupConfigInfoTable();
 	                },
 	                afterDestroy: function() {
 	                    // 移除事件
@@ -542,6 +544,14 @@ var ProtocolConfigItemsHandsontableHelper = {
 							cellProperties.renderer = protocolConfigItemsHandsontableHelper.addBoldBg;
 		                }
 	                    return cellProperties;
+	                },
+	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	var row1=protocolConfigItemsHandsontableHelper.hot.getDataAtRow(row);
+	                	if(row1[0]){
+	                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(row, 0, false);
+	                	}else{
+	                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(row, 0, true);
+	                	}
 	                }
 //	        		,colHeaders: function (col) { 
 //	                    switch (col) { 
@@ -765,53 +775,56 @@ var KafkaProtocolConfigHandsontableHelper = {
 	    }
 	};
 
-function SaveModbusDriverConfigData(){
+function SaveModbusProtocolConfigData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
-		var driverConfigSaveData=[];
-		var driverConfigItemsSaveData=[];
-		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
-		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
-		var configInfo={};
-		configInfo.ProtocolName=protocolConfigData[1];
-		configInfo.ProtocolType=protocolConfigData[2];
-		configInfo.StoreMode=protocolConfigData[3];
-		configInfo.HeartbeatPrefix=protocolConfigData[4];
-		configInfo.HeartbeatSuffix=protocolConfigData[5];
-		configInfo.DataConfig=[];
-		for(var i=0;i<driverConfigItemsData.length;i++){
-			var item={};
-			item.Name=driverConfigItemsData[i][2];
-			item.Address=parseInt(driverConfigItemsData[i][3]);
-			item.Length=parseInt(driverConfigItemsData[i][4]);
-			item.DataType=driverConfigItemsData[i][5];
-			item.Readonly=driverConfigItemsData[i][6];
-			item.Unit=driverConfigItemsData[i][7];
-			item.Zoom=parseFloat(driverConfigItemsData[i][8]);
-			item.Initiative=driverConfigItemsData[i][9];
-			configInfo.DataConfig.push(item);
-		}
+//		var driverConfigSaveData=[];
+//		var driverConfigItemsSaveData=[];
+//		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+//		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
+//		var configInfo={};
+//		configInfo.ProtocolName=protocolConfigData[1];
+//		configInfo.ProtocolType=protocolConfigData[2];
+//		configInfo.StoreMode=protocolConfigData[3];
+//		configInfo.HeartbeatPrefix=protocolConfigData[4];
+//		configInfo.HeartbeatSuffix=protocolConfigData[5];
+//		configInfo.DataConfig=[];
+//		for(var i=0;i<driverConfigItemsData.length;i++){
+//			var item={};
+//			item.Name=driverConfigItemsData[i][2];
+//			item.Address=parseInt(driverConfigItemsData[i][3]);
+//			item.Length=parseInt(driverConfigItemsData[i][4]);
+//			item.DataType=driverConfigItemsData[i][5];
+//			item.Readonly=driverConfigItemsData[i][6];
+//			item.Unit=driverConfigItemsData[i][7];
+//			item.Zoom=parseFloat(driverConfigItemsData[i][8]);
+//			item.Initiative=driverConfigItemsData[i][9];
+//			configInfo.DataConfig.push(item);
+//		}
+//		
+//		Ext.Ajax.request({
+//    		method:'POST',
+//    		url:context + '/acquisitionUnitManagerController/saveModbusProtocolConfigData',
+//    		success:function(response) {
+//    			var data=Ext.JSON.decode(response.responseText);
+//    			if (data.success) {
+//                	Ext.MessageBox.alert("信息","保存成功");
+//                	CreateDriverConfigInfoTable();
+//                } else {
+//                	Ext.MessageBox.alert("信息","数据保存失败");
+//
+//                }
+//    		},
+//    		failure:function(){
+//    			Ext.MessageBox.alert("信息","请求失败");
+//    		},
+//    		params: {
+//    			data:JSON.stringify(configInfo)
+//            }
+//    	}); 
 		
-		Ext.Ajax.request({
-    		method:'POST',
-    		url:context + '/acquisitionUnitManagerController/saveModbusDriverConfigData',
-    		success:function(response) {
-    			var data=Ext.JSON.decode(response.responseText);
-    			if (data.success) {
-                	Ext.MessageBox.alert("信息","保存成功");
-                	CreateDriverConfigInfoTable();
-                } else {
-                	Ext.MessageBox.alert("信息","数据保存失败");
-
-                }
-    		},
-    		failure:function(){
-    			Ext.MessageBox.alert("信息","请求失败");
-    		},
-    		params: {
-    			data:JSON.stringify(configInfo)
-            }
-    	}); 
+		acquisitionUnitConfigHandsontableHelper.saveData();
+		acquisitionGroupConfigHandsontableHelper.saveData();
 	}
 };
 
@@ -926,7 +939,6 @@ function CreateAcquisitionUnitConfigInfoTable(isNew){
 				}else{
 					acquisitionUnitConfigHandsontableHelper.hot.loadData(result.totalRoot);
 				}
-				CreateAcquisitionGroupConfigInfoTable(true);
 			},
 			failure:function(){
 				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -966,7 +978,7 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	        	acquisitionUnitConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0],
+	                    columns: [0,2],
 	                    indicators: true
 	                },
 	                columns:acquisitionUnitConfigHandsontableHelper.columns,
@@ -975,8 +987,6 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	                rowHeaders: true,//显示行头
 	                colHeaders:acquisitionUnitConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
-//	                colWidths:[50,90,75, 80,100,70, 80,100,70, 140,120, 80,80,80,80,80, 80,80,80,80,80,  80,80,80,120, 80, 75],
-//	                colWidths:50,
 	                contextMenu: {
 	                	items: {
 	                	    "row_above": {
@@ -1032,12 +1042,15 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                },
 	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	Ext.getCmp("ScadaAcquisitionUnitConfigSelectRow_Id").setValue(row);
-	                	CreateAcquisitionGroupConfigInfoTable();
+	                	var row1=acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(row);
+	                	Ext.getCmp("selectedAcquisitionUnitCode_Id").setValue(row1[2]);
+	                	showAcquisitionUnitOwnGroups(row1[2]);
 	                },
 	                afterDestroy: function() {
 	                },
 	                beforeRemoveRow: function (index, amount) {
+	                	if(!confirm("确定要删除选中行吗？"))
+	                		return false;
 	                    var ids = [];
 	                    if (amount != 0) {
 	                        for (var i = index; i < amount + index; i++) {
@@ -1075,9 +1088,10 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	        	});
 	        }
 	        acquisitionUnitConfigHandsontableHelper.insertExpressCount=function() {
-	            var idsdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtCol(0);
-	            for (var i = 0; i < idsdata.length; i++) {
-	                if (idsdata[i] == null||idsdata[i]<0) {
+//	            var idsdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtCol(0);
+	            var acquisitionUnitData = acquisitionUnitConfigHandsontableHelper.hot.getData();
+	            for (var i = 0; i < acquisitionUnitData.length; i++) {
+	                if ((acquisitionUnitData[i][0] == null||acquisitionUnitData[i][0]<0) && acquisitionUnitData[i][1]!=null) {
 	                    var rowdata = acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(i);
 	                    if (rowdata != null) {
 	                    	var data="{";
@@ -1097,43 +1111,39 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	            }
 	        }
 	        acquisitionUnitConfigHandsontableHelper.saveData = function () {
-	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
-		        	acquisitionUnitConfigHandsontableHelper.insertExpressCount();
-		        	var orgId=IframeViewSelection[0].data.orgId;
-		            if (JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData) != "{}" && acquisitionUnitConfigHandsontableHelper.validresult) {
-		            	Ext.Ajax.request({
-		            		method:'POST',
-		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-		            		success:function(response) {
-		            			rdata=Ext.JSON.decode(response.responseText);
-		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert("信息","保存成功");
-		                            acquisitionUnitConfigHandsontableHelper.clearContainer();
-		                            CreateAcquisitionUnitConfigInfoTable();
-		                        } else {
-		                        	Ext.MessageBox.alert("信息","数据保存失败");
-		                        }
-		            		},
-		            		failure:function(){
-		            			Ext.MessageBox.alert("信息","请求失败");
-		                        acquisitionUnitConfigHandsontableHelper.clearContainer();
-		            		},
-		            		params: {
-		                    	data: JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData),
-		                    	orgId:orgId
-		                    }
-		            	}); 
-		            } else {
-		                if (!acquisitionUnitConfigHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert("信息","数据类型错误");
-		                } else {
-		                	Ext.MessageBox.alert("信息","无数据变化");
-		                }
-		            }
-	        	}else{
-	        		Ext.MessageBox.alert("信息","请先选择组织节点");
-	        	}
+	        	acquisitionUnitConfigHandsontableHelper.insertExpressCount();
+	        	alert(JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData));
+	        	
+	        	
+//	            if (JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData) != "{}" && acquisitionUnitConfigHandsontableHelper.validresult) {
+//	            	Ext.Ajax.request({
+//	            		method:'POST',
+//	            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
+//	            		success:function(response) {
+//	            			rdata=Ext.JSON.decode(response.responseText);
+//	            			if (rdata.success) {
+//	                        	Ext.MessageBox.alert("信息","保存成功");
+//	                            acquisitionUnitConfigHandsontableHelper.clearContainer();
+//	                            CreateAcquisitionUnitConfigInfoTable();
+//	                        } else {
+//	                        	Ext.MessageBox.alert("信息","数据保存失败");
+//	                        }
+//	            		},
+//	            		failure:function(){
+//	            			Ext.MessageBox.alert("信息","请求失败");
+//	                        acquisitionUnitConfigHandsontableHelper.clearContainer();
+//	            		},
+//	            		params: {
+//	                    	data: JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData)
+//	                    }
+//	            	}); 
+//	            } else {
+//	                if (!acquisitionUnitConfigHandsontableHelper.validresult) {
+//	                	Ext.MessageBox.alert("信息","数据类型错误");
+//	                } else {
+//	                	Ext.MessageBox.alert("信息","无数据变化");
+//	                }
+//	            }
 	        }
 	        acquisitionUnitConfigHandsontableHelper.delExpressCount=function(ids) {
 	            $.each(ids, function (index, id) {
@@ -1187,10 +1197,10 @@ function CreateAcquisitionGroupConfigInfoTable(isNew){
         acquisitionGroupConfigHandsontableHelper.hot.destroy();
         acquisitionGroupConfigHandsontableHelper=null;
 	}
-	var AcquisitionUnitConfigSelectRow= Ext.getCmp("ScadaAcquisitionUnitConfigSelectRow_Id").getValue();
-	if(AcquisitionUnitConfigSelectRow!=''){
-		var AcquisitionUnitData=acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(AcquisitionUnitConfigSelectRow);
-		var unitName=AcquisitionUnitData[1];
+	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
+	if(ScadaDriverModbusConfigSelectRow!=''){
+		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+		var protocolName=protocolConfigData[1];
 		Ext.Ajax.request({
 			method:'POST',
 			url: context + '/acquisitionUnitManagerController/doAcquisitionGroupShow',
@@ -1199,18 +1209,17 @@ function CreateAcquisitionGroupConfigInfoTable(isNew){
 				if(result.totalRoot.length===0){
 					result.totalRoot=[{},{},{},{},{},{},{},{},{},{}];
 				}
-				for(var i=0;i<result.totalRoot;i++){
-	        		totalRoot[i].checked=false;
-	        	}
 				if(acquisitionGroupConfigHandsontableHelper==null){
 					acquisitionGroupConfigHandsontableHelper = AcquisitionGroupConfigHandsontableHelper.createNew("AcquisitionGroupConfigTableInfoDiv_id");
-//					var colHeaders="['',";
-//			        var columns="[{data:'checked',type:'checkbox'},";
 					var colHeaders="[";
 			        var columns="[";
 		            for(var i=0;i<result.columns.length;i++){
 		            	colHeaders+="'"+result.columns[i].header+"'";
-		            	columns+="{data:'"+result.columns[i].dataIndex+"'}";
+		            	if(result.columns[i].dataIndex.toUpperCase()==="checked".toUpperCase()){
+		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'checkbox'}";
+		            	}else{
+		            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
+		            	}
 		            	if(i<result.columns.length-1){
 		            		colHeaders+=",";
 		                	columns+=",";
@@ -1229,7 +1238,7 @@ function CreateAcquisitionGroupConfigInfoTable(isNew){
 				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 			},
 			params: {
-				unitName:unitName
+				protocolName:protocolName
 	        }
 		});
 	}
@@ -1262,14 +1271,14 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        	acquisitionGroupConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0],
+	                    columns: [1,3],
 	                    indicators: true
 	                },
-	        		colWidths: [25,50,100,80,80,80,100],
+	        		colWidths: [5,50,50,50,50,50,100],
 	                columns:acquisitionGroupConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true,//显示行头
+	                rowHeaders: false,//显示行头
 	                colHeaders:acquisitionGroupConfigHandsontableHelper.colHeaders,//显示列头
 	                columnSorting: true,//允许排序
 	                contextMenu: {
@@ -1304,16 +1313,12 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                	    "paste": {
 	                	      name: '粘贴',
 	                	      disabled: function() {
-//	                	        return self.clipboardCache.length === 0;
 	                	      },
 	                	      callback: function() {
-//	                	        var plugin = this.getPlugin('copyPaste');
-//	                	        this.listen();
-//	                	        plugin.paste(self.clipboardCache);
 	                	      }
 	                	    }
 	                	}
-	                },//右键菜单展示
+	                },
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
@@ -1332,9 +1337,21 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(row1[2]);
-	                	showAcquisitionGroupOwnItems(row1[2]);
-//	                	alert(row1[1]);
+	                	
+	                	if(row1[0]){
+	                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(row, 0, false);
+	                	}else{
+	                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(row, 0, true);
+	                	}
+	                	
+	                	var acquisitionGroupData = acquisitionGroupConfigHandsontableHelper.hot.getData();
+	                	for(var i=0;i<acquisitionGroupData.length;i++){
+	                		if(acquisitionGroupData[i][0]){
+	                			Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(acquisitionGroupData[i][3]);
+	    	                	showAcquisitionGroupOwnItems(acquisitionGroupData[i][3]);
+	    	                	break;
+	                    	}
+	                	}
 	                },
 	                afterDestroy: function() {
 	                },
@@ -1381,9 +1398,10 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        }
 	      //插入的数据的获取
 	        acquisitionGroupConfigHandsontableHelper.insertExpressCount=function() {
-	            var idsdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
-	            for (var i = 0; i < idsdata.length; i++) {
-	                if (idsdata[i] == null||idsdata[i]<0) {
+//	            var idsdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
+	            var acquisitionGroupData = acquisitionGroupConfigHandsontableHelper.hot.getData();
+	            for (var i = 0; i < acquisitionGroupData.length; i++) {
+	                if ((acquisitionGroupData[i][1] == null||acquisitionGroupData[i][1]<1) && acquisitionGroupData[i][2]!=null) {
 	                    var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(i);
 	                    if (rowdata != null) {
 	                    	var data="{";
@@ -1404,42 +1422,36 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        }
 	        //保存数据
 	        acquisitionGroupConfigHandsontableHelper.saveData = function () {
-	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
-		        	acquisitionGroupConfigHandsontableHelper.insertExpressCount();
-		        	var orgId=IframeViewSelection[0].data.orgId;
-		            if (JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData) != "{}" && acquisitionGroupConfigHandsontableHelper.validresult) {
-		            	Ext.Ajax.request({
-		            		method:'POST',
-		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-		            		success:function(response) {
-		            			rdata=Ext.JSON.decode(response.responseText);
-		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert("信息","保存成功");
-		                            acquisitionGroupConfigHandsontableHelper.clearContainer();
-		                        } else {
-		                        	Ext.MessageBox.alert("信息","数据保存失败");
-		                        }
-		            		},
-		            		failure:function(){
-		            			Ext.MessageBox.alert("信息","请求失败");
-		                        acquisitionGroupConfigHandsontableHelper.clearContainer();
-		            		},
-		            		params: {
-		                    	data: JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData),
-		                    	orgId:orgId
-		                    }
-		            	}); 
-		            } else {
-		                if (!acquisitionGroupConfigHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert("信息","数据类型错误");
-		                } else {
-		                	Ext.MessageBox.alert("信息","无数据变化");
-		                }
-		            }
-	        	}else{
-	        		Ext.MessageBox.alert("信息","请先选择组织节点");
-	        	}
+	        	acquisitionGroupConfigHandsontableHelper.insertExpressCount();
+	        	alert(JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData));
+//	            if (JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData) != "{}" && acquisitionGroupConfigHandsontableHelper.validresult) {
+//	            	Ext.Ajax.request({
+//	            		method:'POST',
+//	            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
+//	            		success:function(response) {
+//	            			rdata=Ext.JSON.decode(response.responseText);
+//	            			if (rdata.success) {
+//	                        	Ext.MessageBox.alert("信息","保存成功");
+//	                            acquisitionGroupConfigHandsontableHelper.clearContainer();
+//	                        } else {
+//	                        	Ext.MessageBox.alert("信息","数据保存失败");
+//	                        }
+//	            		},
+//	            		failure:function(){
+//	            			Ext.MessageBox.alert("信息","请求失败");
+//	                        acquisitionGroupConfigHandsontableHelper.clearContainer();
+//	            		},
+//	            		params: {
+//	                    	data: JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData)
+//	                    }
+//	            	}); 
+//	            } else {
+//	                if (!acquisitionGroupConfigHandsontableHelper.validresult) {
+//	                	Ext.MessageBox.alert("信息","数据类型错误");
+//	                } else {
+//	                	Ext.MessageBox.alert("信息","无数据变化");
+//	                }
+//	            }
 	        }
 	        
 	        acquisitionGroupConfigHandsontableHelper.delExpressCount=function(ids) {

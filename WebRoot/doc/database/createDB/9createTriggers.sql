@@ -494,9 +494,9 @@ BEGIN
 end;
 /
 
-create or replace trigger trg_b_acq_group_conf_i   before  insert on TBL_ACQ_GROUP_CONF FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_acq_group_conf_i   before  insert on TBL_ACQ_GROUP_CONF FOR EACH ROW
 BEGIN
-  SELECT SEQ_ACQUISITIONGROUP.nextval INTO :new.id FROM dual;
+  SELECT SEQ_ACQUISITIONGROUP.nextval,'group' || SEQ_ACQUISITIONGROUP.nextval INTO :new.id, :new.group_code FROM dual;
 end;
 /
 
@@ -512,9 +512,9 @@ BEGIN
 end;
 /
 
-create or replace trigger trg_b_acq_unit_conf_i   before  insert on TBL_ACQ_UNIT_CONF FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_b_acq_unit_conf_i   before  insert on TBL_ACQ_UNIT_CONF FOR EACH ROW
 BEGIN
-  SELECT SEQ_ACQUISITIONUNIT.nextval INTO :new.id FROM dual;
+  SELECT SEQ_ACQUISITIONUNIT.nextval,'unit' || SEQ_ACQUISITIONUNIT.nextval INTO :new.id, :new.unit_code FROM dual;
 end;
 /
 

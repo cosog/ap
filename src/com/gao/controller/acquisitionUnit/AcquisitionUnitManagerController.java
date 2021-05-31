@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,10 +30,13 @@ import com.gao.model.AcquisitionGroupItem;
 import com.gao.model.Module;
 import com.gao.model.Role;
 import com.gao.model.RoleModule;
+import com.gao.model.User;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusDriverSaveData;
 import com.gao.model.drive.RTUDriveConfig;
 import com.gao.model.drive.RTUDriveConfig.Item;
+import com.gao.model.gridmodel.AcquisitionGroupHandsontableChangeData;
+import com.gao.model.gridmodel.AcquisitionUnitHandsontableChangeData;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.right.RoleManagerService;
@@ -320,9 +324,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 */
 	@RequestMapping("/showAcquisitionUnitOwnGroups")
 	public String showAcquisitionUnitOwnGroups() throws IOException {
-		String unitCode = ParamUtils.getParameter(request, "unitCode");
+		String unitId = ParamUtils.getParameter(request, "unitId");
 		Gson g = new Gson();
-		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnGroups(AcquisitionUnitGroup.class, unitCode);
+		List<AcquisitionGroupItem> list = acquisitionUnitItemManagerService.showAcquisitionUnitOwnGroups(AcquisitionUnitGroup.class, unitId);
 		String json = "";
 		json = g.toJson(list);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -551,7 +555,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}else{
 					driveConfig.setStoreMode(1);
 				}
-				
+				driveConfig.setSignInPrefix(modbusDriverSaveData.getSignInPrefix());
+				driveConfig.setSignInSuffix(modbusDriverSaveData.getSignInSuffix());
 				driveConfig.setHeartbeatPrefix(modbusDriverSaveData.getHeartbeatPrefix());
 				driveConfig.setHeartbeatSuffix(modbusDriverSaveData.getHeartbeatSuffix());
 				
@@ -704,6 +709,120 @@ public class AcquisitionUnitManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@SuppressWarnings("static-access")
+	@RequestMapping("/saveAcquisitionUnitHandsontableData")
+	public String saveAcquisitionUnitHandsontableData() throws Exception {
+		HttpSession session=request.getSession();
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type = new TypeToken<AcquisitionUnitHandsontableChangeData>() {}.getType();
+		AcquisitionUnitHandsontableChangeData acquisitionUnitHandsontableChangeData=gson.fromJson(data, type);
+//		this.acquisitionUnitItemManagerService.saveAcquisitionUnitHandsontableData(acquisitionUnitHandsontableChangeData);
+		if(acquisitionUnitHandsontableChangeData!=null){
+			if(acquisitionUnitHandsontableChangeData.getDelidslist()!=null){
+				for(int i=0;i<acquisitionUnitHandsontableChangeData.getDelidslist().size();i++){
+					this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(acquisitionUnitHandsontableChangeData.getDelidslist().get(i));
+				}
+			}
+			if(acquisitionUnitHandsontableChangeData.getUpdatelist()!=null){
+				for(int i=0;i<acquisitionUnitHandsontableChangeData.getUpdatelist().size();i++){
+					AcquisitionUnit acquisitionUnit=new AcquisitionUnit();
+					acquisitionUnit.setId(StringManagerUtils.stringToInteger(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getId()));
+					acquisitionUnit.setUnitCode(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitCode());
+					acquisitionUnit.setUnitName(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getUnitName());
+					acquisitionUnit.setRemark(acquisitionUnitHandsontableChangeData.getUpdatelist().get(i).getRemark());
+					acquisitionUnit.setProtocol(protocol);
+					this.acquisitionUnitManagerService.doAcquisitionUnitEdit(acquisitionUnit);
+				}
+			}
+			
+			if(acquisitionUnitHandsontableChangeData.getInsertlist()!=null){
+				for(int i=0;i<acquisitionUnitHandsontableChangeData.getInsertlist().size();i++){
+					AcquisitionUnit acquisitionUnit=new AcquisitionUnit();
+					acquisitionUnit.setId(StringManagerUtils.stringToInteger(acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getId()));
+					acquisitionUnit.setUnitCode(acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getUnitCode());
+					acquisitionUnit.setUnitName(acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getUnitName());
+					acquisitionUnit.setRemark(acquisitionUnitHandsontableChangeData.getInsertlist().get(i).getRemark());
+					acquisitionUnit.setProtocol(protocol);
+					this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
+				}
+			}
+			
+		}
+		String json ="{success:true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+//		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
+//		beeTechDriverServerTast.updateWellConfif(wellHandsontableChangedData);
+		return null;
+	}
+	
+	@SuppressWarnings("static-access")
+	@RequestMapping("/saveAcquisitionGroupHandsontableData")
+	public String saveAcquisitionGroupHandsontableData() throws Exception {
+		HttpSession session=request.getSession();
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		String unitId = ParamUtils.getParameter(request, "unitId");
+		Gson gson = new Gson();
+		java.lang.reflect.Type type = new TypeToken<AcquisitionGroupHandsontableChangeData>() {}.getType();
+		AcquisitionGroupHandsontableChangeData acquisitionGroupHandsontableChangeData=gson.fromJson(data, type);
+		if(acquisitionGroupHandsontableChangeData!=null){
+			if(acquisitionGroupHandsontableChangeData.getDelidslist()!=null){
+				for(int i=0;i<acquisitionGroupHandsontableChangeData.getDelidslist().size();i++){
+					this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(acquisitionGroupHandsontableChangeData.getDelidslist().get(i));
+				}
+			}
+			if(acquisitionGroupHandsontableChangeData.getUpdatelist()!=null){
+				for(int i=0;i<acquisitionGroupHandsontableChangeData.getUpdatelist().size();i++){
+					AcquisitionGroup acquisitionGroup=new AcquisitionGroup();
+					acquisitionGroup.setId(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getId()));
+					acquisitionGroup.setGroupCode(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupCode());
+					acquisitionGroup.setGroupName(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
+					acquisitionGroup.setAcqCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getAcqCycle()));
+					acquisitionGroup.setSaveCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getSaveCycle()));
+					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getRemark());
+					acquisitionGroup.setProtocol(protocol);
+					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
+				}
+			}
+			
+			if(acquisitionGroupHandsontableChangeData.getInsertlist()!=null){
+				for(int i=0;i<acquisitionGroupHandsontableChangeData.getInsertlist().size();i++){
+					AcquisitionGroup acquisitionGroup=new AcquisitionGroup();
+					acquisitionGroup.setId(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getId()));
+					acquisitionGroup.setGroupCode(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupCode());
+					acquisitionGroup.setGroupName(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupName());
+					acquisitionGroup.setAcqCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getAcqCycle()));
+					acquisitionGroup.setSaveCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getSaveCycle()));
+					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getRemark());
+					acquisitionGroup.setProtocol(protocol);
+					this.acquisitionUnitManagerService.doAcquisitionGroupAdd(acquisitionGroup);
+				}
+			}
+			
+		}
+		String json ="{success:true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		log.warn("jh json is ==" + json);
+		pw.flush();
+		pw.close();
+//		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
+//		beeTechDriverServerTast.updateWellConfif(wellHandsontableChangedData);
+		return null;
+	}
+	
+	
 	
 	@RequestMapping("/getKafkaDriverConfigData")
 	public String getKafkaDriverConfigData() throws Exception {

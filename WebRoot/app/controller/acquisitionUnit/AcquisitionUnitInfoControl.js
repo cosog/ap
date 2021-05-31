@@ -348,10 +348,10 @@ showAcquisitionGroupOwnItems = function (selectedAcquisitionGroupCode) {
     return false;
 }
 
-showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitCode) {
+showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitId) {
 	Ext.Ajax.request({
         method: 'POST',
-        url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitCode=' + selectedAcquisitionUnitCode,
+        url: context + '/acquisitionUnitManagerController/showAcquisitionUnitOwnGroups?unitId=' + selectedAcquisitionUnitId,
         success: function (response, opts) {
         	var items = Ext.decode(response.responseText);
             if (acquisitionGroupConfigHandsontableHelper != null) {

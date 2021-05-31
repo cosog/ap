@@ -3,6 +3,8 @@
     "ProtocolCode": "SunMoonStandardDrive",
     "ProtocolType":0,
     "StoreMode":0,
+    "SignInPrefix":"AA01",
+    "SignInSuffix":"0D",
     "HeartbeatPrefix":"AA01",
     "HeartbeatSuffix":"0D",
     "Sort":3,

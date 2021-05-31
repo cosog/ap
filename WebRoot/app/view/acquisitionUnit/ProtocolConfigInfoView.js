@@ -35,7 +35,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     value: 0,
                     hidden: true
                 },{
-                    id: 'selectedAcquisitionUnitCode_Id',
+                    id: 'selectedAcquisitionUnitId_Id',
                     xtype: 'textfield',
                     value: '',
                     hidden: true
@@ -183,6 +183,8 @@ function CreateDriverConfigInfoTable(isNew){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="StoreMode".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['大端', '小端']}";
+	            	}else if(result.columns[i].dataIndex.toUpperCase()==="SignInPrefix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="SignInSuffix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="HeartbeatPrefix".toUpperCase()){
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,protocolConfigHandsontableHelper);}}";
 	            	}else{
 	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 	            	}
@@ -204,7 +206,7 @@ function CreateDriverConfigInfoTable(isNew){
 			}
 			
 			var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(0);
-			CreateDriverConfigItemsInfoTable(row1[6]);
+			CreateDriverConfigItemsInfoTable(row1[8]);
 			CreateAcquisitionUnitConfigInfoTable(true);
 			CreateAcquisitionGroupConfigInfoTable(true);
 		},
@@ -230,7 +232,6 @@ var DriverConfigHandsontableHelper = {
 	        protocolConfigHandsontableHelper.updatelist=[];
 	        protocolConfigHandsontableHelper.delidslist=[];
 	        protocolConfigHandsontableHelper.insertlist=[];
-	        protocolConfigHandsontableHelper.editWellNameList=[];
 	        
 	        protocolConfigHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -248,7 +249,7 @@ var DriverConfigHandsontableHelper = {
 	        	protocolConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0,6],
+	                    columns: [0,8],
 	                    indicators: true
 	                },
 	                columns:protocolConfigHandsontableHelper.columns,
@@ -277,7 +278,7 @@ var DriverConfigHandsontableHelper = {
 	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").setValue(row);
 	                	var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	CreateDriverConfigItemsInfoTable(row1[6]);
+	                	CreateDriverConfigItemsInfoTable(row1[8]);
 	                	CreateAcquisitionUnitConfigInfoTable();
 	                	CreateAcquisitionGroupConfigInfoTable();
 	                },
@@ -371,7 +372,7 @@ var DriverConfigHandsontableHelper = {
 		            if (JSON.stringify(protocolConfigHandsontableHelper.AllData) != "{}" && protocolConfigHandsontableHelper.validresult) {
 		            	Ext.Ajax.request({
 		            		method:'POST',
-		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
+		            		url:context + '/acquisitionUnitManagerController/saveWellHandsontableData',
 		            		success:function(response) {
 		            			rdata=Ext.JSON.decode(response.responseText);
 		            			if (rdata.success) {
@@ -778,53 +779,57 @@ var KafkaProtocolConfigHandsontableHelper = {
 function SaveModbusProtocolConfigData(){
 	var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
 	if(ScadaDriverModbusConfigSelectRow!=''){
-//		var driverConfigSaveData=[];
-//		var driverConfigItemsSaveData=[];
-//		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
-//		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
-//		var configInfo={};
-//		configInfo.ProtocolName=protocolConfigData[1];
-//		configInfo.ProtocolType=protocolConfigData[2];
-//		configInfo.StoreMode=protocolConfigData[3];
-//		configInfo.HeartbeatPrefix=protocolConfigData[4];
-//		configInfo.HeartbeatSuffix=protocolConfigData[5];
-//		configInfo.DataConfig=[];
-//		for(var i=0;i<driverConfigItemsData.length;i++){
-//			var item={};
-//			item.Name=driverConfigItemsData[i][2];
-//			item.Address=parseInt(driverConfigItemsData[i][3]);
-//			item.Length=parseInt(driverConfigItemsData[i][4]);
-//			item.DataType=driverConfigItemsData[i][5];
-//			item.Readonly=driverConfigItemsData[i][6];
-//			item.Unit=driverConfigItemsData[i][7];
-//			item.Zoom=parseFloat(driverConfigItemsData[i][8]);
-//			item.Initiative=driverConfigItemsData[i][9];
-//			configInfo.DataConfig.push(item);
-//		}
-//		
-//		Ext.Ajax.request({
-//    		method:'POST',
-//    		url:context + '/acquisitionUnitManagerController/saveModbusProtocolConfigData',
-//    		success:function(response) {
-//    			var data=Ext.JSON.decode(response.responseText);
-//    			if (data.success) {
-//                	Ext.MessageBox.alert("信息","保存成功");
-//                	CreateDriverConfigInfoTable();
-//                } else {
-//                	Ext.MessageBox.alert("信息","数据保存失败");
-//
-//                }
-//    		},
-//    		failure:function(){
-//    			Ext.MessageBox.alert("信息","请求失败");
-//    		},
-//    		params: {
-//    			data:JSON.stringify(configInfo)
-//            }
-//    	}); 
+		var driverConfigSaveData=[];
+		var driverConfigItemsSaveData=[];
+		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
+		var configInfo={};
+		configInfo.ProtocolName=protocolConfigData[1];
+		configInfo.ProtocolType=protocolConfigData[2];
+		configInfo.StoreMode=protocolConfigData[3];
+		configInfo.SignInPrefix=protocolConfigData[4];
+		configInfo.SignInSuffix=protocolConfigData[5];
+		configInfo.HeartbeatPrefix=protocolConfigData[6];
+		configInfo.HeartbeatSuffix=protocolConfigData[7];
+		configInfo.DataConfig=[];
+		for(var i=0;i<driverConfigItemsData.length;i++){
+			var item={};
+			item.Name=driverConfigItemsData[i][2];
+			item.Address=parseInt(driverConfigItemsData[i][3]);
+			item.Length=parseInt(driverConfigItemsData[i][4]);
+			item.DataType=driverConfigItemsData[i][5];
+			item.Readonly=driverConfigItemsData[i][6];
+			item.Unit=driverConfigItemsData[i][7];
+			item.Zoom=parseFloat(driverConfigItemsData[i][8]);
+			item.Initiative=driverConfigItemsData[i][9];
+			configInfo.DataConfig.push(item);
+		}
 		
-		acquisitionUnitConfigHandsontableHelper.saveData();
-		acquisitionGroupConfigHandsontableHelper.saveData();
+		Ext.Ajax.request({
+    		method:'POST',
+    		url:context + '/acquisitionUnitManagerController/saveModbusProtocolConfigData',
+    		success:function(response) {
+    			var data=Ext.JSON.decode(response.responseText);
+    			if (data.success) {
+                	Ext.MessageBox.alert("信息","保存成功");
+                	CreateDriverConfigInfoTable();
+                } else {
+                	Ext.MessageBox.alert("信息","数据保存失败");
+
+                }
+    		},
+    		failure:function(){
+    			Ext.MessageBox.alert("信息","请求失败");
+    		},
+    		params: {
+    			data:JSON.stringify(configInfo)
+            }
+    	}); 
+		
+		acquisitionUnitConfigHandsontableHelper.saveData(configInfo.ProtocolName);
+		acquisitionGroupConfigHandsontableHelper.saveData(configInfo.ProtocolName);
+		
+		grantAcquisitionItemsPermission();
 	}
 };
 
@@ -914,6 +919,7 @@ function CreateAcquisitionUnitConfigInfoTable(isNew){
 				if(result.totalRoot.length===0){
 					result.totalRoot=[{},{},{},{},{},{},{},{},{},{}];
 				}
+				
 				if(acquisitionUnitConfigHandsontableHelper==null){
 					acquisitionUnitConfigHandsontableHelper = AcquisitionUnitConfigHandsontableHelper.createNew("AcquisitionUnitConfigTableInfoDiv_id");
 					var colHeaders="[";
@@ -923,6 +929,8 @@ function CreateAcquisitionUnitConfigInfoTable(isNew){
 		            	colHeaders+="'"+result.columns[i].header+"'";
 		            	if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
 		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
+		            	}else if(result.columns[i].dataIndex.toUpperCase()==="unitName".toUpperCase()){
+		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,acquisitionUnitConfigHandsontableHelper);}}";
 		            	}else{
 		            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 		            	}
@@ -1043,8 +1051,8 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	                },
 	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=acquisitionUnitConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	Ext.getCmp("selectedAcquisitionUnitCode_Id").setValue(row1[2]);
-	                	showAcquisitionUnitOwnGroups(row1[2]);
+	                	Ext.getCmp("selectedAcquisitionUnitId_Id").setValue(row1[0]);
+	                	showAcquisitionUnitOwnGroups(row1[0]);
 	                },
 	                afterDestroy: function() {
 	                },
@@ -1110,40 +1118,39 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	            	acquisitionUnitConfigHandsontableHelper.AllData.insertlist = acquisitionUnitConfigHandsontableHelper.insertlist;
 	            }
 	        }
-	        acquisitionUnitConfigHandsontableHelper.saveData = function () {
+	        acquisitionUnitConfigHandsontableHelper.saveData = function (protocol) {
 	        	acquisitionUnitConfigHandsontableHelper.insertExpressCount();
-	        	alert(JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData));
-	        	
-	        	
-//	            if (JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData) != "{}" && acquisitionUnitConfigHandsontableHelper.validresult) {
-//	            	Ext.Ajax.request({
-//	            		method:'POST',
-//	            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-//	            		success:function(response) {
-//	            			rdata=Ext.JSON.decode(response.responseText);
-//	            			if (rdata.success) {
-//	                        	Ext.MessageBox.alert("信息","保存成功");
-//	                            acquisitionUnitConfigHandsontableHelper.clearContainer();
+//	        	alert(JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData));
+	            if (JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData) != "{}" && acquisitionUnitConfigHandsontableHelper.validresult) {
+	            	Ext.Ajax.request({
+	            		method:'POST',
+	            		url:context + '/acquisitionUnitManagerController/saveAcquisitionUnitHandsontableData',
+	            		success:function(response) {
+	            			rdata=Ext.JSON.decode(response.responseText);
+	            			if (rdata.success) {
+	                        	Ext.MessageBox.alert("信息","保存成功");
+	                            acquisitionUnitConfigHandsontableHelper.clearContainer();
 //	                            CreateAcquisitionUnitConfigInfoTable();
-//	                        } else {
-//	                        	Ext.MessageBox.alert("信息","数据保存失败");
-//	                        }
-//	            		},
-//	            		failure:function(){
-//	            			Ext.MessageBox.alert("信息","请求失败");
-//	                        acquisitionUnitConfigHandsontableHelper.clearContainer();
-//	            		},
-//	            		params: {
-//	                    	data: JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData)
-//	                    }
-//	            	}); 
-//	            } else {
-//	                if (!acquisitionUnitConfigHandsontableHelper.validresult) {
-//	                	Ext.MessageBox.alert("信息","数据类型错误");
-//	                } else {
-//	                	Ext.MessageBox.alert("信息","无数据变化");
-//	                }
-//	            }
+	                        } else {
+	                        	Ext.MessageBox.alert("信息","数据保存失败");
+	                        }
+	            		},
+	            		failure:function(){
+	            			Ext.MessageBox.alert("信息","请求失败");
+	                        acquisitionUnitConfigHandsontableHelper.clearContainer();
+	            		},
+	            		params: {
+	                    	data: JSON.stringify(acquisitionUnitConfigHandsontableHelper.AllData),
+	                    	protocol: protocol
+	                    }
+	            	}); 
+	            } else {
+	                if (!acquisitionUnitConfigHandsontableHelper.validresult) {
+	                	Ext.MessageBox.alert("信息","数据类型错误");
+	                } else {
+	                	Ext.MessageBox.alert("信息","采集单元无数据变化");
+	                }
+	            }
 	        }
 	        acquisitionUnitConfigHandsontableHelper.delExpressCount=function(ids) {
 	            $.each(ids, function (index, id) {
@@ -1184,7 +1191,6 @@ var AcquisitionUnitConfigHandsontableHelper = {
 	        	acquisitionUnitConfigHandsontableHelper.updatelist = [];
 	        	acquisitionUnitConfigHandsontableHelper.delidslist = [];
 	        	acquisitionUnitConfigHandsontableHelper.insertlist = [];
-	        	acquisitionUnitConfigHandsontableHelper.editWellNameList=[];
 	        }
 	        
 	        return acquisitionUnitConfigHandsontableHelper;
@@ -1209,6 +1215,7 @@ function CreateAcquisitionGroupConfigInfoTable(isNew){
 				if(result.totalRoot.length===0){
 					result.totalRoot=[{},{},{},{},{},{},{},{},{},{}];
 				}
+				
 				if(acquisitionGroupConfigHandsontableHelper==null){
 					acquisitionGroupConfigHandsontableHelper = AcquisitionGroupConfigHandsontableHelper.createNew("AcquisitionGroupConfigTableInfoDiv_id");
 					var colHeaders="[";
@@ -1217,6 +1224,10 @@ function CreateAcquisitionGroupConfigInfoTable(isNew){
 		            	colHeaders+="'"+result.columns[i].header+"'";
 		            	if(result.columns[i].dataIndex.toUpperCase()==="checked".toUpperCase()){
 		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'checkbox'}";
+		            	}else if(result.columns[i].dataIndex.toUpperCase()==="groupName".toUpperCase()){
+		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,acquisitionGroupConfigHandsontableHelper);}}";
+		            	}else if(result.columns[i].dataIndex.toUpperCase()==="acqCycle".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="saveCycle".toUpperCase()){
+		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,acquisitionGroupConfigHandsontableHelper);}}";
 		            	}else{
 		            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 		            	}
@@ -1257,7 +1268,6 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        acquisitionGroupConfigHandsontableHelper.updatelist=[];
 	        acquisitionGroupConfigHandsontableHelper.delidslist=[];
 	        acquisitionGroupConfigHandsontableHelper.insertlist=[];
-	        acquisitionGroupConfigHandsontableHelper.editWellNameList=[];
 	        
 	        
 	        acquisitionGroupConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -1338,20 +1348,23 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	var row1=acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(row);
 	                	
-	                	if(row1[0]){
-	                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(row, 0, false);
-	                	}else{
-	                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(row, 0, true);
+	                	if(row==row2 && column==column2 && isNotVal(row1[3]) && row1[1]!=null){
+	                		if(row1[0]){
+		                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(row, 0, false);
+		                	}else{
+		                		acquisitionGroupConfigHandsontableHelper.hot.setDataAtCell(row, 0, true);
+		                	}
+	                		
+	                		var acquisitionGroupData = acquisitionGroupConfigHandsontableHelper.hot.getData();
+		                	for(var i=0;i<acquisitionGroupData.length;i++){
+		                		if(acquisitionGroupData[i][0]){
+		                			Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(acquisitionGroupData[i][3]);
+		    	                	showAcquisitionGroupOwnItems(acquisitionGroupData[i][3]);
+		    	                	break;
+		                    	}
+		                	}
 	                	}
 	                	
-	                	var acquisitionGroupData = acquisitionGroupConfigHandsontableHelper.hot.getData();
-	                	for(var i=0;i<acquisitionGroupData.length;i++){
-	                		if(acquisitionGroupData[i][0]){
-	                			Ext.getCmp("selectedAcquisitionGroupCode_Id").setValue(acquisitionGroupData[i][3]);
-	    	                	showAcquisitionGroupOwnItems(acquisitionGroupData[i][3]);
-	    	                	break;
-	                    	}
-	                	}
 	                },
 	                afterDestroy: function() {
 	                },
@@ -1360,7 +1373,7 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                    if (amount != 0) {
 	                        for (var i = index; i < amount + index; i++) {
 	                            var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(i);
-	                            ids.push(rowdata[0]);
+	                            ids.push(rowdata[1]);
 	                        }
 	                        acquisitionGroupConfigHandsontableHelper.delExpressCount(ids);
 	                        acquisitionGroupConfigHandsontableHelper.screening();
@@ -1369,28 +1382,26 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                afterChange: function (changes, source) {
 	                    if (changes != null) {
 	                    	for(var i=0;i<changes.length;i++){
-	                    		var params = [];
-	                    		var index = changes[i][0]; 
-		                        var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(index);
-		                        params.push(rowdata[0]);
-		                        params.push(changes[i][1]);
-		                        params.push(changes[i][2]);
-		                        params.push(changes[i][3]);
-		                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
-		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
-		                        	acquisitionGroupConfigHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
-		                        }
-		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
-		                        	var data="{";
-		                        	for(var j=0;j<acquisitionGroupConfigHandsontableHelper.columns.length;j++){
-		                        		data+=acquisitionGroupConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-		                        		if(j<acquisitionGroupConfigHandsontableHelper.columns.length-1){
-		                        			data+=","
-		                        		}
-		                        	}
-		                        	data+="}"
-		                            acquisitionGroupConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
-		                        }
+	                    		if(changes[i][1]!="checked"){
+	                    			var params = [];
+		                    		var index = changes[i][0]; 
+			                        var rowdata = acquisitionGroupConfigHandsontableHelper.hot.getDataAtRow(index);
+			                        params.push(rowdata[1]);
+			                        params.push(changes[i][1]);
+			                        params.push(changes[i][2]);
+			                        params.push(changes[i][3]);
+			                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
+			                        	var data="{";
+			                        	for(var j=0;j<acquisitionGroupConfigHandsontableHelper.columns.length;j++){
+			                        		data+=acquisitionGroupConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
+			                        		if(j<acquisitionGroupConfigHandsontableHelper.columns.length-1){
+			                        			data+=","
+			                        		}
+			                        	}
+			                        	data+="}"
+			                            acquisitionGroupConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
+			                        }
+	                    		}
 	                    	}
 	                    }
 	                }
@@ -1421,37 +1432,40 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	            }
 	        }
 	        //保存数据
-	        acquisitionGroupConfigHandsontableHelper.saveData = function () {
+	        acquisitionGroupConfigHandsontableHelper.saveData = function (protocol) {
 	        	acquisitionGroupConfigHandsontableHelper.insertExpressCount();
-	        	alert(JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData));
-//	            if (JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData) != "{}" && acquisitionGroupConfigHandsontableHelper.validresult) {
-//	            	Ext.Ajax.request({
-//	            		method:'POST',
-//	            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-//	            		success:function(response) {
-//	            			rdata=Ext.JSON.decode(response.responseText);
-//	            			if (rdata.success) {
-//	                        	Ext.MessageBox.alert("信息","保存成功");
-//	                            acquisitionGroupConfigHandsontableHelper.clearContainer();
-//	                        } else {
-//	                        	Ext.MessageBox.alert("信息","数据保存失败");
-//	                        }
-//	            		},
-//	            		failure:function(){
-//	            			Ext.MessageBox.alert("信息","请求失败");
-//	                        acquisitionGroupConfigHandsontableHelper.clearContainer();
-//	            		},
-//	            		params: {
-//	                    	data: JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData)
-//	                    }
-//	            	}); 
-//	            } else {
-//	                if (!acquisitionGroupConfigHandsontableHelper.validresult) {
-//	                	Ext.MessageBox.alert("信息","数据类型错误");
-//	                } else {
-//	                	Ext.MessageBox.alert("信息","无数据变化");
-//	                }
-//	            }
+	        	var unitId=Ext.getCmp("selectedAcquisitionUnitId_Id").getValue();
+//	        	alert(JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData));
+	            if (JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData) != "{}" && acquisitionGroupConfigHandsontableHelper.validresult) {
+	            	Ext.Ajax.request({
+	            		method:'POST',
+	            		url:context + '/acquisitionUnitManagerController/saveAcquisitionGroupHandsontableData',
+	            		success:function(response) {
+	            			rdata=Ext.JSON.decode(response.responseText);
+	            			if (rdata.success) {
+	                        	Ext.MessageBox.alert("信息","保存成功");
+	                            acquisitionGroupConfigHandsontableHelper.clearContainer();
+	                        } else {
+	                        	Ext.MessageBox.alert("信息","数据保存失败");
+	                        }
+	            		},
+	            		failure:function(){
+	            			Ext.MessageBox.alert("信息","请求失败");
+	                        acquisitionGroupConfigHandsontableHelper.clearContainer();
+	            		},
+	            		params: {
+	                    	data: JSON.stringify(acquisitionGroupConfigHandsontableHelper.AllData),
+	                    	protocol: protocol,
+	                    	unitId: unitId
+	                    }
+	            	}); 
+	            } else {
+	                if (!acquisitionGroupConfigHandsontableHelper.validresult) {
+	                	Ext.MessageBox.alert("信息","数据类型错误");
+	                } else {
+	                	Ext.MessageBox.alert("信息","无数据变化");
+	                }
+	            }
 	        }
 	        
 	        acquisitionGroupConfigHandsontableHelper.delExpressCount=function(ids) {
@@ -1493,7 +1507,6 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	        	acquisitionGroupConfigHandsontableHelper.updatelist = [];
 	        	acquisitionGroupConfigHandsontableHelper.delidslist = [];
 	        	acquisitionGroupConfigHandsontableHelper.insertlist = [];
-	        	acquisitionGroupConfigHandsontableHelper.editWellNameList=[];
 	        }
 	        return acquisitionGroupConfigHandsontableHelper;
 	    }

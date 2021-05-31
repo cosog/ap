@@ -130,8 +130,10 @@ private CommonDataService service;
 				+ "{ \"header\":\"协议名称\",\"dataIndex\":\"ProtocolName\",width:120 ,children:[] },"
 				+ "{ \"header\":\"协议类型\",\"dataIndex\":\"ProtocolType\",width:50 ,children:[] },"
 				+ "{ \"header\":\"储存模式\",\"dataIndex\":\"StoreMode\",width:50 ,children:[] },"
-				+ "{ \"header\":\"注册包/心跳包前缀\",\"dataIndex\":\"HeartbeatPrefix\",width:50 ,children:[] },"
-				+ "{ \"header\":\"注册包/心跳包后缀\",\"dataIndex\":\"HeartbeatSuffix\",width:50 ,children:[] }"
+				+ "{ \"header\":\"注册包前缀\",\"dataIndex\":\"SignInPrefix\",width:50 ,children:[] },"
+				+ "{ \"header\":\"注册包后缀\",\"dataIndex\":\"SignInSuffix\",width:50 ,children:[] },"
+				+ "{ \"header\":\"心跳包前缀\",\"dataIndex\":\"HeartbeatPrefix\",width:50 ,children:[] },"
+				+ "{ \"header\":\"心跳包后缀\",\"dataIndex\":\"HeartbeatSuffix\",width:50 ,children:[] }"
 				+ "]";
 		
 		String diagramTableColumns = "["
@@ -338,6 +340,8 @@ private CommonDataService service;
 						+ "\"ProtocolName\":\""+driveConfig.getProtocolName()+"\","
 						+ "\"ProtocolType\":\""+(driveConfig.getProtocolType()==0?"modbus-tcp":"modbus-rtu")+"\","
 						+ "\"StoreMode\":\""+(driveConfig.getStoreMode()==0?"大端":"小端")+"\","
+						+ "\"SignInPrefix\":\""+driveConfig.getSignInPrefix()+"\","
+						+ "\"SignInSuffix\":\""+driveConfig.getSignInSuffix()+"\","
 						+ "\"HeartbeatPrefix\":\""+driveConfig.getHeartbeatPrefix()+"\","
 						+ "\"HeartbeatSuffix\":\""+driveConfig.getHeartbeatSuffix()+"\","
 						+ "\"dataConfig\":"+driverConfigData.toString()+""
@@ -461,9 +465,9 @@ private CommonDataService service;
 		return getBaseDao().find(queryString);
 	}
 	
-	public List<T> showAcquisitionUnitOwnGroups(Class<AcquisitionUnitGroup> class1, String unitCode) {
-		String queryString = "select u FROM AcquisitionGroup u, AcquisitionUnitGroup u2,AcquisitionUnit u3 "
-				+ "where u.id=u2.groupId and u2.unitId= u3.id and    u3.unitCode='" + unitCode + "' order by u.id asc";
+	public List<T> showAcquisitionUnitOwnGroups(Class<AcquisitionUnitGroup> class1, String unitId) {
+		String queryString = "select u FROM AcquisitionGroup u, AcquisitionUnitGroup u2 "
+				+ "where u.id=u2.groupId and u2.unitId=" + unitId + " order by u.id asc";
 		return getBaseDao().find(queryString);
 	}
 	

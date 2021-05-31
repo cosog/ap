@@ -9,6 +9,10 @@ public class RTUDriveConfig {
     
     private int StoreMode;
     
+    private String SignInPrefix;
+    
+    private String SignInSuffix;
+    
     private String HeartbeatPrefix;
     
     private String HeartbeatSuffix;
@@ -604,5 +608,17 @@ public class RTUDriveConfig {
 	}
 	public void setHeartbeatSuffix(String heartbeatSuffix) {
 		HeartbeatSuffix = heartbeatSuffix;
+	}
+	public String getSignInPrefix() {
+		return SignInPrefix;
+	}
+	public void setSignInPrefix(String signInPrefix) {
+		SignInPrefix = signInPrefix;
+	}
+	public String getSignInSuffix() {
+		return SignInSuffix;
+	}
+	public void setSignInSuffix(String signInSuffix) {
+		SignInSuffix = signInSuffix;
 	}
 }

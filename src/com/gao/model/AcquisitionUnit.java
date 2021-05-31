@@ -22,6 +22,7 @@ public class AcquisitionUnit implements java.io.Serializable {
 	private Integer id;
 	private String unitCode;
 	private String unitName;
+	private String protocol;
 	private String remark;
 
 	// Constructors
@@ -73,6 +74,15 @@ public class AcquisitionUnit implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	@Column(name = "PROTOCOL", nullable = false, length = 10)
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 
 }

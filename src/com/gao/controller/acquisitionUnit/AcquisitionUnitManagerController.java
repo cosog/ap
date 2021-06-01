@@ -33,8 +33,8 @@ import com.gao.model.RoleModule;
 import com.gao.model.User;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusDriverSaveData;
-import com.gao.model.drive.RTUDriveConfig;
-import com.gao.model.drive.RTUDriveConfig.Item;
+import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.A11ProtocolConfig.Item;
 import com.gao.model.gridmodel.AcquisitionGroupHandsontableChangeData;
 import com.gao.model.gridmodel.AcquisitionUnitHandsontableChangeData;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
@@ -479,8 +479,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getDriverConfigData")
-	public String getDriverConfigData() throws Exception {
+	@RequestMapping("/getProtocolConfigData")
+	public String getProtocolConfigData() throws Exception {
 		String json = "";
 		json = acquisitionUnitItemManagerService.getDriverConfigData();
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -492,7 +492,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/SaveModbusProtocolConfigData")
+	@RequestMapping("/saveModbusProtocolConfigData")
 	public String SaveModbusProtocolConfigData() throws Exception {
 		String json = "";
 		Gson gson = new Gson();
@@ -506,7 +506,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String path="";
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTask.initDriverConfig();
+				EquipmentDriverServerTask.initProtocolConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			switch (modbusDriverSaveData.getProtocolName()){
@@ -537,11 +537,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			
 			if(StringManagerUtils.isNotNull(fileName)&&StringManagerUtils.isNotNull(driverCode)){
-				RTUDriveConfig driveConfig=(RTUDriveConfig)equipmentDriveMap.get(driverCode);
+				A11ProtocolConfig driveConfig=(A11ProtocolConfig)equipmentDriveMap.get(driverCode);
 				path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
 				if(driveConfig==null){
 					String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
-					type = new TypeToken<RTUDriveConfig>() {}.getType();
+					type = new TypeToken<A11ProtocolConfig>() {}.getType();
 					driveConfig=gson.fromJson(driverConfigData, type);
 				}
 				if(modbusDriverSaveData.getProtocolType().equalsIgnoreCase("modbus-tcp")){
@@ -581,7 +581,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}else if("只读".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getReadonly())){
 						readonly=true;
 					}
-					RTUDriveConfig.Item item=new Item();
+					A11ProtocolConfig.Item item=new Item();
 					item.setAddress(modbusDriverSaveData.getDataConfig().get(i).getAddress());
 					item.setLength(modbusDriverSaveData.getDataConfig().get(i).getLength());
 					item.setUnit(modbusDriverSaveData.getDataConfig().get(i).getUnit());
@@ -684,7 +684,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(KafkaConfigSaveData!=null){
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTask.initDriverConfig();
+				EquipmentDriverServerTask.initProtocolConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");

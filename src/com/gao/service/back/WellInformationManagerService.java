@@ -13,7 +13,7 @@ import com.gao.model.gridmodel.WellGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.WellInformation;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.A11ProtocolConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.task.EquipmentDriverServerTask;
@@ -330,7 +330,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer driverDropdownData = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initDriverConfig();
+			EquipmentDriverServerTask.initProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -372,13 +372,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
 			}else{
-				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
 			}
 		}
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
-			if( ( entry.getValue() instanceof RTUDriveConfig ) ){
-				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+			if( ( entry.getValue() instanceof A11ProtocolConfig ) ){
+				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 				driverDropdownData.append("'"+driveConfig.getProtocolName()+"',");
 			}else if( ( entry.getValue() instanceof KafkaConfig ) ){
 				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
@@ -402,8 +402,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String protocolName="";
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-				if( ( entry.getValue() instanceof RTUDriveConfig ) ){
-					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				if( ( entry.getValue() instanceof A11ProtocolConfig ) ){
+					A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 					if(driverCode.equals(driveConfig.getProtocolCode())){
 						protocolName=driveConfig.getProtocolName();
 						break;
@@ -446,7 +446,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initDriverConfig();
+			EquipmentDriverServerTask.initProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		String wellInformationName = (String) map.get("wellInformationName");
 		String liftingType = (String) map.get("liftingType");
@@ -478,7 +479,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String protocolName="";
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 				if(driverCode.equals(driveConfig.getProtocolCode())){
 					protocolName=driveConfig.getProtocolName();
 					break;

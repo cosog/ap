@@ -20,7 +20,7 @@ import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.EnergyCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
-import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.A11ProtocolConfig;
 import com.gao.task.EquipmentDriverServerTask;
 import com.gao.task.EquipmentDriverServerTask.AcquisitionData;
 import com.gao.task.EquipmentDriverServerTask.ClientUnit;
@@ -39,11 +39,11 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 	private String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 	private String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 	private String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
-	private RTUDriveConfig driveConfig;
+	private A11ProtocolConfig driveConfig;
 	private InputStream is=null;
 	private OutputStream os=null;
 	private boolean releaseResourceSign=false;
-	public IntelligentPumpingUnitThread(int threadId, ClientUnit clientUnit,RTUDriveConfig driveConfig) {
+	public IntelligentPumpingUnitThread(int threadId, ClientUnit clientUnit,A11ProtocolConfig driveConfig) {
 		super();
 		this.threadId = threadId;
 		this.clientUnit = clientUnit;
@@ -2340,12 +2340,12 @@ public class IntelligentPumpingUnitThread extends ProtocolBasicThread{
 	}
 
 
-	public RTUDriveConfig getDriveConfig() {
+	public A11ProtocolConfig getDriveConfig() {
 		return driveConfig;
 	}
 
 
-	public void setDriveConfig(RTUDriveConfig driveConfig) {
+	public void setDriveConfig(A11ProtocolConfig driveConfig) {
 		this.driveConfig = driveConfig;
 	}
 	public boolean isExit() {

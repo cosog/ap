@@ -1,6 +1,6 @@
 package com.gao.model.drive;
 
-public class RTUDriveConfig {
+public class A11ProtocolConfig {
 	private String ProtocolName;
     
     private String ProtocolCode;

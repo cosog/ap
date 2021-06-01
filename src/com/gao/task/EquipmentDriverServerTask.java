@@ -30,7 +30,8 @@ import com.gao.model.AcquisitionUnitData;
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.calculate.FA2FSResponseData;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.InitProtocol;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.thread.calculate.ProtocolModbusThread;
 import com.gao.thread.calculate.IntelligentPumpingUnitThread;
@@ -80,7 +81,7 @@ public class EquipmentDriverServerTask {
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		initDriverConfig();//初始化驱动配置
+		initProtocolConfig();//初始化驱动配置
 		boolean reg=false;
 		do{
 			reg=initAcquisitionUnit();//初始化采集单元信息
@@ -238,7 +239,7 @@ public class EquipmentDriverServerTask {
 				unit.runStatusControl=0;
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 					if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
-						RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+						A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 						if(driveConfig.getProtocolCode().equalsIgnoreCase(rs.getString(7))){
 							unit.setRtuDriveConfig(driveConfig);
 							unit.setProtocolName(driveConfig.getProtocolName());
@@ -299,7 +300,7 @@ public class EquipmentDriverServerTask {
 				unit.runTimeEfficiencySource=rs.getInt(6);
 				unit.runStatusControl=0;
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+					A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 					if(driveConfig.getProtocolCode().equalsIgnoreCase(rs.getString(7))){
 						unit.setRtuDriveConfig(driveConfig);
 						unit.setProtocolName(driveConfig.getProtocolName());
@@ -443,7 +444,7 @@ public class EquipmentDriverServerTask {
 					units.get(i).protocol=rs.getInt(9);
 					for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 						if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
-							RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+							A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 							if(driveConfig.getProtocolCode().equals(rs.getString(7))){
 								units.get(i).setRtuDriveConfig(driveConfig);
 								units.get(i).setProtocolName(driveConfig.getProtocolName());
@@ -478,7 +479,7 @@ public class EquipmentDriverServerTask {
 				unit.runStatusControl=0;
 				unit.protocol=rs.getInt(9);
 				for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-					RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+					A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 					if(driveConfig.getProtocolCode().equals(rs.getString(7))){
 						unit.setRtuDriveConfig(driveConfig);
 						unit.setProtocolName(driveConfig.getProtocolName());
@@ -534,7 +535,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings("static-access")
-	public static void initDriverConfig(){
+	public static void initProtocolConfig(){
 		System.out.println("驱动初始化开始");
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -545,50 +546,50 @@ public class EquipmentDriverServerTask {
 		//添加安控驱动配置
 		path=stringManagerUtils.getFilePath("EtrolDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig EtrolRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(EtrolRTUDrive.getProtocolCode(), EtrolRTUDrive);
 		
 		//添加必创驱动配置
 		path=stringManagerUtils.getFilePath("BeeTechDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig BeeTechRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(BeeTechRTUDrive.getProtocolCode(), BeeTechRTUDrive);
 		
 		//添加蚌埠日月驱动配置
 		path=stringManagerUtils.getFilePath("SunMoonDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig SunMoonStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SunMoonStandardDriver.getProtocolCode(), SunMoonStandardDriver);
 		
 		//添加中科奥维驱动配置
 		path=stringManagerUtils.getFilePath("ZKAWDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig ZKAWDRTUDrive=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(ZKAWDRTUDrive.getProtocolCode(), ZKAWDRTUDrive);
 		
 		//添加A11驱动配置
 		path=stringManagerUtils.getFilePath("CNPCStandardDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig CNPCStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(CNPCStandardDriver.getProtocolCode(), CNPCStandardDriver);
 		
 		//添加四化驱动配置
 		path=stringManagerUtils.getFilePath("SinoepcStandardDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig SinoepcStandardDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(SinoepcStandardDriver.getProtocolCode(), SinoepcStandardDriver);
 		
 		//添加MQTT驱动配置
 		path=stringManagerUtils.getFilePath("MqttDriverConfig.json","protocolConfig/");
 		DriverConfigData=stringManagerUtils.readFile(path,"utf-8");
-		type = new TypeToken<RTUDriveConfig>() {}.getType();
-		RTUDriveConfig MqttDriver=gson.fromJson(DriverConfigData, type);
+		type = new TypeToken<A11ProtocolConfig>() {}.getType();
+		A11ProtocolConfig MqttDriver=gson.fromJson(DriverConfigData, type);
 		equipmentDriveMap.put(MqttDriver.getProtocolCode(), MqttDriver);
 		
 		//添加Kafka
@@ -599,6 +600,21 @@ public class EquipmentDriverServerTask {
 		equipmentDriveMap.put(kafkaConfig.getProtocolCode(), kafkaConfig);
 		
 		System.out.println("驱动初始化结束");
+	}
+	
+	public static void initProtocolConfig(String protocolCode){
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		StringBuffer configJson = new StringBuffer();
+		InitProtocol initProtocol=null;
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.initProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		if(StringManagerUtils.isNotNull(protocolCode)){
+			A11ProtocolConfig protocolConfig=(A11ProtocolConfig)equipmentDriveMap.get(protocolCode);
+			initProtocol=new InitProtocol();
+			initProtocol.setProtocolName(protocolConfig.getProtocolName());
+		}
 	}
 	
 	@SuppressWarnings("static-access")
@@ -1280,7 +1296,7 @@ public class EquipmentDriverServerTask {
 		public int sendPackageSize=0;
 		public String currentDate=StringManagerUtils.getCurrentTime();//判断是否跨天
 		public AcquisitionData acquisitionData=null;
-		public RTUDriveConfig rtuDriveConfig;
+		public A11ProtocolConfig rtuDriveConfig;
 		public AcquisitionUnitData acquisitionUnitData;
 		
 		public float getLastTotalKWattH() {
@@ -1458,10 +1474,10 @@ public class EquipmentDriverServerTask {
 		public void setAcquisitionData(AcquisitionData acquisitionData) {
 			this.acquisitionData = acquisitionData;
 		}
-		public RTUDriveConfig getRtuDriveConfig() {
+		public A11ProtocolConfig getRtuDriveConfig() {
 			return rtuDriveConfig;
 		}
-		public void setRtuDriveConfig(RTUDriveConfig rtuDriveConfig) {
+		public void setRtuDriveConfig(A11ProtocolConfig rtuDriveConfig) {
 			this.rtuDriveConfig = rtuDriveConfig;
 		}
 		public AcquisitionUnitData getAcquisitionUnitData() {

@@ -102,7 +102,7 @@ import com.gao.model.calculate.TotalCalculateResponseData;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.model.calculate.WellboreTrajectoryResponseData;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.A11ProtocolConfig;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.OracleJdbcUtis;
@@ -1333,7 +1333,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PreparedStatement ps=null;
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initDriverConfig();
+			EquipmentDriverServerTask.initProtocolConfig();
 		}
 		try {
 			cs = conn.prepareCall("{call prd_save_wellinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
@@ -1350,7 +1350,7 @@ public class BaseDao extends HibernateDaoSupport {
 									break;
 								}
 							}else{
-								RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+								A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 								if(driverName.equals(driveConfig.getProtocolName())){
 									driverCode=driveConfig.getProtocolCode();
 									break;
@@ -1389,7 +1389,7 @@ public class BaseDao extends HibernateDaoSupport {
 									break;
 								}
 							}else{
-								RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+								A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 								if(driverName.equals(driveConfig.getProtocolName())){
 									driverCode=driveConfig.getProtocolCode();
 									break;

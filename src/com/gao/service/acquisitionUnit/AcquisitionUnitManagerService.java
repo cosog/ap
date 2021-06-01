@@ -13,7 +13,7 @@ import com.gao.model.AcquisitionItem;
 import com.gao.model.AcquisitionUnitGroup;
 import com.gao.model.AcquisitionGroupItem;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.A11ProtocolConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.task.EquipmentDriverServerTask;
@@ -113,14 +113,14 @@ private CommonDataService service;
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initDriverConfig();
+			EquipmentDriverServerTask.initProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		//驱动排序
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
-				RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
 			}
 			
@@ -130,10 +130,10 @@ private CommonDataService service;
 				+ "{ \"header\":\"协议名称\",\"dataIndex\":\"ProtocolName\",width:120 ,children:[] },"
 				+ "{ \"header\":\"协议类型\",\"dataIndex\":\"ProtocolType\",width:50 ,children:[] },"
 				+ "{ \"header\":\"储存模式\",\"dataIndex\":\"StoreMode\",width:50 ,children:[] },"
-				+ "{ \"header\":\"注册包前缀\",\"dataIndex\":\"SignInPrefix\",width:50 ,children:[] },"
-				+ "{ \"header\":\"注册包后缀\",\"dataIndex\":\"SignInSuffix\",width:50 ,children:[] },"
-				+ "{ \"header\":\"心跳包前缀\",\"dataIndex\":\"HeartbeatPrefix\",width:50 ,children:[] },"
-				+ "{ \"header\":\"心跳包后缀\",\"dataIndex\":\"HeartbeatSuffix\",width:50 ,children:[] }"
+				+ "{ \"header\":\"注册包前缀(HEX)\",\"dataIndex\":\"SignInPrefix\",width:50 ,children:[] },"
+				+ "{ \"header\":\"注册包后缀(HEX)\",\"dataIndex\":\"SignInSuffix\",width:50 ,children:[] },"
+				+ "{ \"header\":\"心跳包前缀(HEX)\",\"dataIndex\":\"HeartbeatPrefix\",width:50 ,children:[] },"
+				+ "{ \"header\":\"心跳包后缀(HEX)\",\"dataIndex\":\"HeartbeatSuffix\",width:50 ,children:[] }"
 				+ "]";
 		
 		String diagramTableColumns = "["
@@ -154,7 +154,7 @@ private CommonDataService service;
 		int i=0;
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 			i++;
-			RTUDriveConfig driveConfig=(RTUDriveConfig)entry.getValue();
+			A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
 			if(!driveConfig.getProtocolCode().toUpperCase().contains("KAFKA") && !driveConfig.getProtocolCode().toUpperCase().contains("MQTT")){
 				StringBuffer driverConfigData = new StringBuffer();
 				driverConfigData.append("[");
@@ -370,7 +370,7 @@ private CommonDataService service;
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initDriverConfig();
+			EquipmentDriverServerTask.initProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");

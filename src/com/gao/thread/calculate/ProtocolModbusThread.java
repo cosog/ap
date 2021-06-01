@@ -20,7 +20,7 @@ import com.gao.model.calculate.CommResponseData;
 import com.gao.model.calculate.ElectricCalculateResponseData;
 import com.gao.model.calculate.EnergyCalculateResponseData;
 import com.gao.model.calculate.TimeEffResponseData;
-import com.gao.model.drive.RTUDriveConfig;
+import com.gao.model.drive.A11ProtocolConfig;
 import com.gao.task.EquipmentDriverServerTask;
 import com.gao.task.EquipmentDriverServerTask.AcquisitionData;
 import com.gao.task.EquipmentDriverServerTask.ClientUnit;

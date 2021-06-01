@@ -67,7 +67,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	CreateDriverConfigInfoTable(true);
+                                	CreateProtocolConfigInfoTable(true);
                                 }
                             }
                         }, {
@@ -156,7 +156,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     }
 });
 
-function CreateDriverConfigInfoTable(isNew){
+function CreateProtocolConfigInfoTable(isNew){
 	if(isNew&&protocolConfigHandsontableHelper!=null){
         protocolConfigHandsontableHelper.clearContainer();
         protocolConfigHandsontableHelper.hot.destroy();
@@ -169,11 +169,11 @@ function CreateDriverConfigInfoTable(isNew){
 	
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/acquisitionUnitManagerController/getDriverConfigData',
+		url:context + '/acquisitionUnitManagerController/getProtocolConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolConfigHandsontableHelper==null){
-				protocolConfigHandsontableHelper = DriverConfigHandsontableHelper.createNew("DriverConfigInfoInfoDiv_id");
+				protocolConfigHandsontableHelper = ProtocolConfigHandsontableHelper.createNew("DriverConfigInfoInfoDiv_id");
 				var colHeaders="[";
 		        var columns="[";
 		       
@@ -219,7 +219,7 @@ function CreateDriverConfigInfoTable(isNew){
 	});
 };
 
-var DriverConfigHandsontableHelper = {
+var ProtocolConfigHandsontableHelper = {
 	    createNew: function (divid) {
 	        var protocolConfigHandsontableHelper = {};
 	        protocolConfigHandsontableHelper.hot = '';
@@ -379,7 +379,7 @@ var DriverConfigHandsontableHelper = {
 		                        	Ext.MessageBox.alert("信息","保存成功");
 		                            //保存以后重置全局容器
 		                            protocolConfigHandsontableHelper.clearContainer();
-		                            CreateDriverConfigInfoTable();
+//		                            CreateProtocolConfigInfoTable();
 		                        } else {
 		                        	Ext.MessageBox.alert("信息","数据保存失败");
 
@@ -812,10 +812,9 @@ function SaveModbusProtocolConfigData(){
     			var data=Ext.JSON.decode(response.responseText);
     			if (data.success) {
                 	Ext.MessageBox.alert("信息","保存成功");
-                	CreateDriverConfigInfoTable();
+//                	CreateProtocolConfigInfoTable();
                 } else {
                 	Ext.MessageBox.alert("信息","数据保存失败");
-
                 }
     		},
     		failure:function(){
@@ -830,6 +829,7 @@ function SaveModbusProtocolConfigData(){
 		acquisitionGroupConfigHandsontableHelper.saveData(configInfo.ProtocolName);
 		
 		grantAcquisitionItemsPermission();
+		grantAcquisitionGroupsPermission();
 	}
 };
 

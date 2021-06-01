@@ -19,6 +19,8 @@ public class ConfigFile {
     private TcpServer tcpServer;
 
     private ViewInformation viewInformation;
+    
+    private DriverConfig driverConfig;
 
     private Others others;
 
@@ -485,6 +487,38 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class DriverConfig{
+		private String server;
+		private String protocol;
+		private String id;
+		private String ctrl;
+		public String getServer() {
+			return server;
+		}
+		public void setServer(String server) {
+			this.server = server;
+		}
+		public String getProtocol() {
+			return protocol;
+		}
+		public void setProtocol(String protocol) {
+			this.protocol = protocol;
+		}
+		public String getId() {
+			return id;
+		}
+		public void setId(String id) {
+			this.id = id;
+		}
+		public String getCtrl() {
+			return ctrl;
+		}
+		public void setCtrl(String ctrl) {
+			this.ctrl = ctrl;
+		}
+		
+	}
+	
 	public static class Others
 	{
 	    private boolean cache;
@@ -590,5 +624,11 @@ public class ConfigFile {
 	}
 	public void setTcpServer(TcpServer tcpServer) {
 		this.tcpServer = tcpServer;
+	}
+	public DriverConfig getDriverConfig() {
+		return driverConfig;
+	}
+	public void setDriverConfig(DriverConfig driverConfig) {
+		this.driverConfig = driverConfig;
 	}
 }

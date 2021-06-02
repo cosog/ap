@@ -102,7 +102,7 @@ import com.gao.model.calculate.TotalCalculateResponseData;
 import com.gao.model.calculate.WellAcquisitionData;
 import com.gao.model.calculate.WellboreTrajectoryResponseData;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.OracleJdbcUtis;
@@ -1333,7 +1333,7 @@ public class BaseDao extends HibernateDaoSupport {
 		PreparedStatement ps=null;
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 		}
 		try {
 			cs = conn.prepareCall("{call prd_save_wellinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
@@ -1343,21 +1343,23 @@ public class BaseDao extends HibernateDaoSupport {
 						String driverName=wellHandsontableChangedData.getUpdatelist().get(i).getProtocolName();
 						String driverCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-							if(entry.getKey().toUpperCase().contains("KAFKA")){
-								KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getProtocolName())){
-									driverCode=driveConfig.getProtocolCode();
+							if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+								KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+								if(driverName.equals(protocolConfig.getProtocolName())){
+									driverCode=protocolConfig.getProtocolName();
 									break;
 								}
-							}else{
-								A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getProtocolName())){
-									driverCode=driveConfig.getProtocolCode();
-									break;
+							}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+								ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
+									if(driverName.equals(protocolConfig.getName())){
+										driverCode=protocolConfig.getCode();
+										break;
+									}
 								}
 							}
 						}
-						
 						cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getOrgName());
 						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getResName());
 						cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
@@ -1382,17 +1384,20 @@ public class BaseDao extends HibernateDaoSupport {
 						String driverName=wellHandsontableChangedData.getInsertlist().get(i).getProtocolName();
 						String driverCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-							if(entry.getKey().toUpperCase().contains("KAFKA")){
-								KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getProtocolName())){
-									driverCode=driveConfig.getProtocolCode();
+							if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+								KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+								if(driverName.equals(protocolConfig.getProtocolName())){
+									driverCode=protocolConfig.getProtocolName();
 									break;
 								}
-							}else{
-								A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-								if(driverName.equals(driveConfig.getProtocolName())){
-									driverCode=driveConfig.getProtocolCode();
-									break;
+							}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+								ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
+									if(driverName.equals(protocolConfig.getName())){
+										driverCode=protocolConfig.getCode();
+										break;
+									}
 								}
 							}
 						}

@@ -33,8 +33,7 @@ import com.gao.model.RoleModule;
 import com.gao.model.User;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusDriverSaveData;
-import com.gao.model.drive.A11ProtocolConfig;
-import com.gao.model.drive.A11ProtocolConfig.Item;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.model.gridmodel.AcquisitionGroupHandsontableChangeData;
 import com.gao.model.gridmodel.AcquisitionUnitHandsontableChangeData;
 import com.gao.service.acquisitionUnit.AcquisitionUnitManagerService;
@@ -130,7 +129,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
-			EquipmentDriverServerTask.initAcquisitionUnit();
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -184,7 +182,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionUnitManagerService.doAcquisitionUnitAdd(acquisitionUnit);
-			EquipmentDriverServerTask.initAcquisitionUnit();
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -344,51 +341,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 	 * @throws IOException
 	 *             为当前采集组安排采集项
 	 */
-	@RequestMapping("/grantAcquisitionItemsPermission2")
-	public String grantAcquisitionItemsPermission2() throws IOException {
-		String result = "";
-		PrintWriter out = response.getWriter();
-		AcquisitionGroupItem acquisitionGroupItem = null;
-		try {
-			String paramsIds = ParamUtils.getParameter(request, "paramsId");
-			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
-			String groupCode = ParamUtils.getParameter(request, "groupCode");
-			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
-			String ids[] = StringManagerUtils.split(paramsIds, ",");
-			String groupId="";
-			String groupIdSql="select t.id from tbl_acq_group_conf t where t.group_code='"+groupCode+"' ";
-			List list = this.service.findCallSql(groupIdSql);
-			if(list.size()>0){
-				groupId=list.get(0).toString();
-			}
-			if (ids.length > 0 && StringManagerUtils.isNotNull(groupId)) {
-				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionGroupOwnItems(groupId);
-				if (matrixCodes != "" || matrixCodes != null) {
-					String module_matrix[] = matrixCodes.split("\\|");
-					for (int i = 0; i < module_matrix.length; i++) {
-						String module_[] = module_matrix[i].split("\\:");
-						acquisitionGroupItem = new AcquisitionGroupItem();
-						acquisitionGroupItem.setGroupId(Integer.parseInt(groupId));
-						log.debug("groupCode==" + groupCode);
-						acquisitionGroupItem.setItemId(StringManagerUtils.stringTransferInteger(module_[0]));
-						acquisitionGroupItem.setMatrix(module_[1]);
-						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
-					}
-					EquipmentDriverServerTask.initAcquisitionUnit();
-				}
-			}
-			result = "{success:true,msg:true}";
-			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			out.print(result);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			result = "{success:false,msg:false}";
-			out.print(result);
-		}
-		return null;
-	}
-	
 	@RequestMapping("/grantAcquisitionItemsPermission")
 	public String grantAcquisitionItemsPermission() throws IOException {
 		String result = "";
@@ -419,7 +371,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionGroupItem.setMatrix(module_[1]);
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
-					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
 			}
 			result = "{success:true,msg:true}";
@@ -462,9 +413,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						r.setGroupId(StringManagerUtils.stringTransferInteger(module_[0]));
 						r.setMatrix(module_[1]);
 						this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(r);
-
 					}
-					EquipmentDriverServerTask.initAcquisitionUnit();
 				}
 			}
 			result = "{success:true,msg:true}";
@@ -497,171 +446,78 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json = "";
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String fileName="";
-		String driverCode="";
+		String fileName="ModbusProtocolConfig.json";
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		if(modbusDriverSaveData!=null){
-			String path="";
+			String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTask.initProtocolConfig();
+				EquipmentDriverServerTask.loadProtocolConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
-			switch (modbusDriverSaveData.getProtocolName()){
-			case "A11协议_安控":
-				fileName="EtrolDriverConfig.json";
-				driverCode="EtrolDrive";
-				break;
-			case "A11协议_必创":
-				fileName="BeeTechDriverConfig.json";
-				driverCode="BeeTech";
-				break;
-			case "A11协议_日月":
-				fileName="SunMoonDriverConfig.json";
-				driverCode="SunMoonStandardDrive";
-				break;
-			case "A11协议_中科奥维":
-				fileName="ZKAWDriverConfig.json";
-				driverCode="ZKAWDrive";
-				break;
-			case "A11协议":
-				fileName="CNPCStandardDriverConfig.json";
-				driverCode="CNPCStandardDrive";
-				break;
-			case "四化协议":
-				fileName="SinoepcStandardDriverConfig.json";
-				driverCode="SinoepcStandardDrive";
-				break;
+			ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(modbusDriverSaveData.getProtocolName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+					modbusDriverSaveData.setProtocolCode(modbusProtocolConfig.getProtocol().get(i).getCode());
+					if(modbusDriverSaveData.getProtocolType().equalsIgnoreCase("modbus-tcp")){
+						modbusProtocolConfig.getProtocol().get(i).setType(0);
+					}else{
+						modbusProtocolConfig.getProtocol().get(i).setType(1);
+					}
+					
+					if(modbusDriverSaveData.getStoreMode().equalsIgnoreCase("大端")){
+						modbusProtocolConfig.getProtocol().get(i).setStoreMode(0);;
+					}else{
+						modbusProtocolConfig.getProtocol().get(i).setStoreMode(1);
+					}
+					modbusProtocolConfig.getProtocol().get(i).setSignInPrefix(modbusDriverSaveData.getSignInPrefix());
+					modbusProtocolConfig.getProtocol().get(i).setSignInSuffix(modbusDriverSaveData.getSignInSuffix());
+					modbusProtocolConfig.getProtocol().get(i).setHeartbeatPrefix(modbusDriverSaveData.getHeartbeatPrefix());
+					modbusProtocolConfig.getProtocol().get(i).setHeartbeatSuffix(modbusDriverSaveData.getHeartbeatSuffix());
+					
+					for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
+						for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getName().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getName())){
+								int dataType=1;
+								if("整型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
+									dataType=1;
+								}else if("实型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
+									dataType=2;
+								}else if("BCD码".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
+									dataType=3;
+								}
+								boolean initiative=true;
+								if("主动轮询".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
+									initiative=true;
+								}else if("被动接收".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
+									initiative=false;
+								}
+								boolean readonly=true;
+								if("读写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getReadonly())){
+									readonly=false;
+								}else if("只读".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getReadonly())){
+									readonly=true;
+								}
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddress());
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getLength());
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getZoom());
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setDataType(dataType);
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRWType(readonly);
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAcqMode(initiative);
+								break;
+							}
+						}
+					}
+					break;
+				}
 			}
-			
-			if(StringManagerUtils.isNotNull(fileName)&&StringManagerUtils.isNotNull(driverCode)){
-				A11ProtocolConfig driveConfig=(A11ProtocolConfig)equipmentDriveMap.get(driverCode);
-				path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
-				if(driveConfig==null){
-					String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
-					type = new TypeToken<A11ProtocolConfig>() {}.getType();
-					driveConfig=gson.fromJson(driverConfigData, type);
-				}
-				if(modbusDriverSaveData.getProtocolType().equalsIgnoreCase("modbus-tcp")){
-					driveConfig.setProtocolType(0);
-				}else{
-					driveConfig.setProtocolType(1);
-				}
-				
-				if(modbusDriverSaveData.getStoreMode().equalsIgnoreCase("大端")){
-					driveConfig.setStoreMode(0);;
-				}else{
-					driveConfig.setStoreMode(1);
-				}
-				driveConfig.setSignInPrefix(modbusDriverSaveData.getSignInPrefix());
-				driveConfig.setSignInSuffix(modbusDriverSaveData.getSignInSuffix());
-				driveConfig.setHeartbeatPrefix(modbusDriverSaveData.getHeartbeatPrefix());
-				driveConfig.setHeartbeatSuffix(modbusDriverSaveData.getHeartbeatSuffix());
-				
-				for(int i=0;i<modbusDriverSaveData.getDataConfig().size();i++){
-					int dataType=1;
-					if("整型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getDataType())){
-						dataType=1;
-					}else if("实型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getDataType())){
-						dataType=2;
-					}else if("BCD码".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getDataType())){
-						dataType=3;
-					}
-					boolean initiative=true;
-					if("主动轮询".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getInitiative())){
-						initiative=true;
-					}else if("被动接收".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getInitiative())){
-						initiative=false;
-					}
-					boolean readonly=true;
-					if("读写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getReadonly())){
-						readonly=false;
-					}else if("只读".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getReadonly())){
-						readonly=true;
-					}
-					A11ProtocolConfig.Item item=new Item();
-					item.setAddress(modbusDriverSaveData.getDataConfig().get(i).getAddress());
-					item.setLength(modbusDriverSaveData.getDataConfig().get(i).getLength());
-					item.setUnit(modbusDriverSaveData.getDataConfig().get(i).getUnit());
-					item.setZoom(modbusDriverSaveData.getDataConfig().get(i).getZoom());
-					item.setDataType(dataType);
-					item.setReadonly(readonly);
-					item.setInitiative(initiative);
-					if("运行状态".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setRunStatus(item);
-					}else if("启停控制".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setRunControl(item);
-					}else if("A相电流".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setCurrentA(item);
-					}else if("B相电流".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setCurrentB(item);
-					}else if("C相电流".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setCurrentC(item);
-					}else if("A相电压".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setVoltageA(item);
-					}else if("B相电压".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setVoltageB(item);
-					}else if("C相电压".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setVoltageC(item);
-					}else if("有功功耗".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setActivePowerConsumption(item);
-					}else if("无功功耗".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setReactivePowerConsumption(item);
-					}else if("有功功率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setActivePower(item);
-					}else if("无功功率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setReactivePower(item);
-					}else if("反向功率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setReversePower(item);
-					}else if("功率因数".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setPowerFactor(item);
-					}else if("油压".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setTubingPressure(item);
-					}else if("套压".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setCasingPressure(item);
-					}else if("回压".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setBackPressure(item);
-					}else if("井口流温".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setWellHeadFluidTemperature(item);
-					}else if("动液面".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setProducingfluidLevel(item);
-					}else if("含水率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setWaterCut(item);
-					}else if("变频设置频率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setSetFrequency(item);
-					}else if("变频运行频率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setRunFrequency(item);
-					}else if("螺杆泵转速".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setRPM(item);
-					}else if("螺杆泵扭矩".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setTorque(item);
-					}else if("功图采集间隔".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setFSDiagramAcquisitionInterval(item);
-					}else if("功图设置点数".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setFSDiagramSetPointCount(item);
-					}else if("功图实测点数".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setFSDiagramPointCount(item);
-					}else if("功图采集时间".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setAcqTime(item);
-					}else if("冲次".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setSPM(item);
-					}else if("冲程".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setStroke(item);
-					}else if("功图数据-位移".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setSDiagram(item);
-					}else if("功图数据-载荷".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setFDiagram(item);
-					}else if("功图数据-电流".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setADiagram(item);
-					}else if("功图数据-功率".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getName())){
-						driveConfig.getDataConfig().setPDiagram(item);
-					}
-				}
-				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));
-				equipmentDriveMap.put(driveConfig.getProtocolCode(), driveConfig);
-			}
+//			System.out.println(gson.toJson(modbusProtocolConfig));
+			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
+			equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
+			EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolCode());
 		}
 		json ="{success:true}";
 		response.setContentType("application/json;charset="+Constants.ENCODING_UTF8);
@@ -684,7 +540,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(KafkaConfigSaveData!=null){
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
-				EquipmentDriverServerTask.initProtocolConfig();
+				EquipmentDriverServerTask.loadProtocolConfig();
 				equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			}
 			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");

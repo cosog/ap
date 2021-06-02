@@ -13,7 +13,7 @@ import com.gao.model.AcquisitionItem;
 import com.gao.model.AcquisitionUnitGroup;
 import com.gao.model.AcquisitionGroupItem;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.task.EquipmentDriverServerTask;
@@ -113,17 +113,15 @@ private CommonDataService service;
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 		//驱动排序
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
-		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			if(!(entry.getKey().toUpperCase().contains("KAFKA")||entry.getKey().toUpperCase().contains("MQTT"))){
-				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
-			}
-			
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(i);
+			equipmentDriveSortMap.put(protocolConfig.getSort(), protocolConfig);
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -154,196 +152,41 @@ private CommonDataService service;
 		int i=0;
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 			i++;
-			A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-			if(!driveConfig.getProtocolCode().toUpperCase().contains("KAFKA") && !driveConfig.getProtocolCode().toUpperCase().contains("MQTT")){
+			ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
+			if(!protocolConfig.getCode().toUpperCase().contains("KAFKA") && !protocolConfig.getCode().toUpperCase().contains("MQTT")){
 				StringBuffer driverConfigData = new StringBuffer();
 				driverConfigData.append("[");
-				if("IntelligentPumpingUnitDrive".equalsIgnoreCase(driveConfig.getProtocolCode())){
+				if("IntelligentPumpingUnitDrive".equalsIgnoreCase(protocolConfig.getCode())){
 					
 				}else{
 					
 				}
-				driverConfigData.append("{\"checked\":false,\"id\":1,\"item\":\"运行状态\",\"address\":"+driveConfig.getDataConfig().getRunStatus().getAddress()+",\"length\":"+driveConfig.getDataConfig().getRunStatus().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getRunStatus().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getRunStatus().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getRunStatus().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getRunStatus().getUnit()+"\","
-						+ "\"initiative\":\""+(driveConfig.getDataConfig().getRunStatus().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":2,\"item\":\"启停控制\",\"address\":"+driveConfig.getDataConfig().getRunControl().getAddress()+",\"length\":"+driveConfig.getDataConfig().getRunControl().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getRunControl().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getRunControl().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getRunControl().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getRunControl().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getRunControl().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":3,\"item\":\"A相电流\",\"address\":"+driveConfig.getDataConfig().getCurrentA().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCurrentA().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCurrentA().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCurrentA().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getCurrentA().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getCurrentA().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getCurrentA().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":4,\"item\":\"B相电流\",\"address\":"+driveConfig.getDataConfig().getCurrentB().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCurrentB().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCurrentB().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCurrentB().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getCurrentB().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getCurrentB().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getCurrentB().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":5,\"item\":\"C相电流\",\"address\":"+driveConfig.getDataConfig().getCurrentC().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCurrentC().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCurrentC().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCurrentC().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getCurrentC().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getCurrentC().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getCurrentC().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":6,\"item\":\"A相电压\",\"address\":"+driveConfig.getDataConfig().getVoltageA().getAddress()+",\"length\":"+driveConfig.getDataConfig().getVoltageA().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getVoltageA().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getVoltageA().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getVoltageA().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getVoltageA().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getVoltageA().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":7,\"item\":\"B相电压\",\"address\":"+driveConfig.getDataConfig().getVoltageB().getAddress()+",\"length\":"+driveConfig.getDataConfig().getVoltageB().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getVoltageB().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getVoltageB().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getVoltageB().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getVoltageB().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getVoltageB().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":8,\"item\":\"C相电压\",\"address\":"+driveConfig.getDataConfig().getVoltageC().getAddress()+",\"length\":"+driveConfig.getDataConfig().getVoltageC().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getVoltageC().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getVoltageC().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getVoltageC().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getVoltageC().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getVoltageC().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":9,\"item\":\"有功功耗\",\"address\":"+driveConfig.getDataConfig().getActivePowerConsumption().getAddress()+",\"length\":"+driveConfig.getDataConfig().getActivePowerConsumption().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getActivePowerConsumption().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getActivePowerConsumption().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getActivePowerConsumption().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getActivePowerConsumption().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getActivePowerConsumption().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":10,\"item\":\"无功功耗\",\"address\":"+driveConfig.getDataConfig().getReactivePowerConsumption().getAddress()+",\"length\":"+driveConfig.getDataConfig().getReactivePowerConsumption().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getReactivePowerConsumption().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getReactivePowerConsumption().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getReactivePowerConsumption().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getReactivePowerConsumption().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getReactivePowerConsumption().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":11,\"item\":\"有功功率\",\"address\":"+driveConfig.getDataConfig().getActivePower().getAddress()+",\"length\":"+driveConfig.getDataConfig().getActivePower().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getActivePower().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getActivePower().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getActivePower().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getActivePower().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getActivePower().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":12,\"item\":\"无功功率\",\"address\":"+driveConfig.getDataConfig().getReactivePower().getAddress()+",\"length\":"+driveConfig.getDataConfig().getReactivePower().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getReactivePower().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getReactivePower().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getReactivePower().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getReactivePower().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getReactivePower().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":13,\"item\":\"反向功率\",\"address\":"+driveConfig.getDataConfig().getReversePower().getAddress()+",\"length\":"+driveConfig.getDataConfig().getReversePower().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getReversePower().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getReversePower().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getReversePower().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getReversePower().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getReversePower().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":14,\"item\":\"功率因数\",\"address\":"+driveConfig.getDataConfig().getPowerFactor().getAddress()+",\"length\":"+driveConfig.getDataConfig().getPowerFactor().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getPowerFactor().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getPowerFactor().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getPowerFactor().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getPowerFactor().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getPowerFactor().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":15,\"item\":\"油压\",\"address\":"+driveConfig.getDataConfig().getTubingPressure().getAddress()+",\"length\":"+driveConfig.getDataConfig().getTubingPressure().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getTubingPressure().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getTubingPressure().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getTubingPressure().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getTubingPressure().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getTubingPressure().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":16,\"item\":\"套压\",\"address\":"+driveConfig.getDataConfig().getCasingPressure().getAddress()+",\"length\":"+driveConfig.getDataConfig().getCasingPressure().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getCasingPressure().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getCasingPressure().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getCasingPressure().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getCasingPressure().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getCasingPressure().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":17,\"item\":\"回压\",\"address\":"+driveConfig.getDataConfig().getBackPressure().getAddress()+",\"length\":"+driveConfig.getDataConfig().getBackPressure().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getBackPressure().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getBackPressure().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getBackPressure().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getBackPressure().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getBackPressure().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":18,\"item\":\"井口流温\",\"address\":"+driveConfig.getDataConfig().getWellHeadFluidTemperature().getAddress()+",\"length\":"+driveConfig.getDataConfig().getWellHeadFluidTemperature().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getWellHeadFluidTemperature().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getWellHeadFluidTemperature().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getWellHeadFluidTemperature().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getWellHeadFluidTemperature().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getWellHeadFluidTemperature().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":19,\"item\":\"动液面\",\"address\":"+driveConfig.getDataConfig().getProducingfluidLevel().getAddress()+",\"length\":"+driveConfig.getDataConfig().getProducingfluidLevel().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getProducingfluidLevel().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getProducingfluidLevel().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getProducingfluidLevel().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getProducingfluidLevel().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getProducingfluidLevel().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":20,\"item\":\"含水率\",\"address\":"+driveConfig.getDataConfig().getWaterCut().getAddress()+",\"length\":"+driveConfig.getDataConfig().getWaterCut().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getWaterCut().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getWaterCut().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getWaterCut().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getWaterCut().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getWaterCut().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":21,\"item\":\"变频设置频率\",\"address\":"+driveConfig.getDataConfig().getSetFrequency().getAddress()+",\"length\":"+driveConfig.getDataConfig().getSetFrequency().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getSetFrequency().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getSetFrequency().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getSetFrequency().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getSetFrequency().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getSetFrequency().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":22,\"item\":\"变频运行频率\",\"address\":"+driveConfig.getDataConfig().getRunFrequency().getAddress()+",\"length\":"+driveConfig.getDataConfig().getRunFrequency().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getRunFrequency().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getRunFrequency().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getRunFrequency().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getRunFrequency().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getRunFrequency().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":23,\"item\":\"螺杆泵转速\",\"address\":"+driveConfig.getDataConfig().getRPM().getAddress()+",\"length\":"+driveConfig.getDataConfig().getRPM().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getRPM().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getRPM().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getRPM().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getRPM().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getRPM().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":24,\"item\":\"螺杆泵扭矩\",\"address\":"+driveConfig.getDataConfig().getTorque().getAddress()+",\"length\":"+driveConfig.getDataConfig().getTorque().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getTorque().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getTorque().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getTorque().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getTorque().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getTorque().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				//功图
-				driverConfigData.append("{\"checked\":false,\"id\":25,\"item\":\"功图采集间隔\",\"address\":"+driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getFSDiagramAcquisitionInterval().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":26,\"item\":\"功图设置点数\",\"address\":"+driveConfig.getDataConfig().getFSDiagramSetPointCount().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFSDiagramSetPointCount().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFSDiagramSetPointCount().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFSDiagramSetPointCount().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getFSDiagramSetPointCount().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getFSDiagramSetPointCount().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getFSDiagramSetPointCount().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":27,\"item\":\"功图实测点数\",\"address\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFSDiagramPointCount().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFSDiagramPointCount().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getFSDiagramPointCount().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getFSDiagramPointCount().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getFSDiagramPointCount().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":28,\"item\":\"功图采集时间\",\"address\":"+driveConfig.getDataConfig().getAcqTime().getAddress()+",\"length\":"+driveConfig.getDataConfig().getAcqTime().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getAcqTime().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getAcqTime().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getAcqTime().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getAcqTime().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getAcqTime().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":29,\"item\":\"冲次\",\"address\":"+driveConfig.getDataConfig().getSPM().getAddress()+",\"length\":"+driveConfig.getDataConfig().getSPM().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getSPM().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getSPM().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getSPM().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getSPM().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getSPM().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":30,\"item\":\"冲程\",\"address\":"+driveConfig.getDataConfig().getStroke().getAddress()+",\"length\":"+driveConfig.getDataConfig().getStroke().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getStroke().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getStroke().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getStroke().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getStroke().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getStroke().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":31,\"item\":\"功图数据-位移\",\"address\":"+driveConfig.getDataConfig().getSDiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getSDiagram().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getSDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getSDiagram().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getSDiagram().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getSDiagram().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getSDiagram().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":32,\"item\":\"功图数据-载荷\",\"address\":"+driveConfig.getDataConfig().getFDiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getFDiagram().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getFDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getFDiagram().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getFDiagram().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getFDiagram().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getFDiagram().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":33,\"item\":\"功图数据-电流\",\"address\":"+driveConfig.getDataConfig().getADiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getADiagram().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getADiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getADiagram().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getADiagram().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getADiagram().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getADiagram().getInitiative()?"主动轮询":"被动接收")+"\"},");
-				driverConfigData.append("{\"checked\":false,\"id\":34,\"item\":\"功图数据-功率\",\"address\":"+driveConfig.getDataConfig().getPDiagram().getAddress()+",\"length\":"+driveConfig.getDataConfig().getPDiagram().getLength()+","
-						+ "\"dataType\":\""+getDataItemsType(driveConfig.getDataConfig().getPDiagram().getDataType())+"\",\"zoom\":"+driveConfig.getDataConfig().getPDiagram().getZoom()+","
-						+ "\"readonly\":\""+(driveConfig.getDataConfig().getPDiagram().getReadonly()?"只读":"读写")+"\","
-						+ "\"unit\":\""+driveConfig.getDataConfig().getPDiagram().getUnit()+"\","
-						+"\"initiative\":\""+(driveConfig.getDataConfig().getPDiagram().getInitiative()?"主动轮询":"被动接收")+"\"}");
+				for(int j=0;j<protocolConfig.getItems().size();j++){
+					driverConfigData.append("{\"checked\":false,"
+							+ "\"id\":"+(j+1)+","
+							+ "\"item\":\""+protocolConfig.getItems().get(j).getName()+"\","
+							+ "\"address\":"+protocolConfig.getItems().get(j).getAddr()+","
+							+ "\"length\":"+protocolConfig.getItems().get(j).getQuantity()+","
+							+ "\"dataType\":\""+getDataItemsType(protocolConfig.getItems().get(j).getDataType())+"\","
+							+ "\"zoom\":"+protocolConfig.getItems().get(j).getRatio()+","
+							+ "\"readonly\":\""+(protocolConfig.getItems().get(j).getRWType()?"只读":"读写")+"\","
+							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+							+ "\"initiative\":\""+(protocolConfig.getItems().get(j).getAcqMode()?"主动轮询":"被动接收")+"\"},");
+				}
+				if(driverConfigData.toString().endsWith(",")){
+					driverConfigData.deleteCharAt(driverConfigData.length() - 1);
+				}
+				
 				driverConfigData.append("]");
 				result_json.append("{"
 						+ "\"id\":"+i+","
-						+ "\"ProtocolName\":\""+driveConfig.getProtocolName()+"\","
-						+ "\"ProtocolType\":\""+(driveConfig.getProtocolType()==0?"modbus-tcp":"modbus-rtu")+"\","
-						+ "\"StoreMode\":\""+(driveConfig.getStoreMode()==0?"大端":"小端")+"\","
-						+ "\"SignInPrefix\":\""+driveConfig.getSignInPrefix()+"\","
-						+ "\"SignInSuffix\":\""+driveConfig.getSignInSuffix()+"\","
-						+ "\"HeartbeatPrefix\":\""+driveConfig.getHeartbeatPrefix()+"\","
-						+ "\"HeartbeatSuffix\":\""+driveConfig.getHeartbeatSuffix()+"\","
+						+ "\"ProtocolName\":\""+protocolConfig.getName()+"\","
+						+ "\"ProtocolType\":\""+(protocolConfig.getType()==0?"modbus-tcp":"modbus-rtu")+"\","
+						+ "\"StoreMode\":\""+(protocolConfig.getStoreMode()==0?"大端":"小端")+"\","
+						+ "\"SignInPrefix\":\""+protocolConfig.getSignInPrefix()+"\","
+						+ "\"SignInSuffix\":\""+protocolConfig.getSignInSuffix()+"\","
+						+ "\"HeartbeatPrefix\":\""+protocolConfig.getHeartbeatPrefix()+"\","
+						+ "\"HeartbeatSuffix\":\""+protocolConfig.getHeartbeatSuffix()+"\","
 						+ "\"dataConfig\":"+driverConfigData.toString()+""
 						+ "},");
 			}
@@ -370,7 +213,7 @@ private CommonDataService service;
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");

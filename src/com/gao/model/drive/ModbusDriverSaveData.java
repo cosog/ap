@@ -7,6 +7,8 @@ public class ModbusDriverSaveData {
 
 	private String ProtocolName;
 	
+	private String ProtocolCode;
+	
 	private String ProtocolType;
 	
 	private String StoreMode;
@@ -138,6 +140,12 @@ public class ModbusDriverSaveData {
 	}
 	public void setSignInSuffix(String signInSuffix) {
 		SignInSuffix = signInSuffix;
+	}
+	public String getProtocolCode() {
+		return ProtocolCode;
+	}
+	public void setProtocolCode(String protocolCode) {
+		ProtocolCode = protocolCode;
 	}
 	
 }

@@ -23,7 +23,7 @@ import com.gao.model.ProductionOutWellInfo;
 import com.gao.model.User;
 import com.gao.model.WellInformation;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.model.gridmodel.ProductionOutGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.gridmodel.WellProHandsontableChangedData;
@@ -153,7 +153,7 @@ public class ProductionDataController extends BaseController {
 	public String downKafkaProductionData(WellProHandsontableChangedData wellProHandsontableChangedData) throws Exception {
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		

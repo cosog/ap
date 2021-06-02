@@ -73,10 +73,10 @@ mqtt:
 kafka:
    server: 39.98.64.56:9092
 driverConfig:
-   server: 127.0.0.1:18100/api/init/server
-   protocol: 127.0.0.1:18100/api/init/protocol
-   id: 127.0.0.1:18100/api/init/id
-   ctrl: 127.0.0.1:18100/api/ctrl
+   server: 127.0.0.1:19500/api/init/server
+   protocol: 127.0.0.1:19500/api/init/protocol
+   id: 127.0.0.1:19500/api/init/id
+   ctrl: 127.0.0.1:19500/api/ctrl
 others:
    cache: false
    language: zh_CN

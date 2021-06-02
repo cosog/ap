@@ -1,5 +1,6 @@
 package com.gao.model.drive;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InitProtocol {
@@ -29,8 +30,50 @@ public class InitProtocol {
     private List<Float> Ratio;
     
     private List<String> AcqMode;
-
-	public String getProtocolName() {
+	
+    public InitProtocol() {
+		super();
+	}
+    
+    public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig) {
+    	this.setProtocolName(protocolConfig.getName());
+    	this.setProtocolType(protocolConfig.getType()==0?"tcp":"rtu");
+    	this.setStoreMode(protocolConfig.getStoreMode()==0?"big":"little");
+    	this.setSignInPrefix(protocolConfig.getSignInPrefix());
+    	this.setSignInSuffix(protocolConfig.getSignInSuffix());
+    	this.setHeartbeatPrefix(protocolConfig.getHeartbeatPrefix());
+    	this.setHeartbeatSuffix(protocolConfig.getHeartbeatSuffix());
+    	this.Addr=new ArrayList<Integer>();
+    	this.Quantity=new ArrayList<Integer>();
+    	this.DataType=new ArrayList<String>();
+    	this.RWType=new ArrayList<String>();
+    	this.Ratio=new ArrayList<Float>();
+    	this.AcqMode=new ArrayList<String>();
+    	for(int i=0;i<protocolConfig.getItems().size();i++){
+    		String dataTypeStr="";
+    		switch(protocolConfig.getItems().get(i).getDataType()){
+    		case 1:
+    			dataTypeStr="int16";
+    			break;
+    		case 2:
+    			dataTypeStr="float32";
+    			break;
+    		case 3:
+    			dataTypeStr="BCD";
+    			break;
+    		default:
+    			dataTypeStr="int16";
+    		}
+    		this.Addr.add(protocolConfig.getItems().get(i).getAddr());
+    		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
+    		this.DataType.add(dataTypeStr);
+    		this.RWType.add(protocolConfig.getItems().get(i).getRWType()?"r":"rw");
+    		this.Ratio.add(protocolConfig.getItems().get(i).getRatio());
+    		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode()?"active":"pasv");
+    	}
+	}
+    
+    public String getProtocolName() {
 		return ProtocolName;
 	}
 

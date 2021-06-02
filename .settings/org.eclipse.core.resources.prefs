@@ -4,6 +4,7 @@ encoding//WebRoot/protocolConfig/CNPCStandardDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/EtrolDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/IntelligentPumpingUnitDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/KafkaDriverConfig.json=UTF-8
+encoding//WebRoot/protocolConfig/ModbusProtocolConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/MqttDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/SinoepcStandardDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/SunMoonDriverConfig.json=UTF-8

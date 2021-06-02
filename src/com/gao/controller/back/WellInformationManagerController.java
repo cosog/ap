@@ -368,15 +368,12 @@ public class WellInformationManagerController extends BaseController {
 		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
-		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
-		beeTechDriverServerTast.updateWellConfif(wellHandsontableChangedData);
 		return null;
 	}
 	
 	@SuppressWarnings("static-access")
 	@RequestMapping("/editWellName")
 	public String editWellName() throws Exception {
-
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		String orgid=user.getUserorgids();
@@ -390,7 +387,6 @@ public class WellInformationManagerController extends BaseController {
 			this.wellInformationManagerService.editWellName(oldWellName,newWellName,orgid);
 		}
 		String json ="{success:true}";
-		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -398,10 +394,6 @@ public class WellInformationManagerController extends BaseController {
 		log.warn("jh json is ==" + json);
 		pw.flush();
 		pw.close();
-		
-		EquipmentDriverServerTask beeTechDriverServerTast=EquipmentDriverServerTask.getInstance();
-		beeTechDriverServerTast.updateWellName(data);
-		
 		return null;
 	}
 	

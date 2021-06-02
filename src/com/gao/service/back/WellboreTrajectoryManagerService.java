@@ -22,7 +22,7 @@ import com.gao.model.calculate.RPCCalculateRequestData;
 import com.gao.model.calculate.RPCCalculateRequestData.WellboreTrajectory;
 import com.gao.model.calculate.WellboreTrajectoryResponseData;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.task.EquipmentDriverServerTask;
@@ -245,7 +245,7 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		

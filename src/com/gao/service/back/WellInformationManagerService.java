@@ -13,7 +13,7 @@ import com.gao.model.gridmodel.WellGridPanelData;
 import com.gao.model.gridmodel.WellHandsontableChangedData;
 import com.gao.model.WellInformation;
 import com.gao.model.drive.KafkaConfig;
-import com.gao.model.drive.A11ProtocolConfig;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.task.EquipmentDriverServerTask;
@@ -330,7 +330,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer driverDropdownData = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -367,24 +367,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			if(entry.getKey().toUpperCase().contains("KAFKA")){
-				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-				
+			if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+				KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
-			}else{
-				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+			}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+				ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(i);
+					equipmentDriveSortMap.put(protocolConfig.getSort(), protocolConfig);
+				}
 			}
 		}
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
-			if( ( entry.getValue() instanceof A11ProtocolConfig ) ){
-				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-				driverDropdownData.append("'"+driveConfig.getProtocolName()+"',");
+			if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
+				ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
+				driverDropdownData.append("'"+protocolConfig.getName()+"',");
 			}else if( ( entry.getValue() instanceof KafkaConfig ) ){
 				KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
 				driverDropdownData.append("'"+driveConfig.getProtocolName()+"',");
 			}
-			
 		}
 		if(driverDropdownData.toString().endsWith(",")){
 			driverDropdownData.deleteCharAt(driverDropdownData.length() - 1);
@@ -401,11 +402,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			String protocolName="";
 			String driverCode=obj[6]+"";
-			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-				if( ( entry.getValue() instanceof A11ProtocolConfig ) ){
-					A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-					if(driverCode.equals(driveConfig.getProtocolCode())){
-						protocolName=driveConfig.getProtocolName();
+			for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
+				if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
+					ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
+					if(driverCode.equals(protocolConfig.getCode())){
+						protocolName=protocolConfig.getName();
 						break;
 					}
 				}else if( ( entry.getValue() instanceof KafkaConfig ) ){
@@ -446,7 +447,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
-			EquipmentDriverServerTask.initProtocolConfig();
+			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -479,12 +480,24 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String protocolName="";
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-				A11ProtocolConfig driveConfig=(A11ProtocolConfig)entry.getValue();
-				if(driverCode.equals(driveConfig.getProtocolCode())){
-					protocolName=driveConfig.getProtocolName();
-					break;
+				if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+					KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+					if(driverCode.equals(protocolConfig.getProtocolCode())){
+						protocolName=protocolConfig.getProtocolName();
+						break;
+					}
+				}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+					ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+					for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+						ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
+						if(driverCode.equals(protocolConfig.getCode())){
+							protocolName=protocolConfig.getName();
+							break;
+						}
+					}
 				}
 			}
+			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"orgName\":\""+obj[1]+"\",");
 			result_json.append("\"resName\":\""+obj[2]+"\",");

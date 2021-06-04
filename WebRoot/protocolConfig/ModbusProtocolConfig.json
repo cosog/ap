@@ -1,6 +1,5 @@
 {
-    "Protocol": [
-        {
+    "Protocol": [{
         "Name": "A11协议_必创",
         "Code": "BeeTech",
         "Type": 0,
@@ -19,7 +18,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "启停控制",
             "Code": "RunControl",
@@ -29,7 +28,7 @@
             "Ratio": 1,
             "RWType": false,
             "Unit": "",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "A相电流",
             "Code": "IA",
@@ -39,7 +38,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "A",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "B相电流",
             "Code": "IB",
@@ -49,17 +48,17 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "A",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "C相电流",
             "Code": "IC",
-            "Addr": 40357,
+            "Addr": 40355,
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
             "RWType": true,
             "Unit": "V",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "A相电压",
             "Code": "VA",
@@ -69,7 +68,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "V",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "B相电压",
             "Code": "VB",
@@ -79,7 +78,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "V",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "C相电压",
             "Code": "VC",
@@ -87,9 +86,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"V",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "V",
+            "AcqMode": false
         }, {
             "Name": "有功功耗",
             "Code": "KWattH",
@@ -97,9 +96,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kW·h",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kW·h",
+            "AcqMode": false
         }, {
             "Name": "无功功耗",
             "Code": "KVarH",
@@ -107,9 +106,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kVar·h",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kVar·h",
+            "AcqMode": false
         }, {
             "Name": "有功功率",
             "Code": "Watt3",
@@ -117,9 +116,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kW",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kW",
+            "AcqMode": false
         }, {
             "Name": "无功功率",
             "Code": "Var3",
@@ -127,9 +126,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kVar",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kVar",
+            "AcqMode": false
         }, {
             "Name": "反向功率",
             "Code": "ReversePower",
@@ -137,9 +136,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kW",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kW",
+            "AcqMode": false
         }, {
             "Name": "功率因数",
             "Code": "PF3",
@@ -147,9 +146,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "油压",
             "Code": "TubingPressure",
@@ -157,9 +156,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"MPa",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "MPa",
+            "AcqMode": false
         }, {
             "Name": "套压",
             "Code": "CasingPressure",
@@ -167,9 +166,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"MPa",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "MPa",
+            "AcqMode": false
         }, {
             "Name": "回压",
             "Code": "BackPressure",
@@ -177,9 +176,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"MPa",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "MPa",
+            "AcqMode": false
         }, {
             "Name": "井口流温",
             "Code": "WellHeadFluidTemperature",
@@ -187,9 +186,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"℃",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "℃",
+            "AcqMode": false
         }, {
             "Name": "动液面",
             "Code": "ProducingfluidLevel",
@@ -197,9 +196,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "m",
+            "AcqMode": false
         }, {
             "Name": "含水率",
             "Code": "WaterCut",
@@ -207,9 +206,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"%",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "%",
+            "AcqMode": false
         }, {
             "Name": "变频设置频率",
             "Code": "SetFrequency",
@@ -217,9 +216,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":false,
-            "Unit":"Hz",
-            "AcqMode":true
+            "RWType": false,
+            "Unit": "Hz",
+            "AcqMode": false
         }, {
             "Name": "变频运行频率",
             "Code": "RunFrequency",
@@ -227,9 +226,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"Hz",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "Hz",
+            "AcqMode": false
         }, {
             "Name": "螺杆泵转速",
             "Code": "RPM",
@@ -237,9 +236,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"r/min",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "r/min",
+            "AcqMode": false
         }, {
             "Name": "螺杆泵扭矩",
             "Code": "Torque",
@@ -247,9 +246,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kN·m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kN·m",
+            "AcqMode": false
         }, {
             "Name": "功图采集间隔",
             "Code": "FSDiagramAcquisitionInterval",
@@ -257,9 +256,9 @@
             "DataType": 1,
             "Quantity": 1,
             "Ratio": 1,
-            "RWType":false,
-            "Unit":"min",
-            "AcqMode":true
+            "RWType": false,
+            "Unit": "min",
+            "AcqMode": false
         }, {
             "Name": "功图设置点数",
             "Code": "FSDiagramSetPointCount",
@@ -267,9 +266,9 @@
             "DataType": 1,
             "Quantity": 1,
             "Ratio": 1,
-            "RWType":false,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": false,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "功图实测点数",
             "Code": "FSDiagramPointCount",
@@ -277,9 +276,9 @@
             "DataType": 1,
             "Quantity": 1,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "功图采集时间",
             "Code": "FSDiagramAcqTime",
@@ -287,9 +286,9 @@
             "DataType": 3,
             "Quantity": 6,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "冲次",
             "Code": "SPM",
@@ -297,9 +296,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"次/min",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "次/min",
+            "AcqMode": false
         }, {
             "Name": "冲程",
             "Code": "Stroke",
@@ -307,9 +306,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "m",
+            "AcqMode": false
         }, {
             "Name": "功图数据-位移",
             "Code": "SDiagram",
@@ -317,9 +316,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01m",
+            "AcqMode": false
         }, {
             "Name": "功图数据-载荷",
             "Code": "FDiagram",
@@ -327,9 +326,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01kN",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01kN",
+            "AcqMode": false
         }, {
             "Name": "功图数据-电流",
             "Code": "ADiagram",
@@ -337,9 +336,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01A",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01A",
+            "AcqMode": false
         }, {
             "Name": "功图数据-功率",
             "Code": "PDiagram",
@@ -347,11 +346,11 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01kW",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01kW",
+            "AcqMode": false
         }]
-    },{
+    }, {
         "Name": "A11协议",
         "Code": "CNPCStandardDrive",
         "Type": 0,
@@ -370,7 +369,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "启停控制",
             "Code": "RunControl",
@@ -380,7 +379,7 @@
             "Ratio": 1,
             "RWType": false,
             "Unit": "",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "A相电流",
             "Code": "IA",
@@ -390,7 +389,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "A",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "B相电流",
             "Code": "IB",
@@ -400,17 +399,17 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "A",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "C相电流",
             "Code": "IC",
-            "Addr": 40357,
+            "Addr": 40355,
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
             "RWType": true,
             "Unit": "V",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "A相电压",
             "Code": "VA",
@@ -420,7 +419,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "V",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "B相电压",
             "Code": "VB",
@@ -430,7 +429,7 @@
             "Ratio": 1,
             "RWType": true,
             "Unit": "V",
-            "AcqMode": true
+            "AcqMode": false
         }, {
             "Name": "C相电压",
             "Code": "VC",
@@ -438,9 +437,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"V",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "V",
+            "AcqMode": false
         }, {
             "Name": "有功功耗",
             "Code": "KWattH",
@@ -448,9 +447,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kW·h",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kW·h",
+            "AcqMode": false
         }, {
             "Name": "无功功耗",
             "Code": "KVarH",
@@ -458,9 +457,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kVar·h",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kVar·h",
+            "AcqMode": false
         }, {
             "Name": "有功功率",
             "Code": "Watt3",
@@ -468,9 +467,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kW",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kW",
+            "AcqMode": false
         }, {
             "Name": "无功功率",
             "Code": "Var3",
@@ -478,9 +477,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kVar",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kVar",
+            "AcqMode": false
         }, {
             "Name": "反向功率",
             "Code": "ReversePower",
@@ -488,9 +487,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kW",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kW",
+            "AcqMode": false
         }, {
             "Name": "功率因数",
             "Code": "PF3",
@@ -498,9 +497,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "油压",
             "Code": "TubingPressure",
@@ -508,9 +507,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"MPa",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "MPa",
+            "AcqMode": false
         }, {
             "Name": "套压",
             "Code": "CasingPressure",
@@ -518,9 +517,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"MPa",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "MPa",
+            "AcqMode": false
         }, {
             "Name": "回压",
             "Code": "BackPressure",
@@ -528,9 +527,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"MPa",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "MPa",
+            "AcqMode": false
         }, {
             "Name": "井口流温",
             "Code": "WellHeadFluidTemperature",
@@ -538,9 +537,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"℃",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "℃",
+            "AcqMode": false
         }, {
             "Name": "动液面",
             "Code": "ProducingfluidLevel",
@@ -548,9 +547,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "m",
+            "AcqMode": false
         }, {
             "Name": "含水率",
             "Code": "WaterCut",
@@ -558,9 +557,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"%",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "%",
+            "AcqMode": false
         }, {
             "Name": "变频设置频率",
             "Code": "SetFrequency",
@@ -568,9 +567,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":false,
-            "Unit":"Hz",
-            "AcqMode":true
+            "RWType": false,
+            "Unit": "Hz",
+            "AcqMode": false
         }, {
             "Name": "变频运行频率",
             "Code": "RunFrequency",
@@ -578,9 +577,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"Hz",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "Hz",
+            "AcqMode": false
         }, {
             "Name": "螺杆泵转速",
             "Code": "RPM",
@@ -588,9 +587,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"r/min",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "r/min",
+            "AcqMode": false
         }, {
             "Name": "螺杆泵扭矩",
             "Code": "Torque",
@@ -598,9 +597,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"kN·m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "kN·m",
+            "AcqMode": false
         }, {
             "Name": "功图采集间隔",
             "Code": "FSDiagramAcquisitionInterval",
@@ -608,9 +607,9 @@
             "DataType": 1,
             "Quantity": 1,
             "Ratio": 1,
-            "RWType":false,
-            "Unit":"min",
-            "AcqMode":true
+            "RWType": false,
+            "Unit": "min",
+            "AcqMode": false
         }, {
             "Name": "功图设置点数",
             "Code": "FSDiagramSetPointCount",
@@ -618,9 +617,9 @@
             "DataType": 1,
             "Quantity": 1,
             "Ratio": 1,
-            "RWType":false,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": false,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "功图实测点数",
             "Code": "FSDiagramPointCount",
@@ -628,9 +627,9 @@
             "DataType": 1,
             "Quantity": 1,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "功图采集时间",
             "Code": "FSDiagramAcqTime",
@@ -638,9 +637,9 @@
             "DataType": 3,
             "Quantity": 6,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "",
+            "AcqMode": false
         }, {
             "Name": "冲次",
             "Code": "SPM",
@@ -648,9 +647,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"次/min",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "次/min",
+            "AcqMode": false
         }, {
             "Name": "冲程",
             "Code": "Stroke",
@@ -658,9 +657,9 @@
             "DataType": 2,
             "Quantity": 2,
             "Ratio": 1,
-            "RWType":true,
-            "Unit":"m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "m",
+            "AcqMode": false
         }, {
             "Name": "功图数据-位移",
             "Code": "SDiagram",
@@ -668,9 +667,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01m",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01m",
+            "AcqMode": false
         }, {
             "Name": "功图数据-载荷",
             "Code": "FDiagram",
@@ -678,9 +677,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01kN",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01kN",
+            "AcqMode": false
         }, {
             "Name": "功图数据-电流",
             "Code": "ADiagram",
@@ -688,9 +687,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01A",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01A",
+            "AcqMode": false
         }, {
             "Name": "功图数据-功率",
             "Code": "PDiagram",
@@ -698,9 +697,9 @@
             "DataType": 1,
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType":true,
-            "Unit":"0.01kW",
-            "AcqMode":true
+            "RWType": true,
+            "Unit": "0.01kW",
+            "AcqMode": false
         }]
     }]
 }

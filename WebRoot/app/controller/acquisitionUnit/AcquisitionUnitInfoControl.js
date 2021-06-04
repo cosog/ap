@@ -402,7 +402,7 @@ var grantAcquisitionItemsPermission = function () {
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     var groupCode = Ext.getCmp("selectedAcquisitionGroupCode_Id").getValue();
     if (!isNotVal(groupCode)) {
-        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
+//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
         return false
     }
     if (driverConfigItemsData.length > 0) {
@@ -466,7 +466,7 @@ var grantAcquisitionGroupsPermission = function () {
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     var unitId = Ext.getCmp("selectedAcquisitionUnitId_Id").getValue();
     if (!isNotVal(unitId)) {
-        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集单元!');
+//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集单元!');
         return false
     }
     if (acquisitionData.length > 0) {
@@ -507,7 +507,7 @@ var grantAcquisitionGroupsPermission = function () {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '请先选择一个采集单元!' + '！</font>');
+        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采集单元!' + '！</font>');
     }
     return false;
 }

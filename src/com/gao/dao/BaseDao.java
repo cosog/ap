@@ -1331,6 +1331,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
+		List<String> initWellList=new ArrayList<String>();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
@@ -1375,6 +1376,14 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(13, orgId);
 						cs.setInt(14, 10000);
 						cs.executeUpdate();
+						
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceAddr()) 
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceId()) 
+								&&StringManagerUtils.isNotNull(driverCode) 
+								){
+							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
+						}
 					}
 				}
 			}
@@ -1416,6 +1425,13 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(13, orgId);
 						cs.setInt(14, 10000);
 						cs.executeUpdate();
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceAddr()) 
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceId()) 
+								&&StringManagerUtils.isNotNull(driverCode) 
+								){
+							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName());
+						}
 					}
 				}
 			}
@@ -1431,6 +1447,10 @@ public class BaseDao extends HibernateDaoSupport {
 				delSql="delete from tbl_wellinformation t where t.id in ("+delIds+")";
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
+			}
+			
+			if(initWellList.size()>0){
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

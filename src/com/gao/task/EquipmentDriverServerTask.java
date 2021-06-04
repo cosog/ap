@@ -10,7 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Component;
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusProtocolConfig;
+import com.gao.model.drive.InitId;
 import com.gao.model.drive.InitProtocol;
 import com.gao.utils.Config;
 import com.gao.utils.DataModelMap;
@@ -47,11 +52,12 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		loadProtocolConfig();
 		initProtocolConfig("");
 		initServerConfig();
+		initDriverAcquisitionInfoConfig(null);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -84,7 +90,6 @@ public class EquipmentDriverServerTask {
 		String initUrl=Config.getInstance().configFile.getDriverConfig().getProtocol();
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-		StringBuffer configJson = new StringBuffer();
 		InitProtocol initProtocol=null;
 		
 		if(equipmentDriveMap.size()==0){
@@ -108,6 +113,160 @@ public class EquipmentDriverServerTask {
 				}
 			}
 		}
+	}
+	
+	public static int initDriverAcquisitionInfoConfig(List<String> wellList){
+		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		Gson gson = new Gson();
+		int result=0;
+		String wellName=StringManagerUtils.joinStringArr2(wellList, ",");
+		String sql="select wellname, deviceaddr,deviceid,protocol,unit_code,group_code,acq_cycle,max(key) items from "
+				+ " (select  t.wellname,t.deviceaddr,t.deviceid,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,"
+				+ " wm_concat(t5.itemname) over (partition by t.wellname,t.deviceaddr,t.deviceid,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle order by t5.id) key"
+				+ " from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_group_conf t4,tbl_acq_item2group_conf t5 "
+				+ " where t.unitcode=t2.unit_code and t2.id=t3.unitid and t3.groupid=t4.id and t4.id=t5.groupid "
+				+ " and t.deviceaddr is not null and t.deviceid is not null and t.unitcode is not null ";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and t.wellname in("+wellName+")";
+		}
+		sql+="  ) v "
+				+ " group by wellname,deviceaddr,deviceid,protocol,unit_code,group_code,acq_cycle";
+		
+		Map<String,InitId> wellListMap=new HashMap<String,InitId>();
+		
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null || modbusProtocolConfig==null){
+        	return -1;
+        }
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				InitId initId=wellListMap.get(rs.getString(2));
+				if(initId==null){
+					initId=new InitId();
+					initId.setWellName(rs.getString(1));
+					initId.setID(rs.getString(2));
+					initId.setSlave((byte) rs.getInt(3));
+					initId.setProtocolName(rs.getString(4));
+					initId.setGroup(new ArrayList<InitId.Group>());
+				}
+				InitId.Group group=new InitId.Group();
+				group.setInterval(rs.getInt(7));
+				group.setAddr(new ArrayList<Integer>());
+				String[] itemsArr=rs.getString(8).split(",");
+				
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(4))){
+						for(int j=0;j<itemsArr.length;j++){
+							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+								if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getName())){
+									group.getAddr().add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr());
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+				initId.getGroup().add(group);
+				wellListMap.put(rs.getString(2), initId);
+			}
+			result=wellListMap.size();
+			for(Entry<String, InitId> entry:wellListMap.entrySet()){
+				try {
+//					System.out.println(gson.toJson(entry.getValue()));
+					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(entry.getValue()),"utf-8");
+				}catch (Exception e) {
+					continue;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return result;
+	}
+	
+	public static int initDriverAcquisitionInfoConfigByProtocol(String protocol){
+		String sql="select t.wellname from tbl_wellinformation t,tbl_acq_unit_conf t2 where t.unitcode=t2.unit_code and t2.protocol='"+protocol+"'";
+		List<String> wellList=new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getString(1));
+			}
+			if(wellList.size()>0){
+				initDriverAcquisitionInfoConfig(wellList);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
+	}
+	
+	public static int initDriverAcquisitionInfoConfigByUnit(String unitId){
+		String sql="select t.wellname from tbl_wellinformation t,tbl_acq_unit_conf t2 where t.unitcode=t2.unit_code and t2.id="+unitId;
+		List<String> wellList=new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getString(1));
+			}
+			if(wellList.size()>0){
+				initDriverAcquisitionInfoConfig(wellList);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
+	}
+	
+	public static int initDriverAcquisitionInfoConfigByGroup(String groupId){
+		String sql="select t.wellname from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_group_conf t4 "
+				+ "where t.unitcode=t2.unit_code and t2.id=t3.unitid and t3.groupid=t4.id and t4.id="+groupId;
+		List<String> wellList=new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getString(1));
+			}
+			if(wellList.size()>0){
+				initDriverAcquisitionInfoConfig(wellList);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
 	}
 	
 	public static void initServerConfig() throws MalformedURLException{

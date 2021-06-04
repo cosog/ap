@@ -372,6 +372,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 				}
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByGroup(groupId+"");
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -394,12 +395,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String grantAcquisitionGroupsPermission() throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
-		AcquisitionUnitGroup r = null;
+		AcquisitionUnitGroup acquisitionUnitGroup = null;
 		try {
 			String paramsIds = ParamUtils.getParameter(request, "paramsId");
 			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			String unitId = ParamUtils.getParameter(request, "unitId");
-			log.debug("grantAcquisitionItemsPermission paramsIds==" + paramsIds);
+			log.debug("grantAcquisitionGroupsPermission paramsIds==" + paramsIds);
 			String groupIds[] = StringManagerUtils.split(paramsIds, ",");
 			if (groupIds.length > 0 && unitId != null) {
 				this.acquisitionUnitItemManagerService.deleteCurrentAcquisitionUnitOwnGroups(unitId);
@@ -407,14 +408,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 					String module_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");
-						r = new AcquisitionUnitGroup();
-						r.setUnitId(Integer.parseInt(unitId));
+						acquisitionUnitGroup = new AcquisitionUnitGroup();
+						acquisitionUnitGroup.setUnitId(Integer.parseInt(unitId));
 						log.debug("unitId==" + unitId);
-						r.setGroupId(StringManagerUtils.stringTransferInteger(module_[0]));
-						r.setMatrix(module_[1]);
-						this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(r);
+						acquisitionUnitGroup.setGroupId(StringManagerUtils.stringTransferInteger(module_[0]));
+						acquisitionUnitGroup.setMatrix(module_[1]);
+						this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
 					}
 				}
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByUnit(unitId);
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -463,8 +465,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					modbusDriverSaveData.setProtocolCode(modbusProtocolConfig.getProtocol().get(i).getCode());
 					if(modbusDriverSaveData.getProtocolType().equalsIgnoreCase("modbus-tcp")){
 						modbusProtocolConfig.getProtocol().get(i).setType(0);
-					}else{
+					}else if(modbusDriverSaveData.getProtocolType().equalsIgnoreCase("modbus-rtu")){
 						modbusProtocolConfig.getProtocol().get(i).setType(1);
+					}else{
+						modbusProtocolConfig.getProtocol().get(i).setType(2);
 					}
 					
 					if(modbusDriverSaveData.getStoreMode().equalsIgnoreCase("大端")){
@@ -489,9 +493,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 									dataType=3;
 								}
 								boolean initiative=true;
-								if("主动轮询".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
+								if("主动上传".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
 									initiative=true;
-								}else if("被动接收".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
+								}else if("被动响应".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
 									initiative=false;
 								}
 								boolean readonly=true;
@@ -518,6 +522,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
 			equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
 			EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolCode());
+			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocol(modbusDriverSaveData.getProtocolName());
 		}
 		json ="{success:true}";
 		response.setContentType("application/json;charset="+Constants.ENCODING_UTF8);

@@ -2118,7 +2118,7 @@ public class StringManagerUtils {
 	    
 	    public static String join(Object objarr[],String sign){
 	    	String result="";
-	    	for(int i=0;i<objarr.length;i++){
+	    	for(int i=0;objarr!=null&&i<objarr.length;i++){
 	    		result+=objarr[i]+"";
 	    		if(i<objarr.length-1){
 	    			result+=sign;
@@ -2129,7 +2129,7 @@ public class StringManagerUtils {
 	    
 	    public static String join(List<Object> objarr,String sign){
 	    	String result="";
-	    	for(int i=0;i<objarr.size();i++){
+	    	for(int i=0;objarr!=null&&i<objarr.size();i++){
 	    		result+=objarr.get(i)+"";
 	    		if(i<objarr.size()-1){
 	    			result+=sign;
@@ -2140,7 +2140,7 @@ public class StringManagerUtils {
 	    
 	    public static String joinStringArr(String objarr[],String sign){
 	    	String result="";
-	    	for(int i=0;i<objarr.length;i++){
+	    	for(int i=0;objarr!=null&&i<objarr.length;i++){
 	    		result+="\""+objarr[i]+"\"";
 	    		if(i<objarr.length-1){
 	    			result+=sign;
@@ -2151,8 +2151,19 @@ public class StringManagerUtils {
 	    
 	    public static String joinStringArr(List<String> objarr,String sign){
 	    	String result="";
-	    	for(int i=0;i<objarr.size();i++){
+	    	for(int i=0;objarr!=null&&i<objarr.size();i++){
 	    		result+="\""+objarr.get(i)+"\"";
+	    		if(i<objarr.size()-1){
+	    			result+=sign;
+	    		}
+	    	}
+	    	return result;
+	    }
+	    
+	    public static String joinStringArr2(List<String> objarr,String sign){
+	    	String result="";
+	    	for(int i=0;objarr!=null&&i<objarr.size();i++){
+	    		result+="'"+objarr.get(i)+"'";
 	    		if(i<objarr.size()-1){
 	    			result+=sign;
 	    		}

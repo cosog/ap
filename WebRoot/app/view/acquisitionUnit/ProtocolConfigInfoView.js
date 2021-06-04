@@ -180,7 +180,7 @@ function CreateProtocolConfigInfoTable(isNew){
 	            for(var i=0;i<result.columns.length;i++){
 	            	colHeaders+="'"+result.columns[i].header+"'";
 	            	if(result.columns[i].dataIndex.toUpperCase()==="ProtocolType".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu','modbus-rtu拓展(主动上传)']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="StoreMode".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['大端', '小端']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="SignInPrefix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="SignInSuffix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="HeartbeatPrefix".toUpperCase()){
@@ -252,6 +252,7 @@ var ProtocolConfigHandsontableHelper = {
 	                    columns: [0,8],
 	                    indicators: true
 	                },
+	                colWidths: [80,80,170,120,120,120,120,120],
 	                columns:protocolConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -289,7 +290,6 @@ var ProtocolConfigHandsontableHelper = {
 	                },
 	                beforeRemoveRow: function (index, amount) {
 	                    var ids = [];
-	                    //封装id成array传入后台
 	                    if (amount != 0) {
 	                        for (var i = index; i < amount + index; i++) {
 	                            var rowdata = protocolConfigHandsontableHelper.hot.getDataAtRow(i);
@@ -300,8 +300,6 @@ var ProtocolConfigHandsontableHelper = {
 	                    }
 	                },
 	                afterChange: function (changes, source) {
-	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
-	                    
 	                    if (changes != null) {
 	                    	for(var i=0;i<changes.length;i++){
 	                    		var params = [];
@@ -475,7 +473,7 @@ function CreateDriverConfigItemsInfoTable(data){
 			+"{data:'readonly',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 			+"{data:'unit'}," 
 			+"{data:'zoom',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
-			+"{data:'initiative',type:'dropdown',strict:true,allowInvalid:false,source:['主动轮询', '被动接收']}" 
+			+"{data:'initiative',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}" 
 			+"]";
 	protocolConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 	protocolConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -927,9 +925,7 @@ function CreateAcquisitionUnitConfigInfoTable(isNew){
 			       
 		            for(var i=0;i<result.columns.length;i++){
 		            	colHeaders+="'"+result.columns[i].header+"'";
-		            	if(result.columns[i].dataIndex.toUpperCase()==="protocol".toUpperCase()){
-		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
-		            	}else if(result.columns[i].dataIndex.toUpperCase()==="unitName".toUpperCase()){
+		            	if(result.columns[i].dataIndex.toUpperCase()==="unitName".toUpperCase()){
 		            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_NotNull(val, callback,this.row, this.col,acquisitionUnitConfigHandsontableHelper);}}";
 		            	}else{
 		            		columns+="{data:'"+result.columns[i].dataIndex+"'}";

@@ -171,7 +171,7 @@ private CommonDataService service;
 							+ "\"zoom\":"+protocolConfig.getItems().get(j).getRatio()+","
 							+ "\"readonly\":\""+(protocolConfig.getItems().get(j).getRWType()?"只读":"读写")+"\","
 							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-							+ "\"initiative\":\""+(protocolConfig.getItems().get(j).getAcqMode()?"主动轮询":"被动接收")+"\"},");
+							+ "\"initiative\":\""+(protocolConfig.getItems().get(j).getAcqMode()?"主动上传":"被动响应")+"\"},");
 				}
 				if(driverConfigData.toString().endsWith(",")){
 					driverConfigData.deleteCharAt(driverConfigData.length() - 1);
@@ -181,7 +181,7 @@ private CommonDataService service;
 				result_json.append("{"
 						+ "\"id\":"+i+","
 						+ "\"ProtocolName\":\""+protocolConfig.getName()+"\","
-						+ "\"ProtocolType\":\""+(protocolConfig.getType()==0?"modbus-tcp":"modbus-rtu")+"\","
+						+ "\"ProtocolType\":\""+getProtocolType(protocolConfig.getType())+"\","
 						+ "\"StoreMode\":\""+(protocolConfig.getStoreMode()==0?"大端":"小端")+"\","
 						+ "\"SignInPrefix\":\""+protocolConfig.getSignInPrefix()+"\","
 						+ "\"SignInSuffix\":\""+protocolConfig.getSignInSuffix()+"\","
@@ -344,5 +344,17 @@ private CommonDataService service;
 			dataType="BCD码";
 		}
 		return dataType;
+	}
+	
+	public static String getProtocolType(int type){
+		String protocolType="";
+		if(type==0){
+			protocolType="modbus-tcp";
+		}else if(type==1){
+			protocolType="modbus-rtu";
+		}else if(type==2){
+			protocolType="modbus-rtu拓展(主动上传)";
+		}
+		return protocolType;
 	}
 }

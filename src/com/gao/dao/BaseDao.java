@@ -1450,7 +1450,7 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 			
 			if(initWellList.size()>0){
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList);
+				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

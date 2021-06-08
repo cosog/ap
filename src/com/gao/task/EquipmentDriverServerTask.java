@@ -52,12 +52,12 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		loadProtocolConfig();
-		initProtocolConfig("");
+		initProtocolConfig("","");
 		initServerConfig();
-		initDriverAcquisitionInfoConfig(null);
+		initDriverAcquisitionInfoConfig(null,"");
 	}
 	
 	@SuppressWarnings("static-access")
@@ -86,7 +86,10 @@ public class EquipmentDriverServerTask {
 		System.out.println("驱动初始化结束");
 	}
 	
-	public static void initProtocolConfig(String protocolCode){
+	public static void initProtocolConfig(String protocolCode,String method){
+		if(!StringManagerUtils.isNotNull(method)){
+			method="update";
+		}
 		String initUrl=Config.getInstance().configFile.getDriverConfig().getProtocol();
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
@@ -102,6 +105,7 @@ public class EquipmentDriverServerTask {
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i));
+						initProtocol.setMethod(method);
 						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8");
 						break;
 					}
@@ -109,17 +113,21 @@ public class EquipmentDriverServerTask {
 			}else{
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i));
+					initProtocol.setMethod(method);
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8");
 				}
 			}
 		}
 	}
 	
-	public static int initDriverAcquisitionInfoConfig(List<String> wellList){
+	public static int initDriverAcquisitionInfoConfig(List<String> wellList,String method){
 		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
 		Gson gson = new Gson();
 		int result=0;
 		String wellName=StringManagerUtils.joinStringArr2(wellList, ",");
+		if(!StringManagerUtils.isNotNull(method)){
+			method="update";
+		}
 		String sql="select wellname, deviceaddr,deviceid,protocol,unit_code,group_code,acq_cycle,max(key) items from "
 				+ " (select  t.wellname,t.deviceaddr,t.deviceid,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,"
 				+ " wm_concat(t5.itemname) over (partition by t.wellname,t.deviceaddr,t.deviceid,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle order by t5.id) key"
@@ -152,6 +160,7 @@ public class EquipmentDriverServerTask {
 				InitId initId=wellListMap.get(rs.getString(2));
 				if(initId==null){
 					initId=new InitId();
+					initId.setMethod(method);
 					initId.setWellName(rs.getString(1));
 					initId.setID(rs.getString(2));
 					initId.setSlave((byte) rs.getInt(3));
@@ -210,7 +219,7 @@ public class EquipmentDriverServerTask {
 				wellList.add(rs.getString(1));
 			}
 			if(wellList.size()>0){
-				initDriverAcquisitionInfoConfig(wellList);
+				initDriverAcquisitionInfoConfig(wellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -234,7 +243,7 @@ public class EquipmentDriverServerTask {
 				wellList.add(rs.getString(1));
 			}
 			if(wellList.size()>0){
-				initDriverAcquisitionInfoConfig(wellList);
+				initDriverAcquisitionInfoConfig(wellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -259,7 +268,7 @@ public class EquipmentDriverServerTask {
 				wellList.add(rs.getString(1));
 			}
 			if(wellList.size()>0){
-				initDriverAcquisitionInfoConfig(wellList);
+				initDriverAcquisitionInfoConfig(wellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

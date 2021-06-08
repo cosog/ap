@@ -80,23 +80,6 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 //		request.setAttribute("locale", browserLang);
 		String urlString = loginUrl[loginUrl.length - 1];
 		if (uck.equalsIgnoreCase("God bless you!")) {
-//			if (urlString.equals("toLogin")
-//					||urlString.equals("toBackMain")
-//					||urlString.equals("toMain")
-//					||urlString.equals("getUserList")||urlString.equals("userLogin")
-//					||urlString.endsWith(".js")||urlString.endsWith(".css")||urlString.endsWith(".jsp")
-//					||urlString.endsWith(".html")||urlString.endsWith(".htm")||urlString.endsWith(".dhtml")||urlString.endsWith(".xhtml")||urlString.endsWith(".shtml")||urlString.endsWith(".shtm")
-//					||urlString.endsWith(".ico")||urlString.endsWith(".jpg")||urlString.endsWith(".png")||urlString.endsWith(".gif")
-//					||urlString.endsWith(".jpeg")||urlString.endsWith(".svg")||urlString.endsWith(".bmp")
-//					||urlString.endsWith(".json")
-//					||urlString.equals("getBatchCalculateTime")||urlString.equals("totalCalculation")
-//					||urlString.equals("getBalanceTorqueCalulate")||urlString.equals("balanceTotalCalculation")
-//					||urlString.equals("saveRTUAcquisitionData")
-//					){
-//				chain.doFilter(request, response);
-//			} 
-			
-			
 			if (!path.contains("Controller")){//只过滤Controller
 				chain.doFilter(request, response);
 			}else {

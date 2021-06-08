@@ -21,7 +21,7 @@ public class ModbusProtocolConfig {
 
 	    private int Addr;
 
-	    private int DataType;
+	    private String DataType;
 
 	    private int Quantity;
 
@@ -51,10 +51,10 @@ public class ModbusProtocolConfig {
 	    public int getAddr(){
 	        return this.Addr;
 	    }
-	    public void setDataType(int DataType){
+	    public void setDataType(String DataType){
 	        this.DataType = DataType;
 	    }
-	    public int getDataType(){
+	    public String getDataType(){
 	        return this.DataType;
 	    }
 	    public void setQuantity(int Quantity){

@@ -334,14 +334,18 @@ private CommonDataService service;
 	
 	
 	
-	public static String getDataItemsType(int type){
+	public static String getDataItemsType(String type){
 		String dataType="";
-		if(type==1){
-			dataType="整型";
-		}else if(type==2){
+		if(type.equalsIgnoreCase("int")){
+			dataType="有符号整型";
+		}else if(type.equalsIgnoreCase("uint")){
+			dataType="无符号整型";
+		}else if(type.equalsIgnoreCase("float")){
 			dataType="实型";
-		}else if(type==3){
+		}else if(type.equalsIgnoreCase("bcd")){
 			dataType="BCD码";
+		}else if(type.equalsIgnoreCase("asc")){
+			dataType="ASCII";
 		}
 		return dataType;
 	}

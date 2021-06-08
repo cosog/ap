@@ -484,13 +484,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 					for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
 						for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getName().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getName())){
-								int dataType=1;
-								if("整型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
-									dataType=1;
+								String dataType="int";
+								if("有符号整型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
+									dataType="int";
+								}else if("无符号整型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
+									dataType="uint";
 								}else if("实型".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
-									dataType=2;
+									dataType="float";
 								}else if("BCD码".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
-									dataType=3;
+									dataType="bcd";
+								}else if("ASCII".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getDataType())){
+									dataType="asc";
 								}
 								boolean initiative=true;
 								if("主动上传".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getInitiative())){
@@ -521,7 +525,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 //			System.out.println(gson.toJson(modbusProtocolConfig));
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
 			equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
-			EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolCode());
+			EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolCode(),"update");
 			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocol(modbusDriverSaveData.getProtocolName());
 		}
 		json ="{success:true}";

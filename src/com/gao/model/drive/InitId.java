@@ -4,6 +4,8 @@ import java.util.List;
 
 public class InitId {
 	
+	private String Method;
+	
 	private String WellName;
 	
 	private String ID;
@@ -64,5 +66,11 @@ public class InitId {
 	}
 	public void setWellName(String wellName) {
 		WellName = wellName;
+	}
+	public String getMethod() {
+		return Method;
+	}
+	public void setMethod(String method) {
+		Method = method;
 	}
 }

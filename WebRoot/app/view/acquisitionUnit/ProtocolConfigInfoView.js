@@ -469,7 +469,7 @@ function CreateDriverConfigItemsInfoTable(data){
 	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'item'},"
 		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
 			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
-			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['整型', '实型','BCD码']}," 
+			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['有符号整型','无符号整型','实型', 'BCD码','ASCII']}," 
 			+"{data:'readonly',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 			+"{data:'unit'}," 
 			+"{data:'zoom',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 

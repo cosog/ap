@@ -251,7 +251,7 @@
             "AcqMode": false
         }, {
             "Name": "功图采集间隔",
-            "Code": "FSDiagramAcquisitionInterval",
+            "Code": "FESDiagramAcquisitionInterval",
             "Addr": 40981,
             "DataType": "uint",
             "Quantity": 1,
@@ -261,7 +261,7 @@
             "AcqMode": false
         }, {
             "Name": "功图设置点数",
-            "Code": "FSDiagramSetPointCount",
+            "Code": "FESDiagramSetPointCount",
             "Addr": 40983,
             "DataType": "uint",
             "Quantity": 1,
@@ -271,7 +271,7 @@
             "AcqMode": false
         }, {
             "Name": "功图实测点数",
-            "Code": "FSDiagramPointCount",
+            "Code": "FESDiagramPointCount",
             "Addr": 40984,
             "DataType": "uint",
             "Quantity": 1,
@@ -281,7 +281,7 @@
             "AcqMode": false
         }, {
             "Name": "功图采集时间",
-            "Code": "FSDiagramAcqTime",
+            "Code": "FESDiagramAcqTime",
             "Addr": 40985,
             "DataType": "bcd",
             "Quantity": 6,
@@ -331,7 +331,7 @@
             "AcqMode": false
         }, {
             "Name": "功图数据-电流",
-            "Code": "ADiagram",
+            "Code": "IDiagram",
             "Addr": 41501,
             "DataType": "int",
             "Quantity": 250,
@@ -341,7 +341,7 @@
             "AcqMode": false
         }, {
             "Name": "功图数据-功率",
-            "Code": "PDiagram",
+            "Code": "WattDiagram",
             "Addr": 41751,
             "DataType": "int",
             "Quantity": 250,
@@ -602,7 +602,7 @@
             "AcqMode": false
         }, {
             "Name": "功图采集间隔",
-            "Code": "FSDiagramAcquisitionInterval",
+            "Code": "FESDiagramAcquisitionInterval",
             "Addr": 40981,
             "DataType": "uint",
             "Quantity": 1,
@@ -612,7 +612,7 @@
             "AcqMode": false
         }, {
             "Name": "功图设置点数",
-            "Code": "FSDiagramSetPointCount",
+            "Code": "FESDiagramSetPointCount",
             "Addr": 40983,
             "DataType": "uint",
             "Quantity": 1,
@@ -622,7 +622,7 @@
             "AcqMode": false
         }, {
             "Name": "功图实测点数",
-            "Code": "FSDiagramPointCount",
+            "Code": "FESDiagramPointCount",
             "Addr": 40984,
             "DataType": "uint",
             "Quantity": 1,
@@ -632,7 +632,7 @@
             "AcqMode": false
         }, {
             "Name": "功图采集时间",
-            "Code": "FSDiagramAcqTime",
+            "Code": "FESDiagramAcqTime",
             "Addr": 40985,
             "DataType": "bcd",
             "Quantity": 6,
@@ -682,7 +682,7 @@
             "AcqMode": false
         }, {
             "Name": "功图数据-电流",
-            "Code": "ADiagram",
+            "Code": "IDiagram",
             "Addr": 41501,
             "DataType": "int",
             "Quantity": 250,
@@ -692,7 +692,7 @@
             "AcqMode": false
         }, {
             "Name": "功图数据-功率",
-            "Code": "PDiagram",
+            "Code": "WattDiagram",
             "Addr": 41751,
             "DataType": "int",
             "Quantity": 250,

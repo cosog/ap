@@ -2113,9 +2113,6 @@ public class StringManagerUtils {
 	    	return resultByte;
 	    }
 	    
-	    
-	    
-	    
 	    public static String join(Object objarr[],String sign){
 	    	String result="";
 	    	for(int i=0;objarr!=null&&i<objarr.length;i++){

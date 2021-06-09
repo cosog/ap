@@ -1345,7 +1345,6 @@ public class GraphicalUploadController extends BaseController {
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-//							+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
 					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
 						ifAddDay=true;
 					}
@@ -1353,7 +1352,6 @@ public class GraphicalUploadController extends BaseController {
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
 						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-//						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
 					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
 						ifAddDay=true;
 					}

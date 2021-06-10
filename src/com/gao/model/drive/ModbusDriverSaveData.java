@@ -41,67 +41,92 @@ public class ModbusDriverSaveData {
 	{
 	    private String Name;
 
-	    private int Address;
+	    private int Addr;
 
-	    private int Length;
+	    private int Quantity;
 
-	    private String DataType;
+	    private String SrcDataType;
 	    
-	    private String Readonly;
+	    private String DestDataType;
 	    
 	    private String Unit;
 
-	    private float Zoom;
+	    private float Ratio;
 	    
-	    private String Initiative;
+	    private String AcqMode;
+	    
+	    private String RWType;
 
-	    public void setName(String Name){
-	        this.Name = Name;
-	    }
-	    public String getName(){
-	        return this.Name;
-	    }
-	    public void setAddress(int Address){
-	        this.Address = Address;
-	    }
-	    public int getAddress(){
-	        return this.Address;
-	    }
-	    public void setLength(int Length){
-	        this.Length = Length;
-	    }
-	    public int getLength(){
-	        return this.Length;
-	    }
-	    public void setDataType(String DataType){
-	        this.DataType = DataType;
-	    }
-	    public String getDataType(){
-	        return this.DataType;
-	    }
-	    public void setZoom(float Zoom){
-	        this.Zoom = Zoom;
-	    }
-	    public float getZoom(){
-	        return this.Zoom;
-	    }
-		public String getInitiative() {
-			return Initiative;
+		public String getName() {
+			return Name;
 		}
-		public void setInitiative(String initiative) {
-			Initiative = initiative;
+
+		public void setName(String name) {
+			Name = name;
 		}
-		public String getReadonly() {
-			return Readonly;
+
+		public int getAddr() {
+			return Addr;
 		}
-		public void setReadonly(String readonly) {
-			Readonly = readonly;
+
+		public void setAddr(int addr) {
+			Addr = addr;
 		}
+
+		public int getQuantity() {
+			return Quantity;
+		}
+
+		public void setQuantity(int quantity) {
+			Quantity = quantity;
+		}
+
+		public String getSrcDataType() {
+			return SrcDataType;
+		}
+
+		public void setSrcDataType(String srcDataType) {
+			SrcDataType = srcDataType;
+		}
+
+		public String getDestDataType() {
+			return DestDataType;
+		}
+
+		public void setDestDataType(String destDataType) {
+			DestDataType = destDataType;
+		}
+
 		public String getUnit() {
 			return Unit;
 		}
+
 		public void setUnit(String unit) {
 			Unit = unit;
+		}
+
+		public float getRatio() {
+			return Ratio;
+		}
+
+		public void setRatio(float ratio) {
+			Ratio = ratio;
+		}
+
+		public String getAcqMode() {
+			return AcqMode;
+		}
+
+		public void setAcqMode(String acqMode) {
+			AcqMode = acqMode;
+		}
+
+		public String getRWType() {
+			return RWType;
+		}
+
+		public void setRWType(String rWType) {
+			RWType = rWType;
 		}
 	}
 

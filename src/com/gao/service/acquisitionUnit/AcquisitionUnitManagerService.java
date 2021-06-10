@@ -137,13 +137,14 @@ private CommonDataService service;
 		String diagramTableColumns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",width:120 ,children:[] },"
-				+ "{ \"header\":\"地址\",\"dataIndex\":\"address\",width:80 ,children:[] },"
-				+ "{ \"header\":\"寄存器数量\",\"dataIndex\":\"length\",width:80 ,children:[] },"
-				+ "{ \"header\":\"数据类型\",\"dataIndex\":\"dataType\",width:80 ,children:[] },"
-				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"readonly\",width:80 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"寄存器数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\"源数据类型\",\"dataIndex\":\"srcDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"目的数据类型\",\"dataIndex\":\"destDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
 				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
-				+ "{ \"header\":\"单位换算系数\",\"dataIndex\":\"zoom\",width:80 ,children:[] },"
-				+ "{ \"header\":\"模式\",\"dataIndex\":\"initiative\",width:80 ,children:[] }"
+				+ "{ \"header\":\"单位换算系数\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\"模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
 				+ "]";
 		
 		
@@ -165,13 +166,14 @@ private CommonDataService service;
 					driverConfigData.append("{\"checked\":false,"
 							+ "\"id\":"+(j+1)+","
 							+ "\"item\":\""+protocolConfig.getItems().get(j).getName()+"\","
-							+ "\"address\":"+protocolConfig.getItems().get(j).getAddr()+","
-							+ "\"length\":"+protocolConfig.getItems().get(j).getQuantity()+","
-							+ "\"dataType\":\""+getDataItemsType(protocolConfig.getItems().get(j).getDataType())+"\","
-							+ "\"zoom\":"+protocolConfig.getItems().get(j).getRatio()+","
-							+ "\"readonly\":\""+(protocolConfig.getItems().get(j).getRWType()?"只读":"读写")+"\","
+							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+							+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
+							+ "\"srcDataType\":\""+protocolConfig.getItems().get(j).getSrcDataType()+"\","
+							+ "\"destDataType\":\""+protocolConfig.getItems().get(j).getDestDataType()+"\","
+							+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
+							+ "\"RWType\":\""+(protocolConfig.getItems().get(j).getRWType()?"只读":"读写")+"\","
 							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-							+ "\"initiative\":\""+(protocolConfig.getItems().get(j).getAcqMode()?"主动上传":"被动响应")+"\"},");
+							+ "\"acqMode\":\""+(protocolConfig.getItems().get(j).getAcqMode()?"主动上传":"被动响应")+"\"},");
 				}
 				if(driverConfigData.toString().endsWith(",")){
 					driverConfigData.deleteCharAt(driverConfigData.length() - 1);

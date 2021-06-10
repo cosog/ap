@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,9 +23,12 @@ import com.gao.controller.base.BaseController;
 import com.gao.model.DiagnosisAnalysisOnly;
 import com.gao.model.DiagnosisAnalysisStatistics;
 import com.gao.model.User;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.diagnosis.DiagnosisAnalysisOnlyService;
 import com.gao.task.EquipmentDriverServerTask;
+import com.gao.utils.Config;
+import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.I18NConfig;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
@@ -478,6 +482,89 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	@RequestMapping("/wellControlOperation")
+	public String WellControlOperation() throws Exception {
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		String url=Config.getInstance().configFile.getDriverConfig().getCtrl();
+		String wellName = request.getParameter("wellName");
+		String password = request.getParameter("password");
+		String controlType = request.getParameter("controlType");
+		String controlValue = request.getParameter("controlValue");
+		String jsonLogin = "";
+		String clientIP=StringManagerUtils.getIpAddr(request);
+		User userInfo = (User) request.getSession().getAttribute("userLogin");
+		// 用户不存在
+		if (null != userInfo) {
+			String getUpwd = userInfo.getUserPwd();
+			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
+			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
+				String sql="select t2.protocol, t.deviceaddr,to_number(t.deviceid) from tbl_wellinformation t,tbl_acq_unit_conf t2 "
+						+ " where t.unitcode=t2.unit_code and t.wellname='"+wellName+"'";
+				List list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					Object[] obj=(Object[]) list.get(0);
+					if(StringManagerUtils.isNotNull(obj[0]+"") && StringManagerUtils.isNotNull(obj[1]+"") && StringManagerUtils.isNotNull(obj[2]+"")){
+						Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+						if(equipmentDriveMap.size()==0){
+							EquipmentDriverServerTask.loadProtocolConfig();
+							equipmentDriveMap = EquipmentDriveMap.getMapObject();
+						}
+						ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+						
+						ModbusProtocolConfig.Protocol protocol=null;
+						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+							if((obj[0]+"").equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+								protocol=modbusProtocolConfig.getProtocol().get(i);
+								break;
+							}
+						}
+						int addr=0;
+						String itemCode="";
+						
+						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
+							itemCode="RunControl";
+						}else if("frequencySetValue".equalsIgnoreCase(controlType)){//设置变频频率
+							itemCode="SetFrequency";
+						}
+						for(int i=0;i<protocol.getItems().size();i++){
+							if(itemCode.equals(protocol.getItems().get(i).getCode())){
+								addr=protocol.getItems().get(i).getAddr();
+								break;
+							}
+						}
+						if(addr>0){
+							String ctrlJson="{"
+									+ "\"ID\":\""+obj[1]+"\","
+									+ "\"Slave\":"+obj[2]+","
+									+ "\"Addr\":"+addr+","
+									+ "\"Value\":"+controlValue+","
+									+ "}";
+							StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
+						}
+						jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
+					}else{
+						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>协议配置有误，请核查！</font>'}";
+					}
+				}else{
+					jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>该井不存在，请核查！</font>'}";
+				}
+			}else if(getOld.equals(getUpwd) && !StringManagerUtils.isNumber(controlValue)){
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>数据有误，请检查输入数据！</font>'}";
+			} else {
+				jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>您输入的密码有误！</font>'}";
+			}
+
+		} else {
+			jsonLogin = "{success:true,flag:false}";
+		}
+		// 处理乱码。
+		response.setCharacterEncoding("utf-8");
+		// 输出json数据。
+		out.print(jsonLogin);
 		return null;
 	}
 

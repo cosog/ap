@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusProtocolConfig;
+import com.gao.model.drive.AcqGroup;
 import com.gao.model.drive.InitId;
 import com.gao.model.drive.InitProtocol;
 import com.gao.utils.Config;
@@ -54,6 +55,17 @@ public class EquipmentDriverServerTask {
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+//		String data="{\"ID\":\"12345678901\",\"Slave\":1,\"GroupSN\":1,\"Addr\":[40001,40003,40005],\"Value\":[[1,2],[2.5],[\"aa\"]]}";
+//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/group";
+//		StringManagerUtils.sendPostMethod(url, data,"utf-8");
+//		Gson gson=new Gson();
+//		java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
+//		AcqGroup acqGroup=gson.fromJson(data, type);
+//		for(int i=0;i<acqGroup.getAddr().size();i++){
+//			for(int j=0;j<acqGroup.getValue().get(i).size();j++){
+//				System.out.println(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(j)));
+//			}
+//		}
 		loadProtocolConfig();
 		initProtocolConfig("","");
 		initServerConfig();

@@ -2271,4 +2271,24 @@ public class StringManagerUtils {
 			}
 			return result;
 		}
+	    
+	    public static String objectToString(Object obj,String dataType){
+	    	String result="";
+	    	if("int".equalsIgnoreCase(dataType)){
+	    		result=(int)obj+"";
+	    	}else if("uint".equalsIgnoreCase(dataType)){
+	    		result=(int)obj+"";
+	    	}else if("float32".equalsIgnoreCase(dataType)){
+	    		result=(float)obj+"";
+	    	}else if("float64".equalsIgnoreCase(dataType)){
+	    		result=(double)obj+"";
+	    	}else if("string".equalsIgnoreCase(dataType)){
+	    		result=obj+"";
+	    	}else if("bcd".equalsIgnoreCase(dataType)){
+	    		result=obj+"";
+	    	}else if("asc".equalsIgnoreCase(dataType)){
+	    		result=obj+"";
+	    	}
+	    	return result;
+	    }
 }

@@ -21,7 +21,9 @@ public class ModbusProtocolConfig {
 
 	    private int Addr;
 
-	    private String DataType;
+	    private String SrcDataType;
+	    
+	    private String DestDataType;
 
 	    private int Quantity;
 
@@ -50,12 +52,6 @@ public class ModbusProtocolConfig {
 	    }
 	    public int getAddr(){
 	        return this.Addr;
-	    }
-	    public void setDataType(String DataType){
-	        this.DataType = DataType;
-	    }
-	    public String getDataType(){
-	        return this.DataType;
 	    }
 	    public void setQuantity(int Quantity){
 	        this.Quantity = Quantity;
@@ -87,6 +83,18 @@ public class ModbusProtocolConfig {
 	    public boolean getAcqMode(){
 	        return this.AcqMode;
 	    }
+		public String getSrcDataType() {
+			return SrcDataType;
+		}
+		public void setSrcDataType(String srcDataType) {
+			SrcDataType = srcDataType;
+		}
+		public String getDestDataType() {
+			return DestDataType;
+		}
+		public void setDestDataType(String destDataType) {
+			DestDataType = destDataType;
+		}
 	}
 	
 	public class Protocol

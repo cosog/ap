@@ -522,30 +522,30 @@ public class CalculateDataService<T> extends BaseService<T> {
 			        calculateRequestData.setFESDiagram(new RPCCalculateRequestData.FESDiagram());
 			        calculateRequestData.getFESDiagram().setSrc(0);
 			        calculateRequestData.getFESDiagram().setAcqTime(acquisitionGroupResolutionData.getFESDiagramAcqTime());
-			        calculateRequestData.getFESDiagram().setStroke(acquisitionGroupResolutionData.getStroke());
-			        calculateRequestData.getFESDiagram().setSPM(acquisitionGroupResolutionData.getSPM());
+			        calculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(acquisitionGroupResolutionData.getStroke()));
+			        calculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(acquisitionGroupResolutionData.getSPM()));
 			        List<Float> F=new ArrayList<Float>();
 			        List<Float> S=new ArrayList<Float>();
 			        List<Float> Watt=new ArrayList<Float>();
 			        List<Float> I=new ArrayList<Float>();
 			        if(acquisitionGroupResolutionData.getFDiagram()!=null&&acquisitionGroupResolutionData.getFDiagram().size()>0){
 			        	for(int i=0;i<acquisitionGroupResolutionData.getFDiagram().size();i++){
-				        	F.add(acquisitionGroupResolutionData.getFDiagram().get(i));
+				        	F.add(StringManagerUtils.stringToFloat(acquisitionGroupResolutionData.getFDiagram().get(i)));
 				        }
 			        }
 			        if(acquisitionGroupResolutionData.getSDiagram()!=null&&acquisitionGroupResolutionData.getSDiagram().size()>0){
 			        	for(int i=0;i<acquisitionGroupResolutionData.getSDiagram().size();i++){
-				        	S.add(acquisitionGroupResolutionData.getSDiagram().get(i));
+				        	S.add(StringManagerUtils.stringToFloat(acquisitionGroupResolutionData.getSDiagram().get(i)));
 				        }
 			        }
 			        if(acquisitionGroupResolutionData.getWattDiagram()!=null&&acquisitionGroupResolutionData.getWattDiagram().size()>0){
 			        	for(int i=0;i<acquisitionGroupResolutionData.getWattDiagram().size();i++){
-				        	Watt.add(acquisitionGroupResolutionData.getWattDiagram().get(i));
+				        	Watt.add(StringManagerUtils.stringToFloat(acquisitionGroupResolutionData.getWattDiagram().get(i)));
 				        }
 			        }
 			        if(acquisitionGroupResolutionData.getIDiagram()!=null&&acquisitionGroupResolutionData.getIDiagram().size()>0){
 			        	for(int i=0;i<acquisitionGroupResolutionData.getIDiagram().size();i++){
-				        	I.add(acquisitionGroupResolutionData.getIDiagram().get(i));
+				        	I.add(StringManagerUtils.stringToFloat(acquisitionGroupResolutionData.getIDiagram().get(i)));
 				        }
 			        }
 			        

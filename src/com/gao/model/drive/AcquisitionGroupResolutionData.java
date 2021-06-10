@@ -14,85 +14,83 @@ public class AcquisitionGroupResolutionData {
 	
 	public String AcqTime;
 	
-	public int RunStatus;
+	public String RunStatus;
 	
-	public float IA;
+	public String IA;
 
-    public float IB;
+    public String IB;
 
-    public float IC;
+    public String IC;
 
-    public float VA;
+    public String VA;
 
-    public float VB;
+    public String VB;
 
-    public float VC;
+    public String VC;
 
-    public float KWattH;
+    public String KWattH;
 
-    public float KVarH;
+    public String KVarH;
 
-    public float Watt3;
+    public String Watt3;
 
-    public float Var3;
+    public String Var3;
 
-    public float ReversePower;
+    public String ReversePower;
 
-    public float PF3;
+    public String PF3;
     
-    public float TubingPressure;
+    public String TubingPressure;
 
-    public float CasingPressure;
+    public String CasingPressure;
 
-    public float BackPressure;
+    public String BackPressure;
 
-    public float WellHeadFluidTemperature;
+    public String WellHeadFluidTemperature;
     
-    public float ProducingfluidLevel;
+    public String ProducingfluidLevel;
 
-    public float WaterCut;
+    public String WaterCut;
     
-    public float SetFrequency;
+    public String SetFrequency;
 
-    public float RunFrequency;
+    public String RunFrequency;
     
-    public float RPM;
+    public String RPM;
 
-    public float Torque;
+    public String Torque;
 
     public String FESDiagramAcqTime;
     
-    public int FESDiagramAcquisitionInterval;
+    public String FESDiagramAcquisitionInterval;
     
-    public int FESDiagramSetPointCount;
+    public String FESDiagramSetPointCount;
     
-    public int FESDiagramPointCount;
+    public String FESDiagramPointCount;
 
-    public float SPM;
+    public String SPM;
 
-    public float Stroke;
+    public String Stroke;
     
-    public float HaveBalanceData=0;
+    public String UpStrokeIMax;
     
-    public float UpStrokeIMax;
+    public String DownStrokeIMax;
     
-    public float DownStrokeIMax;
+    public String IDegreeBalance;
     
-    public float IDegreeBalance;
+    public String UpStrokeWattMax;
     
-    public float UpStrokeWattMax;
+    public String DownStrokeWattMax;
     
-    public float DownStrokeWattMax;
-    
-    public float WattDegreeBalance;
+    public String WattDegreeBalance;
 
-    public List<Float> SDiagram;
+    public List<String> SDiagram;
 
-    public List<Float> FDiagram;
+    public List<String> FDiagram;
 
-    public List<Float> IDiagram;
+    public List<String> IDiagram;
 
-    public List<Float> WattDiagram;
+    public List<String> WattDiagram;
 
 	public String getWellName() {
 		return WellName;
@@ -134,292 +132,188 @@ public class AcquisitionGroupResolutionData {
 		AcqTime = acqTime;
 	}
 
-	public int getRunStatus() {
+	public String getRunStatus() {
 		return RunStatus;
 	}
 
-	public void setRunStatus(int runStatus) {
+	public void setRunStatus(String runStatus) {
 		RunStatus = runStatus;
 	}
 
-	public float getIA() {
+	public String getIA() {
 		return IA;
 	}
 
-	public void setIA(float iA) {
+	public void setIA(String iA) {
 		IA = iA;
 	}
 
-	public float getIB() {
+	public String getIB() {
 		return IB;
 	}
 
-	public void setIB(float iB) {
+	public void setIB(String iB) {
 		IB = iB;
 	}
 
-	public float getIC() {
+	public String getIC() {
 		return IC;
 	}
 
-	public void setIC(float iC) {
+	public void setIC(String iC) {
 		IC = iC;
 	}
 
-	public float getVA() {
+	public String getVA() {
 		return VA;
 	}
 
-	public void setVA(float vA) {
+	public void setVA(String vA) {
 		VA = vA;
 	}
 
-	public float getVB() {
+	public String getVB() {
 		return VB;
 	}
 
-	public void setVB(float vB) {
+	public void setVB(String vB) {
 		VB = vB;
 	}
 
-	public float getVC() {
+	public String getVC() {
 		return VC;
 	}
 
-	public void setVC(float vC) {
+	public void setVC(String vC) {
 		VC = vC;
 	}
 
-	public float getKWattH() {
+	public String getKWattH() {
 		return KWattH;
 	}
 
-	public void setKWattH(float kWattH) {
+	public void setKWattH(String kWattH) {
 		KWattH = kWattH;
 	}
 
-	public float getKVarH() {
+	public String getKVarH() {
 		return KVarH;
 	}
 
-	public void setKVarH(float kVarH) {
+	public void setKVarH(String kVarH) {
 		KVarH = kVarH;
 	}
 
-	public float getWatt3() {
+	public String getWatt3() {
 		return Watt3;
 	}
 
-	public void setWatt3(float watt3) {
+	public void setWatt3(String watt3) {
 		Watt3 = watt3;
 	}
 
-	public float getVar3() {
+	public String getVar3() {
 		return Var3;
 	}
 
-	public void setVar3(float var3) {
+	public void setVar3(String var3) {
 		Var3 = var3;
 	}
 
-	public float getReversePower() {
+	public String getReversePower() {
 		return ReversePower;
 	}
 
-	public void setReversePower(float reversePower) {
+	public void setReversePower(String reversePower) {
 		ReversePower = reversePower;
 	}
 
-	public float getPF3() {
+	public String getPF3() {
 		return PF3;
 	}
 
-	public void setPF3(float pF3) {
+	public void setPF3(String pF3) {
 		PF3 = pF3;
 	}
 
-	public float getTubingPressure() {
+	public String getTubingPressure() {
 		return TubingPressure;
 	}
 
-	public void setTubingPressure(float tubingPressure) {
+	public void setTubingPressure(String tubingPressure) {
 		TubingPressure = tubingPressure;
 	}
 
-	public float getCasingPressure() {
+	public String getCasingPressure() {
 		return CasingPressure;
 	}
 
-	public void setCasingPressure(float casingPressure) {
+	public void setCasingPressure(String casingPressure) {
 		CasingPressure = casingPressure;
 	}
 
-	public float getBackPressure() {
+	public String getBackPressure() {
 		return BackPressure;
 	}
 
-	public void setBackPressure(float backPressure) {
+	public void setBackPressure(String backPressure) {
 		BackPressure = backPressure;
 	}
 
-	public float getWellHeadFluidTemperature() {
+	public String getWellHeadFluidTemperature() {
 		return WellHeadFluidTemperature;
 	}
 
-	public void setWellHeadFluidTemperature(float wellHeadFluidTemperature) {
+	public void setWellHeadFluidTemperature(String wellHeadFluidTemperature) {
 		WellHeadFluidTemperature = wellHeadFluidTemperature;
 	}
 
-	public float getProducingfluidLevel() {
+	public String getProducingfluidLevel() {
 		return ProducingfluidLevel;
 	}
 
-	public void setProducingfluidLevel(float producingfluidLevel) {
+	public void setProducingfluidLevel(String producingfluidLevel) {
 		ProducingfluidLevel = producingfluidLevel;
 	}
 
-	public float getWaterCut() {
+	public String getWaterCut() {
 		return WaterCut;
 	}
 
-	public void setWaterCut(float waterCut) {
+	public void setWaterCut(String waterCut) {
 		WaterCut = waterCut;
 	}
 
-	public float getSetFrequency() {
+	public String getSetFrequency() {
 		return SetFrequency;
 	}
 
-	public void setSetFrequency(float setFrequency) {
+	public void setSetFrequency(String setFrequency) {
 		SetFrequency = setFrequency;
 	}
 
-	public float getRunFrequency() {
+	public String getRunFrequency() {
 		return RunFrequency;
 	}
 
-	public void setRunFrequency(float runFrequency) {
+	public void setRunFrequency(String runFrequency) {
 		RunFrequency = runFrequency;
 	}
 
-	public float getRPM() {
+	public String getRPM() {
 		return RPM;
 	}
 
-	public void setRPM(float rPM) {
+	public void setRPM(String rPM) {
 		RPM = rPM;
 	}
 
-	public float getTorque() {
+	public String getTorque() {
 		return Torque;
 	}
 
-	public void setTorque(float torque) {
+	public void setTorque(String torque) {
 		Torque = torque;
-	}
-
-	public float getSPM() {
-		return SPM;
-	}
-
-	public void setSPM(float sPM) {
-		SPM = sPM;
-	}
-
-	public float getStroke() {
-		return Stroke;
-	}
-
-	public void setStroke(float stroke) {
-		Stroke = stroke;
-	}
-
-	public float getHaveBalanceData() {
-		return HaveBalanceData;
-	}
-
-	public void setHaveBalanceData(float haveBalanceData) {
-		HaveBalanceData = haveBalanceData;
-	}
-
-	public float getUpStrokeIMax() {
-		return UpStrokeIMax;
-	}
-
-	public void setUpStrokeIMax(float upStrokeIMax) {
-		UpStrokeIMax = upStrokeIMax;
-	}
-
-	public float getDownStrokeIMax() {
-		return DownStrokeIMax;
-	}
-
-	public void setDownStrokeIMax(float downStrokeIMax) {
-		DownStrokeIMax = downStrokeIMax;
-	}
-
-	public float getIDegreeBalance() {
-		return IDegreeBalance;
-	}
-
-	public void setIDegreeBalance(float iDegreeBalance) {
-		IDegreeBalance = iDegreeBalance;
-	}
-
-	public float getUpStrokeWattMax() {
-		return UpStrokeWattMax;
-	}
-
-	public void setUpStrokeWattMax(float upStrokeWattMax) {
-		UpStrokeWattMax = upStrokeWattMax;
-	}
-
-	public float getDownStrokeWattMax() {
-		return DownStrokeWattMax;
-	}
-
-	public void setDownStrokeWattMax(float downStrokeWattMax) {
-		DownStrokeWattMax = downStrokeWattMax;
-	}
-
-	public float getWattDegreeBalance() {
-		return WattDegreeBalance;
-	}
-
-	public void setWattDegreeBalance(float wattDegreeBalance) {
-		WattDegreeBalance = wattDegreeBalance;
-	}
-
-	public List<Float> getSDiagram() {
-		return SDiagram;
-	}
-
-	public void setSDiagram(List<Float> sDiagram) {
-		SDiagram = sDiagram;
-	}
-
-	public List<Float> getFDiagram() {
-		return FDiagram;
-	}
-
-	public void setFDiagram(List<Float> fDiagram) {
-		FDiagram = fDiagram;
-	}
-
-	public List<Float> getIDiagram() {
-		return IDiagram;
-	}
-
-	public void setIDiagram(List<Float> iDiagram) {
-		IDiagram = iDiagram;
-	}
-
-	public List<Float> getWattDiagram() {
-		return WattDiagram;
-	}
-
-	public void setWattDiagram(List<Float> wattDiagram) {
-		WattDiagram = wattDiagram;
 	}
 
 	public String getFESDiagramAcqTime() {
@@ -430,27 +324,123 @@ public class AcquisitionGroupResolutionData {
 		FESDiagramAcqTime = fESDiagramAcqTime;
 	}
 
-	public int getFESDiagramAcquisitionInterval() {
+	public String getFESDiagramAcquisitionInterval() {
 		return FESDiagramAcquisitionInterval;
 	}
 
-	public void setFESDiagramAcquisitionInterval(int fESDiagramAcquisitionInterval) {
+	public void setFESDiagramAcquisitionInterval(String fESDiagramAcquisitionInterval) {
 		FESDiagramAcquisitionInterval = fESDiagramAcquisitionInterval;
 	}
 
-	public int getFESDiagramSetPointCount() {
+	public String getFESDiagramSetPointCount() {
 		return FESDiagramSetPointCount;
 	}
 
-	public void setFESDiagramSetPointCount(int fESDiagramSetPointCount) {
+	public void setFESDiagramSetPointCount(String fESDiagramSetPointCount) {
 		FESDiagramSetPointCount = fESDiagramSetPointCount;
 	}
 
-	public int getFESDiagramPointCount() {
+	public String getFESDiagramPointCount() {
 		return FESDiagramPointCount;
 	}
 
-	public void setFESDiagramPointCount(int fESDiagramPointCount) {
+	public void setFESDiagramPointCount(String fESDiagramPointCount) {
 		FESDiagramPointCount = fESDiagramPointCount;
+	}
+
+	public String getSPM() {
+		return SPM;
+	}
+
+	public void setSPM(String sPM) {
+		SPM = sPM;
+	}
+
+	public String getStroke() {
+		return Stroke;
+	}
+
+	public void setStroke(String stroke) {
+		Stroke = stroke;
+	}
+
+	public String getUpStrokeIMax() {
+		return UpStrokeIMax;
+	}
+
+	public void setUpStrokeIMax(String upStrokeIMax) {
+		UpStrokeIMax = upStrokeIMax;
+	}
+
+	public String getDownStrokeIMax() {
+		return DownStrokeIMax;
+	}
+
+	public void setDownStrokeIMax(String downStrokeIMax) {
+		DownStrokeIMax = downStrokeIMax;
+	}
+
+	public String getIDegreeBalance() {
+		return IDegreeBalance;
+	}
+
+	public void setIDegreeBalance(String iDegreeBalance) {
+		IDegreeBalance = iDegreeBalance;
+	}
+
+	public String getUpStrokeWattMax() {
+		return UpStrokeWattMax;
+	}
+
+	public void setUpStrokeWattMax(String upStrokeWattMax) {
+		UpStrokeWattMax = upStrokeWattMax;
+	}
+
+	public String getDownStrokeWattMax() {
+		return DownStrokeWattMax;
+	}
+
+	public void setDownStrokeWattMax(String downStrokeWattMax) {
+		DownStrokeWattMax = downStrokeWattMax;
+	}
+
+	public String getWattDegreeBalance() {
+		return WattDegreeBalance;
+	}
+
+	public void setWattDegreeBalance(String wattDegreeBalance) {
+		WattDegreeBalance = wattDegreeBalance;
+	}
+
+	public List<String> getSDiagram() {
+		return SDiagram;
+	}
+
+	public void setSDiagram(List<String> sDiagram) {
+		SDiagram = sDiagram;
+	}
+
+	public List<String> getFDiagram() {
+		return FDiagram;
+	}
+
+	public void setFDiagram(List<String> fDiagram) {
+		FDiagram = fDiagram;
+	}
+
+	public List<String> getIDiagram() {
+		return IDiagram;
+	}
+
+	public void setIDiagram(List<String> iDiagram) {
+		IDiagram = iDiagram;
+	}
+
+	public List<String> getWattDiagram() {
+		return WattDiagram;
+	}
+
+	public void setWattDiagram(List<String> wattDiagram) {
+		WattDiagram = wattDiagram;
 	}
 }

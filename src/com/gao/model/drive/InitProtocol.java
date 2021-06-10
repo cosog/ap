@@ -25,7 +25,9 @@ public class InitProtocol {
     
     private List<Integer> Quantity;
     
-    private List<String> DataType;
+    private List<String> SrcDataType;
+    
+    private List<String> DestDataType;
     
     private List<String> RWType;
     
@@ -38,8 +40,6 @@ public class InitProtocol {
 	}
     
     public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig) {
-    	
-    	
     	this.setProtocolName(protocolConfig.getName());
     	this.setProtocolType(protocolConfig.getType()==0?"tcp_pasv":(protocolConfig.getType()==1?"rtu_pasv":"rtu_active"));
     	this.setStoreMode(protocolConfig.getStoreMode()==0?"big":"little");
@@ -49,14 +49,16 @@ public class InitProtocol {
     	this.setHeartbeatSuffix(protocolConfig.getHeartbeatSuffix());
     	this.Addr=new ArrayList<Integer>();
     	this.Quantity=new ArrayList<Integer>();
-    	this.DataType=new ArrayList<String>();
+    	this.SrcDataType=new ArrayList<String>();
+    	this.DestDataType=new ArrayList<String>();
     	this.RWType=new ArrayList<String>();
     	this.Ratio=new ArrayList<Float>();
     	this.AcqMode=new ArrayList<String>();
     	for(int i=0;i<protocolConfig.getItems().size();i++){
     		this.Addr.add(protocolConfig.getItems().get(i).getAddr());
     		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
-    		this.DataType.add(protocolConfig.getItems().get(i).getDataType());
+    		this.SrcDataType.add(protocolConfig.getItems().get(i).getSrcDataType());
+    		this.DestDataType.add(protocolConfig.getItems().get(i).getDestDataType());
     		this.RWType.add(protocolConfig.getItems().get(i).getRWType()?"r":"rw");
     		this.Ratio.add(protocolConfig.getItems().get(i).getRatio());
     		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode()?"active":"pasv");
@@ -134,13 +136,21 @@ public class InitProtocol {
 	public void setQuantity(List<Integer> quantity) {
 		Quantity = quantity;
 	}
-
-	public List<String> getDataType() {
-		return DataType;
+	
+	public List<String> getSrcDataType() {
+		return SrcDataType;
 	}
 
-	public void setDataType(List<String> dataType) {
-		DataType = dataType;
+	public void setSrcDataType(List<String> srcDataType) {
+		SrcDataType = srcDataType;
+	}
+
+	public List<String> getDestDataType() {
+		return DestDataType;
+	}
+
+	public void setDestDataType(List<String> destDataType) {
+		DestDataType = destDataType;
 	}
 
 	public List<String> getRWType() {

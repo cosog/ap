@@ -465,15 +465,16 @@ var ProtocolConfigHandsontableHelper = {
 
 function CreateDriverConfigItemsInfoTable(data){
 	protocolConfigItemsHandsontableHelper = ProtocolConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
-	var colHeaders="['','序号','名称','地址','寄存器数量','数据类型','读写类型','单位','单位换算系数','模式']";
+	var colHeaders="['','序号','名称','地址','寄存器数量','源数据类型','目的数据类型','读写类型','单位','单位换算系数','模式']";
 	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'item'},"
-		 	+"{data:'address',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
-			+"{data:'length',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
-			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['有符号整型','无符号整型','实型', 'BCD码','ASCII']}," 
-			+"{data:'readonly',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
+		 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
+			+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
+			+"{data:'srcDataType',type:'dropdown',strict:true,allowInvalid:false,source:['int16','uint16','float32','bcd','asc']}," 
+			+"{data:'destDataType',type:'dropdown',strict:true,allowInvalid:false,source:['int','uint','float32','float64','string','bcd','asc']}," 
+			+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 			+"{data:'unit'}," 
-			+"{data:'zoom',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
-			+"{data:'initiative',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}" 
+			+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
+			+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}" 
 			+"]";
 	protocolConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 	protocolConfigItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -517,7 +518,7 @@ var ProtocolConfigItemsHandsontableHelper = {
 	        	var hotElement = document.querySelector('#'+protocolConfigItemsHandsontableHelper.divid);
 	        	protocolConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
-	        		colWidths: [25,50,80,80,80,80,80,80,80,80],
+	        		colWidths: [25,50,100,80,80,80,80,80,80,80,80],
 //	                hiddenColumns: {
 //	                    columns: [0],
 //	                    indicators: true
@@ -793,13 +794,14 @@ function SaveModbusProtocolConfigData(){
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};
 			item.Name=driverConfigItemsData[i][2];
-			item.Address=parseInt(driverConfigItemsData[i][3]);
-			item.Length=parseInt(driverConfigItemsData[i][4]);
-			item.DataType=driverConfigItemsData[i][5];
-			item.Readonly=driverConfigItemsData[i][6];
-			item.Unit=driverConfigItemsData[i][7];
-			item.Zoom=parseFloat(driverConfigItemsData[i][8]);
-			item.Initiative=driverConfigItemsData[i][9];
+			item.Addr=parseInt(driverConfigItemsData[i][3]);
+			item.Quantity=parseInt(driverConfigItemsData[i][4]);
+			item.SrcDataType=driverConfigItemsData[i][5];
+			item.DestDataType=driverConfigItemsData[i][6];
+			item.RWType=driverConfigItemsData[i][7];
+			item.Unit=driverConfigItemsData[i][8];
+			item.Ratio=parseFloat(driverConfigItemsData[i][9]);
+			item.AcqMode=driverConfigItemsData[i][10];
 			configInfo.DataConfig.push(item);
 		}
 		

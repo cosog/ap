@@ -249,127 +249,127 @@ public class DriverAPIController extends BaseController{
 							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 								String itemCode=protocol.getItems().get(j).getCode();
 								if("RunStatus".equalsIgnoreCase(itemCode)){//运行状态
-									acquisitionGroupResolutionData.setRunStatus(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setRunStatus(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isRunStatusData=true;
 								}else if("IA".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setIA(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setIA(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Ia= "+acquisitionGroupResolutionData.getIA();
 									isDistreteData=true;
 								}else if("IB".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setIB(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setIB(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Ib= "+acquisitionGroupResolutionData.getIB();
 									isDistreteData=true;
 								}else if("IC".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setIC(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setIC(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Ic= "+acquisitionGroupResolutionData.getIC();
 									isDistreteData=true;
 								}else if("VA".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setVA(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setVA(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Va= "+acquisitionGroupResolutionData.getVA();
 									isDistreteData=true;
 								}else if("VB".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setVB(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setVB(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Vb= "+acquisitionGroupResolutionData.getVB();
 									isDistreteData=true;
 								}else if("VC".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setVC(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setVC(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Vc= "+acquisitionGroupResolutionData.getVC();
 									isDistreteData=true;
 								}else if("KWattH".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setKWattH(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setKWattH(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isEnergyData=true;
 								}else if("KVarH".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setKVarH(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setKVarH(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isEnergyData=true;
 								}else if("Watt3".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setWatt3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setWatt3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.WattSum= "+acquisitionGroupResolutionData.getWatt3();
 									isDistreteData=true;
 								}else if("Var3".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setVar3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setVar3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.VarSum= "+acquisitionGroupResolutionData.getVar3();
 									isDistreteData=true;
 								}else if("ReversePower".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setReversePower(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setReversePower(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isDistreteData=true;
 								}else if("PF3".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setPF3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setPF3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.PFSum= "+acquisitionGroupResolutionData.getPF3();
 									isDistreteData=true;
 								}else if("RunFrequency".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setRunFrequency(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setRunFrequency(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.RunFrequency= "+acquisitionGroupResolutionData.getRunFrequency();
 									isDistreteData=true;
 								}else if("SetFrequency".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setSetFrequency(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setSetFrequency(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.SetFrequency= "+acquisitionGroupResolutionData.getSetFrequency();
 									isDistreteData=true;
 								}else if("TubingPressure".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setTubingPressure(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setTubingPressure(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateProdData+=",t.TubingPressure="+acquisitionGroupResolutionData.getTubingPressure();
 									isProductionData=true;
 								}else if("CasingPressure".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setCasingPressure(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setCasingPressure(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateProdData+=",t.CasingPressure="+acquisitionGroupResolutionData.getCasingPressure();
 									isProductionData=true;
 								}else if("BackPressure".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setBackPressure(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setBackPressure(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isProductionData=true;
 								}else if("WellHeadFluidTemperature".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setWellHeadFluidTemperature(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setWellHeadFluidTemperature(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateProdData+=",t.WellHeadFluidTemperature="+acquisitionGroupResolutionData.getWellHeadFluidTemperature();
 									isProductionData=true;
 								}else if("ProducingfluidLevel".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setProducingfluidLevel(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setProducingfluidLevel(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateProdData+=",t.ProducingfluidLevel="+acquisitionGroupResolutionData.getProducingfluidLevel();
 									isProductionData=true;
 								}else if("WaterCut".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setWaterCut(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setWaterCut(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateProdData+=",t.waterCut="+acquisitionGroupResolutionData.getWaterCut();
 									isProductionData=true;
 								}else if("RPM".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setRPM(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setRPM(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isScrewPumpDataData=true;
 								}else if("Torque".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setTorque(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setTorque(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isScrewPumpDataData=true;
 								}else if("FESDiagramAcquisitionInterval".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setFESDiagramAcquisitionInterval(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setFESDiagramAcquisitionInterval(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isFESDiagramData=true;
 								}else if("FESDiagramSetPointCount".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setFESDiagramSetPointCount(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setFESDiagramSetPointCount(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isFESDiagramData=true;
 								}else if("FESDiagramPointCount".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setFESDiagramPointCount(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setFESDiagramPointCount(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isFESDiagramData=true;
 								}else if("FESDiagramAcqTime".equalsIgnoreCase(itemCode)){
 									String FESDiagramAcqTime=StringManagerUtils.BCD2TimeString(StringManagerUtils.hexStringToBytes(acqGroup.getValue().get(i).get(0)+""), 0);
 									acquisitionGroupResolutionData.setFESDiagramAcqTime(FESDiagramAcqTime);
 									isFESDiagramData=true;
 								}else if("SPM".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setSPM(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setSPM(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isFESDiagramData=true;
 								}else if("Stroke".equalsIgnoreCase(itemCode)){
-									acquisitionGroupResolutionData.setStroke(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getDestDataType()));
+									acquisitionGroupResolutionData.setStroke(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isFESDiagramData=true;
 								}else if("SDiagram".equalsIgnoreCase(itemCode)){
 									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
-										acquisitionGroupResolutionData.getSDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getDestDataType()));
+										acquisitionGroupResolutionData.getSDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}else if("FDiagram".equalsIgnoreCase(itemCode)){
 									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
-										acquisitionGroupResolutionData.getFDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getDestDataType()));
+										acquisitionGroupResolutionData.getFDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}else if("IDiagram".equalsIgnoreCase(itemCode)){
 									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
-										acquisitionGroupResolutionData.getIDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getDestDataType()));
+										acquisitionGroupResolutionData.getIDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}else if("WattDiagram".equalsIgnoreCase(itemCode)){
 									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
-										acquisitionGroupResolutionData.getWattDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getDestDataType()));
+										acquisitionGroupResolutionData.getWattDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}

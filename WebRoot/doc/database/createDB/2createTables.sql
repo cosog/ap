@@ -38,7 +38,7 @@ create index IDX_A9RAWDATA_HIST_TIME on TBL_A9RAWDATA_HIST (ACQTIME)
 /
 
 /*==============================================================*/
-/* Table: TBL_A9RAWDATA_LATEST                                    */
+/* Table: TBL_A9RAWDATA_LATEST                                  */
 /*==============================================================*/
 create table TBL_A9RAWDATA_LATEST
 (
@@ -71,7 +71,7 @@ create index IDX_A9RAWDATA_LATEST_TIME on TBL_A9RAWDATA_LATEST (ACQTIME)
 /
 
 /*==============================================================*/
-/* Table: TBL_ACQ_GROUP2UNIT_CONF                                    */
+/* Table: TBL_ACQ_GROUP2UNIT_CONF                               */
 /*==============================================================*/
 create table TBL_ACQ_GROUP2UNIT_CONF
 (
@@ -104,8 +104,9 @@ create table TBL_ACQ_GROUP_CONF
   ID         NUMBER(10) not null,
   GROUP_CODE VARCHAR2(50) not null,
   GROUP_NAME VARCHAR2(50),
-  acq_cycle  NUMBER(10) default 1,
-  save_cycle NUMBER(10) default 5,
+  ACQ_CYCLE  NUMBER(10) default 1,
+  SAVE_CYCLE NUMBER(10) default 5,
+  PROTOCOL   VARCHAR2(50),
   REMARK     VARCHAR2(2000)
 )
 tablespace AGILE_DATA
@@ -121,7 +122,7 @@ alter table TBL_ACQ_GROUP_CONF
 /
 
 /*==============================================================*/
-/* Table: TBL_ACQ_ITEM2GROUP_CONF                                    */
+/* Table: TBL_ACQ_ITEM2GROUP_CONF                               */
 /*==============================================================*/
 create table TBL_ACQ_ITEM2GROUP_CONF
 (
@@ -147,36 +148,6 @@ create index IDX_ACQ_GROUP_ITEM_ITEMID on TBL_ACQ_ITEM2GROUP_CONF (ITEMID)
 /
 
 /*==============================================================*/
-/* Table: TBL_ACQ_ITEM_CONF                                    */
-/*==============================================================*/
-create table TBL_ACQ_ITEM_CONF
-(
-  ID            NUMBER(10) not null,
-  PARENTID      NUMBER(10) default 0,
-  ITEMNAME      VARCHAR2(100),
-  ITEMCODE      VARCHAR2(100),
-  ADDRESS       NUMBER(10),
-  LENGTH        NUMBER(10),
-  DATATYPE      NUMBER(5),
-  ZOOM          NUMBER(10,3),
-  SEQ           NUMBER(10) default 1,
-  OPERATIONTYPE NUMBER(2) default 1
-)
-tablespace AGILE_DATA
-  storage
-  (
-    initial 64K
-    minextents 1
-    maxextents unlimited
-  )
-/
-alter table TBL_ACQ_ITEM_CONF
-  add constraint PK_T_ACQUISITIONITEMS primary key (ID)
-/
-create index IDX_ACQITEMS_OPTYPE on TBL_ACQ_ITEM_CONF (OPERATIONTYPE)
-/
-
-/*==============================================================*/
 /* Table: TBL_ACQ_UNIT_CONF                                    */
 /*==============================================================*/
 create table TBL_ACQ_UNIT_CONF
@@ -184,6 +155,7 @@ create table TBL_ACQ_UNIT_CONF
   ID        NUMBER(10) not null,
   UNIT_CODE VARCHAR2(50) not null,
   UNIT_NAME VARCHAR2(50),
+  PROTOCOL   VARCHAR2(50),
   REMARK    VARCHAR2(2000)
 )
 tablespace AGILE_DATA

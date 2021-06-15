@@ -524,6 +524,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 						}
 						int addr=0;
 						String itemCode="";
+						String dataType="";
 						
 						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
 							itemCode="RunControl";
@@ -533,6 +534,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 						for(int i=0;i<protocol.getItems().size();i++){
 							if(itemCode.equals(protocol.getItems().get(i).getCode())){
 								addr=protocol.getItems().get(i).getAddr();
+								dataType=protocol.getItems().get(i).getIFDataType();
 								break;
 							}
 						}
@@ -541,7 +543,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 									+ "\"ID\":\""+obj[1]+"\","
 									+ "\"Slave\":"+obj[2]+","
 									+ "\"Addr\":"+addr+","
-									+ "\"Value\":"+controlValue+","
+									+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
 									+ "}";
 							StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
 						}

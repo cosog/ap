@@ -1,856 +1,138 @@
 /*==============================================================*/
-/* 初始化tbl_acq_item_conf数据                                          */
-/*==============================================================*/
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (1, 0, '采集项', 'root', null, null, null, null, 1, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (80, 0, '控制项', 'ControlRoot', null, null, null, null, 100, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (2, 1, '运行状态', 'RunStatus', null, null, null, null, 2, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (8, 1, '油压', 'TubingPressure', null, null, null, null, 3, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (9, 1, '套压', 'CasingPressure', null, null, null, null, 4, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (10, 1, '回压', 'BackPressure', null, null, null, null, 5, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (11, 1, '井口油温', 'WellHeadFluidTemperature', null, null, null, null, 6, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (36, 1, '动液面', 'ProducingfluidLevel', null, null, null, null, 7, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (37, 1, '含水率', 'WaterCut', null, null, null, null, 8, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (4, 1, '电参数据', 'ElectricData', null, null, null, null, 9, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (5, 1, '变频数据', 'FrequencyData', null, null, null, null, 10, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (6, 1, '功图数据', 'FSDiagramData', null, null, null, null, 11, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (7, 1, '螺杆泵特有数据', 'ScrewPumpData', null, null, null, null, 12, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (40, 1, '平衡调节', 'BalanceControl', null, null, null, null, 39, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (12, 4, 'A相电流', 'CurrentA', null, null, null, null, 13, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (13, 4, 'B相电流', 'CurrentB', null, null, null, null, 14, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (14, 4, 'C相电流', 'CurrentC', null, null, null, null, 15, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (15, 4, 'A相电压', 'VoltageA', null, null, null, null, 16, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (16, 4, 'B相电压', 'VoltageB', null, null, null, null, 17, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (17, 4, 'C相电压', 'VoltageC', null, null, null, null, 18, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (18, 4, '有功功耗', 'ActivePowerConsumption', null, null, null, null, 19, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (19, 4, '无功功耗', 'ReactivePowerConsumption', null, null, null, null, 20, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (20, 4, '有功功率', 'ActivePower', null, null, null, null, 21, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (21, 4, '无功功率', 'ReactivePower', null, null, null, null, 22, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (22, 4, '反向功率', 'ReversePower', null, null, null, null, 23, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (23, 4, '功率因数', 'PowerFactor', null, null, null, null, 24, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (25, 5, '变频运行频率', 'RunFrequency', null, null, null, null, 26, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (26, 6, '采集时间', 'AcqTime', null, null, null, null, 27, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (27, 6, '功图点数', 'FSDiagramPointCount', null, null, null, null, 28, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (28, 6, '冲次', 'SPM', null, null, null, null, 29, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (29, 6, '冲程', 'Stroke', null, null, null, null, 30, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (30, 6, '曲线-位移值', 'SDiagram', null, null, null, null, 31, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (31, 6, '曲线-载荷值', 'FDiagram', null, null, null, null, 32, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (32, 6, '曲线-电流值', 'ADiagram', null, null, null, null, 33, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (33, 6, '曲线-功率值', 'PDiagram', null, null, null, null, 34, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (38, 6, '功图采集间隔', 'FSDiagramAcquisitionInterval', null, null, null, null, 37, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (39, 6, '功图采集设置点数', 'FSDiagramSetPointCount', null, null, null, null, 38, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (34, 7, '转速', 'RPM', null, null, null, null, 35, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (35, 7, '扭矩', 'Torque', null, null, null, null, 36, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (41, 40, '远程调节状态', 'BalaceControlStatus', null, null, null, null, 40, 1);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (106, 80, '即时采集', 'ImmediatelyAcquisition', null, null, null, null, 101, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (81, 80, '启停抽', 'RunControl', null, null, null, null, 102, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (42, 80, '远程调节手自动模式', 'BalanceControlMode', null, null, null, null, 103, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (24, 80, '变频设置频率', 'SetFrequency', null, null, null, null, 104, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (100, 80, '功图数据采集间隔', 'FSDiagramInterval', null, null, null, null, 105, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (101, 80, '离散数据采集间隔', 'DiscreteInterval', null, null, null, null, 106, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (102, 80, '电流上限', 'iUpLimit', null, null, null, null, 107, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (103, 80, '电流下限', 'iDownLimit', null, null, null, null, 108, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (104, 80, '功率上限', 'wattUpLimit', null, null, null, null, 109, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (105, 80, '功率下限', 'wattDownLimit', null, null, null, null, 110, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (44, 80, '向远离驴头方向调节距离', 'BalanceAwayTime', null, null, null, null, 111, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (45, 80, '向接近驴头方向调节距离', 'BalanceCloseTime', null, null, null, null, 112, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (43, 80, '平衡计算方式', 'BalanceCalculateMode', null, null, null, null, 113, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (46, 80, '参与平衡计算冲程次数', 'BalanceStrokeCount', null, null, null, null, 114, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (47, 80, '平衡调节上限', 'BalanceOperationUpLimit', null, null, null, null, 115, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (48, 80, '平衡调节下限', 'BalanceOperationDownLimit', null, null, null, null, 116, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (60, 80, '重心远离支点每拍调节时间', 'BalanceAwayTimePerBeat', null, null, null, null, 117, 2);
-
-insert into tbl_acq_item_conf (ID, PARENTID, ITEMNAME, ITEMCODE, ADDRESS, LENGTH, DATATYPE, ZOOM, SEQ, OPERATIONTYPE)
-values (61, 80, '重心接近支点每拍调节时间', 'BalanceCloseTimePerBeat', null, null, null, null, 118, 2);
-
-
-/*==============================================================*/
 /* 初始化tbl_acq_group_conf数据                                          */
 /*==============================================================*/
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (1, 'group1', '电参', '电参数据', 1, 5);
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
+values (1, 'group1', '抽油机离散数据', '抽油机离散数据', 60, 60, 'A11协议_必创');
 
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (2, 'group2', '功图', '功图数据', 60, 60);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (21, 'group3', '变频', '变频数据', 1, 5);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (41, 'group4', '运行状态', '运行状态', 1, 5);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (61, 'group5', '压力、温度', '油压、套压、井口油温', 1, 5);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (62, 'group6', '螺杆泵转速、扭矩', '螺杆泵转速、扭矩', 1, 5);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (63, 'group20', '启停控制', '启停控制', 1, 5);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (64, 'group21', '变频控制', '变频控制', 1, 5);
-
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE)
-values (65, 'group30', '数字抽油机', '数字抽油机', 1, 5);
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
+values (2, 'group2', '功图数据', '功图数据', 360, 360, 'A11协议_必创´');
 
 /*==============================================================*/
 /* 初始化tbl_acq_unit_conf数据                                    */
 /*==============================================================*/
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (1, 'type1', '类型一', '抽油机全部数据');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
+values (1, 'type1', '类型一', '抽油机全部数据', 'A11协议_必创');
 
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (2, 'type2', '类型二', '螺杆泵全部数据');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
+values (2, 'type2', '类型二', '抽油机离散数据', 'A11协议_必创');
 
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (21, 'type3', '类型三', '抽油机功图数据');
-
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (22, 'type4', '类型四', '抽油机运行状态、电参数据、功图数据');
-
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (23, 'type5', '类型五', '抽油机电参数据、功图数据');
-
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (24, 'type6', '类型六', '运行状态、电参数据');
-
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (25, 'type7', '类型七', '运行状态和螺杆泵数据');
-
-insert into tbl_acq_unit_conf (ID, UNIT_CODE, UNIT_NAME, REMARK)
-values (66, 'type8', '类型八', '数字化抽油机数据');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
+values (3, 'type3', '类型三', '抽油机功图数据', 'A11协议_必创');
 
 /*==============================================================*/
 /* 初始化tbl_acq_item2group_conf数据                                          */
 /*==============================================================*/
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1661, 4, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (1, null, '0,0,0', 1, '运行状态', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1662, 12, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (2, null, '0,0,0', 1, '启停控制', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1663, 13, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (3, null, '0,0,0', 1, 'A相电流', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1664, 14, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (4, null, '0,0,0', 1, 'B相电流', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1665, 15, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (5, null, '0,0,0', 1, 'C相电流', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1666, 16, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (6, null, '0,0,0', 1, 'A相电压', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1667, 17, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (7, null, '0,0,0', 1, 'B相电压', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1668, 18, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (8, null, '0,0,0', 1, 'C相电压', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1669, 19, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (9, null, '0,0,0', 1, '有功功耗', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1670, 20, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (10, null, '0,0,0', 1, '无功功耗', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1671, 21, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (11, null, '0,0,0', 1, '有功功率', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1672, 22, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (12, null, '0,0,0', 1, '无功功率', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1673, 23, '0,0,0', 1);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (13, null, '0,0,0', 1, '反向功率', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1674, 6, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (14, null, '0,0,0', 1, '功率因数', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1675, 26, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (15, null, '0,0,0', 1, '油压', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1676, 27, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (16, null, '0,0,0', 1, '套压', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1677, 28, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (17, null, '0,0,0', 1, '回压', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1678, 29, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (18, null, '0,0,0', 1, '井口流温', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1679, 30, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (19, null, '0,0,0', 1, '动液面', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1680, 31, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (20, null, '0,0,0', 1, '含水率', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1681, 32, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (21, null, '0,0,0', 1, '变频设置频率', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1682, 33, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (22, null, '0,0,0', 1, '变频运行频率', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1683, 38, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (23, null, '0,0,0', 2, '功图采集间隔', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1684, 39, '0,0,0', 2);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (24, null, '0,0,0', 2, '功图设置点数', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1685, 5, '0,0,0', 21);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (25, null, '0,0,0', 2, '功图实测点数', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1686, 25, '0,0,0', 21);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (26, null, '0,0,0', 2, '功图采集时间', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1621, 2, '0,0,0', 22);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (27, null, '0,0,0', 2, '冲次', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1625, 4, '0,0,0', 22);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (28, null, '0,0,0', 2, '冲程', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1638, 6, '0,0,0', 22);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (29, null, '0,0,0', 2, '功图数据-位移', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1622, 8, '0,0,0', 22);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (30, null, '0,0,0', 2, '功图数据-载荷', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1623, 9, '0,0,0', 22);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (31, null, '0,0,0', 2, '功图数据-电流', null);
 
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1624, 11, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1626, 12, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1627, 13, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1628, 14, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1629, 15, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1630, 16, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1631, 17, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1632, 18, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1633, 19, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1634, 20, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1635, 21, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1636, 22, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1637, 23, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1648, 24, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1639, 26, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1640, 27, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1641, 28, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1642, 29, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1643, 30, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1644, 31, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1645, 32, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1646, 33, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1647, 81, '0,0,0', 22);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (155, 4, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (168, 6, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (156, 12, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (157, 13, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (158, 14, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (159, 15, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (160, 16, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (161, 17, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (162, 18, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (163, 19, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (164, 20, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (165, 21, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (166, 22, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (167, 23, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (169, 26, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (170, 27, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (171, 28, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (172, 29, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (173, 30, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (174, 31, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (175, 32, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (176, 33, '0,0,0', 23);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (194, 2, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (195, 4, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (196, 12, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (197, 13, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (198, 14, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (199, 15, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (200, 16, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (201, 17, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (202, 18, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (203, 19, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (204, 20, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (205, 21, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (206, 22, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (207, 23, '0,0,0', 24);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (790, 2, '0,0,0', 25);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (791, 7, '0,0,0', 25);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (792, 34, '0,0,0', 25);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (793, 35, '0,0,0', 25);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1701, 2, '0,0,0', 41);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1721, 8, '0,0,0', 61);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1722, 9, '0,0,0', 61);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1723, 10, '0,0,0', 61);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1724, 11, '0,0,0', 61);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1725, 7, '0,0,0', 62);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1726, 34, '0,0,0', 62);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1727, 35, '0,0,0', 62);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1728, 81, '0,0,0', 63);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1735, 24, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1729, 40, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1730, 41, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1734, 42, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1744, 43, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1742, 44, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1743, 45, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1745, 46, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1746, 47, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1747, 48, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1748, 60, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1749, 61, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1731, 80, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1733, 81, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1736, 100, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1737, 101, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1738, 102, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1739, 103, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1740, 104, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1741, 105, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1732, 106, '0,0,0', 65);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1561, 1, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1562, 2, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1563, 4, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1576, 5, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1578, 6, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1564, 12, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1565, 13, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1566, 14, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1567, 15, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1568, 16, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1569, 17, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1570, 18, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1571, 19, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1572, 20, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1573, 21, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1574, 22, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1575, 23, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1595, 24, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1577, 25, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1579, 26, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1580, 27, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1581, 28, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1582, 29, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1583, 30, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1584, 31, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1585, 32, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1586, 33, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1587, 38, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1588, 39, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1589, 40, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1590, 41, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1594, 42, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1604, 43, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1602, 44, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1603, 45, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1605, 46, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1606, 47, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1607, 48, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1608, 60, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1609, 61, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1591, 80, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1593, 81, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1596, 100, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1597, 101, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1598, 102, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1599, 103, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1600, 104, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1601, 105, '0,0,0', 66);
-
-insert into tbl_acq_item2group_conf (ID, ITEMID, MATRIX, GROUPID)
-values (1592, 106, '0,0,0', 66);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
+values (32, null, '0,0,0', 2, '功图数据-功率', null);
 
 
 /*==============================================================*/
 /* 初始化tbl_acq_group2unit_conf数据                              */
 /*==============================================================*/
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (70, 1, '0,0,0', 1);
+insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
+values (1, 1, '0,0,0', 1);
 
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (83, 1, '0,0,0', 2);
+insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
+values (2, 2, '0,0,0', 1);
 
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (42, 1, '0,0,0', 22);
+insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
+values (3, 1, '0,0,0', 2);
 
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (85, 1, '0,0,0', 23);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (86, 1, '0,0,0', 24);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (90, 1, '0,0,0', 66);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (71, 2, '0,0,0', 1);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (21, 2, '0,0,0', 21);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (43, 2, '0,0,0', 22);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (84, 2, '0,0,0', 23);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (91, 2, '0,0,0', 66);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (72, 21, '0,0,0', 1);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (82, 21, '0,0,0', 2);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (96, 21, '0,0,0', 66);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (73, 41, '0,0,0', 1);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (81, 41, '0,0,0', 2);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (41, 41, '0,0,0', 22);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (87, 41, '0,0,0', 24);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (88, 41, '0,0,0', 25);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (95, 41, '0,0,0', 66);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (74, 61, '0,0,0', 1);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (80, 61, '0,0,0', 2);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (79, 62, '0,0,0', 2);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (89, 62, '0,0,0', 25);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (76, 63, '0,0,0', 1);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (78, 63, '0,0,0', 2);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (94, 63, '0,0,0', 66);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (75, 64, '0,0,0', 1);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (77, 64, '0,0,0', 2);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (93, 64, '0,0,0', 66);
-
-insert into tbl_acq_group2unit_conf (ID, GROUPID, MATRIX, UNITID)
-values (92, 65, '0,0,0', 66);
+insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
+values (4, 2, '0,0,0', 3);
 
 /*==============================================================*/
 /* 初始化tbl_code数据                                          */

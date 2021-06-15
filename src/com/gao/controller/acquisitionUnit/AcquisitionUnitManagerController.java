@@ -512,8 +512,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
-								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setSrcDataType(modbusDriverSaveData.getDataConfig().get(j).getSrcDataType());
-								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setDestDataType(modbusDriverSaveData.getDataConfig().get(j).getDestDataType());
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setDataType(modbusDriverSaveData.getDataConfig().get(j).getDataType());
+								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRWType(RWType);
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAcqMode(acqMode);
 								break;

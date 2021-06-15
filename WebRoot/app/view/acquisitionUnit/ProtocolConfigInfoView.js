@@ -465,12 +465,12 @@ var ProtocolConfigHandsontableHelper = {
 
 function CreateDriverConfigItemsInfoTable(data){
 	protocolConfigItemsHandsontableHelper = ProtocolConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
-	var colHeaders="['','序号','名称','地址','寄存器数量','源数据类型','目的数据类型','读写类型','单位','单位换算系数','模式']";
+	var colHeaders="['','序号','名称','地址','数量','数据类型','接口数据类型','读写类型','单位','换算比例','采集模式']";
 	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'item'},"
 		 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
 			+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
-			+"{data:'srcDataType',type:'dropdown',strict:true,allowInvalid:false,source:['int16','uint16','float32','bcd','asc']}," 
-			+"{data:'destDataType',type:'dropdown',strict:true,allowInvalid:false,source:['int','uint','float32','float64','string','bcd','asc']}," 
+			+"{data:'dataType',type:'dropdown',strict:true,allowInvalid:false,source:['byte','int16','uint16','float32','bcd','asc']}," 
+			+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string','bcd','asc']}," 
 			+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 			+"{data:'unit'}," 
 			+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
@@ -796,8 +796,8 @@ function SaveModbusProtocolConfigData(){
 			item.Name=driverConfigItemsData[i][2];
 			item.Addr=parseInt(driverConfigItemsData[i][3]);
 			item.Quantity=parseInt(driverConfigItemsData[i][4]);
-			item.SrcDataType=driverConfigItemsData[i][5];
-			item.DestDataType=driverConfigItemsData[i][6];
+			item.DataType=driverConfigItemsData[i][5];
+			item.IFDataType=driverConfigItemsData[i][6];
 			item.RWType=driverConfigItemsData[i][7];
 			item.Unit=driverConfigItemsData[i][8];
 			item.Ratio=parseFloat(driverConfigItemsData[i][9]);

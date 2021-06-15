@@ -2274,14 +2274,12 @@ public class StringManagerUtils {
 	    
 	    public static String objectToString(Object obj,String dataType){
 	    	String result="";
-	    	if("int".equalsIgnoreCase(dataType)){
-	    		result=(int)obj+"";
-	    	}else if("uint".equalsIgnoreCase(dataType)){
-	    		result=(int)obj+"";
+	    	if("int".equalsIgnoreCase(dataType) || "uint".equalsIgnoreCase(dataType)){
+	    		result=StringManagerUtils.stringToInteger(obj+"")+"";
 	    	}else if("float32".equalsIgnoreCase(dataType)){
-	    		result=(float)obj+"";
+	    		result=StringManagerUtils.stringToFloat(obj+"")+"";
 	    	}else if("float64".equalsIgnoreCase(dataType)){
-	    		result=(double)obj+"";
+	    		result=StringManagerUtils.stringToDouble(obj+"")+"";
 	    	}else if("string".equalsIgnoreCase(dataType)){
 	    		result=obj+"";
 	    	}else if("bcd".equalsIgnoreCase(dataType)){

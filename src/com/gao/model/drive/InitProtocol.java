@@ -57,8 +57,8 @@ public class InitProtocol {
     	for(int i=0;i<protocolConfig.getItems().size();i++){
     		this.Addr.add(protocolConfig.getItems().get(i).getAddr());
     		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
-    		this.SrcDataType.add(protocolConfig.getItems().get(i).getSrcDataType());
-    		this.DestDataType.add(protocolConfig.getItems().get(i).getDestDataType());
+    		this.SrcDataType.add(protocolConfig.getItems().get(i).getDataType());
+    		this.DestDataType.add(protocolConfig.getItems().get(i).getIFDataType());
     		this.RWType.add(protocolConfig.getItems().get(i).getRWType()?"r":"rw");
     		this.Ratio.add(protocolConfig.getItems().get(i).getRatio());
     		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode()?"active":"pasv");

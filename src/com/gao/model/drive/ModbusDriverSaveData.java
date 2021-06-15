@@ -45,9 +45,9 @@ public class ModbusDriverSaveData {
 
 	    private int Quantity;
 
-	    private String SrcDataType;
+	    private String DataType;
 	    
-	    private String DestDataType;
+	    private String IFDataType;
 	    
 	    private String Unit;
 
@@ -81,20 +81,20 @@ public class ModbusDriverSaveData {
 			Quantity = quantity;
 		}
 
-		public String getSrcDataType() {
-			return SrcDataType;
+		public String getDataType() {
+			return DataType;
 		}
 
-		public void setSrcDataType(String srcDataType) {
-			SrcDataType = srcDataType;
+		public void setDataType(String dataType) {
+			DataType = dataType;
 		}
 
-		public String getDestDataType() {
-			return DestDataType;
+		public String getIFDataType() {
+			return IFDataType;
 		}
 
-		public void setDestDataType(String destDataType) {
-			DestDataType = destDataType;
+		public void setIFDataType(String IFDataType) {
+			this.IFDataType = IFDataType;
 		}
 
 		public String getUnit() {

@@ -18,6 +18,7 @@ import com.gao.dao.BaseDao;
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.DiagnosisAnalysisStatistics;
 import com.gao.model.data.DataDictionary;
+import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.service.base.BaseService;
 import com.gao.service.base.CommonDataService;
 import com.gao.service.data.DataitemsInfoService;
@@ -25,6 +26,7 @@ import com.gao.task.EquipmentDriverServerTask;
 import com.gao.utils.Config;
 import com.gao.utils.ConfigFile;
 import com.gao.utils.DataModelMap;
+import com.gao.utils.EquipmentDriveMap;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -1267,19 +1269,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tableName="viw_rpc_comprehensive_hist";
 		}
 		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
-		String controlItemSql="select t.wellname,t4.itemname,t4.itemcode "
-				+ " from tbl_wellinformation t,"
-				+ " tbl_acq_unit_conf t2,"
-				+ " tbl_acq_group_conf t3,"
-				+ " tbl_acq_item_conf t4,"
-				+ " tbl_acq_group2unit_conf t5,"
-				+ " tbl_acq_item2group_conf t6 "
-				+ " where t.unitcode=t2.unit_code "
-				+ " and t2.id=t5.unitid and t3.id=t5.groupid "
-				+ " and t3.id=t6.groupid and t4.id=t6.itemid "
-				+ " and t.wellname='"+selectedWellName+"' "
-				+ " and t4.operationtype=2 "
-				+ " order by t4.seq";
+		String acqUnitSql="select t2.protocol from tbl_wellinformation t1,tbl_acq_unit_conf t2 where t1.unitcode=t2.unit_code and t1.wellname='"+selectedWellName+"'";
 		String sql="select wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
 				+ prodCol
 				+ " theoreticalProduction,"
@@ -1316,7 +1306,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " levelCorrectValue,noLiquidAvailablePlungerStroke,noLiquidFullnessCoefficient"
 				+ " from "+tableName+" t where id="+recordId;
 		List<?> isControlList = this.findCallSql(isControlSql);
-		List<?> controlItemsList = this.findCallSql(controlItemSql);
+		List<?> acqUnitList = this.findCallSql(acqUnitSql);
 		List<?> list = this.findCallSql(sql);
 		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAnalysis");
 		String analysisDataList = ddic.getTableHeader();
@@ -1328,12 +1318,28 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		result_json.append("\"analysisDataList\":"+analysisDataList+",");
 		result_json.append("\"acquisitionDataList\":"+acquisitionDataList+",");
 		result_json.append("\"controlItems\":[");
-		for(int i=0;i<controlItemsList.size();i++){
-			Object[] obj=(Object[]) controlItemsList.get(i);
-			result_json.append("{\"tiem\":\""+obj[2]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+		
+		if(acqUnitList.size()>0){
+			String protocol=acqUnitList.get(0)+"";
+			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			if(equipmentDriveMap.size()==0){
+				EquipmentDriverServerTask.loadProtocolConfig();
+				equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			}
+			ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				if(protocol.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+						if(!modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType()){//如果可读可写
+							result_json.append("{\"tiem\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getCode()+"\"},");
+						}
+					}
+					break;
+				}
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
 		}
 		result_json.append("],");
 		if(list.size()>0){

@@ -506,12 +506,6 @@ BEGIN
 end;
 /
 
-create or replace trigger trg_b_acq_item_conf_i   before  insert on TBL_ACQ_ITEM_CONF FOR EACH ROW
-BEGIN
-  SELECT SEQ_ACQUISITIONITEMS.nextval INTO :new.id FROM dual;
-end;
-/
-
 CREATE OR REPLACE TRIGGER trg_b_acq_unit_conf_i   before  insert on TBL_ACQ_UNIT_CONF FOR EACH ROW
 BEGIN
   SELECT SEQ_ACQUISITIONUNIT.nextval,'unit' || SEQ_ACQUISITIONUNIT.nextval INTO :new.id, :new.unit_code FROM dual;

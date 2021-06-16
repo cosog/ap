@@ -21,7 +21,7 @@ public class ModbusProtocolConfig {
 
 	    private int Addr;
 
-	    private String DataType;
+	    private String StoreDataType;
 	    
 	    private String IFDataType;
 
@@ -83,11 +83,11 @@ public class ModbusProtocolConfig {
 	    public boolean getAcqMode(){
 	        return this.AcqMode;
 	    }
-		public String getDataType() {
-			return DataType;
+		public String getStoreDataType() {
+			return StoreDataType;
 		}
-		public void setDataType(String dataType) {
-			DataType = dataType;
+		public void setStoreDataType(String storeDataType) {
+			StoreDataType = storeDataType;
 		}
 		public String getIFDataType() {
 			return IFDataType;
@@ -97,7 +97,7 @@ public class ModbusProtocolConfig {
 		}
 	}
 	
-	public class Protocol
+	public static class Protocol
 	{
 	    private String Name;
 

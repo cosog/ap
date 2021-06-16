@@ -127,8 +127,10 @@ alter table TBL_ACQ_GROUP_CONF
 create table TBL_ACQ_ITEM2GROUP_CONF
 (
   ID      NUMBER(10) not null,
-  ITEMID  NUMBER(10) not null,
-  MATRIX  VARCHAR2(8) not null,
+  ITEMID  NUMBER(10),
+  ITEMNAME VARCHAR2(100),
+  ITEMCODE VARCHAR2(100),
+  MATRIX  VARCHAR2(8),
   GROUPID NUMBER(10) not null
 )
 tablespace AGILE_DATA

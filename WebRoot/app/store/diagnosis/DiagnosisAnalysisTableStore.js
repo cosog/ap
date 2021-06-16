@@ -417,13 +417,16 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		    	 }else{
     		    	 	runStatus="";
     		    	 }
-    		    	 controlSataStr+="{\"item\":\"运行状态\",\"itemcode\":\"startOrStopWell\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+",\"showType\":0},";
+    		    	 controlSataStr+="{\"item\":\"运行状态\",\"itemcode\":\"RunControl\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+",\"showType\":0},";
     		         break;
     		     case "SetFrequency":
-    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"SetFrequency\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
-    		     case "FSDiagramInterval":
-    		    	 controlSataStr+="{\"item\":\"功图数据采集间隔(min)\",\"itemcode\":\"acqcycle_diagram\",\"value\":\""+(get_rawData.acqcycle_diagram==undefined?"":get_rawData.acqcycle_diagram)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		     case "FESDiagramAcquisitionInterval":
+    		    	 controlSataStr+="{\"item\":\"功图数据采集间隔(min)\",\"itemcode\":\"FESDiagramAcquisitionInterval\",\"value\":\""+(get_rawData.acqcycle_diagram==undefined?"":get_rawData.acqcycle_diagram)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 break;
+    		     case "FESDiagramSetPointCount":
+    		    	 controlSataStr+="{\"item\":\"功图点数\",\"itemcode\":\"FESDiagramSetPointCount\",\"value\":\""+(get_rawData.FESDiagramSetPointCount==undefined?"":get_rawData.FESDiagramSetPointCount)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
     		     case "DiscreteInterval":
     		    	 controlSataStr+="{\"item\":\"离散数据采集间隔(min)\",\"itemcode\":\"acqcycle_discrete\",\"value\":\""+(get_rawData.acqcycle_discrete==undefined||get_rawData.acqcycle_discrete==""?"":parseFloat(get_rawData.acqcycle_discrete).toFixed(2))+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";

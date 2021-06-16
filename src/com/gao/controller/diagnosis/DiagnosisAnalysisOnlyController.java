@@ -523,14 +523,14 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 							}
 						}
 						int addr=0;
-						String itemCode="";
+						String itemCode=controlType;
 						String dataType="";
 						
-						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
-							itemCode="RunControl";
-						}else if("frequencySetValue".equalsIgnoreCase(controlType)){//设置变频频率
-							itemCode="SetFrequency";
-						}
+//						if("startOrStopWell".equalsIgnoreCase(controlType)){//启停井控制
+//							itemCode="RunControl";
+//						}else if("frequencySetValue".equalsIgnoreCase(controlType)){//设置变频频率
+//							itemCode="SetFrequency";
+//						}
 						for(int i=0;i<protocol.getItems().size();i++){
 							if(itemCode.equals(protocol.getItems().get(i).getCode())){
 								addr=protocol.getItems().get(i).getAddr();

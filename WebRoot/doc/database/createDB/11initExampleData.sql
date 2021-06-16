@@ -106,3 +106,5 @@ from tbl_wellinformation t2,tbl_rpc_discrete_latest t3,tbl_rpc_discrete_hist t4,
 where t2.id=t3.wellid and t3.wellid=t4.wellid and t3.acqtime=t4.acqtime
 and  t2.id=t5.wellid and t5.wellid=t6.wellid and t5.acqtime=t6.acqtime
 and t2.wellname='POC2';
+
+exit;

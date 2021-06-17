@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import com.gao.model.calculate.CommResponseData;
 import com.gao.utils.Config;
 import com.gao.utils.Config2;
+import com.gao.utils.DataSourceConfig;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -93,6 +94,7 @@ public class CalculateDataManagerTask {
 	 * */
 //	@Scheduled(cron = "0 0/1 * * * ?")
 	public void getOuterDataRequset() throws SQLException, UnsupportedEncodingException, ParseException{
+		DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
 		String sql="select t.id,t2.pumpsettingdepth,to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t  "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "

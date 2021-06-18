@@ -35,7 +35,13 @@ public class OracleJdbcUtis {
         try{  
         	DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
         	String driver="oracle.jdbc.driver.OracleDriver";
-        	String url="jdbc:oracle:thin:@"+dataSourceConfig.getIP()+":"+dataSourceConfig.getPort()+":"+dataSourceConfig.getInstanceName();
+        	String sign=":";
+        	if(dataSourceConfig.getVersion().indexOf("11")==0||dataSourceConfig.getVersion().indexOf("10")==0||dataSourceConfig.getVersion().indexOf("9")==0){
+        		sign=":";
+        	}else{
+        		sign="/";
+        	}
+        	String url="jdbc:oracle:thin:@"+dataSourceConfig.getIP()+":"+dataSourceConfig.getPort()+sign+dataSourceConfig.getInstanceName();
         	String username = dataSourceConfig.getUser();
             String password = dataSourceConfig.getPassword();  
 //        	String driver=Config.getInstance().configFile.getDockDataSource().get(0).getDriver();

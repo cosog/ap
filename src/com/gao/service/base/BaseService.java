@@ -945,14 +945,18 @@ public class BaseService<T> {
 						int attr_length = attr.length;
 						if (attr_length > 1) {
 							String key = attr[1].trim();
-							String value = obj[j] + "";
+							String value = obj[j]+"";
 							if (!key.equalsIgnoreCase("hj")) {
 								if (value.equals("null")) {
 									value = "";
 								} else if (sql.contains("v_012_") && key.contains("lsxs")) {
 									float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 									value = value2 + "";
-								} else if (!StringManagerUtils.stringDataFiter(key)) {
+								}
+								else if (StringManagerUtils.clobDataFiter(key)) {
+									value = StringManagerUtils.CLOBObjectToString(obj[j]);
+								} 
+								else if (!StringManagerUtils.stringDataFiter(key)) {
 									value = StringManagerUtils.formatReportPrecisionValue(value);
 								}
 								strs.append("\"" + key + "\":\"" + value + "\",");
@@ -960,18 +964,16 @@ public class BaseService<T> {
 								strs.append("\"" + key + "\":\"合计 \",");
 							}
 						} else {
-							String attr_left = attr[0].trim();
-							if (attr_left.indexOf(".") > 0) {// 当查询的sql字段中含有
-																// t.jh
-																// 时，把字段从“.”后截取字符串作为key
-								attr_left = attr_left.substring(attr_left.indexOf(".") + 1);
+							String key = attr[0].trim();
+							if (key.indexOf(".") > 0) {// 当查询的sql字段中含有t.jh时，把字段从“.”后截取字符串作为key
+								key = key.substring(key.indexOf(".") + 1);
 							}
 							String value = obj[j] + "";
 							if (null == value || value.equals("null") || !StringManagerUtils.isNotNull(value)) {
 								value = "";
-							} else if (attr_left.equalsIgnoreCase("dl")) {
+							} else if (key.equalsIgnoreCase("dl")) {
 								value = StringManagerUtils.formatReportPrecisionValue(obj[j + 1] + "") + "/" + StringManagerUtils.formatReportPrecisionValue(obj[j + 2] + "");
-							} else if ("gtsj".equalsIgnoreCase(attr_left)) {
+							} else if ("gtsj".equalsIgnoreCase(key)) {
 								byte[] bytes; 
 								String gtsj="";
 								BufferedInputStream bis = null;
@@ -989,13 +991,17 @@ public class BaseService<T> {
 								}else{
 									value = StringManagerUtils.formatReportPrecisionValue(value);
 								}
-							} else if (sql.contains("v_012_") && attr_left.contains("lsxs")) {
+							}
+							else if (StringManagerUtils.clobDataFiter(key)) {
+								value = StringManagerUtils.CLOBObjectToString(obj[j]);
+							}
+							else if (sql.contains("v_012_") && key.contains("lsxs")) {
 								float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
 								value = value2 + "";
-							}else if (!StringManagerUtils.stringDataFiter(attr_left)) {
+							}else if (!StringManagerUtils.stringDataFiter(key)) {
 								value = StringManagerUtils.formatReportPrecisionValue(value);
 							}
-							strs.append("\"" + attr_left + "\":\"" + value + "\",");
+							strs.append("\"" + key + "\":\"" + value + "\",");
 						}
 					}
 					strs = strs.deleteCharAt(strs.length() - 1);

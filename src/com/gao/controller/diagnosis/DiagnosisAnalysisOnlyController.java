@@ -158,10 +158,9 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			} else {
 				endDate = StringManagerUtils.getCurrentTime();
 			}
-		}
-		
-		if(!StringManagerUtils.isNotNull(startDate)){
-			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
+			}
 		}
 		
 		String data = diagnosisAnalysisOnlyService.exportProductionWellRTAnalysisDataExcel(orgId, wellName, pager,type,wellType,startDate,endDate,statValue);

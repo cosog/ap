@@ -2213,7 +2213,8 @@ begin
     select count(*)into p_diagramCount from tbl_rpc_diagram_hist t where t.wellid=p_wellId and t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss');
     if p_diagramCount=0 then
       select t.id into p_productiondataId from tbl_rpc_productiondata_hist t
-      where t.wellid=p_wellId and t.AcqTime=(select max(t2.AcqTime) from tbl_rpc_productiondata_hist t2 where t2.wellid=t.wellid );
+      where t.wellid=p_wellId and t.AcqTime=(select max(t2.AcqTime) from tbl_rpc_productiondata_hist t2 where t2.wellid=t.wellid )
+      and rownum=1;
       insert into tbl_rpc_diagram_hist(wellid,AcqTime,stroke,spm,position_curve,load_curve,power_curve,current_curve,datasource,productiondataid,resultstatus)
       values(p_wellId,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),v_stroke,v_spm,v_sData,v_fData,v_wattData,v_iData,2,p_productiondataId,0);
       commit;

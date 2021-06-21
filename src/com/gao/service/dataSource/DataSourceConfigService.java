@@ -50,7 +50,7 @@ public class DataSourceConfigService<T> extends BaseService<T>  {
 			result_json.append("{\"id\":1,\"item\":\"IP\",\"value\":\""+dataSourceConfig.getIP()+"\"},");
 			result_json.append("{\"id\":2,\"item\":\"Port\",\"value\":\""+dataSourceConfig.getPort()+"\"},");
 			result_json.append("{\"id\":3,\"item\":\"数据库类型\",\"value\":\""+(dataSourceConfig.getType()==0?"oracle":"sql server")+"\"},");
-			result_json.append("{\"id\":4,\"item\":\"数据库版本\",\"value\":\"12c\"},");
+			result_json.append("{\"id\":4,\"item\":\"数据库版本\",\"value\":\""+dataSourceConfig.getVersion()+"\"},");
 			result_json.append("{\"id\":5,\"item\":\"数据库名称\",\"value\":\""+dataSourceConfig.getInstanceName()+"\"},");
 			result_json.append("{\"id\":6,\"item\":\"用户名\",\"value\":\""+dataSourceConfig.getUser()+"\"},");
 			result_json.append("{\"id\":7,\"item\":\"密码\",\"value\":\""+dataSourceConfig.getPassword()+"\"}");
@@ -108,7 +108,7 @@ public class DataSourceConfigService<T> extends BaseService<T>  {
 			result_json.append("{\"checked\":true,\"id\":\"泵数据\",\"item\":\""+dataSourceConfig.getPumpTable().getName()+"\",\"columnName\":\"\",\"columnType\":\"\"},");
 			result_json.append("{\"checked\":true,\"id\":\"序号\",\"item\":\"字段名称\",\"columnName\":\"字段代码\",\"columnType\":\"字段类型\"},");
 			result_json.append("{\"checked\":true,\"id\":1,\"item\":\"井名\",\"columnName\":\""+dataSourceConfig.getPumpTable().getColumns().getWellName().getColumn()+"\",\"columnType\":\""+dataSourceConfig.getPumpTable().getColumns().getWellName().getType()+"\"},");
-			result_json.append("{\"checked\":true,\"id\":2,\"item\":\"泵级别级别\",\"columnName\":\""+dataSourceConfig.getPumpTable().getColumns().getPumpGrade().getColumn()+"\",\"columnType\":\""+dataSourceConfig.getPumpTable().getColumns().getPumpGrade().getType()+"\"},");
+			result_json.append("{\"checked\":true,\"id\":2,\"item\":\"泵级别\",\"columnName\":\""+dataSourceConfig.getPumpTable().getColumns().getPumpGrade().getColumn()+"\",\"columnType\":\""+dataSourceConfig.getPumpTable().getColumns().getPumpGrade().getType()+"\"},");
 			result_json.append("{\"checked\":true,\"id\":3,\"item\":\"泵径\",\"columnName\":\""+dataSourceConfig.getPumpTable().getColumns().getPumpBoreDiameter().getColumn()+"\",\"columnType\":\""+dataSourceConfig.getPumpTable().getColumns().getPumpBoreDiameter().getType()+"\"},");
 			result_json.append("{\"checked\":true,\"id\":4,\"item\":\"柱塞长\",\"columnName\":\""+dataSourceConfig.getPumpTable().getColumns().getPlungerLength().getColumn()+"\",\"columnType\":\""+dataSourceConfig.getPumpTable().getColumns().getPlungerLength().getType()+"\"},");
 			//动态数据

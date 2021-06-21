@@ -97,10 +97,10 @@ public class GetExternalDataThread extends Thread{
 							frequency=rs.getFloat(4);
 						}
 						
-						String SStr=rs.getString(6)==null?"":rs.getString(6).replaceAll(";", ",");
-						String FStr=rs.getString(7)==null?"":rs.getString(7).replaceAll(";", ",");
-						String AStr=rs.getString(8)==null?"":rs.getString(8).replaceAll(";", ",");
-						String PStr=rs.getString(9)==null?"":rs.getString(9).replaceAll(";", ",");
+						String SStr=rs.getString(6)==null?"":rs.getString(6).replaceAll(";", ",").replaceAll("\r\n", "\n").replaceAll("\n", "");
+						String FStr=rs.getString(7)==null?"":rs.getString(7).replaceAll(";", ",").replaceAll("\r\n", "\n").replaceAll("\n", "");
+						String AStr=rs.getString(8)==null?"":rs.getString(8).replaceAll(";", ",").replaceAll("\r\n", "\n").replaceAll("\n", "");
+						String PStr=rs.getString(9)==null?"":rs.getString(9).replaceAll(";", ",").replaceAll("\r\n", "\n").replaceAll("\n", "");
 						int point=SStr.split(",").length;
 						
 						CLOB sClob=new CLOB((OracleConnection) conn);

@@ -6,7 +6,7 @@ public class InitId {
 	
 	private String Method;
 	
-	private String WellName;
+//	private String WellName;
 	
 	private String ID;
 
@@ -61,12 +61,12 @@ public class InitId {
 	    }
 	}
 
-	public String getWellName() {
-		return WellName;
-	}
-	public void setWellName(String wellName) {
-		WellName = wellName;
-	}
+//	public String getWellName() {
+//		return WellName;
+//	}
+//	public void setWellName(String wellName) {
+//		WellName = wellName;
+//	}
 	public String getMethod() {
 		return Method;
 	}

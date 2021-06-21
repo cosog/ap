@@ -79,8 +79,8 @@ private CommonDataService service;
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
 				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
-				+ "{ \"header\":\"采集周期(min)\",\"dataIndex\":\"acqCycle\" ,children:[] },"
-				+ "{ \"header\":\"保存周期(min)\",\"dataIndex\":\"saveCycle\" ,children:[] },"
+				+ "{ \"header\":\"采集周期(s)\",\"dataIndex\":\"acqCycle\" ,children:[] },"
+				+ "{ \"header\":\"保存周期(s)\",\"dataIndex\":\"saveCycle\" ,children:[] },"
 				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sqlBuffer.toString());

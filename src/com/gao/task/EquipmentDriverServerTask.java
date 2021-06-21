@@ -55,17 +55,6 @@ public class EquipmentDriverServerTask {
 	
 //	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-//		String data="{\"ID\":\"12345678901\",\"Slave\":1,\"GroupSN\":1,\"Addr\":[40001,40003,40005],\"Value\":[[1,2],[2.5],[\"aa\"]]}";
-//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/group";
-//		StringManagerUtils.sendPostMethod(url, data,"utf-8");
-//		Gson gson=new Gson();
-//		java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
-//		AcqGroup acqGroup=gson.fromJson(data, type);
-//		for(int i=0;i<acqGroup.getAddr().size();i++){
-//			for(int j=0;j<acqGroup.getValue().get(i).size();j++){
-//				System.out.println(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(j)));
-//			}
-//		}
 		loadProtocolConfig();
 		initProtocolConfig("","");
 		initServerConfig();
@@ -126,6 +115,7 @@ public class EquipmentDriverServerTask {
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i));
 					initProtocol.setMethod(method);
+					System.out.println("协议初始化："+gson.toJson(initProtocol));
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8");
 				}
 			}
@@ -173,7 +163,7 @@ public class EquipmentDriverServerTask {
 				if(initId==null){
 					initId=new InitId();
 					initId.setMethod(method);
-					initId.setWellName(rs.getString(1));
+//					initId.setWellName(rs.getString(1));
 					initId.setID(rs.getString(2));
 					initId.setSlave((byte) rs.getInt(3));
 					initId.setProtocolName(rs.getString(4));
@@ -203,7 +193,7 @@ public class EquipmentDriverServerTask {
 			result=wellListMap.size();
 			for(Entry<String, InitId> entry:wellListMap.entrySet()){
 				try {
-//					System.out.println(gson.toJson(entry.getValue()));
+					System.out.println("ID始化："+gson.toJson(entry.getValue()));
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(entry.getValue()),"utf-8");
 				}catch (Exception e) {
 					continue;
@@ -308,6 +298,7 @@ public class EquipmentDriverServerTask {
 		json_buff.append("\"Port\":\""+port+"\",");
 		json_buff.append("\"ProjectName\":\""+projectName+"\"");
 		json_buff.append("}");
+		System.out.println("服务始化："+json_buff.toString());
 		StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8");
 	}
 	

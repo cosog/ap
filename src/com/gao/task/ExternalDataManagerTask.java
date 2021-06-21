@@ -45,8 +45,7 @@ public class ExternalDataManagerTask {
 
     private ExecutorService pool = Executors.newCachedThreadPool();
     
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
-    @Scheduled(cron = "0 0/1 * * * ?")
+//    @Scheduled(cron = "0 0/1 * * * ?")
 	public void GetExternalFESDiagramData() throws SQLException, ParseException,InterruptedException, IOException{
 //		pool.submit(new GetExternalDataThread("南V10-3",""));
     	System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));

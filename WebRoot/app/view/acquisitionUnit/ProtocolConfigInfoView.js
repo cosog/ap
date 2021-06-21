@@ -834,7 +834,6 @@ function SaveModbusProtocolConfigData(){
 };
 
 function SaveScadaKafkaDriverConfigData(){
-
 	var protocolConfigData=kafkaProtocolConfigHandsontableHelper.hot.getData();
 	var configInfo={};
 	var KafkaData={};

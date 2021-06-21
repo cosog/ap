@@ -348,7 +348,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		}else if("3".equals(type)){
 			json = this.diagnosisAnalysisOnlyService.querySingleDetailsDynamicCurveData(id,wellName,selectedWellName,startDate,endDate);
 		}
-		
+		System.out.println(json);
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

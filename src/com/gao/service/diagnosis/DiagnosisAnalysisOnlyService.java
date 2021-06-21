@@ -497,7 +497,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			if(obj[17]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+				positionCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 				if(StringManagerUtils.isNotNull(positionCurveData)){
 					pointCount=positionCurveData.split(",").length+"";
 				}
@@ -506,7 +506,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			if(obj[18]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+				loadCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			
 			if(obj[19]!=null){
@@ -700,62 +700,62 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			if(obj[9]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+				positionCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[10]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[10]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+				loadCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[11]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[11]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				wattCurveData=StringManagerUtils.CLOBtoString(realClob);
+				wattCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[12]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[12]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				iCurveData=StringManagerUtils.CLOBtoString(realClob);
+				iCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[13]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[13]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				IaCurveData=StringManagerUtils.CLOBtoString(realClob);
+				IaCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[14]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[14]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				IbCurveData=StringManagerUtils.CLOBtoString(realClob);
+				IbCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[15]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[15]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				IcCurveData=StringManagerUtils.CLOBtoString(realClob);
+				IcCurveData=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[16]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				crankAngle=StringManagerUtils.CLOBtoString(realClob);
+				crankAngle=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[17]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				loadRorque=StringManagerUtils.CLOBtoString(realClob);
+				loadRorque=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[18]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				crankTorque=StringManagerUtils.CLOBtoString(realClob);
+				crankTorque=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[19]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				currentBalanceTorque=StringManagerUtils.CLOBtoString(realClob);
+				currentBalanceTorque=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[20]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[20]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
-				currentNetTorque=StringManagerUtils.CLOBtoString(realClob);
+				currentNetTorque=StringManagerUtils.CLOBtoString(realClob).replaceAll("\r\n", "\n").replaceAll("\n", "");
 			}
 			if(obj[21]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[21]);

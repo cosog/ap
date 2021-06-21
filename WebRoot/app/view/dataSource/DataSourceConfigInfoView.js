@@ -18,6 +18,7 @@ Ext.define('AP.view.dataSource.DataSourceConfigInfoView', {
         			text: cosog.string.save,
         			iconCls: 'save',
         			handler: function (v, o) {
+        				SavedDtaSourceConfigData();
         			}
                 }],
                 items: [{
@@ -143,9 +144,6 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 			}else{
 				dataSourceConfigColumnsHandsontableHelper.hot.loadData(result.columnRoot);
 			}
-			
-			
-			
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -218,171 +216,23 @@ var DataSourceConfigHandsontableHelper = {
 //	                    Handsontable.Dom.removeEvent(save, 'click', saveData);
 //	                    loadDataTable();
 	                },
-	                beforeRemoveRow: function (index, amount) {
-	                    var ids = [];
-	                    //封装id成array传入后台
-	                    if (amount != 0) {
-	                        for (var i = index; i < amount + index; i++) {
-	                            var rowdata = dataSourceConfigHandsontableHelper.hot.getDataAtRow(i);
-	                            ids.push(rowdata[0]);
-	                        }
-	                        dataSourceConfigHandsontableHelper.delExpressCount(ids);
-	                        dataSourceConfigHandsontableHelper.screening();
-	                    }
-	                },
-	                afterChange: function (changes, source) {
-	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
-	                    
-	                    if (changes != null) {
-	                    	for(var i=0;i<changes.length;i++){
-	                    		var params = [];
-	                    		var index = changes[i][0]; //行号码
-		                        var rowdata = dataSourceConfigHandsontableHelper.hot.getDataAtRow(index);
-		                        params.push(rowdata[0]);
-		                        params.push(changes[i][1]);
-		                        params.push(changes[i][2]);
-		                        params.push(changes[i][3]);
-		                        
-		                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
-		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
-		                        	dataSourceConfigHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
-		                        }
-
-		                        //仅当单元格发生改变的时候,id!=null,说明是更新
-		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
-		                        	var data="{";
-		                        	for(var j=0;j<dataSourceConfigHandsontableHelper.columns.length;j++){
-		                        		data+=dataSourceConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-		                        		if(j<dataSourceConfigHandsontableHelper.columns.length-1){
-		                        			data+=","
-		                        		}
-		                        	}
-		                        	data+="}"
-		                            dataSourceConfigHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
-		                        }
-	                    	}
-	                        
-	                    }
-	                }
+	                beforeRemoveRow: function (index, amount) {},
+	                afterChange: function (changes, source) {}
 	        	});
 	        }
 	      //插入的数据的获取
-	        dataSourceConfigHandsontableHelper.insertExpressCount=function() {
-	            var idsdata = dataSourceConfigHandsontableHelper.hot.getDataAtCol(0); //所有的id
-	            for (var i = 0; i < idsdata.length; i++) {
-	                //id=null时,是插入数据,此时的i正好是行号
-	                if (idsdata[i] == null||idsdata[i]<0) {
-	                    //获得id=null时的所有数据封装进data
-	                    var rowdata = dataSourceConfigHandsontableHelper.hot.getDataAtRow(i);
-	                    //var collength = hot.countCols();
-	                    if (rowdata != null) {
-	                    	var data="{";
-                        	for(var j=0;j<dataSourceConfigHandsontableHelper.columns.length;j++){
-                        		data+=dataSourceConfigHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-                        		if(j<dataSourceConfigHandsontableHelper.columns.length-1){
-                        			data+=","
-                        		}
-                        	}
-                        	data+="}"
-	                        dataSourceConfigHandsontableHelper.insertlist.push(Ext.JSON.decode(data));
-	                    }
-	                }
-	            }
-	            if (dataSourceConfigHandsontableHelper.insertlist.length != 0) {
-	            	dataSourceConfigHandsontableHelper.AllData.insertlist = dataSourceConfigHandsontableHelper.insertlist;
-	            }
-	        }
+	        dataSourceConfigHandsontableHelper.insertExpressCount=function() {}
 	        //保存数据
-	        dataSourceConfigHandsontableHelper.saveData = function () {
-	        	
-	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
-	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
-	        		//插入的数据的获取
-		        	dataSourceConfigHandsontableHelper.insertExpressCount();
-		        	var orgId=IframeViewSelection[0].data.orgId;
-		            if (JSON.stringify(dataSourceConfigHandsontableHelper.AllData) != "{}" && dataSourceConfigHandsontableHelper.validresult) {
-		            	Ext.Ajax.request({
-		            		method:'POST',
-		            		url:context + '/wellInformationManagerController/saveWellHandsontableData',
-		            		success:function(response) {
-		            			rdata=Ext.JSON.decode(response.responseText);
-		            			if (rdata.success) {
-		                        	Ext.MessageBox.alert("信息","保存成功");
-		                            //保存以后重置全局容器
-		                            dataSourceConfigHandsontableHelper.clearContainer();
-		                            CreateDataSourceConfigDBInfoTable();
-		                        } else {
-		                        	Ext.MessageBox.alert("信息","数据保存失败");
-
-		                        }
-		            		},
-		            		failure:function(){
-		            			Ext.MessageBox.alert("信息","请求失败");
-		                        dataSourceConfigHandsontableHelper.clearContainer();
-		            		},
-		            		params: {
-		                    	data: JSON.stringify(dataSourceConfigHandsontableHelper.AllData),
-		                    	orgId:orgId
-		                    }
-		            	}); 
-		            } else {
-		                if (!dataSourceConfigHandsontableHelper.validresult) {
-		                	Ext.MessageBox.alert("信息","数据类型错误");
-		                } else {
-		                	Ext.MessageBox.alert("信息","无数据变化");
-		                }
-		            }
-	        	}else{
-	        		Ext.MessageBox.alert("信息","请先选择组织节点");
-	        	}
-	            
-	        }
+	        dataSourceConfigHandsontableHelper.saveData = function () {}
 	        
 	      //删除的优先级最高
-	        dataSourceConfigHandsontableHelper.delExpressCount=function(ids) {
-	            //传入的ids.length不可能为0
-	            $.each(ids, function (index, id) {
-	                if (id != null) {
-	                	dataSourceConfigHandsontableHelper.delidslist.push(id);
-	                }
-	            });
-	            dataSourceConfigHandsontableHelper.AllData.delidslist = dataSourceConfigHandsontableHelper.delidslist;
-	        }
+	        dataSourceConfigHandsontableHelper.delExpressCount=function(ids) {}
 
 	        //updatelist数据更新
-	        dataSourceConfigHandsontableHelper.screening=function() {
-	            if (dataSourceConfigHandsontableHelper.updatelist.length != 0 && dataSourceConfigHandsontableHelper.delidslist.lentgh != 0) {
-	                for (var i = 0; i < dataSourceConfigHandsontableHelper.delidslist.length; i++) {
-	                    for (var j = 0; j < dataSourceConfigHandsontableHelper.updatelist.length; j++) {
-	                        if (dataSourceConfigHandsontableHelper.updatelist[j].id == dataSourceConfigHandsontableHelper.delidslist[i]) {
-	                            //更新updatelist
-	                        	dataSourceConfigHandsontableHelper.updatelist.splice(j, 1);
-	                        }
-	                    }
-	                }
-	                //把updatelist封装进AllData
-	                dataSourceConfigHandsontableHelper.AllData.updatelist = dataSourceConfigHandsontableHelper.updatelist;
-	            }
-	        }
+	        dataSourceConfigHandsontableHelper.screening=function() {}
 	        
 	      //更新数据
-	        dataSourceConfigHandsontableHelper.updateExpressCount=function(data) {
-	            if (JSON.stringify(data) != "{}") {
-	                var flag = true;
-	                //判断记录是否存在,更新数据     
-	                $.each(dataSourceConfigHandsontableHelper.updatelist, function (index, node) {
-	                    if (node.id == data.id) {
-	                        //此记录已经有了
-	                        flag = false;
-	                        //用新得到的记录替换原来的,不用新增
-	                        dataSourceConfigHandsontableHelper.updatelist[index] = data;
-	                    }
-	                });
-	                flag && dataSourceConfigHandsontableHelper.updatelist.push(data);
-	                //封装
-	                dataSourceConfigHandsontableHelper.AllData.updatelist = dataSourceConfigHandsontableHelper.updatelist;
-	            }
-	        }
+	        dataSourceConfigHandsontableHelper.updateExpressCount=function(data) {}
 	        
 	        dataSourceConfigHandsontableHelper.clearContainer = function () {
 	        	dataSourceConfigHandsontableHelper.AllData = {};
@@ -589,35 +439,10 @@ var DataSourceConfigColumnsHandsontableHelper = {
 	        }
 	        dataSourceConfigColumnsHandsontableHelper.getData = function (data) {
 	            dataSourceConfigColumnsHandsontableHelper.get_data = data;
-	            
-	            
 	            var columnRoot = data.columnRoot;
 	            dataSourceConfigColumnsHandsontableHelper.sum = columnRoot.length;
 	            dataSourceConfigColumnsHandsontableHelper.updateArray();
-//	            for(var i=0;i<columnRoot.length;i++){
-//	            	var columnInfo=[columnRoot[i].id,columnRoot[i].item,columnRoot[i].columnName,columnRoot[i].columnType];
-//	            	dataSourceConfigColumnsHandsontableHelper.my_data.splice(i, 0, columnInfo);
-//	            	
-//	            	
-////	            	var columnInfo=columnRoot[i];
-////	            	dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][0] = columnInfo.id;
-////	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][1] = columnInfo.item;
-////	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][2] = columnInfo.columnName;
-////	                dataSourceConfigColumnsHandsontableHelper.my_data[i + 2][3] = columnInfo.columnType;
-//	            }
 	            dataSourceConfigColumnsHandsontableHelper.my_data=columnRoot;
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(0, 0, ['功图数据', 'pc_fd_pumpjack_dyna_dia_t', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(11, 0, ['油层数据', 'tbl_reservoir', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(16, 0, ['杆柱组合数据', 'tbl_rodstring', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(31, 0, ['油管数据', 'tbl_tubingstringr', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(35, 0, ['套管数据', 'tbl_casingstring', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(39, 0, ['泵数据', 'tbl_pump', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-//	            dataSourceConfigColumnsHandsontableHelper.my_data.splice(45, 0, ['动态数据', 'tbl_production', '', ''],['序号', '字段名称', '字段代码','字段类型']);
-	            
-	            
-	            
-//	            columnRoot.forEach(function (columnInfo, index) { 
-//	            })
 	        }
 	        var init = function () {
 	        }
@@ -625,3 +450,192 @@ var DataSourceConfigColumnsHandsontableHelper = {
 	        return dataSourceConfigColumnsHandsontableHelper;
 	    }
 	};
+
+function SavedDtaSourceConfigData(){
+	if(dataSourceConfigHandsontableHelper==null || dataSourceConfigColumnsHandsontableHelper==null){
+		return;
+	}
+	var dataSourceConfig=dataSourceConfigHandsontableHelper.hot.getData();
+	var dataSourceColumnsConfig=dataSourceConfigColumnsHandsontableHelper.hot.getData();
+	var dataSourceConfigData={};
+	
+	dataSourceConfigData.IP=dataSourceConfig[0][2];
+	dataSourceConfigData.Port=dataSourceConfig[1][2];
+	dataSourceConfigData.Type=dataSourceConfig[2][2];
+	dataSourceConfigData.Version=dataSourceConfig[3][2];
+	dataSourceConfigData.InstanceName=dataSourceConfig[4][2];
+	dataSourceConfigData.User=dataSourceConfig[5][2];
+	dataSourceConfigData.Password=dataSourceConfig[6][2];
+	
+	dataSourceConfigData.DiagramTable={};
+	dataSourceConfigData.DiagramTable.Name=dataSourceColumnsConfig[0][2];
+	dataSourceConfigData.DiagramTable.Columns={};
+	dataSourceConfigData.DiagramTable.Columns.WellName={};
+	dataSourceConfigData.DiagramTable.Columns.WellName.Column=dataSourceColumnsConfig[2][3];
+	dataSourceConfigData.DiagramTable.Columns.WellName.Type=dataSourceColumnsConfig[2][4];
+	dataSourceConfigData.DiagramTable.Columns.AcqTime={};
+	dataSourceConfigData.DiagramTable.Columns.AcqTime.Column=dataSourceColumnsConfig[3][3];
+	dataSourceConfigData.DiagramTable.Columns.AcqTime.Type=dataSourceColumnsConfig[3][4];
+	dataSourceConfigData.DiagramTable.Columns.Stroke={};
+	dataSourceConfigData.DiagramTable.Columns.Stroke.Column=dataSourceColumnsConfig[4][3];
+	dataSourceConfigData.DiagramTable.Columns.Stroke.Type=dataSourceColumnsConfig[4][4];
+	dataSourceConfigData.DiagramTable.Columns.SPM={};
+	dataSourceConfigData.DiagramTable.Columns.SPM.Column=dataSourceColumnsConfig[5][3];
+	dataSourceConfigData.DiagramTable.Columns.SPM.Type=dataSourceColumnsConfig[5][4];
+	dataSourceConfigData.DiagramTable.Columns.PointCount={};
+	dataSourceConfigData.DiagramTable.Columns.PointCount.Column=dataSourceColumnsConfig[6][3];
+	dataSourceConfigData.DiagramTable.Columns.PointCount.Type=dataSourceColumnsConfig[6][4];
+	dataSourceConfigData.DiagramTable.Columns.S={};
+	dataSourceConfigData.DiagramTable.Columns.S.Column=dataSourceColumnsConfig[7][3];
+	dataSourceConfigData.DiagramTable.Columns.S.Type=dataSourceColumnsConfig[7][4];
+	dataSourceConfigData.DiagramTable.Columns.F={};
+	dataSourceConfigData.DiagramTable.Columns.F.Column=dataSourceColumnsConfig[8][3];
+	dataSourceConfigData.DiagramTable.Columns.F.Type=dataSourceColumnsConfig[8][4];
+	dataSourceConfigData.DiagramTable.Columns.I={};
+	dataSourceConfigData.DiagramTable.Columns.I.Column=dataSourceColumnsConfig[9][3];
+	dataSourceConfigData.DiagramTable.Columns.I.Type=dataSourceColumnsConfig[9][4];
+	dataSourceConfigData.DiagramTable.Columns.KWatt={};
+	dataSourceConfigData.DiagramTable.Columns.KWatt.Column=dataSourceColumnsConfig[10][3];
+	dataSourceConfigData.DiagramTable.Columns.KWatt.Type=dataSourceColumnsConfig[10][4];
+	
+	dataSourceConfigData.ReservoirTable={};
+	dataSourceConfigData.ReservoirTable.Name=dataSourceColumnsConfig[11][2];
+	dataSourceConfigData.ReservoirTable.Columns={};
+	dataSourceConfigData.ReservoirTable.Columns.WellName={};
+	dataSourceConfigData.ReservoirTable.Columns.WellName.Column=dataSourceColumnsConfig[13][3];
+	dataSourceConfigData.ReservoirTable.Columns.WellName.Type=dataSourceColumnsConfig[13][4];
+	dataSourceConfigData.ReservoirTable.Columns.Depth={};
+	dataSourceConfigData.ReservoirTable.Columns.Depth.Column=dataSourceColumnsConfig[14][3];
+	dataSourceConfigData.ReservoirTable.Columns.Depth.Type=dataSourceColumnsConfig[14][4];
+	dataSourceConfigData.ReservoirTable.Columns.Temperature={};
+	dataSourceConfigData.ReservoirTable.Columns.Temperature.Column=dataSourceColumnsConfig[15][3];
+	dataSourceConfigData.ReservoirTable.Columns.Temperature.Type=dataSourceColumnsConfig[15][4];
+	
+	dataSourceConfigData.RodStringTable={};
+	dataSourceConfigData.RodStringTable.Name=dataSourceColumnsConfig[16][2];
+	dataSourceConfigData.RodStringTable.Columns={};
+	dataSourceConfigData.RodStringTable.Columns.WellName={};
+	dataSourceConfigData.RodStringTable.Columns.WellName.Column=dataSourceColumnsConfig[18][3];
+	dataSourceConfigData.RodStringTable.Columns.WellName.Type=dataSourceColumnsConfig[18][4];
+	dataSourceConfigData.RodStringTable.Columns.Grade1={};
+	dataSourceConfigData.RodStringTable.Columns.Grade1.Column=dataSourceColumnsConfig[19][3];
+	dataSourceConfigData.RodStringTable.Columns.Grade1.Type=dataSourceColumnsConfig[19][4];
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter1={};
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter1.Column=dataSourceColumnsConfig[20][3];
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter1.Type=dataSourceColumnsConfig[20][4];
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter1={};
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter1.Column=dataSourceColumnsConfig[21][3];
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter1.Type=dataSourceColumnsConfig[21][4];
+	dataSourceConfigData.RodStringTable.Columns.Length1={};
+	dataSourceConfigData.RodStringTable.Columns.Length1.Column=dataSourceColumnsConfig[22][3];
+	dataSourceConfigData.RodStringTable.Columns.Length1.Type=dataSourceColumnsConfig[22][4];
+	dataSourceConfigData.RodStringTable.Columns.Grade2={};
+	dataSourceConfigData.RodStringTable.Columns.Grade2.Column=dataSourceColumnsConfig[23][3];
+	dataSourceConfigData.RodStringTable.Columns.Grade2.Type=dataSourceColumnsConfig[23][4];
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter2={};
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter2.Column=dataSourceColumnsConfig[24][3];
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter2.Type=dataSourceColumnsConfig[24][4];
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter2={};
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter2.Column=dataSourceColumnsConfig[25][3];
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter2.Type=dataSourceColumnsConfig[25][4];
+	dataSourceConfigData.RodStringTable.Columns.Length2={};
+	dataSourceConfigData.RodStringTable.Columns.Length2.Column=dataSourceColumnsConfig[26][3];
+	dataSourceConfigData.RodStringTable.Columns.Length2.Type=dataSourceColumnsConfig[26][4];
+	dataSourceConfigData.RodStringTable.Columns.Grade3={};
+	dataSourceConfigData.RodStringTable.Columns.Grade3.Column=dataSourceColumnsConfig[27][3];
+	dataSourceConfigData.RodStringTable.Columns.Grade3.Type=dataSourceColumnsConfig[27][4];
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter3={};
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter3.Column=dataSourceColumnsConfig[28][3];
+	dataSourceConfigData.RodStringTable.Columns.OutsideDiameter3.Type=dataSourceColumnsConfig[28][4];
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter3={};
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter3.Column=dataSourceColumnsConfig[29][3];
+	dataSourceConfigData.RodStringTable.Columns.InsideDiameter3.Type=dataSourceColumnsConfig[29][4];
+	dataSourceConfigData.RodStringTable.Columns.Length3={};
+	dataSourceConfigData.RodStringTable.Columns.Length3.Column=dataSourceColumnsConfig[30][3];
+	dataSourceConfigData.RodStringTable.Columns.Length3.Type=dataSourceColumnsConfig[30][4];
+	
+	dataSourceConfigData.TubingStringTable={};
+	dataSourceConfigData.TubingStringTable.Name=dataSourceColumnsConfig[31][2];
+	dataSourceConfigData.TubingStringTable.Columns={};
+	dataSourceConfigData.TubingStringTable.Columns.WellName={};
+	dataSourceConfigData.TubingStringTable.Columns.WellName.Column=dataSourceColumnsConfig[33][3];
+	dataSourceConfigData.TubingStringTable.Columns.WellName.Type=dataSourceColumnsConfig[33][4];
+	dataSourceConfigData.TubingStringTable.Columns.InsideDiameter={};
+	dataSourceConfigData.TubingStringTable.Columns.InsideDiameter.Column=dataSourceColumnsConfig[34][3];
+	dataSourceConfigData.TubingStringTable.Columns.InsideDiameter.Type=dataSourceColumnsConfig[34][4];
+	
+	dataSourceConfigData.CasingStringTable={};
+	dataSourceConfigData.CasingStringTable.Name=dataSourceColumnsConfig[35][2];
+	dataSourceConfigData.CasingStringTable.Columns={};
+	dataSourceConfigData.CasingStringTable.Columns.WellName={};
+	dataSourceConfigData.CasingStringTable.Columns.WellName.Column=dataSourceColumnsConfig[37][3];
+	dataSourceConfigData.CasingStringTable.Columns.WellName.Type=dataSourceColumnsConfig[37][4];
+	dataSourceConfigData.CasingStringTable.Columns.InsideDiameter={};
+	dataSourceConfigData.CasingStringTable.Columns.InsideDiameter.Column=dataSourceColumnsConfig[38][3];
+	dataSourceConfigData.CasingStringTable.Columns.InsideDiameter.Type=dataSourceColumnsConfig[38][4];
+	
+	dataSourceConfigData.PumpTable={};
+	dataSourceConfigData.PumpTable.Name=dataSourceColumnsConfig[39][2];
+	dataSourceConfigData.PumpTable.Columns={};
+	dataSourceConfigData.PumpTable.Columns.WellName={};
+	dataSourceConfigData.PumpTable.Columns.WellName.Column=dataSourceColumnsConfig[41][3];
+	dataSourceConfigData.PumpTable.Columns.WellName.Type=dataSourceColumnsConfig[41][4];
+	dataSourceConfigData.PumpTable.Columns.PumpGrade={};
+	dataSourceConfigData.PumpTable.Columns.PumpGrade.Column=dataSourceColumnsConfig[42][3];
+	dataSourceConfigData.PumpTable.Columns.PumpGrade.Type=dataSourceColumnsConfig[42][4];
+	dataSourceConfigData.PumpTable.Columns.PumpBoreDiameter={};
+	dataSourceConfigData.PumpTable.Columns.PumpBoreDiameter.Column=dataSourceColumnsConfig[43][3];
+	dataSourceConfigData.PumpTable.Columns.PumpBoreDiameter.Type=dataSourceColumnsConfig[43][4];
+	dataSourceConfigData.PumpTable.Columns.PlungerLength={};
+	dataSourceConfigData.PumpTable.Columns.PlungerLength.Column=dataSourceColumnsConfig[44][3];
+	dataSourceConfigData.PumpTable.Columns.PlungerLength.Type=dataSourceColumnsConfig[44][4];
+	
+	dataSourceConfigData.ProductionTable={};
+	dataSourceConfigData.ProductionTable.Name=dataSourceColumnsConfig[45][2];
+	dataSourceConfigData.ProductionTable.Columns={};
+	dataSourceConfigData.ProductionTable.Columns.WellName={};
+	dataSourceConfigData.ProductionTable.Columns.WellName.Column=dataSourceColumnsConfig[47][3];
+	dataSourceConfigData.ProductionTable.Columns.WellName.Type=dataSourceColumnsConfig[47][4];
+	dataSourceConfigData.ProductionTable.Columns.WaterCut={};
+	dataSourceConfigData.ProductionTable.Columns.WaterCut.Column=dataSourceColumnsConfig[48][3];
+	dataSourceConfigData.ProductionTable.Columns.WaterCut.Type=dataSourceColumnsConfig[48][4];
+	dataSourceConfigData.ProductionTable.Columns.ProductionGasOilRatio={};
+	dataSourceConfigData.ProductionTable.Columns.ProductionGasOilRatio.Column=dataSourceColumnsConfig[49][3];
+	dataSourceConfigData.ProductionTable.Columns.ProductionGasOilRatio.Type=dataSourceColumnsConfig[49][4];
+	dataSourceConfigData.ProductionTable.Columns.TubingPressure={};
+	dataSourceConfigData.ProductionTable.Columns.TubingPressure.Column=dataSourceColumnsConfig[50][3];
+	dataSourceConfigData.ProductionTable.Columns.TubingPressure.Type=dataSourceColumnsConfig[50][4];
+	dataSourceConfigData.ProductionTable.Columns.CasingPressure={};
+	dataSourceConfigData.ProductionTable.Columns.CasingPressure.Column=dataSourceColumnsConfig[51][3];
+	dataSourceConfigData.ProductionTable.Columns.CasingPressure.Type=dataSourceColumnsConfig[51][4];
+	dataSourceConfigData.ProductionTable.Columns.WellHeadFluidTemperature={};
+	dataSourceConfigData.ProductionTable.Columns.WellHeadFluidTemperature.Column=dataSourceColumnsConfig[52][3];
+	dataSourceConfigData.ProductionTable.Columns.WellHeadFluidTemperature.Type=dataSourceColumnsConfig[52][4];
+	dataSourceConfigData.ProductionTable.Columns.ProducingfluidLevel={};
+	dataSourceConfigData.ProductionTable.Columns.ProducingfluidLevel.Column=dataSourceColumnsConfig[53][3];
+	dataSourceConfigData.ProductionTable.Columns.ProducingfluidLevel.Type=dataSourceColumnsConfig[53][4];
+	dataSourceConfigData.ProductionTable.Columns.PumpSettingDepth={};
+	dataSourceConfigData.ProductionTable.Columns.PumpSettingDepth.Column=dataSourceColumnsConfig[54][3];
+	dataSourceConfigData.ProductionTable.Columns.PumpSettingDepth.Type=dataSourceColumnsConfig[54][4];
+	
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/dataSourceConfigController/saveDataSourceConfigData',
+		success:function(response) {
+			var data=Ext.JSON.decode(response.responseText);
+			if (data.success) {
+            	Ext.MessageBox.alert("信息","保存成功");
+//            	CreateKafkaConfigInfoTable();
+            } else {
+            	Ext.MessageBox.alert("信息","数据保存失败");
+
+            }
+		},
+		failure:function(){
+			Ext.MessageBox.alert("信息","请求失败");
+		},
+		params: {
+			dataSourceConfigData:JSON.stringify(dataSourceConfigData)
+        }
+	}); 
+}

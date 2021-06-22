@@ -304,10 +304,10 @@ create index INDEX_MODULE_PARENTID on TBL_MODULE (MD_PARENTID)
 /*==============================================================*/
 create table TBL_ROLE
 (
+  ROLE_ID   NUMBER(10) not null,
   ROLE_CODE VARCHAR2(50) not null,
   ROLE_NAME VARCHAR2(40) not null,
   ROLE_FLAG NUMBER(10),
-  ROLE_ID   NUMBER(10) not null,
   REMARK    VARCHAR2(2000)
 )
 tablespace AGILE_DATA

@@ -15,16 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import com.gao.model.AlarmShowStyle;
 import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusProtocolConfig;
-import com.gao.model.drive.AcqGroup;
 import com.gao.model.drive.InitId;
 import com.gao.model.drive.InitProtocol;
 import com.gao.utils.Config;
@@ -40,12 +35,8 @@ public class EquipmentDriverServerTask {
 	public static Connection conn = null;   
 	public static PreparedStatement pstmt = null;  
 	public static Statement stmt = null;  
-	public static ResultSet rs = null; 
-	public static ServerSocket beeTechServerSocket;
-	public static ServerSocket sunMoonServerSocket;
-	public static boolean exit=false;
+	public static ResultSet rs = null;
 	public static ServerSocket serverSocket=null;
-	private ExecutorService pool = Executors.newCachedThreadPool();
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
@@ -53,7 +44,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		loadProtocolConfig();
 		initProtocolConfig("","");
@@ -76,7 +67,6 @@ public class EquipmentDriverServerTask {
 		type = new TypeToken<ModbusProtocolConfig>() {}.getType();
 		ModbusProtocolConfig modbusProtocolConfig=gson.fromJson(protocolConfigData, type);
 		equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
-		
 		//添加Kafka协议配置
 		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
 		protocolConfigData=stringManagerUtils.readFile(path,"utf-8");
@@ -95,7 +85,6 @@ public class EquipmentDriverServerTask {
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		InitProtocol initProtocol=null;
-		
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
@@ -141,16 +130,13 @@ public class EquipmentDriverServerTask {
 		}
 		sql+="  ) v "
 				+ " group by wellname,deviceaddr,deviceid,protocol,unit_code,group_code,acq_cycle";
-		
 		Map<String,InitId> wellListMap=new HashMap<String,InitId>();
-		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
 		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
-		
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null || modbusProtocolConfig==null){
         	return -1;
@@ -173,7 +159,6 @@ public class EquipmentDriverServerTask {
 				group.setInterval(rs.getInt(7));
 				group.setAddr(new ArrayList<Integer>());
 				String[] itemsArr=rs.getString(8).split(",");
-				
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(4))){
 						for(int j=0;j<itemsArr.length;j++){

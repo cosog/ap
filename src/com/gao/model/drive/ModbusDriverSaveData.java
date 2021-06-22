@@ -11,8 +11,6 @@ public class ModbusDriverSaveData {
 	
 	private String ProtocolType;
 	
-	private String StoreMode;
-	
 	private String SignInPrefix;
 	
 	private String SignInSuffix;
@@ -135,12 +133,6 @@ public class ModbusDriverSaveData {
 	}
 	public void setProtocolType(String protocolType) {
 		ProtocolType = protocolType;
-	}
-	public String getStoreMode() {
-		return StoreMode;
-	}
-	public void setStoreMode(String storeMode) {
-		StoreMode = storeMode;
 	}
 	public String getHeartbeatPrefix() {
 		return HeartbeatPrefix;

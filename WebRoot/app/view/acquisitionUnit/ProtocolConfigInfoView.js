@@ -206,7 +206,7 @@ function CreateProtocolConfigInfoTable(isNew){
 			}
 			
 			var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(0);
-			CreateDriverConfigItemsInfoTable(row1[8]);
+			CreateDriverConfigItemsInfoTable(row1[7]);
 			CreateAcquisitionUnitConfigInfoTable(true);
 			CreateAcquisitionGroupConfigInfoTable(true);
 		},
@@ -249,7 +249,7 @@ var ProtocolConfigHandsontableHelper = {
 	        	protocolConfigHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	                hiddenColumns: {
-	                    columns: [0,8],
+	                    columns: [0,7],
 	                    indicators: true
 	                },
 	                colWidths: [80,80,170,120,120,120,120,120],
@@ -279,7 +279,7 @@ var ProtocolConfigHandsontableHelper = {
 	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
 	                	Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").setValue(row);
 	                	var row1=protocolConfigHandsontableHelper.hot.getDataAtRow(row);
-	                	CreateDriverConfigItemsInfoTable(row1[8]);
+	                	CreateDriverConfigItemsInfoTable(row1[7]);
 	                	CreateAcquisitionUnitConfigInfoTable();
 	                	CreateAcquisitionGroupConfigInfoTable();
 	                },
@@ -785,11 +785,10 @@ function SaveModbusProtocolConfigData(){
 		var configInfo={};
 		configInfo.ProtocolName=protocolConfigData[1];
 		configInfo.ProtocolType=protocolConfigData[2];
-		configInfo.StoreMode=protocolConfigData[3];
-		configInfo.SignInPrefix=protocolConfigData[4];
-		configInfo.SignInSuffix=protocolConfigData[5];
-		configInfo.HeartbeatPrefix=protocolConfigData[6];
-		configInfo.HeartbeatSuffix=protocolConfigData[7];
+		configInfo.SignInPrefix=protocolConfigData[3];
+		configInfo.SignInSuffix=protocolConfigData[4];
+		configInfo.HeartbeatPrefix=protocolConfigData[5];
+		configInfo.HeartbeatSuffix=protocolConfigData[6];
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};

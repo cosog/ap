@@ -109,173 +109,179 @@ values ('sysAdmin', '系统管理', 1, 141, '具有最大权限');
 /*==============================================================*/
 /* 初始化tbl_module2role数据                                          */
 /*==============================================================*/
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (9999, '0,0,0', 118324, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (9999, '0,0,0', 118456, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1757, '0,0,0', 118325, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1757, '0,0,0', 118457, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (5, '0,0,0', 118326, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (5, '0,0,0', 118458, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1678, '0,0,0', 118327, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1678, '0,0,0', 118459, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (554, '0,0,0', 118328, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (554, '0,0,0', 118460, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1315, '0,0,0', 118329, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1315, '0,0,0', 118461, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1958, '0,0,0', 118330, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (2001, '0,0,0', 118462, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1938, '0,0,0', 118331, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1958, '0,0,0', 118463, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1959, '0,0,0', 118332, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1938, '0,0,0', 118464, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (27, '0,0,0', 118333, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1959, '0,0,0', 118465, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (24, '0,0,0', 118334, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (27, '0,0,0', 118466, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (28, '0,0,0', 118335, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (24, '0,0,0', 118467, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (29, '0,0,0', 118336, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (28, '0,0,0', 118468, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (31, '0,0,0', 118337, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (29, '0,0,0', 118469, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (34, '0,0,0', 118338, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (31, '0,0,0', 118470, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (35, '0,0,0', 118339, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (34, '0,0,0', 118471, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (36, '0,0,0', 118340, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (35, '0,0,0', 118472, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1718, '0,0,0', 118341, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (36, '0,0,0', 118473, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1998, '0,0,0', 118342, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1718, '0,0,0', 118474, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1978, '0,0,0', 118343, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1998, '0,0,0', 118475, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1999, '0,0,0', 118344, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1978, '0,0,0', 118476, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1777, '0,0,0', 118345, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1999, '0,0,0', 118477, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (2000, '0,0,0', 118346, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1777, '0,0,0', 118478, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1797, '0,0,0', 118347, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (2000, '0,0,0', 118479, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1515, '0,0,0', 118348, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1797, '0,0,0', 118480, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1877, '0,0,0', 118349, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1515, '0,0,0', 118481, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (23, '0,0,0', 118350, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1877, '0,0,0', 118482, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (26, '0,0,0', 118351, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (23, '0,0,0', 118483, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (894, '0,0,0', 118352, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (26, '0,0,0', 118484, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1697, '0,0,0', 118353, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (894, '0,0,0', 118485, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (47, '0,0,0', 118354, 141);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1697, '0,0,0', 118486, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1757, '0,0,0', 118355, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (47, '0,0,0', 118487, 141);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (5, '0,0,0', 118356, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1757, '0,0,0', 119115, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1678, '0,0,0', 118357, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (5, '0,0,0', 119116, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (554, '0,0,0', 118358, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1678, '0,0,0', 119117, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1315, '0,0,0', 118359, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (554, '0,0,0', 119118, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (27, '0,0,0', 118360, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1315, '0,0,0', 119119, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (24, '0,0,0', 118361, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (27, '0,0,0', 119120, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (28, '0,0,0', 118362, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (24, '0,0,0', 119121, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (31, '0,0,0', 118363, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (28, '0,0,0', 119122, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (34, '0,0,0', 118364, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (31, '0,0,0', 119123, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (35, '0,0,0', 118365, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (34, '0,0,0', 119124, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (36, '0,0,0', 118366, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (35, '0,0,0', 119125, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1718, '0,0,0', 118367, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (36, '0,0,0', 119126, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (2000, '0,0,0', 118368, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1718, '0,0,0', 119127, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1797, '0,0,0', 118369, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1998, '0,0,0', 119128, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (23, '0,0,0', 118370, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1978, '0,0,0', 119129, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (894, '0,0,0', 118371, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (2000, '0,0,0', 119130, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1697, '0,0,0', 118372, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1797, '0,0,0', 119131, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (47, '0,0,0', 118373, 302);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (23, '0,0,0', 119132, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (9999, '0,0,0', 118379, 322);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (894, '0,0,0', 119133, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1757, '0,0,0', 118380, 322);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1697, '0,0,0', 119134, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (5, '0,0,0', 118381, 322);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (47, '0,0,0', 119135, 302);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1678, '0,0,0', 118382, 322);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1757, '0,0,0', 119136, 322);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (554, '0,0,0', 118383, 322);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (5, '0,0,0', 119137, 322);
 
-insert into tbl_module2role (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1315, '0,0,0', 118384, 322);
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1678, '0,0,0', 119138, 322);
+
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (554, '0,0,0', 119139, 322);
+
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (1315, '0,0,0', 119140, 322);
 
 /*==============================================================*/
 /* 初始化tbl_user数据                                          */

@@ -472,19 +472,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}else{
 				protocolType=2;
 			}
-			
-			int storeMode=0;
-			if(modbusDriverSaveData.getStoreMode().equalsIgnoreCase("大端")){
-				storeMode=0;
-			}else{
-				storeMode=1;
-			}
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(modbusDriverSaveData.getProtocolName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 					isAdd=false;
 					modbusDriverSaveData.setProtocolCode(modbusProtocolConfig.getProtocol().get(i).getCode());
 					modbusProtocolConfig.getProtocol().get(i).setType(protocolType);
-					modbusProtocolConfig.getProtocol().get(i).setStoreMode(storeMode);
 					modbusProtocolConfig.getProtocol().get(i).setSignInPrefix(modbusDriverSaveData.getSignInPrefix());
 					modbusProtocolConfig.getProtocol().get(i).setSignInSuffix(modbusDriverSaveData.getSignInSuffix());
 					modbusProtocolConfig.getProtocol().get(i).setHeartbeatPrefix(modbusDriverSaveData.getHeartbeatPrefix());
@@ -544,7 +536,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocol.setCode(protocolCode);
 				modbusDriverSaveData.setProtocolCode(protocolCode);
 				protocol.setType(protocolType);
-				protocol.setStoreMode(storeMode);
 				
 				protocol.setSignInPrefix(modbusDriverSaveData.getSignInPrefix());
 				protocol.setSignInSuffix(modbusDriverSaveData.getSignInSuffix());

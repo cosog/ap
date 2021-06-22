@@ -261,7 +261,7 @@ function CreateAndLoadWellInfoTable(isNew){
 	            		source+="]";
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
 	            	}else{
 	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
 	            	}

@@ -7188,91 +7188,73 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115661', '', 'c36a76211afd4f37b8978255d3f439e5', '沉没度(m)', 'submergence', '', 52, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117566', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '采集时间', 'acqTime_d', '', 1, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117566', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '采集时间', 'acqTime_d', null, 1, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117567', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '通信状态', 'commStatus', '', 2, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117567', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '通信状态', 'commStatus', null, 2, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117568', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行状态', 'runStatus', '', 3, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117568', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行状态', 'runStatus', null, 3, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117569', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行频率(Hz)', 'frequencyRunValue', '', 4, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117569', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行频率(Hz)', 'frequencyRunValue', null, 4, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117570', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电流(A)', 'Ia', '', 5, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117570', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电流(A)', 'Ia', null, 5, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117571', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电流最大值(A)', 'IaMax', '', 6, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117573', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'B相电流(A)', 'Ib', null, 6, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117572', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电流最小值(A)', 'IaMin', '', 7, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117576', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电流(A)', 'Ic', null, 7, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117573', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'B相电流(A)', 'Ib', '', 8, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117579', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电压(V)', 'Va', null, 8, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117574', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'B相电流最大值(A)', 'IbMax', '', 9, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117580', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'B相电压(V)', 'Vb', null, 9, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117575', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'B相电流最小值(A)', 'IbMin', '', 10, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117581', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电压(V)', 'Vc', null, 10, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117576', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电流(A)', 'Ic', '', 11, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117582', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功率(kW)', 'wattSum', null, 11, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117577', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电流最大值(A)', 'IcMax', '', 12, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117583', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '无功功率(kVar)', 'varSum', null, 12, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117578', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电流最小值(A)', 'IcMin', '', 13, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117584', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '反向功率(kW)', 'reversePower', null, 13, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117579', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电压(V)', 'Va', '', 14, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117822', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '视在功率(kVA)', 'vaSum', null, 14, 1, null, null, to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117580', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'B相电压(V)', 'Vb', '', 15, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117585', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '功率因数', 'pfSum', null, 15, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117581', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电压(V)', 'Vc', '', 16, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117586', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功耗(kW·h)', 'totalKWattH', null, 16, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117582', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功率(kW)', 'wattSum', '', 17, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117587', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '无功功耗(kVar·h)', 'totalKVarH', null, 17, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117583', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '无功功率(kVar)', 'varSum', '', 18, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117588', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '视在功耗(kVA·h)', 'totalKVAH', null, 18, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117584', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '反向功率(kW)', 'reversePower', '', 19, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117823', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '油压(MPa)', 'tubingPressure', null, 19, 1, null, null, to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117822', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '视在功率(kVA)', 'vaSum', '', 20, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117824', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '套压(MPa)', 'casingPressure', null, 20, 1, null, null, to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117585', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '功率因数', 'pfSum', '', 21, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117825', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '井口油温(℃)', 'wellheadFluidTemperature', null, 21, 1, null, null, to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117586', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功耗(kW·h)', 'totalKWattH', '', 22, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117589', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '信号强度', 'signal', null, 22, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117587', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '无功功耗(kVar·h)', 'totalKVarH', '', 23, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117588', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '视在功耗(kVA·h)', 'totalKVAH', '', 24, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117823', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '油压(MPa)', 'tubingPressure', '', 25, 1, '', '', to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117824', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '套压(MPa)', 'casingPressure', '', 26, 1, '', '', to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117825', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '井口油温(℃)', 'wellheadFluidTemperature', '', 27, 1, '', '', to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117589', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '信号强度', 'signal', '', 28, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117590', '', 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '设备版本', 'deviceVer', '', 29, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117590', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '设备版本', 'deviceVer', null, 23, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114954', '', 'c7a2100cf9d840019f9f40b02cfb0075', '序号', 'id', 'width:40', 1, 1, '', '', to_date('23-07-2018 13:38:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-07-2018 13:38:00', 'dd-mm-yyyy hh24:mi:ss'));

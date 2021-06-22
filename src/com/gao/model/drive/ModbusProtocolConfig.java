@@ -105,8 +105,6 @@ public class ModbusProtocolConfig {
 
 	    private int Type;
 
-	    private int StoreMode;
-
 	    private String SignInPrefix;
 
 	    private String SignInSuffix;
@@ -136,12 +134,6 @@ public class ModbusProtocolConfig {
 	    }
 	    public int getType(){
 	        return this.Type;
-	    }
-	    public void setStoreMode(int StoreMode){
-	        this.StoreMode = StoreMode;
-	    }
-	    public int getStoreMode(){
-	        return this.StoreMode;
 	    }
 	    public void setSignInPrefix(String SignInPrefix){
 	        this.SignInPrefix = SignInPrefix;

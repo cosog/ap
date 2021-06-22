@@ -51,8 +51,7 @@ public class ModuleShowRightManagerController extends BaseController implements 
 			String moduleIds = ParamUtils.getParameter(request, "paramsId");
 		//	String oldModuleIds = ParamUtils.getParameter(request,
 					//"oldModuleIds");
-			String matrixCodes = ParamUtils
-					.getParameter(request, "matrixCodes");
+			String matrixCodes = ParamUtils.getParameter(request, "matrixCodes");
 			log.debug("doModuleSaveOrUpdate moduleIds==" + moduleIds);
 			String roleId = ParamUtils.getParameter(request, "roleId");
 			String moduleId[] = StringManagerUtils.split(moduleIds, ",");
@@ -71,7 +70,6 @@ public class ModuleShowRightManagerController extends BaseController implements 
 						this.moduleService.saveOrUpdateModule(r);
 					}
 				}
-
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);

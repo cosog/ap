@@ -45,30 +45,29 @@ public class ExternalDataManagerTask {
 
     private ExecutorService pool = Executors.newCachedThreadPool();
     
-//    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
 	public void GetExternalFESDiagramData() throws SQLException, ParseException,InterruptedException, IOException{
-//		pool.submit(new GetExternalDataThread("南V10-3",""));
     	System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 		String sql="select t1.wellname,to_char(v.acqtime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t1 "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t1.id "
 				+ " left outer join (select t3.wellid,max(t3.acqtime) as acqtime from tbl_rpc_diagram_hist t3 group by t3.wellid) v on v.wellid=t1.id "
 				+ " where t1.unitcode is null and t1.protocolcode is null "
-//				+ " and t1.wellname='南V10-3'"
 				+ " and t2.pumpsettingdepth>0 ";
 		try {
-			while(conn==null || conn.isClosed() || conn_outer==null || conn_outer.isClosed()){
-				if(conn==null || conn.isClosed()){
-					conn=OracleJdbcUtis.getConnection();
-				}
-				if(conn_outer==null || conn_outer.isClosed()){
-					conn_outer= OracleJdbcUtis.getOuterConnection();
-				}
-				if(conn==null || conn.isClosed() || conn_outer==null || conn_outer.isClosed()){
-					Thread.sleep(1000*1*60);
-				}
-			}
-			
+//			while(conn==null || conn.isClosed() || conn_outer==null || conn_outer.isClosed()){
+//				if(conn==null || conn.isClosed()){
+//					conn=OracleJdbcUtis.getConnection();
+//				}
+//				if(conn_outer==null || conn_outer.isClosed()){
+//					conn_outer= OracleJdbcUtis.getOuterConnection();
+//				}
+//				if(conn==null || conn.isClosed() || conn_outer==null || conn_outer.isClosed()){
+//					Thread.sleep(1000*1*60);
+//				}
+//			}
+			conn=OracleJdbcUtis.getConnection();
+			conn_outer= OracleJdbcUtis.getOuterConnection();
 			if(conn!=null&&conn_outer!=null){
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();

@@ -42,7 +42,7 @@ import com.google.gson.reflect.TypeToken;
 public class DataDictionaryInitTask {
     
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void initProductionDataDictionary(){
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/dataitemsInfoController/initProductionDataDictionary";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");

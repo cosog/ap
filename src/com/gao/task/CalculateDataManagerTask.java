@@ -41,7 +41,7 @@ public class CalculateDataManagerTask {
     private static ResultSet rs_outer = null; 
 	
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断SDK是否启动
 		String probeUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
@@ -60,14 +60,14 @@ public class CalculateDataManagerTask {
 	/**
 	 * 汇总计算
 	 * */
-//	@Scheduled(cron = "0 0 1/24 * * ?")
+	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/dailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
 	
 	//离散数据实时汇总
-//	@Scheduled(cron = "0 30 0/1 * * ?")
+	@Scheduled(cron = "0 30 0/1 * * ?")
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
 		@SuppressWarnings("static-access")
@@ -87,37 +87,6 @@ public class CalculateDataManagerTask {
 		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/pubSubModelCommCalculation";
 		String result="";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8");
-	}
-	
-	/**
-	 * 取对接数据库的数据
-	 * */
-//	@Scheduled(cron = "0 0/1 * * * ?")
-	public void getOuterDataRequset() throws SQLException, UnsupportedEncodingException, ParseException{
-		DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
-		String sql="select t.id,t2.pumpsettingdepth,to_char(t3.acqTime,'yyyy-mm-dd hh24:mi:ss') "
-				+ " from tbl_wellinformation t  "
-				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t.id "
-				+ " left outer join tbl_rpc_diagram_latest t3 on t3.wellid=t.id ";
-		try {
-			conn_outer=OracleJdbcUtis.getConnection();
-			if(conn_outer!=null){
-				pstmt_outer = conn_outer.prepareStatement(sql);
-				rs_outer=pstmt_outer.executeQuery();
-				while(rs_outer.next()){
-					int wellId=rs_outer.getInt(1);
-					String pumpsettingdepth=rs_outer.getString(2);
-					if(StringManagerUtils.isNotNull(pumpsettingdepth)&&StringManagerUtils.stringToFloat(pumpsettingdepth)>0){//如果录入了生产数据
-						String url=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/getOuterSurfaceCardData?wellId="+wellId;
-						StringManagerUtils.sendPostMethod(url, "","utf-8");
-					}
-				}
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			OracleJdbcUtis.closeDBConnection(conn_outer, pstmt_outer, rs_outer);
-		}
 	}
 	
 	public static  int getCount(String sql) throws SQLException{  

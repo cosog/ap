@@ -11,8 +11,6 @@ public class InitProtocol {
     
     private String ProtocolType;
     
-    private String StoreMode;
-    
     private String SignInPrefix;
     
     private String SignInSuffix;
@@ -42,7 +40,6 @@ public class InitProtocol {
     public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig) {
     	this.setProtocolName(protocolConfig.getName());
     	this.setProtocolType(protocolConfig.getType()==0?"tcp_pasv":(protocolConfig.getType()==1?"rtu_pasv":"rtu_active"));
-    	this.setStoreMode(protocolConfig.getStoreMode()==0?"big":"little");
     	this.setSignInPrefix(protocolConfig.getSignInPrefix());
     	this.setSignInSuffix(protocolConfig.getSignInSuffix());
     	this.setHeartbeatPrefix(protocolConfig.getHeartbeatPrefix());
@@ -79,14 +76,6 @@ public class InitProtocol {
 
 	public void setProtocolType(String protocolType) {
 		ProtocolType = protocolType;
-	}
-
-	public String getStoreMode() {
-		return StoreMode;
-	}
-
-	public void setStoreMode(String storeMode) {
-		StoreMode = storeMode;
 	}
 
 	public String getSignInPrefix() {

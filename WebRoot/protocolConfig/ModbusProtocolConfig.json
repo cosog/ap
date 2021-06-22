@@ -3,7 +3,6 @@
         "Name": "A11协议_必创",
         "Code": "BeeTech",
         "Type": 0,
-        "StoreMode": 0,
         "SignInPrefix": "AA01",
         "SignInSuffix": "0D",
         "HeartbeatPrefix": "AA01",

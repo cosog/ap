@@ -31,8 +31,8 @@ public class DataSourceConfigService<T> extends BaseService<T>  {
 		DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"项\",\"dataIndex\":\"item\",width:120 ,children:[] },"
-				+ "{ \"header\":\"值状态\",\"dataIndex\":\"value\",width:80 ,children:[] }"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",width:120 ,children:[] },"
+				+ "{ \"header\":\"变量\",\"dataIndex\":\"value\",width:80 ,children:[] }"
 				+ "]";
 		
 		String diagramTableColumns = "["

@@ -3,7 +3,7 @@
     "IP":"127.0.0.1",
     "Port":1521,
     "Type":0,
-    "Version":"11",
+    "Version":"11g",
     "InstanceName":"orcl",
     "User":"kfk",
     "Password":"a11ck_123",

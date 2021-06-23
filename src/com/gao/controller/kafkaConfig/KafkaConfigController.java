@@ -191,7 +191,7 @@ public class KafkaConfigController extends BaseController {
         }else{
         	tableName="tbl_a9rawdata_latest";
         }
-        String sql="select t.deviceid, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer,t.interval,t.a,t.f,t.watt,t.i from "+tableName+" t where 1=1 ";
+        String sql="select t.deviceId, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer,t.interval,t.a,t.f,t.watt,t.i from "+tableName+" t where 1=1 ";
         if(StringManagerUtils.isNotNull(selectedDeviceId)){
         	sql+=" and t.id="+id;
         }else{
@@ -380,7 +380,7 @@ public class KafkaConfigController extends BaseController {
 		String type = ParamUtils.getParameter(request, "type");
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String data = ParamUtils.getParameter(request, "data");
-		String sql="select t.protocolcode,t.deviceaddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
+		String sql="select t.protocolcode,t.signinid from tbl_wellinformation t where t.wellname='"+wellName+"'";
 		List list = this.commonDataService.findCallSql(sql);
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){

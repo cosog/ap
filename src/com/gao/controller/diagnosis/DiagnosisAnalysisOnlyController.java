@@ -348,7 +348,6 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		}else if("3".equals(type)){
 			json = this.diagnosisAnalysisOnlyService.querySingleDetailsDynamicCurveData(id,wellName,selectedWellName,startDate,endDate);
 		}
-		System.out.println(json);
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
@@ -501,7 +500,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			String getUpwd = userInfo.getUserPwd();
 			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t2.protocol, t.deviceaddr,to_number(t.deviceid) from tbl_wellinformation t,tbl_acq_unit_conf t2 "
+				String sql="select t2.protocol, t.signinid,to_number(t.slave) from tbl_wellinformation t,tbl_acq_unit_conf t2 "
 						+ " where t.unitcode=t2.unit_code and t.wellname='"+wellName+"'";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){

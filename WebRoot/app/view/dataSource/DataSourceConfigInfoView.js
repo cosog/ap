@@ -90,42 +90,8 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 		        var columns="[";
 		       
 	            for(var i=0;i<result.columns.length;i++){
-	            	 colHeaders+="'"+result.columns[i].header+"'";
-	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,dataSourceConfigHandsontableHelper);}}";
-	            	}else if(result.columns[i].dataIndex==="liftingTypeName"){
-	            		if(pcpHidden){
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
-	            		}else{
-	            			columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
-	            		}
-	            	}else if(result.columns[i].dataIndex==="runtimeEfficiencySource"){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['软件计算','组态直读', '数据库直读','人工录入']}";
-	            	}else if(result.columns[i].dataIndex==="driverName"){
-	            		var source="[";
-	            		for(var j=0;j<result.driverDropdownData.length;j++){
-	            			source+="\'"+result.driverDropdownData[j]+"\'";
-	            			if(j<result.driverDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex==="acquisitionUnit"){
-	            		var source="[";
-	            		for(var j=0;j<result.unitDropdownData.length;j++){
-	            			source+="\'"+result.unitDropdownData[j]+"\'";
-	            			if(j<result.unitDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
-	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,dataSourceConfigHandsontableHelper);}}";
-	            	}else{
-	            		columns+="{data:'"+result.columns[i].dataIndex+"'}";
-	            	}
+	            	colHeaders+="'"+result.columns[i].header+"'";
+	            	columns+="{data:'"+result.columns[i].dataIndex+"'}";
 	            	if(i<result.columns.length-1){
 	            		colHeaders+=",";
 	                	columns+=",";
@@ -209,6 +175,20 @@ var DataSourceConfigHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = dataSourceConfigHandsontableHelper.addBoldBg;
 		                }
+	                    
+	                    if(visualRowIndex==2 && visualColIndex ==2){
+	                    	cellProperties.type='dropdown';
+	                    	cellProperties.strict=true;
+	                    	cellProperties.allowInvalid=false;
+	                    	cellProperties.source=['oracle','sql server'];
+	                    }
+	                    
+	                    if(visualRowIndex==3 && visualColIndex ==2){
+	                    	cellProperties.type='dropdown';
+	                    	cellProperties.strict=true;
+	                    	cellProperties.allowInvalid=false;
+	                    	cellProperties.source=['10g','11g','12c','19c'];
+	                    }
 	                    return cellProperties;
 	                },
 	                afterDestroy: function() {

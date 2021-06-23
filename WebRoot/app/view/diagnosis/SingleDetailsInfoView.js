@@ -21,9 +21,9 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         xtype: 'tbfill'
                     },{
                 		xtype: 'button',
-                		width:180,
+//                		width:180,
                         id:"CPUUsedPercentLabel_id",
-                        text: 'CPU使用率:',
+                        text: 'CPU:',
                         handler: function (v, o) {
                         	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("CPU使用率(%)");
                             Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("cpuUsedPercent");
@@ -35,9 +35,9 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         }
                 	},{
                 		xtype: 'button',
-                		width:150,
+//                		width:150,
                         id:"memUsedPercentLabel_id",
-                        text: '内存使用率:',
+                        text: '内存:',
                         handler: function (v, o) {
                         	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("内存使用率(%)");
                             Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("memUsedPercent");
@@ -49,9 +49,9 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         }
                 	},{
                 		xtype: 'button',
-                		width:150,
+//                		width:150,
                         id:"tableSpaceSizeProbeLabel_id",
-                        text: '表空间使用率:',
+                        text: '表空间:',
                         handler: function (v, o) {
                         	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("表空间使用率(%)");
                             Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("tableSpaceSize");
@@ -63,7 +63,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         }
                 	},{
                 		xtype: 'button',
-                		width:150,
+//                		width:150,
                         id:"appRunStatusProbeLabel_id",
                         text: 'SDK运行状态:',
                         handler: function (v, o) {
@@ -77,7 +77,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         }
                 	},{
                 		xtype: 'button',
-                		width:150,
+//                		width:150,
                         id:"appVersionProbeLabel_id",
                         text: 'SDK版本:',
                         handler: function (v, o) {
@@ -91,7 +91,7 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                 	},{
                         id: 'webSocketTest_Id', //选择查看曲线的数据项名称
                         xtype: 'textfield',
-                        width:150,
+//                        width:150,
                         value: '',
                         hidden: true
                     }]
@@ -165,10 +165,10 @@ function probeWebsocketOnMessage(evt) {
 //		Ext.getCmp("webSocketTest_Id").setValue(evt.data);
 		if(evt.data!='Connect successfully!'){
 			var data=Ext.JSON.decode(evt.data);
-			Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU使用率:"+data.cpuUsedPercent);
-			Ext.getCmp("memUsedPercentLabel_id").setText("内存使用率:"+data.memUsedPercent);
-			Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间使用率:"+data.tableSpaceUsedPercent);
-			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK运行状态:"+data.appRunStatus);
+			Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU:"+data.cpuUsedPercent);
+			Ext.getCmp("memUsedPercentLabel_id").setText("内存:"+data.memUsedPercent);
+			Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
+			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK状态:"+data.appRunStatus);
 			Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
 		}
 	}

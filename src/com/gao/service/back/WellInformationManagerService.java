@@ -345,9 +345,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			liftingType_Str = " and t.liftingtype like '%" + liftingType.substring(0, 1)+ "%'";
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
-				+ " t.protocolcode,t.acquisitionunit,t.deviceaddr,t.deviceid,"
-				+ " t.videourl,t.sortnum,"
-				+ " t.protocol "
+				+ " t.protocolcode,t.acquisitionunit,t.signinid,t.slave,"
+				+ " t.videourl,t.sortnum"
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
@@ -426,11 +425,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"protocolCode\":\""+obj[6]+"\",");
 			result_json.append("\"protocolName\":\""+protocolName+"\",");
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
-			result_json.append("\"deviceAddr\":\""+obj[8]+"\",");
-			result_json.append("\"deviceId\":\""+obj[9]+"\",");
+			result_json.append("\"signInId\":\""+obj[8]+"\",");
+			result_json.append("\"slave\":\""+obj[9]+"\",");
 			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
-			result_json.append("\"sortNum\":\""+obj[11]+"\",");
-			result_json.append("\"protocol\":\""+obj[12]+"\"},");
+			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -464,7 +462,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			liftingType_Str = " and t.liftingtype like '%" + liftingType.substring(0, 1)+ "%'";
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
-				+ " t.protocolcode,t.acquisitionunit,t.deviceaddr,t.deviceid,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
+				+ " t.protocolcode,t.acquisitionunit,t.signinid,t.slave,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
 				+ " t.videourl,t.sortnum, "
 				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
 				+ " from viw_wellinformation t where 1=1"
@@ -507,8 +505,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"protocolCode\":\""+obj[6]+"\",");
 			result_json.append("\"protocolName\":\""+protocolName+"\",");
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
-			result_json.append("\"deviceAddr\":\""+obj[8]+"\",");
-			result_json.append("\"deviceId\":\""+obj[9]+"\",");
+			result_json.append("\"signInId\":\""+obj[8]+"\",");
+			result_json.append("\"slave\":\""+obj[9]+"\",");
 			result_json.append("\"acqcycle_diagram\":\""+obj[10]+"\",");
 			result_json.append("\"acqcycle_discrete\":\""+obj[11]+"\",");
 			result_json.append("\"savecycle_discrete\":\""+obj[12]+"\",");

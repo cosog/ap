@@ -162,7 +162,7 @@ public class ProductionDataController extends BaseController {
 			if(wellProHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						String sql="select t.protocolcode,t.deviceaddr from tbl_wellinformation t where t.wellname='"+wellProHandsontableChangedData.getUpdatelist().get(i).getWellName()+"'";
+						String sql="select t.protocolcode,t.signinid from tbl_wellinformation t where t.wellname='"+wellProHandsontableChangedData.getUpdatelist().get(i).getWellName()+"'";
 						List list = this.services.findCallSql(sql);
 						if(list.size()>0){
 							Object[] obj=(Object[]) list.get(0);
@@ -285,7 +285,7 @@ public class ProductionDataController extends BaseController {
 			if(wellProHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellProHandsontableChangedData.getInsertlist().size();i++){
 					if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						String sql="select t.protocolcode,t.deviceaddr from tbl_wellinformation t where t.wellname='"+wellProHandsontableChangedData.getInsertlist().get(i).getWellName()+"'";
+						String sql="select t.protocolcode,t.signinid from tbl_wellinformation t where t.wellname='"+wellProHandsontableChangedData.getInsertlist().get(i).getWellName()+"'";
 						List list = this.services.findCallSql(sql);
 						if(list.size()>0){
 							Object[] obj=(Object[]) list.get(0);

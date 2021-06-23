@@ -59,9 +59,9 @@ Ext.define('AP.store.kafkaConfig.KafkaConfigOperationListStore', {
                                 		
                                 		var wellName =wellRecord[0].data.wellName;
                                 		var deviceId =wellRecord[0].data.deviceId;
-                                		var driverCode =wellRecord[0].data.driverCode;
+                                		var protocolCode =wellRecord[0].data.protocolCode;
                                 		
-                                		if(isNotVal(deviceId) && driverCode.toUpperCase()=="KafkaDrive".toUpperCase()){
+                                		if(isNotVal(deviceId) && protocolCode.toUpperCase()=="KafkaDrive".toUpperCase()){
                                 			readDeviceInfo(deviceId,type);
                                 		}
                         			}

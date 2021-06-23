@@ -463,7 +463,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}
 		}
 		dynSbf.append("]}");
-		return dynSbf.toString().replaceAll("null", "").replaceAll("\r\n", "\n").replaceAll("\n", "");
+		return dynSbf.toString().replaceAll("null", "");
 	}
 	
 	public String getDiagnosisTotalCurveData(Page pager,String orgId,String jh,String startDate,String endDate) throws SQLException, IOException {

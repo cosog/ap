@@ -99,7 +99,7 @@ public class DriverAPIController extends BaseController{
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
 					+ " where t.id=t2.wellid"
-					+ " and t.deviceaddr='"+acqOnline.getID()+"' and to_number(t.deviceid)="+acqOnline.getSlave();
+					+ " and t.signinid='"+acqOnline.getID()+"' and to_number(t.slave)="+acqOnline.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -184,7 +184,7 @@ public class DriverAPIController extends BaseController{
 					+ " t.id,t3.protocol"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2,tbl_acq_unit_conf t3  "
 					+ " where t.id=t2.wellid and t.unitcode=t3.unit_code"
-					+ " and t.deviceaddr='"+acqGroup.getID()+"' and to_number(t.deviceid)="+acqGroup.getSlave();
+					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);

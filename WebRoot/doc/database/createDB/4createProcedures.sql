@@ -2289,10 +2289,9 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
                                                     v_wellName    in varchar2,
                                                     v_liftingTypeName   in varchar2,
                                                     v_protocolCode    in varchar2,
-                                                    v_protocol    in varchar2,
                                                     v_acquisitionUnit   in varchar2,
-                                                    v_deviceAddr    in varchar2,
-                                                    v_deviceId   in varchar2,
+                                                    v_signInId    in varchar2,
+                                                    v_slave   in varchar2,
                                                     v_videoUrl   in varchar2,
                                                     v_sortNum  in NUMBER,
                                                     v_ids    in varchar2,
@@ -2304,8 +2303,6 @@ CREATE OR REPLACE PROCEDURE prd_save_wellinformation (v_orgname   in varchar2,
   p_orgName    varchar2(30):='';
   p_msg varchar2(3000) := 'error';
   p_sql varchar2(3000);
-  p_prototal number :=null;
-  p_prototalCount number :=0;
 begin
   --验证权限
   p_sql:='select count(*)  from tbl_org t where t.org_name is not null and  t.org_id='||v_orgId||' and t.org_id in ('||v_ids||')';
@@ -2319,19 +2316,14 @@ begin
      select t.org_name into p_orgName from tbl_org t where t.org_id=v_orgId;
      if orgcount>0 and p_orgName=v_orgname then
         select count(*) into wellcount from tbl_wellinformation t where t.wellName=v_wellName;
-        select count(*) into p_prototalCount from tbl_code code where code.itemcode='PROTOCOL' and code.itemname=v_protocol;
-        if p_prototalCount>0 then
-           select code.itemvalue into p_prototal from tbl_code code where code.itemcode='PROTOCOL' and code.itemname=v_protocol;
-        end if;
         if wellcount>0 then
            Update tbl_wellinformation t
            Set t.orgid   = v_orgId,
                t.resname  =v_resname,
                t.liftingtype   = (select code2.itemvalue from tbl_code code2 where code2.itemcode='LiftingType' and code2.itemname=v_liftingTypeName),
                t.protocolcode=v_protocolCode,
-               t.protocol=p_prototal,
                t.unitcode=(select t046.unit_code from tbl_acq_unit_conf t046 where t046.unit_name=v_acquisitionUnit and rownum=1),
-               t.deviceaddr=v_deviceAddr,t.deviceid=v_deviceId,
+               t.signinid=v_signInId,t.slave=v_slave,
                t.videourl=v_videourl,
                t.sortnum=v_sortNum
            Where t.wellName=v_wellName;
@@ -2339,9 +2331,8 @@ begin
            p_msg := '修改成功';
         elsif wellcount=0 then
               if wellamount<v_license then
-                  insert into tbl_wellinformation(wellName,protocolcode,protocol,deviceaddr,deviceid,
-                  videourl,Sortnum)
-                  values(v_wellName,v_protocolCode,p_prototal,v_deviceAddr,v_deviceId,v_videourl,v_sortNum);
+                  insert into tbl_wellinformation(wellName,protocolcode,signinid,slave,videourl,Sortnum)
+                  values(v_wellName,v_protocolCode,v_signInId,v_slave,v_videourl,v_sortNum);
                   commit;
                   update tbl_wellinformation t set
                      orgId   = v_orgId,

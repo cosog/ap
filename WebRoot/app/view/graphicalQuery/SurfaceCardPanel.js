@@ -328,7 +328,7 @@ function createGraphicalQueryWellListWellListDataColumn(columnInfo) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
         }else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
-        }else if (attr.dataIndex.toUpperCase()=='deviceId'.toUpperCase()) {
+        }else if (attr.dataIndex.toUpperCase()=='slave'.toUpperCase()) {
             myColumns += ",sortable : false,locked:true,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
         } else if (attr.dataIndex.toUpperCase() == 'acqTime'.toUpperCase()) {
             myColumns += ",sortable : false,locked:false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";

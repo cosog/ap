@@ -257,7 +257,7 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 			driveConfig=gson.fromJson(DriverConfigData, type);
 		}
 		if(driveConfig!=null){
-			String sql="select t.protocolcode,t.deviceaddr from tbl_wellinformation t where t.wellname='"+wellName+"'";
+			String sql="select t.protocolcode,t.signinid from tbl_wellinformation t where t.wellname='"+wellName+"'";
 			List list = this.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);

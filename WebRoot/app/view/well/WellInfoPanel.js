@@ -225,7 +225,7 @@ function CreateAndLoadWellInfoTable(isNew){
 		        var columns="[";
 		       
 	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].header==='协议名称'){
+	            	if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
 	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
 	            	}else{
 	            		colHeaders+="'"+result.columns[i].header+"'";
@@ -478,7 +478,6 @@ var WellInfoHandsontableHelper = {
 	        }
 	        //保存数据
 	        wellInfoHandsontableHelper.saveData = function () {
-	        	
 	        	var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
 	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
 	        		//插入的数据的获取

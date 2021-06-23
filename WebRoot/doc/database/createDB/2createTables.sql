@@ -2497,14 +2497,13 @@ create table TBL_WELLINFORMATION
   RESNAME                    VARCHAR2(200),
   WELLNAME                   VARCHAR2(200) not null,
   LIFTINGTYPE                NUMBER(10) default 200,
-  DEVICEADDR                 VARCHAR2(200),
-  DEVICEID                   VARCHAR2(200),
+  SIGNINID                   VARCHAR2(200),
+  SLAVE                      VARCHAR2(200),
   PROTOCOLCODE               VARCHAR2(50),
   UNITCODE                   VARCHAR2(50),
   VIDEOURL                   VARCHAR2(400),
   SORTNUM                    NUMBER(10) default 9999,
-  LEVELCORRECTVALUE          NUMBER(2) default 0,
-  PROTOCOL                   NUMBER(2) default 1
+  LEVELCORRECTVALUE          NUMBER(2) default 0
 )
 tablespace AGILE_DATA
   storage

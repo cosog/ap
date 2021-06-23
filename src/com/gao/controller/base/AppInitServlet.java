@@ -10,8 +10,10 @@ import com.gao.utils.Config;
 import com.gao.utils.Config2;
 import com.gao.utils.CryptUtil;
 import com.gao.utils.DataModelMap;
+import com.gao.utils.LicenseMap;
 import com.gao.utils.MACAddress;
 import com.gao.utils.StringManagerUtils;
+import com.gao.utils.LicenseMap.License;
 
 /**<p>描述：AppInitServlet 应用程序初始化.</p>
  * 
@@ -61,7 +63,8 @@ public class AppInitServlet extends HttpServlet {
 			String macAddress=StringManagerUtils.getMacAddress();
 			String serialnumber = Config.getInstance().configFile.getOthers().getSerialnumber();
 			String decodestr = (new CryptUtil()).decode(serialnumber);
-			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||"00-16-3E-01-47-51".equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
+			License licenses=LicenseMap.getMapObject().get(LicenseMap.SN);
+			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||licenses.getMac().replaceAll("-", ":").equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
 				license.put("license", "");
 				license.put("license", "God bless you!");
 				log.warn("恭喜软件已经授权！");
@@ -70,6 +73,5 @@ public class AppInitServlet extends HttpServlet {
 				log.warn("抱歉，没有授权哦！");
 			}
 		}
-
 	}
 }

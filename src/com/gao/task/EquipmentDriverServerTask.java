@@ -44,7 +44,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		loadProtocolConfig();
 		initProtocolConfig("","");
@@ -119,17 +119,17 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String sql="select wellname, deviceaddr,deviceid,protocol,unit_code,group_code,acq_cycle,max(key) items from "
-				+ " (select  t.wellname,t.deviceaddr,t.deviceid,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,"
-				+ " wm_concat(t5.itemname) over (partition by t.wellname,t.deviceaddr,t.deviceid,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle order by t5.id) key"
+		String sql="select wellname, signinid,slave,protocol,unit_code,group_code,acq_cycle,max(key) items from "
+				+ " (select  t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,"
+				+ " wm_concat(t5.itemname) over (partition by t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle order by t5.id) key"
 				+ " from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_group_conf t4,tbl_acq_item2group_conf t5 "
 				+ " where t.unitcode=t2.unit_code and t2.id=t3.unitid and t3.groupid=t4.id and t4.id=t5.groupid "
-				+ " and t.deviceaddr is not null and t.deviceid is not null and t.unitcode is not null ";
+				+ " and t.signinid is not null and t.slave is not null and t.unitcode is not null ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and t.wellname in("+wellName+")";
 		}
 		sql+="  ) v "
-				+ " group by wellname,deviceaddr,deviceid,protocol,unit_code,group_code,acq_cycle";
+				+ " group by wellname,signinid,slave,protocol,unit_code,group_code,acq_cycle";
 		Map<String,InitId> wellListMap=new HashMap<String,InitId>();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){

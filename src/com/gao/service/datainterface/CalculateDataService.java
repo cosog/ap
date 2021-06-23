@@ -624,7 +624,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<String> requestDataList=new ArrayList<String>();
 		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		String commTotalUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
-		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t4.runtimeefficiencysource,t.deviceaddr,t.deviceid,"
+		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t4.runtimeefficiencysource,t.signinid,t.slave,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "
 				+ " from tbl_wellinformation t "
@@ -1467,7 +1467,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<String> requestDataList=new ArrayList<String>();
 		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		String commTotalUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
-		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t4.runtimeefficiencysource,t.deviceaddr,t.deviceid,"
+		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t4.runtimeefficiencysource,t.signinid,t.slave,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "
 				+ " from tbl_wellinformation t "
@@ -1765,7 +1765,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<String> requestDataList=new ArrayList<String>();
 		String timeEffTotalUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		String commTotalUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
-		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t4.runtimeefficiencysource,t.deviceaddr,t.deviceid,"
+		String wellinformationSql="select t.wellname,t2.runtime as runtime2,t4.runtimeefficiencysource,t.signinid,t.slave,"
 				+ " t3.commstatus,t3.commtime,t3.commtimeefficiency,t3.commrange,"
 				+ " t3.runstatus,t3.runtime,t3.runtimeefficiency,t3.runrange "
 				+ " from tbl_wellinformation t "
@@ -1968,7 +1968,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 //		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 //		StringBuffer dataSbf=null;
 //		List<String> requestDataList=new ArrayList<String>();
-//		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.deviceaddr,t.deviceid "
+//		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.signinid,t.slave "
 //				+ " from tbl_wellinformation t "
 //				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
 //				+ " where t.liftingType between 200 and 299 ";
@@ -2036,7 +2036,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.deviceaddr,t.deviceid "
+		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.signinid,t.slave "
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " where t.liftingType between 200 and 299 ";
@@ -2131,7 +2131,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
-		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.deviceaddr,t.deviceid "
+		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.signinid,t.slave "
 				+ " from tbl_wellinformation t "
 				+ " left outer join tbl_pcp_productiondata_latest t2 on t.id=t2.wellid  "
 				+ " where t.liftingType between 400 and 499 ";

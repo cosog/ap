@@ -5,7 +5,7 @@ insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, S
 values (1, 'group1', '抽油机离散数据', '抽油机离散数据', 60, 60, 'A11协议_必创');
 
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
-values (2, 'group2', '功图数据', '功图数据', 360, 360, 'A11协议_必创´');
+values (2, 'group2', '功图数据', '功图数据', 360, 360, 'A11协议_必创');
 
 /*==============================================================*/
 /* 初始化tbl_acq_unit_conf数据                                    */

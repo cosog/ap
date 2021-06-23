@@ -206,8 +206,8 @@ private CommonDataService service;
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"项\",\"dataIndex\":\"item\",width:120 ,children:[] },"
-				+ "{ \"header\":\"值\",\"dataIndex\":\"value\",width:80 ,children:[] }"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",width:120 ,children:[] },"
+				+ "{ \"header\":\"变量\",\"dataIndex\":\"value\",width:80 ,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		
@@ -221,7 +221,7 @@ private CommonDataService service;
 		result_json.append("\"totalRoot\":[");
 		if(driveConfig!=null){
 			
-			result_json.append("{\"id\":\"序号\",\"item\":\"项\",\"value\":\"值\"},");
+			result_json.append("{\"id\":\"序号\",\"item\":\"名称\",\"value\":\"变量\"},");
 			
 			result_json.append("{\"id\":\"Server\",\"item\":\"\",\"value\":\"\"},");
 			result_json.append("{\"id\":1,\"item\":\"IP\",\"value\":\""+driveConfig.getServer().getIP()+"\"},");

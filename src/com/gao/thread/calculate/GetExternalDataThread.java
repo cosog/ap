@@ -5,29 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
-import com.gao.model.calculate.PCPCalculateRequestData;
-import com.gao.model.calculate.PCPCalculateResponseData;
-import com.gao.model.calculate.RPCCalculateRequestData;
-import com.gao.model.calculate.RPCCalculateResponseData;
-import com.gao.model.calculate.CommResponseData;
-import com.gao.model.calculate.ElectricCalculateResponseData;
-import com.gao.model.calculate.TimeEffResponseData;
-import com.gao.service.base.CommonDataService;
-import com.gao.service.datainterface.CalculateDataService;
-import com.gao.service.graphicalupload.GraphicalUploadService;
-import com.gao.utils.Config;
-import com.gao.utils.Config2;
 import com.gao.utils.DataSourceConfig;
-import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.StringManagerUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import oracle.jdbc.OracleConnection;
 import oracle.sql.CLOB;
 
+@SuppressWarnings("deprecation")
 public class GetExternalDataThread extends Thread{
 
 	private String wellName;

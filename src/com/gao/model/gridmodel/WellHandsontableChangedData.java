@@ -42,14 +42,12 @@ public class WellHandsontableChangedData {
 	    private String liftingTypeName="抽油机";
 
 	    private String protocolName="";
-	    
-	    private String protocol="";
 
 	    private String acquisitionUnit="";
 
-	    private String deviceAddr="";
+	    private String signInId="";
 
-	    private String deviceId="";
+	    private String slave="";
 	    
 	    private String videoUrl="";
 	    
@@ -119,14 +117,6 @@ public class WellHandsontableChangedData {
 			this.sortNum = sortNum;
 		}
 
-		public String getProtocol() {
-			return protocol;
-		}
-
-		public void setProtocol(String protocol) {
-			this.protocol = protocol;
-		}
-
 		public String getProtocolName() {
 			return protocolName;
 		}
@@ -135,20 +125,20 @@ public class WellHandsontableChangedData {
 			this.protocolName = protocolName;
 		}
 
-		public String getDeviceAddr() {
-			return deviceAddr;
+		public String getSignInId() {
+			return signInId;
 		}
 
-		public void setDeviceAddr(String deviceAddr) {
-			this.deviceAddr = deviceAddr;
+		public void setSignInId(String signInId) {
+			this.signInId = signInId;
 		}
 
-		public String getDeviceId() {
-			return deviceId;
+		public String getSlave() {
+			return slave;
 		}
 
-		public void setDeviceId(String deviceId) {
-			this.deviceId = deviceId;
+		public void setSlave(String slave) {
+			this.slave = slave;
 		}
 	    
 	}

@@ -29,12 +29,12 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer sqlCuswhere = new StringBuffer();
-		String sql = " select t.deviceid,t.deviceid as deviceName from tbl_a9rawdata_latest t where 1=1";
+		String sql = " select t.deviceId,t.deviceId as deviceName from tbl_a9rawdata_latest t where 1=1";
 		
 		if (StringManagerUtils.isNotNull(deviceName)) {
-			sql += " and t.deviceid like '%" + deviceName + "%'";
+			sql += " and t.deviceId like '%" + deviceName + "%'";
 		}
-		sql += " order by t.deviceid";
+		sql += " order by t.deviceId";
 		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
 		sqlCuswhere.append(""+sql);
 		int maxvalue=pager.getLimit()+pager.getStart();
@@ -69,7 +69,7 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 	
 	public String getKafkaConfigWellList(String orgId,String wellName){
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.deviceaddr,t.wellname,t.protocolCode,"
+		String sql="select t.id,t.signinid,t.wellname,t.protocolCode,"
 				+ " dis.commStatus,dis.commStatusName,dis.commAlarmLevel "
 				+ " from tbl_wellinformation t "
 				+ " left outer join viw_rpc_comprehensive_latest dis on dis.wellid=t.id"
@@ -112,17 +112,17 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 		String sql="select t.id,t.deviceId,well.wellName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer,"
 				+ " dis.commStatus,dis.commStatusName,dis.commAlarmLevel "
 				+ " from tbl_a9rawdata_latest t "
-				+ " left outer join tbl_wellinformation well on well.deviceaddr=t.deviceid"
+				+ " left outer join tbl_wellinformation well on well.signinid=t.deviceId"
 				+ " left outer join viw_rpc_comprehensive_latest dis on dis.wellid=well.id"
 				+ " order by well.sortnum,well.wellName,t.deviceId";
 		String sqlHis="select t.id,t.deviceId,well.wellName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.signal,t.deviceVer,"
 				+ " 1 as commStatus,'在线' as commStatusName,0 as commAlarmLevel"
 				+ " from tbl_a9rawdata_hist t "
-				+ " left outer join tbl_wellinformation well on well.deviceaddr=t.deviceid"
+				+ " left outer join tbl_wellinformation well on well.signinid=t.deviceId"
 				+ " where 1=1";
 		String firstHisRecordCommStatus="select dis.commStatus,dis.commStatusName,dis.commAlarmLevel "
 				+ " from tbl_wellinformation t,viw_rpc_comprehensive_latest dis"
-				+ " where t.id=dis.wellId and t.deviceaddr='"+deviceId+"'";
+				+ " where t.id=dis.wellId and t.signinid='"+deviceId+"'";
 		String finalSql="";
 		String sqlAll="";
 		String columns = "["

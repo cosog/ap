@@ -106,9 +106,11 @@ import com.gao.model.drive.KafkaConfig;
 import com.gao.model.drive.ModbusProtocolConfig;
 import com.gao.utils.DataModelMap;
 import com.gao.utils.EquipmentDriveMap;
+import com.gao.utils.LicenseMap;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
 import com.gao.utils.StringManagerUtils;
+import com.gao.utils.LicenseMap.License;
 /**
  * <p>
  * 描述：核心服务dao处理接口类
@@ -1337,8 +1339,9 @@ public class BaseDao extends HibernateDaoSupport {
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
 		}
+		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		try {
-			cs = conn.prepareCall("{call prd_save_wellinformation(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_wellinformation(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
@@ -1367,20 +1370,19 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
 						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getLiftingTypeName());
 						cs.setString(5, driverCode);
-						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getProtocol());
-						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAcquisitionUnit());
-						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceAddr());
-						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getDeviceId());
-						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl());
-						cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
-						cs.setString(12, orgIds);
-						cs.setString(13, orgId);
-						cs.setInt(14, 10000);
+						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getAcquisitionUnit());
+						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId());
+						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getSlave());
+						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl());
+						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum());
+						cs.setString(11, orgIds);
+						cs.setString(12, orgId);
+						cs.setInt(13, license.getNumber());
 						cs.executeUpdate();
 						
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceAddr()) 
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getDeviceId()) 
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSignInId()) 
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSlave()) 
 								&&StringManagerUtils.isNotNull(driverCode) 
 								){
 							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
@@ -1416,19 +1418,18 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(3, wellHandsontableChangedData.getInsertlist().get(i).getWellName());
 						cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getLiftingTypeName());
 						cs.setString(5, driverCode);
-						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getProtocol());
-						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAcquisitionUnit());
-						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getDeviceAddr());
-						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getDeviceId());
-						cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl());
-						cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
-						cs.setString(12, orgIds);
-						cs.setString(13, orgId);
-						cs.setInt(14, 10000);
+						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getAcquisitionUnit());
+						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getSignInId());
+						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getSlave());
+						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl());
+						cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSortNum());
+						cs.setString(11, orgIds);
+						cs.setString(12, orgId);
+						cs.setInt(13, license.getNumber());
 						cs.executeUpdate();
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceAddr()) 
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getDeviceId()) 
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSignInId()) 
+								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSlave()) 
 								&&StringManagerUtils.isNotNull(driverCode) 
 								){
 							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName());

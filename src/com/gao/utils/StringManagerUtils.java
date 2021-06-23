@@ -840,7 +840,7 @@ public class StringManagerUtils {
 		String arrays[] = { "id", "wellName", "jhh", "bj", "bjbz", "bjlx", "userType", "userTitle", "userOrgid",
 				"userNo", "userPhone", "userPwd", "userName","orgName","resName","jlxName","jslxName","ssjwName","sszcdyName", "userInEmail", "userId", "zjs", "ygbh", "blx","shzt","roleCode",
 				"dwbh", "yqcbh","hfbz", "rfidkh", "bmbh", "roleFlag","roleId","jlx","ssjw","sszcdy","jslx","qtlx","sfpfcl","ccjzt","bjb","yjgjb","ejgjb","sjgjb","mdzt","jbh",
-				"ygbh", "bjjb", "", "gklx", "jlbh", "bdbjlx", "bdbjjb", "ssgldw", "bz","dmx","dmy","showLevel","pxbh","deviceAddr","deviceId","cycle","userQuickLogin","gtcjsj","jsbz","ExtendedDays",
+				"ygbh", "bjjb", "", "gklx", "jlbh", "bdbjlx", "bdbjjb", "ssgldw", "bz","dmx","dmy","showLevel","pxbh","signInId","slave","cycle","userQuickLogin","gtcjsj","jsbz","ExtendedDays",
 				"acqCycle","saveCycle" };
 		for (String str : arrays) {
 			if (value.equalsIgnoreCase(str)) {
@@ -1061,7 +1061,7 @@ public class StringManagerUtils {
 		 char[] buffer = null;
 		 buffer = new char[(int)clob.length()]; 
 		 clob.getCharacterStream().read(buffer);
-		 return String.valueOf(buffer);
+		 return String.valueOf(buffer).replaceAll("\r\n", "\n").replaceAll("\n", "");
 		    
 	 }
 	 

@@ -21,7 +21,7 @@ left outer join
        case when t.AcqTime is null
        or (sysdate- t.AcqTime)*24*60 >decode(t.TransferIntervel,null,1,t.TransferIntervel)*1.5 then 0
        else 1 end as commstatus
-from tbl_a9rawdata_latest t,tbl_wellinformation t2 where t.deviceId=t2.deviceaddr) v3 on well.id=v3.wellid
+from tbl_a9rawdata_latest t,tbl_wellinformation t2 where t.deviceId=t2.signinid) v3 on well.id=v3.wellid
 where well.protocolcode='MQTTDrive' or well.protocolcode='KafkaDrive';
 /
 
@@ -630,73 +630,8 @@ select
  status1.optimizationSuggestion,
  decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingConditionAlarmLevel,
  dis.workingconditioncode as workingconditioncode_E,
- case when dis.workingconditioncode=0 then '正常'
-      when dis.workingconditioncode=1 then '电压缺相'
-      when dis.workingconditioncode=2 then '电流超上限报警'
-      when dis.workingconditioncode=3 then '电压缺相/电流超上限报警'
-      when dis.workingconditioncode=4 then '电流超下限报警'
-      when dis.workingconditioncode=5 then '电压缺相/电流超下限报警'
-      when dis.workingconditioncode=6 then '电流超上限报警/电流超下限报警'
-      when dis.workingconditioncode=7 then '电压缺相/电流超上限报警/电流超下限报警'
-      when dis.workingconditioncode=8 then '功率超上限报警'
-      when dis.workingconditioncode=9 then '电压缺相/功率超上限报警'
-      when dis.workingconditioncode=10 then '电流超上限报警/功率超上限报警'
-      when dis.workingconditioncode=11 then '电压缺相/电流超上限报警/功率超上限报警'
-      when dis.workingconditioncode=12 then '电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=13 then '电压缺相/电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=14 then '电流超上限报警/电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=15 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=16 then '功率超下限报警'
-      when dis.workingconditioncode=17 then '电压缺相/功率超下限报警'
-      when dis.workingconditioncode=18 then '电流超上限报警/功率超下限报警'
-      when dis.workingconditioncode=19 then '电压缺相/电流超上限报警/功率超下限报警'
-      when dis.workingconditioncode=20 then '电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=21 then '电压缺相/电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=22 then '电流超上限报警/电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=23 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=24 then '功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=25 then '电压缺相/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=26 then '电流超上限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=27 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=28 then '电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=29 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=30 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=31 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=32 then '电参模块故障'
-      when dis.workingconditioncode=33 then '电压缺相/电参模块故障'
-      when dis.workingconditioncode=34 then '电流超上限报警/电参模块故障'
-      when dis.workingconditioncode=35 then '电压缺相/电流超上限报警/电参模块故障'
-      when dis.workingconditioncode=36 then '电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=37 then '电压缺相/电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=38 then '电流超上限报警/电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=39 then '电压缺相/电流超上限报警/电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=40 then '功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=41 then '电压缺相/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=42 then '电流超上限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=43 then '电压缺相/电流超上限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=44 then '电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=45 then '电压缺相/电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=46 then '电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=47 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=48 then '功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=49 then '电压缺相/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=50 then '电流超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=51 then '电压缺相/电流超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=52 then '电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=53 then '电压缺相/电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=54 then '电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=55 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=56 then '功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=57 then '电压缺相/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=58 then '电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=59 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=60 then '电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=61 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=62 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=63 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      else status10.workingconditionname end as workingConditionName_E,
+ status10.workingconditionname as workingConditionName_E,
  case when dis.workingconditioncode=0 then 0
-      when dis.workingconditioncode>=1 and dis.workingconditioncode<=63 then 100
       else decode(alarm10.alarmsign,0,0,alarm10.alarmlevel) end as workingConditionAlarmLevel_E,
  dis.workingconditionstring as workingConditionString_E,
  t.theoreticalProduction,
@@ -860,73 +795,8 @@ select
  status1.optimizationSuggestion,
  decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingConditionAlarmLevel,
  dis.workingconditioncode as workingconditioncode_E,
- case when dis.workingconditioncode=0 then '正常'
-      when dis.workingconditioncode=1 then '电压缺相'
-      when dis.workingconditioncode=2 then '电流超上限报警'
-      when dis.workingconditioncode=3 then '电压缺相/电流超上限报警'
-      when dis.workingconditioncode=4 then '电流超下限报警'
-      when dis.workingconditioncode=5 then '电压缺相/电流超下限报警'
-      when dis.workingconditioncode=6 then '电流超上限报警/电流超下限报警'
-      when dis.workingconditioncode=7 then '电压缺相/电流超上限报警/电流超下限报警'
-      when dis.workingconditioncode=8 then '功率超上限报警'
-      when dis.workingconditioncode=9 then '电压缺相/功率超上限报警'
-      when dis.workingconditioncode=10 then '电流超上限报警/功率超上限报警'
-      when dis.workingconditioncode=11 then '电压缺相/电流超上限报警/功率超上限报警'
-      when dis.workingconditioncode=12 then '电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=13 then '电压缺相/电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=14 then '电流超上限报警/电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=15 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警'
-      when dis.workingconditioncode=16 then '功率超下限报警'
-      when dis.workingconditioncode=17 then '电压缺相/功率超下限报警'
-      when dis.workingconditioncode=18 then '电流超上限报警/功率超下限报警'
-      when dis.workingconditioncode=19 then '电压缺相/电流超上限报警/功率超下限报警'
-      when dis.workingconditioncode=20 then '电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=21 then '电压缺相/电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=22 then '电流超上限报警/电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=23 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警'
-      when dis.workingconditioncode=24 then '功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=25 then '电压缺相/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=26 then '电流超上限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=27 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=28 then '电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=29 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=30 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=31 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when dis.workingconditioncode=32 then '电参模块故障'
-      when dis.workingconditioncode=33 then '电压缺相/电参模块故障'
-      when dis.workingconditioncode=34 then '电流超上限报警/电参模块故障'
-      when dis.workingconditioncode=35 then '电压缺相/电流超上限报警/电参模块故障'
-      when dis.workingconditioncode=36 then '电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=37 then '电压缺相/电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=38 then '电流超上限报警/电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=39 then '电压缺相/电流超上限报警/电流超下限报警/电参模块故障'
-      when dis.workingconditioncode=40 then '功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=41 then '电压缺相/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=42 then '电流超上限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=43 then '电压缺相/电流超上限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=44 then '电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=45 then '电压缺相/电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=46 then '电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=47 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when dis.workingconditioncode=48 then '功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=49 then '电压缺相/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=50 then '电流超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=51 then '电压缺相/电流超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=52 then '电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=53 then '电压缺相/电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=54 then '电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=55 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=56 then '功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=57 then '电压缺相/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=58 then '电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=59 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=60 then '电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=61 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=62 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when dis.workingconditioncode=63 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      else status10.workingconditionname end as workingConditionName_E,
+ status10.workingconditionname as workingConditionName_E,
  case when dis.workingconditioncode=0 then 0
-      when dis.workingconditioncode>=1 and dis.workingconditioncode<=63 then 100
       else decode(alarm10.alarmsign,0,0,alarm10.alarmlevel) end as workingConditionAlarmLevel_E,
  dis.workingconditionstring as workingConditionString_E,
  t.theoreticalProduction,
@@ -1135,7 +1005,7 @@ where well.liftingtype between 200 and 299;
 /*==============================================================*/
 create or replace view viw_rpc_diagram_hist as
 select
- t.id,well.wellname, well.id as wellid ,well.liftingtype,well.deviceaddr,t.AcqTime,
+ t.id,well.wellname, well.id as wellid ,well.liftingtype,well.signinid,t.AcqTime,
  comm.commstatus,decode(comm.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode) as workingconditioncode,status1.workingconditionname,status1.optimizationsuggestion,decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingconditionrunAlarmLevel,
@@ -1223,7 +1093,7 @@ where well.liftingtype>=200 and well.liftingtype<300;
 /*==============================================================*/
 create or replace view viw_rpc_diagram_latest as
 select
- t.id,well.wellname, well.id as wellid ,well.liftingtype,well.deviceaddr,t.AcqTime,
+ t.id,well.wellname, well.id as wellid ,well.liftingtype,well.signinid,t.AcqTime,
  comm.commstatus,decode(comm.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_8.alarmsign,0,0,t031_8.alarmlevel) as commAlarmLevel,
  decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode) as workingconditioncode,status1.workingconditionname,status1.optimizationsuggestion,decode(alarm1.alarmsign,0,0,alarm1.alarmlevel) as workingconditionrunAlarmLevel,
@@ -1311,7 +1181,7 @@ where well.liftingtype>=200 and well.liftingtype<300;
 /*==============================================================*/
 create or replace view viw_rpc_discrete_hist as
 select
- t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.deviceaddr,
+ t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.signinid,
  t.commstatus,
  decode(t.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
@@ -1330,74 +1200,9 @@ select
  t.acqcycle_diagram,t.acqcycle_discrete,
  decode(t.workingconditioncode,null,1100,t.workingconditioncode) as workingconditioncode,
  t.workingconditionstring as workingconditionstring,
- case when t.workingconditioncode=0 then '正常'
-      when t.workingconditioncode=1 then '电压缺相'
-      when t.workingconditioncode=2 then '电流超上限报警'
-      when t.workingconditioncode=3 then '电压缺相/电流超上限报警'
-      when t.workingconditioncode=4 then '电流超下限报警'
-      when t.workingconditioncode=5 then '电压缺相/电流超下限报警'
-      when t.workingconditioncode=6 then '电流超上限报警/电流超下限报警'
-      when t.workingconditioncode=7 then '电压缺相/电流超上限报警/电流超下限报警'
-      when t.workingconditioncode=8 then '功率超上限报警'
-      when t.workingconditioncode=9 then '电压缺相/功率超上限报警'
-      when t.workingconditioncode=10 then '电流超上限报警/功率超上限报警'
-      when t.workingconditioncode=11 then '电压缺相/电流超上限报警/功率超上限报警'
-      when t.workingconditioncode=12 then '电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=13 then '电压缺相/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=14 then '电流超上限报警/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=15 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=16 then '功率超下限报警'
-      when t.workingconditioncode=17 then '电压缺相/功率超下限报警'
-      when t.workingconditioncode=18 then '电流超上限报警/功率超下限报警'
-      when t.workingconditioncode=19 then '电压缺相/电流超上限报警/功率超下限报警'
-      when t.workingconditioncode=20 then '电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=21 then '电压缺相/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=22 then '电流超上限报警/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=23 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=24 then '功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=25 then '电压缺相/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=26 then '电流超上限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=27 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=28 then '电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=29 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=30 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=31 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=32 then '电参模块故障'
-      when t.workingconditioncode=33 then '电压缺相/电参模块故障'
-      when t.workingconditioncode=34 then '电流超上限报警/电参模块故障'
-      when t.workingconditioncode=35 then '电压缺相/电流超上限报警/电参模块故障'
-      when t.workingconditioncode=36 then '电流超下限报警/电参模块故障'
-      when t.workingconditioncode=37 then '电压缺相/电流超下限报警/电参模块故障'
-      when t.workingconditioncode=38 then '电流超上限报警/电流超下限报警/电参模块故障'
-      when t.workingconditioncode=39 then '电压缺相/电流超上限报警/电流超下限报警/电参模块故障'
-      when t.workingconditioncode=40 then '功率超上限报警/电参模块故障'
-      when t.workingconditioncode=41 then '电压缺相/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=42 then '电流超上限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=43 then '电压缺相/电流超上限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=44 then '电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=45 then '电压缺相/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=46 then '电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=47 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=48 then '功率超下限报警/电参模块故障'
-      when t.workingconditioncode=49 then '电压缺相/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=50 then '电流超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=51 then '电压缺相/电流超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=52 then '电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=53 then '电压缺相/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=54 then '电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=55 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=56 then '功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=57 then '电压缺相/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=58 then '电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=59 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=60 then '电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=61 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=62 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=63 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      else status1.workingconditionname end as workingconditionname,
+ status1.workingconditionname,
  status1.optimizationsuggestion as optimizationsuggestion,
  case when t.workingconditioncode=0 then 0
-      when t.workingconditioncode>=1 and t.workingconditioncode<=63 then 100
       else decode(t031_1.alarmsign,0,0,t031_1.alarmlevel) end as workingconditionAlarmLevel,
  t.todayKWattH,stat1.s_level as todayKWattHLevel,t.todaypKWattH,t.todaynKWattH,
  t.todayKVarH,t.todaypKVarH,t.todaynKVarH,t.todayKVAH,
@@ -1445,14 +1250,13 @@ left outer join  tbl_rpc_statistics_conf stat1 on t.todayKWattH between stat1.s_
 left outer join  tbl_rpc_statistics_conf stat2 on t.runtimeefficiency between stat2.s_min and stat2.s_max and stat2.s_type='SCSL'
 left outer join  tbl_rpc_statistics_conf stat3 on t.commtimeefficiency between stat3.s_min and stat3.s_max and stat3.s_type='TXSL'
 where well.liftingtype>=200 and well.liftingtype<300;
-/
 
 /*==============================================================*/
 /* View: viw_rpc_discrete_latest                                */
 /*==============================================================*/
 create or replace view viw_rpc_discrete_latest as
 select
- t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.deviceaddr,
+ t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName, t.wellid ,well.signinid,
  comm.commstatus,decode(comm.commstatus,1,'在线','离线') as commStatusName,
  decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  case when prod.runtimeefficiencysource=0 and prod.runtime=0 then 0
@@ -1470,74 +1274,9 @@ select
  t.acqcycle_diagram,t.acqcycle_discrete,
  decode(t.workingconditioncode,null,1100,t.workingconditioncode) as workingconditioncode,
  t.workingconditionstring as workingconditionstring,
- case when t.workingconditioncode=0 then '正常'
-      when t.workingconditioncode=1 then '电压缺相'
-      when t.workingconditioncode=2 then '电流超上限报警'
-      when t.workingconditioncode=3 then '电压缺相/电流超上限报警'
-      when t.workingconditioncode=4 then '电流超下限报警'
-      when t.workingconditioncode=5 then '电压缺相/电流超下限报警'
-      when t.workingconditioncode=6 then '电流超上限报警/电流超下限报警'
-      when t.workingconditioncode=7 then '电压缺相/电流超上限报警/电流超下限报警'
-      when t.workingconditioncode=8 then '功率超上限报警'
-      when t.workingconditioncode=9 then '电压缺相/功率超上限报警'
-      when t.workingconditioncode=10 then '电流超上限报警/功率超上限报警'
-      when t.workingconditioncode=11 then '电压缺相/电流超上限报警/功率超上限报警'
-      when t.workingconditioncode=12 then '电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=13 then '电压缺相/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=14 then '电流超上限报警/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=15 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode=16 then '功率超下限报警'
-      when t.workingconditioncode=17 then '电压缺相/功率超下限报警'
-      when t.workingconditioncode=18 then '电流超上限报警/功率超下限报警'
-      when t.workingconditioncode=19 then '电压缺相/电流超上限报警/功率超下限报警'
-      when t.workingconditioncode=20 then '电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=21 then '电压缺相/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=22 then '电流超上限报警/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=23 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode=24 then '功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=25 then '电压缺相/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=26 then '电流超上限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=27 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=28 then '电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=29 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=30 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=31 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode=32 then '电参模块故障'
-      when t.workingconditioncode=33 then '电压缺相/电参模块故障'
-      when t.workingconditioncode=34 then '电流超上限报警/电参模块故障'
-      when t.workingconditioncode=35 then '电压缺相/电流超上限报警/电参模块故障'
-      when t.workingconditioncode=36 then '电流超下限报警/电参模块故障'
-      when t.workingconditioncode=37 then '电压缺相/电流超下限报警/电参模块故障'
-      when t.workingconditioncode=38 then '电流超上限报警/电流超下限报警/电参模块故障'
-      when t.workingconditioncode=39 then '电压缺相/电流超上限报警/电流超下限报警/电参模块故障'
-      when t.workingconditioncode=40 then '功率超上限报警/电参模块故障'
-      when t.workingconditioncode=41 then '电压缺相/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=42 then '电流超上限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=43 then '电压缺相/电流超上限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=44 then '电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=45 then '电压缺相/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=46 then '电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=47 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode=48 then '功率超下限报警/电参模块故障'
-      when t.workingconditioncode=49 then '电压缺相/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=50 then '电流超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=51 then '电压缺相/电流超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=52 then '电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=53 then '电压缺相/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=54 then '电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=55 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=56 then '功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=57 then '电压缺相/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=58 then '电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=59 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=60 then '电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=61 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=62 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode=63 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      else status1.workingconditionname end as workingconditionname,
+ status1.workingconditionname,
  status1.optimizationsuggestion as optimizationsuggestion,
  case when t.workingconditioncode=0 then 0
-      when t.workingconditioncode>=1 and t.workingconditioncode<=63 then 100
       else decode(t031_1.alarmsign,0,0,t031_1.alarmlevel) end as workingconditionAlarmLevel,
  t.todayKWattH,stat1.s_level as todayKWattHLevel,t.todaypKWattH,t.todaynKWattH,
  t.todayKVarH,t.todaypKVarH,t.todaynKVarH,t.todayKVAH,
@@ -1663,7 +1402,7 @@ where c1.itemcode='AnchoringState' and c1.itemvalue=op.AnchoringState
 /*==============================================================*/
 create or replace view viw_rpc_total_day as
 select
- t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName,well.id as wellid ,well.deviceaddr,
+ t.id,well.wellname,well.liftingtype,code1.itemname as liftingTypeName,well.id as wellid ,well.signinid,
  t.calculateDate,t.calculateDate-t.extendeddays as acquisitionDate,
  t.commstatus,decode(t.commstatus,1,'在线','离线') as commStatusName,decode(t031_2.alarmsign,0,0,t031_2.alarmlevel) as commAlarmLevel,
  runStatus,
@@ -1677,74 +1416,9 @@ select
  status.workingconditionname as workingconditionname,t.workingConditionString,status.optimizationsuggestion,
  decode(alarm.alarmsign,0,0,alarm.alarmlevel) as workingConditionAlarmLevel,
  decode(t.workingconditioncode_e,null,1100,0,1100,t.workingconditioncode_e) as workingconditioncode_e,
- case when t.workingconditioncode_e=0 then '正常'
-      when t.workingconditioncode_e=1 then '电压缺相'
-      when t.workingconditioncode_e=2 then '电流超上限报警'
-      when t.workingconditioncode_e=3 then '电压缺相/电流超上限报警'
-      when t.workingconditioncode_e=4 then '电流超下限报警'
-      when t.workingconditioncode_e=5 then '电压缺相/电流超下限报警'
-      when t.workingconditioncode_e=6 then '电流超上限报警/电流超下限报警'
-      when t.workingconditioncode_e=7 then '电压缺相/电流超上限报警/电流超下限报警'
-      when t.workingconditioncode_e=8 then '功率超上限报警'
-      when t.workingconditioncode_e=9 then '电压缺相/功率超上限报警'
-      when t.workingconditioncode_e=10 then '电流超上限报警/功率超上限报警'
-      when t.workingconditioncode_e=11 then '电压缺相/电流超上限报警/功率超上限报警'
-      when t.workingconditioncode_e=12 then '电流超下限报警/功率超上限报警'
-      when t.workingconditioncode_e=13 then '电压缺相/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode_e=14 then '电流超上限报警/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode_e=15 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警'
-      when t.workingconditioncode_e=16 then '功率超下限报警'
-      when t.workingconditioncode_e=17 then '电压缺相/功率超下限报警'
-      when t.workingconditioncode_e=18 then '电流超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=19 then '电压缺相/电流超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=20 then '电流超下限报警/功率超下限报警'
-      when t.workingconditioncode_e=21 then '电压缺相/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode_e=22 then '电流超上限报警/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode_e=23 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警'
-      when t.workingconditioncode_e=24 then '功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=25 then '电压缺相/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=26 then '电流超上限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=27 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=28 then '电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=29 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=30 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=31 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警'
-      when t.workingconditioncode_e=32 then '电参模块故障'
-      when t.workingconditioncode_e=33 then '电压缺相/电参模块故障'
-      when t.workingconditioncode_e=34 then '电流超上限报警/电参模块故障'
-      when t.workingconditioncode_e=35 then '电压缺相/电流超上限报警/电参模块故障'
-      when t.workingconditioncode_e=36 then '电流超下限报警/电参模块故障'
-      when t.workingconditioncode_e=37 then '电压缺相/电流超下限报警/电参模块故障'
-      when t.workingconditioncode_e=38 then '电流超上限报警/电流超下限报警/电参模块故障'
-      when t.workingconditioncode_e=39 then '电压缺相/电流超上限报警/电流超下限报警/电参模块故障'
-      when t.workingconditioncode_e=40 then '功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=41 then '电压缺相/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=42 then '电流超上限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=43 then '电压缺相/电流超上限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=44 then '电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=45 then '电压缺相/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=46 then '电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=47 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/电参模块故障'
-      when t.workingconditioncode_e=48 then '功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=49 then '电压缺相/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=50 then '电流超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=51 then '电压缺相/电流超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=52 then '电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=53 then '电压缺相/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=54 then '电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=55 then '电压缺相/电流超上限报警/电流超下限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=56 then '功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=57 then '电压缺相/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=58 then '电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=59 then '电压缺相/电流超上限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=60 then '电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=61 then '电压缺相/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=62 then '电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      when t.workingconditioncode_e=63 then '电压缺相/电流超上限报警/电流超下限报警/功率超上限报警/功率超下限报警/电参模块故障'
-      else status1.workingconditionname end as workingconditionname_e,
+ status1.workingconditionname as workingconditionname_e,
  t.workingconditionstring_e,
  case when t.workingconditioncode_e=0 then 0
-      when t.workingconditioncode_e>=1 and t.workingconditioncode_e<=63 then 100
       else decode(t031_1.alarmsign,0,0,t031_1.alarmlevel) end as workingConditionAlarmLevel_E,
  t.liquidweightproduction,
  stat7.s_level as liquidWeightProductionlevel,
@@ -1791,7 +1465,6 @@ tbl_wellinformation well
 left outer join  tbl_org org  on well.orgid=org.org_id
 left outer join  tbl_code code1  on  code1.itemvalue=well.liftingtype and code1.itemcode='LiftingType'
 left outer join  tbl_rpc_total_day t  on t.wellid=well.id
---left outer join  viw_commstatus comm on comm.id=well.id
 left outer join  tbl_rpc_worktype status  on  status.workingconditioncode=decode(t.workingconditioncode,null,1100,0,1100,t.workingconditioncode)
 left outer join  tbl_rpc_alarmtype_conf alarm  on  alarm.workingconditioncode=status.workingconditioncode
 left outer join  tbl_rpc_worktype status1  on  status1.workingconditioncode=decode(t.workingconditioncode_e,null,1100,0,1100,t.workingconditioncode_e)
@@ -1835,13 +1508,12 @@ left outer join  tbl_org org  on t.orgid=org.org_id;
 /*==============================================================*/
 create or replace view viw_wellinformation as
 select t.id,org.org_name as orgName,org.org_id as orgid,
-t.resname,t.wellname,t.liftingtype,t.deviceaddr,t.deviceid,
+t.resname,t.wellname,t.liftingtype,t.signinid,t.slave,
 t.videourl,
-c1.itemname as LiftingTypeName,t.protocolcode, t2.unit_name as AcquisitionUnit ,c2.itemname as protocol,
+c1.itemname as LiftingTypeName,t.protocolcode, t2.unit_name as AcquisitionUnit,
 t.sortnum
 from tbl_wellinformation t
 left outer join tbl_code c1 on c1.itemcode='LiftingType' and c1.itemvalue=t.liftingtype
-left outer join tbl_code c2 on c2.itemcode='PROTOCOL' and c2.itemvalue=t.protocol
 left outer join  tbl_org org  on t.orgid=org.org_id
 left outer join tbl_acq_unit_conf t2 on t2.unit_code=t.unitcode;
 /

@@ -2289,4 +2289,16 @@ public class StringManagerUtils {
 	    	}
 	    	return result;
 	    }
+	    
+	    public static String diagramDataSimplification(String diagramData,int bit){
+	    	String[] diagramDataArr=diagramData.split(",");
+	    	StringBuffer dataSbf = new StringBuffer();
+	    	for(int i=0;i<diagramDataArr.length;i++){
+	    		dataSbf.append(StringManagerUtils.stringToFloat(diagramDataArr[i], bit)+",");
+	    	}
+	    	if(dataSbf.toString().endsWith(",")){
+	    		dataSbf.deleteCharAt(dataSbf.length() - 1);
+	    	}
+	    	return dataSbf.toString();
+	    }
 }

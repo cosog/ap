@@ -179,7 +179,9 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
 			+ "rodString,"
-			+ "anchoringStateName,netGrossRatio,runtimeEfficiencySourceName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') "
+			+ "anchoringStateName,netGrossRatio,"
+			+ "runtimeEfficiencySourceName,"
+			+ "to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') "
 			+ "from "+tableName+" t "
 			+ "where t.org_id in("+orgId+")  "
 			+ "and t.liftingtype>="+wellType+" and t.liftingtype<("+wellType+"+99) ";

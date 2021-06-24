@@ -51,7 +51,7 @@ public class ResourceMonitoringTask {
     private static CallableStatement cs= null; 
     
 	@SuppressWarnings("static-access")
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, UnsupportedEncodingException, ParseException{
 		String probeAppUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
 		String probeMemUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getMem()[0];

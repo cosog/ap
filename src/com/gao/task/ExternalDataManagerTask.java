@@ -55,17 +55,6 @@ public class ExternalDataManagerTask {
 				+ " where t1.unitcode is null and t1.protocolcode is null "
 				+ " and t2.pumpsettingdepth>0 ";
 		try {
-//			while(conn==null || conn.isClosed() || conn_outer==null || conn_outer.isClosed()){
-//				if(conn==null || conn.isClosed()){
-//					conn=OracleJdbcUtis.getConnection();
-//				}
-//				if(conn_outer==null || conn_outer.isClosed()){
-//					conn_outer= OracleJdbcUtis.getOuterConnection();
-//				}
-//				if(conn==null || conn.isClosed() || conn_outer==null || conn_outer.isClosed()){
-//					Thread.sleep(1000*1*60);
-//				}
-//			}
 			conn=OracleJdbcUtis.getConnection();
 			conn_outer= OracleJdbcUtis.getOuterConnection();
 			if(conn!=null&&conn_outer!=null){

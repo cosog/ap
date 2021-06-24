@@ -52,7 +52,6 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 			sql+=" and t.wellName='"+wellName+"'";
 		}
 		sql+= " order by t.sortNum";
-		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"totalRoot\":[");
@@ -62,7 +61,6 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"WellName\":\""+obj[1]+"\"},");
 		}
-		
 		for(int i=list.size()+1;i<=50;i++){
 			result_json.append("{},");
 		}
@@ -73,13 +71,11 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	
 	public String getWellboreTrajectoryDetailsData(String wellName) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.wellname,t.measuringdepth,t.verticaldepth,t.deviationangle,t.azimuthangle,t.x,t.y,t.z"
 				+ " from viw_wellboretrajectory t "
 				+ " where t.wellName='"+wellName+"'";
-		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,\"wellName\":\""+wellName+"\",");
 		result_json.append("\"totalRoot\":[");
@@ -170,7 +166,6 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		String url=Config.getInstance().configFile.getAgileCalculate().getPlugin().getWellboreTrajectory();
-		
 		requestBuff.append("{\"WellName\":\""+wellName+"\",\"WellboreTrajectory\": {");
 		MeasuringDepthBuff.append("\"MeasuringDepth\":[");
 		DeviationAngleBuff.append("\"DeviationAngle\":[");
@@ -178,18 +173,15 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"wellName\":\""+wellName+"\",");
 		result_json.append("\"totalRoot\":[");
 		String measuringDepth="";
-		String deviationAngle="";;
-		String azimuthAngle="";;
-		
+		String deviationAngle="";
+		String azimuthAngle="";
 		JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+wellboreTrajectoryData+"}");//解析数据
 		JSONArray jsonArray = jsonObject.getJSONArray("data");
-		
 		for(int i=0;i<jsonArray.size();i++){
 			JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
 			MeasuringDepthBuff.append(everydata.getString("measuringDepth")+",");
 			DeviationAngleBuff.append(everydata.getString("deviationAngle")+",");
 			AzimuthAngleBuff.append(everydata.getString("azimuthAngle")+",");
-			
 			measuringDepth+=everydata.getString("measuringDepth");
 			deviationAngle+=everydata.getString("deviationAngle");
 			azimuthAngle+=everydata.getString("azimuthAngle");
@@ -199,7 +191,6 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 				azimuthAngle+=",";
 			}
 		}
-		
 		if(MeasuringDepthBuff.toString().endsWith(",")){
 			MeasuringDepthBuff.deleteCharAt(MeasuringDepthBuff.length() - 1);
 		}
@@ -214,7 +205,6 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 		AzimuthAngleBuff.append("]");
 		requestBuff.append(MeasuringDepthBuff.toString()+","+DeviationAngleBuff.toString()+","+AzimuthAngleBuff.toString());
 		requestBuff.append("}}");
-		
 		String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
 		java.lang.reflect.Type type = new TypeToken<WellboreTrajectoryResponseData>() {}.getType();
 		WellboreTrajectoryResponseData wellboreTrajectoryResponseData=gson.fromJson(responseData, type);
@@ -229,26 +219,22 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 				result_json.append("\"Z\":"+wellboreTrajectoryResponseData.getWellboreTrajectory().getZ().get(i)+"},");
 			}
 		}
-		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		this.getBaseDao().saveWellboreTrajectoryData(wellName,wellboreTrajectoryResponseData,measuringDepth,deviationAngle,azimuthAngle);
-		
 		return result_json.toString();
 	}
 	
 	public  String downKafkaWellboreTrajectoryData(String wellName,String wellboreTrajectoryData) throws SQLException {
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
-		
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 		if(driveConfig==null){
 			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
@@ -261,9 +247,9 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 			List list = this.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
-				String driverCode=obj[0].toString();
-				String ID=obj[1].toString();
-				if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+				String protocolCode=obj[0]==null?"":obj[0].toString();
+				String ID=obj[1]==null?"":obj[1].toString();
+				if(protocolCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 					String topic=driveConfig.getTopic().getDown().getModel_WellboreTrajectory().replace("-ID-", "-"+ID+"-");
 					RPCCalculateRequestData.WellboreTrajectory wellboreTrajectory=new RPCCalculateRequestData.WellboreTrajectory();
 					List<Float> measuringDepth=new ArrayList<Float>();
@@ -286,7 +272,6 @@ public class WellboreTrajectoryManagerService<T> extends BaseService<T> {
 				}
 			}
 		}
-		
 		return null;
 	}
 }

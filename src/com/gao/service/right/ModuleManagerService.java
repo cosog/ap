@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.gao.model.Module;
 import com.gao.model.User;
 import com.gao.service.base.BaseService;
+import com.gao.utils.LicenseMap;
 import com.gao.utils.PagingConstants;
 import com.gao.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -87,12 +89,20 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	 * @throws Exception 
 	 */
 	public List<T> queryFunctionModuleList(Class<T> clazz, User user) throws Exception {
+//		if("system".equalsIgnoreCase(user.getUserId())){
+//			
+//		}
+		List<Integer> moduleList=LicenseMap.getModuleMapObject().get(LicenseMap.modulesSN);
 		String queryString = "";
 		queryString = "SELECT  m FROM Module m where 1=1 and m.mdType=0  and m.mdId in " 
-					+ "( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "
-					+ "where  role.roleId =rm.rmRoleId   " 
-					+ " and role.roleId = u.userType   and u.userNo="
-					+ user.getUserNo() + ") order by m.mdSeq, m.mdId";
+					+ " ( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "
+					+ " where  role.roleId =rm.rmRoleId " 
+					+ " and role.roleId = u.userType "
+					+ " and u.userNo="+ user.getUserNo() + "";
+		if(moduleList!=null){
+			queryString+=" and rm.rmModuleid in("+StringUtils.join(moduleList, ",")+") ";
+		}
+		queryString+= ") order by m.mdSeq, m.mdId";
 		return this.find(queryString);
 	}
 	
@@ -180,7 +190,6 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	}
 
 	public List<T> queryCurrentRoleModules(Class<T> clazz, String roleId) {
-
 		String queryString = "select   rm  From  Role r ,RoleModule rm where  rm.rmRoleId=r.roleId ";
 		if(StringManagerUtils.isNotNull(roleId)){
 			queryString+=" and rm.rmRoleId="+roleId;
@@ -246,7 +255,6 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		}
 		if ("sysAdmin".equals(roleCode))
 			return loadRightModules(clazz);
-//		String queryString = "SELECT u FROM Module u WHERE u.mdName like '%" + moduleName + "%' and  u.mdType in(0,1) order by u.mdId asc";
 		String queryString = "SELECT  m FROM Module m where 1=1 and m.mdType in(0,1)  and m.mdId in " 
 				+ "( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "
 				+ "where  role.roleId =rm.rmRoleId   " 
@@ -254,9 +262,6 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				+ user.getUserNo() + ") order by m.mdSeq, m.mdId";
 		return find(queryString);
 	}
-	
-	
-	
 
 	@SuppressWarnings("rawtypes")
 	public String getModuleList(Map map) {
@@ -306,7 +311,6 @@ public class ModuleManagerService<T> extends BaseService<T> {
 				}
 			}
 			result_json.append("]");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

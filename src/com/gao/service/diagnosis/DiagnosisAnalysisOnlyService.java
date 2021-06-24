@@ -498,6 +498,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+//				System.out.println(wellName+"位移："+StringManagerUtils.diagramDataSimplification(positionCurveData, 3));
 				if(StringManagerUtils.isNotNull(positionCurveData)){
 					pointCount=positionCurveData.split(",").length+"";
 				}
@@ -507,6 +508,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+//				System.out.println(wellName+"载荷："+StringManagerUtils.diagramDataSimplification(loadCurveData, 3));
 			}
 			
 			if(obj[19]!=null){
@@ -701,21 +703,25 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[9]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+//				System.out.println(wellName+"位移："+StringManagerUtils.diagramDataSimplification(positionCurveData, 3));
 			}
 			if(obj[10]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[10]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+//				System.out.println(wellName+"载荷："+StringManagerUtils.diagramDataSimplification(loadCurveData, 3));
 			}
 			if(obj[11]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[11]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				wattCurveData=StringManagerUtils.CLOBtoString(realClob);
+//				System.out.println(wellName+"功率："+StringManagerUtils.diagramDataSimplification(wattCurveData, 3));
 			}
 			if(obj[12]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[12]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				iCurveData=StringManagerUtils.CLOBtoString(realClob);
+//				System.out.println(wellName+"电流："+StringManagerUtils.diagramDataSimplification(iCurveData, 3));
 			}
 			if(obj[13]!=null){
 				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[13]);

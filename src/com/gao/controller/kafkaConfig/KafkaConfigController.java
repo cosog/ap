@@ -98,9 +98,7 @@ public class KafkaConfigController extends BaseController {
 			}
 		}
 		json = kafkaConfigService.getKafkaConfigWellList(orgId,wellName);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -116,7 +114,6 @@ public class KafkaConfigController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate = ParamUtils.getParameter(request, "endDate");
-		
 		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
 			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd') from tbl_a9rawdata_hist t where t.deviceId='"+deviceId+"'";
 			List list = this.commonDataService.reportDateJssj(sql);
@@ -126,18 +123,14 @@ public class KafkaConfigController extends BaseController {
 				endDate = StringManagerUtils.getCurrentTime();
 			}
 		}
-		
 		if(!StringManagerUtils.isNotNull(startDate)){
 			startDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(endDate),-10);
 		}
-		
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
 		json = kafkaConfigService.getA9RowDataList(pager,deviceId,startDate,endDate);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -149,11 +142,8 @@ public class KafkaConfigController extends BaseController {
 	@RequestMapping("/getKafkaConfigOperationList")
 	public String getKafkaConfigOperationList() throws Exception {
 		String json = "";
-		
 		json = kafkaConfigService.getKafkaConfigOperationList();
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -168,8 +158,6 @@ public class KafkaConfigController extends BaseController {
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
 		String selectedDeviceId = ParamUtils.getParameter(request, "selectedDeviceId");
 		String json  = this.kafkaConfigService.getA9RawCurveChartsData(id,deviceId,selectedDeviceId);
-		
-		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -286,25 +274,21 @@ public class KafkaConfigController extends BaseController {
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					intervalCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				
 				if(obj[5]!=null){
 					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[5]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					aCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				
 				if(obj[6]!=null){
 					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[6]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					fCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				
 				if(obj[7]!=null){
 					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
 					wattCurveData=StringManagerUtils.CLOBtoString(realClob);
 				}
-				
 				if(obj[8]!=null){
 					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
 					realClob = (CLOB) proxy.getWrappedClob(); 
@@ -316,7 +300,6 @@ public class KafkaConfigController extends BaseController {
 				Label content4=new Label(3,1,obj[3]+"",wcf_table);
 				sheetOne.addCell(content1);
 				sheetOne.addCell(content2);
-//				sheetOne.addCell(content3);
 				jxl.write.Number number = new jxl.write.Number(2, 1, StringManagerUtils.stringToDouble(obj[2]+""),format);
 				sheetOne.addCell(number);
 				sheetOne.addCell(content4);
@@ -330,35 +313,20 @@ public class KafkaConfigController extends BaseController {
 				for(int i=0;i<intervalData.length;i++){
 					number = new jxl.write.Number(4, i+1, StringManagerUtils.stringToDouble(intervalData[i]),format);
 					sheetOne.addCell(number);
-					
-//					Label content=new Label(4,i+1,intervalData[i]+"",wcf_table);
-//					sheetOne.addCell(content);
 				}
 				for(int i=0;i<aData.length;i++){
-//					Label content=new Label(5,i+1,aData[i]+"",wcf_table);
-//					sheetOne.addCell(content);
-					
 					number = new jxl.write.Number(5, i+1, StringManagerUtils.stringToDouble(aData[i]),format);
 					sheetOne.addCell(number);
 				}
 				for(int i=0;i<fData.length;i++){
-//					Label content=new Label(6,i+1,fData[i]+"",wcf_table);
-//					sheetOne.addCell(content);
-					
 					number = new jxl.write.Number(6, i+1, StringManagerUtils.stringToDouble(fData[i]),format);
 					sheetOne.addCell(number);
 				}
 				for(int i=0;i<wattData.length;i++){
-//					Label content=new Label(7,i+1,wattData[i]+"",wcf_table);
-//					sheetOne.addCell(content);
-					
 					number = new jxl.write.Number(7, i+1, StringManagerUtils.stringToDouble(wattData[i]),format);
 					sheetOne.addCell(number);
 				}
 				for(int i=0;i<iData.length;i++){
-//					Label content=new Label(8,i+1,iData[i]+"",wcf_table);
-//					sheetOne.addCell(content);
-					
 					number = new jxl.write.Number(8, i+1, StringManagerUtils.stringToDouble(iData[i]),format);
 					sheetOne.addCell(number);
 				}
@@ -372,8 +340,6 @@ public class KafkaConfigController extends BaseController {
 	    }
 		return null;
 	}
-	
-
 	
 	@RequestMapping("/kafkaProducerMsg")
 	public String kafkaProducerMsg() throws Exception {
@@ -398,9 +364,9 @@ public class KafkaConfigController extends BaseController {
 		}
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
-			String driverCode=obj[0]+"";
-			String ID=obj[1]+"";
-			if("KafkaDrive".equalsIgnoreCase(driverCode)&&StringManagerUtils.isNotNull(ID)){
+			String protocolCode=obj[0]==null?"":obj[0].toString();
+			String ID=obj[1]==null?"":obj[1].toString();
+			if(protocolCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 //				String topic="Down-"+ID+"-";
 				String topic="";
 				if("1".equals(type)){

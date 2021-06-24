@@ -475,31 +475,6 @@ public class PSToFSController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/getWellList")
-	public String getWellList() throws Exception {
-		orgId=ParamUtils.getParameter(request, "orgId");
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		String wellName=ParamUtils.getParameter(request, "wellName");
-		
-		String json = this.PSToFSService.getWellList(orgId,wellName);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		log.warn("jh json is ==" + json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getDiagramDataList")
 	public String getDiagramDataList() throws Exception {
 		orgId=ParamUtils.getParameter(request, "orgId");

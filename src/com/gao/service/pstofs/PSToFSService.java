@@ -57,7 +57,6 @@ import oracle.sql.CLOB;
 public class PSToFSService<T> extends BaseService<T> {
 	@Autowired
 	private CommonDataService service;
-	
 	public String getPSToFSPumpingUnitData(String orgId) throws SQLException, IOException{
 		StringBuffer result_json = new StringBuffer();
 		String sql="select t.id,t2.wellName,t.manufacturer,t.model,t.stroke,t.crankrotationdirection,"
@@ -68,7 +67,6 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " where t.wellId=t2.id and t2.orgid=org.org_id "
 				+ " and org.org_id in("+orgId+") "
 				+ " order by t2.sortNum";
-		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"totalRoot\":[");
@@ -95,7 +93,6 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"BalanceWeight\":\""+obj[12]+"\",");
 			result_json.append("\"prtf\":"+prtf+"},");
 		}
-		
 		for(int i=list.size()+1;i<=30;i++){
 			result_json.append("{},");
 		}
@@ -114,7 +111,6 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " where t.wellId=t2.id and t2.orgid=org.org_id "
 				+ " and org.org_id in("+orgId+") "
 				+ " order by t2.sortNum";
-		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"totalRoot\":[");
@@ -129,7 +125,6 @@ public class PSToFSService<T> extends BaseService<T> {
 			if(!StringManagerUtils.isNotNull(PerformanceCurver)){
 				PerformanceCurver="[]";
 			}
-			
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"WellName\":\""+obj[1]+"\",");
 			result_json.append("\"Manufacturer\":\""+obj[2]+"\",");
@@ -158,13 +153,10 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " from tbl_rpc_inver_opt t,tbl_wellinformation t2,tbl_org org "
 				+ " where t.wellId=t2.id and t2.orgid=org.org_id "
 				+ " and org.org_id in("+orgId+") ";
-		
 		if(StringManagerUtils.isNotNull(wellInformationName)){
 			sql+=" and t2.wellName='"+wellInformationName+"'";
 		}
-		
 		sql+= " order by t2.sortNum";
-		
 		List<?> list = this.findCallSql(sql);
 //		int totalCount=getTotalCountRows(sql);//获取总记录数
 		String columns = "["
@@ -202,7 +194,6 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"FilterTime_FSDiagram_L\":\""+obj[11]+"\",");
 			result_json.append("\"FilterTime_FSDiagram_R\":\""+obj[12]+"\"},");
 		}
-		
 		for(int i=list.size()+1;i<=recordCount;i++){
 			result_json.append("{},");
 		}
@@ -229,7 +220,6 @@ public class PSToFSService<T> extends BaseService<T> {
 		}
 		sql+="";
 		sql+=" order by wellname,cjsj desc";
-		
 		sql="select v.* from ("+sql+") v where rownum=1"; 
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
@@ -256,7 +246,6 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"FSDiagram\":"+fsdiagram+"");
 		}
 		result_json.append("}");
-		
 		return result_json.toString();
 	}
 	
@@ -436,7 +425,6 @@ public class PSToFSService<T> extends BaseService<T> {
 				}
 			}
 			result_json.append("]}");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -479,7 +467,6 @@ public class PSToFSService<T> extends BaseService<T> {
 				}
 			}
 			result_json.append("]}");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -491,16 +478,13 @@ public class PSToFSService<T> extends BaseService<T> {
 	}
 	
 	public String downKafkaPumpingData(String PumpingUnitData,String PumpingUnitPTRData,String wellName){
-		
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
 			equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		}
-		
 		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 		if(driveConfig==null){
 			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
@@ -517,12 +501,11 @@ public class PSToFSService<T> extends BaseService<T> {
 				List list = this.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					String protocolCode=obj[0].toString();
-					String ID=obj[1].toString();
+					String protocolCode=obj[0]==null?"":obj[0].toString();
+					String ID=obj[1]==null?"":obj[1].toString();
 					if(protocolCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 						String topic=driveConfig.getTopic().getDown().getModel_PumpingUnit().replace("-ID-", "-"+ID+"-");
 						RPCCalculateRequestData.PumpingUnit pumpingUnit=new RPCCalculateRequestData.PumpingUnit();
-						
 						pumpingUnit.setManufacturer(everydata.getString("Manufacturer"));
 						pumpingUnit.setModel(everydata.getString("Model"));
 						pumpingUnit.setStroke(StringManagerUtils.stringToFloat(everydata.getString("Stroke")));
@@ -532,7 +515,6 @@ public class PSToFSService<T> extends BaseService<T> {
 						pumpingUnit.setSingleCrankWeight(StringManagerUtils.stringToFloat(everydata.getString("SingleCrankWeight")));
 						pumpingUnit.setSingleCrankPinWeight(StringManagerUtils.stringToFloat(everydata.getString("SingleCrankPinWeight")));
 						pumpingUnit.setStructuralUnbalance(StringManagerUtils.stringToFloat(everydata.getString("StructuralUnbalance")));
-						
 						String[] BalanceWeightArr=(everydata.getString("BalanceWeight")).split(",");
 						pumpingUnit.setBalance(new RPCCalculateRequestData.Balance());
 						pumpingUnit.getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
@@ -541,49 +523,16 @@ public class PSToFSService<T> extends BaseService<T> {
 							everyBalance.setWeight(StringManagerUtils.stringToFloat(BalanceWeightArr[j]));
 							pumpingUnit.getBalance().getEveryBalance().add(everyBalance);
 						}
-						
-						if(wellName.equals(everydata.getString("WellName"))){
-							
-						}
-						
 						KafkaServerTask.producerMsg(topic, "下行抽油机数据", gson.toJson(pumpingUnit));
 					}
 				}
 			}
 		}
-		
-		
 		return null;
 	}
 	
 	public boolean saveMotorData(String MotorData,String MotorPerformanceCurverData,String wellName) throws SQLException, ParseException{
 		return this.getBaseDao().savePSToFSMotorData(MotorData,MotorPerformanceCurverData,wellName);
-	}
-	
-	public String getWellList(String orgId,String wellName) throws Exception {
-		StringBuffer result_json = new StringBuffer();
-		String sql = "select t.jlbh,t.jh from tbl_wellinformation t,t_wellorder ord,tbl_org org where t.dwbh=org.org_code and t.jh=ord.jh and org.org_id in ("+orgId+") ";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and t.jh='"+wellName+"'";
-		}
-		sql+=" order by ord.pxbh";
-		int totals=this.getTotalCountRows(sql);
-		List<?> list = this.findCallSql(sql);
-		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"jlbh\",width:50},{ \"header\":\"井名\",\"dataIndex\":\"wellName\" }]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalCount\":"+totals+",");
-		result_json.append("\"wellName\":\""+wellName+"\",");
-		result_json.append("\"totalRoot\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"jlbh\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\"},");
-		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getDiagramDataList(String orgId,String wellName,String startDate,String endDate, Page pager)throws Exception {
@@ -609,31 +558,9 @@ public class PSToFSService<T> extends BaseService<T> {
 					+ " where t.wellid=well.id and t.datasource=1  and well.wellname='"+wellName+"' and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 "
 					+ " order by t.acqTime desc";
 		}
-		
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		String getResult = this.findCustomPageBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
-//		int totals=this.getTotalCountRows(sqlAll);
-//		
-//		List<?> list = this.findCallSql(finalSql);
-//		String columns=service.showTableHeadersColumns("elecInverDiagram_Realtime");
-//		
-//		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-//		result_json.append("\"totalCount\":"+totals+",");
-//		result_json.append("\"wellName\":\""+wellName+"\",");
-//		result_json.append("\"totalRoot\":[");
-//		for(int i=0;i<list.size();i++){
-//			Object[] obj=(Object[]) list.get(i);
-//			result_json.append("{\"id\":"+obj[0]+",");
-//			result_json.append("\"wellName\":\""+obj[1]+"\",");
-//			result_json.append("\"acqTime\":\""+obj[2]+"\",");
-//			result_json.append("\"fmax\":\""+obj[3]+"\",");
-//			result_json.append("\"fmin\":\""+obj[4]+"\"},");
-//		}
-//		if(result_json.toString().endsWith(",")){
-//			result_json.deleteCharAt(result_json.length() - 1);
-//		}
-//		result_json.append("]}");
 		return getResult.replaceAll("null", "");
 	}
 	

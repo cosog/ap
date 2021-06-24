@@ -166,9 +166,9 @@ public class ProductionDataController extends BaseController {
 						List list = this.services.findCallSql(sql);
 						if(list.size()>0){
 							Object[] obj=(Object[]) list.get(0);
-							String driverCode=obj[0]==null?"":obj[0].toString();
+							String protocolCode=obj[0]==null?"":obj[0].toString();
 							String ID=obj[1]==null?"":obj[1].toString();
-							if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+							if(protocolCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 								String FluidPVTTopic=driveConfig.getTopic().getDown().getModel_FluidPVT().replace("-ID-", "-"+ID+"-");
 								String ReservoirTopic=driveConfig.getTopic().getDown().getModel_Reservoir().replace("-ID-", "-"+ID+"-");
 								String RodStringTopic=driveConfig.getTopic().getDown().getModel_RodString().replace("-ID-", "-"+ID+"-");
@@ -289,9 +289,9 @@ public class ProductionDataController extends BaseController {
 						List list = this.services.findCallSql(sql);
 						if(list.size()>0){
 							Object[] obj=(Object[]) list.get(0);
-							String driverCode=obj[0].toString();
-							String ID=obj[1].toString();
-							if(driverCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
+							String protocolCode=obj[0]==null?"":obj[0].toString();
+							String ID=obj[1]==null?"":obj[1].toString();
+							if(protocolCode.toUpperCase().contains("KAFKA")&&StringManagerUtils.isNotNull(ID)){
 								String FluidPVTTopic=driveConfig.getTopic().getDown().getModel_FluidPVT().replace("-ID-", "-"+ID+"-");
 								String ReservoirTopic=driveConfig.getTopic().getDown().getModel_Reservoir().replace("-ID-", "-"+ID+"-");
 								String RodStringTopic=driveConfig.getTopic().getDown().getModel_RodString().replace("-ID-", "-"+ID+"-");

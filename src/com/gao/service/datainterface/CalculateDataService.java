@@ -91,7 +91,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		RPCCalculateRequestData calculateRequestData=new RPCCalculateRequestData();
 		
 		try{
-			String rpcInformationSql="select t2.manufacturer,t2.model,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
+			String rpcInformationSql="select t2.manufacturer,t2.model,t2.stroke,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 					+ " t2.offsetangleofcrank,t2.crankgravityradius,"
 					+ " t2.singlecrankweight,t2.singlecrankpinweight,"
 					+ " t2.structuralunbalance,"
@@ -224,15 +224,16 @@ public class CalculateDataService<T> extends BaseService<T> {
 				calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
 				calculateRequestData.getPumpingUnit().setManufacturer(rpcObject[0]+"");
 				calculateRequestData.getPumpingUnit().setModel(rpcObject[1]+"");
-				calculateRequestData.getPumpingUnit().setCrankRotationDirection(rpcObject[2]+"");
-				calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(rpcObject[3]+""));
-				calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(rpcObject[4]+""));
-				calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(rpcObject[5]+""));
-				calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(rpcObject[6]+""));
-				calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[7]+""));
+				calculateRequestData.getPumpingUnit().setStroke(StringManagerUtils.stringToFloat(rpcObject[2]+""));
+				calculateRequestData.getPumpingUnit().setCrankRotationDirection(rpcObject[3]+"");
+				calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(rpcObject[4]+""));
+				calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(rpcObject[5]+""));
+				calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(rpcObject[6]+""));
+				calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(rpcObject[7]+""));
+				calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(rpcObject[8]+""));
 				
-				String[] BalancePositionArr=(rpcObject[8]+"").split(",");
-				String[] BalanceWeightArr=(rpcObject[9]+"").split(",");
+				String[] BalancePositionArr=(rpcObject[9]+"").split(",");
+				String[] BalanceWeightArr=(rpcObject[10]+"").split(",");
 				calculateRequestData.getPumpingUnit().setBalance(new RPCCalculateRequestData.Balance());
 				calculateRequestData.getPumpingUnit().getBalance().setEveryBalance(new ArrayList<RPCCalculateRequestData.EveryBalance>());
 				for(int j=0;BalanceWeightArr!=null&&j<BalanceWeightArr.length;j++){

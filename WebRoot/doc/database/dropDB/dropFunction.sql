@@ -1,0 +1,2 @@
+drop function BLOBTOCLOB;
+drop function GETELEMENTFROMARRAYBYINDEX;

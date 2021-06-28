@@ -89,7 +89,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public String getObjectToRPCCalculateRequestData(Object[] object) throws SQLException, IOException, ParseException{
 		Gson gson = new Gson();
 		RPCCalculateRequestData calculateRequestData=new RPCCalculateRequestData();
-		
 		try{
 			String rpcInformationSql="select t2.manufacturer,t2.model,t2.stroke,decode(t2.crankrotationdirection,'顺时针','Clockwise','Anticlockwise'),"
 					+ " t2.offsetangleofcrank,t2.crankgravityradius,"

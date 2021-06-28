@@ -493,7 +493,7 @@ tablespace AGILE_DATA
   )
 /
 alter table TBL_PCP_DISCRETE_HIST
-  add constraint FK_PCP_DISCRETE_HIST primary key (ID)
+  add constraint PK_PCP_DISCRETE_HIST primary key (ID)
 /
 create index IDX_PCP_DISCRETE_HIST_CODE on TBL_PCP_DISCRETE_HIST (WORKINGCONDITIONCODE)
 /
@@ -612,7 +612,7 @@ tablespace AGILE_DATA
   )
 /
 alter table TBL_PCP_DISCRETE_LATEST
-  add constraint FK_PCP_DISCRETE_LATEST primary key (ID, WELLID)
+  add constraint PK_PCP_DISCRETE_LATEST primary key (ID, WELLID)
 /
 create index IDX_PCP_DISCRETE_LATEST_CODE on TBL_PCP_DISCRETE_LATEST (WORKINGCONDITIONCODE)
 /

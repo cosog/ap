@@ -146,6 +146,7 @@ EXECUTE IMMEDIATE 'truncate table tbl_rpc_discrete_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_discrete_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_diagram_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_diagram_hist';
+EXECUTE IMMEDIATE 'truncate table tbl_rpc_diagram_total';
 EXECUTE IMMEDIATE 'truncate table tbl_a9rawdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_a9rawdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_motor';
@@ -160,9 +161,40 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcp_discrete_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_rpm_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_rpm_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_total_day';
+EXECUTE IMMEDIATE 'truncate table tbl_wellboretrajectory';
 
 EXECUTE IMMEDIATE 'truncate table tbl_wellinformation';
 
+--重置所有序列
+ prd_reset_sequence('seq_org');
+
+ prd_reset_sequence('seq_outputwellproduction_rt');
+ prd_reset_sequence('seq_outputwellproduction');
+ prd_reset_sequence('seq_discretedata_rt');
+ prd_reset_sequence('seq_discretedata');
+ prd_reset_sequence('seq_indicatordiagram_rt');
+ prd_reset_sequence('seq_indicatordiagram');
+ prd_reset_sequence('seq_rpc_diagram_total');
+ prd_reset_sequence('seq_a9rawdata_hist');
+ prd_reset_sequence('seq_a9rawdata_latest');
+ prd_reset_sequence('seq_inver_motor');
+ prd_reset_sequence('seq_inver_pumpingunit');
+ prd_reset_sequence('seq_inver_optimize');
+ prd_reset_sequence('seq_outputwellaggregation');
+
+ prd_reset_sequence('seq_pcp_productiondata_latest');
+ prd_reset_sequence('seq_pcp_productiondata_hist');
+ prd_reset_sequence('seq_pcp_discrete_latest');
+ prd_reset_sequence('seq_pcp_discrete_hist');
+ prd_reset_sequence('seq_pcp_rpm_latest');
+ prd_reset_sequence('seq_pcp_rpm_hist');
+ prd_reset_sequence('seq_pcp_total_day');
+ 
+ prd_reset_sequence('seq_wellboretrajectory');
+
+ prd_reset_sequence('seq_wellinformation');
+
+end prd_clear_data;
 --重置所有序列
  prd_reset_sequence('seq_org');
 

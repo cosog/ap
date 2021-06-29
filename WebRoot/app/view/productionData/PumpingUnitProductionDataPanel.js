@@ -189,7 +189,7 @@ function CreateAndLoadWellProTable(isNew){
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,wellProHandsontableHelper);}}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="runtimeEfficiencySourceName".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['软件计算','组态直读', '数据库直读','人工录入']}";
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['软件计算','采控直读', '数据库直读','人工录入']}";
 	            	}else{
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,wellProHandsontableHelper);}}";
 	            	}

@@ -1,6 +1,6 @@
 var dataSourceConfigHandsontableHelper=null;
 var dataSourceConfigColumnsHandsontableHelper=null;
-Ext.define('AP.view.dataSource.DataSourceConfigInfoView', {
+Ext.define('AP.view.acquisitionUnit.DataSourceConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.dataSourceConfigInfoView',
     layout: "fit",
@@ -81,7 +81,7 @@ function CreateDataSourceConfigDBInfoTable(isNew){
 	
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/dataSourceConfigController/getDataSourceConfigData',
+		url:context + '/acquisitionUnitManagerController/getDataSourceConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
 			if(dataSourceConfigHandsontableHelper==null){
@@ -600,7 +600,7 @@ function SavedDtaSourceConfigData(){
 	
 	Ext.Ajax.request({
 		method:'POST',
-		url:context + '/dataSourceConfigController/saveDataSourceConfigData',
+		url:context + '/acquisitionUnitManagerController/saveDataSourceConfigData',
 		success:function(response) {
 			var data=Ext.JSON.decode(response.responseText);
 			if (data.success) {

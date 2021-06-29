@@ -8,8 +8,6 @@ public class ConfigFile {
 
     private Spring spring;
 
-    private List<Datasource> dockDataSource;
-
     private AgileCalculate agileCalculate;
 
     private Mqtt mqtt;
@@ -35,12 +33,6 @@ public class ConfigFile {
     }
     public Spring getSpring(){
         return this.spring;
-    }
-    public void setDockDataSource(List<Datasource> dockDataSource){
-        this.dockDataSource = dockDataSource;
-    }
-    public List<Datasource> getDockDataSource(){
-        return this.dockDataSource;
     }
     public void setAgileCalculate(AgileCalculate agileCalculate){
         this.agileCalculate = agileCalculate;

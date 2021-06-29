@@ -27,6 +27,7 @@ import com.gao.service.diagnosis.DiagnosisAnalysisOnlyService;
 import com.gao.utils.Config;
 import com.gao.utils.ConfigFile;
 import com.gao.utils.I18NConfig;
+import com.gao.utils.LicenseMap;
 import com.gao.utils.OracleJdbcUtis;
 import com.gao.utils.Page;
 import com.gao.utils.ParamUtils;
@@ -60,6 +61,7 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
+		session.setAttribute("dataSourceSN", LicenseMap.dataSourceSN);
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
 		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
@@ -75,6 +77,7 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
+		session.setAttribute("dataSourceSN", LicenseMap.dataSourceSN);
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
 		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());

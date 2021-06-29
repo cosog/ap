@@ -53,6 +53,7 @@
  var electricalHidden = !${configFile}.others.electrical;
  var dynamicCurveHidden = !${configFile}.others.dynamicCurve;
  var productionUnit = ${configFile}.others.productionUnit;
+ var dataSourceSN=${dataSourceSN};
 if (user_ == null || "" == (user_)) {
 			window.location.href = "../login/toLogin";
 }

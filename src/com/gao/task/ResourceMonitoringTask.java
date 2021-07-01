@@ -40,15 +40,15 @@ import com.google.gson.reflect.TypeToken;
 
 @Component("ResourceMonitoringTask")  
 public class ResourceMonitoringTask {
-	private static Connection conn = null;   
-    private static PreparedStatement pstmt = null;  
-    private static ResultSet rs = null;  
+	private static Connection conn = null;
+    private static PreparedStatement pstmt = null;
+    private static ResultSet rs = null;
     
-    private static Connection conn_outer = null;   
-    private static PreparedStatement pstmt_outer = null;  
-    private static ResultSet rs_outer = null; 
+    private static Connection conn_outer = null;
+    private static PreparedStatement pstmt_outer = null;
+    private static ResultSet rs_outer = null;
 	
-    private static CallableStatement cs= null; 
+    private static CallableStatement cs= null;
     
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")

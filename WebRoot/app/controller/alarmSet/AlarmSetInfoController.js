@@ -140,8 +140,8 @@ function modifyAlarmSet() {
 SelectAlarmSet = function () {
     var dataattr_row = Ext.getCmp("AlarmSetInfoGridPanel_Id").getSelectionModel().getSelection();
     var recordId = dataattr_row[0].data.id;
-    var workingConditionCode = dataattr_row[0].data.workingconditioncode;
-    var workingConditionName = dataattr_row[0].data.workingconditionname;
+    var resultCode = dataattr_row[0].data.resultcode;
+    var resultName = dataattr_row[0].data.resultname;
     var alarmType = dataattr_row[0].data.alarmtype;
     var alarmTypeName = dataattr_row[0].data.alarmtypename;
     var alarmLevel = dataattr_row[0].data.alarmlevel;
@@ -149,15 +149,15 @@ SelectAlarmSet = function () {
     var alarmSign = dataattr_row[0].data.alarmsign;
     var remark = dataattr_row[0].data.remark;
     Ext.getCmp('alarmSetRecord_Id').setValue(recordId);
-    Ext.getCmp('alarmSetWorkingConditionComb_Id').setValue(workingConditionCode);
-    Ext.getCmp('alarmSetWorkingConditionComb_Id').setRawValue(workingConditionName);
+    Ext.getCmp('alarmSetResultCodeComb_Id').setValue(resultCode);
+    Ext.getCmp('alarmSetResultCodeComb_Id').setRawValue(resultName);
     Ext.getCmp('alarmSetAlarmType_Id').setValue(alarmType);
     Ext.getCmp('alarmSetAlarmType_Id').setRawValue(alarmTypeName);
     Ext.getCmp('alarmSetAlarmLevel_Id').setValue(alarmLevel);
     Ext.getCmp('alarmSetAlarmLevel_Id').setRawValue(alarmLevelName);
     Ext.getCmp('alarmSetAlarmSignComb_Id').setValue(alarmSign);
     Ext.getCmp('alarmSetAlarmSign_Id').setValue(alarmSign);
-    Ext.getCmp("alarmSetWorkingConditionComb_Id").readOnly = true;
+    Ext.getCmp("alarmSetResultCodeComb_Id").readOnly = true;
     Ext.getCmp("alarmSetAlarmType_Id").readOnly = true;
     if (bjbz == 0) {
         Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('关');

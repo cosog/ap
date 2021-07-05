@@ -2549,10 +2549,10 @@ color16ToRgba = function(sColor,Opacity){
 		 val="";
 	}
 	var AlarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
- 	var alarmLevel=p.data.workingConditionAlarmLevel;
+ 	var alarmLevel=p.data.resultAlarmLevel;
  	var tipval=val;
- 	if(p.data.workingConditionString!=undefined&&p.data.workingConditionString!=''){
- 		tipval=p.data.workingConditionString;
+ 	if(p.data.resultString!=undefined&&p.data.resultString!=''){
+ 		tipval=p.data.resultString;
  	}
  	var BackgroundColor='#FFFFFF';
  	var Colorr='#000000';
@@ -2579,18 +2579,18 @@ color16ToRgba = function(sColor,Opacity){
 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 }
 
- adviceElecWorkingConditionColor = function(val,o,p,e) {
+ adviceElecResultColor = function(val,o,p,e) {
 	if(val==undefined||val=="undefined"){
 		val="";
 	}
- 	var alarmLevel=p.data.workingConditionAlarmLevel_E;
+ 	var alarmLevel=p.data.resultAlarmLevel_E;
  	if(alarmLevel==undefined){
- 		alarmLevel=p.data.workingConditionAlarmLevel_e;
+ 		alarmLevel=p.data.resultAlarmLevel_e;
  	}
  	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
  	var tipval=val;
- 	if(p.data.workingConditionString_E!=undefined&&p.data.workingConditionString_E!=''){
- 		tipval=p.data.workingConditionString_E;
+ 	if(p.data.resultString_E!=undefined&&p.data.resultString_E!=''){
+ 		tipval=p.data.resultString_E;
  	}
  	var BackgroundColor='#FFFFFF';
  	var Colorr='#000000';
@@ -3547,8 +3547,8 @@ showFSDiagram = function(result, divid) {
 	if(result.fmax!=undefined && result.stroke!=undefined && result.liquidWeightProduction!=undefined){
 		xtext+='最大载荷:' + result.fmax + 'kN 冲程:' + result.stroke + 'm 产液:' + result.liquidWeightProduction + 't/d<br />';
 	}
-	if(result.fmin!=undefined && result.spm!=undefined && result.workingConditionName!=undefined){
-		xtext+='最小载荷:' + result.fmin + 'kN 冲次:' + result.spm + '/min 工况:' + result.workingConditionName + '<br /></span>';
+	if(result.fmin!=undefined && result.spm!=undefined && result.resultName!=undefined){
+		xtext+='最小载荷:' + result.fmin + 'kN 冲次:' + result.spm + '/min 工况:' + result.resultName + '<br /></span>';
 	}
 	
 	
@@ -4745,7 +4745,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 	var stroke=gtdata.stroke;       // 冲程
 	var spm=gtdata.spm;       // 冲次
 	var liquidProduction=gtdata.liquidProduction;     // 日产液量
-	var workingConditionName=gtdata.workingConditionName;     // 工况类型
+	var resultName=gtdata.resultName;     // 工况类型
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
 	var productionUnitStr='t/d';
     if(productionUnit!=0){
@@ -4757,10 +4757,10 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     xtext+=' 冲程:'+stroke+'m';
     xtext+=' 冲次:'+spm+'/min';
     xtext+=' 产液:'+liquidProduction+productionUnitStr;
-    xtext+=' 工况:'+workingConditionName;
+    xtext+=' 工况:'+resultName;
     
 //    xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidProduction + productionUnitStr+ '<br />';
-//    xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + workingConditionName + '<br /></span>';
+//    xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + resultName + '<br /></span>';
     var upperlimit=parseFloat(fmax)+10;
 //    if(parseFloat(upperLoadLine)==0||upperLoadLine==""||parseFloat(fmax)==0||fmax==""){
 //    	upperlimit=null
@@ -4936,10 +4936,10 @@ function initTowColorSurfaceCardChart(upStrokePointdata,downStrokePointdata, gtd
 	var stroke=gtdata.stroke;       // 冲程
 	var spm=gtdata.spm;       // 冲次
 	var liquidProduction=gtdata.liquidProduction;     // 日产液量
-	var workingConditionName=gtdata.workingConditionName;     // 工况类型
+	var resultName=gtdata.resultName;     // 工况类型
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
     xtext+='最大载荷:' + fmax + 'kN 冲程:' + stroke + 'm 产液:' + liquidProduction + 't/d<br />';
-    xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + workingConditionName + '<br /></span>';
+    xtext+='最小载荷:' + fmin + 'kN 冲次:' + spm + '/min 工况:' + resultName + '<br /></span>';
     var upperlimit=parseFloat(fmax)+10;
     if(parseFloat(upperLoadLine)==0||parseFloat(fmax)==0){
     	upperlimit=null
@@ -5580,10 +5580,10 @@ showPumpCard = function(result,divid) {
 	var color=new Array("#00ff00","#ff0000","#ff8000","#ff06c5","#0000ff"); // 线条颜色
 	var wellName=result.wellName;                        // 井名
 	var acqTime=result.acqTime;                    // 时间
-	var workingConditionCode=result.workingConditionCode;
+	var resultCode=result.resultCode;
 	var pumpFSDiagramData=result.pumpFSDiagramData.split("#");       // 图形数据
 	var series = "[";
-	if(pumpFSDiagramData.length>0&&workingConditionCode!=1232){
+	if(pumpFSDiagramData.length>0&&resultCode!=1232){
 		series+="{";
 		for (var i =0; i < pumpFSDiagramData.length; i++){
 			var everyDiagramData = pumpFSDiagramData[i].split(",");

@@ -507,7 +507,7 @@ var DiagnoseDailyReportHelper = {
 	                diagnoseDailyReportHelper.my_data[index + 3][7] = runRange;
 	                diagnoseDailyReportHelper.my_data[index + 3][8] = _day.runTimeEfficiency;
 	                
-	                diagnoseDailyReportHelper.my_data[index + 3][9] = _day.workingConditionName;
+	                diagnoseDailyReportHelper.my_data[index + 3][9] = _day.resultName;
 	                diagnoseDailyReportHelper.my_data[index + 3][10] = _day.optimizationSuggestion;
 	                
 	                diagnoseDailyReportHelper.my_data[index + 3][11] = _day.liquidProduction;
@@ -525,7 +525,7 @@ var DiagnoseDailyReportHelper = {
 	                diagnoseDailyReportHelper.my_data[index + 3][21] = _day.systemEfficiency;
 	                diagnoseDailyReportHelper.my_data[index + 3][22] = _day.surfaceSystemEfficiency;
 	                diagnoseDailyReportHelper.my_data[index + 3][23] = _day.welldownSystemEfficiency;
-	                diagnoseDailyReportHelper.my_data[index + 3][24] = _day.powerConsumptionPerthm;
+	                diagnoseDailyReportHelper.my_data[index + 3][24] = _day.energyPer100mLift;
 	                
 	                diagnoseDailyReportHelper.my_data[index + 3][25] = _day.todayKWattH;
 	                

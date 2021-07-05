@@ -34,8 +34,8 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			case "waterWeightProduction".toUpperCase():
     				dataStr+="{\"item\":\"产水量(t/d)\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterProduction+"\",\"curve\":\"\"},";
         			break;
-    			case "waterCut_W".toUpperCase():
-    				dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    			case "weightWaterCut".toUpperCase():
+    				dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
     	        	break;
     			case "liquidVolumetricProduction".toUpperCase():
     				dataStr+="{\"item\":\"产液量(m^3/d)\",\"itemCode\":\"liquidVolumetricProduction\",\"value\":\""+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
@@ -46,8 +46,8 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			case "waterVolumetricProduction".toUpperCase():
     				dataStr+="{\"item\":\"产水量(m^3/d)\",\"itemCode\":\"waterVolumetricProduction\",\"value\":\""+get_rawData.waterProduction+"\",\"curve\":\"\"},";
         			break;
-    			case "waterCut".toUpperCase():
-    				dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    			case "volumeWaterCut".toUpperCase():
+    				dataStr+="{\"item\":\"含水率(%)\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
     	        	break;
     			case "qpr".toUpperCase():
     				dataStr+="{\"item\":\"公称排量(ml/r)\",\"itemCode\":\"qpr\",\"value\":\""+get_rawData.qpr+"\",\"curve\":\"\"},";
@@ -64,11 +64,11 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			case "systemEfficiency".toUpperCase():
     				dataStr+="{\"item\":\"系统效率(%)\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
         			break;
-    			case "powerConsumptionPerthm".toUpperCase():
-    				dataStr+="{\"item\":\"吨液百米耗电量(kW·h/100m·t)\",\"itemCode\":\"powerConsumptionPerthm\",\"value\":\""+get_rawData.powerConsumptionPerthm+"\",\"curve\":\"\"},";
+    			case "energyPer100mLift".toUpperCase():
+    				dataStr+="{\"item\":\"吨液百米耗电量(kW·h/100m·t)\",\"itemCode\":\"energyPer100mLift\",\"value\":\""+get_rawData.energyPer100mLift+"\",\"curve\":\"\"},";
         			break;
-    			case "motorInputActivePower".toUpperCase():
-    				dataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"motorInputActivePower\",\"value\":\""+get_rawData.motorInputActivePower+"\",\"curve\":\"\"},";
+    			case "averageWatt".toUpperCase():
+    				dataStr+="{\"item\":\"有功功率(kW)\",\"itemCode\":\"averageWatt\",\"value\":\""+get_rawData.averageWatt+"\",\"curve\":\"\"},";
         			break;
     			case "waterPower".toUpperCase():
     				dataStr+="{\"item\":\"水功率(kW)\",\"itemCode\":\"waterPower\",\"value\":\""+get_rawData.waterPower+"\",\"curve\":\"\"},";
@@ -161,8 +161,8 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			case "runStatus".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
         			break;
-    			case "frequencyRunValue".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";
+    			case "runFrequency".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"runFrequency\",\"value\":\""+get_rawData.runFrequency+"\",\"curve\":\"\"},";
         			break;
     			case "Ia".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.Ia+"\",\"curve\":\"\"},";
@@ -182,20 +182,20 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			case "Vc".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.Vc+"\",\"curve\":\"\"},";
         			break;
-    			case "wattSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
+    			case "watt3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"watt3\",\"value\":\""+get_rawData.watt3+"\",\"curve\":\"\"},";
         			break;
-    			case "varSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
+    			case "var3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"var3\",\"value\":\""+get_rawData.var3+"\",\"curve\":\"\"},";
         			break;
     			case "reversePower".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
         			break;
-    			case "pfSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
+    			case "pf3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pf3\",\"value\":\""+get_rawData.pf3+"\",\"curve\":\"\"},";
         			break;
-    			case "vaSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"vaSum\",\"value\":\""+get_rawData.vaSum+"\",\"curve\":\"\"},";
+    			case "va3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"va3\",\"value\":\""+get_rawData.va3+"\",\"curve\":\"\"},";
         			break;
     			case "totalKWattH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKWattH\",\"value\":\""+get_rawData.totalKWattH+"\",\"curve\":\"\"},";
@@ -241,7 +241,7 @@ var controlSataStr="{\"items\":[";
     		    	 controlSataStr+="{\"item\":\"启/停抽\",\"itemcode\":\"startOrStopWell\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+"},";
     		         break;
     		     case "SetFrequency":
-    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"frequencySetValue\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+"},";
+    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"setFrequency\",\"value\":\""+(get_rawData.setFrequency==undefined?"":get_rawData.setFrequency)+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+"},";
     		    	 break;
     			} 
     		}if(stringEndWith(controlSataStr,",")){

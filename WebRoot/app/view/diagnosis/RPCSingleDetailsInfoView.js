@@ -1380,10 +1380,10 @@ function createDiagnosisColumn(columnInfo) {
             width_ = ",width:" + attr.width;
         }
         myColumns += "{text:'" + attr.header + "',lockable:true,align:'center' "+width_;
-        if (attr.dataIndex.toUpperCase() == 'workingConditionName'.toUpperCase()) {
+        if (attr.dataIndex.toUpperCase() == 'resultName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceColor(value,o,p,e);}";
-        } else if (attr.dataIndex.toUpperCase()=='workingConditionName_Elec'.toUpperCase()||attr.dataIndex.toUpperCase()=='workingConditionName_E'.toUpperCase()) {
-            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecWorkingConditionColor(value,o,p,e);}";
+        } else if (attr.dataIndex.toUpperCase()=='resultName_Elec'.toUpperCase()||attr.dataIndex.toUpperCase()=='resultName_E'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceElecResultColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
         } else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {

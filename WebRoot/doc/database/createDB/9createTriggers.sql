@@ -33,7 +33,7 @@ begin
 end;
 /
 
-create or replace trigger trg_a_pcp_rpm_hist_i_u
+CREATE OR REPLACE TRIGGER trg_a_pcp_rpm_hist_i_u
     before update or insert  on TBL_pcp_rpm_HIST
     for each row
 declare
@@ -51,12 +51,12 @@ begin
              update tbl_pcp_rpm_latest t set
               t.AcqTime=:new.AcqTime,
               t.rpm=:new.rpm,t.torque=:new.torque,
-              t.workingconditioncode=:new.workingconditioncode,
+              t.resultcode=:new.resultcode,
               t.theoreticalproduction=:new.theoreticalproduction,
               t.liquidvolumetricproduction=:new.liquidvolumetricproduction,t.oilvolumetricproduction=:new.oilvolumetricproduction,t.watervolumetricproduction=:new.watervolumetricproduction,
               t.liquidweightproduction=:new.liquidweightproduction,t.oilweightproduction=:new.oilweightproduction,t.waterweightproduction=:new.waterweightproduction,
-              t.motorinputactivepower=:new.motorinputactivepower,t.waterpower=:new.waterpower,
-              t.systemefficiency=:new.systemefficiency,t.powerconsumptionperthm=:new.powerconsumptionperthm,
+              t.averagewatt=:new.averagewatt,t.waterpower=:new.waterpower,
+              t.systemefficiency=:new.systemefficiency,t.energyper100mlift=:new.energyper100mlift,
               t.pumpeff1=:new.pumpeff1,t.pumpeff2=:new.pumpeff2,t.pumpeff=:new.pumpeff,
               t.pumpintakep=:new.pumpintakep,t.pumpintaket=:new.pumpintaket,t.pumpintakegol=:new.pumpintakegol,t.pumpIntakevisl=:new.pumpIntakevisl,t.pumpIntakebo=:new.pumpIntakebo,
               t.pumpoutletp=:new.pumpoutletp,t.pumpoutlett=:new.pumpoutlett,t.pumpoutletgol=:new.pumpoutletgol,t.pumpoutletvisl=:new.pumpoutletvisl,t.pumpoutletbo=:new.pumpoutletbo,
@@ -71,7 +71,7 @@ begin
 end;
 /
 
-create or replace trigger trg_a_rpc_diagram_hist_i_u
+CREATE OR REPLACE TRIGGER trg_a_rpc_diagram_hist_i_u
     before update or insert  on TBL_RPC_DIAGRAM_HIST
     for each row
 declare
@@ -92,7 +92,7 @@ begin
               ia_curve,ib_curve,ic_curve,
               upstrokeimax,downstrokeimax,upstrokewattmax,downstrokewattmax,idegreebalance,wattdegreebalance,deltaradius,
               datasource,
-              workingconditioncode,
+              resultcode,
               fullnesscoefficient,plungerstroke,availableplungerstroke,
               levelcorrectvalue,inverproducingfluidlevel,noliquidfullnesscoefficient,noliquidavailableplungerstroke,
               upperloadline,upperloadlineofexact,lowerloadline,
@@ -103,9 +103,9 @@ begin
               liquidweightproduction,oilweightproduction,waterweightproduction,
               availableplungerstrokeprod_w,pumpclearanceleakprod_w,
               tvleakweightproduction,svleakweightproduction,gasinfluenceprod_w,
-              motorinputactivepower,polishrodpower,waterpower,
+              averagewatt,polishrodpower,waterpower,
               surfacesystemefficiency,welldownsystemefficiency,systemefficiency,
-              powerconsumptionperthm,fsdiagramarea,
+              energyper100mlift,area,
               rodflexlength,tubingflexlength,inertialength,
               pumpeff1,pumpeff2,pumpeff3,pumpeff4,pumpeff,
               pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
@@ -128,7 +128,7 @@ begin
               :new.ia_curve,:new.ib_curve,:new.ic_curve,
               :new.upstrokeimax,:new.downstrokeimax,:new.upstrokewattmax,:new.downstrokewattmax,:new.idegreebalance,:new.wattdegreebalance,:new.deltaradius,
               :new.datasource,
-              :new.workingconditioncode,
+              :new.resultcode,
               :new.fullnesscoefficient,:new.plungerstroke,:new.availableplungerstroke,
               :new.levelcorrectvalue,:new.inverproducingfluidlevel,:new.noliquidfullnesscoefficient,:new.noliquidavailableplungerstroke,
               :new.upperloadline,:new.upperloadlineofexact,:new.lowerloadline,
@@ -139,9 +139,9 @@ begin
               :new.liquidweightproduction,:new.oilweightproduction,:new.waterweightproduction,
               :new.availableplungerstrokeprod_w,:new.pumpclearanceleakprod_w,
               :new.tvleakweightproduction,:new.svleakweightproduction,:new.gasinfluenceprod_w,
-              :new.motorinputactivepower,:new.polishrodpower,:new.waterpower,
+              :new.averagewatt,:new.polishrodpower,:new.waterpower,
               :new.surfacesystemefficiency,:new.welldownsystemefficiency,:new.systemefficiency,
-              :new.powerconsumptionperthm,:new.fsdiagramarea,
+              :new.energyper100mlift,:new.area,
               :new.rodflexlength,:new.tubingflexlength,:new.inertialength,
               :new.pumpeff1,:new.pumpeff2,:new.pumpeff3,:new.pumpeff4,:new.pumpeff,
               :new.pumpintakep,:new.pumpintaket,:new.pumpintakegol,:new.pumpIntakevisl,:new.pumpIntakebo,
@@ -158,7 +158,6 @@ begin
           );
        elsif recordCount>0  then
          select decode(t.AcqTime,null,to_date('1980-01-01','yyyy-mm-dd'),t.AcqTime) into realtime from tbl_rpc_diagram_latest t where t.wellid=:new.wellid;
-           --if realtime<=:new.AcqTime and (:new.datasource=1 or :new.resultstatus=1) then
            if realtime<=:new.AcqTime then
              dbms_output.put_line('更新实时数据');
              update tbl_rpc_diagram_latest t set
@@ -171,7 +170,7 @@ begin
               t.ia_curve=:new.ia_curve,t.ib_curve=:new.ib_curve,t.ic_curve=:new.ic_curve,
               t.upstrokeimax=:new.upstrokeimax,t.downstrokeimax=:new.downstrokeimax,t.upstrokewattmax=:new.upstrokewattmax,t.downstrokewattmax=:new.downstrokewattmax,t.idegreebalance=:new.idegreebalance,t.wattdegreebalance=:new.wattdegreebalance,t.deltaradius=:new.deltaradius,
               t.datasource=:new.datasource,
-              t.workingconditioncode=:new.workingconditioncode,
+              t.resultcode=:new.resultcode,
               t.fullnesscoefficient=:new.fullnesscoefficient,t.plungerstroke=:new.plungerstroke,t.availableplungerstroke=:new.availableplungerstroke,
               t.levelcorrectvalue=:new.levelcorrectvalue,t.inverproducingfluidlevel=:new.inverproducingfluidlevel,
               t.noliquidfullnesscoefficient=:new.noliquidfullnesscoefficient,t.noliquidavailableplungerstroke=:new.noliquidavailableplungerstroke,
@@ -183,9 +182,9 @@ begin
               t.liquidweightproduction=:new.liquidweightproduction,t.oilweightproduction=:new.oilweightproduction,t.waterweightproduction=:new.waterweightproduction,
               t.availableplungerstrokeprod_w=:new.availableplungerstrokeprod_w,t.pumpclearanceleakprod_w=:new.pumpclearanceleakprod_w,
               t.tvleakweightproduction=:new.tvleakweightproduction,t.svleakweightproduction=:new.svleakweightproduction,t.gasinfluenceprod_w=:new.gasinfluenceprod_w,
-              t.motorinputactivepower=:new.motorinputactivepower,t.polishrodpower=:new.polishrodpower,t.waterpower=:new.waterpower,
+              t.averagewatt=:new.averagewatt,t.polishrodpower=:new.polishrodpower,t.waterpower=:new.waterpower,
               t.surfacesystemefficiency=:new.surfacesystemefficiency,t.welldownsystemefficiency=:new.welldownsystemefficiency,t.systemefficiency=:new.systemefficiency,
-              t.powerconsumptionperthm=:new.powerconsumptionperthm,t.fsdiagramarea=:new.fsdiagramarea,
+              t.energyper100mlift=:new.energyper100mlift,t.area=:new.area,
               t.rodflexlength=:new.rodflexlength,t.tubingflexlength=:new.tubingflexlength,t.inertialength=:new.inertialength,
               t.pumpeff1=:new.pumpeff1,t.pumpeff2=:new.pumpeff2,t.pumpeff3=:new.pumpeff3,t.pumpeff4=:new.pumpeff4,t.pumpeff=:new.pumpeff,
               t.pumpintakep=:new.pumpintakep,t.pumpintaket=:new.pumpintaket,t.pumpintakegol=:new.pumpintakegol,t.pumpIntakevisl=:new.pumpIntakevisl,t.pumpIntakebo=:new.pumpIntakebo,
@@ -203,10 +202,8 @@ begin
            where t.wellid=:new.wellid;
          end if;
        end if;
-       --update t_wellinformation acqcycle_diagram
-       --update t_wellinformation t set t.acqcycle_diagram=:new.interval where t.id=:new.wellid;
        --更新井信息表动液面校正值
-       if :new.resultstatus=1 and :new.workingconditioncode<>1232 then
+       if :new.resultstatus=1 and :new.resultcode<>1232 then
           update tbl_wellinformation t set t.levelcorrectvalue=:new.levelcorrectvalue
           where t.id=:new.wellid;
        end if;
@@ -215,7 +212,7 @@ begin
 end;
 /
 
-create or replace trigger trg_a_rpc_discrete_latest_i_u
+CREATE OR REPLACE TRIGGER trg_a_rpc_discrete_latest_i_u
     before update or insert  on TBL_RPC_DISCRETE_LATEST
     for each row
 declare
@@ -225,25 +222,24 @@ begin
        :new.savetime:=sysdate;
        select count(id) into recordCount from tbl_rpc_discrete_hist t where t.wellid=:new.wellid and t.AcqTime=:new.AcqTime;
        if recordCount=0 then
-          --insert into t_discretedata select * from t_discretedata_rt t2 where t2.wellid=:new.wellid and t2.AcqTime=:new.AcqTime;
           insert into tbl_rpc_discrete_hist(
               wellid,AcqTime,
               commstatus,commtime,commtimeefficiency,commrange,
               runstatus,runtime,runtimeefficiency,runrange,
               ia,ib,ic,iavg,va,vb,vc,vavg,
               totalKWattH,totalpKWattH,totalnKWattH,totalKVarH,totalpKVarH,totalnKVarH,totalKVAH,
-              watta,wattb,wattc,wattsum,
-              vara,varb,varc,varsum,
-              vaa,vab,vac,vasum,
+              watta,wattb,wattc,watt3,
+              vara,varb,varc,var3,
+              vaa,vab,vac,va3,
               reversepower,
-              pfa,pfb,pfc,pfsum,
-              acqcycle_diagram,frequencysetvalue,frequencyrunvalue,
+              pfa,pfb,pfc,pf3,
+              acqcycle_diagram,setfrequency,runfrequency,
               tubingpressure,casingpressure,backpressure,wellheadfluidtemperature,
               todayKWattH,todaypKWattH,todaynKWattH,todayKVarH,todaypKVarH,todaynKVarH,todayKVAH,
-              workingconditioncode,
+              resultcode,
               iaalarm,ibalarm,icalarm,
               vaalarm,vbalarm,vcalarm,
-              workingconditionstring,
+              resultstring,
               iauplimit,iadownlimit,iazero,
               ibuplimit,ibdownlimit,ibzero,
               icuplimit,icdownlimit,iczero,
@@ -269,12 +265,12 @@ begin
               :new.totalpKVarH,
               :new.totalnKVarH,
               :new.totalKVAH,
-              :new.watta,:new.wattb,:new.wattc,:new.wattsum,
-              :new.vara,:new.varb,:new.varc,:new.varsum,
-              :new.vaa,:new.vab,:new.vac,:new.vasum,
+              :new.watta,:new.wattb,:new.wattc,:new.watt3,
+              :new.vara,:new.varb,:new.varc,:new.var3,
+              :new.vaa,:new.vab,:new.vac,:new.va3,
               :new.reversepower,
-              :new.pfa,:new.pfb,:new.pfc,:new.pfsum,
-              :new.acqcycle_diagram,:new.frequencysetvalue,:new.frequencyrunvalue,
+              :new.pfa,:new.pfb,:new.pfc,:new.pf3,
+              :new.acqcycle_diagram,:new.setfrequency,:new.runfrequency,
               :new.tubingpressure,:new.casingpressure,:new.backpressure,:new.wellheadfluidtemperature,
               :new.todayKWattH,
               :new.todaypKWattH,
@@ -283,10 +279,10 @@ begin
               :new.todaypKVarH,
               :new.todaynKVarH,
               :new.todayKVAH,
-              :new.workingconditioncode,
+              :new.resultcode,
               :new.iaalarm,:new.ibalarm,:new.icalarm,
               :new.vaalarm,:new.vbalarm,:new.vcalarm,
-              :new.workingconditionstring,
+              :new.resultstring,
               :new.iauplimit,:new.iadownlimit,:new.iazero,
               :new.ibuplimit,:new.ibdownlimit,:new.ibzero,
               :new.icuplimit,:new.icdownlimit,:new.iczero,
@@ -312,20 +308,20 @@ begin
               t.totalKWattH=:new.totalKWattH,t.totalpKWattH=:new.totalpKWattH,t.totalnKWattH=:new.totalnKWattH,
               t.totalKVarH=:new.totalKVarH,t.totalpKVarH=:new.totalpKVarH,t.totalnKVarH=:new.totalnKVarH,
               t.totalKVAH=:new.totalKVAH,
-              t.watta=:new.watta,t.wattb=:new.wattb,t.wattc=:new.wattc,t.wattsum=:new.wattsum,
-              t.vara=:new.vara,t.varb=:new.varb,t.varc=:new.varc,t.varsum=:new.varsum,
-              t.vaa=:new.vaa,t.vab=:new.vab,t.vac=:new.vac,t.vasum=:new.vasum,
+              t.watta=:new.watta,t.wattb=:new.wattb,t.wattc=:new.wattc,t.watt3=:new.watt3,
+              t.vara=:new.vara,t.varb=:new.varb,t.varc=:new.varc,t.var3=:new.var3,
+              t.vaa=:new.vaa,t.vab=:new.vab,t.vac=:new.vac,t.va3=:new.va3,
               t.reversepower=:new.reversepower,
-              t.pfa=:new.pfa,t.pfb=:new.pfb,t.pfc=:new.pfc,t.pfsum=:new.pfsum,
-              t.acqcycle_diagram=:new.acqcycle_diagram,t.frequencysetvalue=:new.frequencysetvalue,t.frequencyrunvalue=:new.frequencyrunvalue,
+              t.pfa=:new.pfa,t.pfb=:new.pfb,t.pfc=:new.pfc,t.pf3=:new.pf3,
+              t.acqcycle_diagram=:new.acqcycle_diagram,t.setfrequency=:new.setfrequency,t.runfrequency=:new.runfrequency,
               t.tubingpressure=:new.tubingpressure,t.casingpressure=:new.casingpressure,t.backpressure=:new.backpressure,t.wellheadfluidtemperature=:new.wellheadfluidtemperature,
               t.todayKWattH=:new.todayKWattH,t.todaypKWattH=:new.todaypKWattH,t.todaynKWattH=:new.todaynKWattH,
               t.todayKVarH=:new.todayKVarH,t.todaypKVarH=:new.todaypKVarH,t.todaynKVarH=:new.todaynKVarH,
               t.todayKVAH=:new.todayKVAH,
-              t.workingconditioncode=:new.workingconditioncode,
+              t.resultcode=:new.resultcode,
               t.iaalarm=:new.iaalarm,t.ibalarm=:new.ibalarm,t.icalarm=:new.icalarm,
               t.vaalarm=:new.vaalarm,t.vbalarm=:new.vbalarm,t.vcalarm=:new.vcalarm,
-              t.workingconditionstring=:new.workingconditionstring,
+              t.resultstring=:new.resultstring,
               t.iauplimit=:new.iauplimit,t.iadownlimit=:new.iadownlimit,t.iazero=:new.iazero,
               t.ibuplimit=:new.ibuplimit,t.ibdownlimit=:new.ibdownlimit,t.ibzero=:new.ibzero,
               t.icuplimit=:new.icuplimit,t.icdownlimit=:new.icdownlimit,t.iczero=:new.iczero,
@@ -361,10 +357,6 @@ begin
               t.totalKVarH=:new.totalKVarH,t.totalpKVarH=:new.totalpKVarH,t.totalnKVarH=:new.totalnKVarH,
               t.totalKVAH=:new.totalKVAH
        where t.wellid=:new.wellid and t.calculatedate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd');
-       --update t_wellinformation acqcycle_discrete
-       --if :new.interval is not null then
-       --   update tbl_wellinformation t set t.acqcycle_discrete=:new.interval where t.id=:new.wellid;
-       --end if;
     end if;
 end;
 /
@@ -375,27 +367,27 @@ CREATE OR REPLACE TRIGGER trg_a_rpc_proddata_latest_i_u
 declare
     waterDensity number(8,2);
     crudeOilDensity number(8,2);
-    waterCut_W number(8,2);
-    waterCut number(8,2);
+    weightwatercut number(8,2);
+    volumewaterCut number(8,2);
 begin
     
     waterDensity:=:new.waterDensity;
     crudeOilDensity:=:new.crudeOilDensity;
     --由重量含水率计算体积含水率;
-    if (:new.waterCut_W is not null and :new.waterCut_W != :old.waterCut_W) or :new.waterCut is null then
-       waterCut_W:=:new.waterCut_W;
-       if crudeOilDensity<0.00001 or waterCut_W<0.00001 then
-          :new.waterCut:=0;
+    if (:new.weightwatercut is not null and :new.weightwatercut != :old.weightwatercut) or :new.volumewaterCut is null then
+       weightwatercut:=:new.weightwatercut;
+       if crudeOilDensity<0.00001 or weightwatercut<0.00001 then
+          :new.volumewaterCut:=0;
           else
-          :new.waterCut:=100/(1+waterDensity/crudeOilDensity*(100-waterCut_W)/waterCut_W);
+          :new.volumewaterCut:=100/(1+waterDensity/crudeOilDensity*(100-weightwatercut)/weightwatercut);
        end if;
     --由体积含水率计算重量含水率;
-    elsif (:new.waterCut is not null and :new.waterCut != :old.waterCut) or :new.waterCut_W is null then 
-       waterCut:=:new.waterCut;
-       if crudeOilDensity<0.00001 or waterCut<0.00001 then
-          :new.waterCut_W:=0;
+    elsif (:new.volumewaterCut is not null and :new.volumewaterCut != :old.volumewaterCut) or :new.weightwatercut is null then 
+       volumewaterCut:=:new.volumewaterCut;
+       if crudeOilDensity<0.00001 or volumewaterCut<0.00001 then
+          :new.weightwatercut:=0;
           else
-          :new.waterCut_W:=100*waterCut*waterDensity/(waterCut*waterDensity+(100-waterCut)*crudeOilDensity);
+          :new.weightwatercut:=100*volumewaterCut*waterDensity/(volumewaterCut*waterDensity+(100-volumewaterCut)*crudeOilDensity);
        end if;
     end if;
 
@@ -403,7 +395,7 @@ begin
     insert into tbl_rpc_productiondata_hist(
         wellid,AcqTime,liftingtype,displacementtype,runtime,
         crudeoildensity,waterdensity,naturalgasrelativedensity,saturationpressure,reservoirdepth,reservoirtemperature,
-        watercut,watercut_w,tubingpressure,casingpressure,backpressure,wellheadfluidtemperature,
+        volumewaterCut,weightwatercut,tubingpressure,casingpressure,backpressure,wellheadfluidtemperature,
         producingfluidlevel,pumpsettingdepth,productiongasoilratio,
         tubingstringinsidediameter,casingstringinsidediameter,rodstring,
         pumpgrade,pumpborediameter,plungerlength,pumptype,barreltype,barrellength,barrelseries,rotordiameter,qpr,
@@ -411,7 +403,7 @@ begin
       )values(
         :new.wellid,:new.AcqTime,:new.liftingtype,:new.displacementtype,:new.runtime,
         :new.crudeoildensity,:new.waterdensity,:new.naturalgasrelativedensity,:new.saturationpressure,:new.reservoirdepth,:new.reservoirtemperature,
-        :new.watercut,:new.watercut_w,:new.tubingpressure,:new.casingpressure,:new.backpressure,:new.wellheadfluidtemperature,
+        :new.volumewaterCut,:new.weightwatercut,:new.tubingpressure,:new.casingpressure,:new.backpressure,:new.wellheadfluidtemperature,
         :new.producingfluidlevel,:new.pumpsettingdepth,:new.productiongasoilratio,
         :new.tubingstringinsidediameter,:new.casingstringinsidediameter,:new.rodstring,
         :new.pumpgrade,:new.pumpborediameter,:new.plungerlength,:new.pumptype,:new.barreltype,:new.barrellength,:new.barrelseries,:new.rotordiameter,:new.qpr,
@@ -541,7 +533,7 @@ BEGIN
 END;
 /
 
-create or replace trigger trg_b_pcp_discrete_latest_i   before  insert or update on tbl_pcp_discrete_latest
+CREATE OR REPLACE TRIGGER trg_b_pcp_discrete_latest_i   before  insert or update on tbl_pcp_discrete_latest
 FOR EACH ROW
 
 declare
@@ -560,18 +552,18 @@ BEGIN
               runstatus,runtime,runtimeefficiency,runrange,
               ia,ib,ic,iavg,va,vb,vc,vavg,
               totalKWattH,totalpKWattH,totalnKWattH,totalKVarH,totalpKVarH,totalnKVarH,totalKVAH,
-              watta,wattb,wattc,wattsum,
-              vara,varb,varc,varsum,
-              vaa,vab,vac,vasum,
+              watta,wattb,wattc,watt3,
+              vara,varb,varc,var3,
+              vaa,vab,vac,va3,
               reversepower,
-              pfa,pfb,pfc,pfsum,
-              frequencysetvalue,frequencyrunvalue,
+              pfa,pfb,pfc,pf3,
+              setfrequency,runfrequency,
               tubingpressure,casingpressure,backpressure,wellheadfluidtemperature,
               todayKWattH,todaypKWattH,todaynKWattH,todayKVarH,todaypKVarH,todaynKVarH,todayKVAH,
-              workingconditioncode,
+              resultcode,
               iaalarm,ibalarm,icalarm,
               vaalarm,vbalarm,vcalarm,
-              workingconditionstring,
+              resultstring,
               iauplimit,iadownlimit,iazero,
               ibuplimit,ibdownlimit,ibzero,
               icuplimit,icdownlimit,iczero,
@@ -585,18 +577,18 @@ BEGIN
               :new.runstatus,:new.runtime,:new.runtimeefficiency,:new.runrange,
               :new.ia,:new.ib,:new.ic,:new.iavg,:new.va,:new.vb,:new.vc,:new.vavg,
               :new.totalKWattH,:new.totalpKWattH,:new.totalnKWattH,:new.totalKVarH,:new.totalpKVarH,:new.totalnKVarH,:new.totalKVAH,
-              :new.watta,:new.wattb,:new.wattc,:new.wattsum,
-              :new.vara,:new.varb,:new.varc,:new.varsum,
-              :new.vaa,:new.vab,:new.vac,:new.vasum,
+              :new.watta,:new.wattb,:new.wattc,:new.watt3,
+              :new.vara,:new.varb,:new.varc,:new.var3,
+              :new.vaa,:new.vab,:new.vac,:new.va3,
               :new.reversepower,
-              :new.pfa,:new.pfb,:new.pfc,:new.pfsum,
-              :new.frequencysetvalue,:new.frequencyrunvalue,
+              :new.pfa,:new.pfb,:new.pfc,:new.pf3,
+              :new.setfrequency,:new.runfrequency,
               :new.tubingpressure,:new.casingpressure,:new.backpressure,:new.wellheadfluidtemperature,
               :new.todayKWattH,:new.todaypKWattH,:new.todaynKWattH,:new.todayKVarH,:new.todaypKVarH,:new.todaynKVarH,:new.todayKVAH,
-              :new.workingconditioncode,
+              :new.resultcode,
               :new.iaalarm,:new.ibalarm,:new.icalarm,
               :new.vaalarm,:new.vbalarm,:new.vcalarm,
-              :new.workingconditionstring,
+              :new.resultstring,
               :new.iauplimit,:new.iadownlimit,:new.iazero,
               :new.ibuplimit,:new.ibdownlimit,:new.ibzero,
               :new.icuplimit,:new.icdownlimit,:new.iczero,
@@ -616,20 +608,20 @@ BEGIN
               t.totalKWattH=:new.totalKWattH,t.totalpKWattH=:new.totalpKWattH,t.totalnKWattH=:new.totalnKWattH,
               t.totalKVarH=:new.totalKVarH,t.totalpKVarH=:new.totalpKVarH,t.totalnKVarH=:new.totalnKVarH,
               t.totalKVAH=:new.totalKVAH,
-              t.watta=:new.watta,t.wattb=:new.wattb,t.wattc=:new.wattc,t.wattsum=:new.wattsum,
-              t.vara=:new.vara,t.varb=:new.varb,t.varc=:new.varc,t.varsum=:new.varsum,
-              t.vaa=:new.vaa,t.vab=:new.vab,t.vac=:new.vac,t.vasum=:new.vasum,
+              t.watta=:new.watta,t.wattb=:new.wattb,t.wattc=:new.wattc,t.watt3=:new.watt3,
+              t.vara=:new.vara,t.varb=:new.varb,t.varc=:new.varc,t.var3=:new.var3,
+              t.vaa=:new.vaa,t.vab=:new.vab,t.vac=:new.vac,t.va3=:new.va3,
               t.reversepower=:new.reversepower,
-              t.pfa=:new.pfa,t.pfb=:new.pfb,t.pfc=:new.pfc,t.pfsum=:new.pfsum,
-              t.frequencysetvalue=:new.frequencysetvalue,t.frequencyrunvalue=:new.frequencyrunvalue,
+              t.pfa=:new.pfa,t.pfb=:new.pfb,t.pfc=:new.pfc,t.pf3=:new.pf3,
+              t.setfrequency=:new.setfrequency,t.runfrequency=:new.runfrequency,
               t.tubingpressure=:new.tubingpressure,t.casingpressure=:new.casingpressure,t.backpressure=:new.backpressure,t.wellheadfluidtemperature=:new.wellheadfluidtemperature,
               t.todayKWattH=:new.todayKWattH,t.todaypKWattH=:new.todaypKWattH,t.todaynKWattH=:new.todaynKWattH,
               t.todayKVarH=:new.todayKVarH,t.todaypKVarH=:new.todaypKVarH,t.todaynKVarH=:new.todaynKVarH,
               t.todayKVAH=:new.todayKVAH,
-              t.workingconditioncode=:new.workingconditioncode,
+              t.resultcode=:new.resultcode,
               t.iaalarm=:new.iaalarm,t.ibalarm=:new.ibalarm,t.icalarm=:new.icalarm,
               t.vaalarm=:new.vaalarm,t.vbalarm=:new.vbalarm,t.vcalarm=:new.vcalarm,
-              t.workingconditionstring=:new.workingconditionstring,
+              t.resultstring=:new.resultstring,
               t.iauplimit=:new.iauplimit,t.iadownlimit=:new.iadownlimit,t.iazero=:new.iazero,
               t.ibuplimit=:new.ibuplimit,t.ibdownlimit=:new.ibdownlimit,t.ibzero=:new.ibzero,
               t.icuplimit=:new.icuplimit,t.icdownlimit=:new.icdownlimit,t.iczero=:new.iczero,
@@ -666,8 +658,8 @@ FOR EACH ROW
 declare
     waterDensity number(8,2);
     crudeOilDensity number(8,2);
-    waterCut_W number(8,2);
-    waterCut number(8,2);
+    weightwatercut number(8,2);
+    volumewatercut number(8,2);
 BEGIN
   if inserting then
       SELECT seq_pcp_productiondata_latest.nextval INTO :new.id FROM dual;
@@ -676,27 +668,27 @@ BEGIN
     waterDensity:=:new.waterDensity;
     crudeOilDensity:=:new.crudeOilDensity;
     --由重量含水率计算体积含水率;
-    if (:new.waterCut_W is not null and :new.waterCut_W != :old.waterCut_W) or :new.waterCut is null then
-       waterCut_W:=:new.waterCut_W;
-       if crudeOilDensity<0.00001 or waterCut_W<0.00001 then
-          :new.waterCut:=0;
+    if (:new.weightwatercut is not null and :new.weightwatercut != :old.weightwatercut) or :new.volumewatercut is null then
+       weightwatercut:=:new.weightwatercut;
+       if crudeOilDensity<0.00001 or weightwatercut<0.00001 then
+          :new.volumewatercut:=0;
           else
-          :new.waterCut:=100/(1+waterDensity/crudeOilDensity*(100-waterCut_W)/waterCut_W);
+          :new.volumewatercut:=100/(1+waterDensity/crudeOilDensity*(100-weightwatercut)/weightwatercut);
        end if;
     --由体积含水率计算重量含水率;
-    elsif (:new.waterCut is not null and :new.waterCut != :old.waterCut) or :new.waterCut_W is null then 
-       waterCut:=:new.waterCut;
-       if crudeOilDensity<0.00001 or waterCut<0.00001 then
-          :new.waterCut_W:=0;
+    elsif (:new.volumewatercut is not null and :new.volumewatercut != :old.volumewatercut) or :new.weightwatercut is null then 
+       volumewatercut:=:new.volumewatercut;
+       if crudeOilDensity<0.00001 or volumewatercut<0.00001 then
+          :new.weightwatercut:=0;
           else
-          :new.waterCut_W:=100*waterCut*waterDensity/(waterCut*waterDensity+(100-waterCut)*crudeOilDensity);
+          :new.weightwatercut:=100*volumewatercut*waterDensity/(volumewatercut*waterDensity+(100-volumewatercut)*crudeOilDensity);
        end if;
     end if;
     --同时向生产数据历史表中插入数据
     insert into tbl_pcp_productiondata_hist(
         wellid,AcqTime,liftingtype,displacementtype,runtime,
         crudeoildensity,waterdensity,naturalgasrelativedensity,saturationpressure,reservoirdepth,reservoirtemperature,
-        watercut,watercut_w,tubingpressure,casingpressure,backpressure,wellheadfluidtemperature,
+        volumewatercut,weightwatercut,tubingpressure,casingpressure,backpressure,wellheadfluidtemperature,
         producingfluidlevel,pumpsettingdepth,productiongasoilratio,
         tubingstringinsidediameter,casingstringinsidediameter,rodstring,
         pumpgrade,pumpborediameter,plungerlength,pumptype,barreltype,barrellength,barrelseries,rotordiameter,qpr,
@@ -704,7 +696,7 @@ BEGIN
       )values(
         :new.wellid,:new.AcqTime,:new.liftingtype,:new.displacementtype,:new.runtime,
         :new.crudeoildensity,:new.waterdensity,:new.naturalgasrelativedensity,:new.saturationpressure,:new.reservoirdepth,:new.reservoirtemperature,
-        :new.watercut,:new.watercut_w,:new.tubingpressure,:new.casingpressure,:new.backpressure,:new.wellheadfluidtemperature,
+        :new.volumewatercut,:new.weightwatercut,:new.tubingpressure,:new.casingpressure,:new.backpressure,:new.wellheadfluidtemperature,
         :new.producingfluidlevel,:new.pumpsettingdepth,:new.productiongasoilratio,
         :new.tubingstringinsidediameter,:new.casingstringinsidediameter,:new.rodstring,
         :new.pumpgrade,:new.pumpborediameter,:new.plungerlength,:new.pumptype,:new.barreltype,:new.barrellength,:new.barrelseries,:new.rotordiameter,:new.qpr,

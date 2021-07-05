@@ -15,7 +15,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 			border : false,
 			initComponent : function() {
 				var me = this;
-				var workingConditionStore = new Ext.data.SimpleStore({
+				var resultStore = new Ext.data.SimpleStore({
 									fields : [ {
 										name : "boxkey",
 										type : "string"
@@ -37,7 +37,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 									listeners : {
 										beforeload : function(store, options) {
 											var new_params = {
-												type : 'workingCondition'
+												type : 'result'
 											};
 											Ext.apply(store.proxy.extraParams,new_params);
 										}
@@ -45,13 +45,13 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 								});
 
 						// Simple ComboBox using the data store
-						var workingConditionComb = Ext.create(
+						var resultComb = Ext.create(
 								'Ext.form.field.ComboBox', {
 									fieldLabel :  '报警项',
-									id : 'alarmSetWorkingConditionComb_Id',
-									name : "workingconditioncode",
+									id : 'alarmSetResultCodeComb_Id',
+									name : "resultcode",
 									anchor : '95%',
-									store: workingConditionStore,
+									store: resultStore,
 									queryMode : 'local',
 									emptyText :  cosog.string.all,
 									blankText :  cosog.string.all,
@@ -186,7 +186,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 										id : 'alarmSetAlarmSign_Id',
 										value:'0',
 										name : "alarmsign"
-									},alarmTypeComb,workingConditionComb,alarmLevelComb ,{
+									},alarmTypeComb,resultComb,alarmLevelComb ,{
 										xtype : "combobox",
 										fieldLabel : cosog.string.alarmSign,
 										id : 'alarmSetAlarmSignComb_Id',

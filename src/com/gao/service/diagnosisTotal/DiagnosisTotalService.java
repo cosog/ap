@@ -52,7 +52,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		DataDictionary ddic = null;
 		String ddicName="";
 		String tableName="viw_rpc_total_day";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
@@ -60,7 +60,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="dailyFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if("2".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyProdDist";
@@ -147,14 +147,14 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="dailyETValue";
 			}
-			typeColumnName="workingConditionName_E";
+			typeColumnName="resultName_E";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
+		String sql=ddic.getSql()+",resultString,resultAlarmLevel,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		if("200".equals(wellType)){
-			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql+= " ,resultString_E,resultAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 			tableName="viw_rpc_total_day";
 		}else{
 			tableName="viw_pcp_total_day";
@@ -185,7 +185,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		DataDictionary ddic = null;
 		String ddicName="";
 		String tableName="viw_rpc_total_day";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
@@ -193,7 +193,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="dailyFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if("2".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpDailyProdDist";
@@ -280,15 +280,15 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="dailyETValue";
 			}
-			typeColumnName="workingConditionName_E";
+			typeColumnName="resultName_E";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",workingConditionString,"
-				+ " workingConditionAlarmLevel,"
+		String sql=ddic.getSql()+",resultString,"
+				+ " resultAlarmLevel,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		if("200".equals(wellType)){
-			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql+= " ,resultString_E,resultAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 			tableName="viw_rpc_total_day";
 		}else{
 			tableName="viw_pcp_total_day";
@@ -315,9 +315,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="";
 		String tableName="viw_rpc_total_day";
-		String statType="workingConditionName";
+		String statType="resultName";
 		if("1".equalsIgnoreCase(type)){
-			statType="workingConditionName";
+			statType="resultName";
 		}else if("2".equalsIgnoreCase(type)){
 			statType="liquidWeightProductionlevel";
 			if(configFile.getOthers().getProductionUnit()!=0){
@@ -344,7 +344,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}else if("12".equalsIgnoreCase(type)){
 			statType="commtimeefficiencyLevel";
 		}else if("13".equalsIgnoreCase(type)){
-			statType="workingConditionName_E";
+			statType="resultName_E";
 		}
 		if("200".equals(wellType)){
 			tableName="viw_rpc_total_day";
@@ -394,7 +394,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
 		}
 		String sql="select t.id,t.wellname,to_char(t.acqTime,'hh24:mi:ss'),"
-				+ " t.workingConditionName,t.workingConditionAlarmLevel,"+prodCol+","
+				+ " t.resultName,t.resultAlarmLevel,"+prodCol+","
 				+ " t.stroke,t.spm,t.fmax,t.fmin,t.upperloadline,t.lowerloadline,"
 				+ " t.iDegreeBalanceLevel,t.iDegreeBalance,t.iDegreeBalanceAlarmLevel,"
 				+ " t.wattDegreeBalanceLevel,t.wattDegreeBalance,t.wattDegreeBalanceAlarmLevel,"
@@ -437,8 +437,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
 				dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
 				dynSbf.append("\"calculateDate\":\"" + obj[2] + "\",");
-				dynSbf.append("\"workingConditionName\":\""+obj[3]+"\",");
-				dynSbf.append("\"workingConditionAlarmLevel\":\""+obj[4]+"\",");
+				dynSbf.append("\"resultName\":\""+obj[3]+"\",");
+				dynSbf.append("\"resultAlarmLevel\":\""+obj[4]+"\",");
 				dynSbf.append("\""+(prodCol.split(",")[0])+"\":\""+obj[5]+"\",");
 				dynSbf.append("\""+(prodCol.split(",")[1])+"\":\""+obj[6]+"\",");
 				dynSbf.append("\"stroke\":\""+obj[7]+"\",");
@@ -495,9 +495,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 	public String getDiagnosisTotalDynamicCurveData(String wellName,String selectedWellName,String calculateDate, String startDate,String endDate) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.waterCut_W,";
+		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.waterCut,";;
+			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";;
 		}
 		String sql="select well.wellname,to_char(t.calculateDate,'yyyy-mm-dd') as calculateDate,"
 				+ prodCol
@@ -520,7 +520,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				dynSbf.append("\"liquidProduction\":"+obj[2]+",");
 				dynSbf.append("\"oilProduction\":"+obj[3]+",");
 				dynSbf.append("\"waterProduction\":"+obj[4]+",");
-				dynSbf.append("\"waterCut\":"+obj[5]+",");
+				dynSbf.append("\"volumeWaterCut\":"+obj[5]+",");
 				dynSbf.append("\"stroke\":"+obj[6]+",");
 				dynSbf.append("\"spm\":"+obj[7]+",");
 				dynSbf.append("\"wellheadFluidTemperature\":"+obj[8]+",");
@@ -544,7 +544,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String prodCol=" t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
 				+ " t.oilWeightProduction,t.oilWeightProductionMax,t.oilWeightProductionMin,"
 				+ " t.waterWeightProduction,t.waterWeightProductionMax,t.waterWeightProductionMin,"
-				+ " t.waterCut_W,t.waterCutMax_W,t.waterCutMin_W,"
+				+ " t.weightWaterCut,t.weightWaterCutMax,t.weightWaterCutMin,"
 				+ " t.availablestrokeprod_w,t.availablestrokeprod_w_max,t.availablestrokeprod_w_min,"
 				+ " t.pumpclearanceleakprod_w,t.pumpclearanceleakprod_w_max,t.pumpclearanceleakprod_w_min,"
 				+ " t.tvleakweightproduction,t.tvleakweightproductionmax,t.tvleakweightproductionmin,"
@@ -554,7 +554,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			prodCol=" t.liquidVolumetricProduction,t.liquidVolumetricProductionMax,t.liquidVolumetricProductionMin,"
 					+ " t.oilVolumetricProduction,t.oilVolumetricProductionMax,t.oilVolumetricProductionMin,"
 					+ " t.waterVolumetricProduction,t.waterVolumetricProductionMax,t.waterVolumetricProductionMin,"
-					+ " t.waterCut,t.waterCutMax,t.waterCutMin,"
+					+ " t.volumeWaterCut,t.volumeWaterCutMax,t.volumeWaterCutMin,"
 					+ " t.availablestrokeprod_v,t.availablestrokeprod_v_max,t.availablestrokeprod_v_min,"
 					+ " t.pumpclearanceleakprod_v,t.pumpclearanceleakprod_v_max,t.pumpclearanceleakprod_v_min,"
 					+ " t.tvleakvolumetricproduction,t.tvleakvolumetricproductionmax,t.tvleakvolumetricproductionmin,"
@@ -563,11 +563,11 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		}
 		String sql="select t.runTime,runTimeEfficiency,"
 				+ " t.iDegreeBalance,t.iDegreeBalanceMax,t.iDegreeBalanceMin,"
-				+ " t.UpStrokeIMax_Avg,t.UpStrokeIMax_Max,t.UpStrokeIMax_Min,"
-				+ " t.DownStrokeIMax_Avg,t.DownStrokeIMax_Max,t.DownStrokeIMax_Min,"
+				+ " t.upStrokeIMax,t.UpStrokeIMax_Max,t.UpStrokeIMax_Min,"
+				+ " t.downStrokeIMax,t.DownStrokeIMax_Max,t.DownStrokeIMax_Min,"
 				+ " t.wattDegreeBalance,t.wattDegreeBalanceMax,t.wattDegreeBalanceMin,"
-				+ " t.UpStrokeWattMax_Avg,t.UpStrokeWattMax_Max,t.UpStrokeWattMax_Min,"
-				+ " t.DownStrokeWattMax_Avg,t.DownStrokeWattMax_Max,t.DownStrokeWattMax_Min,"
+				+ " t.upStrokeWattMax,t.UpStrokeWattMax_Max,t.UpStrokeWattMax_Min,"
+				+ " t.downStrokeWattMax,t.DownStrokeWattMax_Max,t.DownStrokeWattMax_Min,"
 				+ " t.deltaRadius*100,t.deltaRadiusMax*100,t.deltaRadiusMin*100, "
 				+ " theoreticalproduction,theoreticalproductionmax,theoreticalproductionmin,"
 				+ prodCol
@@ -595,7 +595,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.systemEfficiency*100,t.systemEfficiencyMax*100,t.systemEfficiencyMin*100,"
 				+ " t.surfaceSystemEfficiency*100,t.surfaceSystemEfficiencyMax*100,t.surfaceSystemEfficiencyMin*100,"
 				+ " t.welldownSystemEfficiency*100,t.welldownSystemEfficiencyMax*100,t.welldownSystemEfficiencyMin*100,"
-				+ " powerConsumptionPerTHM,powerConsumptionPerTHMmax,powerConsumptionPerTHMmin,"
+				+ " energyPer100mLift,energyPer100mLiftmax,energyPer100mLiftmin,"
 				+ " AvgWatt,AvgWattmax,AvgWattmin,"
 				+ " PolishRodPower,PolishRodPowermax,PolishRodPowermin,"
 				+ " WaterPower,WaterPowermax,WaterPowermin,"
@@ -619,14 +619,14 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.productionGasOilRatio,t.productionGasOilRatioMax,t.productionGasOilRatioMin,"
 				+ " t.Ia,t.IaMax,t.IaMin,t.Ib,t.IbMax,t.IbMin,t.Ic,t.IcMax,t.IcMin,"
 				+ " t.Va,t.VaMax,t.VaMin,t.Vb,t.VbMax,t.VbMin,t.Vc,t.VcMax,t.VcMin,"
-				+ " t.wattSum,t.wattSumMax,t.wattSumMin,"
-				+ " t.varSum,t.varSumMax,t.varSumMin,"
-				+ " t.vaSum,t.vaSumMax,t.vaSumMin,"
-				+ " t.PFSum,t.PFSumMax,t.PFSumMin,"
+				+ " t.watt3,t.watt3Max,t.watt3Min,"
+				+ " t.var3,t.var3Max,t.var3Min,"
+				+ " t.va3,t.va3Max,t.va3Min,"
+				+ " t.pf3,t.pf3Max,t.pf3Min,"
 				+ " t.todayKWattH,t.todayKVarH,t.todayKVAH,"//加2
 				+ " t.signal,t.signalmax,t.signalmin,"//加3
 				+ " t.frequency,t.frequencymax,t.frequencymin,"//加3
-				+ " t.runrange,t.workingconditionstring,"
+				+ " t.runrange,t.resultstring,"
 				+ " t.levelCorrectValue,t.levelCorrectValueMax,t.levelCorrectValueMin,"
 				+ " t.noLiquidAvailableStroke,t.noLiquidAvailableStrokeMax,t.noLiquidAvailableStrokeMin,"
 				+ " t.noLiquidFullnessCoefficient,t.noLiquidFullnessCoefficientMax,t.noLiquidFullnessCoefficientMin"
@@ -646,19 +646,19 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"iDegreeBalance\":\""+obj[2]+"\",");
 			result_json.append("\"iDegreeBalanceMax\":\""+obj[3]+"\",");
 			result_json.append("\"iDegreeBalanceMin\":\""+obj[4]+"\",");
-			result_json.append("\"upStrokeIMax_Avg\":\""+obj[5]+"\",");
+			result_json.append("\"upStrokeIMax\":\""+obj[5]+"\",");
 			result_json.append("\"upStrokeIMax_Max\":\""+obj[6]+"\",");
 			result_json.append("\"upStrokeIMax_Min\":\""+obj[7]+"\",");
-			result_json.append("\"downStrokeIMax_Avg\":\""+obj[8]+"\",");
+			result_json.append("\"downStrokeIMax\":\""+obj[8]+"\",");
 			result_json.append("\"downStrokeIMax_Max\":\""+obj[9]+"\",");
 			result_json.append("\"downStrokeIMax_Min\":\""+obj[10]+"\",");
 			result_json.append("\"wattDegreeBalance\":\""+obj[11]+"\",");
 			result_json.append("\"wattDegreeBalanceMax\":\""+obj[12]+"\",");
 			result_json.append("\"wattDegreeBalanceMin\":\""+obj[13]+"\",");
-			result_json.append("\"upStrokeWattMax_Avg\":\""+obj[14]+"\",");
+			result_json.append("\"upStrokeWattMax\":\""+obj[14]+"\",");
 			result_json.append("\"upStrokeWattMax_Max\":\""+obj[15]+"\",");
 			result_json.append("\"upStrokeWattMax_Min\":\""+obj[16]+"\",");
-			result_json.append("\"downStrokeWattMax_Avg\":\""+obj[17]+"\",");
+			result_json.append("\"downStrokeWattMax\":\""+obj[17]+"\",");
 			result_json.append("\"downStrokeWattMax_Max\":\""+obj[18]+"\",");
 			result_json.append("\"downStrokeWattMax_Min\":\""+obj[19]+"\",");
 			result_json.append("\"deltaRadius\":\""+obj[20]+"\",");
@@ -769,9 +769,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"welldownSystemEfficiency\":\""+obj[125]+"\",");
 			result_json.append("\"welldownSystemEfficiencyMax\":\""+obj[126]+"\",");
 			result_json.append("\"welldownSystemEfficiencyMin\":\""+obj[127]+"\",");
-			result_json.append("\"powerConsumptionPerTHM\":\""+obj[128]+"\",");
-			result_json.append("\"powerConsumptionPerTHMMax\":\""+obj[129]+"\",");
-			result_json.append("\"powerConsumptionPerTHMMin\":\""+obj[130]+"\",");
+			result_json.append("\"energyPer100mLift\":\""+obj[128]+"\",");
+			result_json.append("\"energyPer100mLiftMax\":\""+obj[129]+"\",");
+			result_json.append("\"energyPer100mLiftMin\":\""+obj[130]+"\",");
 			result_json.append("\"avgWatt\":\""+obj[131]+"\",");
 			result_json.append("\"avgWattMax\":\""+obj[132]+"\",");
 			result_json.append("\"avgWattMin\":\""+obj[133]+"\",");
@@ -853,18 +853,18 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"Vc\":\""+obj[209]+"\",");
 			result_json.append("\"VcMax\":\""+obj[210]+"\",");
 			result_json.append("\"VcMin\":\""+obj[211]+"\",");
-			result_json.append("\"wattSum\":\""+obj[212]+"\",");
-			result_json.append("\"wattSumMax\":\""+obj[213]+"\",");
-			result_json.append("\"wattSumMin\":\""+obj[214]+"\",");
-			result_json.append("\"varSum\":\""+obj[215]+"\",");
-			result_json.append("\"varSumMax\":\""+obj[216]+"\",");
-			result_json.append("\"varSumMin\":\""+obj[217]+"\",");
-			result_json.append("\"vaSum\":\""+obj[218]+"\",");
-			result_json.append("\"vaSumMax\":\""+obj[219]+"\",");
-			result_json.append("\"vaSumMin\":\""+obj[220]+"\",");
-			result_json.append("\"PFSum\":\""+obj[221]+"\",");
-			result_json.append("\"PFSumMax\":\""+obj[222]+"\",");
-			result_json.append("\"PFSumMin\":\""+obj[223]+"\",");
+			result_json.append("\"watt3\":\""+obj[212]+"\",");
+			result_json.append("\"watt3Max\":\""+obj[213]+"\",");
+			result_json.append("\"watt3Min\":\""+obj[214]+"\",");
+			result_json.append("\"var3\":\""+obj[215]+"\",");
+			result_json.append("\"var3Max\":\""+obj[216]+"\",");
+			result_json.append("\"var3Min\":\""+obj[217]+"\",");
+			result_json.append("\"va3\":\""+obj[218]+"\",");
+			result_json.append("\"va3Max\":\""+obj[219]+"\",");
+			result_json.append("\"va3Min\":\""+obj[220]+"\",");
+			result_json.append("\"pf3\":\""+obj[221]+"\",");
+			result_json.append("\"pf3Max\":\""+obj[222]+"\",");
+			result_json.append("\"pf3Min\":\""+obj[223]+"\",");
 			result_json.append("\"todayKWattH\":\""+obj[224]+"\",");
 			result_json.append("\"todayKVarH\":\""+obj[225]+"\",");
 			result_json.append("\"todayKVAH\":\""+obj[226]+"\",");
@@ -875,7 +875,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"frequencyMax\":\""+obj[231]+"\",");
 			result_json.append("\"frequencyMin\":\""+obj[232]+"\",");
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[233])+"\",");
-			result_json.append("\"workingConditionString\":\""+(StringManagerUtils.CLOBObjectToString(obj[234])+"").replaceAll("<br/>", ";")+"\",");
+			result_json.append("\"resultString\":\""+(StringManagerUtils.CLOBObjectToString(obj[234])+"").replaceAll("<br/>", ";")+"\",");
 			result_json.append("\"levelCorrectValue\":\""+obj[235]+"\",");
 			result_json.append("\"levelCorrectValueMax\":\""+obj[236]+"\",");
 			result_json.append("\"levelCorrectValueMin\":\""+obj[237]+"\",");
@@ -896,7 +896,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		String prodCol=" t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
 				+ " t.oilWeightProduction,t.oilWeightProductionMax,t.oilWeightProductionMin,"
 				+ " t.waterWeightProduction,t.waterWeightProductionMax,t.waterWeightProductionMin,"
-				+ " t.waterCut_W,t.waterCutMax_W,t.waterCutMin_W,";
+				+ " t.weightWaterCut,t.weightWaterCutMax,t.weightWaterCutMin,";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" t.liquidVolumetricProduction,t.liquidVolumetricProductionMax,t.liquidVolumetricProductionMin,"
 					+ " t.oilVolumetricProduction,t.oilVolumetricProductionMax,t.oilVolumetricProductionMin,"
@@ -911,7 +911,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.pumpEff1*100,t.pumpEff1Max*100,t.pumpEff1Min*100,"
 				+ " t.pumpEff2*100,t.pumpEff2Max*100,t.pumpEff2Min*100,"
 				+ " t.systemEfficiency*100,t.systemEfficiencyMax*100,t.systemEfficiencyMin*100,"
-				+ " t.powerConsumptionPerTHM,t.powerConsumptionPerTHMMax,t.powerConsumptionPerTHMMin,"
+				+ " t.energyPer100mLift,t.energyPer100mLiftMax,t.energyPer100mLiftMin,"
 				+ " t.AvgWatt,t.AvgWattMax,t.AvgWattMin,"
 				+ " t.WaterPower,t.WaterPowerMax,t.WaterPowerMin,"
 				+ " t.pumpSettingDepth,t.pumpSettingDepthMax,t.pumpSettingDepthMin,"
@@ -925,11 +925,11 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.Ia,t.IaMax,t.IaMin,t.Ib,t.IbMax,t.IbMin,t.Ic,t.IcMax,t.IcMin,"
 				+ " t.Va,t.VaMax,t.VaMin,t.Vb,t.VbMax,t.VbMin,t.Vc,t.VcMax,t.VcMin,"
 				+ " t.todayKWattH,t.todayKVarH,t.todayKVAH,"
-				+ " t.wattSum,t.wattSumMax,t.wattSumMin,"
-				+ " t.varSum,t.varSumMax,t.varSumMin,"
-				+ " t.vaSum,t.vaSumMax,t.vaSumMin,"
-				+ " t.PFSum,t.PFSumMax,t.PFSumMin,"
-				+ " t.runrange,t.workingconditionstring"
+				+ " t.watt3,t.watt3Max,t.watt3Min,"
+				+ " t.var3,t.var3Max,t.var3Min,"
+				+ " t.va3,t.va3Max,t.va3Min,"
+				+ " t.pf3,t.pf3Max,t.pf3Min,"
+				+ " t.runrange,t.resultstring"
 				+ " from tbl_pcp_total_day t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpDailyAnalysis");
@@ -978,9 +978,9 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"systemEfficiency\":\""+obj[29]+"\",");
 			result_json.append("\"systemEfficiencyMax\":\""+obj[30]+"\",");
 			result_json.append("\"systemEfficiencyMin\":\""+obj[31]+"\",");
-			result_json.append("\"powerConsumptionPerTHM\":\""+obj[32]+"\",");
-			result_json.append("\"powerConsumptionPerTHMMax\":\""+obj[33]+"\",");
-			result_json.append("\"powerConsumptionPerTHMMin\":\""+obj[34]+"\",");
+			result_json.append("\"energyPer100mLift\":\""+obj[32]+"\",");
+			result_json.append("\"energyPer100mLiftMax\":\""+obj[33]+"\",");
+			result_json.append("\"energyPer100mLiftMin\":\""+obj[34]+"\",");
 			result_json.append("\"avgWatt\":\""+obj[35]+"\",");
 			result_json.append("\"avgWattMax\":\""+obj[36]+"\",");
 			result_json.append("\"avgWattMin\":\""+obj[37]+"\",");
@@ -1036,21 +1036,21 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 			result_json.append("\"todayKWattH\":\""+obj[83]+"\",");
 			result_json.append("\"todayKVarH\":\""+obj[84]+"\",");
 			result_json.append("\"todayKVAH\":\""+obj[85]+"\",");
-			result_json.append("\"wattSum\":\""+obj[86]+"\",");
-			result_json.append("\"wattSumMax\":\""+obj[87]+"\",");
-			result_json.append("\"wattSumMin\":\""+obj[88]+"\",");
-			result_json.append("\"varSum\":\""+obj[89]+"\",");
-			result_json.append("\"varSumMax\":\""+obj[90]+"\",");
-			result_json.append("\"varSumMin\":\""+obj[91]+"\",");
-			result_json.append("\"vaSum\":\""+obj[92]+"\",");
-			result_json.append("\"vaSumMax\":\""+obj[93]+"\",");
-			result_json.append("\"vaSumMin\":\""+obj[94]+"\",");
-			result_json.append("\"PFSum\":\""+obj[95]+"\",");
-			result_json.append("\"PFSumMax\":\""+obj[96]+"\",");
-			result_json.append("\"PFSumMin\":\""+obj[97]+"\",");
+			result_json.append("\"watt3\":\""+obj[86]+"\",");
+			result_json.append("\"watt3Max\":\""+obj[87]+"\",");
+			result_json.append("\"watt3Min\":\""+obj[88]+"\",");
+			result_json.append("\"var3\":\""+obj[89]+"\",");
+			result_json.append("\"var3Max\":\""+obj[90]+"\",");
+			result_json.append("\"var3Min\":\""+obj[91]+"\",");
+			result_json.append("\"va3\":\""+obj[92]+"\",");
+			result_json.append("\"va3Max\":\""+obj[93]+"\",");
+			result_json.append("\"va3Min\":\""+obj[94]+"\",");
+			result_json.append("\"pf3\":\""+obj[95]+"\",");
+			result_json.append("\"pf3Max\":\""+obj[96]+"\",");
+			result_json.append("\"pf3Min\":\""+obj[97]+"\",");
 			
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[98])+"\",");
-			result_json.append("\"workingConditionString\":\""+(StringManagerUtils.CLOBObjectToString(obj[99])+"").replaceAll("<br/>", ";")+"\"");
+			result_json.append("\"resultString\":\""+(StringManagerUtils.CLOBObjectToString(obj[99])+"").replaceAll("<br/>", ";")+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "");
@@ -1066,10 +1066,10 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)
 				||"deltaRadius".equalsIgnoreCase(itemCode)){
 				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
-			}else if("WATERCUT_W".equalsIgnoreCase(itemCode)){
-				itemCode="t."+itemCode+",t.waterCutMax_w,t.waterCutMin_w";
-			}else if(itemCode.toUpperCase().endsWith("MAX")||itemCode.toUpperCase().endsWith("MIN")){
-				itemCode="t."+itemCode+"_Avg,t."+itemCode+"_Max,t."+itemCode+"_Min";
+			}else if("weightWaterCut".equalsIgnoreCase(itemCode)){
+				itemCode="t."+itemCode+",t.weightWaterCutMax,t.weightWaterCutMin";
+			}else if("upStrokeWattMax".equalsIgnoreCase(itemCode)||"downStrokeWattMax".equalsIgnoreCase(itemCode)||"upStrokeIMax".equalsIgnoreCase(itemCode)||"downStrokeIMax".equalsIgnoreCase(itemCode)){
+				itemCode="t."+itemCode+",t."+itemCode+"_Max,t."+itemCode+"_Min";
 			}else if(itemCode.toUpperCase().endsWith("_V")||itemCode.toUpperCase().endsWith("_W")){
 				itemCode="t."+itemCode+",t."+itemCode+"_Max,t."+itemCode+"_Min";
 			}else{
@@ -1110,8 +1110,8 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				||"surfaceSystemEfficiency".equalsIgnoreCase(itemCode)||"welldownSystemEfficiency".equalsIgnoreCase(itemCode)||"systemEfficiency".equalsIgnoreCase(itemCode)
 				||"deltaRadius".equalsIgnoreCase(itemCode)){
 				itemCode="t."+itemCode+"*100,t."+itemCode+"max*100,t."+itemCode+"min*100";
-			}else if("WATERCUT_W".equalsIgnoreCase(itemCode)){
-				itemCode="t."+itemCode+",t.waterCutMax_w,t.waterCutMin_w";
+			}else if("weightWaterCut".equalsIgnoreCase(itemCode)){
+				itemCode="t."+itemCode+",t.weightWaterCutMax,t.weightWaterCutMin";
 			}else if(itemCode.toUpperCase().endsWith("MAX")||itemCode.toUpperCase().endsWith("MIN")){
 				itemCode="t."+itemCode+"_Avg,t."+itemCode+"_Max,t."+itemCode+"_Min";
 			}else if(itemCode.toUpperCase().endsWith("_V")||itemCode.toUpperCase().endsWith("_W")){

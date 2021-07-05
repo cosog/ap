@@ -4,10 +4,10 @@ Ext.define('AP.model.alarmSet.BalanceStatusAlarmSetModel', {
     	name: 'id',
     	type: 'int'
      },{
-    	 name: 'workingConditionName',
+    	 name: 'resultName',
     	 type: 'string'
      },{
-    	 name: 'workingConditionCode',
+    	 name: 'resultCode',
     	 type: 'int'
      },{
     	 name: 'minValue',

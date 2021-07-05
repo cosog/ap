@@ -226,7 +226,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var ext_panel = Ext.getCmp(panel_Id);
 		if (ext_panel != undefined||tab_Code=="BalanceHistory"||tab_Code=="BalanceCycle") {
 			// 工况诊断的统计信息刷新及图形
-			if (secondTab_Code == "WorkingConditionDistributionStatistic") {
+			if (secondTab_Code == "ResultDistributionStatistic") {
 				ext_panel.getStore().load();
 			} else if (secondTab_Code == "SingleDinagnosisAnalysis") {
 				var leftOrg_Id = Ext.getCmp("leftOrg_Id");

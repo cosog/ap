@@ -108,16 +108,16 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
 		}
 		
-		sql="select t.id,t.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.workingConditionName,"
+		sql="select t.id,t.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultName,"
 			+ prodCol
 			+ "t.crudeoilDensity,t.waterDensity,t.naturalGasRelativeDensity,"
 			+ "t.saturationPressure,t.reservoirDepth,t.reservoirTemperature,"
-			+ "t.tubingPressure,t.casingPressure,t.wellHeadFluidTemperature,t.waterCut,t.productionGasOilRatio,t.producingFluidLevel,"
+			+ "t.tubingPressure,t.casingPressure,t.wellHeadFluidTemperature,t.weightWaterCut,t.productionGasOilRatio,t.producingFluidLevel,"
 			+ "t.pumpSettingDepth,"
 			+ "t.pumpTypeName,t.barrelTypeName,"
 			+ "t.pumpGrade,t.pumpboreDiameter,t.plungerLength,"
 			+ "t.tubingStringInsideDiameter,t.casingStringInsideDiameter,"
-			+ "t.anchoringStateName,t.netGrossRatio,decode(t.resultStatus,1,'计算成功',0,'为计算',2,'未计算','计算失败'),"
+			+ "t.anchoringStateName,t.netGrossRatio,decode(t.resultStatus,1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
 			+ "t.rodstring"
 			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
 			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
@@ -149,7 +149,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"acqTime\":\""+obj[2]+"\",");
-			result_json.append("\"workingConditionName\":\""+obj[3]+"\",");
+			result_json.append("\"resultName\":\""+obj[3]+"\",");
 			if(configFile.getOthers().getProductionUnit()==0){
 				result_json.append("\"liquidWeightProduction\":\""+obj[4]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[5]+"\",");
@@ -166,7 +166,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"tubingPressure\":\""+obj[12]+"\",");
 			result_json.append("\"casingPressure\":\""+obj[13]+"\",");
 			result_json.append("\"wellHeadFluidTemperature\":\""+obj[14]+"\",");
-			result_json.append("\"waterCut\":\""+obj[15]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[15]+"\",");
 			result_json.append("\"productionGasOilRatio\":\""+obj[16]+"\",");
 			result_json.append("\"producingFluidLevel\":\""+obj[17]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[18]+"\",");
@@ -612,7 +612,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " t2.tubingstringinsidediameter,"
 				+ " t2.pumptype,t2.barreltype,t2.pumpgrade,t2.plungerlength,t2.pumpborediameter,"
 				+ " t2.casingstringinsidediameter,"
-				+ " t2.watercut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,"
+				+ " t2.volumeWaterCut,t2.productiongasoilratio,t2.tubingpressure,t2.casingpressure,t2.wellheadfluidtemperature,"
 				+ " t2.producingfluidlevel,t2.pumpsettingdepth,"
 				+ " decode(t.resultstatus,2,t.levelcorrectvalue,t3.levelcorrectvalue) as levelcorrectvalue,"
 				+ " t2.netgrossratio,"

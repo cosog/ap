@@ -283,18 +283,18 @@ public class DriverAPIController extends BaseController{
 									isEnergyData=true;
 								}else if("Watt3".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setWatt3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
-									updateDiscreteData+=",t.WattSum= "+acquisitionGroupResolutionData.getWatt3();
+									updateDiscreteData+=",t.watt3= "+acquisitionGroupResolutionData.getWatt3();
 									isDistreteData=true;
 								}else if("Var3".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setVar3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
-									updateDiscreteData+=",t.VarSum= "+acquisitionGroupResolutionData.getVar3();
+									updateDiscreteData+=",t.var3= "+acquisitionGroupResolutionData.getVar3();
 									isDistreteData=true;
 								}else if("ReversePower".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setReversePower(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isDistreteData=true;
 								}else if("PF3".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setPF3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
-									updateDiscreteData+=",t.PFSum= "+acquisitionGroupResolutionData.getPF3();
+									updateDiscreteData+=",t.pf3= "+acquisitionGroupResolutionData.getPF3();
 									isDistreteData=true;
 								}else if("RunFrequency".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setRunFrequency(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
@@ -325,7 +325,7 @@ public class DriverAPIController extends BaseController{
 									isProductionData=true;
 								}else if("WaterCut".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setWaterCut(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
-									updateProdData+=",t.waterCut="+acquisitionGroupResolutionData.getWaterCut();
+									updateProdData+=",t.volumeWaterCut="+acquisitionGroupResolutionData.getWaterCut();
 									isProductionData=true;
 								}else if("RPM".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setRPM(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));

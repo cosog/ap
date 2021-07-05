@@ -340,7 +340,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 					+ " t.tubingstringinsidediameter,"
 					+ " t.pumptype,t.barreltype,t.pumpgrade,t.plungerlength,t.pumpborediameter,"
 					+ " t.casingstringinsidediameter,"
-					+ " t.watercut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,t.producingfluidlevel,t.pumpsettingdepth,"
+					+ " t.volumeWaterCut,t.productiongasoilratio,t.tubingpressure,t.casingpressure,t.wellheadfluidtemperature,t.producingfluidlevel,t.pumpsettingdepth,"
 					+ " t3.levelcorrectvalue,"
 					+ " t.netgrossratio,"
 					+ " t.wellid "
@@ -632,18 +632,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " left outer join tbl_rpc_discrete_latest  t3 on t3.wellId=t.id"
 				+ " left outer join tbl_rpc_productiondata_latest  t4 on t4.wellId=t.id"
 				+ " where t.liftingType between 200 and 299 ";
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.workingconditioncode,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.resultcode,"
 											+ "t.TheoreticalProduction,"
-											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
+											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.volumeWaterCut,"
 											+ "t.availableplungerstrokeprod_v,t.pumpclearanceleakprod_v,t.tvleakvolumetricproduction,t.svleakvolumetricproduction,t.gasinfluenceprod_v,"
-											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
+											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.weightWaterCut,"
 											+ "t.availableplungerstrokeprod_W,t.pumpclearanceleakprod_W,t.tvleakweightproduction,t.svleakweightproduction,t.gasinfluenceprod_W,"
-											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.powerconsumptionperthm,"
-											+ "t.motorInputActivePower,t.polishrodPower,t.waterPower,"
+											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyPer100mLift,"
+											+ "t.averageWatt,t.polishrodPower,t.waterPower,"
 											+ "t.stroke,t.spm,"
 											+ "t.UpperLoadLine,t.LowerLoadLine,t.UpperLoadLineOfExact,"
 											+ "t.UpperLoadLine-t.LowerLoadLine as DeltaLoadLine,t.UpperLoadLineOfExact-t.LowerLoadLine as DeltaLoadLineOfExact,"
-											+ "t.FMax,t.FMin,t.FMax-t.FMin as DeltaF,t.fsdiagramarea,"
+											+ "t.FMax,t.FMin,t.FMax-t.FMin as DeltaF,t.area,"
 											+" t.PlungerStroke,t.AvailablePlungerStroke,"
 											+ "t.noLiquidAvailablePlungerStroke,"//加1
 											+ "t.fullnesscoefficient,"
@@ -855,7 +855,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				List<Float> surfaceSystemEfficiencyList=new ArrayList<Float>();
 				List<Float> wellDownSystemEfficiencyList=new ArrayList<Float>();
 				List<Float> systemEfficiencyList=new ArrayList<Float>();
-				List<Float> powerConsumptionPerTHMList=new ArrayList<Float>();
+				List<Float> energyPer100mLiftList=new ArrayList<Float>();
 				List<Float> avgWattList=new ArrayList<Float>();
 				List<Float> polishRodPowerList=new ArrayList<Float>();
 				List<Float> waterPowerList=new ArrayList<Float>();
@@ -939,7 +939,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 						surfaceSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[22]+""));
 						wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[23]+""));
 						systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[24]+""));
-						powerConsumptionPerTHMList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
+						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
 						avgWattList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
 						polishRodPowerList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
 						waterPowerList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
@@ -1052,7 +1052,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
 				dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
 				dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
-				dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(powerConsumptionPerTHMList, ",")+"],");
+				dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 				dataSbf.append("\"AvgWatt\":["+StringUtils.join(avgWattList, ",")+"],");
 				dataSbf.append("\"PolishRodPower\":["+StringUtils.join(polishRodPowerList, ",")+"],");
 				dataSbf.append("\"WaterPower\":["+StringUtils.join(waterPowerList, ",")+"],");
@@ -1134,18 +1134,18 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
-		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.workingconditioncode,"
+		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.resultcode,"
 											+ "t.TheoreticalProduction,"
-											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
+											+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.volumeWaterCut,"
 											+ "t.availableplungerstrokeprod_v,t.pumpclearanceleakprod_v,t.tvleakvolumetricproduction,t.svleakvolumetricproduction,t.gasinfluenceprod_v,"
-											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
+											+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.weightWaterCut,"
 											+ "t.availableplungerstrokeprod_W,t.pumpclearanceleakprod_W,t.tvleakweightproduction,t.svleakweightproduction,t.gasinfluenceprod_W,"
-											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.powerconsumptionperthm,"
-											+ "t.motorInputActivePower,t.polishrodPower,t.waterPower,"
+											+" t.surfacesystemefficiency,t.welldownsystemefficiency,t.systemefficiency,t.energyPer100mLift,"
+											+ "t.averageWatt,t.polishrodPower,t.waterPower,"
 											+ "t.stroke,t.spm,"
 											+ "t.UpperLoadLine,t.LowerLoadLine,t.UpperLoadLineOfExact,"
 											+ "t.UpperLoadLine-t.LowerLoadLine as DeltaLoadLine,t.UpperLoadLineOfExact-t.LowerLoadLine as DeltaLoadLineOfExact,"
-											+ "t.FMax,t.FMin,t.FMax-t.FMin as DeltaF,t.fsdiagramarea,"
+											+ "t.FMax,t.FMin,t.FMax-t.FMin as DeltaF,t.area,"
 											+" t.PlungerStroke,t.AvailablePlungerStroke,"
 											+ "t.noLiquidAvailablePlungerStroke,"//加1
 											+ "t.fullnesscoefficient,"
@@ -1256,7 +1256,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<Float> surfaceSystemEfficiencyList=new ArrayList<Float>();
 		List<Float> wellDownSystemEfficiencyList=new ArrayList<Float>();
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
-		List<Float> powerConsumptionPerTHMList=new ArrayList<Float>();
+		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		List<Float> avgWattList=new ArrayList<Float>();
 		List<Float> polishRodPowerList=new ArrayList<Float>();
 		List<Float> waterPowerList=new ArrayList<Float>();
@@ -1309,7 +1309,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			surfaceSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[22]+""));
 			wellDownSystemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[23]+""));
 			systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[24]+""));
-			powerConsumptionPerTHMList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
+			energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[25]+""));
 			avgWattList.add(StringManagerUtils.stringToFloat(resuleObj[26]+""));
 			polishRodPowerList.add(StringManagerUtils.stringToFloat(resuleObj[27]+""));
 			waterPowerList.add(StringManagerUtils.stringToFloat(resuleObj[28]+""));
@@ -1402,7 +1402,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
 		dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
 		dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
-		dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(powerConsumptionPerTHMList, ",")+"],");
+		dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 		dataSbf.append("\"AvgWatt\":["+StringUtils.join(avgWattList, ",")+"],");
 		dataSbf.append("\"PolishRodPower\":["+StringUtils.join(polishRodPowerList, ",")+"],");
 		dataSbf.append("\"WaterPower\":["+StringUtils.join(waterPowerList, ",")+"],");
@@ -1478,10 +1478,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.rpm,"
 				+ "t.TheoreticalProduction,"							
-				+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
-				+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
-				+" t.systemefficiency,t.powerconsumptionperthm,"
-				+ "t.motorInputActivePower,t.waterPower,"
+				+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.volumeWaterCut,"
+				+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.weightWaterCut,"
+				+" t.systemefficiency,t.energyPer100mLift,"
+				+ "t.averageWatt,t.waterPower,"
 				+" prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,"
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,"
 				+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio"
@@ -1619,7 +1619,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				List<Float> submergenceList=new ArrayList<Float>();
 				
 				List<Float> systemEfficiencyList=new ArrayList<Float>();
-				List<Float> powerConsumptionPerTHMList=new ArrayList<Float>();
+				List<Float> energyPer100mLiftList=new ArrayList<Float>();
 				List<Float> avgWattList=new ArrayList<Float>();
 				List<Float> waterPowerList=new ArrayList<Float>();
 				
@@ -1676,7 +1676,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 						weightWaterCutList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
 						
 						systemEfficiencyList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
-						powerConsumptionPerTHMList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
+						energyPer100mLiftList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
 						avgWattList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
 						waterPowerList.add(StringManagerUtils.stringToFloat(resuleObj[15]+""));
 						
@@ -1726,7 +1726,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 				
 				dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
-				dataSbf.append("\"PowerConsumptionPerTHM\":["+StringUtils.join(powerConsumptionPerTHMList, ",")+"],");
+				dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 				dataSbf.append("\"AvgWatt\":["+StringUtils.join(avgWattList, ",")+"],");
 				dataSbf.append("\"WaterPower\":["+StringUtils.join(waterPowerList, ",")+"],");
 				
@@ -1776,10 +1776,10 @@ public class CalculateDataService<T> extends BaseService<T> {
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "t.rpm,"
 				+ "t.TheoreticalProduction,"							
-				+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.watercut,"
-				+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.watercut_w,"
-				+" t.systemefficiency,t.powerconsumptionperthm,"
-				+ "t.motorInputActivePower,t.waterPower,"
+				+" t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,prod.volumeWaterCut,"
+				+" t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction, prod.weightWaterCut,"
+				+" t.systemefficiency,t.energyPer100mLift,"
+				+ "t.averageWatt,t.waterPower,"
 				+" prod.producingfluidlevel,prod.pumpsettingdepth,prod.pumpsettingdepth-prod.producingfluidlevel as submergence,"
 				+ "t.pumpeff,t.pumpeff1,t.pumpeff2,"
 				+" prod.tubingpressure,prod.casingpressure,prod.wellheadfluidtemperature,prod.productiongasoilratio"
@@ -1958,79 +1958,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				continue;
 			}
 		}
-		//遍历无井环的井
-		
 		return requestDataList;
 	}
-	
-	
-//	public List<String> getDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
-//		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
-//		StringBuffer dataSbf=null;
-//		List<String> requestDataList=new ArrayList<String>();
-//		String wellinformationSql="select t.wellname,t2.runtime,t2.runtimeefficiencysource,t.signinid,t.slave "
-//				+ " from tbl_wellinformation t "
-//				+ " left outer join tbl_rpc_productiondata_latest t2 on t.id=t2.wellid  "
-//				+ " where t.liftingType between 200 and 299 ";
-//		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,t.workingconditioncode,"
-//				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
-//				+" t.frequencyrunvalue,"
-//				+ "t.Signal,t.Watt3,t.Var3,t.VA3,t.PF3"
-//				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
-//				+" where t.wellid=t007.id "
-//				+ " and t.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
-//		if(StringManagerUtils.isNotNull(wellId)){
-//			wellinformationSql+=" and t.id in ("+wellId+")";
-//			singleCalculateResuleSql+=" and t007.id in ("+wellId+")";
-//		}
-//		
-//		singleCalculateResuleSql+=" order by t007.sortnum,t.acqTime";
-//		wellinformationSql+=" order by t.sortnum";
-//		List<?> welllist = findCallSql(wellinformationSql);
-//		List<?> singleresultlist = findCallSql(singleCalculateResuleSql);
-//
-//		for(int i=0;i<welllist.size();i++){
-//			try{
-//				Object[] wellObj=(Object[]) welllist.get(i);
-//				dataSbf = new StringBuffer();
-//				dataSbf.append("{\"AKString\":\"\",");
-//				dataSbf.append("\"WellName\":\""+wellObj[0]+"\",");
-//				dataSbf.append("\"Date\":\""+date+"\",");
-//				dataSbf.append("\"EveryTime\": [");
-//				String wellRunRime=getWellRuningTime(StringManagerUtils.getOneDayDateString(-1),wellObj[1],null);
-//				for(int j=0;j<singleresultlist.size();j++){
-//					Object[] resuleObj=(Object[]) singleresultlist.get(j);
-//					if(wellObj[0].toString().equals(resuleObj[0].toString())){
-//						dataSbf.append("{\"AcqTime\":\""+resuleObj[1]+"\",");
-//						dataSbf.append("\"ETResultCode\":"+resuleObj[2]+",");
-//						dataSbf.append("\"IA\":"+resuleObj[3]+",");
-//						dataSbf.append("\"IB\":"+resuleObj[4]+",");
-//						dataSbf.append("\"IC\":"+resuleObj[5]+",");
-//						dataSbf.append("\"VA\":"+resuleObj[6]+",");
-//						dataSbf.append("\"VB\":"+resuleObj[7]+",");
-//						dataSbf.append("\"VC\":"+resuleObj[8]+",");
-//						dataSbf.append("\"RunFrequency\":"+resuleObj[9]+",");
-//						dataSbf.append("\"Signal\":"+resuleObj[10]+",");
-//						dataSbf.append("\"Watt3\":"+resuleObj[11]+",");
-//						dataSbf.append("\"Var3\":"+resuleObj[12]+",");
-//						dataSbf.append("\"VA3\":"+resuleObj[13]+",");
-//						dataSbf.append("\"PF3\":"+StringManagerUtils.stringToFloat(resuleObj[14]+"")+"},");
-//					}
-//				}
-//				if(dataSbf.toString().endsWith(",")){
-//					dataSbf.deleteCharAt(dataSbf.length() - 1);
-//				}
-//				dataSbf.append("]}");
-//				requestDataList.add(dataSbf.toString());
-//			}catch(Exception e){
-//				e.printStackTrace();
-//				continue;
-//			}
-//		}
-//		//遍历无井环的井
-//		
-//		return requestDataList;
-//	}
 	
 	public List<String> getDiscreteDailyCalculation(String tatalDate,String wellId) throws ParseException{
 		String date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate),-1);
@@ -2042,8 +1971,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.liftingType between 200 and 299 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
-				+" t.frequencyrunvalue,"
-				+ "t.Signal,t.WattSum,t.VarSum,t.VASum,t.PFSum"
+				+" t.runFrequency,"
+				+ "t.Signal,t.watt3,t.var3,t.va3,t.pf3"
 				+" from tbl_rpc_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+ " and t.acqTime between to_date('"+tatalDate+"','yyyy-mm-dd')-1 and to_date('"+tatalDate+"','yyyy-mm-dd')";
@@ -2137,8 +2066,8 @@ public class CalculateDataService<T> extends BaseService<T> {
 				+ " where t.liftingType between 400 and 499 ";
 		String singleCalculateResuleSql="select t007.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+" t.ia,t.ib,t.ic,t.va,t.vb,t.vc,"
-				+" t.frequencyrunvalue,"
-				+ "t.WattSum,t.VarSum,t.VASum,t.PFSum"
+				+" t.runFrequency,"
+				+ "t.watt3,t.var3,t.va3,t.pf3"
 				+" from tbl_pcp_discrete_hist t ,tbl_wellinformation t007"
 				+" where t.wellid=t007.id "
 				+" and t.acqTime between to_date('2020-01-17','yyyy-mm-dd')-1 and to_date('2020-01-17','yyyy-mm-dd')";

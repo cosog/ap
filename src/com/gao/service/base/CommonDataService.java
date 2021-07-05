@@ -1931,13 +1931,13 @@ public class CommonDataService extends BaseService {
 	public String findAlarmSetDataById(Page pager) {
 		String sql = "";
 		StringBuffer sqlwhere = new StringBuffer();
-		sqlwhere.append("select t.id, w.workingconditioncode,w.workingconditionname, t.alarmtype,code1.itemname as alarmtypename, t.alarmlevel,code2.itemname as alarmlevelname,t.alarmsign,t.remark");
+		sqlwhere.append("select t.id, w.resultcode,w.resultname, t.alarmtype,code1.itemname as alarmtypename, t.alarmlevel,code2.itemname as alarmlevelname,t.alarmsign,t.remark");
 		sqlwhere.append(" from tbl_rpc_worktype w   ");
-		sqlwhere.append(" left outer join tbl_rpc_alarmtype_conf  t  on t.workingconditioncode = w.workingconditioncode  ");
+		sqlwhere.append(" left outer join tbl_rpc_alarmtype_conf  t  on t.resultcode = w.resultcode  ");
 		sqlwhere.append(" left outer join tbl_code   code1  on t.alarmtype=code1.itemvalue  and code1.itemcode='BJLX'");
 		sqlwhere.append(" left outer join tbl_code  code2   on t.alarmlevel=code2.itemvalue and code2.itemcode='BJJB'");
-		sqlwhere.append(" where w.workingconditioncode>=1100");
-		sqlwhere.append(" order by w.workingconditioncode");
+		sqlwhere.append(" where w.resultcode>=1100");
+		sqlwhere.append(" order by w.resultcode");
 		String getResult = "";
 		sql = sqlwhere.toString();
 		String columns = this.showTableHeadersColumns("alarmSet");

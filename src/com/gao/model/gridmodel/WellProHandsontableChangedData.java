@@ -55,9 +55,9 @@ public class WellProHandsontableChangedData {
 
 	    private String wellHeadFluidTemperature;
 
-	    private String waterCut_W;
+	    private String weightWaterCut;
 	    
-	    private String waterCut;
+	    private String volumeWaterCut;
 
 	    private String productionGasOilRatio;
 
@@ -223,12 +223,12 @@ public class WellProHandsontableChangedData {
 			this.wellHeadFluidTemperature = wellHeadFluidTemperature;
 		}
 
-		public String getWaterCut_W() {
-			return waterCut_W;
+		public String getWeightWaterCut() {
+			return weightWaterCut;
 		}
 
-		public void setWaterCut_W(String waterCut_W) {
-			this.waterCut_W = waterCut_W;
+		public void setWeightWaterCut(String weightWaterCut) {
+			this.weightWaterCut = weightWaterCut;
 		}
 
 		public String getProductionGasOilRatio() {
@@ -479,12 +479,12 @@ public class WellProHandsontableChangedData {
 			this.acqTime = acqTime;
 		}
 
-		public String getWaterCut() {
-			return waterCut;
+		public String getVolumeWaterCut() {
+			return volumeWaterCut;
 		}
 
-		public void setWaterCut(String waterCut) {
-			this.waterCut = waterCut;
+		public void setVolumeWaterCut(String volumeWaterCut) {
+			this.volumeWaterCut = volumeWaterCut;
 		}
 
 		public String getBarrelTypeName() {

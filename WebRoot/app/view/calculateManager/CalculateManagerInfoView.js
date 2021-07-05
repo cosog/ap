@@ -456,7 +456,7 @@ function CreateAndLoadCalculateManagerTable(isNew,result,divid){
         	columns+="{data:'"+result.columns[i].dataIndex+"'";
         	if(result.columns[i].dataIndex.toUpperCase()=="id".toUpperCase()){
         		columns+=",type: 'checkbox'";
-        	}else if(result.columns[i].dataIndex.toUpperCase()==="wellName".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="acqTime".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="workingConditionName".toUpperCase()){
+        	}else if(result.columns[i].dataIndex.toUpperCase()==="wellName".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="acqTime".toUpperCase()||result.columns[i].dataIndex.toUpperCase()==="resultName".toUpperCase()){
     			
     		}else if(result.columns[i].dataIndex==="anchoringStateName"){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['锚定', '未锚定']";

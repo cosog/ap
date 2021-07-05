@@ -186,16 +186,16 @@ public class ProductionDataController extends BaseController {
 									wellProHandsontableChangedData.getUpdatelist().get(i).setPumpTypeName("管式泵");
 								}
 								
-								if((!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut()))&&StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W())){
-									float waterCut_W=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W());
+								if((!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getVolumeWaterCut()))&&StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut())){
+									float weightWaterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut());
 									float waterDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterDensity());
 									float crudeOilDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity());
 									
-									if(waterCut_W>0.0001&&crudeOilDensity!=0){
-										waterCut=100/(1+waterDensity/crudeOilDensity*(100-waterCut_W)/waterCut_W);
+									if(weightWaterCut>0.0001&&crudeOilDensity!=0){
+										waterCut=100/(1+waterDensity/crudeOilDensity*(100-weightWaterCut)/weightWaterCut);
 									}
-								}else if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut())){
-									waterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+								}else if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getUpdatelist().get(i).getVolumeWaterCut())){
+									waterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getUpdatelist().get(i).getVolumeWaterCut());
 								}
 								
 								
@@ -309,16 +309,16 @@ public class ProductionDataController extends BaseController {
 									wellProHandsontableChangedData.getInsertlist().get(i).setPumpTypeName("管式泵");
 								}
 								
-								if((!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut()))&&StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W())){
-									float waterCut_W=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W());
+								if((!StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getVolumeWaterCut()))&&StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWeightWaterCut())){
+									float weightWaterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWeightWaterCut());
 									float waterDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWaterDensity());
 									float crudeOilDensity=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity());
 									
-									if(waterCut_W>0.0001&&crudeOilDensity!=0){
-										waterCut=100/(1+waterDensity/crudeOilDensity*(100-waterCut_W)/waterCut_W);
+									if(weightWaterCut>0.0001&&crudeOilDensity!=0){
+										waterCut=100/(1+waterDensity/crudeOilDensity*(100-weightWaterCut)/weightWaterCut);
 									}
-								}else if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut())){
-									waterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut());
+								}else if(StringManagerUtils.isNotNull(wellProHandsontableChangedData.getInsertlist().get(i).getVolumeWaterCut())){
+									waterCut=StringManagerUtils.stringToFloat(wellProHandsontableChangedData.getInsertlist().get(i).getVolumeWaterCut());
 								}
 								
 								String FluidPVTData="{"

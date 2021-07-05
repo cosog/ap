@@ -22,7 +22,7 @@ public class WorkStatusAlarm implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private Integer workingconditioncode;
+	private Integer resultcode;
 	private Integer alarmtype;
 	private Integer alarmlevel;
 	private Integer alarmsign;
@@ -35,19 +35,19 @@ public class WorkStatusAlarm implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public WorkStatusAlarm(Integer id, Integer workingconditioncode, Integer alarmtype,
+	public WorkStatusAlarm(Integer id, Integer resultcode, Integer alarmtype,
 			Integer alarmlevel) {
 		this.id = id;
-		this.workingconditioncode = workingconditioncode;
+		this.resultcode = resultcode;
 		this.alarmtype = alarmtype;
 		this.alarmlevel = alarmlevel;
 	}
 
 	/** full constructor */
-	public WorkStatusAlarm(Integer id, Integer workingconditioncode, Integer alarmtype,
+	public WorkStatusAlarm(Integer id, Integer resultcode, Integer alarmtype,
 			Integer alarmlevel, Integer alarmsign, String remark) {
 		this.id = id;
-		this.workingconditioncode = workingconditioncode;
+		this.resultcode = resultcode;
 		this.alarmtype = alarmtype;
 		this.alarmlevel = alarmlevel;
 		this.alarmsign = alarmsign;
@@ -65,13 +65,13 @@ public class WorkStatusAlarm implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "workingconditioncode", nullable = false, precision = 22, scale = 0)
-	public Integer getWorkingconditioncode() {
-		return this.workingconditioncode;
+	@Column(name = "resultcode", nullable = false, precision = 22, scale = 0)
+	public Integer getResultcode() {
+		return this.resultcode;
 	}
 
-	public void setWorkingconditioncode(Integer workingconditioncode) {
-		this.workingconditioncode = workingconditioncode;
+	public void setResultcode(Integer resultcode) {
+		this.resultcode = resultcode;
 	}
 
 	@Column(name = "alarmtype", nullable = false, precision = 22, scale = 0)

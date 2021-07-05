@@ -156,7 +156,7 @@ values ('115234', null, '04d869912d824f4c8aea7034a2da5962', '采集时间', 'to_char
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114957', null, '04d869912d824f4c8aea7034a2da5962', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114963', null, '04d869912d824f4c8aea7034a2da5962', '功图工况', 'workingConditionName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114963', null, '04d869912d824f4c8aea7034a2da5962', '功图工况', 'resultName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114964', 'sys', '04d869912d824f4c8aea7034a2da5962', '优化建议', 'optimizationSuggestion', 'width:120', 6, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -180,7 +180,7 @@ values ('116983', null, '04d869912d824f4c8aea7034a2da5962', '功图产油量(t/d)', '
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116987', null, '04d869912d824f4c8aea7034a2da5962', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117138', null, '04d869912d824f4c8aea7034a2da5962', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117138', null, '04d869912d824f4c8aea7034a2da5962', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118585', 'sys', '04d869912d824f4c8aea7034a2da5962', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -194,7 +194,7 @@ values ('114965', null, '04d869912d824f4c8aea7034a2da5962', '功图产油量(m^3/d)',
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114993', null, '04d869912d824f4c8aea7034a2da5962', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114971', null, '04d869912d824f4c8aea7034a2da5962', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114971', null, '04d869912d824f4c8aea7034a2da5962', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118588', 'sys', '04d869912d824f4c8aea7034a2da5962', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -236,13 +236,13 @@ values ('115239', null, '04d869912d824f4c8aea7034a2da5962', '地面效率(%)', 'surf
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114984', null, '04d869912d824f4c8aea7034a2da5962', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114983', null, '04d869912d824f4c8aea7034a2da5962', '有功功率(kW)', 'motorInputActivePower', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114983', null, '04d869912d824f4c8aea7034a2da5962', '有功功率(kW)', 'averageWatt', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114985', null, '04d869912d824f4c8aea7034a2da5962', '光杆功率(kW)', 'polishrodPower', null, 46, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114987', null, '04d869912d824f4c8aea7034a2da5962', '水功率(kW)', 'waterPower', null, 47, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114986', null, '04d869912d824f4c8aea7034a2da5962', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114986', null, '04d869912d824f4c8aea7034a2da5962', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114988', null, '04d869912d824f4c8aea7034a2da5962', '日用电量(kW·h)', 'todayKWattH', null, 49, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -332,9 +332,9 @@ values ('115681', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '运行时率(小数)', 'run
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115682', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115683', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115683', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117443', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117443', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115684', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -344,7 +344,7 @@ values ('116989', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '产油量(t/d)', 'oilWei
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116990', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117139', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117139', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115691', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -352,7 +352,7 @@ values ('115692', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '产油量(m^3/d)', 'oilV
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115693', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115694', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115694', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115701', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -386,7 +386,7 @@ values ('115713', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '地面效率(%)', 'surfac
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115714', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115715', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115715', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115716', '', '0e9e1b6b8b6c4fcfaa5415b2d1d943ca', '日用电量(kW·h)', 'todayKWattH', '', 42, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -432,7 +432,7 @@ values ('116139', '', '153a67db3bf346c39160be2319694d8c', '运行时率(小数)', 'run
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116140', '', '153a67db3bf346c39160be2319694d8c', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116141', '', '153a67db3bf346c39160be2319694d8c', '电参工况', 'workingConditionName_E', 'width:130', 12, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116141', '', '153a67db3bf346c39160be2319694d8c', '电参工况', 'resultName_E', 'width:130', 12, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116142', 'sys', '153a67db3bf346c39160be2319694d8c', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -442,7 +442,7 @@ values ('116992', '', '153a67db3bf346c39160be2319694d8c', '产油量(t/d)', 'oilWei
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116993', '', '153a67db3bf346c39160be2319694d8c', '产水量(t/d)', 'waterWeightProduction', '', 16, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117140', '', '153a67db3bf346c39160be2319694d8c', '含水率(%)', 'waterCut_W', '', 17, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117140', '', '153a67db3bf346c39160be2319694d8c', '含水率(%)', 'weightWaterCut', '', 17, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116143', '', '153a67db3bf346c39160be2319694d8c', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
@@ -450,7 +450,7 @@ values ('116144', '', '153a67db3bf346c39160be2319694d8c', '产油量(m^3/d)', 'oilV
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116145', '', '153a67db3bf346c39160be2319694d8c', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116146', '', '153a67db3bf346c39160be2319694d8c', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116146', '', '153a67db3bf346c39160be2319694d8c', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116151', '', '153a67db3bf346c39160be2319694d8c', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -462,13 +462,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116159', '', '153a67db3bf346c39160be2319694d8c', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116160', '', '153a67db3bf346c39160be2319694d8c', '有功功率(kW)', 'motorInputActivePower', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116160', '', '153a67db3bf346c39160be2319694d8c', '有功功率(kW)', 'averageWatt', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116161', '', '153a67db3bf346c39160be2319694d8c', '水功率(kW)', 'waterPower', '', 26, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116162', '', '153a67db3bf346c39160be2319694d8c', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116162', '', '153a67db3bf346c39160be2319694d8c', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116163', '', '153a67db3bf346c39160be2319694d8c', '日用电量(kW·h)', 'todayKWattH', '', 28, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -519,7 +519,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115107', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115112', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115112', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115113', 'sys', '1b52f76fc8344541bd8e75dfcf0b75ae', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -555,7 +555,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116996', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117141', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117141', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118591', 'sys', '1b52f76fc8344541bd8e75dfcf0b75ae', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -576,7 +576,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115116', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115117', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115117', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118594', 'sys', '1b52f76fc8344541bd8e75dfcf0b75ae', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -639,7 +639,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115133', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115134', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '有功功率(kW)', 'motorInputActivePower', null, 45, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115134', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '有功功率(kW)', 'averageWatt', null, 45, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115135', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '光杆功率(kW)', 'polishrodPower', null, 46, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
@@ -648,7 +648,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115136', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '水功率(kW)', 'waterPower', null, 47, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116081', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 1, null, null, to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116081', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 1, null, null, to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115137', null, '1b52f76fc8344541bd8e75dfcf0b75ae', '日用电量(kW·h)', 'todayKWattH', null, 49, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -702,7 +702,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115333', null, '20f9a5493b7041478c67fac2d7709f42', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115338', null, '20f9a5493b7041478c67fac2d7709f42', '功图工况', 'workingConditionName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115338', null, '20f9a5493b7041478c67fac2d7709f42', '功图工况', 'resultName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115339', 'sys', '20f9a5493b7041478c67fac2d7709f42', '优化建议', 'optimizationSuggestion', 'width:120', 6, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -738,7 +738,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117001', null, '20f9a5493b7041478c67fac2d7709f42', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117142', null, '20f9a5493b7041478c67fac2d7709f42', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117142', null, '20f9a5493b7041478c67fac2d7709f42', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118579', 'sys', '20f9a5493b7041478c67fac2d7709f42', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -759,7 +759,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115342', null, '20f9a5493b7041478c67fac2d7709f42', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115343', null, '20f9a5493b7041478c67fac2d7709f42', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115343', null, '20f9a5493b7041478c67fac2d7709f42', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118582', 'sys', '20f9a5493b7041478c67fac2d7709f42', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -822,7 +822,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115364', null, '20f9a5493b7041478c67fac2d7709f42', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115365', null, '20f9a5493b7041478c67fac2d7709f42', '有功功率(kW)', 'motorInputActivePower', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115365', null, '20f9a5493b7041478c67fac2d7709f42', '有功功率(kW)', 'averageWatt', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115366', null, '20f9a5493b7041478c67fac2d7709f42', '光杆功率(kW)', 'polishrodPower', null, 46, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -831,7 +831,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115367', null, '20f9a5493b7041478c67fac2d7709f42', '水功率(kW)', 'waterPower', null, 47, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115368', null, '20f9a5493b7041478c67fac2d7709f42', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115368', null, '20f9a5493b7041478c67fac2d7709f42', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115369', null, '20f9a5493b7041478c67fac2d7709f42', '日用电量(kW·h)', 'todayKWattH', null, 49, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -906,7 +906,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116657', '', '217c9704a8bc49c7aa4f47e1e6197790', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116658', '', '217c9704a8bc49c7aa4f47e1e6197790', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116658', '', '217c9704a8bc49c7aa4f47e1e6197790', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116659', '', '217c9704a8bc49c7aa4f47e1e6197790', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -921,7 +921,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117006', '', '217c9704a8bc49c7aa4f47e1e6197790', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117143', '', '217c9704a8bc49c7aa4f47e1e6197790', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117143', '', '217c9704a8bc49c7aa4f47e1e6197790', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116666', '', '217c9704a8bc49c7aa4f47e1e6197790', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -933,7 +933,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116668', '', '217c9704a8bc49c7aa4f47e1e6197790', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116669', '', '217c9704a8bc49c7aa4f47e1e6197790', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116669', '', '217c9704a8bc49c7aa4f47e1e6197790', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116675', '', '217c9704a8bc49c7aa4f47e1e6197790', '泵效(%)', 'pumpEff', '', 22, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -945,7 +945,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116679', '', '217c9704a8bc49c7aa4f47e1e6197790', '系统效率(%)', 'systemEfficiency', '', 24, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116680', '', '217c9704a8bc49c7aa4f47e1e6197790', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116680', '', '217c9704a8bc49c7aa4f47e1e6197790', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116681', '', '217c9704a8bc49c7aa4f47e1e6197790', '日用电量(kW·h)', 'todayKWattH', '', 26, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1062,10 +1062,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115907', '', '28be9fa769664a2aaf250fbf49fa7007', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115908', '', '28be9fa769664a2aaf250fbf49fa7007', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115908', '', '28be9fa769664a2aaf250fbf49fa7007', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117446', '', '28be9fa769664a2aaf250fbf49fa7007', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117446', '', '28be9fa769664a2aaf250fbf49fa7007', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115909', '', '28be9fa769664a2aaf250fbf49fa7007', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1080,7 +1080,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117009', '', '28be9fa769664a2aaf250fbf49fa7007', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117144', '', '28be9fa769664a2aaf250fbf49fa7007', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117144', '', '28be9fa769664a2aaf250fbf49fa7007', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115916', '', '28be9fa769664a2aaf250fbf49fa7007', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1092,7 +1092,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115919', '', '28be9fa769664a2aaf250fbf49fa7007', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115920', '', '28be9fa769664a2aaf250fbf49fa7007', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115920', '', '28be9fa769664a2aaf250fbf49fa7007', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115927', '', '28be9fa769664a2aaf250fbf49fa7007', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1143,7 +1143,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115917', '', '28be9fa769664a2aaf250fbf49fa7007', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115931', '', '28be9fa769664a2aaf250fbf49fa7007', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115931', '', '28be9fa769664a2aaf250fbf49fa7007', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115941', '', '28be9fa769664a2aaf250fbf49fa7007', '日用电量(kW·h)', 'todayKWattH', '', 42, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1212,7 +1212,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116552', '', '2a68eb17dbda497d9e2518f121887cdf', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116553', '', '2a68eb17dbda497d9e2518f121887cdf', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116553', '', '2a68eb17dbda497d9e2518f121887cdf', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116554', '', '2a68eb17dbda497d9e2518f121887cdf', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1227,7 +1227,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117012', '', '2a68eb17dbda497d9e2518f121887cdf', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117145', '', '2a68eb17dbda497d9e2518f121887cdf', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117145', '', '2a68eb17dbda497d9e2518f121887cdf', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116561', '', '2a68eb17dbda497d9e2518f121887cdf', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1239,7 +1239,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116563', '', '2a68eb17dbda497d9e2518f121887cdf', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116564', '', '2a68eb17dbda497d9e2518f121887cdf', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116564', '', '2a68eb17dbda497d9e2518f121887cdf', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116570', '', '2a68eb17dbda497d9e2518f121887cdf', '泵效(%)', 'pumpEff', '', 22, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1251,7 +1251,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116574', '', '2a68eb17dbda497d9e2518f121887cdf', '系统效率(%)', 'systemEfficiency', '', 24, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116575', '', '2a68eb17dbda497d9e2518f121887cdf', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116575', '', '2a68eb17dbda497d9e2518f121887cdf', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116576', '', '2a68eb17dbda497d9e2518f121887cdf', '日用电量(kW·h)', 'todayKWattH', '', 26, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1347,10 +1347,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115772', '', '2b12806c5c914103a5f05961b0ddd6f4', '运行区间', 'runRange', 'width:80', 13, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115773', '', '2b12806c5c914103a5f05961b0ddd6f4', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115773', '', '2b12806c5c914103a5f05961b0ddd6f4', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117444', '', '2b12806c5c914103a5f05961b0ddd6f4', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117444', '', '2b12806c5c914103a5f05961b0ddd6f4', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115774', '', '2b12806c5c914103a5f05961b0ddd6f4', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1365,7 +1365,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117015', '', '2b12806c5c914103a5f05961b0ddd6f4', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117146', '', '2b12806c5c914103a5f05961b0ddd6f4', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117146', '', '2b12806c5c914103a5f05961b0ddd6f4', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115781', '', '2b12806c5c914103a5f05961b0ddd6f4', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1377,7 +1377,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115783', '', '2b12806c5c914103a5f05961b0ddd6f4', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115784', '', '2b12806c5c914103a5f05961b0ddd6f4', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115784', '', '2b12806c5c914103a5f05961b0ddd6f4', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115791', '', '2b12806c5c914103a5f05961b0ddd6f4', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1428,7 +1428,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115804', '', '2b12806c5c914103a5f05961b0ddd6f4', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115805', '', '2b12806c5c914103a5f05961b0ddd6f4', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115805', '', '2b12806c5c914103a5f05961b0ddd6f4', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115806', '', '2b12806c5c914103a5f05961b0ddd6f4', '日用电量(kW·h)', 'todayKWattH', '', 42, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1476,7 +1476,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115181', null, '2b85032f6e27436c8c71069d9894476d', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115185', null, '2b85032f6e27436c8c71069d9894476d', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115185', null, '2b85032f6e27436c8c71069d9894476d', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115186', null, '2b85032f6e27436c8c71069d9894476d', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1512,7 +1512,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117020', null, '2b85032f6e27436c8c71069d9894476d', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 1, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117147', null, '2b85032f6e27436c8c71069d9894476d', '含水率(%)', 'waterCut_W', null, 17, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117147', null, '2b85032f6e27436c8c71069d9894476d', '含水率(%)', 'weightWaterCut', null, 17, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118603', null, '2b85032f6e27436c8c71069d9894476d', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1533,7 +1533,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115213', null, '2b85032f6e27436c8c71069d9894476d', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115214', null, '2b85032f6e27436c8c71069d9894476d', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115214', null, '2b85032f6e27436c8c71069d9894476d', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118606', null, '2b85032f6e27436c8c71069d9894476d', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1596,7 +1596,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115256', null, '2b85032f6e27436c8c71069d9894476d', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 1, null, null, to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115257', null, '2b85032f6e27436c8c71069d9894476d', '有功功率(kW)', 'motorInputActivePower', null, 45, 1, null, null, to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115257', null, '2b85032f6e27436c8c71069d9894476d', '有功功率(kW)', 'averageWatt', null, 45, 1, null, null, to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115197', null, '2b85032f6e27436c8c71069d9894476d', '光杆功率(kW)', 'polishrodPower', null, 46, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1605,7 +1605,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115205', null, '2b85032f6e27436c8c71069d9894476d', '水功率(kW)', 'waterPower', null, 47, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115206', null, '2b85032f6e27436c8c71069d9894476d', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115206', null, '2b85032f6e27436c8c71069d9894476d', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115207', null, '2b85032f6e27436c8c71069d9894476d', '日用电量(kW·h)', 'todayKWattH', null, 49, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1659,7 +1659,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115420', null, '2d78b9eb403447438402afa80f3270c0', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115425', null, '2d78b9eb403447438402afa80f3270c0', '功图工况', 'workingConditionName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115425', null, '2d78b9eb403447438402afa80f3270c0', '功图工况', 'resultName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115426', 'sys', '2d78b9eb403447438402afa80f3270c0', '优化建议', 'optimizationSuggestion', 'width:120', 6, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1695,7 +1695,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117023', null, '2d78b9eb403447438402afa80f3270c0', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117148', null, '2d78b9eb403447438402afa80f3270c0', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117148', null, '2d78b9eb403447438402afa80f3270c0', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118615', 'sys', '2d78b9eb403447438402afa80f3270c0', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1716,7 +1716,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115429', null, '2d78b9eb403447438402afa80f3270c0', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115430', null, '2d78b9eb403447438402afa80f3270c0', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115430', null, '2d78b9eb403447438402afa80f3270c0', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118618', 'sys', '2d78b9eb403447438402afa80f3270c0', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1779,7 +1779,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115451', null, '2d78b9eb403447438402afa80f3270c0', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115452', null, '2d78b9eb403447438402afa80f3270c0', '有功功率(kW)', 'motorInputActivePower', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115452', null, '2d78b9eb403447438402afa80f3270c0', '有功功率(kW)', 'averageWatt', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115453', null, '2d78b9eb403447438402afa80f3270c0', '光杆功率(kW)', 'polishrodPower', null, 46, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1788,7 +1788,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115454', null, '2d78b9eb403447438402afa80f3270c0', '水功率(kW)', 'waterPower', null, 47, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115455', null, '2d78b9eb403447438402afa80f3270c0', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115455', null, '2d78b9eb403447438402afa80f3270c0', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115456', null, '2d78b9eb403447438402afa80f3270c0', '日用电量(kW·h)', 'todayKWattH', null, 49, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1842,7 +1842,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('114996', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115001', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115001', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115002', 'sys', '3a1aff3b8cb441c1b5fe5e0ef100a35a', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1878,7 +1878,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117028', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117149', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '含水率(%)', 'waterCut_W', null, 17, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117149', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '含水率(%)', 'weightWaterCut', null, 17, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118561', 'sys', '3a1aff3b8cb441c1b5fe5e0ef100a35a', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1899,7 +1899,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115005', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115006', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115006', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118564', 'sys', '3a1aff3b8cb441c1b5fe5e0ef100a35a', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1962,7 +1962,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115022', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115023', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '有功功率(kW)', 'motorInputActivePower', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115023', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '有功功率(kW)', 'averageWatt', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115024', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '光杆功率(kW)', 'polishrodPower', null, 46, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -1971,7 +1971,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115025', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '水功率(kW)', 'waterPower', null, 47, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115026', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115026', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115027', null, '3a1aff3b8cb441c1b5fe5e0ef100a35a', '日用电量(kW·h)', 'todayKWattH', null, 49, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2025,7 +2025,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116722', null, '436802a1c0074a79aafd00ce539166f4', '计算状态', 'resultStatus', null, 4, 1, null, '系统管理员', to_date('30-11-2018 10:21:04', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 10:21:04', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116757', null, '436802a1c0074a79aafd00ce539166f4', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, '系统管理员', to_date('30-11-2018 18:11:49', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 18:11:49', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116757', null, '436802a1c0074a79aafd00ce539166f4', '功图工况', 'resultName', 'width:130', 5, 1, null, '系统管理员', to_date('30-11-2018 18:11:49', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 18:11:49', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117031', null, '436802a1c0074a79aafd00ce539166f4', '产液量(t/d)', 'liquidWeightProduction', null, 6, 1, null, null, to_date('30-11-2018 16:32:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 16:32:20', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2067,94 +2067,91 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116694', null, '436802a1c0074a79aafd00ce539166f4', '井口油温(℃)', 'wellHeadFluidTemperature', null, 18, 1, null, '系统管理员', to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116695', null, '436802a1c0074a79aafd00ce539166f4', '含水率(%)', 'waterCut', null, 19, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117150', null, '436802a1c0074a79aafd00ce539166f4', '含水率(%)', 'weightWaterCut', null, 19, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117150', null, '436802a1c0074a79aafd00ce539166f4', '含水率(%)', 'waterCut_W', null, 20, 0, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116696', null, '436802a1c0074a79aafd00ce539166f4', '生产气油比(m^3/t)', 'productionGasOilRatio', 'width:120', 20, 1, null, '系统管理员', to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116696', null, '436802a1c0074a79aafd00ce539166f4', '生产气油比(m^3/t)', 'productionGasOilRatio', 'width:120', 21, 1, null, '系统管理员', to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116697', null, '436802a1c0074a79aafd00ce539166f4', '动液面(m)', 'producingFluidLevel', null, 21, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116697', null, '436802a1c0074a79aafd00ce539166f4', '动液面(m)', 'producingFluidLevel', null, 22, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116698', null, '436802a1c0074a79aafd00ce539166f4', '泵挂(m)', 'pumpSettingDepth', null, 22, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116698', null, '436802a1c0074a79aafd00ce539166f4', '泵挂(m)', 'pumpSettingDepth', null, 23, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('118515', null, '436802a1c0074a79aafd00ce539166f4', '泵类型', 'pumpTypeName', null, 23, 1, null, null, to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('118515', null, '436802a1c0074a79aafd00ce539166f4', '泵类型', 'pumpTypeName', null, 24, 1, null, null, to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'));
+values ('118516', null, '436802a1c0074a79aafd00ce539166f4', '泵筒类型', 'barrelTypeName', null, 24, 1, null, null, to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('118516', null, '436802a1c0074a79aafd00ce539166f4', '泵筒类型', 'barrelTypeName', null, 25, 1, null, null, to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-04-2021 19:22:11', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116699', null, '436802a1c0074a79aafd00ce539166f4', '泵级别', 'pumpGrade', null, 25, 1, null, '系统管理员', to_date('24-06-2014 10:40:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('24-06-2014 10:40:46', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116699', null, '436802a1c0074a79aafd00ce539166f4', '泵级别', 'pumpGrade', null, 26, 1, null, '系统管理员', to_date('24-06-2014 10:40:46', 'dd-mm-yyyy hh24:mi:ss'), to_date('24-06-2014 10:40:46', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116700', null, '436802a1c0074a79aafd00ce539166f4', '泵径(mm)', 'pumpboreDiameter', null, 26, 1, null, '系统管理员', to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116700', null, '436802a1c0074a79aafd00ce539166f4', '泵径(mm)', 'pumpboreDiameter', null, 27, 1, null, '系统管理员', to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2014 13:50:05', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116701', null, '436802a1c0074a79aafd00ce539166f4', '柱塞长(m)', 'plungerLength', null, 27, 1, null, '系统管理员', to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116701', null, '436802a1c0074a79aafd00ce539166f4', '柱塞长(m)', 'plungerLength', null, 28, 1, null, '系统管理员', to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2014 14:10:33', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116702', null, '436802a1c0074a79aafd00ce539166f4', '油管内径(mm)', 'tubingStringInsideDiameter', null, 28, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116702', null, '436802a1c0074a79aafd00ce539166f4', '油管内径(mm)', 'tubingStringInsideDiameter', null, 29, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116703', null, '436802a1c0074a79aafd00ce539166f4', '套管内径(mm)', 'casingStringInsideDiameter', 'width:120', 29, 1, null, '系统管理员', to_date('17-09-2014 14:59:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116703', null, '436802a1c0074a79aafd00ce539166f4', '套管内径(mm)', 'casingStringInsideDiameter', 'width:120', 30, 1, null, '系统管理员', to_date('17-09-2014 14:59:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116704', null, '436802a1c0074a79aafd00ce539166f4', '一级杆级别', 'rodGrade1', null, 30, 1, null, '系统管理员', to_date('30-08-2016 10:59:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 10:59:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116704', null, '436802a1c0074a79aafd00ce539166f4', '一级杆级别', 'rodGrade1', null, 31, 1, null, '系统管理员', to_date('30-08-2016 10:59:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 10:59:52', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116705', null, '436802a1c0074a79aafd00ce539166f4', '一级杆外径(mm)', 'rodOutsideDiameter1', null, 31, 1, null, '系统管理员', to_date('08-06-2018 14:57:23', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:57:23', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116705', null, '436802a1c0074a79aafd00ce539166f4', '一级杆外径(mm)', 'rodOutsideDiameter1', null, 32, 1, null, '系统管理员', to_date('08-06-2018 14:57:23', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:57:23', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116706', null, '436802a1c0074a79aafd00ce539166f4', '一级杆内径(mm)', 'rodInsideDiameter1', null, 32, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116706', null, '436802a1c0074a79aafd00ce539166f4', '一级杆内径(mm)', 'rodInsideDiameter1', null, 33, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116707', null, '436802a1c0074a79aafd00ce539166f4', '一级杆长度(m)', 'rodLength1', null, 33, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116707', null, '436802a1c0074a79aafd00ce539166f4', '一级杆长度(m)', 'rodLength1', null, 34, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116708', null, '436802a1c0074a79aafd00ce539166f4', '二级杆级别', 'rodGrade2', null, 34, 1, null, '系统管理员', to_date('30-08-2016 11:00:14', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 11:00:14', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116708', null, '436802a1c0074a79aafd00ce539166f4', '二级杆级别', 'rodGrade2', null, 35, 1, null, '系统管理员', to_date('30-08-2016 11:00:14', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 11:00:14', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116709', null, '436802a1c0074a79aafd00ce539166f4', '二级杆外径(mm)', 'rodOutsideDiameter2', null, 35, 1, null, '系统管理员', to_date('08-06-2018 14:57:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:57:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116709', null, '436802a1c0074a79aafd00ce539166f4', '二级杆外径(mm)', 'rodOutsideDiameter2', null, 36, 1, null, '系统管理员', to_date('08-06-2018 14:57:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:57:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116710', null, '436802a1c0074a79aafd00ce539166f4', '二级杆内径(mm)', 'rodInsideDiameter2', null, 36, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116710', null, '436802a1c0074a79aafd00ce539166f4', '二级杆内径(mm)', 'rodInsideDiameter2', null, 37, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116711', null, '436802a1c0074a79aafd00ce539166f4', '二级杆长度(m)', 'rodLength2', null, 37, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116711', null, '436802a1c0074a79aafd00ce539166f4', '二级杆长度(m)', 'rodLength2', null, 38, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116712', null, '436802a1c0074a79aafd00ce539166f4', '三级杆级别', 'rodGrade3', null, 38, 1, null, '系统管理员', to_date('30-08-2016 11:00:25', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 11:00:25', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116712', null, '436802a1c0074a79aafd00ce539166f4', '三级杆级别', 'rodGrade3', null, 39, 1, null, '系统管理员', to_date('30-08-2016 11:00:25', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-08-2016 11:00:25', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116713', null, '436802a1c0074a79aafd00ce539166f4', '三级杆外径(mm)', 'rodOutsideDiameter3', null, 39, 1, null, '系统管理员', to_date('08-06-2018 14:58:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:58:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116713', null, '436802a1c0074a79aafd00ce539166f4', '三级杆外径(mm)', 'rodOutsideDiameter3', null, 40, 1, null, '系统管理员', to_date('08-06-2018 14:58:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:58:00', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116714', null, '436802a1c0074a79aafd00ce539166f4', '三级杆内径(mm)', 'rodInsideDiameter3', null, 40, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116714', null, '436802a1c0074a79aafd00ce539166f4', '三级杆内径(mm)', 'rodInsideDiameter3', null, 41, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116715', null, '436802a1c0074a79aafd00ce539166f4', '三级杆长度(m)', 'rodLength3', null, 41, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116715', null, '436802a1c0074a79aafd00ce539166f4', '三级杆长度(m)', 'rodLength3', null, 42, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116716', null, '436802a1c0074a79aafd00ce539166f4', '四级杆级别', 'rodGrade4', null, 42, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116716', null, '436802a1c0074a79aafd00ce539166f4', '四级杆级别', 'rodGrade4', null, 43, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116717', null, '436802a1c0074a79aafd00ce539166f4', '四级杆外径(mm)', 'rodOutsideDiameter4', null, 43, 1, null, '系统管理员', to_date('08-06-2018 14:58:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:58:11', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116717', null, '436802a1c0074a79aafd00ce539166f4', '四级杆外径(mm)', 'rodOutsideDiameter4', null, 44, 1, null, '系统管理员', to_date('08-06-2018 14:58:11', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-06-2018 14:58:11', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116718', null, '436802a1c0074a79aafd00ce539166f4', '四级杆内径(mm)', 'rodInsideDiameter4', null, 44, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116718', null, '436802a1c0074a79aafd00ce539166f4', '四级杆内径(mm)', 'rodInsideDiameter4', null, 45, 1, null, null, to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 14:31:51', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116719', null, '436802a1c0074a79aafd00ce539166f4', '四级杆长度(m)', 'rodLength4', null, 45, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116719', null, '436802a1c0074a79aafd00ce539166f4', '四级杆长度(m)', 'rodLength4', null, 46, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116788', null, '436802a1c0074a79aafd00ce539166f4', '锚定状态', 'anchoringStateName', null, 46, 1, null, null, to_date('23-02-2019 14:46:06', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:46:06', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116788', null, '436802a1c0074a79aafd00ce539166f4', '锚定状态', 'anchoringStateName', null, 47, 1, null, null, to_date('23-02-2019 14:46:06', 'dd-mm-yyyy hh24:mi:ss'), to_date('23-02-2019 14:46:06', 'dd-mm-yyyy hh24:mi:ss'));
-
-insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116720', null, '436802a1c0074a79aafd00ce539166f4', '净毛比', 'netGrossRatio', null, 48, 1, null, '系统管理员', to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116720', null, '436802a1c0074a79aafd00ce539166f4', '净毛比', 'netGrossRatio', null, 47, 1, null, '系统管理员', to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-11-2018 10:20:58', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115068', null, '471e78c093194dbb95b0218f1e601082', '序号', 'id', 'width:40', 1, 1, null, null, to_date('09-08-2018 18:07:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-08-2018 18:07:56', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2169,7 +2166,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115070', null, '471e78c093194dbb95b0218f1e601082', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115075', null, '471e78c093194dbb95b0218f1e601082', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115075', null, '471e78c093194dbb95b0218f1e601082', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115076', 'sys', '471e78c093194dbb95b0218f1e601082', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2205,7 +2202,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117035', null, '471e78c093194dbb95b0218f1e601082', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117151', null, '471e78c093194dbb95b0218f1e601082', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117151', null, '471e78c093194dbb95b0218f1e601082', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118573', 'sys', '471e78c093194dbb95b0218f1e601082', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2226,7 +2223,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115079', null, '471e78c093194dbb95b0218f1e601082', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115080', null, '471e78c093194dbb95b0218f1e601082', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115080', null, '471e78c093194dbb95b0218f1e601082', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118576', 'sys', '471e78c093194dbb95b0218f1e601082', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2289,7 +2286,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115096', null, '471e78c093194dbb95b0218f1e601082', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115097', null, '471e78c093194dbb95b0218f1e601082', '有功功率(kW)', 'motorInputActivePower', null, 45, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115097', null, '471e78c093194dbb95b0218f1e601082', '有功功率(kW)', 'averageWatt', null, 45, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115098', null, '471e78c093194dbb95b0218f1e601082', '光杆功率(kW)', 'polishrodPower', null, 46, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2298,7 +2295,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115099', null, '471e78c093194dbb95b0218f1e601082', '水功率(kW)', 'waterPower', null, 47, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115100', null, '471e78c093194dbb95b0218f1e601082', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115100', null, '471e78c093194dbb95b0218f1e601082', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115101', null, '471e78c093194dbb95b0218f1e601082', '日用电量(kW·h)', 'todayKWattH', null, 49, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2379,10 +2376,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115592', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115593', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115593', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117441', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117441', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115594', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2397,7 +2394,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117040', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '产水量(t/d)', 'waterWeightProduction', '', 19, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117152', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '含水率(%)', 'waterCut_W', '', 20, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117152', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '含水率(%)', 'weightWaterCut', '', 20, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115601', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2409,7 +2406,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115603', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115604', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115604', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115611', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2460,7 +2457,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115624', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115625', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115625', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115626', '', '4772d5aa051f4e0d87e14ff0a6f6417f', '日用电量(kW·h)', 'todayKWattH', '', 42, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2535,10 +2532,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115862', '', '48f90b3c24fd424288958ab65b4cd2bc', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115863', '', '48f90b3c24fd424288958ab65b4cd2bc', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115863', '', '48f90b3c24fd424288958ab65b4cd2bc', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117450', '', '48f90b3c24fd424288958ab65b4cd2bc', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117450', '', '48f90b3c24fd424288958ab65b4cd2bc', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115864', '', '48f90b3c24fd424288958ab65b4cd2bc', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2553,7 +2550,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117043', '', '48f90b3c24fd424288958ab65b4cd2bc', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117153', '', '48f90b3c24fd424288958ab65b4cd2bc', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117153', '', '48f90b3c24fd424288958ab65b4cd2bc', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115871', '', '48f90b3c24fd424288958ab65b4cd2bc', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2565,7 +2562,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115873', '', '48f90b3c24fd424288958ab65b4cd2bc', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115874', '', '48f90b3c24fd424288958ab65b4cd2bc', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115874', '', '48f90b3c24fd424288958ab65b4cd2bc', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115881', '', '48f90b3c24fd424288958ab65b4cd2bc', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2616,7 +2613,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115894', '', '48f90b3c24fd424288958ab65b4cd2bc', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115895', '', '48f90b3c24fd424288958ab65b4cd2bc', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115895', '', '48f90b3c24fd424288958ab65b4cd2bc', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115896', '', '48f90b3c24fd424288958ab65b4cd2bc', '日用电量(kW·h)', 'todayKWattH', '', 42, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2664,7 +2661,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116927', null, '4d9c05e7e731431c801a5995521d7e8b', '通信状态', 'commStatusName', 'width:80', 4, 1, null, null, to_date('26-07-2018 18:22:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('26-07-2018 18:22:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116935', null, '4d9c05e7e731431c801a5995521d7e8b', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, '系统管理员', to_date('30-03-2020 11:18:31', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-03-2020 11:18:31', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116935', null, '4d9c05e7e731431c801a5995521d7e8b', '功图工况', 'resultName', 'width:130', 5, 1, null, '系统管理员', to_date('30-03-2020 11:18:31', 'dd-mm-yyyy hh24:mi:ss'), to_date('30-03-2020 11:18:31', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116936', 'sys', '4d9c05e7e731431c801a5995521d7e8b', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2700,7 +2697,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117046', null, '4d9c05e7e731431c801a5995521d7e8b', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117154', null, '4d9c05e7e731431c801a5995521d7e8b', '含水率(%)', 'waterCut_W', null, 17, 1, null, null, to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117154', null, '4d9c05e7e731431c801a5995521d7e8b', '含水率(%)', 'weightWaterCut', null, 17, 1, null, null, to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118555', null, '4d9c05e7e731431c801a5995521d7e8b', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2721,7 +2718,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116939', null, '4d9c05e7e731431c801a5995521d7e8b', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116940', null, '4d9c05e7e731431c801a5995521d7e8b', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116940', null, '4d9c05e7e731431c801a5995521d7e8b', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118558', null, '4d9c05e7e731431c801a5995521d7e8b', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2784,7 +2781,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116961', null, '4d9c05e7e731431c801a5995521d7e8b', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116962', null, '4d9c05e7e731431c801a5995521d7e8b', '有功功率(kW)', 'motorInputActivePower', null, 45, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116962', null, '4d9c05e7e731431c801a5995521d7e8b', '有功功率(kW)', 'averageWatt', null, 45, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116963', null, '4d9c05e7e731431c801a5995521d7e8b', '光杆功率(kW)', 'polishrodPower', null, 46, 0, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2793,7 +2790,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116964', null, '4d9c05e7e731431c801a5995521d7e8b', '水功率(kW)', 'waterPower', null, 47, 0, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116965', null, '4d9c05e7e731431c801a5995521d7e8b', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 0, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116965', null, '4d9c05e7e731431c801a5995521d7e8b', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 0, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116966', null, '4d9c05e7e731431c801a5995521d7e8b', '日用电量(kW·h)', 'todayKWattH', null, 49, 0, null, null, to_date('13-08-2018 14:11:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:11:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2902,7 +2899,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116174', '', '5ffd914da7f3471e9be09c89ee018851', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116175', '', '5ffd914da7f3471e9be09c89ee018851', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116175', '', '5ffd914da7f3471e9be09c89ee018851', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116176', 'sys', '5ffd914da7f3471e9be09c89ee018851', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2917,7 +2914,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117051', '', '5ffd914da7f3471e9be09c89ee018851', '产水量(t/d)', 'waterWeightProduction', '', 16, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117155', '', '5ffd914da7f3471e9be09c89ee018851', '含水率(%)', 'waterCut_W', '', 17, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117155', '', '5ffd914da7f3471e9be09c89ee018851', '含水率(%)', 'weightWaterCut', '', 17, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116177', '', '5ffd914da7f3471e9be09c89ee018851', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2929,7 +2926,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116179', '', '5ffd914da7f3471e9be09c89ee018851', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116180', '', '5ffd914da7f3471e9be09c89ee018851', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116180', '', '5ffd914da7f3471e9be09c89ee018851', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116185', '', '5ffd914da7f3471e9be09c89ee018851', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2941,13 +2938,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116193', '', '5ffd914da7f3471e9be09c89ee018851', '系统效率(%)', 'systemEfficiency', '', 24, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116194', '', '5ffd914da7f3471e9be09c89ee018851', '有功功率(kW)', 'motorInputActivePower', '', 25, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116194', '', '5ffd914da7f3471e9be09c89ee018851', '有功功率(kW)', 'averageWatt', '', 25, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116195', '', '5ffd914da7f3471e9be09c89ee018851', '水功率(kW)', 'waterPower', '', 26, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116196', '', '5ffd914da7f3471e9be09c89ee018851', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116196', '', '5ffd914da7f3471e9be09c89ee018851', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116197', '', '5ffd914da7f3471e9be09c89ee018851', '日用电量(kW·h)', 'todayKWattH', '', 28, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -2998,7 +2995,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115144', null, '60757e6c950047ccb0b2b98c59fc3e02', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115149', null, '60757e6c950047ccb0b2b98c59fc3e02', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115149', null, '60757e6c950047ccb0b2b98c59fc3e02', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115150', 'sys', '60757e6c950047ccb0b2b98c59fc3e02', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3034,7 +3031,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117054', null, '60757e6c950047ccb0b2b98c59fc3e02', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117156', null, '60757e6c950047ccb0b2b98c59fc3e02', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117156', null, '60757e6c950047ccb0b2b98c59fc3e02', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118597', 'sys', '60757e6c950047ccb0b2b98c59fc3e02', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3055,7 +3052,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115153', null, '60757e6c950047ccb0b2b98c59fc3e02', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115154', null, '60757e6c950047ccb0b2b98c59fc3e02', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115154', null, '60757e6c950047ccb0b2b98c59fc3e02', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118600', 'sys', '60757e6c950047ccb0b2b98c59fc3e02', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3118,7 +3115,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115172', null, '60757e6c950047ccb0b2b98c59fc3e02', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116082', null, '60757e6c950047ccb0b2b98c59fc3e02', '有功功率(kW)', 'motorInputActivePower', null, 45, 1, null, null, to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116082', null, '60757e6c950047ccb0b2b98c59fc3e02', '有功功率(kW)', 'averageWatt', null, 45, 1, null, null, to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115173', null, '60757e6c950047ccb0b2b98c59fc3e02', '光杆功率(kW)', 'polishrodPower', null, 46, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3127,7 +3124,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115174', null, '60757e6c950047ccb0b2b98c59fc3e02', '水功率(kW)', 'waterPower', null, 47, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115175', null, '60757e6c950047ccb0b2b98c59fc3e02', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115175', null, '60757e6c950047ccb0b2b98c59fc3e02', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115176', null, '60757e6c950047ccb0b2b98c59fc3e02', '日用电量(kW·h)', 'todayKWattH', null, 49, 1, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3205,16 +3202,16 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117679', '', '67fe9e22298d487e8e23a7996710281f', 'C相电压(V)', 'Vc', '', 8, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117680', '', '67fe9e22298d487e8e23a7996710281f', '有功功率(kW)', 'wattSum', '', 9, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117680', '', '67fe9e22298d487e8e23a7996710281f', '有功功率(kW)', 'watt3', '', 9, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117681', '', '67fe9e22298d487e8e23a7996710281f', '无功功率(kVar)', 'varSum', '', 10, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117681', '', '67fe9e22298d487e8e23a7996710281f', '无功功率(kVar)', 'var3', '', 10, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117682', '', '67fe9e22298d487e8e23a7996710281f', '视在功率(kVA)', 'vaSum', '', 11, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117682', '', '67fe9e22298d487e8e23a7996710281f', '视在功率(kVA)', 'va3', '', 11, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117683', '', '67fe9e22298d487e8e23a7996710281f', '功率因数', 'PFSum', '', 12, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117683', '', '67fe9e22298d487e8e23a7996710281f', '功率因数', 'pf3', '', 12, 1, '', '', to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:23:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117819', '', '67fe9e22298d487e8e23a7996710281f', '油压(MPa)', 'tubingPressure', '', 13, 1, '', '', to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3259,7 +3256,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116482', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '运行区间', 'runRange', 'width:80', 11, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116483', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116483', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116484', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3274,7 +3271,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117059', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117157', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117157', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116491', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3286,7 +3283,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116493', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116494', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116494', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116500', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '泵效(%)', 'pumpEff', '', 22, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3298,7 +3295,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116504', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116505', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116505', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116506', '', '6b809c8d0e3d4a2a8acbe226a42e316d', '日用电量(kW·h)', 'todayKWattH', '', 26, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3424,7 +3421,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116378', '', '78a25e023ced46e689e68e795db78ac4', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116379', '', '78a25e023ced46e689e68e795db78ac4', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116379', '', '78a25e023ced46e689e68e795db78ac4', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116380', 'sys', '78a25e023ced46e689e68e795db78ac4', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3439,7 +3436,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117062', '', '78a25e023ced46e689e68e795db78ac4', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117158', '', '78a25e023ced46e689e68e795db78ac4', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117158', '', '78a25e023ced46e689e68e795db78ac4', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116381', '', '78a25e023ced46e689e68e795db78ac4', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3451,7 +3448,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116383', '', '78a25e023ced46e689e68e795db78ac4', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116384', '', '78a25e023ced46e689e68e795db78ac4', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116384', '', '78a25e023ced46e689e68e795db78ac4', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116389', '', '78a25e023ced46e689e68e795db78ac4', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3463,13 +3460,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116397', '', '78a25e023ced46e689e68e795db78ac4', '系统效率(%)', 'systemEfficiency', '', 24, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116398', '', '78a25e023ced46e689e68e795db78ac4', '有功功率(kW)', 'motorInputActivePower', '', 25, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116398', '', '78a25e023ced46e689e68e795db78ac4', '有功功率(kW)', 'averageWatt', '', 25, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116399', '', '78a25e023ced46e689e68e795db78ac4', '水功率(kW)', 'waterPower', '', 26, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116400', '', '78a25e023ced46e689e68e795db78ac4', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116400', '', '78a25e023ced46e689e68e795db78ac4', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116401', '', '78a25e023ced46e689e68e795db78ac4', '日用电量(kW·h)', 'todayKWattH', '', 28, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3544,10 +3541,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('114923', null, '7d69ed05294d43c9ac43719f05ed1626', '井口油温(℃)', 'wellHeadFluidTemperature', null, 15, 1, null, '系统管理员', to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114924', null, '7d69ed05294d43c9ac43719f05ed1626', '含水率(%)', 'waterCut_W', null, 17, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114924', null, '7d69ed05294d43c9ac43719f05ed1626', '含水率(%)', 'weightWaterCut', null, 17, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('118300', null, '7d69ed05294d43c9ac43719f05ed1626', '含水率(%)', 'waterCut', null, 18, 0, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('118300', null, '7d69ed05294d43c9ac43719f05ed1626', '含水率(%)', 'volumeWaterCut', null, 18, 0, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114925', null, '7d69ed05294d43c9ac43719f05ed1626', '生产气油比(m^3/t)', 'productionGasOilRatio', 'width:120', 19, 1, null, '系统管理员', to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3637,8 +3634,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('118635', null, '7d69ed05294d43c9ac43719f05ed1626', '时率来源', 'runtimeEfficiencySourceName', null, 48, 1, null, '系统管理员', to_date('13-06-2018 15:27:50', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-06-2018 15:27:50', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114953', null, '7d69ed05294d43c9ac43719f05ed1626', '更新时间', 'acqTime
-', 'width:150', 49, 1, null, '系统管理员', to_date('13-06-2018 15:27:50', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-06-2018 15:27:50', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114953', null, '7d69ed05294d43c9ac43719f05ed1626', '更新时间', 'acqTime', 'width:150', 49, 1, null, '系统管理员', to_date('13-06-2018 15:27:50', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-06-2018 15:27:50', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114887', '', '81edf07422614b1b85f96bb6d0355a79', '序号', 'jlbh', 'width:50', 1, 1, '', '系统管理员', to_date('07-06-2018 16:01:01', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-06-2018 16:01:01', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3701,7 +3697,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116447', '', '833a3131a0194af89d5ebf5e839d06bb', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116448', '', '833a3131a0194af89d5ebf5e839d06bb', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116448', '', '833a3131a0194af89d5ebf5e839d06bb', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116449', '', '833a3131a0194af89d5ebf5e839d06bb', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3716,7 +3712,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117065', '', '833a3131a0194af89d5ebf5e839d06bb', '产水量(t/d)', 'waterWeightProduction', '', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117159', '', '833a3131a0194af89d5ebf5e839d06bb', '含水率(%)', 'waterCut_W', '', 17, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117159', '', '833a3131a0194af89d5ebf5e839d06bb', '含水率(%)', 'weightWaterCut', '', 17, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116456', '', '833a3131a0194af89d5ebf5e839d06bb', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3728,7 +3724,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116458', '', '833a3131a0194af89d5ebf5e839d06bb', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116459', '', '833a3131a0194af89d5ebf5e839d06bb', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116459', '', '833a3131a0194af89d5ebf5e839d06bb', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116465', '', '833a3131a0194af89d5ebf5e839d06bb', '泵效(%)', 'pumpEff', '', 22, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3740,7 +3736,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116469', '', '833a3131a0194af89d5ebf5e839d06bb', '系统效率(%)', 'systemEfficiency', '', 24, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116470', '', '833a3131a0194af89d5ebf5e839d06bb', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116470', '', '833a3131a0194af89d5ebf5e839d06bb', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116471', '', '833a3131a0194af89d5ebf5e839d06bb', '日用电量(kW·h)', 'todayKWattH', '', 26, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3824,10 +3820,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115952', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115953', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115953', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117451', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117451', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115954', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3842,7 +3838,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117068', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117160', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117160', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115961', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3854,7 +3850,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115963', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115964', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115964', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115971', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3905,7 +3901,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115984', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115985', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115985', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115986', '', '83a832d00d9b40c7afd9f1acf2e4e2d1', '日用电量(kW·h)', 'todayKWattH', '', 42, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3974,7 +3970,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116622', '', '86dc8dff3f634944a2b7ee35ec6e5953', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116623', '', '86dc8dff3f634944a2b7ee35ec6e5953', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116623', '', '86dc8dff3f634944a2b7ee35ec6e5953', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116624', '', '86dc8dff3f634944a2b7ee35ec6e5953', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -3989,7 +3985,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117071', '', '86dc8dff3f634944a2b7ee35ec6e5953', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117161', '', '86dc8dff3f634944a2b7ee35ec6e5953', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117161', '', '86dc8dff3f634944a2b7ee35ec6e5953', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116631', '', '86dc8dff3f634944a2b7ee35ec6e5953', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4001,7 +3997,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116633', '', '86dc8dff3f634944a2b7ee35ec6e5953', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116634', '', '86dc8dff3f634944a2b7ee35ec6e5953', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116634', '', '86dc8dff3f634944a2b7ee35ec6e5953', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116640', '', '86dc8dff3f634944a2b7ee35ec6e5953', '泵效(%)', 'pumpEff', '', 22, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4013,7 +4009,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116644', '', '86dc8dff3f634944a2b7ee35ec6e5953', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116645', '', '86dc8dff3f634944a2b7ee35ec6e5953', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116645', '', '86dc8dff3f634944a2b7ee35ec6e5953', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116646', '', '86dc8dff3f634944a2b7ee35ec6e5953', '日用电量(kW·h)', 'todayKWattH', '', 26, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4153,7 +4149,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117602', '', '8bdec79988cf47f681fc6e9524a097e7', '产水量(t/d)', 'waterWeightProduction', '', 13, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117603', '', '8bdec79988cf47f681fc6e9524a097e7', '含水率(%)', 'waterCut_W', '', 14, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117603', '', '8bdec79988cf47f681fc6e9524a097e7', '含水率(%)', 'weightWaterCut', '', 14, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117604', '', '8bdec79988cf47f681fc6e9524a097e7', '有效冲程计算产量(t/d)', 'availableStrokeProd_w', '', 15, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4180,7 +4176,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117611', '', '8bdec79988cf47f681fc6e9524a097e7', '产水量(m^3/d)', 'waterVolumetricProduction', '', 22, 0, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117612', '', '8bdec79988cf47f681fc6e9524a097e7', '含水率(%)', 'waterCut', '', 23, 0, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117612', '', '8bdec79988cf47f681fc6e9524a097e7', '含水率(%)', 'volumeWaterCut', '', 23, 0, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117613', '', '8bdec79988cf47f681fc6e9524a097e7', '有效冲程计算产量(m^3/d)', 'availableStrokeProd_v', '', 24, 0, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4264,7 +4260,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117637', '', '8bdec79988cf47f681fc6e9524a097e7', '系统效率(%)', 'systemEfficiency', '', 50, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117638', '', '8bdec79988cf47f681fc6e9524a097e7', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', '', 51, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117638', '', '8bdec79988cf47f681fc6e9524a097e7', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', '', 51, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117639', '', '8bdec79988cf47f681fc6e9524a097e7', '有功功率(kW)', 'avgWatt', '', 52, 1, '', '', to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 15:42:56', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4351,7 +4347,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117689', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '产水量(t/d)', 'waterWeightProduction', '', 6, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117690', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '含水率(%)', 'waterCut_W', '', 7, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117690', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '含水率(%)', 'weightWaterCut', '', 7, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117691', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 8, 0, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4363,7 +4359,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117693', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '产水量(m^3/d)', 'waterVolumetricProduction', '', 10, 0, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117694', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '含水率(%)', 'waterCut', '', 11, 0, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117694', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '含水率(%)', 'volumeWaterCut', '', 11, 0, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117695', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '容积效率(%)', 'pumpEff1', '', 12, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4378,7 +4374,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117698', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '系统效率(%)', 'systemEfficiency', '', 15, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117699', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', '', 16, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117699', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', '', 16, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117700', '', '8db3cdaa4ddc483d99e6abd7ee7db4e5', '有功功率(kW)', 'avgWatt', '', 17, 1, '', '', to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 09:12:52', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4447,10 +4443,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116042', '', '8f19f0c54eb54a59abe1ba518994fda5', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116043', '', '8f19f0c54eb54a59abe1ba518994fda5', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116043', '', '8f19f0c54eb54a59abe1ba518994fda5', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117447', '', '8f19f0c54eb54a59abe1ba518994fda5', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117447', '', '8f19f0c54eb54a59abe1ba518994fda5', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116044', '', '8f19f0c54eb54a59abe1ba518994fda5', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4465,7 +4461,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117074', '', '8f19f0c54eb54a59abe1ba518994fda5', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117162', '', '8f19f0c54eb54a59abe1ba518994fda5', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117162', '', '8f19f0c54eb54a59abe1ba518994fda5', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116051', '', '8f19f0c54eb54a59abe1ba518994fda5', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4477,7 +4473,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116053', '', '8f19f0c54eb54a59abe1ba518994fda5', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116054', '', '8f19f0c54eb54a59abe1ba518994fda5', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116054', '', '8f19f0c54eb54a59abe1ba518994fda5', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116061', '', '8f19f0c54eb54a59abe1ba518994fda5', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4528,7 +4524,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116072', '', '8f19f0c54eb54a59abe1ba518994fda5', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 1, '', '', to_date('16-08-2018 15:41:56', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:41:56', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116075', '', '8f19f0c54eb54a59abe1ba518994fda5', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116075', '', '8f19f0c54eb54a59abe1ba518994fda5', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116076', '', '8f19f0c54eb54a59abe1ba518994fda5', '日用电量(kW·h)', 'todayKWattH', '', 42, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4597,7 +4593,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116208', '', '91426be0e4a64cd189119e7b3c793f06', '运行区间', 'runRange', 'width:80', 11, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116209', '', '91426be0e4a64cd189119e7b3c793f06', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116209', '', '91426be0e4a64cd189119e7b3c793f06', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116210', 'sys', '91426be0e4a64cd189119e7b3c793f06', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4612,7 +4608,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117077', '', '91426be0e4a64cd189119e7b3c793f06', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117163', '', '91426be0e4a64cd189119e7b3c793f06', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117163', '', '91426be0e4a64cd189119e7b3c793f06', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116211', '', '91426be0e4a64cd189119e7b3c793f06', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4624,7 +4620,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116213', '', '91426be0e4a64cd189119e7b3c793f06', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116214', '', '91426be0e4a64cd189119e7b3c793f06', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116214', '', '91426be0e4a64cd189119e7b3c793f06', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116219', '', '91426be0e4a64cd189119e7b3c793f06', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4636,13 +4632,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116227', '', '91426be0e4a64cd189119e7b3c793f06', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116228', '', '91426be0e4a64cd189119e7b3c793f06', '有功功率(kW)', 'motorInputActivePower', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116228', '', '91426be0e4a64cd189119e7b3c793f06', '有功功率(kW)', 'averageWatt', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116229', '', '91426be0e4a64cd189119e7b3c793f06', '水功率(kW)', 'waterPower', '', 26, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116230', '', '91426be0e4a64cd189119e7b3c793f06', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116230', '', '91426be0e4a64cd189119e7b3c793f06', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116231', '', '91426be0e4a64cd189119e7b3c793f06', '日用电量(kW·h)', 'todayKWattH', '', 28, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4714,7 +4710,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115311', '', '91906faed3d64b85b7ce567ad10e2735', '运行区间', 'runRange', 'width:80', 11, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115312', '', '91906faed3d64b85b7ce567ad10e2735', '电参工况', 'workingConditionName_E', 'width:130', 12, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115312', '', '91906faed3d64b85b7ce567ad10e2735', '电参工况', 'resultName_E', 'width:130', 12, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115313', 'sys', '91906faed3d64b85b7ce567ad10e2735', '功率平衡状态', 'wattDegreeBalanceName', '', 13, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4822,7 +4818,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116344', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116345', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116345', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116346', 'sys', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4837,7 +4833,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117083', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117165', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117165', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116347', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4849,7 +4845,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116349', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116350', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116350', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116355', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4861,13 +4857,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116363', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116364', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '有功功率(kW)', 'motorInputActivePower', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116364', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '有功功率(kW)', 'averageWatt', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116365', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '水功率(kW)', 'waterPower', '', 26, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116366', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116366', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116367', '', '93bdeb42331e4ba5af1ca5f2ecd4ec4f', '日用电量(kW·h)', 'todayKWattH', '', 28, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4912,7 +4908,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('114880', '', '9439b5be24c04491aa8c353e7c65a0ea', '报警类型', 'alarmtypename', '', 2, 1, '', '系统管理员', to_date('13-11-2018 17:26:08', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-11-2018 17:26:08', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('114879', '', '9439b5be24c04491aa8c353e7c65a0ea', '报警项', 'workingconditionname', '', 3, 1, '', '系统管理员', to_date('13-11-2018 17:26:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-11-2018 17:26:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('114879', '', '9439b5be24c04491aa8c353e7c65a0ea', '报警项', 'resultname', '', 3, 1, '', '系统管理员', to_date('13-11-2018 17:26:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-11-2018 17:26:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114881', '', '9439b5be24c04491aa8c353e7c65a0ea', '报警级别', 'alarmlevelname', '', 4, 1, '', '系统管理员', to_date('24-06-2014 15:52:52', 'dd-mm-yyyy hh24:mi:ss'), to_date('24-06-2014 15:52:52', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4957,7 +4953,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116276', '', '96f945b4e44d4f4aaa7e434906e30278', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116277', '', '96f945b4e44d4f4aaa7e434906e30278', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116277', '', '96f945b4e44d4f4aaa7e434906e30278', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116278', 'sys', '96f945b4e44d4f4aaa7e434906e30278', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4972,7 +4968,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117086', '', '96f945b4e44d4f4aaa7e434906e30278', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117166', '', '96f945b4e44d4f4aaa7e434906e30278', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117166', '', '96f945b4e44d4f4aaa7e434906e30278', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116279', '', '96f945b4e44d4f4aaa7e434906e30278', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4984,7 +4980,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116281', '', '96f945b4e44d4f4aaa7e434906e30278', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116282', '', '96f945b4e44d4f4aaa7e434906e30278', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116282', '', '96f945b4e44d4f4aaa7e434906e30278', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116287', '', '96f945b4e44d4f4aaa7e434906e30278', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -4996,13 +4992,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116295', '', '96f945b4e44d4f4aaa7e434906e30278', '系统效率(%)', 'systemEfficiency', '', 24, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116296', '', '96f945b4e44d4f4aaa7e434906e30278', '有功功率(kW)', 'motorInputActivePower', '', 25, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116296', '', '96f945b4e44d4f4aaa7e434906e30278', '有功功率(kW)', 'averageWatt', '', 25, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116297', '', '96f945b4e44d4f4aaa7e434906e30278', '水功率(kW)', 'waterPower', '', 26, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116298', '', '96f945b4e44d4f4aaa7e434906e30278', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116298', '', '96f945b4e44d4f4aaa7e434906e30278', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116299', '', '96f945b4e44d4f4aaa7e434906e30278', '日用电量(kW·h)', 'todayKWattH', '', 28, 1, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5074,7 +5070,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116412', '', '992d6089eed749ff980f1259d511549c', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116413', '', '992d6089eed749ff980f1259d511549c', '电参工况', 'workingConditionName', 'width:130', 12, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116413', '', '992d6089eed749ff980f1259d511549c', '电参工况', 'resultName', 'width:130', 12, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116414', '', '992d6089eed749ff980f1259d511549c', '优化建议', 'optimizationSuggestion', 'width:120', 13, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5089,7 +5085,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117089', '', '992d6089eed749ff980f1259d511549c', '产水量(t/d)', 'waterWeightProduction', '', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117167', '', '992d6089eed749ff980f1259d511549c', '含水率(%)', 'waterCut_W', '', 17, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117167', '', '992d6089eed749ff980f1259d511549c', '含水率(%)', 'weightWaterCut', '', 17, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116421', '', '992d6089eed749ff980f1259d511549c', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5101,7 +5097,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116423', '', '992d6089eed749ff980f1259d511549c', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116424', '', '992d6089eed749ff980f1259d511549c', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116424', '', '992d6089eed749ff980f1259d511549c', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116430', '', '992d6089eed749ff980f1259d511549c', '泵效(%)', 'pumpEff', '', 22, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5113,7 +5109,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116434', '', '992d6089eed749ff980f1259d511549c', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116435', '', '992d6089eed749ff980f1259d511549c', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116435', '', '992d6089eed749ff980f1259d511549c', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116436', '', '992d6089eed749ff980f1259d511549c', '日用电量(kW·h)', 'todayKWattH', '', 26, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5167,7 +5163,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117711', '', '99864b7feacf42bfb87521d994f5b148', '产水量(t/d)', 'waterWeightProduction', '', 3, 1, '', '系统管理员', to_date('21-07-2020 18:34:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('21-07-2020 18:34:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117712', '', '99864b7feacf42bfb87521d994f5b148', '含水率(%)', 'waterCut_W', '', 4, 1, '', '系统管理员', to_date('21-07-2020 18:34:47', 'dd-mm-yyyy hh24:mi:ss'), to_date('21-07-2020 18:34:47', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117712', '', '99864b7feacf42bfb87521d994f5b148', '含水率(%)', 'weightWaterCut', '', 4, 1, '', '系统管理员', to_date('21-07-2020 18:34:47', 'dd-mm-yyyy hh24:mi:ss'), to_date('21-07-2020 18:34:47', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117713', '', '99864b7feacf42bfb87521d994f5b148', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 5, 0, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5179,7 +5175,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117715', '', '99864b7feacf42bfb87521d994f5b148', '产水量(m^3/d)', 'waterVolumetricProduction', '', 7, 0, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117716', '', '99864b7feacf42bfb87521d994f5b148', '含水率(%)', 'waterCut', '', 8, 0, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117716', '', '99864b7feacf42bfb87521d994f5b148', '含水率(%)', 'volumeWaterCut', '', 8, 0, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117717', '', '99864b7feacf42bfb87521d994f5b148', '公称排量(ml/r)', 'qpr', '', 9, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5197,10 +5193,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117721', '', '99864b7feacf42bfb87521d994f5b148', '系统效率(%)', 'systemEfficiency', '', 13, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117722', '', '99864b7feacf42bfb87521d994f5b148', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', '', 14, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117722', '', '99864b7feacf42bfb87521d994f5b148', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', '', 14, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117723', '', '99864b7feacf42bfb87521d994f5b148', '有功功率(kW)', 'motorInputActivePower', '', 15, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117723', '', '99864b7feacf42bfb87521d994f5b148', '有功功率(kW)', 'averageWatt', '', 15, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117724', '', '99864b7feacf42bfb87521d994f5b148', '水功率(kW)', 'waterPower', '', 16, 1, '', '', to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 18:27:45', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5299,10 +5295,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115758', '', '9a14b6162eb4469dbd170b33efc70889', '运行区间', 'runRange', 'width:80', 13, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115722', '', '9a14b6162eb4469dbd170b33efc70889', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115722', '', '9a14b6162eb4469dbd170b33efc70889', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117445', '', '9a14b6162eb4469dbd170b33efc70889', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117445', '', '9a14b6162eb4469dbd170b33efc70889', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115759', '', '9a14b6162eb4469dbd170b33efc70889', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5317,7 +5313,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117092', '', '9a14b6162eb4469dbd170b33efc70889', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117168', '', '9a14b6162eb4469dbd170b33efc70889', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117168', '', '9a14b6162eb4469dbd170b33efc70889', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115727', '', '9a14b6162eb4469dbd170b33efc70889', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5329,7 +5325,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115729', '', '9a14b6162eb4469dbd170b33efc70889', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115730', '', '9a14b6162eb4469dbd170b33efc70889', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115730', '', '9a14b6162eb4469dbd170b33efc70889', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115737', '', '9a14b6162eb4469dbd170b33efc70889', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5380,7 +5376,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115750', '', '9a14b6162eb4469dbd170b33efc70889', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115751', '', '9a14b6162eb4469dbd170b33efc70889', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115751', '', '9a14b6162eb4469dbd170b33efc70889', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115752', '', '9a14b6162eb4469dbd170b33efc70889', '日用电量(kW·h)', 'todayKWattH', '', 42, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5431,7 +5427,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116794', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '运行状态', 'runStatusName', 'width:80', 5, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116795', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '电参工况', 'workingConditionName', 'width:130', 6, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116795', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '电参工况', 'resultName', 'width:130', 6, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116796', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '运行时间(h)', 'runTime', 'width:80', 7, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5485,7 +5481,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116822', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '有功功率(kW)', 'WattStr', 'width:150', 23, 1, '', '电参分析管理员', to_date('25-12-2019 13:50:14', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 13:50:14', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116805', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '三相总有功功率(kW)', 'WattSum', 'width:130', 24, 1, '', '电参分析管理员', to_date('25-12-2019 11:19:18', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:19:18', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116805', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '三相总有功功率(kW)', 'watt3', 'width:130', 24, 1, '', '电参分析管理员', to_date('25-12-2019 11:19:18', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:19:18', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116823', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', 'A相无功功率(kVar)', 'VarA', 'width:120', 25, 0, '', '', to_date('13-12-2019 14:50:31', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-12-2019 14:50:31', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5500,7 +5496,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116827', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '无功功率(kVar)', 'VarStr', 'width:150', 28, 1, '', '电参分析管理员', to_date('25-12-2019 11:19:50', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:19:50', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116826', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '三相总无功功率(kVar)', 'VarSum', 'width:130', 29, 1, '', '电参分析管理员', to_date('25-12-2019 11:19:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:19:45', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116826', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '三相总无功功率(kVar)', 'var3', 'width:130', 29, 1, '', '电参分析管理员', to_date('25-12-2019 11:19:45', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:19:45', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116828', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', 'A相功率因数', 'PFA', '', 30, 0, '', '', to_date('13-12-2019 14:45:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-12-2019 14:45:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5515,7 +5511,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116832', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '功率因数', 'PFStr', 'width:150', 33, 1, '', '电参分析管理员', to_date('25-12-2019 11:20:01', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:20:01', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116831', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '三相综合功率因数', 'PFSum', 'width:120', 34, 1, '', '电参分析管理员', to_date('25-12-2019 11:20:07', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:20:07', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116831', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '三相综合功率因数', 'pf3', 'width:120', 34, 1, '', '电参分析管理员', to_date('25-12-2019 11:20:07', 'dd-mm-yyyy hh24:mi:ss'), to_date('25-12-2019 11:20:07', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116833', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '有功功耗(kW·h)', 'totalKWattH', '', 40, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5560,7 +5556,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116846', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '日视在功耗(kVA·h)', 'todayKVAH', 'width:120', 53, 1, '', '', to_date('13-12-2019 15:00:39', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-12-2019 15:00:39', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116847', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '频率(Hz)', 'frequencyRunValue', '', 54, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116847', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '频率(Hz)', 'runFrequency', '', 54, 1, '', '', to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('05-11-2019 11:31:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116848', '', '9a6546c4c2ca46ae84dfd19ee5f8bc76', '信号强度', 'signal', '', 55, 1, '', '', to_date('13-12-2019 15:04:47', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-12-2019 15:04:47', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5611,10 +5607,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115548', '', '9be5fc9436474093a0c77be781f55c2c', '运行区间', 'runRange', 'width:80', 13, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115549', '', '9be5fc9436474093a0c77be781f55c2c', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115549', '', '9be5fc9436474093a0c77be781f55c2c', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115550', '', '9be5fc9436474093a0c77be781f55c2c', '电参工况', 'workingConditionName_E', 'width:130', 15, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115550', '', '9be5fc9436474093a0c77be781f55c2c', '电参工况', 'resultName_E', 'width:130', 15, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115551', '', '9be5fc9436474093a0c77be781f55c2c', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5647,7 +5643,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117095', '', '9be5fc9436474093a0c77be781f55c2c', '产水量(t/d)', 'waterWeightProduction', '', 25, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115558', '', '9be5fc9436474093a0c77be781f55c2c', '含水率(%)', 'waterCut_W', '', 26, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115558', '', '9be5fc9436474093a0c77be781f55c2c', '含水率(%)', 'weightWaterCut', '', 26, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117169', '', '9be5fc9436474093a0c77be781f55c2c', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 27, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5659,7 +5655,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115560', '', '9be5fc9436474093a0c77be781f55c2c', '产水量(m^3/d)', 'waterVolumetricProduction', '', 29, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115561', '', '9be5fc9436474093a0c77be781f55c2c', '含水率(%)', 'waterCut', '', 30, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115561', '', '9be5fc9436474093a0c77be781f55c2c', '含水率(%)', 'volumeWaterCut', '', 30, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115562', '', '9be5fc9436474093a0c77be781f55c2c', '生产气油比(m^3/t)', 'productionGasOilRatio', 'width:120', 31, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5722,7 +5718,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115581', '', '9be5fc9436474093a0c77be781f55c2c', '井下效率(%)', 'welldownSystemEfficiency', '', 50, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117420', '', '9be5fc9436474093a0c77be781f55c2c', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 51, 0, '', '', to_date('15-06-2020 09:13:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2020 09:13:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117420', '', '9be5fc9436474093a0c77be781f55c2c', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 51, 0, '', '', to_date('15-06-2020 09:13:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2020 09:13:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117421', '', '9be5fc9436474093a0c77be781f55c2c', '日用电量(kW·h)', 'todayKWattH', '', 52, 1, '', '', to_date('15-06-2020 09:13:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2020 09:13:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5764,7 +5760,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116098', null, '9fa10e9438f640f3a6c8c278fbb4184d', '井口油温(℃)', 'wellHeadFluidTemperature', null, 12, 1, null, '系统管理员', to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116099', null, '9fa10e9438f640f3a6c8c278fbb4184d', '含水率(%)', 'waterCut_W', null, 13, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116099', null, '9fa10e9438f640f3a6c8c278fbb4184d', '含水率(%)', 'weightWaterCut', null, 13, 1, null, null, to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116100', null, '9fa10e9438f640f3a6c8c278fbb4184d', '生产气油比(m^3/t)', 'productionGasOilRatio', 'width:120', 14, 1, null, '系统管理员', to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'), to_date('17-09-2014 14:59:09', 'dd-mm-yyyy hh24:mi:ss'));
@@ -5876,7 +5872,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116864', '', 'a4ad1eeed48c48239a50e75b83b3ea60', '运行状态', 'runStatusName', 'width:80', 5, 1, '', '', to_date('16-12-2019 14:00:12', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-12-2019 14:00:12', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116865', '', 'a4ad1eeed48c48239a50e75b83b3ea60', '电参工况', 'workingConditionName_E', 'width:130', 6, 1, '', '', to_date('16-12-2019 14:05:04', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-12-2019 14:05:04', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116865', '', 'a4ad1eeed48c48239a50e75b83b3ea60', '电参工况', 'resultName_E', 'width:130', 6, 1, '', '', to_date('16-12-2019 14:05:04', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-12-2019 14:05:04', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116866', '', 'a4ad1eeed48c48239a50e75b83b3ea60', '运行时间(h)', 'runTime', 'width:80', 7, 1, '', '', to_date('16-12-2019 14:05:04', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-12-2019 14:05:04', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6101,7 +6097,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116727', '', 'aad8b76fdaf84a1194de5ec0a4453631', '井口油温(℃)', 'jklw', '', 16, 1, '', '系统管理员', to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-06-2018 10:19:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117170', '', 'aad8b76fdaf84a1194de5ec0a4453631', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117170', '', 'aad8b76fdaf84a1194de5ec0a4453631', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116728', '', 'aad8b76fdaf84a1194de5ec0a4453631', '含水率(%)', 'hsl', '', 17, 1, '', '', to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'), to_date('29-06-2018 08:53:30', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6224,7 +6220,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('118537', null, 'ac9235aff606446e831f0113d5e5d34a', '累计产水量(t/d)', 'waterWeightProduction_L', null, 12, 1, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117509', null, 'ac9235aff606446e831f0113d5e5d34a', '含水率(%)', 'waterCut_W', null, 13, 1, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117509', null, 'ac9235aff606446e831f0113d5e5d34a', '含水率(%)', 'weightWaterCut', null, 13, 1, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117510', null, 'ac9235aff606446e831f0113d5e5d34a', '有效冲程计算产量(t/d)', 'availablePlungerstrokeProd_W', null, 14, 1, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6260,7 +6256,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('118540', null, 'ac9235aff606446e831f0113d5e5d34a', '累计产水量(m^3/d)', 'waterVolumetricProduction_L', null, 24, 0, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117518', null, 'ac9235aff606446e831f0113d5e5d34a', '含水率(%)', 'waterCut', null, 25, 0, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117518', null, 'ac9235aff606446e831f0113d5e5d34a', '含水率(%)', 'volumeWaterCut', null, 25, 0, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117519', null, 'ac9235aff606446e831f0113d5e5d34a', '有效冲程计算产量(m^3/d)', 'availablePlungerstrokeProd_V', null, 26, 0, null, null, to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:32', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6299,7 +6295,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117529', null, 'ac9235aff606446e831f0113d5e5d34a', '理论液柱载荷(kN)', 'deltaLoadLine', null, 37, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117530', null, 'ac9235aff606446e831f0113d5e5d34a', '功图面积(kN·m)', 'fsDiagramArea', null, 38, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117530', null, 'ac9235aff606446e831f0113d5e5d34a', '功图面积(kN·m)', 'area', null, 38, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117531', null, 'ac9235aff606446e831f0113d5e5d34a', '柱塞冲程(m)', 'plungerStroke', null, 39, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6347,10 +6343,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117543', null, 'ac9235aff606446e831f0113d5e5d34a', '系统效率(%)', 'systemEfficiency', null, 53, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117544', null, 'ac9235aff606446e831f0113d5e5d34a', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', null, 54, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117544', null, 'ac9235aff606446e831f0113d5e5d34a', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', null, 54, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117545', null, 'ac9235aff606446e831f0113d5e5d34a', '有功功率(kW)', 'motorInputActivePower', null, 55, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117545', null, 'ac9235aff606446e831f0113d5e5d34a', '有功功率(kW)', 'averageWatt', null, 55, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117546', null, 'ac9235aff606446e831f0113d5e5d34a', '光杆功率(kW)', 'polishrodPower', null, 56, 1, null, null, to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 15:08:33', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6515,7 +6511,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116242', '', 'bb2d17adcaea4d948d84e636f8102aea', '运行区间', 'runRange', 'width:80', 11, 1, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116243', '', 'bb2d17adcaea4d948d84e636f8102aea', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116243', '', 'bb2d17adcaea4d948d84e636f8102aea', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116244', 'sys', 'bb2d17adcaea4d948d84e636f8102aea', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6530,7 +6526,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117100', '', 'bb2d17adcaea4d948d84e636f8102aea', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117171', '', 'bb2d17adcaea4d948d84e636f8102aea', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117171', '', 'bb2d17adcaea4d948d84e636f8102aea', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116245', '', 'bb2d17adcaea4d948d84e636f8102aea', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6542,7 +6538,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116247', '', 'bb2d17adcaea4d948d84e636f8102aea', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116248', '', 'bb2d17adcaea4d948d84e636f8102aea', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116248', '', 'bb2d17adcaea4d948d84e636f8102aea', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116253', '', 'bb2d17adcaea4d948d84e636f8102aea', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6554,13 +6550,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116261', '', 'bb2d17adcaea4d948d84e636f8102aea', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116262', '', 'bb2d17adcaea4d948d84e636f8102aea', '有功功率(kW)', 'motorInputActivePower', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116262', '', 'bb2d17adcaea4d948d84e636f8102aea', '有功功率(kW)', 'averageWatt', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116263', '', 'bb2d17adcaea4d948d84e636f8102aea', '水功率(kW)', 'waterPower', '', 26, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116264', '', 'bb2d17adcaea4d948d84e636f8102aea', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116264', '', 'bb2d17adcaea4d948d84e636f8102aea', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116265', '', 'bb2d17adcaea4d948d84e636f8102aea', '日用电量(kW·h)', 'todayKWattH', '', 28, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6638,10 +6634,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115997', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115998', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115998', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117448', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117448', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115999', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6656,7 +6652,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117102', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117172', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117172', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116006', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6668,7 +6664,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116007', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116008', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116008', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116015', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6719,7 +6715,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116028', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116029', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116029', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116031', '', 'bd50dfa7832e4e07a7c4dbec597334c1', '日用电量(kW·h)', 'todayKWattH', '', 42, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6788,7 +6784,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116587', '', 'bf13556ed81c4533b39f4d939e7fbc60', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116588', '', 'bf13556ed81c4533b39f4d939e7fbc60', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116588', '', 'bf13556ed81c4533b39f4d939e7fbc60', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116589', '', 'bf13556ed81c4533b39f4d939e7fbc60', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6803,7 +6799,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117106', '', 'bf13556ed81c4533b39f4d939e7fbc60', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117173', '', 'bf13556ed81c4533b39f4d939e7fbc60', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117173', '', 'bf13556ed81c4533b39f4d939e7fbc60', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116596', '', 'bf13556ed81c4533b39f4d939e7fbc60', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6815,7 +6811,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116598', '', 'bf13556ed81c4533b39f4d939e7fbc60', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116599', '', 'bf13556ed81c4533b39f4d939e7fbc60', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116599', '', 'bf13556ed81c4533b39f4d939e7fbc60', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116605', '', 'bf13556ed81c4533b39f4d939e7fbc60', '泵效(%)', 'pumpEff', '', 22, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6827,7 +6823,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116609', '', 'bf13556ed81c4533b39f4d939e7fbc60', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116610', '', 'bf13556ed81c4533b39f4d939e7fbc60', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116610', '', 'bf13556ed81c4533b39f4d939e7fbc60', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116611', '', 'bf13556ed81c4533b39f4d939e7fbc60', '日用电量(kW·h)', 'todayKWattH', '', 26, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6911,10 +6907,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115817', '', 'c2cc191e63c84ca699d0b78b007bb560', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115818', '', 'c2cc191e63c84ca699d0b78b007bb560', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115818', '', 'c2cc191e63c84ca699d0b78b007bb560', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117449', '', 'c2cc191e63c84ca699d0b78b007bb560', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117449', '', 'c2cc191e63c84ca699d0b78b007bb560', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115819', '', 'c2cc191e63c84ca699d0b78b007bb560', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6929,7 +6925,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117109', '', 'c2cc191e63c84ca699d0b78b007bb560', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117174', '', 'c2cc191e63c84ca699d0b78b007bb560', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117174', '', 'c2cc191e63c84ca699d0b78b007bb560', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115826', '', 'c2cc191e63c84ca699d0b78b007bb560', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6941,7 +6937,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115828', '', 'c2cc191e63c84ca699d0b78b007bb560', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115829', '', 'c2cc191e63c84ca699d0b78b007bb560', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115829', '', 'c2cc191e63c84ca699d0b78b007bb560', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115836', '', 'c2cc191e63c84ca699d0b78b007bb560', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -6992,7 +6988,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115849', '', 'c2cc191e63c84ca699d0b78b007bb560', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115850', '', 'c2cc191e63c84ca699d0b78b007bb560', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115850', '', 'c2cc191e63c84ca699d0b78b007bb560', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115851', '', 'c2cc191e63c84ca699d0b78b007bb560', '日用电量(kW·h)', 'todayKWattH', '', 42, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7067,10 +7063,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115637', '', 'c36a76211afd4f37b8978255d3f439e5', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115638', '', 'c36a76211afd4f37b8978255d3f439e5', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115638', '', 'c36a76211afd4f37b8978255d3f439e5', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117442', '', 'c36a76211afd4f37b8978255d3f439e5', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '', null, null);
+values ('117442', '', 'c36a76211afd4f37b8978255d3f439e5', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '', null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115639', '', 'c36a76211afd4f37b8978255d3f439e5', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7085,7 +7081,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117112', '', 'c36a76211afd4f37b8978255d3f439e5', '产水量(t/d)', 'waterWeightProduction', '', 19, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117175', '', 'c36a76211afd4f37b8978255d3f439e5', '含水率(%)', 'waterCut_W', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117175', '', 'c36a76211afd4f37b8978255d3f439e5', '含水率(%)', 'weightWaterCut', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115646', '', 'c36a76211afd4f37b8978255d3f439e5', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7097,7 +7093,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115648', '', 'c36a76211afd4f37b8978255d3f439e5', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115649', '', 'c36a76211afd4f37b8978255d3f439e5', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115649', '', 'c36a76211afd4f37b8978255d3f439e5', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115656', '', 'c36a76211afd4f37b8978255d3f439e5', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7148,7 +7144,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115669', '', 'c36a76211afd4f37b8978255d3f439e5', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115670', '', 'c36a76211afd4f37b8978255d3f439e5', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115670', '', 'c36a76211afd4f37b8978255d3f439e5', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115671', '', 'c36a76211afd4f37b8978255d3f439e5', '日用电量(kW·h)', 'todayKWattH', '', 42, 1, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7193,7 +7189,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117568', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行状态', 'runStatus', null, 3, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117569', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行频率(Hz)', 'frequencyRunValue', null, 4, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117569', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '运行频率(Hz)', 'runFrequency', null, 4, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117570', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'A相电流(A)', 'Ia', null, 5, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7214,19 +7210,19 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117581', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', 'C相电压(V)', 'Vc', null, 10, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117582', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功率(kW)', 'wattSum', null, 11, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117582', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功率(kW)', 'watt3', null, 11, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117583', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '无功功率(kVar)', 'varSum', null, 12, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117583', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '无功功率(kVar)', 'var3', null, 12, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117584', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '反向功率(kW)', 'reversePower', null, 13, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117822', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '视在功率(kVA)', 'vaSum', null, 14, 1, null, null, to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117822', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '视在功率(kVA)', 'va3', null, 14, 1, null, null, to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117585', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '功率因数', 'pfSum', null, 15, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117585', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '功率因数', 'pf3', null, 15, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117586', null, 'c5ef276d6ed24a4bae44c6d7ddfe82c1', '有功功耗(kW·h)', 'totalKWattH', null, 16, 1, null, null, to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7292,10 +7288,10 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115266', '', 'c7a2100cf9d840019f9f40b02cfb0075', '运行区间', 'runRange', 'width:80', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115267', '', 'c7a2100cf9d840019f9f40b02cfb0075', '功图工况', 'workingConditionName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115267', '', 'c7a2100cf9d840019f9f40b02cfb0075', '功图工况', 'resultName', 'width:130', 14, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117440', '', 'c7a2100cf9d840019f9f40b02cfb0075', '电参工况', 'workingConditionName_E', 'width:130', 15, 0, '', '系统管理员', to_date('16-06-2020 18:33:02', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2020 18:33:02', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117440', '', 'c7a2100cf9d840019f9f40b02cfb0075', '电参工况', 'resultName_E', 'width:130', 15, 0, '', '系统管理员', to_date('16-06-2020 18:33:02', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2020 18:33:02', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115268', '', 'c7a2100cf9d840019f9f40b02cfb0075', '优化建议', 'optimizationSuggestion', 'width:120', 16, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7310,7 +7306,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117115', '', 'c7a2100cf9d840019f9f40b02cfb0075', '产水量(t/d)', 'waterWeightProduction', '', 19, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117176', '', 'c7a2100cf9d840019f9f40b02cfb0075', '含水率(%)', 'waterCut_W', '', 20, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117176', '', 'c7a2100cf9d840019f9f40b02cfb0075', '含水率(%)', 'weightWaterCut', '', 20, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115275', '', 'c7a2100cf9d840019f9f40b02cfb0075', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7322,7 +7318,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115277', '', 'c7a2100cf9d840019f9f40b02cfb0075', '产水量(m^3/d)', 'waterVolumetricProduction', '', 23, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115278', '', 'c7a2100cf9d840019f9f40b02cfb0075', '含水率(%)', 'waterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115278', '', 'c7a2100cf9d840019f9f40b02cfb0075', '含水率(%)', 'volumeWaterCut', '', 24, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115285', '', 'c7a2100cf9d840019f9f40b02cfb0075', '充满系数(小数)', 'fullnesscoEfficient', '', 25, 1, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7373,7 +7369,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115298', '', 'c7a2100cf9d840019f9f40b02cfb0075', '井下效率(%)', 'welldownSystemEfficiency', '', 40, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115299', '', 'c7a2100cf9d840019f9f40b02cfb0075', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115299', '', 'c7a2100cf9d840019f9f40b02cfb0075', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 41, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115300', '', 'c7a2100cf9d840019f9f40b02cfb0075', '日用电量(kW·h)', 'todayKWattH', '', 42, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7415,7 +7411,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116972', null, 'ca3d6dadaeff48b985f2d33c8105fcb6', '采集时间', 'calculateDate', null, 2, 1, null, null, to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116973', null, 'ca3d6dadaeff48b985f2d33c8105fcb6', '工况', 'workingConditionName', 'width:130', 3, 1, null, null, to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116973', null, 'ca3d6dadaeff48b985f2d33c8105fcb6', '工况', 'resultName', 'width:130', 3, 1, null, null, to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-03-2020 15:30:34', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117116', null, 'ca3d6dadaeff48b985f2d33c8105fcb6', '功图产液量(t/d)', 'liquidWeightProduction', null, 4, 1, null, '系统管理员', to_date('11-05-2020 17:37:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('11-05-2020 17:37:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7475,16 +7471,16 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117666', '', 'cc595317dd834a56a225a92a78ec13d6', 'C相电压(V)', 'Vc', '', 7, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117667', '', 'cc595317dd834a56a225a92a78ec13d6', '有功功率(kW)', 'wattSum', '', 8, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117667', '', 'cc595317dd834a56a225a92a78ec13d6', '有功功率(kW)', 'watt3', '', 8, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117668', '', 'cc595317dd834a56a225a92a78ec13d6', '无功功率(kVar)', 'varSum', '', 9, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117668', '', 'cc595317dd834a56a225a92a78ec13d6', '无功功率(kVar)', 'var3', '', 9, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117669', '', 'cc595317dd834a56a225a92a78ec13d6', '视在功率(kVA)', 'vaSum', '', 10, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117669', '', 'cc595317dd834a56a225a92a78ec13d6', '视在功率(kVA)', 'va3', '', 10, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117670', '', 'cc595317dd834a56a225a92a78ec13d6', '功率因数', 'PFSum', '', 11, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117670', '', 'cc595317dd834a56a225a92a78ec13d6', '功率因数', 'pf3', '', 11, 1, '', '', to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-07-2020 17:50:38', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117816', '', 'cc595317dd834a56a225a92a78ec13d6', '油压(MPa)', 'tubingPressure', '', 12, 1, '', '', to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('09-07-2020 18:11:16', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7511,7 +7507,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115033', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115038', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115038', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115039', 'sys', 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7547,7 +7543,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117119', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117177', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117177', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118567', 'sys', 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7568,7 +7564,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115042', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115043', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115043', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118570', 'sys', 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7631,7 +7627,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115059', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115060', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '有功功率(kW)', 'motorInputActivePower', null, 45, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115060', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '有功功率(kW)', 'averageWatt', null, 45, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115061', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '光杆功率(kW)', 'polishrodPower', null, 46, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7640,7 +7636,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115062', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '水功率(kW)', 'waterPower', null, 47, 1, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115063', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 1, null, '系统管理员', to_date('18-06-2020 10:50:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2020 10:50:54', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115063', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 1, null, '系统管理员', to_date('18-06-2020 10:50:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('18-06-2020 10:50:54', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115064', null, 'dd50cf0dac4f4819b0d6bd5b50fe5bd4', '日用电量(kW·h)', 'todayKWattH', null, 49, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7715,7 +7711,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116517', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '运行区间', 'runRange', 'width:80', 11, 1, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116518', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '电参工况', 'workingConditionName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116518', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '电参工况', 'resultName', 'width:130', 12, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116519', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '优化建议', 'optimizationSuggestion', 'width:120', 13, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7730,7 +7726,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117124', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117178', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117178', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116526', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7742,7 +7738,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116528', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116529', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116529', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:35:19', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116535', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '泵效(%)', 'pumpEff', '', 22, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7754,7 +7750,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116539', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116540', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116540', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 25, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116541', '', 'e3e9229c98d34bcd826013b9eb7a7ebc', '日用电量(kW·h)', 'todayKWattH', '', 26, 0, '', '', to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:44:41', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7811,7 +7807,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115377', null, 'e5122e744cb5479697fc3d1bc617b25a', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115382', null, 'e5122e744cb5479697fc3d1bc617b25a', '功图工况', 'workingConditionName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115382', null, 'e5122e744cb5479697fc3d1bc617b25a', '功图工况', 'resultName', 'width:130', 5, 0, null, null, to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115383', 'sys', 'e5122e744cb5479697fc3d1bc617b25a', '优化建议', 'optimizationSuggestion', 'width:120', 6, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7847,7 +7843,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117127', null, 'e5122e744cb5479697fc3d1bc617b25a', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117179', null, 'e5122e744cb5479697fc3d1bc617b25a', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117179', null, 'e5122e744cb5479697fc3d1bc617b25a', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118609', 'sys', 'e5122e744cb5479697fc3d1bc617b25a', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7868,7 +7864,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115386', null, 'e5122e744cb5479697fc3d1bc617b25a', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115387', null, 'e5122e744cb5479697fc3d1bc617b25a', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115387', null, 'e5122e744cb5479697fc3d1bc617b25a', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118612', 'sys', 'e5122e744cb5479697fc3d1bc617b25a', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7931,7 +7927,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115408', null, 'e5122e744cb5479697fc3d1bc617b25a', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115409', null, 'e5122e744cb5479697fc3d1bc617b25a', '有功功率(kW)', 'motorInputActivePower', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115409', null, 'e5122e744cb5479697fc3d1bc617b25a', '有功功率(kW)', 'averageWatt', null, 45, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115410', null, 'e5122e744cb5479697fc3d1bc617b25a', '光杆功率(kW)', 'polishrodPower', null, 46, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7940,7 +7936,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115411', null, 'e5122e744cb5479697fc3d1bc617b25a', '水功率(kW)', 'waterPower', null, 47, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115412', null, 'e5122e744cb5479697fc3d1bc617b25a', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115412', null, 'e5122e744cb5479697fc3d1bc617b25a', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 0, null, null, to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-07-2018 19:05:15', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115413', null, 'e5122e744cb5479697fc3d1bc617b25a', '日用电量(kW·h)', 'todayKWattH', null, 49, 0, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -7994,7 +7990,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115463', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '通信状态', 'commStatusName', 'width:80', 4, 1, null, '系统管理员', to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-09-2014 10:20:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115471', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '功图工况', 'workingConditionName', 'width:130', 5, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115471', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '功图工况', 'resultName', 'width:130', 5, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115472', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '优化建议', 'optimizationSuggestion', 'width:120', 6, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8030,7 +8026,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117132', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '功图产水量(t/d)', 'waterWeightProduction', null, 16, 0, null, null, to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117180', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '含水率(%)', 'waterCut_W', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117180', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '含水率(%)', 'weightWaterCut', null, 17, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118621', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '累计产液量(t/d)', 'liquidWeightProduction_L', null, 18, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8051,7 +8047,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115475', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '功图产水量(m^3/d)', 'waterVolumetricProduction', null, 23, 0, null, null, to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 13:43:24', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115476', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '含水率(%)', 'waterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115476', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '含水率(%)', 'volumeWaterCut', null, 24, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('118624', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '累计产液量(m^3/d)', 'liquidVolumetricProduction_L', null, 25, 0, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8114,7 +8110,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115497', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '井下效率(%)', 'welldownSystemEfficiency', null, 44, 1, null, null, to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 11:26:00', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116084', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '有功功率(kW)', 'motorInputActivePower', null, 45, 1, null, null, to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116084', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '有功功率(kW)', 'averageWatt', null, 45, 1, null, null, to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'), to_date('20-08-2018 17:25:20', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115498', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '光杆功率(kW)', 'polishrodPower', null, 46, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8123,7 +8119,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('115499', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '水功率(kW)', 'waterPower', null, 47, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('115500', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 48, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('115500', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 48, 1, null, null, to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('115501', null, 'ee3d9e5f5eb541f6b6bb13ac209c8a31', '日用电量(kW·h)', 'todayKWattH', null, 49, 1, null, null, to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('13-08-2018 14:12:54', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8198,7 +8194,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116310', '', 'f277c82ea3eb4afba06735e7120810a1', '运行区间', 'runRange', 'width:80', 11, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116311', '', 'f277c82ea3eb4afba06735e7120810a1', '电参工况', 'workingConditionName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116311', '', 'f277c82ea3eb4afba06735e7120810a1', '电参工况', 'resultName_E', 'width:130', 12, 0, '', '', to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'), to_date('06-08-2018 17:30:16', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116312', 'sys', 'f277c82ea3eb4afba06735e7120810a1', '优化建议', 'optimizationsuggestion_e', 'width:120', 13, 0, 'sys', '系统管理员', to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-06-2014 09:30:00', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8213,7 +8209,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117137', '', 'f277c82ea3eb4afba06735e7120810a1', '产水量(t/d)', 'waterWeightProduction', '', 16, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117181', '', 'f277c82ea3eb4afba06735e7120810a1', '含水率(%)', 'waterCut_W', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117181', '', 'f277c82ea3eb4afba06735e7120810a1', '含水率(%)', 'weightWaterCut', '', 17, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116313', '', 'f277c82ea3eb4afba06735e7120810a1', '产液量(m^3/d)', 'liquidVolumetricProduction', '', 18, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8225,7 +8221,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116315', '', 'f277c82ea3eb4afba06735e7120810a1', '产水量(m^3/d)', 'waterVolumetricProduction', '', 20, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116316', '', 'f277c82ea3eb4afba06735e7120810a1', '含水率(%)', 'waterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116316', '', 'f277c82ea3eb4afba06735e7120810a1', '含水率(%)', 'volumeWaterCut', '', 21, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116321', '', 'f277c82ea3eb4afba06735e7120810a1', '转速(r/min)', 'rpm', '', 22, 1, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8237,13 +8233,13 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('116329', '', 'f277c82ea3eb4afba06735e7120810a1', '系统效率(%)', 'systemEfficiency', '', 24, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116330', '', 'f277c82ea3eb4afba06735e7120810a1', '有功功率(kW)', 'motorInputActivePower', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116330', '', 'f277c82ea3eb4afba06735e7120810a1', '有功功率(kW)', 'averageWatt', '', 25, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116331', '', 'f277c82ea3eb4afba06735e7120810a1', '水功率(kW)', 'waterPower', '', 26, 0, '', '', to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'), to_date('12-07-2018 20:26:55', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116332', '', 'f277c82ea3eb4afba06735e7120810a1', '吨液百米耗电量(kW·h/100m·t)', 'powerConsumptionPerthm', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116332', '', 'f277c82ea3eb4afba06735e7120810a1', '吨液百米耗电量(kW·h/100m·t)', 'energyPer100mLift', 'width:180', 27, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116333', '', 'f277c82ea3eb4afba06735e7120810a1', '日用电量(kW·h)', 'todayKWattH', '', 28, 0, '', '', to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'), to_date('15-08-2018 16:49:28', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8291,7 +8287,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117745', '', 'fd7b732122924ed78d9bbf45cc302d48', '运行状态', 'runStatus', '', 3, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117746', '', 'fd7b732122924ed78d9bbf45cc302d48', '运行频率(Hz)', 'frequencyRunValue', '', 4, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117746', '', 'fd7b732122924ed78d9bbf45cc302d48', '运行频率(Hz)', 'runFrequency', '', 4, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117747', '', 'fd7b732122924ed78d9bbf45cc302d48', 'A相电流(A)', 'Ia', '', 5, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
@@ -8312,19 +8308,19 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('117752', '', 'fd7b732122924ed78d9bbf45cc302d48', 'C相电压(V)', 'Vc', '', 10, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117753', '', 'fd7b732122924ed78d9bbf45cc302d48', '有功功率(kW)', 'wattSum', '', 11, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117753', '', 'fd7b732122924ed78d9bbf45cc302d48', '有功功率(kW)', 'watt3', '', 11, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117754', '', 'fd7b732122924ed78d9bbf45cc302d48', '无功功率(kVar)', 'varSum', '', 12, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117754', '', 'fd7b732122924ed78d9bbf45cc302d48', '无功功率(kVar)', 'var3', '', 12, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117755', '', 'fd7b732122924ed78d9bbf45cc302d48', '反向功率(kW)', 'reversePower', '', 13, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117826', '', 'fd7b732122924ed78d9bbf45cc302d48', '视在功率(kVA)', 'vaSum', '', 14, 1, '', '系统管理员', to_date('22-07-2020 16:36:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('22-07-2020 16:36:41', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117826', '', 'fd7b732122924ed78d9bbf45cc302d48', '视在功率(kVA)', 'va3', '', 14, 1, '', '系统管理员', to_date('22-07-2020 16:36:41', 'dd-mm-yyyy hh24:mi:ss'), to_date('22-07-2020 16:36:41', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('117756', '', 'fd7b732122924ed78d9bbf45cc302d48', '功率因数', 'pfSum', '', 15, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
+values ('117756', '', 'fd7b732122924ed78d9bbf45cc302d48', '功率因数', 'pf3', '', 15, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('117757', '', 'fd7b732122924ed78d9bbf45cc302d48', '有功功耗(kW·h)', 'totalKWattH', '', 16, 1, '', '', to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'), to_date('07-07-2020 16:59:37', 'dd-mm-yyyy hh24:mi:ss'));

@@ -853,7 +853,7 @@ public class StringManagerUtils {
 	
 	public static boolean clobDataFiter(String value) {
 		boolean flag = false;
-		String arrays[] = { "COMMRANGE", "RUNRANGE", "WORKINGCONDITIONSTRING", "WORKINGCONDITIONSTRING_E"};
+		String arrays[] = { "COMMRANGE", "RUNRANGE", "RESULTSTRING", "RESULTSTRING_E"};
 		for (String str : arrays) {
 			if (value.equalsIgnoreCase(str)) {
 				flag = true;

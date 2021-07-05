@@ -43,8 +43,8 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
         		case "waterWeightProduction".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterProductionMax+"/"+get_rawData.waterProductionMin+"/"+get_rawData.waterProduction+"\",\"curve\":\"\"},";
         			break;
-        		case "waterCut_W".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        		case "weightWaterCut".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
     	        	break;
         		case "liquidVolumetricProduction".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"liquidVolumetricProduction\",\"value\":\""+get_rawData.liquidProductionMax+"/"+get_rawData.liquidProductionMin+"/"+get_rawData.liquidProduction+"\",\"curve\":\"\"},";
@@ -55,8 +55,8 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
         		case "waterVolumetricProduction".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterVolumetricProduction\",\"value\":\""+get_rawData.waterProductionMax+"/"+get_rawData.waterProductionMin+"/"+get_rawData.waterProduction+"\",\"curve\":\"\"},";
         			break;
-        		case "waterCut".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        		case "volumeWaterCut".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
     	        	break;
         		case "pumpEff1".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"pumpEff1\",\"value\":\""+get_rawData.pumpEff1Max+"/"+get_rawData.pumpEff1Min+"/"+get_rawData.pumpEff1+"\",\"curve\":\"\"},";
@@ -70,8 +70,8 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
         		case "systemEfficiency".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiencyMax+"/"+get_rawData.systemEfficiencyMin+"/"+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
         			break;
-        		case "powerConsumptionPerTHM".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"powerConsumptionPerTHM\",\"value\":\""+get_rawData.powerConsumptionPerTHMMax+"/"+get_rawData.powerConsumptionPerTHMMin+"/"+get_rawData.powerConsumptionPerTHM+"\",\"curve\":\"\"},";
+        		case "energyPer100mLift".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"energyPer100mLift\",\"value\":\""+get_rawData.energyPer100mLiftMax+"/"+get_rawData.energyPer100mLiftMin+"/"+get_rawData.energyPer100mLift+"\",\"curve\":\"\"},";
         			break;
         		case "avgWatt".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"avgWatt\",\"value\":\""+get_rawData.avgWattMax+"/"+get_rawData.avgWattMin+"/"+get_rawData.avgWatt+"\",\"curve\":\"\"},";
@@ -134,17 +134,17 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     			case "Vc".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.VcMax+"/"+get_rawData.VcMin+"/"+get_rawData.Vc+"\",\"curve\":\"\"},";
         			break;
-    			case "wattSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSumMax+"/"+get_rawData.wattSumMin+"/"+get_rawData.wattSum+"\",\"curve\":\"\"},";
+    			case "watt3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"watt3\",\"value\":\""+get_rawData.watt3Max+"/"+get_rawData.watt3Min+"/"+get_rawData.watt3+"\",\"curve\":\"\"},";
         			break;
-    			case "varSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSumMax+"/"+get_rawData.varSumMin+"/"+get_rawData.varSum+"\",\"curve\":\"\"},";
+    			case "var3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"var3\",\"value\":\""+get_rawData.var3Max+"/"+get_rawData.var3Min+"/"+get_rawData.var3+"\",\"curve\":\"\"},";
         			break;
-    			case "vaSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"vaSum\",\"value\":\""+get_rawData.vaSumMax+"/"+get_rawData.vaSumMin+"/"+get_rawData.vaSum+"\",\"curve\":\"\"},";
+    			case "va3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"va3\",\"value\":\""+get_rawData.va3Max+"/"+get_rawData.va3Min+"/"+get_rawData.va3+"\",\"curve\":\"\"},";
         			break;
-    			case "PFSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"PFSum\",\"value\":\""+get_rawData.PFSumMax+"/"+get_rawData.PFSumMin+"/"+get_rawData.PFSum+"\",\"curve\":\"\"},";
+    			case "pf3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pf3\",\"value\":\""+get_rawData.pf3Max+"/"+get_rawData.pf3Min+"/"+get_rawData.pf3+"\",\"curve\":\"\"},";
         			break;
     			case "tubingPressure".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressureMax+"/"+get_rawData.tubingPressureMin+"/"+get_rawData.tubingPressure+"\",\"curve\":\"\"},";

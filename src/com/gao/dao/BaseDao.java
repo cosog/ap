@@ -1154,8 +1154,8 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(9, wellProHandsontableChangedData.getUpdatelist().get(i).getTubingPressure());
 						cs.setString(10, wellProHandsontableChangedData.getUpdatelist().get(i).getCasingPressure());
 						cs.setString(11, wellProHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature());
-						cs.setString(12, wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut_W());
-						cs.setString(13, wellProHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+						cs.setString(12, wellProHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut());
+						cs.setString(13, wellProHandsontableChangedData.getUpdatelist().get(i).getVolumeWaterCut());
 						cs.setString(14, wellProHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio());
 						cs.setString(15, wellProHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel());
 						cs.setString(16, wellProHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());
@@ -1224,8 +1224,8 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(9, wellProHandsontableChangedData.getInsertlist().get(i).getTubingPressure());
 						cs.setString(10, wellProHandsontableChangedData.getInsertlist().get(i).getCasingPressure());
 						cs.setString(11, wellProHandsontableChangedData.getInsertlist().get(i).getWellHeadFluidTemperature());
-						cs.setString(12, wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut_W());
-						cs.setString(13, wellProHandsontableChangedData.getInsertlist().get(i).getWaterCut());
+						cs.setString(12, wellProHandsontableChangedData.getInsertlist().get(i).getWeightWaterCut());
+						cs.setString(13, wellProHandsontableChangedData.getInsertlist().get(i).getVolumeWaterCut());
 						cs.setString(14, wellProHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio());
 						cs.setString(15, wellProHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel());
 						cs.setString(16, wellProHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth());
@@ -1516,7 +1516,7 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(8, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure());
 						cs.setString(9, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure());
 						cs.setString(10, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature());
-						cs.setString(11, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterCut());
+						cs.setString(11, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut());
 						cs.setString(12, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio());
 						cs.setString(13, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel());
 						cs.setString(14, calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth());

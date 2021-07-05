@@ -50,7 +50,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 		
 		allsql="select id, wellName, to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 				+ " position_curve,load_curve,"
-				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, "+prodCol+", workingConditionName "
+				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, "+prodCol+", resultName "
 				+ " from  "+tableName+""
 				+ " where orgid in(" + orgId + ")";
 		if(StringManagerUtils.isNotNull(wellName)){
@@ -100,7 +100,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			dynSbf.append("\"stroke\":\""+obj[9]+"\",");
 			dynSbf.append("\"spm\":\""+obj[10]+"\",");
 			dynSbf.append("\"liquidProduction\":\""+obj[11]+"\",");
-			dynSbf.append("\"workingConditionName\":\""+obj[12]+"\",");
+			dynSbf.append("\"resultName\":\""+obj[12]+"\",");
 			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");         // 工况代码
 			dynSbf.append("\"loadCurveData\":\""+DiagramYData+"\"},");         // 工况代码
 		}
@@ -132,7 +132,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 		}
 		
 		allsql="select id, wellName, to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
-				+ " workingConditionName,"+prodCol+",stroke, SPM,fmax, fmin   "
+				+ " resultName,"+prodCol+",stroke, SPM,fmax, fmin   "
 				+ " from  "+tableName+""
 				+ " where orgid in(" + orgId + ")";
 		if(StringManagerUtils.isNotNull(wellName)){
@@ -152,7 +152,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",width:150,children:[] },"
-				+ "{ \"header\":\"工况\",\"dataIndex\":\"workingConditionName\" ,children:[] },"
+				+ "{ \"header\":\"工况\",\"dataIndex\":\"resultName\" ,children:[] },"
 				+ "{ \"header\":\""+prodTitle+"\",\"dataIndex\":\"liquidProduction\" ,children:[] },"
 				+ "{ \"header\":\"冲程(m)\",\"dataIndex\":\"stroke\" ,children:[] },"
 				+ "{ \"header\":\"冲次(1/min)\",\"dataIndex\":\"SPM\" ,children:[] },"
@@ -167,7 +167,7 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"acqTime\":\""+obj[2]+"\",");
-			result_json.append("\"workingConditionName\":\""+obj[3]+"\",");
+			result_json.append("\"resultName\":\""+obj[3]+"\",");
 			result_json.append("\"liquidProduction\":\""+obj[4]+"\",");
 			result_json.append("\"stroke\":\""+obj[5]+"\",");
 			result_json.append("\"SPM\":\""+obj[6]+"\",");

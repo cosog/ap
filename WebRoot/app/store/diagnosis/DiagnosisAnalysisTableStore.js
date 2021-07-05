@@ -63,8 +63,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterWeightProduction_L\",\"value\":\""+get_rawData.waterProduction_L+"\",\"curve\":\"\"},";
         			break;
         			
-    			case "waterCut_W".toUpperCase():
-    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    			case "weightWaterCut".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
         			break;
     			case "availablePlungerstrokeProd_W".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"availablePlungerstrokeProd_W\",\"value\":\""+get_rawData.availablePlungerstrokeProd+"\",\"curve\":\"\"},";
@@ -90,8 +90,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "waterVolumetricProduction".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterVolumetricProduction\",\"value\":\""+get_rawData.waterProduction+"\",\"curve\":\"\"},";
         			break;
-    			case "waterCut".toUpperCase():
-    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    			case "volumeWaterCut".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
         			break;
     			case "availablePlungerstrokeProd_V".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"availablePlungerstrokeProd_V\",\"value\":\""+get_rawData.availablePlungerstrokeProd+"\",\"curve\":\"\"},";
@@ -129,8 +129,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "deltaLoadLine".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"deltaLoadLine\",\"value\":\""+get_rawData.deltaLoadLine+"\",\"curve\":\"\"},";
         			break;
-    			case "fsDiagramArea".toUpperCase():
-    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"fsDiagramArea\",\"value\":\""+get_rawData.fsDiagramArea+"\",\"curve\":\"\"},";
+    			case "area".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"area\",\"value\":\""+get_rawData.area+"\",\"curve\":\"\"},";
         			break;
     			case "plungerStroke".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"plungerStroke\",\"value\":\""+get_rawData.plungerStroke+"\",\"curve\":\"\"},";
@@ -177,11 +177,11 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "systemEfficiency".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
         			break;
-    			case "powerConsumptionPerthm".toUpperCase():
-    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"powerConsumptionPerthm\",\"value\":\""+get_rawData.powerConsumptionPerthm+"\",\"curve\":\"\"},";
+    			case "energyPer100mLift".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"energyPer100mLift\",\"value\":\""+get_rawData.energyPer100mLift+"\",\"curve\":\"\"},";
         			break;
-    			case "motorInputActivePower".toUpperCase():
-    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"motorInputActivePower\",\"value\":\""+get_rawData.motorInputActivePower+"\",\"curve\":\"\"},";
+    			case "averageWatt".toUpperCase():
+    				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"averageWatt\",\"value\":\""+get_rawData.averageWatt+"\",\"curve\":\"\"},";
         			break;
     			case "polishrodPower".toUpperCase():
     				dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"polishrodPower\",\"value\":\""+get_rawData.polishrodPower+"\",\"curve\":\"\"},";
@@ -307,8 +307,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "runStatus".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"runStatus\",\"value\":\""+runStatus+"\",\"curve\":\"\"},";
         			break;
-    			case "frequencyRunValue".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"frequencyRunValue\",\"value\":\""+get_rawData.frequencyRunValue+"\",\"curve\":\"\"},";
+    			case "runFrequency".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"runFrequency\",\"value\":\""+get_rawData.runFrequency+"\",\"curve\":\"\"},";
         			break;
     			case "Ia".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.Ia+"\",\"curve\":\"\"},";
@@ -346,20 +346,20 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "Vc".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.Vc+"\",\"curve\":\"\"},";
         			break;
-    			case "wattSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSum+"\",\"curve\":\"\"},";
+    			case "watt3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"watt3\",\"value\":\""+get_rawData.watt3+"\",\"curve\":\"\"},";
         			break;
-    			case "varSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSum+"\",\"curve\":\"\"},";
+    			case "var3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"var3\",\"value\":\""+get_rawData.var3+"\",\"curve\":\"\"},";
         			break;
     			case "reversePower".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"reversePower\",\"value\":\""+get_rawData.reversePower+"\",\"curve\":\"\"},";
         			break;
-    			case "vaSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"vaSum\",\"value\":\""+get_rawData.vaSum+"\",\"curve\":\"\"},";
+    			case "va3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"va3\",\"value\":\""+get_rawData.va3+"\",\"curve\":\"\"},";
         			break;
-    			case "pfSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pfSum\",\"value\":\""+get_rawData.pfSum+"\",\"curve\":\"\"},";
+    			case "pf3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pf3\",\"value\":\""+get_rawData.pf3+"\",\"curve\":\"\"},";
         			break;
     			case "totalKWattH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKWattH\",\"value\":\""+get_rawData.totalKWattH+"\",\"curve\":\"\"},";
@@ -370,11 +370,11 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "totalKVAH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
         			break;
-    			case "waterCut_W".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    			case "weightWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
         			break;
-    			case "waterCut".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+    			case "volumeWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
         			break;
     			case "tubingPressure".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
@@ -420,7 +420,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		    	 controlSataStr+="{\"item\":\"运行状态\",\"itemcode\":\"RunControl\",\"value\":\""+runStatus+"\",\"commStatus\":\""+get_rawData.commStatus+"\",\"operation\":true,\"isControl\":"+isControl+",\"showType\":0},";
     		         break;
     		     case "SetFrequency":
-    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"SetFrequency\",\"value\":\""+(get_rawData.frequencySetValue==undefined?"":get_rawData.frequencySetValue)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
+    		    	 controlSataStr+="{\"item\":\"变频设置频率(Hz)\",\"itemcode\":\"SetFrequency\",\"value\":\""+(get_rawData.setFrequency==undefined?"":get_rawData.setFrequency)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
     		    	 break;
     		     case "FESDiagramAcquisitionInterval":
     		    	 controlSataStr+="{\"item\":\"功图数据采集间隔(min)\",\"itemcode\":\"FESDiagramAcquisitionInterval\",\"value\":\""+(get_rawData.acqcycle_diagram==undefined?"":get_rawData.acqcycle_diagram)+"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";

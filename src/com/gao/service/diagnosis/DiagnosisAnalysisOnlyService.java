@@ -72,7 +72,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String ddicName="";
 		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
@@ -80,7 +80,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if("2".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeProdDist";
@@ -167,14 +167,14 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimeETValue";
 			}
-			typeColumnName="workingConditionName_E";
+			typeColumnName="resultName_E";
 		}else{
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
@@ -184,16 +184,16 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		if("400".equals(wellType)){//螺杆泵井
 			tableName_latest="viw_pcp_comprehensive_latest";
 			tableName_hist="viw_pcp_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
-			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+			sqlHis=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		}else{//默认为抽油机
 			tableName_latest="viw_rpc_comprehensive_latest";
 			tableName_hist="viw_rpc_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
-			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+			sqlHis=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
 		
@@ -234,7 +234,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		String ddicName="";
 		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		ConfigFile configFile=Config.getInstance().configFile;
 		if("1".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
@@ -242,7 +242,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if("2".equalsIgnoreCase(type)){
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeProdDist";
@@ -329,14 +329,14 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimeETValue";
 			}
-			typeColumnName="workingConditionName_E";
+			typeColumnName="resultName_E";
 		}else{
 			if("400".equals(wellType)){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
@@ -346,16 +346,16 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		if("400".equals(wellType)){//螺杆泵井
 			tableName_latest="viw_pcp_comprehensive_latest";
 			tableName_hist="viw_pcp_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
-			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+			sqlHis=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		}else{//默认为抽油机
 			tableName_latest="viw_rpc_comprehensive_latest";
 			tableName_hist="viw_rpc_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
-			sqlHis=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+			sqlHis=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
 		
@@ -458,7 +458,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
-        		+ " status.workingconditionname,status.workingconditioncode, "
+        		+ " status.resultname,status.resultcode, "
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.position_curve,t.load_curve,t.wellboreslice,"
@@ -467,7 +467,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         		+ " from "+tableName+" t"
         		+ " left outer join tbl_wellinformation well on t.wellid=well.id"
         		+ " left outer join tbl_wellboretrajectory t2 on t.wellid=t2.wellid"
-        		+ " left outer join tbl_rpc_worktype status on t.workingconditioncode=status.workingconditioncode"
+        		+ " left outer join tbl_rpc_worktype status on t.resultcode=status.resultcode"
         		+ " left outer join tbl_rpc_productiondata_hist prod on t.productiondataid=prod.id"
         		+ " left outer join tbl_rpc_productiondata_latest prod2 on prod2.wellid=t.wellid"
         		+ " where 1=1 ";
@@ -593,8 +593,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("stroke:\""+obj[7]+"\",");         // 冲程
 	        dataSbf.append("spm:\""+obj[8]+"\",");         // 冲次
 	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日产液量
-	        dataSbf.append("workingConditionName:\""+obj[10]+"\",");         // 工况类型
-	        dataSbf.append("workingConditionCode:\""+obj[11]+"\",");         // 工况代码
+	        dataSbf.append("resultName:\""+obj[10]+"\",");         // 工况类型
+	        dataSbf.append("resultCode:\""+obj[11]+"\",");         // 工况代码
 	        
 	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
 	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
@@ -631,8 +631,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("spm:\"\","); 
 	        dataSbf.append("liquidProduction:\"\",");  
-	        dataSbf.append("workingConditionName:\"\",");
-	        dataSbf.append("workingConditionCode:\"\",");  
+	        dataSbf.append("resultName:\"\",");
+	        dataSbf.append("resultCode:\"\",");  
 	        dataSbf.append("rodStressRatio1:\"\","); 
 	        dataSbf.append("rodStressRatio2:\"\",");  
 	        dataSbf.append("rodStressRatio3:\"\",");
@@ -848,9 +848,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,prod.waterCut_W,";
+		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,prod.weightWaterCut,";
 		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,prod.waterCut,";;
+			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,prod.volumeWaterCut,";;
 		}
 		
 		String sql="select well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -888,7 +888,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				dynSbf.append("\"liquidProduction\":"+obj[2]+",");
 				dynSbf.append("\"oilProduction\":"+obj[3]+",");
 				dynSbf.append("\"waterProduction\":"+obj[4]+",");
-				dynSbf.append("\"waterCut\":"+obj[5]+",");
+				dynSbf.append("\"volumeWaterCut\":"+obj[5]+",");
 				dynSbf.append("\"stroke\":"+obj[6]+",");
 				dynSbf.append("\"spm\":"+obj[7]+",");
 				dynSbf.append("\"wellheadFluidTemperature\":"+obj[8]+",");
@@ -930,14 +930,14 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
-        		+ " status.workingconditionname,status.workingconditioncode, "
+        		+ " status.resultname,status.resultcode, "
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.upstrokewattmax,t.downstrokewattmax,t.wattdegreebalance,t.upstrokeimax,t.downstrokeimax,t.idegreebalance,"
         		+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
         		+ " t.ia_curve,t.ib_curve,t.ic_curve "
         		+ " from "+tableName+" t, tbl_rpc_worktype status,tbl_wellinformation well  "
-        		+ " where t.wellid=well.id and t.workingconditioncode=status.workingconditioncode ";
+        		+ " where t.wellid=well.id and t.resultcode=status.resultcode ";
         if(StringManagerUtils.isNotNull(selectedWellName)){
         	sql+=" and t.id="+id;
         }else{
@@ -1050,8 +1050,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("stroke:\""+obj[7]+"\",");         // 冲程
 	        dataSbf.append("spm:\""+obj[8]+"\",");         // 冲次
 	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日产液量
-	        dataSbf.append("workingConditionName:\""+obj[10]+"\",");         // 工况类型
-	        dataSbf.append("workingConditionCode:\""+obj[11]+"\",");         // 工况代码
+	        dataSbf.append("resultName:\""+obj[10]+"\",");         // 工况类型
+	        dataSbf.append("resultCode:\""+obj[11]+"\",");         // 工况代码
 	        
 	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
 	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
@@ -1088,8 +1088,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	        dataSbf.append("stroke:\"\",");  
 	        dataSbf.append("spm:\"\","); 
 	        dataSbf.append("liquidProduction:\"\",");  
-	        dataSbf.append("workingConditionName:\"\",");
-	        dataSbf.append("workingConditionCode:\"\",");  
+	        dataSbf.append("resultName:\"\",");
+	        dataSbf.append("resultCode:\"\",");  
 	        dataSbf.append("rodStressRatio1:\"\","); 
 	        dataSbf.append("rodStressRatio2:\"\",");  
 	        dataSbf.append("rodStressRatio3:\"\",");
@@ -1193,13 +1193,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		String sql="";
-		String statType="workingConditionName";
+		String statType="resultName";
 		String tableName="viw_rpc_comprehensive_latest";
 		if("1".equalsIgnoreCase(type)){
 			if("200".equals(wellType)){
-				statType="workingConditionName";
+				statType="resultName";
 			}else{
-				statType="workingConditionName_E";
+				statType="resultName_E";
 			}
 		}else if("2".equalsIgnoreCase(type)){
 			statType="liquidWeightProductionlevel";
@@ -1228,7 +1228,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		}else if("12".equalsIgnoreCase(type)){
 			statType="commtimeefficiencyLevel";
 		}else if("13".equalsIgnoreCase(type)){
-			statType="workingConditionName_E";
+			statType="resultName_E";
 		}
 		if("200".equals(wellType)){
 			tableName="viw_rpc_comprehensive_latest";
@@ -1262,12 +1262,12 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 		ConfigFile configFile=Config.getInstance().configFile;
 		String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,"
 				+ " liquidWeightProduction_l,oilWeightProduction_l,waterWeightProduction_l,"
-				+ " waterCut_W,"
+				+ " weightWaterCut,"
 				+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
 		if(configFile.getOthers().getProductionUnit()!=0){
 			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,"
 					+ " liquidVolumetricProduction_l,oilVolumetricProduction_l,waterVolumetricProduction_l,"
-					+ " waterCut,"
+					+ " volumeWaterCut,"
 					+ " availablePlungerstrokeProd_V,pumpClearanceLeakProd_V,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_V,";;
 		}
 		String tableName="viw_rpc_comprehensive_latest";
@@ -1281,8 +1281,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " theoreticalProduction,"
 				+ " plungerstroke,availableplungerstroke,"
 				+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
-				+ " stroke,spm,fmax,fmin,deltaF,deltaLoadLine,fsDiagramArea,"
-				+ " motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
+				+ " stroke,spm,fmax,fmin,deltaF,deltaLoadLine,area,"
+				+ " averageWatt,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,energyPer100mLift,"
 				+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
 				+ " rodFlexLength,tubingFlexLength,inertiaLength,"
 				+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
@@ -1295,10 +1295,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalKWattH,totalKVarH,totalKVAH,"
 				+ " todayKWattH,todayKVarH,todayKVAH,"
-				+ " wattSum,varSum,reversePower,vaSum,pfSum,"
+				+ " watt3,var3,reversePower,va3,pf3,"
 				+ " IaUpLimit,IaDownLimit,wattUpLimit,wattDownLimit,"
 				+ " IaMax,IaMin,IbMax,IbMin,IcMax,IcMin,"
-				+ " frequencySetValue,frequencyRunValue,"
+				+ " setFrequency,runFrequency,"
 				+ " balanceControlMode,balanceCalculateMode,"
 				+ " balanceAwayTime,balanceCloseTime,"
 				+ " balanceAwayTimePerBeat,balanceCloseTimePerBeat,"
@@ -1384,15 +1384,15 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"fmin\":\""+obj[27]+"\",");
 			result_json.append("\"deltaF\":\""+obj[28]+"\",");
 			result_json.append("\"deltaLoadLine\":\""+obj[29]+"\",");
-			result_json.append("\"fsDiagramArea\":\""+obj[30]+"\",");
+			result_json.append("\"area\":\""+obj[30]+"\",");
 			
-			result_json.append("\"motorInputActivePower\":\""+obj[31]+"\",");
+			result_json.append("\"averageWatt\":\""+obj[31]+"\",");
 			result_json.append("\"polishrodPower\":\""+obj[32]+"\",");
 			result_json.append("\"waterPower\":\""+obj[33]+"\",");
 			result_json.append("\"surfaceSystemEfficiency\":\""+obj[34]+"\",");
 			result_json.append("\"welldownSystemEfficiency\":\""+obj[35]+"\",");
 			result_json.append("\"systemEfficiency\":\""+obj[36]+"\",");
-			result_json.append("\"powerConsumptionPerthm\":\""+obj[37]+"\",");
+			result_json.append("\"energyPer100mLift\":\""+obj[37]+"\",");
 			result_json.append("\"pumpEff1\":\""+obj[38]+"\",");
 			result_json.append("\"pumpEff2\":\""+obj[39]+"\",");
 			result_json.append("\"pumpEff3\":\""+obj[40]+"\",");
@@ -1439,11 +1439,11 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"todayKVarH\":\""+obj[75]+"\",");
 			result_json.append("\"todayKVAH\":\""+obj[76]+"\",");
 			
-			result_json.append("\"wattSum\":\""+obj[77]+"\",");
-			result_json.append("\"varSum\":\""+obj[78]+"\",");
+			result_json.append("\"watt3\":\""+obj[77]+"\",");
+			result_json.append("\"var3\":\""+obj[78]+"\",");
 			result_json.append("\"reversePower\":\""+obj[79]+"\",");
-			result_json.append("\"vaSum\":\""+obj[80]+"\",");
-			result_json.append("\"pfSum\":\""+obj[81]+"\",");
+			result_json.append("\"va3\":\""+obj[80]+"\",");
+			result_json.append("\"pf3\":\""+obj[81]+"\",");
 			
 			result_json.append("\"IaUpLimit\":\""+obj[82]+"\",");
 			result_json.append("\"IaDownLimit\":\""+obj[83]+"\",");
@@ -1456,8 +1456,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"IcMax\":\""+obj[90]+"\",");
 			result_json.append("\"IcMin\":\""+obj[91]+"\",");
 			
-			result_json.append("\"frequencySetValue\":\""+obj[92]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[93]+"\",");
+			result_json.append("\"setFrequency\":\""+obj[92]+"\",");
+			result_json.append("\"runFrequency\":\""+obj[93]+"\",");
 			
 			result_json.append("\"balanceControlMode\":\""+obj[94]+"\",");
 			result_json.append("\"balanceCalculateMode\":\""+obj[95]+"\",");
@@ -1504,9 +1504,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 	public String getPCPAnalysisAndAcqAndControlData(String recordId,String wellName,String selectedWellName,int userId)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,waterCut_W,";
+		String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,";
 		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,waterCut,";
+			prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,";
 		}
 		String tableName="viw_pcp_comprehensive_latest";
 		if(StringManagerUtils.isNotNull(wellName)){
@@ -1520,7 +1520,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " order by t3.seq";
 		String sql="select "+prodCol
 				+ " qpr,"
-				+ " motorInputActivePower,waterPower,systemEfficiency,powerConsumptionPerthm,"
+				+ " averageWatt,waterPower,systemEfficiency,energyPer100mLift,"
 				+ " pumpEff1,pumpEff2,pumpEff,"
 				+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
 				+ " pumpoutletp,pumpoutlett,pumpOutletGol,pumpoutletvisl,pumpoutletbo,"
@@ -1532,8 +1532,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " Ia,Ib,Ic,Va,Vb,Vc,"
 				+ " totalKWattH,totalKVarH,totalKVAH,"
 				+ " todayKWattH,todayKVarH,todayKVAH,"
-				+ " wattSum,varSum,reversePower,vaSum,pfSum,"
-				+ " frequencySetValue,frequencyRunValue,"
+				+ " watt3,var3,reversePower,va3,pf3,"
+				+ " setFrequency,runFrequency,"
 				+ " videourl,"
 				+ " runRange"
 				+ " from "+tableName+" t where id="+recordId;
@@ -1567,10 +1567,10 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"waterCut\":\""+obj[3]+"\",");
 			result_json.append("\"qpr\":\""+obj[4]+"\",");
 			
-			result_json.append("\"motorInputActivePower\":\""+obj[5]+"\",");
+			result_json.append("\"averageWatt\":\""+obj[5]+"\",");
 			result_json.append("\"waterPower\":\""+obj[6]+"\",");
 			result_json.append("\"systemEfficiency\":\""+obj[7]+"\",");
-			result_json.append("\"powerConsumptionPerthm\":\""+obj[8]+"\",");
+			result_json.append("\"energyPer100mLift\":\""+obj[8]+"\",");
 			
 			result_json.append("\"pumpEff1\":\""+obj[9]+"\",");
 			result_json.append("\"pumpEff2\":\""+obj[10]+"\",");
@@ -1618,13 +1618,13 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			result_json.append("\"todayKVarH\":\""+obj[44]+"\",");
 			result_json.append("\"todayKVAH\":\""+obj[45]+"\",");
 			
-			result_json.append("\"wattSum\":\""+obj[46]+"\",");
-			result_json.append("\"varSum\":\""+obj[47]+"\",");
-			result_json.append("\"vaSum\":\""+obj[48]+"\",");
+			result_json.append("\"watt3\":\""+obj[46]+"\",");
+			result_json.append("\"var3\":\""+obj[47]+"\",");
+			result_json.append("\"va3\":\""+obj[48]+"\",");
 			result_json.append("\"reversePower\":\""+obj[49]+"\",");
-			result_json.append("\"pfSum\":\""+obj[50]+"\",");
-			result_json.append("\"frequencySetValue\":\""+obj[51]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[52]+"\",");
+			result_json.append("\"pf3\":\""+obj[50]+"\",");
+			result_json.append("\"setFrequency\":\""+obj[51]+"\",");
+			result_json.append("\"runFrequency\":\""+obj[52]+"\",");
 			
 			result_json.append("\"videourl\":\""+obj[53]+"\",");
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[54])+"\"");
@@ -1649,9 +1649,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 //				||"tubingpressure".equalsIgnoreCase(itemCode)||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)||"totalKVAH".equalsIgnoreCase(itemCode)
 				||"todayKWattH".equalsIgnoreCase(itemCode)||"todayKVarH".equalsIgnoreCase(itemCode)||"todayKVAH".equalsIgnoreCase(itemCode)
-				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
-				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
-				||"frequencyRunValue".equalsIgnoreCase(itemCode)
+				||"watt3".equalsIgnoreCase(itemCode)||"var3".equalsIgnoreCase(itemCode)||"va3".equalsIgnoreCase(itemCode)
+				||"reversepower".equalsIgnoreCase(itemCode)||"pf3".equalsIgnoreCase(itemCode)
+				||"runFrequency".equalsIgnoreCase(itemCode)
 				||"IaMax".equalsIgnoreCase(itemCode)
 				||"IaMin".equalsIgnoreCase(itemCode)
 				||"IbMax".equalsIgnoreCase(itemCode)
@@ -1669,7 +1669,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			item="downStrokeWattMax,upStrokeWattMax ";
 			tableName="viw_rpc_diagram_hist";
 		}else if("tubingPressure".equalsIgnoreCase(itemCode)||"casingPressure".equalsIgnoreCase(itemCode)||"wellheadFluidTemperature".equalsIgnoreCase(itemCode)
-				||"watercut".equalsIgnoreCase(itemCode)||"watercut_w".equalsIgnoreCase(itemCode)){
+				||"volumeWaterCut".equalsIgnoreCase(itemCode)||"weightWaterCut".equalsIgnoreCase(itemCode)){
 			tableName="viw_rpc_productiondata_hist";
 		}else{
 			tableName="viw_rpc_diagram_hist";
@@ -1717,9 +1717,9 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
 				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)||"totalKVAH".equalsIgnoreCase(itemCode)
 				||"todayKWattH".equalsIgnoreCase(itemCode)||"todayKVarH".equalsIgnoreCase(itemCode)||"todayKVAH".equalsIgnoreCase(itemCode)
-				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
-				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
-				||"frequencyRunValue".equalsIgnoreCase(itemCode)
+				||"watt3".equalsIgnoreCase(itemCode)||"var3".equalsIgnoreCase(itemCode)||"va3".equalsIgnoreCase(itemCode)
+				||"reversepower".equalsIgnoreCase(itemCode)||"pf3".equalsIgnoreCase(itemCode)
+				||"runFrequency".equalsIgnoreCase(itemCode)
 				||"IaMax".equalsIgnoreCase(itemCode)
 				||"IaMin".equalsIgnoreCase(itemCode)
 				||"IbMax".equalsIgnoreCase(itemCode)
@@ -1734,28 +1734,8 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tableName="viw_pcp_rpm_hist";
 		}
 		
-		
-		
-//		String sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_rpm_hist t "
-//				+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acqTime";
-//		if("Ia".equalsIgnoreCase(itemCode)||"Ib".equalsIgnoreCase(itemCode)||"Ic".equalsIgnoreCase(itemCode)
-//				||"Va".equalsIgnoreCase(itemCode)||"Vb".equalsIgnoreCase(itemCode)||"Vc".equalsIgnoreCase(itemCode)){
-//			itemCode="t."+itemCode+",t."+itemCode+"uplimit,t."+itemCode+"downlimit";
-//			sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+itemCode+" from viw_pcp_discrete_hist t "
-//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acqTime";
-//		}else if("commStatus".equalsIgnoreCase(itemCode)||"runStatus".equalsIgnoreCase(itemCode)||"tubingpressure".equalsIgnoreCase(itemCode)
-//				||"casingpressure".equalsIgnoreCase(itemCode)||"backpressure".equalsIgnoreCase(itemCode)||"wellHeadFluidTemperature".equalsIgnoreCase(itemCode)
-//				||"totalKWattH".equalsIgnoreCase(itemCode)||"totalKVarH".equalsIgnoreCase(itemCode)
-//				||"wattSum".equalsIgnoreCase(itemCode)||"varSum".equalsIgnoreCase(itemCode)||"vaSum".equalsIgnoreCase(itemCode)
-//				||"reversepower".equalsIgnoreCase(itemCode)||"pfSum".equalsIgnoreCase(itemCode)
-//				||"frequencyRunValue".equalsIgnoreCase(itemCode)){
-//			sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t."+itemCode+" from viw_pcp_discrete_hist t "
-//					+ " where t.wellName='"+wellName+"' and to_date(to_char(t.acqTime,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') order by t.acqTime";
-//		}
-		
 		sql="select to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"+item+" from "+tableName+" t "
 				+ " where t.wellName='"+wellName+"' and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1 order by t.acqTime";
-		
 		
 		int totals = getTotalCountRows(sql);//获取总记录数
 		List<?> list=this.findCallSql(sql);

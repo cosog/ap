@@ -462,9 +462,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			liftingType_Str = " and t.liftingtype like '%" + liftingType.substring(0, 1)+ "%'";
 		}
 		String sql = "select t.id,t.orgname,t.resname,t.wellname,t.liftingtype,t.liftingtypename,"
-				+ " t.protocolcode,t.acquisitionunit,t.signinid,t.slave,t.acqcycle_diagram,t.acqcycle_discrete,t.savecycle_discrete,"
-				+ " t.videourl,t.sortnum, "
-				+ " t.acqCycleSetStatus_diagram,t.acqCycleSetStatus_discrete,t.protocol "
+				+ " t.protocolcode,t.acquisitionunit,t.signinid,t.slave,"
+				+ " t.videourl,t.sortnum"
 				+ " from viw_wellinformation t where 1=1"
 				+ WellInformation_Str
 				+ liftingType_Str
@@ -479,9 +478,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			String driverCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 				if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
-					KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
-					if(driverCode.equals(protocolConfig.getProtocolCode())){
-						protocolName=protocolConfig.getProtocolName();
+					KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+					if(driverCode.equals(driveConfig.getProtocolCode())){
+						protocolName=driveConfig.getProtocolName();
 						break;
 					}
 				}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
@@ -495,7 +494,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					}
 				}
 			}
-			
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"orgName\":\""+obj[1]+"\",");
 			result_json.append("\"resName\":\""+obj[2]+"\",");
@@ -507,14 +505,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"acquisitionUnit\":\""+obj[7]+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
 			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"acqcycle_diagram\":\""+obj[10]+"\",");
-			result_json.append("\"acqcycle_discrete\":\""+obj[11]+"\",");
-			result_json.append("\"savecycle_discrete\":\""+obj[12]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[13]+"\",");
-			result_json.append("\"sortNum\":\""+obj[14]+"\",");
-			result_json.append("\"acqCycleSetStatus_diagram\":\""+obj[15]+"\",");
-			result_json.append("\"acqCycleSetStatus_discrete\":\""+obj[16]+"\",");
-			result_json.append("\"protocol\":\""+obj[17]+"\"},");
+			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
+			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

@@ -34,19 +34,19 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"wattDegreeBalance\",\"value\":\""+get_rawData.wattDegreeBalanceMax+"/"+get_rawData.wattDegreeBalanceMin+"/"+get_rawData.wattDegreeBalance+"\",\"curve\":\"\"},";
         			break;
         		case "upStrokeWattMax".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"upStrokeWattMax\",\"value\":\""+get_rawData.upStrokeWattMax_Max+"/"+get_rawData.upStrokeWattMax_Min+"/"+get_rawData.upStrokeWattMax_Avg+"\",\"curve\":\"\"},";
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"upStrokeWattMax\",\"value\":\""+get_rawData.upStrokeWattMax_Max+"/"+get_rawData.upStrokeWattMax_Min+"/"+get_rawData.upStrokeWattMax+"\",\"curve\":\"\"},";
             		break;
         		case "downStrokeWattMax".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"downStrokeWattMax\",\"value\":\""+get_rawData.downStrokeWattMax_Max+"/"+get_rawData.downStrokeWattMax_Min+"/"+get_rawData.downStrokeWattMax_Avg+"\",\"curve\":\"\"},";
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"downStrokeWattMax\",\"value\":\""+get_rawData.downStrokeWattMax_Max+"/"+get_rawData.downStrokeWattMax_Min+"/"+get_rawData.downStrokeWattMax+"\",\"curve\":\"\"},";
             		break;
         		case "iDegreeBalance".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"iDegreeBalance\",\"value\":\""+get_rawData.iDegreeBalanceMax+"/"+get_rawData.iDegreeBalanceMin+"/"+get_rawData.iDegreeBalance+"\",\"curve\":\"\"},";
             		break;
         		case "upStrokeIMax".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"upStrokeIMax\",\"value\":\""+get_rawData.upStrokeIMax_Max+"/"+get_rawData.upStrokeIMax_Min+"/"+get_rawData.upStrokeIMax_Avg+"\",\"curve\":\"\"},";
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"upStrokeIMax\",\"value\":\""+get_rawData.upStrokeIMax_Max+"/"+get_rawData.upStrokeIMax_Min+"/"+get_rawData.upStrokeIMax+"\",\"curve\":\"\"},";
             		break;
         		case "downStrokeIMax".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"downStrokeIMax\",\"value\":\""+get_rawData.downStrokeIMax_Max+"/"+get_rawData.downStrokeIMax_Min+"/"+get_rawData.downStrokeIMax_Avg+"\",\"curve\":\"\"},";
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"downStrokeIMax\",\"value\":\""+get_rawData.downStrokeIMax_Max+"/"+get_rawData.downStrokeIMax_Min+"/"+get_rawData.downStrokeIMax+"\",\"curve\":\"\"},";
             		break;
         		case "deltaRadius".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"deltaRadius\",\"value\":\""+get_rawData.deltaRadiusMax+"/"+get_rawData.deltaRadiusMin+"/"+get_rawData.deltaRadius+"\",\"curve\":\"\"},";
@@ -63,8 +63,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         		case "waterWeightProduction".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterWeightProduction\",\"value\":\""+get_rawData.waterProductionMax+"/"+get_rawData.waterProductionMin+"/"+get_rawData.waterProduction+"\",\"curve\":\"\"},";
             		break;
-        		case "waterCut_W".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut_W\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        		case "weightWaterCut".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
             		break;
         		case "availableStrokeProd_w".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"availableStrokeProd_w\",\"value\":\""+get_rawData.availableStrokeProdMax+"/"+get_rawData.availableStrokeProdMin+"/"+get_rawData.availableStrokeProd+"\",\"curve\":\"\"},";
@@ -90,8 +90,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         		case "waterVolumetricProduction".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterVolumetricProduction\",\"value\":\""+get_rawData.waterProductionMax+"/"+get_rawData.waterProductionMin+"/"+get_rawData.waterProduction+"\",\"curve\":\"\"},";
             		break;
-        		case "waterCut".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"waterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        		case "volumeWaterCut".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
             		break;
         		case "availableStrokeProd_v".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"availableStrokeProd_v\",\"value\":\""+get_rawData.availableStrokeProdMax+"/"+get_rawData.availableStrokeProdMin+"/"+get_rawData.availableStrokeProd+"\",\"curve\":\"\"},";
@@ -174,8 +174,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         		case "systemEfficiency".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"systemEfficiency\",\"value\":\""+get_rawData.systemEfficiencyMax+"/"+get_rawData.systemEfficiencyMin+"/"+get_rawData.systemEfficiency+"\",\"curve\":\"\"},";
             		break;
-        		case "powerConsumptionPerTHM".toUpperCase():
-        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"powerConsumptionPerTHM\",\"value\":\""+get_rawData.powerConsumptionPerTHMMax+"/"+get_rawData.powerConsumptionPerTHMMin+"/"+get_rawData.powerConsumptionPerTHM+"\",\"curve\":\"\"},";
+        		case "energyPer100mLift".toUpperCase():
+        			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"energyPer100mLift\",\"value\":\""+get_rawData.energyPer100mLiftMax+"/"+get_rawData.energyPer100mLiftMin+"/"+get_rawData.energyPer100mLift+"\",\"curve\":\"\"},";
             		break;
         		case "avgWatt".toUpperCase():
         			dataStr+="{\"item\":\""+analysisDataList[i].header+"\",\"itemCode\":\"avgWatt\",\"value\":\""+get_rawData.avgWattMax+"/"+get_rawData.avgWattMin+"/"+get_rawData.avgWatt+"\",\"curve\":\"\"},";
@@ -274,17 +274,17 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     			case "Vc".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Vc\",\"value\":\""+get_rawData.VcMax+"/"+get_rawData.VcMin+"/"+get_rawData.Vc+"\",\"curve\":\"\"},";
         			break;
-    			case "wattSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wattSum\",\"value\":\""+get_rawData.wattSumMax+"/"+get_rawData.wattSumMin+"/"+get_rawData.wattSum+"\",\"curve\":\"\"},";
+    			case "watt3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"watt3\",\"value\":\""+get_rawData.watt3Max+"/"+get_rawData.watt3Min+"/"+get_rawData.watt3+"\",\"curve\":\"\"},";
         			break;
-    			case "varSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"varSum\",\"value\":\""+get_rawData.varSumMax+"/"+get_rawData.varSumMin+"/"+get_rawData.varSum+"\",\"curve\":\"\"},";
+    			case "var3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"var3\",\"value\":\""+get_rawData.var3Max+"/"+get_rawData.var3Min+"/"+get_rawData.var3+"\",\"curve\":\"\"},";
         			break;
-    			case "vaSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"vaSum\",\"value\":\""+get_rawData.vaSumMax+"/"+get_rawData.vaSumMin+"/"+get_rawData.vaSum+"\",\"curve\":\"\"},";
+    			case "va3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"va3\",\"value\":\""+get_rawData.va3Max+"/"+get_rawData.va3Min+"/"+get_rawData.va3+"\",\"curve\":\"\"},";
         			break;
-    			case "PFSum".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"PFSum\",\"value\":\""+get_rawData.PFSumMax+"/"+get_rawData.PFSumMin+"/"+get_rawData.PFSum+"\",\"curve\":\"\"},";
+    			case "pf3".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pf3\",\"value\":\""+get_rawData.pf3Max+"/"+get_rawData.pf3Min+"/"+get_rawData.pf3+"\",\"curve\":\"\"},";
         			break;
     			case "tubingPressure".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressureMax+"/"+get_rawData.tubingPressureMin+"/"+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
@@ -502,7 +502,7 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
 //    		}
     		
     		Ext.getCmp("FSDiagramAnalysisDailyDetailsRightRunRangeTextArea_Id").setValue(get_rawData.runRange);
-    		Ext.getCmp("FSDiagramAnalysisDailyDetailsRightResultCodeTextArea_Id").setValue(get_rawData.workingConditionString);
+    		Ext.getCmp("FSDiagramAnalysisDailyDetailsRightResultCodeTextArea_Id").setValue(get_rawData.resultString);
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("DiagnosisTotalData_Id").getSelectionModel().getSelection()[0].data.id;

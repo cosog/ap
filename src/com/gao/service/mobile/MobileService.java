@@ -79,13 +79,13 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		String sql="";
-		String statType="workingConditionName";
+		String statType="resultName";
 		String tableName="viw_rpc_comprehensive_latest";
 		if(type==1||type==0){
 			if(liftingType!=2){
-				statType="workingConditionName";
+				statType="resultName";
 			}else{
-				statType="workingConditionName_E";
+				statType="resultName_E";
 			}
 		}else if(type==2){
 			statType="liquidWeightProductionlevel";
@@ -171,14 +171,14 @@ public class MobileService<T> extends BaseService<T> {
 		String ddicName="";
 		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		if(type==1){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if(type==2){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpRealtimeProdDist";
@@ -265,19 +265,19 @@ public class MobileService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		if(liftingType==2){//螺杆泵井
 			tableName_latest="viw_pcp_comprehensive_latest";
 			tableName_hist="viw_pcp_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		}else{//默认为抽油机
 			tableName_latest="viw_rpc_comprehensive_latest";
 			tableName_hist="viw_rpc_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
 		sql+= " from "+tableName_latest+" t where 1=1 ";
@@ -326,14 +326,14 @@ public class MobileService<T> extends BaseService<T> {
 		String ddicName="";
 		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		if(type==1){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpRealtimeETValue";
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if(type==2){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpRealtimeProdDist";
@@ -420,19 +420,19 @@ public class MobileService<T> extends BaseService<T> {
 			}else{//默认为抽油机
 				ddicName="realtimeFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		if(liftingType==2){//螺杆泵井
 			tableName_latest="viw_pcp_comprehensive_latest";
 			tableName_hist="viw_pcp_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		}else{//默认为抽油机
 			tableName_latest="viw_rpc_comprehensive_latest";
 			tableName_hist="viw_rpc_comprehensive_hist";
-			sql=ddic.getSql()+",workingConditionString_E,videourl,workingConditionAlarmLevel,workingConditionAlarmLevel_E,"
+			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
 					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 		}
 		sql+= " from "+tableName_hist+" t where 1=1";
@@ -478,21 +478,21 @@ public class MobileService<T> extends BaseService<T> {
 				wellName=jsonObject.getString("WellName");
 				acqTime=jsonObject.getString("AcqTime");
 				if(StringManagerUtils.isNotNull(wellName) && StringManagerUtils.isNotNull(acqTime)){
-					String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,waterCut_W,"
+					String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
 							+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
 					if(configFile.getOthers().getProductionUnit()!=0){
-						prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,waterCut,"
+						prodCol=" liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
 								+ " availablePlungerstrokeProd_V,pumpClearanceLeakProd_V,tvleakVolumetricProduction,svleakVolumetricProduction,gasInfluenceProd_V,";;
 					}
 					String tableName="viw_rpc_comprehensive_hist";
-					String sql="select workingConditionName,"
+					String sql="select resultName,"
 							+ " wattDegreeBalance,wattRatio,iDegreeBalance,iRatio,deltaRadius,"
 							+ prodCol
 							+ " theoreticalProduction,"
 							+ " plungerstroke,availableplungerstroke,"
 							+ " pumpBoreDiameter,pumpSettingDepth,producingFluidLevel,submergence,"
-							+ " stroke,spm,fmax,fmin,deltaF,deltaLoadLine,fsDiagramArea,"
-							+ " motorInputActivePower,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,powerConsumptionPerthm,"
+							+ " stroke,spm,fmax,fmin,deltaF,deltaLoadLine,area,"
+							+ " averageWatt,polishrodPower,waterPower,surfaceSystemEfficiency,welldownSystemEfficiency,systemEfficiency,energyPer100mLift,"
 							+ " pumpEff1,pumpEff2,pumpEff3,pumpEff4,pumpEff,"
 							+ " rodFlexLength,tubingFlexLength,inertiaLength,"
 							+ " pumpintakep,pumpintaket,pumpintakegol,pumpintakevisl,pumpintakebo,"
@@ -517,7 +517,7 @@ public class MobileService<T> extends BaseService<T> {
 						result_json.append("\"liquidProduction\":\""+obj[6]+"\",");
 						result_json.append("\"oilProduction\":\""+obj[7]+"\",");
 						result_json.append("\"waterProduction\":\""+obj[8]+"\",");
-						result_json.append("\"waterCut\":\""+obj[9]+"\",");
+						result_json.append("\"volumeWaterCut\":\""+obj[9]+"\",");
 						
 						result_json.append("\"availablePlungerstrokeProd\":\""+obj[10]+"\",");
 						result_json.append("\"pumpClearanceLeakProd\":\""+obj[11]+"\",");
@@ -540,7 +540,7 @@ public class MobileService<T> extends BaseService<T> {
 						result_json.append("\"fmin\":\""+obj[25]+"\",");
 						result_json.append("\"deltaF\":\""+obj[26]+"\",");
 						result_json.append("\"deltaLoadLine\":\""+obj[27]+"\",");
-						result_json.append("\"fsDiagramArea\":\""+obj[28]+"\",");
+						result_json.append("\"area\":\""+obj[28]+"\",");
 						
 						result_json.append("\"averageWatt\":\""+obj[29]+"\",");
 						result_json.append("\"polishrodPower\":\""+obj[30]+"\",");
@@ -548,7 +548,7 @@ public class MobileService<T> extends BaseService<T> {
 						result_json.append("\"surfaceSystemEfficiency\":\""+obj[32]+"\",");
 						result_json.append("\"welldownSystemEfficiency\":\""+obj[33]+"\",");
 						result_json.append("\"systemEfficiency\":\""+obj[34]+"\",");
-						result_json.append("\"powerConsumptionPerthm\":\""+obj[35]+"\",");
+						result_json.append("\"energyPer100mLift\":\""+obj[35]+"\",");
 						result_json.append("\"pumpEff1\":\""+obj[36]+"\",");
 						result_json.append("\"pumpEff2\":\""+obj[37]+"\",");
 						result_json.append("\"pumpEff3\":\""+obj[38]+"\",");
@@ -603,9 +603,9 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		String sql="";
 		String tableName="viw_rpc_total_day";
-		String statType="workingConditionName";
+		String statType="resultName";
 		if(type==1){
-			statType="workingConditionName";
+			statType="resultName";
 		}else if(type==2){
 			statType="liquidWeightProductionlevel";
 			if(configFile.getOthers().getProductionUnit()!=0){
@@ -689,14 +689,14 @@ public class MobileService<T> extends BaseService<T> {
 		DataDictionary ddic = null;
 		String ddicName="";
 		String tableName="viw_rpc_total_day";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		if(type==1){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpDailyETValue";
 			}else{//默认为抽油机
 				ddicName="dailyFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if(type==2){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpDailyProdDist";
@@ -780,10 +780,10 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
+		String sql=ddic.getSql()+",resultString,resultAlarmLevel,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		if(liftingType!=2){
-			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql+= " ,resultString_E,resultAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 			tableName="viw_rpc_total_day";
 		}else{
 			tableName="viw_pcp_total_day";
@@ -840,14 +840,14 @@ public class MobileService<T> extends BaseService<T> {
 		DataDictionary ddic = null;
 		String ddicName="";
 		String tableName="viw_rpc_total_day";
-		String typeColumnName="workingConditionName";
+		String typeColumnName="resultName";
 		if(type==1){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpDailyETValue";
 			}else{//默认为抽油机
 				ddicName="dailyFSDiagram";
 			}
-			typeColumnName="workingConditionName";
+			typeColumnName="resultName";
 		}else if(type==2){
 			if(liftingType==2){//螺杆泵井
 				ddicName="screwPumpDailyProdDist";
@@ -931,10 +931,10 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",workingConditionString,workingConditionAlarmLevel,"
+		String sql=ddic.getSql()+",resultString,resultAlarmLevel,"
 				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
 		if(liftingType!=2){
-			sql+= " ,workingConditionString_E,workingConditionAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql+= " ,resultString_E,resultAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
 			tableName="viw_rpc_total_day";
 		}else{
 			tableName="viw_pcp_total_day";

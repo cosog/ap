@@ -130,10 +130,10 @@ public class TotalAnalysisRequestData {
 	    private float RunFrequency;
 	    private float RPM;
 	    private float Signal; //信号强度
-	    private float WattSum; //有功功率					kW
-	    private float VarSum; //无功功率					kVar
-	    private float VASum; //视在功率					kVA
-	    private float PFSum; //功率因数					小数
+	    private float Watt3; //有功功率					kW
+	    private float Var3; //无功功率					kVar
+	    private float VA3; //视在功率					kVA
+	    private float PF3; //功率因数					小数
 		public String getAcqTime() {
 			return AcqTime;
 		}
@@ -880,36 +880,36 @@ public class TotalAnalysisRequestData {
 			Signal = signal;
 		}
 
-		public float getWattSum() {
-			return WattSum;
+		public float getWatt3() {
+			return Watt3;
 		}
 
-		public void setWattSum(float wattSum) {
-			WattSum = wattSum;
+		public void setWatt3(float watt3) {
+			Watt3 = watt3;
 		}
 
-		public float getVarSum() {
-			return VarSum;
+		public float getVar3() {
+			return Var3;
 		}
 
-		public void setVarSum(float varSum) {
-			VarSum = varSum;
+		public void setVar3(float var3) {
+			Var3 = var3;
 		}
 
-		public float getVASum() {
-			return VASum;
+		public float getVA3() {
+			return VA3;
 		}
 
-		public void setVASum(float vASum) {
-			VASum = vASum;
+		public void setVA3(float va3) {
+			VA3 = va3;
 		}
 
-		public float getPFSum() {
-			return PFSum;
+		public float getPF3() {
+			return PF3;
 		}
 
-		public void setPFSum(float pFSum) {
-			PFSum = pFSum;
+		public void setPF3(float pf3) {
+			PF3 = pf3;
 		}
 
 		public float getEnergyPer100mLift() {

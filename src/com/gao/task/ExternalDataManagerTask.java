@@ -47,7 +47,6 @@ public class ExternalDataManagerTask {
     
     @Scheduled(cron = "0 0/1 * * * ?")
 	public void GetExternalFESDiagramData() throws SQLException, ParseException,InterruptedException, IOException{
-    	System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 		String sql="select t1.wellname,to_char(v.acqtime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t1 "
 				+ " left outer join tbl_rpc_productiondata_latest t2 on t2.wellid=t1.id "

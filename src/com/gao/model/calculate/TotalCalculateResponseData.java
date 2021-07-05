@@ -302,7 +302,7 @@ public class TotalCalculateResponseData {
  
 	    private float SystemEfficiency;
 	    
-	    private float PowerConsumptionPerTHM;
+	    private float EnergyPer100mLift;
 
 	    public void setLiquidVolumetricProduction(float LiquidVolumetricProduction){
 	        this.LiquidVolumetricProduction = LiquidVolumetricProduction;
@@ -358,11 +358,11 @@ public class TotalCalculateResponseData {
 	    public float getSystemEfficiency(){
 	        return this.SystemEfficiency;
 	    }
-		public float getPowerConsumptionPerTHM() {
-			return PowerConsumptionPerTHM;
+		public float getEnergyPer100mLift() {
+			return EnergyPer100mLift;
 		}
-		public void setPowerConsumptionPerTHM(float powerConsumptionPerTHM) {
-			PowerConsumptionPerTHM = powerConsumptionPerTHM;
+		public void setEnergyPer100mLift(float energyPer100mLift) {
+			EnergyPer100mLift = energyPer100mLift;
 		}
 	}
 	

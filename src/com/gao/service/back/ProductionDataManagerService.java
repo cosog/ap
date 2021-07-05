@@ -172,7 +172,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		sql="select id,wellName,runTime,"
 			+ "crudeOilDensity,waterDensity,naturalGasRelativeDensity,saturationPressure,reservoirDepth,reservoirTemperature,"
 			+ "tubingPressure,casingPressure,wellHeadFluidTemperature,"
-			+ "waterCut_W,waterCut,"
+			+ "weightWaterCut,volumeWaterCut,"
 			+ "productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
 			+ "barrelTypeName,pumpTypeName,"
 			+ "pumpGrade,pumpBoreDiameter,plungerLength,"
@@ -213,8 +213,8 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			result_json.append("\"tubingPressure\":\""+obj[9]+"\",");
 			result_json.append("\"casingPressure\":\""+obj[10]+"\",");
 			result_json.append("\"wellHeadFluidTemperature\":\""+obj[11]+"\",");
-			result_json.append("\"waterCut_W\":\""+obj[12]+"\",");
-			result_json.append("\"waterCut\":\""+obj[13]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[12]+"\",");
+			result_json.append("\"volumeWaterCut\":\""+obj[13]+"\",");
 			result_json.append("\"productionGasOilRatio\":\""+obj[14]+"\",");
 			result_json.append("\"producingfluidLevel\":\""+obj[15]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[16]+"\",");
@@ -260,7 +260,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql="select id,wellName,runTime,"
 			+ "crudeOilDensity,waterDensity,naturalGasRelativeDensity,saturationPressure,reservoirDepth,reservoirTemperature,"
-			+ "tubingPressure,casingPressure,wellHeadFluidTemperature,waterCut_W,productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
+			+ "tubingPressure,casingPressure,wellHeadFluidTemperature,weightWaterCut,productionGasOilRatio,producingfluidLevel,pumpSettingDepth,"
 			+ "pumpGrade,pumpBoreDiameter,plungerLength,"
 			+ "barrelLength,barrelSeries,rotorDiameter,QPR,"
 			+ "tubingStringInsideDiameter,casingStringInsideDiameter,"
@@ -297,7 +297,7 @@ public class ProductionDataManagerService<T> extends BaseService<T> {
 			result_json.append("\"tubingPressure\":\""+obj[9]+"\",");
 			result_json.append("\"casingPressure\":\""+obj[10]+"\",");
 			result_json.append("\"wellHeadFluidTemperature\":\""+obj[11]+"\",");
-			result_json.append("\"waterCut_W\":\""+obj[12]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[12]+"\",");
 			result_json.append("\"productionGasOilRatio\":\""+obj[13]+"\",");
 			result_json.append("\"producingfluidLevel\":\""+obj[14]+"\",");
 			result_json.append("\"pumpSettingDepth\":\""+obj[15]+"\",");

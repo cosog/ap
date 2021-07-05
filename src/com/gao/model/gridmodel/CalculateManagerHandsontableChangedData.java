@@ -55,7 +55,7 @@ public class CalculateManagerHandsontableChangedData {
 
 	    private String wellHeadFluidTemperature="35";
 
-	    private String waterCut="0";
+	    private String weightWaterCut="0";
 
 	    private String productionGasOilRatio="10";
 
@@ -219,12 +219,12 @@ public class CalculateManagerHandsontableChangedData {
 			this.wellHeadFluidTemperature = wellHeadFluidTemperature;
 		}
 
-		public String getWaterCut() {
-			return waterCut;
+		public String getWeightWaterCut() {
+			return weightWaterCut;
 		}
 
-		public void setWaterCut(String waterCut) {
-			this.waterCut = waterCut;
+		public void setWeightWaterCut(String weightWaterCut) {
+			this.weightWaterCut = weightWaterCut;
 		}
 
 		public String getProductionGasOilRatio() {

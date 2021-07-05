@@ -431,7 +431,7 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content8=new Label(7,i+3,everydata.getString("runRange"),wcf_table);
             	   content9=new Label(8,i+3,everydata.getString("runTimeEfficiency"),wcf_table);
             	   
-            	   content10=new Label(9,i+3,everydata.getString("workingConditionName"),wcf_table);
+            	   content10=new Label(9,i+3,everydata.getString("resultName"),wcf_table);
             	   content11=new Label(10,i+3,everydata.getString("optimizationSuggestion"),wcf_table);
             	   
             	   
@@ -450,7 +450,7 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content22=new Label(21,i+3,everydata.getString("systemEfficiency"),wcf_table);
             	   content23=new Label(22,i+3,everydata.getString("surfaceSystemEfficiency"),wcf_table);
             	   content24=new Label(23,i+3,everydata.getString("welldownSystemEfficiency"),wcf_table);
-            	   content25=new Label(24,i+3,everydata.getString("powerConsumptionPerthm"),wcf_table);
+            	   content25=new Label(24,i+3,everydata.getString("energyPer100mLift"),wcf_table);
             	   
             	   content26=new Label(25,i+3,everydata.getString("todayKWattH"),wcf_table);
             	   content27=new Label(26,i+3,everydata.getString("remark"),wcf_table);
@@ -859,14 +859,14 @@ public class ReportPumpingUnitDataController extends BaseController {
             	   content10=new Label(9,i+3,everydata.getString("liquidProduction"),wcf_table);
             	   content11=new Label(10,i+3,everydata.getString("oilProduction"),wcf_table);
             	   content12=new Label(11,i+3,everydata.getString("waterProduction"),wcf_table);
-            	   content13=new Label(12,i+3,everydata.getString("waterCut"),wcf_table);
+            	   content13=new Label(12,i+3,everydata.getString("volumeWaterCut"),wcf_table);
             	   content14=new Label(13,i+3,everydata.getString("rpm"),wcf_table);
             	   content15=new Label(14,i+3,everydata.getString("pumpSettingDepth"),wcf_table);
             	   content16=new Label(15,i+3,everydata.getString("producingFluidLevel"),wcf_table);
             	   content17=new Label(16,i+3,everydata.getString("submergence"),wcf_table);
             	   
             	   content18=new Label(17,i+3,everydata.getString("systemEfficiency"),wcf_table);
-            	   content19=new Label(18,i+3,everydata.getString("powerConsumptionPerthm"),wcf_table);
+            	   content19=new Label(18,i+3,everydata.getString("energyPer100mLift"),wcf_table);
             	   
             	   content20=new Label(19,i+3,everydata.getString("todayKWattH"),wcf_table);
             	   

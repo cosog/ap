@@ -1116,12 +1116,12 @@ public class PSToFSService<T> extends BaseService<T> {
 		String voltageaalarm="";
 		String voltagebalarm="";
 		String voltagecalarm="";
-		String WorkingConditionString=transferDiscrete.getResultStr();
-		if(!StringManagerUtils.isNotNull(WorkingConditionString)){
-			WorkingConditionString=transferDiscrete.getResultCode()+"";
+		String resultString=transferDiscrete.getResultStr();
+		if(!StringManagerUtils.isNotNull(resultString)){
+			resultString=transferDiscrete.getResultCode()+"";
 		}
 		String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
-				+ "t.FrequencyRunValue="+transferDiscrete.getFREQ()+","
+				+ "t.runFrequency="+transferDiscrete.getFREQ()+","
 				+ "t.signal="+transferDiscrete.getSignal()+","
 				+ "t.interval="+transferDiscrete.getInterval2()+","
 				+ "t.deviceVer='"+transferDiscrete.getVer()+"',"
@@ -1145,8 +1145,8 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " ,t.totalNKVarH= "+transferDiscrete.getTotalEnergy().getNVar()
 				+ " ,t.totalKVAH= "+transferDiscrete.getTotalEnergy().getVA()
 				+ ",t.RunStatus="+(transferDiscrete.getRunStatus()?1:0)
-				+ " ,t.WorkingConditionCode= "+transferDiscrete.getResultCode()
-				+ " ,t.WorkingConditionString= '"+WorkingConditionString+"'"
+				+ " ,t.resultCode= "+transferDiscrete.getResultCode()
+				+ " ,t.resultString= '"+resultString+"'"
 				+ " ,t.IaAlarm= '"+currentaalarm+"'"
 				+ " ,t.IbAlarm= '"+currentbalarm+"'"
 				+ " ,t.IcAlarm= '"+currentcalarm+"'"
@@ -1161,20 +1161,20 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " ,t.Vb= "+transferDiscrete.getV().getB()+""
 				+ " ,t.Vc= "+transferDiscrete.getV().getC()+""
 				+ " ,t.VAvg= "+transferDiscrete.getV().getAvg()+""
-				+ " ,t.WattSum= "+transferDiscrete.getWatt().getSum()+""
+				+ " ,t.watt3= "+transferDiscrete.getWatt().getSum()+""
 				+ " ,t.WattA= "+transferDiscrete.getWatt().getA()+""
 				+ " ,t.WattB= "+transferDiscrete.getWatt().getB()+""
 				+ " ,t.WattC= "+transferDiscrete.getWatt().getC()+""
-				+ " ,t.VarSum= "+transferDiscrete.getVar().getSum()+""
+				+ " ,t.var3= "+transferDiscrete.getVar().getSum()+""
 				+ " ,t.VarA= "+transferDiscrete.getVar().getA()+""
 				+ " ,t.VarB= "+transferDiscrete.getVar().getB()+""
 				+ " ,t.VarC= "+transferDiscrete.getVar().getC()+""
-				+ " ,t.VASum= "+transferDiscrete.getVA().getSum()+""
+				+ " ,t.va3= "+transferDiscrete.getVA().getSum()+""
 				+ " ,t.VAA= "+transferDiscrete.getVA().getA()+""
 				+ " ,t.VAB= "+transferDiscrete.getVA().getB()+""
 				+ " ,t.VAC= "+transferDiscrete.getVA().getC()+""
 				+ " ,t.ReversePower= "+0+""
-				+ " ,t.PFSum= "+transferDiscrete.getPF().getSum()+""
+				+ " ,t.pf3= "+transferDiscrete.getPF().getSum()+""
 				+ " ,t.PFA= "+transferDiscrete.getPF().getA()+""
 				+ " ,t.PFB= "+transferDiscrete.getPF().getB()+""
 				+ " ,t.PFC= "+transferDiscrete.getPF().getC()+""
@@ -1247,7 +1247,7 @@ public class PSToFSService<T> extends BaseService<T> {
         String stopWellCountSql="select count(1) from viw_rpc_discrete_latest t where length(t.signinid)=16 and t.commstatus=1 and t.runStatus=0 and t.org_id in ("+orgId+")";
         String warnningWellCountSql="select count(1) from viw_rpc_discrete_latest t,viw_rpc_diagram_latest t2 "
         		+ " where t.wellId=t2.wellId and length(t.signinid)=16"
-        		+ " and (t.workingconditionAlarmLevel>0  or t.commAlarmLevel>0 or t.runAlarmLevel>0 or t2.iDegreeBalanceAlarmLevel>0 or t2.wattDegreeBalanceAlarmlevel>0)  "
+        		+ " and (t.resultAlarmLevel>0  or t.commAlarmLevel>0 or t.runAlarmLevel>0 or t2.iDegreeBalanceAlarmLevel>0 or t2.wattDegreeBalanceAlarmlevel>0)  "
         		+ " and t.org_id in ("+orgId+")";
         int runWellCount=this.getTotalCountRows(runWellCountSql);
         int stopWellCount=this.getTotalCountRows(stopWellCountSql);
@@ -1278,15 +1278,15 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " id,wellName,to_char(t.acqTime@'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ "	commStatus,commStatusName,commAlarmLevel,"
 				+ "	runStatus,runStatusName,runAlarmLevel,"
-				+ " workingConditionCode,workingConditionName,workingConditionAlarmLevel as workingConditionAlarmLevel_E,"
+				+ " resultCode,resultName,resultAlarmLevel as resultAlarmLevel_E,"
 				+ " runTime,runTimeEfficiency,t.runRange,"
 				+ " Ia,Ib,Ic,IAvg,IStr,Va,Vb,Vc,VAvg,VStr,"
-				+ " WattA,WattB,WattC,WattSum,WattStr,"
-				+ " VarA,VarB,VarC,VarSum,VarStr,"
-				+ " PFA,PFB,PFC,PFSum,PFStr,"
+				+ " WattA,WattB,WattC,watt3,WattStr,"
+				+ " VarA,VarB,VarC,var3,VarStr,"
+				+ " PFA,PFB,PFC,pf3,PFStr,"
 				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
 				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
-				+ " frequencyRunValue,signal,interval,deviceVer "
+				+ " runFrequency,signal,interval,deviceVer "
 				+ " from viw_rpc_discrete_latest t "
 				+ " where t.org_id in("+orgId+") and length(t.signinid)=16 ";
 		
@@ -1297,7 +1297,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		sqlHis=sourcesql.replace("viw_rpc_discrete_latest", "viw_rpc_discrete_hist");
 		
 		if(StringManagerUtils.isNotNull(egkmc)){
-			sql+=" and workingConditionName='"+egkmc+"' ";
+			sql+=" and resultName='"+egkmc+"' ";
 		}
 		if(StringManagerUtils.isNotNull(timeEff)){
 			sql+=" and runtimeefficiencyLevel='"+timeEff+"' ";
@@ -1309,9 +1309,9 @@ public class PSToFSService<T> extends BaseService<T> {
 			if("runStatus".equalsIgnoreCase(type)){
 				sql+=" and runStatusName='"+statValue+"' ";
 			}else if("alarmStatus".equalsIgnoreCase(type)&&"1".equals(statValue)){
-				sql+=" and (commAlarmLevel>0 or runAlarmLevel>0 or workingconditionAlarmLevel>0 )";
+				sql+=" and (commAlarmLevel>0 or runAlarmLevel>0 or resultAlarmLevel>0 )";
 			}else if("alarmStatus".equalsIgnoreCase(type)&&"0".equals(statValue)){
-				sql+=" and commAlarmLevel=0 and runAlarmLevel=0 and workingconditionAlarmLevel=0";
+				sql+=" and commAlarmLevel=0 and runAlarmLevel=0 and resultAlarmLevel=0";
 			}
 		}
 		sql+=" order by t.sortnum, t.wellName";
@@ -1343,13 +1343,13 @@ public class PSToFSService<T> extends BaseService<T> {
 		String sql="select "
 				+ " runTime,runTimeEfficiency,"
 				+ " Ia,Ib,Ic,IAvg,Va,Vb,Vc,VAvg,"
-				+ " WattA,WattB,WattC,WattSum,"
-				+ " VarA,VarB,VarC,VarSum,"
-				+ " PFA,PFB,PFC,PFSum,"
+				+ " WattA,WattB,WattC,watt3,"
+				+ " VarA,VarB,VarC,var3,"
+				+ " PFA,PFB,PFC,pf3,"
 				+ " totalKWattH,totalPKWattH,totalNKWattH,totalKVarH,totalPKVarH,totalNKVarH,totalKVAH,"
 				+ " todayKWattH,todayPKWattH,todayNKWattH,todayKVarH,todayPKVarH,todayNKVarH,todayKVAH,"
-				+ " frequencyRunValue,signal,interval,"
-				+ " runrange,workingconditionstring "
+				+ " runFrequency,signal,interval,"
+				+ " runrange,resultstring "
 				+ " from "+tableName+" t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
@@ -1368,15 +1368,15 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"WattA\":\""+obj[10]+"\",");
 			result_json.append("\"WattB\":\""+obj[11]+"\",");
 			result_json.append("\"WattC\":\""+obj[12]+"\",");
-			result_json.append("\"WattSum\":\""+obj[13]+"\",");
+			result_json.append("\"watt3\":\""+obj[13]+"\",");
 			result_json.append("\"VarA\":\""+obj[14]+"\",");
 			result_json.append("\"VarB\":\""+obj[15]+"\",");
 			result_json.append("\"VarC\":\""+obj[16]+"\",");
-			result_json.append("\"VarSum\":\""+obj[17]+"\",");
+			result_json.append("\"var3\":\""+obj[17]+"\",");
 			result_json.append("\"PFA\":\""+obj[18]+"\",");
 			result_json.append("\"PFB\":\""+obj[19]+"\",");
 			result_json.append("\"PFC\":\""+obj[20]+"\",");
-			result_json.append("\"PFSum\":\""+obj[21]+"\",");
+			result_json.append("\"pf3\":\""+obj[21]+"\",");
 			result_json.append("\"totalKWattH\":\""+obj[22]+"\",");
 			result_json.append("\"totalPKWattH\":\""+obj[23]+"\",");
 			result_json.append("\"totalNKWattH\":\""+obj[24]+"\",");
@@ -1391,12 +1391,11 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"todayPKVarH\":\""+obj[33]+"\",");
 			result_json.append("\"todayNKVarH\":\""+obj[34]+"\",");
 			result_json.append("\"todayKVAH\":\""+obj[35]+"\",");
-			result_json.append("\"frequencyRunValue\":\""+obj[36]+"\",");
+			result_json.append("\"runFrequency\":\""+obj[36]+"\",");
 			result_json.append("\"signal\":\""+obj[37]+"\",");
 			result_json.append("\"interval\":\""+obj[38]+"\",");
 			result_json.append("\"runRange\":\""+obj[39]+"\",");
-			result_json.append("\"workingConditionString\":\""+obj[40]+"\"");
-			
+			result_json.append("\"resultString\":\""+obj[40]+"\"");
 		}
 		result_json.append("}");
 		return result_json.toString().replaceAll("null", "").replaceAll("//", "");
@@ -1497,7 +1496,7 @@ public class PSToFSService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
         String runWellCountSql="select count(1) from viw_rpc_total_day t where length(t.signinid)=16 and  t.runStatus=1 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
         String stopWellCountSql="select count(1) from viw_rpc_total_day t where length(t.signinid)=16 and  t.runStatus=0 and t.commStatus=1 and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
-        String warnningWellCountSql="select count(1) from viw_rpc_total_day t where length(t.signinid)=16 and (t.workingConditionAlarmLevel_E>0  or commAlarmLevel>0 or runAlarmLevel>0 or idegreebalanceAlarmLevel>0 or wattdegreebalanceAlarmLevel>0)  and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
+        String warnningWellCountSql="select count(1) from viw_rpc_total_day t where length(t.signinid)=16 and (t.resultAlarmLevel_E>0  or commAlarmLevel>0 or runAlarmLevel>0 or idegreebalanceAlarmLevel>0 or wattdegreebalanceAlarmLevel>0)  and t.org_id in ("+orgId+") and t.calculatedate=to_date('"+date+"','yyyy-mm-dd')";
         int runWellCount=this.getTotalCountRows(runWellCountSql);
         int stopWellCount=this.getTotalCountRows(stopWellCountSql);
         int warnningWellCount=this.getTotalCountRows(warnningWellCountSql);
@@ -1555,7 +1554,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " id,wellName,to_char(t.calculateDate@'yyyy-mm-dd') as calculateDate,"
 				+ "	commStatus,commStatusName,commAlarmLevel,"
 				+ " runStatus,runStatusName,runAlarmLevel,"
-				+ " workingConditionCode_E,workingConditionName_E,workingConditionAlarmLevel_E,"
+				+ " resultCode_E,resultName_E,resultAlarmLevel_E,"
 				+ " runTime,runTimeEfficiency,t.runRange,"
 				+ " SPMMax,SPMMin,SPM,SPMStr,"
 				+ " FMax,FMin,F,FStr,"
@@ -1680,7 +1679,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " t.va,t.vamax,t.vamin,t.vb,t.vbmax,t.vbmin,t.vc,t.vcmax,t.vcmin,"
 				+ " t.todayKWattH,t.todayPKWattH,t.todayNKWattH,t.todayKVarH,t.todayPKVarH,t.todayNKVarH,t.todayKVAH,"
 				+ " t.signal,t.signalmax,t.signalmin,"
-				+ " t.runrange,t.workingconditionstring_e"
+				+ " t.runrange,t.resultstring_e"
 				+ " from tbl_rpc_total_day t where id="+id;
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
@@ -1729,7 +1728,7 @@ public class PSToFSService<T> extends BaseService<T> {
 			result_json.append("\"signalMax\":\""+obj[40]+"\",");
 			result_json.append("\"signalMin\":\""+obj[41]+"\",");
 			result_json.append("\"runRange\":\""+obj[42]+"\",");
-			result_json.append("\"workingConditionString_E\":\""+obj[43]+"\"");
+			result_json.append("\"resultString_E\":\""+obj[43]+"\"");
 			
 		}
 		result_json.append("}");

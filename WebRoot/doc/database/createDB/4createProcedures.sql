@@ -339,10 +339,10 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_discretedaily (
   v_Vb in number,v_VbMax in number,v_VbMin in number,
   v_Vc in number,v_VcMax in number,v_VcMin in number,
   v_frequencyrunvalue in number,v_frequencyrunvalueMax in number,v_frequencyrunvalueMin in number,
-  v_WattSum in number,v_WattSumMax in number,v_WattSumMin in number,
-  v_VarSum in number,v_VarSumMax in number,v_VarSumMin in number,
-  v_VASum in number,v_VASumMax in number,v_VASumMin in number,
-  v_PFSum in number,v_PFSumMax in number,v_PFSumMin in number,
+  v_Watt3 in number,v_Watt3Max in number,v_Watt3Min in number,
+  v_Var3 in number,v_Var3Max in number,v_Var3Min in number,
+  v_VA3 in number,v_VA3Max in number,v_VA3Min in number,
+  v_PF3 in number,v_PF3Max in number,v_PF3Min in number,
   v_calDate in varchar2
   ) is
   p_msg varchar2(3000) := 'error';
@@ -368,10 +368,10 @@ begin
          vb,vbmax,vbmin,
          vc,vcmax,vcmin,
          frequency,frequencymax,frequencymin,
-         WattSum,WattSumMax,WattSumMin,
-         VarSum,VarSumMax,VarSumMin,
-         VASum,VASumMax,VASumMin,
-         PFSum,PFSumMax,PFSumMin
+         Watt3,Watt3Max,Watt3Min,
+         Var3,Var3Max,Var3Min,
+         VA3,VA3Max,VA3Min,
+         PF3,PF3Max,PF3Min
       )values(
          to_date(v_calDate,'yyyy-mm-dd')-1,p_wellid,
          v_Ia,v_IaMax,v_IaMin,
@@ -381,10 +381,10 @@ begin
          v_Vb,v_VbMax,v_VbMin,
          v_Vc,v_VcMax,v_VcMin,
          v_frequencyrunvalue,v_frequencyrunvalueMax,v_frequencyrunvalueMin,
-         v_WattSum,v_WattSumMax,v_WattSumMin,
-         v_VarSum,v_VarSumMax,v_VarSumMin,
-         v_VASum,v_VASumMax,v_VASumMin,
-         v_PFSum,v_PFSumMax,v_PFSumMin
+         v_Watt3,v_Watt3Max,v_Watt3Min,
+         v_Var3,v_Var3Max,v_Var3Min,
+         v_VA3,v_VA3Max,v_VA3Min,
+         v_PF3,v_PF3Max,v_PF3Min
       );
       p_msg := '插入成功';
       commit;
@@ -400,10 +400,10 @@ begin
       t.vb=v_Vb,t.vbmax=v_VbMax,t.vbmin=v_VbMin,
       t.vc=v_Vc,t.vcmax=v_VcMax,t.vcmin=v_VcMin,
       t.frequency=v_frequencyrunvalue,t.frequencymax=v_frequencyrunvalueMax,t.frequencymin=v_frequencyrunvalueMin,
-      WattSum=v_WattSum,WattSumMax=v_WattSumMax,WattSumMin=v_WattSumMin,
-      VarSum=v_VarSum,VarSumMax=v_VarSumMax,VarSumMin=v_VarSumMin,
-      VASum=v_VASum,VASumMax=v_VASumMax,VASumMin=v_VASumMin,
-      PFSum=v_PFSum,PFSumMax=v_PFSumMax,PFSumMin=v_PFSumMin
+      Watt3=v_Watt3,Watt3Max=v_Watt3Max,Watt3Min=v_Watt3Min,
+      Var3=v_Var3,Var3Max=v_Var3Max,Var3Min=v_Var3Min,
+      VA3=v_VA3,VA3Max=v_VA3Max,VA3Min=v_VA3Min,
+      PF3=v_PF3,PF3Max=v_PF3Max,PF3Min=v_PF3Min
       where t.id=p_totalresultid;
       commit;
       p_msg := '更新成功';
@@ -430,8 +430,8 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_productiondata (v_WellName   in varchar
                                                       v_TubingPressure   in NUMBER,
                                                       v_CasingPressure   in NUMBER,
                                                       v_WellHeadFluidTemperature   in NUMBER,
-                                                      v_WaterCut_W    in NUMBER,
-                                                      v_WaterCut    in NUMBER,
+                                                      v_WeightWaterCut    in NUMBER,
+                                                      v_VolumeWaterCut    in NUMBER,
                                                       v_ProductionGasOilRatio   in NUMBER,
                                                       v_ProducingfluidLevel    in NUMBER,
                                                       v_PumpSettingDepth    in NUMBER,
@@ -500,7 +500,7 @@ begin
       set t.RunTime=v_RunTime,
           t.CrudeOilDensity=v_CrudeOilDensity,t.WaterDensity=v_WaterDensity,t.NaturalGasRelativeDensity=v_NaturalGasRelativeDensity,t.SaturationPressure=v_SaturationPressure,t.ReservoirDepth=v_ReservoirDepth,t.ReservoirTemperature=v_ReservoirTemperature,
           t.TubingPressure=v_TubingPressure,t.CasingPressure=v_CasingPressure,t.WellHeadFluidTemperature=v_WellHeadFluidTemperature,
-          t.WaterCut_W=v_WaterCut_W,t.watercut=v_WaterCut,
+          t.weightwatercut=v_WeightWaterCut,t.volumewatercut=v_VolumeWaterCut,
           t.ProductionGasOilRatio=v_ProductionGasOilRatio,
           t.ProducingfluidLevel=v_ProducingfluidLevel,t.PumpSettingDepth=v_PumpSettingDepth,
           t.barreltype=p_BarrelType,t.pumptype=p_PumpType,
@@ -519,7 +519,7 @@ begin
       insert into tbl_pcp_productiondata_latest(wellid,AcqTime,runtime,
              crudeoildensity,waterdensity,naturalgasrelativedensity,saturationpressure,reservoirdepth,reservoirtemperature,
              tubingpressure,casingpressure,wellheadfluidtemperature,
-             watercut_w,watercut,
+             WeightWaterCut,VolumeWaterCut,
              productiongasoilratio,
              producingfluidlevel,pumpsettingdepth,
              barreltype,pumptype,
@@ -532,7 +532,7 @@ begin
              p_wellid,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),v_RunTime,
              v_CrudeOilDensity,v_WaterDensity,v_NaturalGasRelativeDensity,v_SaturationPressure,v_ReservoirDepth,v_ReservoirTemperature,
              v_TubingPressure,v_CasingPressure,v_WellHeadFluidTemperature,
-             v_WaterCut_W,v_WaterCut,
+             v_WeightWaterCut,v_VolumeWaterCut,
              v_ProductionGasOilRatio,
              v_ProducingfluidLevel,v_PumpSettingDepth,
              p_BarrelType,p_PumpType,
@@ -566,8 +566,8 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpm (
        v_TheoreticalProduction in NUMBER,
        v_LiquidVolumetricProduction in NUMBER,v_OilVolumetricProduction in NUMBER,v_WaterVolumetricProduction in NUMBER,
        v_LiquidWeightProduction in NUMBER,v_OilWeightProduction in NUMBER,v_WaterWeightProduction in NUMBER,
-       v_MotorInputActivePower in NUMBER,v_WaterPower in NUMBER,
-       v_SystemEfficiency in NUMBER,v_PowerConsumptionPerTHM in NUMBER,
+       v_averagewatt in NUMBER,v_WaterPower in NUMBER,
+       v_SystemEfficiency in NUMBER,v_energyper100mlift in NUMBER,
        v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff in NUMBER,
        v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
        v_PumpOutletP in NUMBER,v_PumpOutletT in NUMBER,v_PumpOutletGOL in NUMBER,v_PumpOutletVisl in NUMBER,v_PumpOutletBo in NUMBER,
@@ -581,12 +581,12 @@ begin
       update tbl_pcp_rpm_hist t
       set t.rpm=v_RPM,t.torque=v_Torque,
           t.productiondataid=v_ProductionDataId,t.resultstatus=v_ResultStatus,
-          t.workingconditioncode=v_ResultCode,
+          t.resultcode=v_ResultCode,
           t.theoreticalproduction=v_TheoreticalProduction,
           t.liquidvolumetricproduction=v_LiquidVolumetricProduction,t.oilvolumetricproduction=v_OilVolumetricProduction,t.watervolumetricproduction=v_WaterVolumetricProduction,
           t.liquidweightproduction=v_LiquidWeightProduction,t.oilweightproduction=v_OilWeightProduction,t.waterweightproduction=v_WaterWeightProduction,
-          t.motorinputactivepower=v_MotorInputActivePower,t.waterpower=v_WaterPower,
-          t.systemefficiency=v_SystemEfficiency,t.powerconsumptionperthm=v_PowerConsumptionPerTHM,
+          t.averagewatt=v_averagewatt,t.waterpower=v_WaterPower,
+          t.systemefficiency=v_SystemEfficiency,t.energyper100mlift=v_energyper100mlift,
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff=v_PumpEff,
           t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
           t.pumpoutletp=v_PumpOutletP,t.pumpoutlett=v_PumpOutletT,t.pumpoutletgol=v_PumpOutletGOL,t.pumpoutletvisl=v_PumpOutletVisl,t.pumpoutletbo=v_PumpOutletBo,
@@ -600,12 +600,12 @@ begin
           wellId,AcqTime,
           rpm,torque,
           productiondataid,resultstatus,
-          workingconditioncode,
+          resultcode,
           theoreticalproduction,
           liquidvolumetricproduction,oilvolumetricproduction,watervolumetricproduction,
           liquidweightproduction,oilweightproduction,waterweightproduction,
-          motorinputactivepower,waterpower,
-          systemefficiency,powerconsumptionperthm,
+          averagewatt,waterpower,
+          systemefficiency,energyper100mlift,
           pumpeff1,pumpeff2,pumpeff,
           pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
           pumpoutletp,pumpoutlett,pumpoutletgol,pumpoutletvisl,pumpoutletbo,
@@ -618,8 +618,8 @@ begin
           v_TheoreticalProduction,
           v_LiquidVolumetricProduction,v_OilVolumetricProduction,v_WaterVolumetricProduction,
           v_LiquidWeightProduction,v_OilWeightProduction,v_WaterWeightProduction,
-          v_MotorInputActivePower,v_WaterPower,
-          v_SystemEfficiency,v_PowerConsumptionPerTHM,
+          v_averagewatt,v_WaterPower,
+          v_SystemEfficiency,v_energyper100mlift,
           v_PumpEff1,v_PumpEff2,v_PumpEff,
           v_PumpIntakeP,v_PumpIntakeT,v_PumpIntakeGOL,v_PumpIntakeVisl,v_PumpIntakeBo,
           v_PumpOutletP,v_PumpOutletT,v_PumpOutletGOL,v_PumpOutletVisl,v_PumpOutletBo,
@@ -652,11 +652,11 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdaily (
   v_liquidVolumetricProduction in number,v_liquidProductionmax_v in number,v_liquidProductionmin_v in number,
   v_oilVolumetricProduction in number,v_oilVolumetricProductionmax in number,v_oilVolumetricProductionmin in number,
   v_waterVolumetricProduction in number,v_waterVolumetricProductionmax in number,v_waterVolumetricProductionmin in number,
-  v_waterCut in number,v_waterCutmax in number,v_waterCutmin in number,
+  v_volumewatercut in number,v_volumewatercutmax in number,v_volumewatercutmin in number,
   v_liquidWeightProduction in number,v_liquidWeightProductionmax in number,v_liquidWeightProductionmin in number,
   v_oilWeightProduction in number,v_oilWeightProductionmax in number,v_oilWeightProductionmin in number,
   v_waterWeightProduction in number,v_waterWeightProductionmax in number,v_waterWeightProductionmin in number,
-  v_waterCut_w in number,v_waterCutmax_w in number,v_waterCutmin_w in number,
+  v_weightwatercut in number,v_weightwatercutmax in number,v_weightwatercutmin in number,
   v_pumpEff in number,v_pumpEffmax in number,v_pumpEffmin in number,
   v_pumpEff1 in number,v_pumpEff1max in number,v_pumpEff1min in number,
   v_pumpEff2 in number,v_pumpEff2max in number,v_pumpEff2min in number,
@@ -664,7 +664,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcp_rpmdaily (
   v_producingfluidLevel in number,v_producingfluidLevelmax in number,v_producingfluidLevelmin in number,
   v_submergence in number,v_submergencemax in number,v_submergencemin in number,
   v_systemEfficiency in number,v_systemEfficiencymax in number,v_systemEfficiencymin in number,
-  v_powerConsumptionPerTHM in number,v_powerConsumptionPerTHMmax in number,v_powerConsumptionPerTHMmin in number,
+  v_energyper100mlift in number,v_energyper100mliftmax in number,v_energyper100mliftmin in number,
   v_AvgWatt in number,v_AvgWattmax in number,v_AvgWattmin in number,
   v_WaterPower in number,v_WaterPowermax in number,v_WaterPowermin in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
@@ -682,7 +682,6 @@ begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
      select id into p_wellid from tbl_wellinformation t where t.wellName=v_wellName and rownum=1;
-
      --查询是否已存在当天计算记录
     select count(*) into p_totalresultcount from tbl_pcp_total_day t
     where t.wellid =p_wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1);
@@ -700,11 +699,11 @@ begin
          liquidVolumetricProduction,liquidVolumetricProductionmax,liquidVolumetricProductionmin,
          oilVolumetricProduction,oilVolumetricProductionmax,oilVolumetricProductionmin,
          waterVolumetricProduction,waterVolumetricProductionmax,waterVolumetricProductionmin,
-         waterCut,waterCutmax,waterCutmin,
+         volumewatercut,volumewatercutmax,volumewatercutmin,
          LiquidWeightProduction,LiquidWeightProductionmax,LiquidWeightProductionmin,
          oilWeightProduction,oilWeightProductionmax,oilWeightProductionmin,
          waterWeightProduction,waterWeightProductionmax,
-         waterWeightProductionmin,waterCut_w,waterCutmax_w,waterCutmin_w,
+         waterWeightProductionmin,weightwatercut,weightwatercutmax,weightwatercutmin,
          pumpEff,pumpEffmax,pumpEffmin,
          pumpEff1,pumpEff1max,pumpEff1min,
          pumpEff2,pumpEff2max,pumpEff2min,
@@ -712,7 +711,7 @@ begin
          producingfluidLevel,producingfluidLevelmax,producingfluidLevelmin,
          submergence,submergencemax,submergencemin,
          systemEfficiency,systemEfficiencymax,systemEfficiencymin,
-         powerConsumptionPerTHM,powerConsumptionPerTHMmax,powerConsumptionPerTHMmin,
+         energyper100mlift,energyper100mliftmax,energyper100mliftmin,
          AvgWatt,AvgWattmax,AvgWattmin,
          WaterPower,WaterPowermax,WaterPowermin
       )values(
@@ -727,11 +726,11 @@ begin
          v_liquidVolumetricProduction,v_liquidProductionmax_v,v_liquidProductionmin_v,
          v_oilVolumetricProduction,v_oilVolumetricProductionmax,v_oilVolumetricProductionmin,
          v_waterVolumetricProduction,v_waterVolumetricProductionmax,v_waterVolumetricProductionmin,
-         v_waterCut,v_waterCutmax,v_waterCutmin,
+         v_volumewatercut,v_volumewatercutmax,v_volumewatercutmin,
          v_liquidWeightProduction,v_liquidWeightProductionmax,v_liquidWeightProductionmin,
          v_oilWeightProduction,v_oilWeightProductionmax,v_oilWeightProductionmin,
          v_waterWeightProduction,v_waterWeightProductionmax,v_waterWeightProductionmin,
-         v_waterCut_w,v_waterCutmax_w,v_waterCutmin_w,
+         v_weightwatercut,v_weightwatercutmax,v_weightwatercutmin,
          v_pumpEff,v_pumpEffmax,v_pumpEffmin,
          v_pumpEff1,v_pumpEff1max,v_pumpEff1min,
          v_pumpEff2,v_pumpEff2max,v_pumpEff2min,
@@ -739,7 +738,7 @@ begin
          v_producingfluidLevel,v_producingfluidLevelmax,v_producingfluidLevelmin,
          v_submergence,v_submergencemax,v_submergencemin,
          v_systemEfficiency,v_systemEfficiencymax,v_systemEfficiencymin,
-         v_powerConsumptionPerTHM,v_powerConsumptionPerTHMmax,v_powerConsumptionPerTHMmin,
+         v_energyper100mlift,v_energyper100mliftmax,v_energyper100mliftmin,
          v_AvgWatt,v_AvgWattmax,v_AvgWattmin,
          v_WaterPower,v_WaterPowermax,v_WaterPowermin
       );
@@ -762,11 +761,11 @@ begin
       t.liquidVolumetricProduction=v_liquidVolumetricProduction,t.liquidVolumetricProductionmax=v_liquidProductionmax_v,t.liquidVolumetricProductionmin=v_liquidProductionmin_v,
       t.oilVolumetricProduction=v_oilVolumetricProduction,t.oilVolumetricProductionmax=v_oilVolumetricProductionmax,t.oilVolumetricProductionmin=v_oilVolumetricProductionmin,
       t.waterVolumetricProduction=v_waterVolumetricProduction,t.waterVolumetricProductionmax=v_waterVolumetricProductionmax,t.waterVolumetricProductionmin=v_waterVolumetricProductionmin,
-      t.waterCut=v_waterCut,t.waterCutmax=v_waterCutmax,t.waterCutmin=v_waterCutmin,
+      t.volumewatercut=v_volumewatercut,t.volumewatercutmax=v_volumewatercutmax,t.volumewatercutmin=v_volumewatercutmin,
       t.liquidWeightProduction=v_liquidWeightProduction,t.liquidWeightProductionmax=v_liquidWeightProductionmax,t.liquidWeightProductionmin=v_liquidWeightProductionmin,
       t.oilWeightProduction=v_oilWeightProduction,t.oilWeightProductionmax=v_oilWeightProductionmax,t.oilWeightProductionmin=v_oilWeightProductionmin,
       t.waterWeightProduction=v_waterWeightProduction,t.waterWeightProductionmax=v_waterWeightProductionmax,t.waterWeightProductionmin=v_waterWeightProductionmin,
-      t.waterCut_w=v_waterCut_w,t.waterCutmax_w=v_waterCutmax_w,t.waterCutmin_w=v_waterCutmin_w,
+      t.weightwatercut=v_weightwatercut,t.weightwatercutmax=v_weightwatercutmax,t.weightwatercutmin=v_weightwatercutmin,
       t.pumpEff=v_pumpEff,t.pumpEffmax=v_pumpEffmax,t.pumpEffmin=v_pumpEffmin,
       t.pumpEff1=v_pumpEff1,t.pumpEff1max=v_pumpEff1max,t.pumpEff1min=v_pumpEff1min,
       t.pumpEff2=v_pumpEff2,t.pumpEff2max=v_pumpEff2max,t.pumpEff2min=v_pumpEff2min,
@@ -774,10 +773,9 @@ begin
       t.producingfluidLevel=v_producingfluidLevel,t.producingfluidLevelmax=v_producingfluidLevelmax,t.producingfluidLevelmin=v_producingfluidLevelmin,
       t.submergence=v_submergence,t.submergencemax=v_submergencemax,t.submergencemin=v_submergencemin,
       t.systemEfficiency=v_systemEfficiency,t.systemEfficiencymax=v_systemEfficiencymax,t.systemEfficiencymin=v_systemEfficiencymin,
-      t.powerConsumptionPerTHM=v_powerConsumptionPerTHM,t.powerConsumptionPerTHMmax=v_powerConsumptionPerTHMmax,t.powerConsumptionPerTHMmin=v_powerConsumptionPerTHMmin,
+      t.energyper100mlift=v_energyper100mlift,t.energyper100mliftmax=v_energyper100mliftmax,t.energyper100mliftmin=v_energyper100mliftmin,
       AvgWatt=v_AvgWatt,AvgWattmax=v_AvgWattmax,AvgWattmin=v_AvgWattmin,
       WaterPower=v_WaterPower,WaterPowermax=v_WaterPowermax,WaterPowermin=v_WaterPowermin
-      --t.jsdjrcyldbd=p_jsdjrcyldbd,t.jsdjrcylfbd=p_jsdjrcylfbd,t.jsdjrcyldbdbfb=p_jsdjrcyldbdbfb,t.jsdjrcylfbdbfb=p_jsdjrcylfbdbfb
       where t.id=p_totalresultid;
       commit;
       p_msg := '更新成功';
@@ -1006,9 +1004,9 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
 
        v_LevelCorrectValue in NUMBER,v_ProducingfluidLevel in NUMBER,
 
-       v_MotorInputActivePower in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
+       v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
-       v_PowerConsumptionPerTHM in NUMBER,v_FSDiagramArea in NUMBER,
+       v_energyper100mlift in NUMBER,v_area in NUMBER,
        v_RodFlexLength in NUMBER,v_TubingFlexLength in NUMBER,v_InertiaLength in NUMBER,
        v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff3 in NUMBER,v_PumpEff4 in NUMBER,v_PumpEff in NUMBER,
        v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
@@ -1043,7 +1041,6 @@ begin
   else
     p_prodDataId := v_ProductionDataId;
   end if;
-
   if p_recordNum>0 then
       update tbl_rpc_diagram_hist t
       set t.stroke=v_STROKE,t.spm=v_SPM,
@@ -1056,7 +1053,7 @@ begin
           t.fmax=v_Fmax,t.fmin=v_Fmin,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
           t.deltaradius=v_DeltaRadius,
-          t.workingconditioncode=v_ResultCode,
+          t.resultcode=v_ResultCode,
           t.fullnesscoefficient=v_FullnessCoefficient,
           t.noliquidfullnesscoefficient=v_NoLiquidFullnessCoefficient,
           t.plungerstroke=v_PlungerStroke,t.availableplungerstroke=v_AvailablePlungerStroke,t.noliquidavailableplungerstroke=v_NoLiquidAvailableStroke,
@@ -1071,9 +1068,9 @@ begin
           t.availableplungerstrokeprod_w=v_AvailablePlungerStrokeProd_W,t.pumpclearanceleakprod_w=v_PumpClearanceLeakProd_W,
           t.tvleakweightproduction=v_TVLeakWeightProduction,t.svleakweightproduction=v_SVLeakWeightProduction,t.gasinfluenceprod_w=v_GasInfluenceProd_W,
           t.levelcorrectvalue=v_LevelCorrectValue,t.inverproducingfluidlevel=v_ProducingfluidLevel,
-          t.motorinputactivepower=v_MotorInputActivePower,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
+          t.averagewatt=v_averagewatt,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
           t.surfacesystemefficiency=v_SurfaceSystemEfficiency,t.welldownsystemefficiency=v_WellDownSystemEfficiency,t.systemefficiency=v_SystemEfficiency,
-          t.powerconsumptionperthm=v_PowerConsumptionPerTHM,t.fsdiagramarea=v_FSDiagramArea,
+          t.energyper100mlift=v_energyper100mlift,t.area=v_area,
           t.rodflexlength=v_RodFlexLength,t.tubingflexlength=v_TubingFlexLength,t.inertialength=v_InertiaLength,
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff3=v_PumpEff3,t.pumpeff4=v_PumpEff4,t.pumpeff=v_PumpEff,
           t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
@@ -1101,7 +1098,7 @@ begin
           fmax,fmin,
           upstrokeimax,downstrokeimax,upstrokewattmax,downstrokewattmax,idegreebalance,wattdegreebalance,
           deltaradius,
-          workingconditioncode,
+          resultcode,
           fullnesscoefficient,noliquidfullnesscoefficient,
           plungerstroke,availableplungerstroke,noliquidavailableplungerstroke,
           upperloadline,upperloadlineofexact,lowerloadline,
@@ -1115,9 +1112,9 @@ begin
           availableplungerstrokeprod_w,pumpclearanceleakprod_w,
           tvleakweightproduction,svleakweightproduction,gasinfluenceprod_w,
           levelcorrectvalue,inverproducingfluidlevel,
-          motorinputactivepower,polishrodpower,waterpower,
+          averagewatt,polishrodpower,waterpower,
           surfacesystemefficiency,welldownsystemefficiency,systemefficiency,
-          powerconsumptionperthm,fsdiagramarea,
+          energyper100mlift,area,
           rodflexlength,tubingflexlength,inertialength,
           pumpeff1,pumpeff2,pumpeff3,pumpeff4,pumpeff,
           pumpintakep,pumpintaket,pumpintakegol,pumpIntakevisl,pumpIntakebo,
@@ -1154,9 +1151,9 @@ begin
           v_AvailablePlungerStrokeProd_W,v_PumpClearanceLeakProd_W,
           v_TVLeakWeightProduction,v_SVLeakWeightProduction,v_GasInfluenceProd_W,
           v_LevelCorrectValue,v_ProducingfluidLevel,
-          v_MotorInputActivePower,v_PolishRodPower,v_WaterPower,
+          v_averagewatt,v_PolishRodPower,v_WaterPower,
           v_SurfaceSystemEfficiency,v_WellDownSystemEfficiency,v_SystemEfficiency,
-          v_PowerConsumptionPerTHM,v_FSDiagramArea,
+          v_energyper100mlift,v_area,
           v_RodFlexLength,v_TubingFlexLength,v_InertiaLength,
           v_PumpEff1,v_PumpEff2,v_PumpEff3,v_PumpEff4,v_PumpEff,
           v_PumpIntakeP,v_PumpIntakeT,v_PumpIntakeGOL,v_PumpIntakeVisl,v_PumpIntakeBo,
@@ -1186,7 +1183,7 @@ end prd_save_rpc_diagram;
 
 CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_wellName in varchar2,v_ResultStatus in number,
-  v_workingconditioncode in number,v_workingconditionString in tbl_rpc_total_day.workingconditionstring%TYPE,
+  v_resultcode in number,v_resultString in tbl_rpc_total_day.resultstring%TYPE,
   v_ExtendedDays in number,
   v_Stroke in number,v_Strokemax in number,v_Strokemin in number,
   v_SPM in number,v_SPMmax in number,v_SPMmin in number,
@@ -1212,7 +1209,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_liquidVolumetricProduction in number,v_liquidProductionmax_v in number,v_liquidProductionmin_v in number,
   v_oilVolumetricProduction in number,v_oilVolumetricProductionmax in number,v_oilVolumetricProductionmin in number,
   v_waterVolumetricProduction in number,v_waterVolumetricProductionmax in number,v_waterVolumetricProductionmin in number,
-  v_waterCut in number,v_waterCutmax in number,v_waterCutmin in number,
+  v_volumewatercut in number,v_volumewatercutmax in number,v_volumewatercutmin in number,
   v_availablestrokeprod_v in number,v_availablestrokeprod_v_max in number,v_availablestrokeprod_v_min in number,
   v_pumpclearanceleakprod_v in number,v_pumpclearanceleakprod_v_max in number,v_pumpclearanceleakprod_v_min in number,
   v_TVLeakProduction_v in number,v_TVLeakProduction_v_max in number,v_TVLeakProduction_v_min in number,
@@ -1221,7 +1218,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_liquidWeightProduction in number,v_liquidWeightProductionmax in number,v_liquidWeightProductionmin in number,
   v_oilWeightProduction in number,v_oilWeightProductionmax in number,v_oilWeightProductionmin in number,
   v_waterWeightProduction in number,v_waterWeightProductionmax in number,v_waterWeightProductionmin in number,
-  v_waterCut_w in number,v_waterCutmax_w in number,v_waterCutmin_w in number,
+  v_weightwatercut in number,v_weightwatercutmax in number,v_weightwatercutmin in number,
   v_availablestrokeprod_w in number,v_availablestrokeprod_w_max in number,v_availablestrokeprod_w_min in number,
   v_pumpclearanceleakprod_w in number,v_pumpclearanceleakprod_w_max in number,v_pumpclearanceleakprod_w_min in number,
   v_TVLeakProduction_w in number,v_TVLeakProduction_w_max in number,v_TVLeakProduction_w_min in number,
@@ -1253,16 +1250,16 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramdaily (
   v_wellDownSystemEfficiency in number,v_wellDownSystemEfficiencymax in number,v_wellDownSystemEfficiencymin in number,
   v_surfaceSystemEfficiency in number,v_surfaceSystemEfficiencymax in number,v_surfaceSystemEfficiencymin in number,
   v_systemEfficiency in number,v_systemEfficiencymax in number,v_systemEfficiencymin in number,
-  v_powerConsumptionPerTHM in number,v_powerConsumptionPerTHMmax in number,v_powerConsumptionPerTHMmin in number,
+  v_energyper100mlift in number,v_energyper100mliftmax in number,v_energyper100mliftmin in number,
   v_AvgWatt in number,v_AvgWattmax in number,v_AvgWattmin in number,
   v_PolishRodPower in number,v_PolishRodPowermax in number,v_PolishRodPowermin in number,
   v_WaterPower in number,v_WaterPowermax in number,v_WaterPowermin in number,
   v_iDegreeBalance in number,v_iDegreeBalancemax in number,v_iDegreeBalancemin in number,
-  v_UpStrokeIMax_Avg in number,v_UpStrokeIMax_Max in number,v_UpStrokeIMax_Min in number,
-  v_DownStrokeIMax_Avg in number,v_DownStrokeIMax_Max in number,v_DownStrokeIMax_Min in number,
+  v_UpStrokeIMax in number,v_UpStrokeIMax_Max in number,v_UpStrokeIMax_Min in number,
+  v_DownStrokeIMax in number,v_DownStrokeIMax_Max in number,v_DownStrokeIMax_Min in number,
   v_wattDegreeBalance in number,v_wattDegreeBalancemax in number,v_wattDegreeBalancemin in number,
-  v_UpStrokeWattMax_Avg in number,v_UpStrokeWattMax_Max in number,v_UpStrokeWattMax_Min in number,
-  v_DownStrokeWattMax_Avg in number,v_DownStrokeWattMax_Max in number,v_DownStrokeWattMax_Min in number,
+  v_UpStrokeWattMax in number,v_UpStrokeWattMax_Max in number,v_UpStrokeWattMax_Min in number,
+  v_DownStrokeWattMax in number,v_DownStrokeWattMax_Max in number,v_DownStrokeWattMax_Min in number,
   v_DeltaRadius in number,v_DeltaRadiusMax in number,v_DeltaRadiusMin in number,
   v_commStatus in number,v_commTime in number,v_commTimeEfficiency in number,
   v_commRange in tbl_rpc_total_day.commrange%TYPE,
@@ -1287,7 +1284,7 @@ begin
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
          calculatedate,wellid,ResultStatus,
-         workingconditioncode,workingconditionString,ExtendedDays,
+         resultcode,resultString,ExtendedDays,
          commstatus,commtime,commtimeefficiency,commrange,
          runstatus,runtime,runtimeefficiency,runrange,
          Stroke,Strokemax,Strokemin,SPM,SPMmax,SPMmin,
@@ -1312,7 +1309,7 @@ begin
          liquidVolumetricProduction,liquidVolumetricProductionmax,liquidVolumetricProductionmin,
          oilVolumetricProduction,oilVolumetricProductionmax,oilVolumetricProductionmin,
          waterVolumetricProduction,waterVolumetricProductionmax,waterVolumetricProductionmin,
-         waterCut,waterCutmax,waterCutmin,
+         volumewatercut,volumewatercutmax,volumewatercutmin,
          availablestrokeprod_v,availablestrokeprod_v_max,availablestrokeprod_v_min,
          pumpclearanceleakprod_v,pumpclearanceleakprod_v_max,pumpclearanceleakprod_v_min,
          tvleakvolumetricproduction,tvleakvolumetricproductionmax,tvleakvolumetricproductionmin,
@@ -1320,7 +1317,7 @@ begin
          gasinfluenceprod_v,gasinfluenceprod_v_max,gasinfluenceprod_v_min,
          LiquidWeightProduction,LiquidWeightProductionmax,LiquidWeightProductionmin,
          oilWeightProduction,oilWeightProductionmax,oilWeightProductionmin,waterWeightProduction,waterWeightProductionmax,waterWeightProductionmin,
-         waterCut_w,waterCutmax_w,waterCutmin_w,
+         weightwatercut,weightwatercutmax,weightwatercutmin,
          availablestrokeprod_w,availablestrokeprod_w_max,availablestrokeprod_w_min,
          pumpclearanceleakprod_w,pumpclearanceleakprod_w_max,pumpclearanceleakprod_w_min,
          tvleakweightproduction,tvleakweightproductionmax,tvleakweightproductionmin,
@@ -1352,20 +1349,20 @@ begin
          wellDownSystemEfficiency,wellDownSystemEfficiencymax,wellDownSystemEfficiencymin,
          surfaceSystemEfficiency,surfaceSystemEfficiencymax,surfaceSystemEfficiencymin,
          systemEfficiency,systemEfficiencymax,systemEfficiencymin,
-         powerConsumptionPerTHM,powerConsumptionPerTHMmax,powerConsumptionPerTHMmin,
+         energyper100mlift,energyper100mliftmax,energyper100mliftmin,
          AvgWatt,AvgWattmax,AvgWattmin,
          PolishRodPower,PolishRodPowermax,PolishRodPowermin,
          WaterPower,WaterPowermax,WaterPowermin,
          iDegreeBalance,iDegreeBalancemax,iDegreeBalancemin,
-         UpStrokeIMax_Avg,UpStrokeIMax_Max,UpStrokeIMax_Min,
-         DownStrokeIMax_Avg,DownStrokeIMax_Max,DownStrokeIMax_Min,
+         UpStrokeIMax,UpStrokeIMax_Max,UpStrokeIMax_Min,
+         DownStrokeIMax,DownStrokeIMax_Max,DownStrokeIMax_Min,
          wattDegreeBalance,wattDegreeBalancemax,wattDegreeBalancemin,
-         UpStrokeWattMax_Avg,UpStrokeWattMax_Max,UpStrokeWattMax_Min,
-         DownStrokeWattMax_Avg,DownStrokeWattMax_Max,DownStrokeWattMax_Min,
+         UpStrokeWattMax,UpStrokeWattMax_Max,UpStrokeWattMax_Min,
+         DownStrokeWattMax,DownStrokeWattMax_Max,DownStrokeWattMax_Min,
          deltaradius,deltaradiusmax,deltaradiusmin
       )values(
          to_date(v_calDate,'yyyy-mm-dd')-1,p_wellid,v_ResultStatus,
-         v_workingconditioncode,v_workingconditionString, v_ExtendedDays,
+         v_resultcode,v_resultString, v_ExtendedDays,
          v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
          v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange,
          v_Stroke ,v_Strokemax ,v_Strokemin ,v_SPM ,v_SPMmax ,v_SPMmin ,
@@ -1390,7 +1387,7 @@ begin
          v_liquidVolumetricProduction,v_liquidProductionmax_v,v_liquidProductionmin_v,
          v_oilVolumetricProduction,v_oilVolumetricProductionmax,v_oilVolumetricProductionmin,
          v_waterVolumetricProduction,v_waterVolumetricProductionmax,v_waterVolumetricProductionmin,
-         v_waterCut,v_waterCutmax,v_waterCutmin,
+         v_volumewatercut,v_volumewatercutmax,v_volumewatercutmin,
          v_availablestrokeprod_v ,v_availablestrokeprod_v_max ,v_availablestrokeprod_v_min ,
          v_pumpclearanceleakprod_v ,v_pumpclearanceleakprod_v_max ,v_pumpclearanceleakprod_v_min ,
          v_TVLeakProduction_v ,v_TVLeakProduction_v_max ,v_TVLeakProduction_v_min ,
@@ -1399,7 +1396,7 @@ begin
          v_liquidWeightProduction,v_liquidWeightProductionmax,v_liquidWeightProductionmin,
          v_oilWeightProduction,v_oilWeightProductionmax,v_oilWeightProductionmin,
          v_waterWeightProduction,v_waterWeightProductionmax,v_waterWeightProductionmin,
-         v_waterCut_w,v_waterCutmax_w,v_waterCutmin_w,
+         v_weightwatercut,v_weightwatercutmax,v_weightwatercutmin,
          v_availablestrokeprod_w ,v_availablestrokeprod_w_max ,v_availablestrokeprod_w_min ,
          v_pumpclearanceleakprod_w ,v_pumpclearanceleakprod_w_max ,v_pumpclearanceleakprod_w_min ,
          v_TVLeakProduction_w ,v_TVLeakProduction_w_max ,v_TVLeakProduction_w_min ,
@@ -1431,16 +1428,16 @@ begin
          v_wellDownSystemEfficiency,v_wellDownSystemEfficiencymax,v_wellDownSystemEfficiencymin,
          v_surfaceSystemEfficiency,v_surfaceSystemEfficiencymax,v_surfaceSystemEfficiencymin,
          v_systemEfficiency,v_systemEfficiencymax,v_systemEfficiencymin,
-         v_powerConsumptionPerTHM,v_powerConsumptionPerTHMmax,v_powerConsumptionPerTHMmin,
+         v_energyper100mlift,v_energyper100mliftmax,v_energyper100mliftmin,
          v_AvgWatt,v_AvgWattmax,v_AvgWattmin,
          v_PolishRodPower,v_PolishRodPowermax,v_PolishRodPowermin,
          v_WaterPower,v_WaterPowermax,v_WaterPowermin,
          v_iDegreeBalance,v_iDegreeBalancemax,v_iDegreeBalancemin,
-         v_UpStrokeIMax_Avg,v_UpStrokeIMax_Max,v_UpStrokeIMax_Min,
-         v_DownStrokeIMax_Avg,v_DownStrokeIMax_Max,v_DownStrokeIMax_Min,
+         v_UpStrokeIMax,v_UpStrokeIMax_Max,v_UpStrokeIMax_Min,
+         v_DownStrokeIMax,v_DownStrokeIMax_Max,v_DownStrokeIMax_Min,
          v_wattDegreeBalance,v_wattDegreeBalancemax,v_wattDegreeBalancemin,
-         v_UpStrokeWattMax_Avg,v_UpStrokeWattMax_Max,v_UpStrokeWattMax_Min,
-         v_DownStrokeWattMax_Avg,v_DownStrokeWattMax_Max,v_DownStrokeWattMax_Min,
+         v_UpStrokeWattMax,v_UpStrokeWattMax_Max,v_UpStrokeWattMax_Min,
+         v_DownStrokeWattMax,v_DownStrokeWattMax_Max,v_DownStrokeWattMax_Min,
          v_DeltaRadius,v_DeltaRadiusMax,v_DeltaRadiusMin
       );
       p_msg := '插入成功';
@@ -1451,7 +1448,7 @@ begin
       update tbl_rpc_total_day t set
       t.calculatedate=to_date(v_calDate,'yyyy-mm-dd')-1,
       t.ResultStatus=v_ResultStatus,
-      t.workingconditioncode=v_workingconditioncode,t.workingconditionString=v_workingconditionString, t.ExtendedDays=v_ExtendedDays,
+      t.resultcode=v_resultcode,t.resultString=v_resultString, t.ExtendedDays=v_ExtendedDays,
       t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commTimeEfficiency,t.commrange=v_commRange,
       t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runTimeEfficiency,t.runrange=v_runRange,
       t.Stroke=v_Stroke,t.Strokemax=v_Strokemax,t.Strokemin=v_Strokemin,
@@ -1478,7 +1475,7 @@ begin
       t.liquidVolumetricProduction=v_liquidVolumetricProduction,t.liquidVolumetricProductionmax=v_liquidProductionmax_v,t.liquidVolumetricProductionmin=v_liquidProductionmin_v,
       t.oilVolumetricProduction=v_oilVolumetricProduction,t.oilVolumetricProductionmax=v_oilVolumetricProductionmax,t.oilVolumetricProductionmin=v_oilVolumetricProductionmin,
       t.waterVolumetricProduction=v_waterVolumetricProduction,t.waterVolumetricProductionmax=v_waterVolumetricProductionmax,t.waterVolumetricProductionmin=v_waterVolumetricProductionmin,
-      t.waterCut=v_waterCut,t.waterCutmax=v_waterCutmax,t.waterCutmin=v_waterCutmin,
+      t.volumewatercut=v_volumewatercut,t.volumewatercutmax=v_volumewatercutmax,t.volumewatercutmin=v_volumewatercutmin,
       availablestrokeprod_v=v_availablestrokeprod_v ,availablestrokeprod_v_max=v_availablestrokeprod_v_max ,availablestrokeprod_v_min=v_availablestrokeprod_v_min ,
       pumpclearanceleakprod_v=v_pumpclearanceleakprod_v ,pumpclearanceleakprod_v_max=v_pumpclearanceleakprod_v_max ,pumpclearanceleakprod_v_min=v_pumpclearanceleakprod_v_min ,
       tvleakvolumetricproduction=v_TVLeakProduction_v ,tvleakvolumetricproductionmax=v_TVLeakProduction_v_max ,tvleakvolumetricproductionmin=v_TVLeakProduction_v_min ,
@@ -1487,7 +1484,7 @@ begin
       t.liquidWeightProduction=v_liquidWeightProduction,t.liquidWeightProductionmax=v_liquidWeightProductionmax,t.liquidWeightProductionmin=v_liquidWeightProductionmin,
       t.oilWeightProduction=v_oilWeightProduction,t.oilWeightProductionmax=v_oilWeightProductionmax,t.oilWeightProductionmin=v_oilWeightProductionmin,
       t.waterWeightProduction=v_waterWeightProduction,t.waterWeightProductionmax=v_waterWeightProductionmax,t.waterWeightProductionmin=v_waterWeightProductionmin,
-      t.waterCut_w=v_waterCut_w,t.waterCutmax_w=v_waterCutmax_w,t.waterCutmin_w=v_waterCutmin_w,
+      t.weightwatercut=v_weightwatercut,t.weightwatercutmax=v_weightwatercutmax,t.weightwatercutmin=v_weightwatercutmin,
       availablestrokeprod_w=v_availablestrokeprod_w ,availablestrokeprod_w_max=v_availablestrokeprod_w_max ,availablestrokeprod_w_min=v_availablestrokeprod_w_min ,
       pumpclearanceleakprod_w=v_pumpclearanceleakprod_w ,pumpclearanceleakprod_w_max=v_pumpclearanceleakprod_w_max ,pumpclearanceleakprod_w_min=v_pumpclearanceleakprod_w_min ,
       tvleakweightproduction=v_TVLeakProduction_v ,tvleakweightproductionmax=v_TVLeakProduction_v_max ,tvleakweightproductionmin=v_TVLeakProduction_v_min ,
@@ -1519,16 +1516,16 @@ begin
       t.wellDownSystemEfficiency=v_wellDownSystemEfficiency,t.wellDownSystemEfficiencymax=v_wellDownSystemEfficiencymax,t.wellDownSystemEfficiencymin=v_wellDownSystemEfficiencymin,
       t.surfaceSystemEfficiency=v_surfaceSystemEfficiency,t.surfaceSystemEfficiencymax=v_surfaceSystemEfficiencymax,t.surfaceSystemEfficiencymin=v_surfaceSystemEfficiencymin,
       t.systemEfficiency=v_systemEfficiency,t.systemEfficiencymax=v_systemEfficiencymax,t.systemEfficiencymin=v_systemEfficiencymin,
-      t.powerConsumptionPerTHM=v_powerConsumptionPerTHM,t.powerConsumptionPerTHMmax=v_powerConsumptionPerTHMmax,t.powerConsumptionPerTHMmin=v_powerConsumptionPerTHMmin,
+      t.energyper100mlift=v_energyper100mlift,t.energyper100mliftmax=v_energyper100mliftmax,t.energyper100mliftmin=v_energyper100mliftmin,
       AvgWatt=v_AvgWatt,AvgWattmax=v_AvgWattmax,AvgWattmin=v_AvgWattmin,
       PolishRodPower=v_PolishRodPower,PolishRodPowermax=v_PolishRodPowermax,PolishRodPowermin=v_PolishRodPowermin,
       WaterPower=v_WaterPower,WaterPowermax=v_WaterPowermax,WaterPowermin=v_WaterPowermin,
       t.iDegreeBalance=v_iDegreeBalance,t.iDegreeBalancemax=v_iDegreeBalancemax,t.iDegreeBalancemin=v_iDegreeBalancemin,
-      UpStrokeIMax_Avg=v_UpStrokeIMax_Avg,UpStrokeIMax_Max=v_UpStrokeIMax_Max,UpStrokeIMax_Min=v_UpStrokeIMax_Min,
-      DownStrokeIMax_Avg=v_DownStrokeIMax_Avg,DownStrokeIMax_Max=v_DownStrokeIMax_Max,DownStrokeIMax_Min=v_DownStrokeIMax_Min,
+      UpStrokeIMax=v_UpStrokeIMax,UpStrokeIMax_Max=v_UpStrokeIMax_Max,UpStrokeIMax_Min=v_UpStrokeIMax_Min,
+      DownStrokeIMax=v_DownStrokeIMax,DownStrokeIMax_Max=v_DownStrokeIMax_Max,DownStrokeIMax_Min=v_DownStrokeIMax_Min,
       t.wattDegreeBalance=v_wattDegreeBalance,t.wattDegreeBalancemax=v_wattDegreeBalancemax,t.wattDegreeBalancemin=v_wattDegreeBalancemin,
-      UpStrokeWattMax_Avg=v_UpStrokeWattMax_Avg,UpStrokeWattMax_Max=v_UpStrokeWattMax_Max,UpStrokeWattMax_Min=v_UpStrokeWattMax_Min,
-      DownStrokeWattMax_Avg=v_DownStrokeWattMax_Avg,DownStrokeWattMax_Max=v_DownStrokeWattMax_Max,DownStrokeWattMax_Min=v_DownStrokeWattMax_Min,
+      UpStrokeWattMax=v_UpStrokeWattMax,UpStrokeWattMax_Max=v_UpStrokeWattMax_Max,UpStrokeWattMax_Min=v_UpStrokeWattMax_Min,
+      DownStrokeWattMax=v_DownStrokeWattMax,DownStrokeWattMax_Max=v_DownStrokeWattMax_Max,DownStrokeWattMax_Min=v_DownStrokeWattMax_Min,
       t.deltaradius=v_DeltaRadius,t.deltaradiusmax=v_DeltaRadiusMax,t.deltaradiusmin=v_DeltaRadiusMin
       where t.id=p_totalresultid;
       commit;
@@ -1550,13 +1547,13 @@ begin
         commstatus,commtime,commtimeefficiency,commrange,
         runstatus,runtime,runtimeefficiency,runrange
         )values(p_wellid,to_date(v_endAcqTime,'yyyy-mm-dd hh24:mi:ss'),
-        v_workingconditioncode,v_Stroke,v_SPM,v_FMax_Avg,v_FMin_Avg,
+        v_resultcode,v_Stroke,v_SPM,v_FMax_Avg,v_FMin_Avg,
         v_fullnessCoefficient,
-        v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_waterCut,
-        v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_waterCut_w,
+        v_liquidVolumetricProduction,v_oilVolumetricProduction,v_waterVolumetricProduction,v_volumewatercut,
+        v_liquidWeightProduction,v_oilWeightProduction,v_waterWeightProduction,v_weightwatercut,
         v_wattDegreeBalance,v_iDegreeBalance,v_DeltaRadius,
         v_systemEfficiency,v_surfaceSystemEfficiency,v_wellDownSystemEfficiency,
-        v_powerConsumptionPerTHM,
+        v_energyper100mlift,
         v_pumpEff,
         v_commStatus,v_commTime,v_commTimeEfficiency,v_commRange,
         v_runStatus,v_runTime,v_runTimeEfficiency,v_runRange
@@ -1565,13 +1562,13 @@ begin
         p_msg := '单张功图汇总插入成功';
       elsif p_singleDiagramCount>0 then
         update tbl_rpc_diagram_total t
-        set t.resultcode=v_workingconditioncode,t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax_Avg,t.fmin=v_FMin_Avg,
+        set t.resultcode=v_resultcode,t.stroke=v_Stroke,t.spm=v_SPM,t.fmax=v_FMax_Avg,t.fmin=v_FMin_Avg,
         t.fullnesscoefficient=v_fullnessCoefficient,
-        t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_waterCut,
-        t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_waterCut_w,
+        t.liquidvolumetricproduction=v_liquidVolumetricProduction,t.oilvolumetricproduction=v_oilVolumetricProduction,t.watervolumetricproduction=v_waterVolumetricProduction,t.volumewatercut=v_volumewatercut,
+        t.liquidweightproduction=v_liquidWeightProduction,t.oilweightproduction=v_oilWeightProduction,t.waterweightproduction=v_waterWeightProduction,t.weightwatercut=v_weightwatercut,
         t.wattdegreebalance=v_wattDegreeBalance,t.idegreebalance=v_iDegreeBalance,t.deltaradius=v_DeltaRadius,
         t.systemefficiency=v_systemEfficiency,t.surfacesystemefficiency=v_surfaceSystemEfficiency,t.welldownsystemefficiency=v_wellDownSystemEfficiency,
-        t.energyper100mlift=v_powerConsumptionPerTHM,
+        t.energyper100mlift=v_energyper100mlift,
         t.pumpeff=v_pumpEff,
         commstatus=v_commStatus,commtime=v_commTime,commtimeefficiency=v_commTimeEfficiency,commrange=v_commRange,
         runstatus=v_runStatus,runtime=v_runTime,runtimeefficiency=v_runTimeEfficiency,runrange=v_runRange
@@ -1614,9 +1611,9 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagramresult (
 
        v_LevelCorrectValue in NUMBER,v_ProducingfluidLevel in NUMBER,
 
-       v_MotorInputActivePower in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
+       v_averagewatt in NUMBER,v_PolishRodPower in NUMBER,v_WaterPower in NUMBER,
        v_SurfaceSystemEfficiency in NUMBER,v_WellDownSystemEfficiency in NUMBER,v_SystemEfficiency in NUMBER,
-       v_PowerConsumptionPerTHM in NUMBER,v_FSDiagramArea in NUMBER,
+       v_energyper100mlift in NUMBER,v_area in NUMBER,
        v_RodFlexLength in NUMBER,v_TubingFlexLength in NUMBER,v_InertiaLength in NUMBER,
        v_PumpEff1 in NUMBER,v_PumpEff2 in NUMBER,v_PumpEff3 in NUMBER,v_PumpEff4 in NUMBER,v_PumpEff in NUMBER,
        v_PumpIntakeP in NUMBER,v_PumpIntakeT in NUMBER,v_PumpIntakeGOL in NUMBER,v_PumpIntakeVisl in NUMBER,v_PumpIntakeBo in NUMBER,
@@ -1643,7 +1640,7 @@ begin
           t.stroke=v_Stroke,t.spm=v_SPM,
           t.upstrokeimax=v_UpStrokeIMax,t.downstrokeimax=v_DownStrokeIMax,t.upstrokewattmax=v_UPStrokeWattMax,t.downstrokewattmax=v_DownStrokeWattMax,t.idegreebalance=v_IDegreeBalance,t.wattdegreebalance=v_WattDegreeBalance,
           t.deltaradius=v_DeltaRadius,
-          t.workingconditioncode=v_ResultCode,
+          t.resultcode=v_ResultCode,
           t.fullnesscoefficient=v_FullnessCoefficient,
           t.noliquidfullnesscoefficient=v_NoLiquidFullnessCoefficient,
           t.plungerstroke=v_PlungerStroke,t.availableplungerstroke=v_AvailablePlungerStroke,t.noliquidavailableplungerstroke=v_NoLiquidAvailableStroke,
@@ -1658,9 +1655,9 @@ begin
           t.availableplungerstrokeprod_w=v_AvailablePlungerStrokeProd_W,t.pumpclearanceleakprod_w=v_PumpClearanceLeakProd_W,
           t.tvleakweightproduction=v_TVLeakWeightProduction,t.svleakweightproduction=v_SVLeakWeightProduction,t.gasinfluenceprod_w=v_GasInfluenceProd_W,
            t.levelcorrectvalue=v_LevelCorrectValue,t.inverproducingfluidlevel=v_ProducingfluidLevel,
-          t.motorinputactivepower=v_MotorInputActivePower,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
+          t.averagewatt=v_averagewatt,t.polishrodpower=v_PolishRodPower,t.waterpower=v_WaterPower,
           t.surfacesystemefficiency=v_SurfaceSystemEfficiency,t.welldownsystemefficiency=v_WellDownSystemEfficiency,t.systemefficiency=v_SystemEfficiency,
-          t.powerconsumptionperthm=v_PowerConsumptionPerTHM,t.fsdiagramarea=v_FSDiagramArea,
+          t.energyper100mlift=v_energyper100mlift,t.area=v_area,
           t.rodflexlength=v_RodFlexLength,t.tubingflexlength=v_TubingFlexLength,t.inertialength=v_InertiaLength,
           t.pumpeff1=v_PumpEff1,t.pumpeff2=v_PumpEff2,t.pumpeff3=v_PumpEff3,t.pumpeff4=v_PumpEff4,t.pumpeff=v_PumpEff,
           t.pumpintakep=v_PumpIntakeP,t.pumpintaket=v_PumpIntakeT,t.pumpintakegol=v_PumpIntakeGOL,t.pumpIntakevisl=v_PumpIntakeVisl,t.pumpIntakebo=v_PumpIntakeBo,
@@ -1674,7 +1671,6 @@ begin
       commit;
       p_msg := '修改成功';
   dbms_output.put_line('p_msg:' || p_msg);
-
 Exception
   When Others Then
     p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
@@ -1692,12 +1688,11 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_discretedaily (
   v_Vb in number,v_VbMax in number,v_VbMin in number,
   v_Vc in number,v_VcMax in number,v_VcMin in number,
   v_frequencyrunvalue in number,v_frequencyrunvalueMax in number,v_frequencyrunvalueMin in number,
-
   v_Signal in number,v_SignalMax in number,v_SignalMin in number,
-  v_WattSum in number,v_WattSumMax in number,v_WattSumMin in number,
-  v_VarSum in number,v_VarSumMax in number,v_VarSumMin in number,
-  v_VASum in number,v_VASumMax in number,v_VASumMin in number,
-  v_PFSum in number,v_PFSumMax in number,v_PFSumMin in number,
+  v_Watt3 in number,v_Watt3Max in number,v_Watt3Min in number,
+  v_Var3 in number,v_Var3Max in number,v_Var3Min in number,
+  v_VA3 in number,v_VA3Max in number,v_VA3Min in number,
+  v_PF3 in number,v_PF3Max in number,v_PF3Min in number,
   v_calDate in varchar2
   ) is
   p_msg varchar2(3000) := 'error';
@@ -1705,11 +1700,6 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_discretedaily (
   p_wellcount number:=0;
   p_totalresultcount number:=0;
   p_totalresultid number:=0;
-  --p_lastTotalResultCount number:=0;
-  --p_jsdjrcyldbd number:=0;
-  --p_jsdjrcylfbd number:=0;
-  --p_jsdjrcyldbdbfb number:=0;
-  --p_jsdjrcylfbdbfb number:=0;
 begin
   select count(*) into p_wellcount from tbl_wellinformation t where t.wellName=v_wellName ;
    if p_wellcount>0 then
@@ -1721,7 +1711,7 @@ begin
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
          calculatedate,wellid,
-         workingconditioncode_e,workingconditionstring_e,
+         resultcode_e,resultstring_e,
          ia,iamax,iamin,
          ib,ibmax,ibmin,
          ic,icmax,icmin,
@@ -1730,10 +1720,10 @@ begin
          vc,vcmax,vcmin,
          frequency,frequencymax,frequencymin,
          Signal,SignalMax,SignalMin,
-         WattSum,WattSumMax,WattSumMin,
-         VarSum,VarSumMax,VarSumMin,
-         VASum,VASumMax,VASumMin,
-         PFSum,PFSumMax,PFSumMin
+         Watt3,Watt3Max,Watt3Min,
+         Var3,Var3Max,Var3Min,
+         VA3,VA3Max,VA3Min,
+         PF3,PF3Max,PF3Min
       )values(
          to_date(v_calDate,'yyyy-mm-dd')-1,p_wellid,
          v_ETRestultCode,v_ETRestultStr,
@@ -1745,10 +1735,10 @@ begin
          v_Vc,v_VcMax,v_VcMin,
          v_frequencyrunvalue,v_frequencyrunvalueMax,v_frequencyrunvalueMin,
          v_Signal,v_SignalMax,v_SignalMin,
-         v_WattSum,v_WattSumMax,v_WattSumMin,
-         v_VarSum,v_VarSumMax,v_VarSumMin,
-         v_VASum,v_VASumMax,v_VASumMin,
-         v_PFSum,v_PFSumMax,v_PFSumMin
+         v_Watt3,v_Watt3Max,v_Watt3Min,
+         v_Var3,v_Var3Max,v_Var3Min,
+         v_VA3,v_VA3Max,v_VA3Min,
+         v_PF3,v_PF3Max,v_PF3Min
       );
       p_msg := '插入成功';
       commit;
@@ -1757,7 +1747,7 @@ begin
       where t007.id=t.wellid and t.calculatedate=(to_date(v_calDate,'yyyy-mm-dd')-1) and t007.wellName=v_wellName and rownum=1;
       update tbl_rpc_total_day t set
       t.calculatedate=to_date(v_calDate,'yyyy-mm-dd')-1,
-      t.workingconditioncode_e=v_ETRestultCode,t.workingconditionstring_e=v_ETRestultStr,
+      t.resultcode_e=v_ETRestultCode,t.resultstring_e=v_ETRestultStr,
       t.ia=v_Ia,t.iamax=v_IaMax,t.iamin=v_IaMin,
       t.ib=v_Ib,t.ibmax=v_IbMax,t.ibmin=v_IbMin,
       t.ic=v_Ic,t.icmax=v_IcMax,t.icmin=v_IcMin,
@@ -1766,10 +1756,10 @@ begin
       t.vc=v_Vc,t.vcmax=v_VcMax,t.vcmin=v_VcMin,
       t.frequency=v_frequencyrunvalue,t.frequencymax=v_frequencyrunvalueMax,t.frequencymin=v_frequencyrunvalueMin,
       Signal=v_Signal,SignalMax=v_SignalMax,SignalMin=v_SignalMin,
-      WattSum=v_WattSum,WattSumMax=v_WattSumMax,WattSumMin=v_WattSumMin,
-      VarSum=v_VarSum,VarSumMax=v_VarSumMax,VarSumMin=v_VarSumMin,
-      VASum=v_VASum,VASumMax=v_VASumMax,VASumMin=v_VASumMin,
-      PFSum=v_PFSum,PFSumMax=v_PFSumMax,PFSumMin=v_PFSumMin
+      Watt3=v_Watt3,Watt3Max=v_Watt3Max,Watt3Min=v_Watt3Min,
+      Var3=v_Var3,Var3Max=v_Var3Max,Var3Min=v_Var3Min,
+      VA3=v_VA3,VA3Max=v_VA3Max,VA3Min=v_VA3Min,
+      PF3=v_PF3,PF3Max=v_PF3Max,PF3Min=v_PF3Min
       where t.id=p_totalresultid;
       commit;
       p_msg := '更新成功';
@@ -1786,7 +1776,7 @@ end prd_save_rpc_discretedaily;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_rpc_inver_daily (
-  v_wellName in varchar2,v_workingConditionCode_E in number,v_workingConditionStr_E in varchar2,
+  v_wellName in varchar2,v_resultCode_E in number,v_resultStr_E in varchar2,
   v_commStatus in number,v_commTime in number,v_commEfficiency in number,v_commRange in varchar2,
   v_runStatus in number,v_runTime in number,v_runEfficiency in number,v_runRange in varchar2,
   v_signal in number,v_signalMax in number,v_signalMin in number,
@@ -1817,7 +1807,7 @@ begin
     --如不存在
     if p_totalresultcount=0 then
       insert into tbl_rpc_total_day (
-         wellId,calculatedate,workingconditioncode_e,workingconditionstring_e,
+         wellId,calculatedate,resultcode_e,resultstring_e,
          commstatus,commtime,commtimeefficiency,commrange,
          runstatus,runtime,runtimeefficiency,runrange,
          signal,signalmax,signalmin,
@@ -1833,7 +1823,7 @@ begin
          idegreebalance,idegreebalancemax,idegreebalancemin,
          wattdegreebalance,wattdegreebalancemax,wattdegreebalancemin
       )values(
-         p_wellId,to_date(v_date,'yyyy-mm-dd'),v_workingConditionCode_E,v_workingConditionStr_E,
+         p_wellId,to_date(v_date,'yyyy-mm-dd'),v_resultCode_E,v_resultStr_E,
          v_commStatus,v_commTime,v_commEfficiency,v_commRange,
          v_runStatus,v_runTime,v_runEfficiency,v_runRange,
          v_signal,v_signalMax,v_signalMin,
@@ -1853,7 +1843,7 @@ begin
       commit;
     elsif p_totalresultcount>0 then
       update tbl_rpc_total_day t set
-             t.workingconditioncode_e=v_workingConditionCode_E,t.workingconditionstring_e=v_workingConditionStr_E,
+             t.resultcode_e=v_resultCode_E,t.resultstring_e=v_resultStr_E,
              t.commstatus=v_commStatus,t.commtime=v_commTime,t.commtimeefficiency=v_commEfficiency,t.commrange=v_commRange,
              t.runstatus=v_runStatus,t.runtime=v_runTime,t.runtimeefficiency=v_runEfficiency,t.runrange=v_runRange,
              t.signal=v_signal,t.signalmax=v_signalMax,t.signalmin=v_signalMin,
@@ -1986,8 +1976,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_productiondata (v_WellName   in varchar
                                                       v_TubingPressure   in NUMBER,
                                                       v_CasingPressure   in NUMBER,
                                                       v_WellHeadFluidTemperature   in NUMBER,
-                                                      v_WaterCut_W    in NUMBER,
-                                                      v_WaterCut    in NUMBER,
+                                                      v_weightwatercut    in NUMBER,
+                                                      v_volumewatercut    in NUMBER,
                                                       v_ProductionGasOilRatio   in NUMBER,
                                                       v_ProducingfluidLevel    in NUMBER,
                                                       v_PumpSettingDepth    in NUMBER,
@@ -2055,7 +2045,7 @@ begin
       set t.RunTime=v_RunTime,
           t.CrudeOilDensity=v_CrudeOilDensity,t.WaterDensity=v_WaterDensity,t.NaturalGasRelativeDensity=v_NaturalGasRelativeDensity,t.SaturationPressure=v_SaturationPressure,t.ReservoirDepth=v_ReservoirDepth,t.ReservoirTemperature=v_ReservoirTemperature,
           t.TubingPressure=v_TubingPressure,t.CasingPressure=v_CasingPressure,t.WellHeadFluidTemperature=v_WellHeadFluidTemperature,
-          t.WaterCut_W=v_WaterCut_W,t.watercut=v_WaterCut,
+          t.weightwatercut=v_weightwatercut,t.volumewatercut=v_volumewatercut,
           t.ProductionGasOilRatio=v_ProductionGasOilRatio,
           t.ProducingfluidLevel=v_ProducingfluidLevel,t.PumpSettingDepth=v_PumpSettingDepth,
           t.barreltype=p_BarrelType,t.pumptype=p_PumpType,
@@ -2074,7 +2064,7 @@ begin
       insert into tbl_rpc_productiondata_latest(wellid,AcqTime,runtime,
              crudeoildensity,waterdensity,naturalgasrelativedensity,saturationpressure,reservoirdepth,reservoirtemperature,
              tubingpressure,casingpressure,wellheadfluidtemperature,
-             watercut_w,watercut,
+             weightwatercut,volumewatercut,
              productiongasoilratio,
              producingfluidlevel,pumpsettingdepth,
              barreltype,pumptype,
@@ -2087,7 +2077,7 @@ begin
              p_wellid,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),v_RunTime,
              v_CrudeOilDensity,v_WaterDensity,v_NaturalGasRelativeDensity,v_SaturationPressure,v_ReservoirDepth,v_ReservoirTemperature,
              v_TubingPressure,v_CasingPressure,v_WellHeadFluidTemperature,
-             v_WaterCut_W,v_WaterCut,
+             v_weightwatercut,v_volumewatercut,
              v_ProductionGasOilRatio,
              v_ProducingfluidLevel,v_PumpSettingDepth,
              p_BarrelType,p_PumpType,
@@ -2124,7 +2114,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_recalculateparam (v_id   in varchar2,
                                                       v_TubingPressure    in NUMBER,
                                                       v_CasingPressure    in NUMBER,
                                                       v_WellHeadFluidTemperature    in NUMBER,
-                                                      v_WaterCut_W    in NUMBER,
+                                                      v_weightwatercut    in NUMBER,
                                                       v_ProductionGasOilRatio    in NUMBER,
                                                       v_ProducingfluidLevel    in NUMBER,
                                                       v_PumpSettingDepth    in NUMBER,
@@ -2139,17 +2129,17 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_recalculateparam (v_id   in varchar2,
                                                       v_AnchoringStateName    in varchar2,
                                                       v_NetGrossRatio  in NUMBER) as
 p_msg varchar2(3000) := 'error';
-v_WaterCut number(8,2);
+v_volumewatercut number(8,2);
 begin
       if v_CrudeOilDensity<0.00001 or v_WaterDensity<0.00001 then
-         v_WaterCut:=0;
+         v_volumewatercut:=0;
       else
-         v_WaterCut:=100/(1+v_WaterDensity/v_CrudeOilDensity*(100-v_WaterCut_W)/v_WaterCut_W);
+         v_volumewatercut:=100/(1+v_WaterDensity/v_CrudeOilDensity*(100-v_weightwatercut)/v_weightwatercut);
       end if;
       update tbl_rpc_productiondata_hist t
       set t.CrudeOilDensity=v_CrudeOilDensity,t.WaterDensity=v_WaterDensity,t.NaturalGasRelativeDensity=v_NaturalGasRelativeDensity,t.SaturationPressure=v_SaturationPressure,t.ReservoirDepth=v_ReservoirDepth,t.ReservoirTemperature=v_ReservoirTemperature,
           t.TubingPressure=v_TubingPressure,t.CasingPressure=v_CasingPressure,t.WellHeadFluidTemperature=v_WellHeadFluidTemperature,
-          t.WaterCut_W=v_WaterCut_W,t.WaterCut=v_WaterCut,t.ProductionGasOilRatio=v_ProductionGasOilRatio,
+          t.weightwatercut=v_weightwatercut,t.volumewatercut=v_volumewatercut,t.ProductionGasOilRatio=v_ProductionGasOilRatio,
           t.ProducingfluidLevel=v_ProducingfluidLevel,t.PumpSettingDepth=v_PumpSettingDepth,
           t.pumptype=(select code.itemvalue from tbl_code code where code.itemcode='PumpType' and code.itemname=v_PumpTypeName),
           t.barreltype=(select code.itemvalue from tbl_code code where code.itemcode='BarrelType' and code.itemname=v_BarrelTypeName),

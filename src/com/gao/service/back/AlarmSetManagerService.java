@@ -51,8 +51,8 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 	public String loadAlarmSetType(String type) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
-		if (type.equalsIgnoreCase("workingCondition")) {
-			sql = " select distinct t.workingconditioncode,t.workingconditionname from tbl_rpc_worktype t,tbl_rpc_alarmtype_conf g where g.workingconditioncode=t.workingconditioncode";
+		if (type.equalsIgnoreCase("result")) {
+			sql = " select distinct t.resultcode,t.resultname from tbl_rpc_worktype t,tbl_rpc_alarmtype_conf g where g.resultcode=t.resultcode";
 		} else if (type.equalsIgnoreCase("alarmType")) {
 			sql = " select  distinct t.itemvalue,t.itemname from tbl_code t,tbl_rpc_alarmtype_conf g where  t.itemcode='BJLX' and t.itemvalue=g.alarmtype";
 		} else if (type.equalsIgnoreCase("alarmLevel")) {

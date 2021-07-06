@@ -75,20 +75,22 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         	});
                         	ResourceProbeHistoryCurveWindow.show();
                         }
-                	},{
-                		xtype: 'button',
-//                		width:150,
-                        id:"appVersionProbeLabel_id",
-                        text: 'SDK版本:',
-                        handler: function (v, o) {
-//                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("SDK版本");
-//                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("appVersion");
-//                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
-//            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
-//                        	});
-//                        	ResourceProbeHistoryCurveWindow.show();
-                        }
-                	},{
+                	},
+//                	{
+//                		xtype: 'button',
+////                		width:150,
+//                        id:"appVersionProbeLabel_id",
+//                        text: 'SDK版本:',
+//                        handler: function (v, o) {
+////                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("SDK版本");
+////                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("appVersion");
+////                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+////            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
+////                        	});
+////                        	ResourceProbeHistoryCurveWindow.show();
+//                        }
+//                	},
+                	{
                         id: 'webSocketTest_Id', //选择查看曲线的数据项名称
                         xtype: 'textfield',
 //                        width:150,
@@ -168,8 +170,13 @@ function probeWebsocketOnMessage(evt) {
 			Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU:"+data.cpuUsedPercent);
 			Ext.getCmp("memUsedPercentLabel_id").setText("内存:"+data.memUsedPercent);
 			Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
-			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK状态:"+data.appRunStatus);
-			Ext.getCmp("appVersionProbeLabel_id").setText("SDK版本:"+data.appVersion);
+			if(data.appRunStatus=="运行"){
+				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtgreen");
+			}else{
+				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtyellow");
+			}
+//			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK状态:"+data.appRunStatus);
+			Ext.getCmp("appRunStatusProbeLabel_id").setText(""+data.appVersion);
 		}
 	}
 }

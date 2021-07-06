@@ -59,20 +59,20 @@ public class ExternalDataManagerTask {
 			if(conn!=null&&conn_outer!=null){
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
-				if(pool.isShutdown()){
+				if(pool==null||pool.isShutdown()){
 					pool = Executors.newCachedThreadPool();
 				}
 				while(rs.next()){
 					pool.submit(new GetExternalDataThread(rs.getString(1),rs.getString(2),conn,conn_outer));
 				}
-			}
-			pool.shutdown();
-			while(true){
-				if(pool.isTerminated()){
-					System.out.println("所有的子线程都结束了！");
-					break;
+				pool.shutdown();
+				while(true){
+					if(pool.isTerminated()){
+						System.out.println("所有的子线程都结束了！");
+						break;
+					}
+					Thread.sleep(1000);
 				}
-				Thread.sleep(1000);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

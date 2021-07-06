@@ -20,10 +20,10 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_COD
 values (1315, 1757, '图形查询', '地面功图', 'AP.view.graphicalQuery.SurfaceCardQueryView', 'graphicalQuery_SurfaceCardQuery', 1010040, null, null, 'Image', 0, 'AP.controller.frame.MainIframeControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2001, 1757, 'WebSocket测试', 'WebSocket测试', 'AP.view.websocketTest.WebSocketTestInfoView', 'WebSocketTest', 1010050, null, null, 'Measure', 0, '#');
+values (2001, 1757, 'WebSocket测试', 'WebSocket测试', 'AP.view.websocketTest.WebSocketTestInfoView', 'WebSocketTest', 1010050, null, null, 'Device', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1958, 9999, '网关测调', '网关测调', '#', 'a9DeviceTest_Root', 10200, null, null, 'SingleWell', 0, '#');
+values (1958, 9999, '网关测调', '网关测调', '#', 'a9DeviceTest_Root', 10200, null, null, 'WellInfo', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (1938, 1958, '命令下行', '命令下行', 'AP.view.kafkaConfig.KafkaConfigInfoView', 'kafkaConfig_kafkaConfigGridPanel', 1020010, null, null, 'Measure', 0, '#');
@@ -50,28 +50,28 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_COD
 values (1777, 31, '数据源', '数据源', 'AP.view.acquisitionUnit.ScadaConfigInfoView', 'ScadaConfigInfoView_Id', 2040100, null, null, 'DataConfig', 0, 'AP.controller.acquisitionUnit.AcquisitionUnitInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (34, 31, '井名信息', '井名信息', 'AP.view.well.WellInfoView', 'well_wellPanel', 2040200, null, null, 'WellInfo', 0, 'AP.controller.well.WellInfoController');
+values (34, 31, '井名信息', '井名信息', 'AP.view.well.WellInfoView', 'well_wellPanel', 2040200, null, null, 'SingleWell', 0, 'AP.controller.well.WellInfoController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (35, 31, '生产数据', '生产数据', 'AP.view.productionData.ProductiondDataUIInfoView', 'outWellProduce_ProductionOutInfoGridPanel', 2040300, null, null, 'SingleWell', 0, 'AP.controller.productionData.ProductionOutInfoControl');
+values (35, 31, '生产数据', '生产数据', 'AP.view.productionData.ProductiondDataUIInfoView', 'outWellProduce_ProductionOutInfoGridPanel', 2040300, null, null, 'Res', 0, 'AP.controller.productionData.ProductionOutInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (36, 31, '井身轨迹', '井身轨迹', 'AP.view.wellboreTrajectory.WellboreTrajectoryInfoView', 'well_WellboreTrajectory', 2040400, null, null, 'SingleWell', 0, '#');
+values (36, 31, '井身轨迹', '井身轨迹', 'AP.view.wellboreTrajectory.WellboreTrajectoryInfoView', 'well_WellboreTrajectory', 2040400, null, null, 'bdbj', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1718, 31, '抽油机信息', '电功图反演-抽油机信息', 'AP.view.PSToFS.PumpingUnitInfoView', 'PSToFS_PumpingUnitInfo', 2040500, null, null, 'Device', 0, '#');
+values (1718, 31, '抽油机信息', '电功图反演-抽油机信息', 'AP.view.PSToFS.PumpingUnitInfoView', 'PSToFS_PumpingUnitInfo', 2040500, null, null, 'Pumping', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2000, 9999, '数据维护', '数据维护', '#', 'dataMaintenance_root', 2070000, null, null, 'Measure', 0, '#');
+values (2000, 9999, '数据维护', '数据维护', '#', 'dataMaintenance_root', 2070000, null, null, 'MeasureProData', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1797, 2000, '计算维护', '计算维护', 'AP.view.calculateManager.CalculateManagerInfoView', 'calculate_calculateManager', 2070100, null, null, 'Measure', 0, '#');
+values (1797, 2000, '计算维护', '计算维护', 'AP.view.calculateManager.CalculateManagerInfoView', 'calculate_calculateManager', 2070100, null, null, 'Calculate', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (1515, 2000, '功图上传', '功图上传', 'AP.view.graphicalUpload.GraphicalUploadInfoView', 'graphicalUpload', 2070200, null, null, 'Upload', 0, 'AP.controller.graphicalUpload.GraphicalUploadController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1877, 2000, '图形优化', '电参反演参数优化', 'AP.view.electricAnalysis.InverOptimizeInfoView', 'PSToFS_InverOptimizeInfo', 2070300, null, null, 'Measure', 0, '#');
+values (1877, 2000, '图形优化', '电参反演参数优化', 'AP.view.electricAnalysis.InverOptimizeInfoView', 'PSToFS_InverOptimizeInfo', 2070300, null, null, 'Compute', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (23, 9999, '系统配置', '系统配置', '#', 'SystemManageent', 2090000, null, null, 'System', 0, 'AP.controller.frame.MainIframeControl');
@@ -191,61 +191,64 @@ insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
 values (47, '0,0,0', 118487, 141);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1757, '0,0,0', 119115, 302);
+values (1757, '0,0,0', 119215, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (5, '0,0,0', 119116, 302);
+values (5, '0,0,0', 119216, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1678, '0,0,0', 119117, 302);
+values (1678, '0,0,0', 119217, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (554, '0,0,0', 119118, 302);
+values (554, '0,0,0', 119218, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1315, '0,0,0', 119119, 302);
+values (1315, '0,0,0', 119219, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (27, '0,0,0', 119120, 302);
+values (27, '0,0,0', 119220, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (24, '0,0,0', 119121, 302);
+values (24, '0,0,0', 119221, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (28, '0,0,0', 119122, 302);
+values (28, '0,0,0', 119222, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (31, '0,0,0', 119123, 302);
+values (31, '0,0,0', 119223, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (34, '0,0,0', 119124, 302);
+values (1777, '0,0,0', 119224, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (35, '0,0,0', 119125, 302);
+values (34, '0,0,0', 119225, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (36, '0,0,0', 119126, 302);
+values (35, '0,0,0', 119226, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1718, '0,0,0', 119127, 302);
+values (36, '0,0,0', 119227, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (2000, '0,0,0', 119130, 302);
+values (1718, '0,0,0', 119228, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1797, '0,0,0', 119131, 302);
+values (2000, '0,0,0', 119229, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (23, '0,0,0', 119132, 302);
+values (1797, '0,0,0', 119230, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (894, '0,0,0', 119133, 302);
+values (23, '0,0,0', 119231, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (1697, '0,0,0', 119134, 302);
+values (894, '0,0,0', 119232, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
-values (47, '0,0,0', 119135, 302);
+values (1697, '0,0,0', 119233, 302);
+
+insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
+values (47, '0,0,0', 119234, 302);
 
 insert into TBL_MODULE2ROLE (RM_MODULEID, RM_MATRIX, RM_ID, RM_ROLEID)
 values (1757, '0,0,0', 119136, 322);

@@ -251,7 +251,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 xtype: 'button',
                 text: '修改数据计算',
                 pressed: true,
-                iconCls: 'save',
+                iconCls: 'edit',
                 handler: function (v, o) {
                 	calculateManagerHandsontableHelper.saveData();
                 }
@@ -333,7 +333,7 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
                 text: '导出请求数据',
                 pressed: true,
                 hidden: false,
-                iconCls: 'save',
+                iconCls: 'export',
                 id:'calculateManager_ExportData_Btn',
                 handler: function (v, o) {
                 	if(calculateManagerHandsontableHelper.hot.getSelected()){

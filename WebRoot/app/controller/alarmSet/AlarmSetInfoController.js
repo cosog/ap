@@ -128,7 +128,7 @@ function modifyAlarmSet() {
             win_Obj.destroy();
         }
         var wellInfoWindow = Ext.create("AP.view.alarmSet.AlarmSetInfoWindow", {
-            title: cosog.string.editAlarm
+            title: '报警项配置'
         });
         wellInfoWindow.show();
         Ext.getCmp("addFormAlarmSet_Id").hide();
@@ -159,11 +159,12 @@ SelectAlarmSet = function () {
     Ext.getCmp('alarmSetAlarmSign_Id').setValue(alarmSign);
     Ext.getCmp("alarmSetResultCodeComb_Id").readOnly = true;
     Ext.getCmp("alarmSetAlarmType_Id").readOnly = true;
-    if (bjbz == 0) {
-        Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('关');
-    } else {
-        Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('开');
-    }
+//    if (alarmSign == 0) {
+//        Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('关');
+//    } else {
+//        Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue('开');
+//    }
+    Ext.getCmp('alarmSetAlarmSignComb_Id').setRawValue(alarmSign);
     Ext.getCmp('alarmSetRemark_Id').setValue(remark);
 };
 

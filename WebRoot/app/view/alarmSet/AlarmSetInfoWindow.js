@@ -188,7 +188,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoWindow", {
 										name : "alarmsign"
 									},alarmTypeComb,resultComb,alarmLevelComb ,{
 										xtype : "combobox",
-										fieldLabel : cosog.string.alarmSign,
+										fieldLabel : '报警开关',
 										id : 'alarmSetAlarmSignComb_Id',
 										anchor : '95%',
 										triggerAction : 'all',

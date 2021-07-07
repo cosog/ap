@@ -227,13 +227,13 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		}
 		sqlBuffer.append("select md_id,md_name,md_parentid,md_showname,md_url,md_code,md_seq ,md_icon,md_type,md_control,c.itemname as mdTypeName   ");
 		sqlBuffer.append("from  tbl_module t,tbl_code c where c.itemcode='MD_TYPE' and c.itemvalue=t.md_type ");
-		if (!"sysAdmin".equals(roleCode)){
+		if (!"systemRole".equals(roleCode)){
 			sqlBuffer.append("and  t.md_id in ( select distinct rm.rm_moduleid from tbl_user u ,tbl_role role,tbl_module2role rm where  role.role_Id =rm.rm_RoleId and role.role_Id = u.user_Type   and u.user_No="+user.getUserNo() + ")");
 		}
 		if(!moduleName.isEmpty()&&moduleName!=null&&!"".equals(moduleName)){
 			sqlBuffer.append("and t.md_name like '%"+moduleName+"%' ");
 		}
-		sqlBuffer.append( " order by t.md_id  asc");
+		sqlBuffer.append( " order by t.md_seq, t.md_id");
 		return this.findCallSql(sqlBuffer.toString());
 	}
 	
@@ -253,7 +253,7 @@ public class ModuleManagerService<T> extends BaseService<T> {
 		if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
 			roleCode = list.get(0).toString();
 		}
-		if ("sysAdmin".equals(roleCode))
+		if ("systemRole".equals(roleCode))
 			return loadRightModules(clazz);
 		String queryString = "SELECT  m FROM Module m where 1=1 and m.mdType in(0,1)  and m.mdId in " 
 				+ "( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "

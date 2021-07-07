@@ -36,7 +36,7 @@
 /*.hello-treepanel {  
   background: url(../images/chongxie1.png) left top repeat-x !important;  
 }*/
-/* 模块小图标css  */
+/* 妯″潡灏忓浘鏍嘽ss  */
 .Index {
 	background-image: url(../images/icon/index.png) !important;
 }
@@ -53,8 +53,12 @@
 	background-image: url(../images/icon/calculate.png) !important;
 }
 
-.WellInfo {
-	background-image: url(../images/icon/wellinformation.png) !important;
+.Optimize {
+	background-image: url(../images/icon/optimize.png) !important;
+}
+
+.DeviceDebugging {
+	background-image: url(../images/icon/deviceDebugging.png) !important;
 }
 
 .Dictionary {
@@ -74,12 +78,12 @@
 	background-image: url(../images/icon/monitor.png) !important;
 }
 
-.Diagnosis {
-	background-image: url(../images/icon/diagnosis.png) !important;
+.Realtime {
+	background-image: url(../images/icon/realtime.png) !important;
 }
 
-.Compute {
-	background-image: url(../images/icon/compute.png) !important;
+.Total {
+	background-image: url(../images/icon/total.png) !important;
 }
 
 .ReportRoot {
@@ -100,38 +104,38 @@
 }
 
 .CurveRoot {
-	background-image: url(../images/icon/pcurve.png) !important;
+	background-image: url(../images/icon/rawData.png) !important;
 }
 
-.Curve {
-	background-image: url(../images/icon/pcurve.png) !important;
+.RawData {
+	background-image: url(../images/icon/rawData.png) !important;
 }
 
 .CurveIn {
-	background-image: url(../images/icon/pcurve.png) !important;
+	background-image: url(../images/icon/rawData.png) !important;
 }
 
-.gongneng {
-	background-image: url(../images/icon/gongneng.png) !important;
+.Function {
+	background-image: url(../images/icon/function.png) !important;
 }
 
 .zuzhi {
 	background-image: url(../images/icon/zuzhi.png) !important;
 }
 
-.Measure {
-	background-image: url(../images/icon/measure.png) !important;
+.Downstream {
+	background-image: url(../images/icon/downstream.png) !important;
 }
 
 .MeasureIn {
-	background-image: url(../images/icon/measure.png) !important;
+	background-image: url(../images/icon/downstream.png) !important;
 }
 
 .MeasureRoot {
 	background-image: url(../images/icon/measure.png) !important;
 }
-.Res {
-	background-image: url(../images/icon/res.png) !important;
+.ProductionData {
+	background-image: url(../images/icon/productionData.png) !important;
 }
 
 .Alarm {
@@ -154,7 +158,7 @@
 	background-image: url(../images/icon/search.png) !important;
 }
 
-/**后台模块小图标*/
+/**鍚庡彴妯″潡灏忓浘鏍�*/
 .loginOut {
 	background-image: url(../images/icon/tuichu.png) !important;
 }
@@ -183,16 +187,20 @@
 	background-image: url(../images/icon/mod.png) !important;
 }
 
+.export {
+	background-image: url(../images/icon/export.png) !important;
+}
+
 .Stat {
 	background-image: url(../images/icon/stat.png) !important;
 }
 
 .Role {
-	background-image: url(../images/icon/juese.png) !important;
+	background-image: url(../images/icon/role.png) !important;
 }
 
 .Module {
-	background-image: url(../images/icon/mokuai.png) !important;
+	background-image: url(../images/icon/module.png) !important;
 }
 
 .Right {
@@ -200,7 +208,7 @@
 }
 
 .User {
-	background-image: url(../images/icon/yonghu.png) !important;
+	background-image: url(../images/icon/user.png) !important;
 }
 
 .Org {
@@ -215,17 +223,20 @@
 .DataConfig{
 	background-image: url(../images/icon/dataconfig.png) !important;
 }
+.DataSource{
+	background-image: url(../images/icon/dataSource.png) !important;
+}
 .Device{
 	background-image: url(../images/icon/device.png) !important;
 }
 .Order{
 	background-image: url(../images/icon/order.png) !important;
 }
-.MeasureProData{
-	background-image: url(../images/icon/measureprodata.png) !important;
+.DataMaintaining{
+	background-image: url(../images/icon/dataMaintaining.png) !important;
 }
-.SingleWell{
-	background-image: url(../images/icon/singlewell.png) !important;
+.WellInformation{
+	background-image: url(../images/icon/wellInformation.png) !important;
 }
 .BalanceData{
 	background-image: url(../images/icon/balancedata.png) !important;
@@ -249,7 +260,7 @@
 	cursor: pointer;
 }
 /*******************************************************************************/
-/*组织树图标*/
+/*缁勭粐鏍戝浘鏍�*/
 .tree_root_icon {
 	background-image: url(../images/icon/root.png) !important;
 }
@@ -262,7 +273,7 @@
 	background-image: url(../images/icon/leaf.png) !important;
 }
 /*******************************************************************************/
-/*************动态监测报警类型图标*/
+/*************鍔ㄦ�佺洃娴嬫姤璀︾被鍨嬪浘鏍�*/
 .normal {
 	background-image: url(../images/icon/normal.png) !important;
 }
@@ -270,7 +281,7 @@
 	background-image: url(../images/icon/exception.png) !important;
 }
 /********************************************************************************/
-/*************报警*/
+/*************鎶ヨ*/
 .realaralm {
 	background-image: url(../images/icon/real-alarm.png) !important;
 }
@@ -286,8 +297,8 @@
 .warn {
 	background-image: url(../images/icon/warn.png) !important;
 }
-.bdbj{
-	background-image: url(../images/icon/alarm-bd.png) !important;
+.WellboreTrajectory{
+	background-image: url(../images/icon/wellboreTrajectory.png) !important;
 }
 .dtred{
 	background-image: url(../images/icon/alarmdt-red.gif) !important;
@@ -304,8 +315,8 @@
 .alarm_well1{
 	background-image: url(../images/icon/alarm-well.png) !important;
 }
-.ProductionWell{
-	background-image: url(../images/icon/productionWell.png) !important;
+.FESDiagram{
+	background-image: url(../images/icon/FESDiagram.png) !important;
 }
 .InjectionWell{
 	background-image: url(../images/icon/injectionWell.png) !important;

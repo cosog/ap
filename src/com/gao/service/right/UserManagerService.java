@@ -202,7 +202,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		String sql = "";
 		sql = " select t.role_id,t.role_name from tbl_role t,(select * from tbl_role where role_id="+userRoleId+") t2 "
-				+ " where t.role_code<>decode(t2.role_code,'sysAdmin',t.role_code||'0','sysAdmin') "
+				+ " where t.role_code<>decode(t2.role_code,'systemRole',t.role_code||'0','systemRole') "
 				+ " order by t.role_id";
 		try {
 			List<?> list = this.getSQLObjects(sql);

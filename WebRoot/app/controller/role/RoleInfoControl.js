@@ -125,7 +125,7 @@ function delroleInfo() {
     if (_record.length>0) {
         // 提示是否删除数据
     	var roleCode=_record[0].data.roleCode;
-    	if(roleCode!="sysAdmin"){
+    	if(roleCode!="systemRole"){
     		Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
             Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
             Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
@@ -150,7 +150,7 @@ function modifyroleInfo() {
         	roleCode=_record[0].data.roleCode;
         }
     }
-    if(roleCode!="sysAdmin"){
+    if(roleCode!="systemRole"){
     	var role_panel = Ext.getCmp("RoleInfoGridPanel_Id");
         var role_model = role_panel.getSelectionModel();
         var _record = role_model.getSelection();
@@ -183,7 +183,7 @@ var grantRolePermission = function () {//授予角色模块权限
         	roleId=_record[0].data.roleId;
         }
     }
-    if(roleCode=="sysAdmin"){
+    if(roleCode=="systemRole"){
     	_record = rightmodule_panel.store.data.items;
     }else{
     	_record = rightmodule_panel.getChecked();

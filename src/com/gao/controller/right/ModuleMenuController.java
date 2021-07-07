@@ -186,7 +186,6 @@ public class ModuleMenuController extends BaseController {
 		Integer userNo = 1;
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		
 		if (user != null) {
 			boolean cache = Config.getInstance().configFile.getOthers().getCache();
 			if (cache) {

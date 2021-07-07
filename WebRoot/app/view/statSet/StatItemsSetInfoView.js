@@ -1,7 +1,4 @@
 var statSetHandsontableHelper=null;
-Ext.require([
-	'MyExtend.Form.Field.ColorField'
-]);
 Ext.define("AP.view.statSet.StatItemsSetInfoView", {
 	extend : 'Ext.panel.Panel',
 	alias : 'widget.statItemsSetInfoView',

@@ -73,7 +73,6 @@ public class ModuleManagerController extends BaseController {
 		String json = "";
 		BackModuleTreePanelRecursion r = new BackModuleTreePanelRecursion();
 		if (list != null) {
-
 			for (Object org : list) {
 				Object[] obj=(Object[])org;
 				if (!r.hasParent(list, obj)) {

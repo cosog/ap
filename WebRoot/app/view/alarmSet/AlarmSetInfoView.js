@@ -1,6 +1,3 @@
-Ext.require([
-'MyExtend.Form.Field.ColorField'
-]);
 Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.alarmSetInfoView',
@@ -92,7 +89,7 @@ Ext.define("AP.view.alarmSet.AlarmSetInfoView", {
                                 	collapse: function (field,eOpts) {
                                     	if(Ext.getCmp('alarmLevelBackgroundColor1_id')!=undefined){
                                     		Ext.getCmp('alarmLevelOpacity1_id').setValue(field.color.a);
-                                        	Ext.getCmp('alarmLevelBackgroundColor1_id').inputEl.applyStyles({
+                                    		field.inputEl.applyStyles({
                           		              background: '#'+field.value,
                           		              opacity:field.color.a
                           		            });

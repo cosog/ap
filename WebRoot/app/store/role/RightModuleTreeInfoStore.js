@@ -36,7 +36,7 @@ Ext.define('AP.store.role.RightModuleTreeInfoStore', {
                 	roleCode=_record[0].data.roleCode;
                 }
             }
-            if(roleCode=="sysAdmin"){
+            if(roleCode=="systemRole"){
                 Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();
             }else{
             	Ext.getCmp("RightModuleTreeInfoGridPanel_Id").enable();

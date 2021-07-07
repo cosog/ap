@@ -59,10 +59,15 @@ public class ResourceMonitoringTask {
 		String appRunStatus="停止";
 		int appRunStatusValue=0;
 		String appVersion="";
+		
 		String cpuUsedPercent="";
 		String cpuUsedPercentValue="";
+		int cpuUsedPercentAlarmLevel=0;
+		
 		String memUsedPercent="";
 		String memUsedPercentValue="";
+		int memUsedPercentAlarmLevel=0;
+		
 		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -81,6 +86,12 @@ public class ResourceMonitoringTask {
 			MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
 			if(cpuProbeResponseData!=null){
 				for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
+					if(cpuProbeResponseData.getPercent().get(i)>=60 && cpuProbeResponseData.getPercent().get(i)<80 && cpuUsedPercentAlarmLevel<1){
+						cpuUsedPercentAlarmLevel=1;
+					}else if(cpuProbeResponseData.getPercent().get(i)>=80 && cpuUsedPercentAlarmLevel<2){
+						cpuUsedPercentAlarmLevel=2;
+					}
+					
 					cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
 					cpuUsedPercentValue+=cpuProbeResponseData.getPercent().get(i);
 					if(i<cpuProbeResponseData.getPercent().size()-1){
@@ -90,6 +101,11 @@ public class ResourceMonitoringTask {
 				}
 			}
 			if(memoryProbeResponseData!=null){
+				if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
+					memUsedPercentAlarmLevel=1;
+				}else if(memoryProbeResponseData.getUsedPercent()>=80){
+					memUsedPercentAlarmLevel=2;
+				}
 				memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
 				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
 			}
@@ -115,9 +131,12 @@ public class ResourceMonitoringTask {
 				+ "\"appRunStatus\":\""+appRunStatus+"\","
 				+ "\"appVersion\":\""+appVersion+"\","
 				+ "\"cpuUsedPercent\":\""+cpuUsedPercent+"\","
+				+ "\"cpuUsedPercentAlarmLevel\":"+cpuUsedPercentAlarmLevel+","
 				+ "\"memUsedPercent\":\""+memUsedPercent+"\","
+				+ "\"memUsedPercentAlarmLevel\":"+memUsedPercentAlarmLevel+","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
-				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent2()+"%")+"\""
+				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent2()+"%")+"\","
+				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""
 				+ "}";
 		try {
 			infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
@@ -181,6 +200,16 @@ public class ResourceMonitoringTask {
 			tableSpaceInfo.setFree(tableSpaceInfo.getFree()+rs.getFloat(3));
 			tableSpaceInfo.setUsed(tableSpaceInfo.getUsed()+rs.getFloat(4));
 			tableSpaceInfo.setUsedPercent2(StringManagerUtils.stringToFloat((tableSpaceInfo.getUsed()*100/tableSpaceInfo.getTotal())+"", 2));
+			
+			if(tableSpaceInfo.getUsedPercent2()>=60 && tableSpaceInfo.getUsedPercent2()<80){
+				tableSpaceInfo.setAlarmLevel(1);
+			}else if(tableSpaceInfo.getUsedPercent2()>=80){
+				tableSpaceInfo.setAlarmLevel(2);
+			}else{
+				tableSpaceInfo.setAlarmLevel(0);
+			}
+			
+			
 		}
 		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return tableSpaceInfo;
@@ -193,11 +222,12 @@ public class ResourceMonitoringTask {
 		public float used=0;
 		public float usedPercent=0;
 		public float usedPercent2=0;
+		public int alarmLevel=0;
 		public TableSpaceInfo() {
 			super();
 		}
 		public TableSpaceInfo(String tableSpaceName, float total, float free, float used, float usedPercent,
-				float usedPercent2) {
+				float usedPercent2,int alarmLevel) {
 			super();
 			this.tableSpaceName = tableSpaceName;
 			this.total = total;
@@ -205,6 +235,7 @@ public class ResourceMonitoringTask {
 			this.used = used;
 			this.usedPercent = usedPercent;
 			this.usedPercent2 = usedPercent2;
+			this.alarmLevel = alarmLevel;
 		}
 		public float getUsedPercent2() {
 			return usedPercent2;
@@ -241,6 +272,12 @@ public class ResourceMonitoringTask {
 		}
 		public void setUsedPercent(float usedPercent) {
 			this.usedPercent = usedPercent;
+		}
+		public int getAlarmLevel() {
+			return alarmLevel;
+		}
+		public void setAlarmLevel(int alarmLevel) {
+			this.alarmLevel = alarmLevel;
 		}
 	}
 }

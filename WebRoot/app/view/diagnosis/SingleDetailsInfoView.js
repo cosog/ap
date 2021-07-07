@@ -75,25 +75,9 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                         	});
                         	ResourceProbeHistoryCurveWindow.show();
                         }
-                	},
-//                	{
-//                		xtype: 'button',
-////                		width:150,
-//                        id:"appVersionProbeLabel_id",
-//                        text: 'SDK版本:',
-//                        handler: function (v, o) {
-////                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("SDK版本");
-////                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("appVersion");
-////                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
-////            				    html:'<div id="ResourceProbeHistoryCurve_DivId" style="width:100%;height:100%;"></div>'
-////                        	});
-////                        	ResourceProbeHistoryCurveWindow.show();
-//                        }
-//                	},
-                	{
+                	},{
                         id: 'webSocketTest_Id', //选择查看曲线的数据项名称
                         xtype: 'textfield',
-//                        width:150,
                         value: '',
                         hidden: true
                     }]
@@ -164,19 +148,41 @@ function probeWebsocketOnMessage(evt) {
 	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
 	
 	if (activeId === "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
-//		Ext.getCmp("webSocketTest_Id").setValue(evt.data);
 		if(evt.data!='Connect successfully!'){
 			var data=Ext.JSON.decode(evt.data);
-			Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU:"+data.cpuUsedPercent);
-			Ext.getCmp("memUsedPercentLabel_id").setText("内存:"+data.memUsedPercent);
-			Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
+			
+			if(data.cpuUsedPercentAlarmLevel==1){
+				Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#F09614 >CPU:"+data.cpuUsedPercent+"</font>");
+			}else if(data.cpuUsedPercentAlarmLevel==2){
+				Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#DC2828 >CPU:"+data.cpuUsedPercent+"</font>");
+			}else{
+				Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU:"+data.cpuUsedPercent);
+			}
+			
+			if(data.memUsedPercentAlarmLevel==1){
+				Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#F09614 >内存:"+data.memUsedPercent+"</font>");
+			}else if(data.memUsedPercentAlarmLevel==2){
+				Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#DC2828 >内存:"+data.memUsedPercent+"</font>");
+			}else{
+				Ext.getCmp("memUsedPercentLabel_id").setText("内存:"+data.memUsedPercent);
+			}
+			
+			if(data.tableSpaceUsedPercentAlarmLevel==1){
+				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >表空间:"+data.tableSpaceUsedPercent+"</font>");
+			}else if(data.tableSpaceUsedPercentAlarmLevel==2){
+				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >表空间:"+data.tableSpaceUsedPercent+"</font>");
+			}else{
+				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
+			}
+			
 			if(data.appRunStatus=="运行"){
 				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtgreen");
+//				Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK"+data.appVersion);
 			}else{
 				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtyellow");
+//				Ext.getCmp("appRunStatusProbeLabel_id").setText("");
 			}
-//			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK状态:"+data.appRunStatus);
-			Ext.getCmp("appRunStatusProbeLabel_id").setText(""+data.appVersion);
+			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK"+data.appVersion);
 		}
 	}
 }

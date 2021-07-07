@@ -77,7 +77,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         	}
                             Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
                             Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
-                            if(roleCode=="sysAdmin"){
+                            if(roleCode=="systemRole"){
                             	Ext.getCmp("delroleLabelClassBtn_Id").disable();
                             	Ext.getCmp("editroleLabelClassBtn_Id").disable();
                             }else{

@@ -18,8 +18,7 @@ Ext.define('MyExtend.Form.Field.ColorField', {
         listeners: {
           scope: this,
           select: function(field, value, opts) {
-
-            me.setValue('#' + value);
+            me.setValue('#' + value.toUpperCase());
             me.inputEl.applyStyles({
               background: '#' + value
             });
@@ -39,13 +38,10 @@ Ext.define('MyExtend.Form.Field.ColorField', {
       });
       me.attached = true;
     }
-
   },
   onMouseDown: function(e) {
-
     var lastShow = this.lastShow,
       doHide = true;
-
     if (Ext.Date.getElapsed(lastShow) > 50 && !e.getTarget('#' + this.picker.id)) {
       if (Ext.isIE9m && !Ext.getDoc().contains(e.target)) {
         doHide = false;

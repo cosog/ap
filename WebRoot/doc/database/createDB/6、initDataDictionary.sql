@@ -4053,6 +4053,7 @@ values ('116642', '', '86dc8dff3f634944a2b7ee35ec6e5953', '动液面(m)', 'producin
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116643', '', '86dc8dff3f634944a2b7ee35ec6e5953', '沉没度(m)', 'submergence', '', 39, 0, '', '', to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'), to_date('16-08-2018 15:40:10', 'dd-mm-yyyy hh24:mi:ss'));
 
+insert into TBL_DIST_ITEM (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('114888', null, '87808f225d7240f68c2ab879347d818a', '序号', 'id', 'width:50', 1, 1, null, null, null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)

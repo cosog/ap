@@ -80,7 +80,7 @@ others:
    defaultComboxSize: 10000
    defaultGraghSize: 60
    productionUnit: 0
-   pcp: true
+   pcp: false
    electrical: false
    dynamicCurve: true
    serialnumber: God bless you!

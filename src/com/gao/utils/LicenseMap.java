@@ -8,9 +8,9 @@ import java.util.Map;
 public final class LicenseMap {
 	private static Map<Integer, License> map;
 	private static Map<Integer, List<Integer>> moduleMap;
-	public static int SN=0;
-	public static int modulesSN=0;
-	public static int dataSourceSN=0;//数据源 0-采控直读和数据库直读 1-采控直读 2-数据库直读
+	public static int SN=1;
+	public static int modulesSN=2;
+	public static int dataSourceSN=2;//数据源 0-采控直读和数据库直读 1-采控直读 2-数据库直读
 	static {
 		map = new HashMap<Integer, License>();
 		map.put(0, new License("阿里云服务器 Windows Server2019", "00:16:3E:01:D8:63", 0,"IP:8.130.30.138"));
@@ -66,7 +66,7 @@ public final class LicenseMap {
 		moduleList1.add(28);//用户管理
 		moduleList1.add(29);//角色管理
 		moduleList1.add(31);//数据配置
-		moduleList0.add(1777);//数据源
+		moduleList1.add(1777);//数据源
 		moduleList1.add(34);//井名信息
 		moduleList1.add(35);//生产数据
 		moduleList1.add(36);//井身轨迹
@@ -98,7 +98,7 @@ public final class LicenseMap {
 		moduleList2.add(28);//用户管理
 		moduleList2.add(29);//角色管理
 		moduleList2.add(31);//数据配置
-		moduleList0.add(1777);//数据源
+		moduleList2.add(1777);//数据源
 		moduleList2.add(34);//井名信息
 		moduleList2.add(35);//生产数据
 		moduleList2.add(36);//井身轨迹

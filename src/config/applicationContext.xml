@@ -15,18 +15,18 @@
 	<!-- 启用spring注解支持 -->
 	<context:annotation-config />
 	<!-- 只解析除controller之外的注解(即解析service、dao), 避免重复加载导致事务失效  -->
-	<context:component-scan base-package="com.gao.*">
+	<context:component-scan base-package="com.cosog.*">
 		<!-- annotation为spting-mvc中解析的内容 -->
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
     
-	<!--<context:component-scan base-package="com.gao.test" />
-	<context:component-scan base-package="com.gao.websocket.config" />  
+	<!--<context:component-scan base-package="com.cosog.test" />
+	<context:component-scan base-package="com.cosog.websocket.config" />  
                  
-   	<context:component-scan base-package="com.gao.websocket.handler">  
+   	<context:component-scan base-package="com.cosog.websocket.handler">  
    	</context:component-scan>  
                  
-   	<context:component-scan base-package="com.gao.websocket.interceptor">  
+   	<context:component-scan base-package="com.cosog.websocket.interceptor">  
    	</context:component-scan> -->
    	<!-- 开启这个配置，spring才能识别@Scheduled注解   -->  
     <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>  
@@ -70,8 +70,8 @@
 		<!-- 扫描实体位置，注入实体-->
 		<property name="packagesToScan">
 			<list>
-				<value>com.gao.model</value>
-				<value>com.gao.model.data</value>
+				<value>com.cosog.model</value>
+				<value>com.cosog.model.data</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -108,7 +108,7 @@
 	<aop:config>
 		<!-- 只对业务逻辑层（service层）实施事务 -->
 		<aop:pointcut id="bussinessService"
-			expression="execution(* com.gao.service..*.*(..))" />
+			expression="execution(* com.cosog.service..*.*(..))" />
 		<aop:advisor pointcut-ref="bussinessService" advice-ref="txAdvice" />
 	</aop:config>
 	<!-- 配置事务通知 -->

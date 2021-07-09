@@ -94,12 +94,8 @@ getSecondTapCode=function(mdCode){
 		}
 	
 	try {
-		//var org_Id = selectEachTreeFn(rec);// 获取到当前点击的组织ID
-		
 		var modules = mdCode.split("_");
-		
 		if (modules.length > 0) {
-		
 				Ext.getCmp("topModule_Id").setValue("");// 给IframeView里的模块隐藏域赋值
 				Ext.getCmp("bottomTab_Id").setValue("");// 给IframeView里的模块隐藏域赋值
 				//Ext.getCmp("secondBottomTab_Id").setValue("");// 给IframeView里的第二个tab的模块隐藏域赋值
@@ -128,14 +124,10 @@ getSecondTapCode=function(mdCode){
 						}
 						secondTab_Code=imageBottomTab_Id;
 					}
-					
-	
 				}else{
 					secondTab_Code="";
 				}
 		}
-	
-	
 	} catch (e) {
 		//Ext.Msg.alert("exception", " name: " + e.name + " \n message: "
 						//+ e.message + " \n lineNumber: " + e.lineNumber
@@ -163,7 +155,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	
 	var panel_Id = "";
 	if (module_Code != "video" && module_Code != "map_MapDraw" && module_Code != "realtime_RealtimeMonitor"
-		&& module_Code != "report_DiagnosisDayReport"
+		&& module_Code != "ProductionReport"
 		&& module_Code != "outWellProduce_ProductionOutInfoGridPanel"
 		&& module_Code != "well_wellPanel"
 		&& module_Code != "well_WellboreTrajectory"
@@ -171,9 +163,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "balance_BalanceMonitor"
 		&& module_Code != "balance_BalanceTotal"
 		&& module_Code != "balance_BalanceCycle"
-		&& module_Code != "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails"
-		&& module_Code != "graphicalQuery_SurfaceCardQuery"
-		&& module_Code != "diagnosisTotal_DiagnosisTotalData"
+		&& module_Code != "RealtimeEvaluation"
+		&& module_Code != "FESDiagramQuery"
+		&& module_Code != "DailyEvaluation"
 		&& module_Code != "calculate_calculateManager"
 		&& module_Code != "PSToFS_PumpingUnitInfo"
 		&& module_Code != "PSToFS_MotorInfo"
@@ -217,12 +209,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 								}
 							});
 			}
-
 		} else {
-
 			panel_Id = tab_Code + "_Id";
 		}
-		//alert(panel_Id);
 		var ext_panel = Ext.getCmp(panel_Id);
 		if (ext_panel != undefined||tab_Code=="BalanceHistory"||tab_Code=="BalanceCycle") {
 			// 工况诊断的统计信息刷新及图形
@@ -294,13 +283,15 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		} else {
 			// Ext.Msg.alert("info", '抱歉，该模块正在开发中... ');
 		}
-	}else if(module_Code == "report_DiagnosisDayReport"){
+	}else if(module_Code == "ProductionReport"){
 		var tabPanel = Ext.getCmp("ProductionWellDailyReportPanel_Id");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="ReportPumpingUnitDayReport"){
 			CreateDiagnosisDailyReportTable();
+			Ext.getCmp("RPCDailyReportGridPanel_Id").getStore().load();
 		}else if(activeId=="screwPumpDailyReportPanel_Id"){
 			CreateScrewPumpDailyReportTable();
+			Ext.getCmp("PPCDailyReportGridPanel_Id").getStore().load();
 		}
 	}else if(module_Code == "outWellProduce_ProductionOutInfoGridPanel"){
 		var tabPanel = Ext.getCmp("ProductionWellProductionPanel");
@@ -317,7 +308,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	}
 	else if(module_Code == "blockdata_Ids"){
 		CreateAndLoadReservoirPropertyTable(true);
-	}else if(module_Code == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails"){
+	}else if(module_Code == "RealtimeEvaluation"){
 		var tabPanel = Ext.getCmp("ProductionWellRealtimeAnalisisPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="RPCSingleDetailsInfoPanel_Id"){
@@ -328,9 +319,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			Ext.getCmp('ScrewPumpRealtimeAnalysisWellCom_Id').setValue("");
 			loadPCPRPMAnalysisSingleStatData();
 		}
-	}else if(module_Code=="graphicalQuery_SurfaceCardQuery"){
+	}else if(module_Code=="FESDiagramQuery"){
 		loadSurfaceCardList(1);
-	}else if(module_Code == "diagnosisTotal_DiagnosisTotalData"){
+	}else if(module_Code == "DailyEvaluation"){
 		var tabPanel = Ext.getCmp("ProductionWellDailyAnalisisPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="pumpUnitDailyAnalysisPanel_Id"){

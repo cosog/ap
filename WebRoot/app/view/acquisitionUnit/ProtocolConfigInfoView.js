@@ -262,10 +262,47 @@ var ProtocolConfigHandsontableHelper = {
 	                sortIndicator: true,
 	                manualColumnResize:true,//当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize:true,//当值为true时，允许拖动，当为false时禁止拖动
-//	                dropdownMenu: ['filter_by_condition', 'filter_by_value', 'filter_action_bar'],
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                	items: {
+	                	    "row_above": {
+	                	      name: '向上插入一行',
+	                	    },
+	                	    "row_below": {
+	                	      name: '向下插入一行',
+	                	    },
+	                	    "col_left": {
+	                	      name: '向左插入一列',
+	                	    },
+	                	    "col_right": {
+	                	      name: '向右插入一列',
+	                	    },
+	                	    "remove_row": {
+	                	      name: '删除行',
+	                	    },
+	                	    "remove_col": {
+	                	      name: '删除列',
+	                	    },
+	                	    "merge_cell": {
+	                	      name: '合并单元格',
+	                	    },
+	                	    "copy": {
+	                	      name: '复制',
+	                	    },
+	                	    "cut": {
+	                	      name: '剪切',
+	                	    },
+	                	    "paste": {
+	                	      name: '粘贴',
+	                	      disabled: function() {
+	                	      },
+	                	      callback: function() {
+	                	      }
+	                	    }
+	                	}
+	                },//右键菜单展示
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
@@ -535,6 +572,44 @@ var ProtocolConfigItemsHandsontableHelper = {
 	                filters: true,
 	                renderAllRows: true,
 	                search: true,
+	                contextMenu: {
+	                	items: {
+	                	    "row_above": {
+	                	      name: '向上插入一行',
+	                	    },
+	                	    "row_below": {
+	                	      name: '向下插入一行',
+	                	    },
+	                	    "col_left": {
+	                	      name: '向左插入一列',
+	                	    },
+	                	    "col_right": {
+	                	      name: '向右插入一列',
+	                	    },
+	                	    "remove_row": {
+	                	      name: '删除行',
+	                	    },
+	                	    "remove_col": {
+	                	      name: '删除列',
+	                	    },
+	                	    "merge_cell": {
+	                	      name: '合并单元格',
+	                	    },
+	                	    "copy": {
+	                	      name: '复制',
+	                	    },
+	                	    "cut": {
+	                	      name: '剪切',
+	                	    },
+	                	    "paste": {
+	                	      name: '粘贴',
+	                	      disabled: function() {
+	                	      },
+	                	      callback: function() {
+	                	      }
+	                	    }
+	                	}
+	                },//右键菜单展示
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);

@@ -18,7 +18,7 @@
     <mvc:annotation-driven />
 
     <!-- 注解扫描包，注意换成自己的路径 -->
-    <context:component-scan base-package="com.gao.Controller.*">
+    <context:component-scan base-package="com.cosog.Controller.*">
         <!-- 只扫描@Controller的部分 -->
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>

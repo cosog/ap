@@ -2784,7 +2784,7 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
 var FSDiagramAnalysisRealtimeRefreshTask = {
 	    run: function() {
 	    	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
-			if (activeId == "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
+			if (activeId == "RealtimeEvaluation") {
 				if (isNotVal(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id"))) {
 					var FSDiagramMaxAcqTime=Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue();
 					var DiscreteMaxAcqTime=Ext.getCmp("DiscreteMaxAcqTime_Id").getValue();

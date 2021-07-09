@@ -147,7 +147,7 @@ function probeWebsocketOnOpen(openEvt) {
 function probeWebsocketOnMessage(evt) {
 	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
 	
-	if (activeId === "FSDiagramAnalysis_FSDiagramAnalysisSingleDetails") {
+	if (activeId === "RealtimeEvaluation") {
 		if(evt.data!='Connect successfully!'){
 			var data=Ext.JSON.decode(evt.data);
 			

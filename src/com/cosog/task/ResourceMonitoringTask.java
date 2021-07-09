@@ -139,8 +139,8 @@ public class ResourceMonitoringTask {
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""
 				+ "}";
 		try {
-			infoHandler().sendMessageToUserByModule("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", new TextMessage(sendData));
-			infoHandler2().sendMessageToBy("FSDiagramAnalysis_FSDiagramAnalysisSingleDetails", sendData);
+			infoHandler().sendMessageToUserByModule("RealtimeEvaluation", new TextMessage(sendData));
+			infoHandler2().sendMessageToBy("RealtimeEvaluation", sendData);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

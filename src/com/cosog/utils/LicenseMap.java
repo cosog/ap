@@ -8,9 +8,9 @@ import java.util.Map;
 public final class LicenseMap {
 	private static Map<Integer, License> map;
 	private static Map<Integer, List<Integer>> moduleMap;
-	public static int SN=1;
-	public static int modulesSN=2;
-	public static int dataSourceSN=2;//数据源 0-采控直读和数据库直读 1-采控直读 2-数据库直读
+	public static int SN=0;
+	public static int modulesSN=0;
+	public static int dataSourceSN=0;//数据源 0-采控直读和数据库直读 1-采控直读 2-数据库直读
 	static {
 		map = new HashMap<Integer, License>();
 		map.put(0, new License("阿里云服务器 Windows Server2019", "00:16:3E:01:D8:63", 0,"IP:8.130.30.138"));

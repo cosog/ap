@@ -2,22 +2,22 @@
 /* 初始化tbl_module数据                                          */
 /*==============================================================*/
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (9999, 0, '功能导航', '功能导航', '#', 'root', 1, null, null, 'Function', 0, '#');
+values (9999, 0, '功能导航', '功能导航', '#', 'Root', 1, null, null, 'Function', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1757, 9999, '功图软件', '功图软件', '#', 'productionWell_Root', 10100, null, null, 'FESDiagram', 0, '#');
+values (1757, 9999, '功图软件', '功图软件', '#', 'FESDiagramSoftware_Root', 10100, null, null, 'FESDiagram', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (5, 1757, '实时评价', '实时评价', 'AP.view.diagnosis.SingleDetailsInfoView', 'FSDiagramAnalysis_FSDiagramAnalysisSingleDetails', 1010010, null, null, 'Realtime', 0, 'AP.controller.frame.MainIframeControl');
+values (5, 1757, '实时评价', '实时评价', 'AP.view.diagnosis.SingleDetailsInfoView', 'RealtimeEvaluation', 1010010, null, null, 'Realtime', 0, 'AP.controller.frame.MainIframeControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1678, 1757, '全天评价', '全天评价', 'AP.view.diagnosisTotal.DiagnosisTotalInfoView', 'diagnosisTotal_DiagnosisTotalData', 1010020, null, null, 'Total', 0, '#');
+values (1678, 1757, '全天评价', '全天评价', 'AP.view.diagnosisTotal.DiagnosisTotalInfoView', 'DailyEvaluation', 1010020, null, null, 'Total', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (554, 1757, '生产报表', '生产报表', 'AP.view.reportOut.ReportOutDayReportView', 'report_DiagnosisDayReport', 1010030, null, null, 'Report', 0, '#');
+values (554, 1757, '生产报表', '生产报表', 'AP.view.reportOut.ReportOutDayReportView', 'ProductionReport', 1010030, null, null, 'Report', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1315, 1757, '图形查询', '图形查询', 'AP.view.graphicalQuery.SurfaceCardQueryView', 'graphicalQuery_SurfaceCardQuery', 1010040, null, null, 'Image', 0, 'AP.controller.frame.MainIframeControl');
+values (1315, 1757, '图形查询', '图形查询', 'AP.view.graphicalQuery.SurfaceCardQueryView', 'FESDiagramQuery', 1010040, null, null, 'Image', 0, 'AP.controller.frame.MainIframeControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (2001, 1757, 'WebSocket测试', 'WebSocket测试', 'AP.view.websocketTest.WebSocketTestInfoView', 'WebSocketTest', 1010050, null, null, 'Device', 2, '#');
@@ -44,49 +44,49 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_COD
 values (29, 27, '角色管理', '角色管理', 'AP.view.role.RoleInfoView', 'role_Ids', 2030300, null, null, 'Role', 0, 'AP.controller.role.RoleInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (31, 9999, '数据配置', '数据配置', '#', 'basicdata_Ids', 2040000, null, null, 'DataConfig', 0, 'AP.controller.frame.MainIframeControl');
+values (31, 9999, '数据配置', '数据配置', '#', 'DataConfig', 2040000, null, null, 'DataConfig', 0, 'AP.controller.frame.MainIframeControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1777, 31, '数据源', '数据源', 'AP.view.acquisitionUnit.ScadaConfigInfoView', 'ScadaConfigInfoView_Id', 2040100, null, null, 'DataSource', 0, 'AP.controller.acquisitionUnit.AcquisitionUnitInfoControl');
+values (1777, 31, '数据源', '数据源', 'AP.view.acquisitionUnit.ScadaConfigInfoView', 'DataSource', 2040100, null, null, 'DataSource', 0, 'AP.controller.acquisitionUnit.AcquisitionUnitInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (34, 31, '井名信息', '井名信息', 'AP.view.well.WellInfoView', 'well_wellPanel', 2040200, null, null, 'WellInformation', 0, 'AP.controller.well.WellInfoController');
+values (34, 31, '井名信息', '井名信息', 'AP.view.well.WellInfoView', 'WellInformation', 2040200, null, null, 'WellInformation', 0, 'AP.controller.well.WellInfoController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (35, 31, '生产数据', '生产数据', 'AP.view.productionData.ProductiondDataUIInfoView', 'outWellProduce_ProductionOutInfoGridPanel', 2040300, null, null, 'ProductionData', 0, 'AP.controller.productionData.ProductionOutInfoControl');
+values (35, 31, '生产数据', '生产数据', 'AP.view.productionData.ProductiondDataUIInfoView', 'ProductionData', 2040300, null, null, 'ProductionData', 0, 'AP.controller.productionData.ProductionOutInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1718, 31, '抽油机信息', '抽油机信息', 'AP.view.PSToFS.PumpingUnitInfoView', 'PSToFS_PumpingUnitInfo', 2040400, null, null, 'Pumping', 0, '#');
+values (1718, 31, '抽油机信息', '抽油机信息', 'AP.view.PSToFS.PumpingUnitInfoView', 'PumpingUnitInformation', 2040400, null, null, 'Pumping', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (36, 31, '井身轨迹', '井身轨迹', 'AP.view.wellboreTrajectory.WellboreTrajectoryInfoView', 'well_WellboreTrajectory', 2040500, null, null, 'WellboreTrajectory', 0, '#');
+values (36, 31, '井身轨迹', '井身轨迹', 'AP.view.wellboreTrajectory.WellboreTrajectoryInfoView', 'WellboreTrajectory', 2040500, null, null, 'WellboreTrajectory', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (2000, 9999, '数据维护', '数据维护', '#', 'dataMaintenance_root', 2070000, null, null, 'DataMaintaining', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1797, 2000, '计算维护', '计算维护', 'AP.view.calculateManager.CalculateManagerInfoView', 'calculate_calculateManager', 2070100, null, null, 'Calculate', 0, '#');
+values (1797, 2000, '计算维护', '计算维护', 'AP.view.calculateManager.CalculateManagerInfoView', 'CalculateManager', 2070100, null, null, 'Calculate', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (1515, 2000, '功图上传', '功图上传', 'AP.view.graphicalUpload.GraphicalUploadInfoView', 'graphicalUpload', 2070200, null, null, 'Upload', 0, 'AP.controller.graphicalUpload.GraphicalUploadController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1877, 2000, '图形优化', '图形优化', 'AP.view.electricAnalysis.InverOptimizeInfoView', 'PSToFS_InverOptimizeInfo', 2070300, null, null, 'Optimize', 0, '#');
+values (1877, 2000, '图形优化', '图形优化', 'AP.view.electricAnalysis.InverOptimizeInfoView', 'DiagramOptimizeInfo', 2070300, null, null, 'Optimize', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (23, 9999, '系统配置', '系统配置', '#', 'SystemManageent', 2090000, null, null, 'System', 0, 'AP.controller.frame.MainIframeControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (26, 23, '模块配置', '模块配置', 'AP.view.module.ModuleInfoView', 'module_Ids', 2090100, null, null, 'Module', 0, 'AP.controller.module.ModuleInfoControl');
+values (26, 23, '模块配置', '模块配置', 'AP.view.module.ModuleInfoView', 'ModuleConfig', 2090100, null, null, 'Module', 0, 'AP.controller.module.ModuleInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (894, 23, '字典配置', '字典配置', 'AP.view.data.SystemdataInfoView', 'dataqaz', 2090200, null, null, 'Dictionary', 0, 'AP.controller.data.SystemdataInfoControl');
+values (894, 23, '字典配置', '字典配置', 'AP.view.data.SystemdataInfoView', 'DataDictionary', 2090200, null, null, 'Dictionary', 0, 'AP.controller.data.SystemdataInfoControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (1697, 23, '统计配置', '统计配置', 'AP.view.statSet.StatItemsSetInfoView', 'statSet_statItemsSet', 2090300, null, null, 'Stat', 0, '#');
+values (1697, 23, '统计配置', '统计配置', 'AP.view.statSet.StatItemsSetInfoView', 'StatisticsItemsSet', 2090300, null, null, 'Stat', 0, '#');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (47, 23, '报警配置', '报警配置', 'AP.view.alarmSet.AlarmSetInfoView', 'alarmSet_Alarm', 2090400, null, null, 'Alarm', 0, 'AP.controller.alarmSet.AlarmSetInfoController');
+values (47, 23, '报警配置', '报警配置', 'AP.view.alarmSet.AlarmSetInfoView', 'AlarmSet', 2090400, null, null, 'Alarm', 0, 'AP.controller.alarmSet.AlarmSetInfoController');
 
 /*==============================================================*/
 /* 初始化tbl_role数据                                          */

@@ -15,7 +15,7 @@
 		memoryStoreEvictionPolicy="LRU" />
 
 	<!-- 直接指定name为实体 包名称.类名称，这样实体就会直接使用这个策略，不用再实体中具体指定或 代码设置了 -->
-	<Cache name="com.gao.model"
+	<Cache name="com.cosog.model"
 		maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="0"
 		timeToLiveSeconds="0" overflowToDisk="true" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />

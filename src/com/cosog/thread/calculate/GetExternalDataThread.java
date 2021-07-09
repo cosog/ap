@@ -40,7 +40,8 @@ public class GetExternalDataThread extends Thread{
 			if(outerConn!=null&&conn!=null){
 				int record=100;
 				String outerSql=""
-						+ " select t."+dataSourceConfig.getDiagramTable().getColumns().getWellName().getColumn()+",to_char(t."+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+",'yyyy-mm-dd hh24:mi:ss'),"
+						+ " select t."+dataSourceConfig.getDiagramTable().getColumns().getWellName().getColumn()+","
+						+ " to_char(t."+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+",'yyyy-mm-dd hh24:mi:ss') as "+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+","
 						+ " t."+dataSourceConfig.getDiagramTable().getColumns().getStroke().getColumn()+","
 						+ " t."+dataSourceConfig.getDiagramTable().getColumns().getSPM().getColumn()+","
 						+ " t."+dataSourceConfig.getDiagramTable().getColumns().getPointCount().getColumn()+","
@@ -52,14 +53,24 @@ public class GetExternalDataThread extends Thread{
 						+ " where 1=1 ";
 				if(!StringManagerUtils.isNotNull(acqTime)){
 					record=1;
-					outerSql+=" and t.dyna_create_time > to_date('"+StringManagerUtils.getCurrentTime()+"','yyyy-mm-dd')-30 ";
+					outerSql+=" and t."+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+" > to_date('"+StringManagerUtils.getCurrentTime()+"','yyyy-mm-dd')-30 ";
 				}else{
-					outerSql+= " and t.dyna_create_time > to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss') ";
+					outerSql+= " and t."+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+" > to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss') ";
 				}
-//				outerSql+= " and t.dyna_create_time < to_date('2020-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss') ";
-				outerSql+=" and t.well_common_name='"+wellName+"' "
-						+ " order by t.dyna_create_time ";
-				outerSql="select v.* from ( "+outerSql+ " ) v where rownum<="+record+"";
+				outerSql+=" and t."+dataSourceConfig.getDiagramTable().getColumns().getWellName().getColumn()+"='"+wellName+"' "
+						+ " order by t."+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+" ";
+				
+				outerSql=" select v."+dataSourceConfig.getDiagramTable().getColumns().getWellName().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getAcqTime().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getStroke().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getSPM().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getPointCount().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getS().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getF().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getI().getColumn()+","
+						+ " v."+dataSourceConfig.getDiagramTable().getColumns().getKWatt().getColumn()
+						+ " from ( "+outerSql+ " ) v  "
+						+ " where rownum<="+record+"";
 //				System.out.println("outerSql-"+wellName+":"+outerSql);
 				pstmt = outerConn.prepareStatement(outerSql);
 				rs=pstmt.executeQuery();

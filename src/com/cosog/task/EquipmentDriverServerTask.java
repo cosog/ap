@@ -38,6 +38,7 @@ public class EquipmentDriverServerTask {
 	public static Statement stmt = null;  
 	public static ResultSet rs = null;
 	public static ServerSocket serverSocket=null;
+	public static boolean adStatus=false;
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
@@ -45,12 +46,37 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+//		Gson gson = new Gson();
+//		String path="";
+//		java.lang.reflect.Type type=null;
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		path=stringManagerUtils.getFilePath("test1.json","test/");
+//		String distreteData=stringManagerUtils.readFile(path,"utf-8");
+//		path=stringManagerUtils.getFilePath("test2.json","test/");
+//		String diagramData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/group";
+//		while(true){
+//			StringManagerUtils.sendPostMethod(url, distreteData,"utf-8");
+//			Thread.sleep(1000*10);
+//			StringManagerUtils.sendPostMethod(url, diagramData,"utf-8");
+//			Thread.sleep(1000*60*5);
+//		}
+		
 		loadProtocolConfig();
-		initProtocolConfig("","");
-		initServerConfig();
-		initDriverAcquisitionInfoConfig(null,"");
+		String probeUrl=Config.getInstance().configFile.getDriverConfig().getProbe();
+		do{
+			boolean currentStatus=StringManagerUtils.checkHttpConnection(probeUrl);
+			if((!adStatus)&&currentStatus){
+				initProtocolConfig("","");
+				initServerConfig();
+				initDriverAcquisitionInfoConfig(null,"");
+			}
+			adStatus=currentStatus;
+			Thread.sleep(1000*1);
+		}while(true);
 	}
 	
 	@SuppressWarnings("static-access")

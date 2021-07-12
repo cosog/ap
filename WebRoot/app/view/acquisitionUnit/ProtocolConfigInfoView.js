@@ -307,10 +307,10 @@ var ProtocolConfigHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==1) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigHandsontableHelper.addBoldBg;
-		                }
+//	                    if (visualColIndex ==1) {
+//							cellProperties.readOnly = true;
+//							cellProperties.renderer = protocolConfigHandsontableHelper.addBoldBg;
+//		                }
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd: function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -614,10 +614,10 @@ var ProtocolConfigItemsHandsontableHelper = {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex ==1 || visualColIndex ==2) {
-							cellProperties.readOnly = true;
-							cellProperties.renderer = protocolConfigItemsHandsontableHelper.addBoldBg;
-		                }
+//	                    if (visualColIndex ==1 || visualColIndex ==2) {
+//							cellProperties.readOnly = true;
+//							cellProperties.renderer = protocolConfigItemsHandsontableHelper.addBoldBg;
+//		                }
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

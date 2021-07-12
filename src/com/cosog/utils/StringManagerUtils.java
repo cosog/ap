@@ -1028,7 +1028,11 @@ public class StringManagerUtils {
 		 int sum=0;
 		 if(StringManagerUtils.isNotNull(value)){
 			 try{
-				 sum=Integer.parseInt(value);
+				 if(value.contains(".")){
+					 sum=(int)Math.floor(Double.parseDouble(value));
+				 }else{
+					 sum=Integer.parseInt(value);
+				 }
 			 }catch(Exception e){
 				 return 0;
 			 }
@@ -1196,13 +1200,11 @@ public class StringManagerUtils {
 	            }else{
 	            	throw new Exception();
 	            }
-	            
 	        } catch (Exception e) {
 	            System.out.println("发送 POST 请求出现异常！"+e);
 	            System.out.println(param);
 	            e.printStackTrace();
 	        }
-	        //使用finally块来关闭输出流、输入流
 	        finally{
 	            try{
 	                if(out!=null){
@@ -1340,7 +1342,7 @@ public class StringManagerUtils {
 		    {         
 		        e.printStackTrace();     
 		    }     
-		    return fileContent;   
+		    return fileContent.replaceAll(" ", "");   
 		}
 	    
 	    /*

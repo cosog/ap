@@ -397,7 +397,7 @@ public class DriverAPIController extends BaseController{
 						}	
 						tiemEffRequest+= "\"Current\": {"
 								+ "\"AcqTime\":\""+acquisitionGroupResolutionData.getAcqTime()+"\","
-								+ "\"RunStatus\":"+acquisitionGroupResolutionData.getRunStatus()+""
+								+ "\"RunStatus\":"+(StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getRunStatus())==1?true:false)+""
 								+ "}"
 								+ "}";
 						String timeEffResponse="";
@@ -438,7 +438,7 @@ public class DriverAPIController extends BaseController{
 								+ "\"AcqTime\":\""+acquisitionGroupResolutionData.getAcqTime()+"\","
 								+ "\"Total\":{"
 								+ "\"KWattH\":"+acquisitionGroupResolutionData.getKWattH()+","
-								+ "\"KVarH\":"+acquisitionGroupResolutionData.getKVarH()+","
+								+ "\"KVarH\":"+acquisitionGroupResolutionData.getKVarH()
 								+ "}"
 								+ "}"
 								+ "}";
@@ -521,8 +521,11 @@ public class DriverAPIController extends BaseController{
 					
 					//处理曲线数据
 					if(isFESDiagramData){
+//						acquisitionGroupResolutionData.setFESDiagramAcqTime(acquisitionGroupResolutionData.getAcqTime());
 						String requestData=calculateDataService.getFESdiagramCalculateRequestData(acquisitionGroupResolutionData);
 						String responseData=StringManagerUtils.sendPostMethod(FESdiagramCalculateHttpServerURL, requestData,"utf-8");
+						System.out.println(requestData);
+						System.out.println(responseData);
 						type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 						RPCCalculateResponseData rpcCalculateResponseData=gson.fromJson(responseData, type);
 						calculateDataService.saveFESDiagramAndCalculateData(acquisitionGroupResolutionData,rpcCalculateResponseData);

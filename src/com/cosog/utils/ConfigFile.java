@@ -484,6 +484,7 @@ public class ConfigFile {
 		private String protocol;
 		private String id;
 		private String ctrl;
+		private String probe;
 		public String getServer() {
 			return server;
 		}
@@ -508,7 +509,12 @@ public class ConfigFile {
 		public void setCtrl(String ctrl) {
 			this.ctrl = ctrl;
 		}
-		
+		public String getProbe() {
+			return probe;
+		}
+		public void setProbe(String probe) {
+			this.probe = probe;
+		}
 	}
 	
 	public static class Others

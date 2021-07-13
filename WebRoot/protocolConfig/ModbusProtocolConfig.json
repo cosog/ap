@@ -2,7 +2,7 @@
     "Protocol": [{
         "Name": "A11协议",
         "Code": "CNPCStandardDrive",
-        "Type": 0,
+        "Type": "modbus-tcp",
         "StoreMode": 0,
         "SignInPrefix": "AA01",
         "SignInSuffix": "0D",
@@ -17,9 +17,9 @@
             "IFDataType": "int",
             "Quantity": 1,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "启停控制",
             "Code": "RunControl",
@@ -28,9 +28,9 @@
             "IFDataType": "int",
             "Quantity": 1,
             "Ratio": 1,
-            "RWType": false,
+            "RWType": "rw",
             "Unit": "",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "A相电流",
             "Code": "IA",
@@ -39,9 +39,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "A",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "B相电流",
             "Code": "IB",
@@ -50,9 +50,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "A",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "C相电流",
             "Code": "IC",
@@ -61,9 +61,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "V",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "A相电压",
             "Code": "VA",
@@ -72,9 +72,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "V",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "B相电压",
             "Code": "VB",
@@ -83,9 +83,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "V",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "C相电压",
             "Code": "VC",
@@ -94,9 +94,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "V",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "有功功耗",
             "Code": "KWattH",
@@ -105,9 +105,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "kW·h",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "无功功耗",
             "Code": "KVarH",
@@ -116,9 +116,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "kVar·h",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "有功功率",
             "Code": "Watt3",
@@ -127,9 +127,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "kW",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "无功功率",
             "Code": "Var3",
@@ -138,9 +138,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "kVar",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "反向功率",
             "Code": "ReversePower",
@@ -149,9 +149,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "kW",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功率因数",
             "Code": "PF3",
@@ -160,9 +160,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "油压",
             "Code": "TubingPressure",
@@ -171,9 +171,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "MPa",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "套压",
             "Code": "CasingPressure",
@@ -182,9 +182,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "MPa",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "回压",
             "Code": "BackPressure",
@@ -193,9 +193,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "MPa",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "井口流温",
             "Code": "WellHeadFluidTemperature",
@@ -204,9 +204,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "℃",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "动液面",
             "Code": "ProducingfluidLevel",
@@ -215,9 +215,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "m",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "含水率",
             "Code": "WaterCut",
@@ -226,9 +226,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "%",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "变频设置频率",
             "Code": "SetFrequency",
@@ -237,9 +237,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": false,
+            "RWType": "rw",
             "Unit": "Hz",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "变频运行频率",
             "Code": "RunFrequency",
@@ -248,9 +248,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "Hz",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "螺杆泵转速",
             "Code": "RPM",
@@ -259,9 +259,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "r/min",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "螺杆泵扭矩",
             "Code": "Torque",
@@ -270,9 +270,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "kN·m",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图采集间隔",
             "Code": "FESDiagramAcquisitionInterval",
@@ -281,9 +281,9 @@
             "IFDataType": "int",
             "Quantity": 1,
             "Ratio": 1,
-            "RWType": false,
+            "RWType": "rw",
             "Unit": "min",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图设置点数",
             "Code": "FESDiagramSetPointCount",
@@ -292,9 +292,9 @@
             "IFDataType": "int",
             "Quantity": 1,
             "Ratio": 1,
-            "RWType": false,
+            "RWType": "rw",
             "Unit": "",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图实测点数",
             "Code": "FESDiagramPointCount",
@@ -303,9 +303,9 @@
             "IFDataType": "int",
             "Quantity": 1,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图采集时间",
             "Code": "FESDiagramAcqTime",
@@ -314,9 +314,9 @@
             "IFDataType": "string",
             "Quantity": 6,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "冲次",
             "Code": "SPM",
@@ -325,9 +325,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "次/min",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "冲程",
             "Code": "Stroke",
@@ -336,9 +336,9 @@
             "IFDataType": "float32",
             "Quantity": 2,
             "Ratio": 1,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "m",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图数据-位移",
             "Code": "SDiagram",
@@ -347,9 +347,9 @@
             "IFDataType": "float32",
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "0.01m",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图数据-载荷",
             "Code": "FDiagram",
@@ -358,9 +358,9 @@
             "IFDataType": "float32",
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "0.01kN",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图数据-电流",
             "Code": "IDiagram",
@@ -369,9 +369,9 @@
             "IFDataType": "float32",
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "0.01A",
-            "AcqMode": false
+            "AcqMode": "passive"
         }, {
             "Name": "功图数据-功率",
             "Code": "WattDiagram",
@@ -380,9 +380,9 @@
             "IFDataType": "float32",
             "Quantity": 250,
             "Ratio": 0.01,
-            "RWType": true,
+            "RWType": "r",
             "Unit": "0.01kW",
-            "AcqMode": false
+            "AcqMode": "passive"
         }]
     }]
 }

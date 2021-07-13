@@ -39,7 +39,7 @@ public class InitProtocol {
     
     public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig) {
     	this.setProtocolName(protocolConfig.getName());
-    	this.setProtocolType(protocolConfig.getType()==0?"tcp_pasv":(protocolConfig.getType()==1?"rtu_pasv":"rtu_active"));
+    	this.setProtocolType(protocolConfig.getType());
     	this.setSignInPrefix(protocolConfig.getSignInPrefix());
     	this.setSignInSuffix(protocolConfig.getSignInSuffix());
     	this.setHeartbeatPrefix(protocolConfig.getHeartbeatPrefix());
@@ -56,9 +56,9 @@ public class InitProtocol {
     		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
     		this.StoreDataType.add(protocolConfig.getItems().get(i).getStoreDataType());
     		this.IFDataType.add(protocolConfig.getItems().get(i).getIFDataType());
-    		this.RWType.add(protocolConfig.getItems().get(i).getRWType()?"r":"rw");
+    		this.RWType.add(protocolConfig.getItems().get(i).getRWType());
     		this.Ratio.add(protocolConfig.getItems().get(i).getRatio());
-    		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode()?"active":"pasv");
+    		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode());
     	}
 	}
     

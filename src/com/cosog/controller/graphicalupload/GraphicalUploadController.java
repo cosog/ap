@@ -1403,7 +1403,7 @@ public class GraphicalUploadController extends BaseController {
 				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
 				//更新clob类型数据  运行区间
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-					String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0, t.runrange=?1 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
+					String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?, t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+kafkaUpData.getWellName()+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
@@ -1547,7 +1547,7 @@ public class GraphicalUploadController extends BaseController {
 				
 				//更新clob类型数据  通信区间
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
+					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
@@ -1641,7 +1641,7 @@ public class GraphicalUploadController extends BaseController {
 				
 				//更新clob类型数据  运行区间
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-					String updateRangeClobSql="update tbl_rpc_discrete_latest t set t.runrange=?0 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
+					String updateRangeClobSql="update tbl_rpc_discrete_latest t set t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 					commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql,clobCont);

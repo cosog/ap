@@ -1336,7 +1336,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(protocol.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
-						if(!modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType()){//如果可读可写
+						if("rw".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType())){//如果可读可写
 							result_json.append("{\"tiem\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getCode()+"\"},");
 						}
 					}

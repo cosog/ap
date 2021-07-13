@@ -92,6 +92,7 @@ public class DriverAPIController extends BaseController{
 		Gson gson=new Gson();
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		System.out.println("接收到ad推送online数据："+data);
 		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
 		AcqOnline acqOnline=gson.fromJson(data, type);
 		if(acqOnline!=null){
@@ -129,13 +130,13 @@ public class DriverAPIController extends BaseController{
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+",";
+					String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 					updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
 					
-					String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0 where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+					String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					int result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
@@ -161,6 +162,7 @@ public class DriverAPIController extends BaseController{
 		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
 		String FESdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		System.out.println("接收到ad推送group数据："+data);
 		java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 		AcqGroup acqGroup=gson.fromJson(data, type);
 		AcquisitionGroupResolutionData acquisitionGroupResolutionData=new AcquisitionGroupResolutionData();
@@ -250,7 +252,9 @@ public class DriverAPIController extends BaseController{
 								String itemCode=protocol.getItems().get(j).getCode();
 								if("RunStatus".equalsIgnoreCase(itemCode)){//运行状态
 									acquisitionGroupResolutionData.setRunStatus(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
+									updateDiscreteData+=",t.RunStatus= "+acquisitionGroupResolutionData.getRunStatus();
 									isRunStatusData=true;
+									isDistreteData=true;
 								}else if("IA".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setIA(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.Ia= "+acquisitionGroupResolutionData.getIA();
@@ -278,9 +282,11 @@ public class DriverAPIController extends BaseController{
 								}else if("KWattH".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setKWattH(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isEnergyData=true;
+									isDistreteData=true;
 								}else if("KVarH".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setKVarH(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isEnergyData=true;
+									isDistreteData=true;
 								}else if("Watt3".equalsIgnoreCase(itemCode)){
 									acquisitionGroupResolutionData.setWatt3(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									updateDiscreteData+=",t.watt3= "+acquisitionGroupResolutionData.getWatt3();
@@ -404,6 +410,14 @@ public class DriverAPIController extends BaseController{
 						timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
 						type = new TypeToken<TimeEffResponseData>() {}.getType();
 						timeEffResponseData=gson.fromJson(timeEffResponse, type);
+						
+						if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+							updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
+								+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
+							if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
+								ifAddDay=true;
+							}
+						}
 					}
 					
 					//判断是否采集了电量，如采集则进行电量计算
@@ -444,58 +458,49 @@ public class DriverAPIController extends BaseController{
 								+ "}";
 						String energyResponse=StringManagerUtils.sendPostMethod(energyUrl, energyRequest,"utf-8");
 						type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
+						
 						energyCalculateResponseData=gson.fromJson(energyResponse, type);
-					}
-					
-					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+acquisitionGroupResolutionData.getWellName()+"') ";
-					
-					if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-						updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
-							+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
-						if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
-							ifAddDay=true;
-						}
-					}
-					
-					if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
-						updateDiscreteData+=",t.TotalKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
-								+ ",t.TotalPKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
-								+ ",t.TotalNKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
-								+ ",t.TotalKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
-								+ ",t.TotalPKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
-								+ ",t.TotalNKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
-								+ ",t.TotalKVAH= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
-								
-								+ ",t.TodayKWattH= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
-								+ ",t.TodayPKWattH= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
-								+ ",t.TodayNKWattH= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
-								+ ",t.TodayKVarH= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
-								+ ",t.TodayPKVarH= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
-								+ ",t.TodayNKVarH= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
-								+ ",t.TodayKVAH= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
-						if(energyCalculateResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate())){
-							updateDailyData="update tbl_rpc_total_day t set t.TotalKWattH= "+energyCalculateResponseData.getDaily().getKWattH()
-									+ ",t.TotalPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
-									+ ",t.TotalNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
-									+ ",t.TotalKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
-									+ ",t.TotalPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
-									+ ",t.TotalNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
-									+ ",t.TotalKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
+						if(energyCalculateResponseData!=null&&energyCalculateResponseData.getResultStatus()==1){
+							updateDiscreteData+=",t.TotalKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getKWattH()
+									+ ",t.TotalPKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getPKWattH()
+									+ ",t.TotalNKWattH= "+energyCalculateResponseData.getCurrent().getTotal().getNKWattH()
+									+ ",t.TotalKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getKVarH()
+									+ ",t.TotalPKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getPKVarH()
+									+ ",t.TotalNKVarH= "+energyCalculateResponseData.getCurrent().getTotal().getNKVarH()
+									+ ",t.TotalKVAH= "+energyCalculateResponseData.getCurrent().getTotal().getKVAH()
 									
-									+ ",t.TodayKWattH= "+energyCalculateResponseData.getDaily().getKWattH()
-									+ ",t.TodayPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
-									+ ",t.TodayNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
-									+ ",t.TodayKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
-									+ ",t.TodayPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
-									+ ",t.TodayNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
-									+ ",t.TodayKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
-									+ " where t.calculatedate=to_date('"+energyCalculateResponseData.getDaily().getDate()+"','yyyy-mm-dd') "
-							         +" and t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+acquisitionGroupResolutionData.getWellName()+"') ";
+									+ ",t.TodayKWattH= "+energyCalculateResponseData.getCurrent().getToday().getKWattH()
+									+ ",t.TodayPKWattH= "+energyCalculateResponseData.getCurrent().getToday().getPKWattH()
+									+ ",t.TodayNKWattH= "+energyCalculateResponseData.getCurrent().getToday().getNKWattH()
+									+ ",t.TodayKVarH= "+energyCalculateResponseData.getCurrent().getToday().getKVarH()
+									+ ",t.TodayPKVarH= "+energyCalculateResponseData.getCurrent().getToday().getPKVarH()
+									+ ",t.TodayNKVarH= "+energyCalculateResponseData.getCurrent().getToday().getNKVarH()
+									+ ",t.TodayKVAH= "+energyCalculateResponseData.getCurrent().getToday().getKVAH();
+							if(energyCalculateResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(energyCalculateResponseData.getDaily().getDate())){
+								updateDailyData="update tbl_rpc_total_day t set t.TotalKWattH= "+energyCalculateResponseData.getDaily().getKWattH()
+										+ ",t.TotalPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
+										+ ",t.TotalNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
+										+ ",t.TotalKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
+										+ ",t.TotalPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
+										+ ",t.TotalNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
+										+ ",t.TotalKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
+										
+										+ ",t.TodayKWattH= "+energyCalculateResponseData.getDaily().getKWattH()
+										+ ",t.TodayPKWattH= "+energyCalculateResponseData.getDaily().getPKWattH()
+										+ ",t.TodayNKWattH= "+energyCalculateResponseData.getDaily().getNKWattH()
+										+ ",t.TodayKVarH= "+energyCalculateResponseData.getDaily().getKVarH()
+										+ ",t.TodayPKVarH= "+energyCalculateResponseData.getDaily().getPKVarH()
+										+ ",t.TodayNKVarH= "+energyCalculateResponseData.getDaily().getNKVarH()
+										+ ",t.TodayKVAH= "+energyCalculateResponseData.getDaily().getKVAH()
+										+ " where t.calculatedate=to_date('"+energyCalculateResponseData.getDaily().getDate()+"','yyyy-mm-dd') "
+								         +" and t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+acquisitionGroupResolutionData.getWellName()+"') ";
+							}
+						}else{
+							updateDiscreteData+= " ,t.totalKWattH= "+acquisitionGroupResolutionData.getKWattH()
+									+ " ,t.totalKVarH= "+acquisitionGroupResolutionData.getKVarH();
 						}
-					}else{
-						updateDiscreteData+= " ,t.totalKWattH= "+acquisitionGroupResolutionData.getKWattH()
-								+ " ,t.totalKVarH= "+acquisitionGroupResolutionData.getKVarH();
 					}
+					updateProdData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+acquisitionGroupResolutionData.getWellName()+"') ";
 					updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+acquisitionGroupResolutionData.getWellName()+"') ";
 					if(isProductionData){
 						commonDataService.getBaseDao().updateOrDeleteBySql(updateProdData);
@@ -505,10 +510,10 @@ public class DriverAPIController extends BaseController{
 						//更新clob类型数据  运行区间
 						if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 							List<String> clobCont=new ArrayList<String>();
-							String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0";
+							String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
 							clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-								updateRunRangeClobSql+=", t.runrange=?1";
+								updateRunRangeClobSql+=", t.runrange=?";
 								clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 							}
 							updateRunRangeClobSql+= " where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+acquisitionGroupResolutionData.getWellName()+"') ";
@@ -532,7 +537,6 @@ public class DriverAPIController extends BaseController{
 						//汇总
 						String totalDate = StringManagerUtils.getCurrentTime();
 						String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?wellId="+acquisitionGroupResolutionData.getWellId();
-//						String totalUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/FSDiagramDailyCalculation?date="+totalDate;
 						if((rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1)){
 							if(ifAddDay){//如果跨天，汇总前一天数据
 								StringManagerUtils.sendPostMethod(totalUrl, "","utf-8");

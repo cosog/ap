@@ -330,9 +330,9 @@ public class BaseDao extends HibernateDaoSupport {
 				clob.putString(1,  values.get(i)); 
 				ps.setClob(i+1, clob);  
 			}
-			n=ps.executeUpdate();  
-//			ps.close();  
-//			conn.commit(); 
+			n=ps.executeUpdate();
+			
+//			n=OracleJdbcUtis.executeSqlUpdateClob(conn, ps, sql, values);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

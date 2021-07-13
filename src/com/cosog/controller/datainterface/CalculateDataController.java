@@ -499,7 +499,7 @@ public class CalculateDataController extends BaseController{
 					int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
 					
 					//更新clob类型数据  通信区间
-					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?0 where t.wellid="+obj[0];
+					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellid="+obj[0];
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commRange);
 					result=calculateDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);

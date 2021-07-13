@@ -1,14 +1,8 @@
 eclipse.preferences.version=1
-encoding//WebRoot/protocolConfig/BeeTechDriverConfig.json=UTF-8
-encoding//WebRoot/protocolConfig/CNPCStandardDriverConfig.json=UTF-8
-encoding//WebRoot/protocolConfig/EtrolDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/IntelligentPumpingUnitDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/KafkaDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/ModbusProtocolConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/MqttDriverConfig.json=UTF-8
-encoding//WebRoot/protocolConfig/SinoepcStandardDriverConfig.json=UTF-8
-encoding//WebRoot/protocolConfig/SunMoonDriverConfig.json=UTF-8
 encoding//WebRoot/protocolConfig/TcpServerConfig.json=UTF-8
-encoding//WebRoot/protocolConfig/ZKAWDriverConfig.json=UTF-8
 encoding//WebRoot/styles/icon.css=UTF-8
 encoding/<project>=UTF-8

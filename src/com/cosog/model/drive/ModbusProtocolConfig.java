@@ -29,11 +29,11 @@ public class ModbusProtocolConfig {
 
 	    private float Ratio;
 
-	    private boolean RWType;
+	    private String RWType;
 
 	    private String Unit;
 
-	    private boolean AcqMode;
+	    private String AcqMode;
 
 	    public void setName(String Name){
 	        this.Name = Name;
@@ -65,10 +65,10 @@ public class ModbusProtocolConfig {
 	    public float getRatio(){
 	        return this.Ratio;
 	    }
-	    public void setRWType(boolean RWType){
+	    public void setRWType(String RWType){
 	        this.RWType = RWType;
 	    }
-	    public boolean getRWType(){
+	    public String getRWType(){
 	        return this.RWType;
 	    }
 	    public void setUnit(String Unit){
@@ -77,10 +77,10 @@ public class ModbusProtocolConfig {
 	    public String getUnit(){
 	        return this.Unit;
 	    }
-	    public void setAcqMode(boolean AcqMode){
+	    public void setAcqMode(String AcqMode){
 	        this.AcqMode = AcqMode;
 	    }
-	    public boolean getAcqMode(){
+	    public String getAcqMode(){
 	        return this.AcqMode;
 	    }
 		public String getStoreDataType() {
@@ -103,7 +103,7 @@ public class ModbusProtocolConfig {
 
 	    private String Code;
 
-	    private int Type;
+	    private String Type;
 
 	    private String SignInPrefix;
 
@@ -129,10 +129,10 @@ public class ModbusProtocolConfig {
 	    public String getCode(){
 	        return this.Code;
 	    }
-	    public void setType(int Type){
+	    public void setType(String Type){
 	        this.Type = Type;
 	    }
-	    public int getType(){
+	    public String getType(){
 	        return this.Type;
 	    }
 	    public void setSignInPrefix(String SignInPrefix){

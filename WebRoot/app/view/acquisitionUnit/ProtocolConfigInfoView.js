@@ -180,7 +180,7 @@ function CreateProtocolConfigInfoTable(isNew){
 	            for(var i=0;i<result.columns.length;i++){
 	            	colHeaders+="'"+result.columns[i].header+"'";
 	            	if(result.columns[i].dataIndex.toUpperCase()==="ProtocolType".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu','modbus-rtu拓展(主动上传)']}";
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu','private-kd93','private-lq1000']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="StoreMode".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['大端', '小端']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="SignInPrefix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="SignInSuffix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="HeartbeatPrefix".toUpperCase()){

@@ -170,9 +170,9 @@ private CommonDataService service;
 							+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
 							+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
 							+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
-							+ "\"RWType\":\""+(protocolConfig.getItems().get(j).getRWType()?"只读":"读写")+"\","
+							+ "\"RWType\":\""+("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())?"只读":"读写")+"\","
 							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-							+ "\"acqMode\":\""+(protocolConfig.getItems().get(j).getAcqMode()?"主动上传":"被动响应")+"\"},");
+							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
 				}
 				if(driverConfigData.toString().endsWith(",")){
 					driverConfigData.deleteCharAt(driverConfigData.length() - 1);
@@ -182,7 +182,7 @@ private CommonDataService service;
 				result_json.append("{"
 						+ "\"id\":"+i+","
 						+ "\"ProtocolName\":\""+protocolConfig.getName()+"\","
-						+ "\"ProtocolType\":\""+getProtocolType(protocolConfig.getType())+"\","
+						+ "\"ProtocolType\":\""+protocolConfig.getType()+"\","
 						+ "\"SignInPrefix\":\""+protocolConfig.getSignInPrefix()+"\","
 						+ "\"SignInSuffix\":\""+protocolConfig.getSignInSuffix()+"\","
 						+ "\"HeartbeatPrefix\":\""+protocolConfig.getHeartbeatPrefix()+"\","

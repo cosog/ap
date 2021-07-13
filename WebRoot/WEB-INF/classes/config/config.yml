@@ -2,7 +2,7 @@ server:
    accessPath: http://127.0.0.1:16100/ap
 spring:
    datasource:
-      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
+      driverUrl: jdbc:oracle:thin:@8.130.30.138:1521/orclpdb
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
       user: agile
@@ -67,11 +67,11 @@ mqtt:
 kafka:
    server: 39.98.64.56:9092
 driverConfig:
-   server: http://8.130.30.138:19500/api/init/server
-   protocol: http://8.130.30.138:19500/api/init/protocol
-   id: http://8.130.30.138:19500/api/init/id
-   ctrl: http://8.130.30.138:19500/api/ctrl
-   probe: http://8.130.30.138:19500/api/probe/init
+   server: http://8.130.30.138:19200/api/init/server
+   protocol: http://8.130.30.138:19200/api/init/protocol
+   id: http://8.130.30.138:19200/api/init/id
+   ctrl: http://8.130.30.138:19200/api/ctrl
+   probe: http://8.130.30.138:19200/api/probe/init
 others:
    cache: false
    language: zh_CN

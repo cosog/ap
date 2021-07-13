@@ -45,7 +45,7 @@ public class ExternalDataManagerTask {
 
     private ExecutorService pool = Executors.newCachedThreadPool();
     
-    @Scheduled(cron = "0 0/1 * * * ?")
+//    @Scheduled(cron = "0 0/1 * * * ?")
 	public void GetExternalFESDiagramData() throws SQLException, ParseException,InterruptedException, IOException{
 		String sql="select t1.wellname,to_char(v.acqtime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from tbl_wellinformation t1 "

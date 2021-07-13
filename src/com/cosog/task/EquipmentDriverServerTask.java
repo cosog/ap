@@ -48,17 +48,24 @@ public class EquipmentDriverServerTask {
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-//		Gson gson = new Gson();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 //		String path="";
-//		java.lang.reflect.Type type=null;
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 //		path=stringManagerUtils.getFilePath("test1.json","test/");
 //		String distreteData=stringManagerUtils.readFile(path,"utf-8");
 //		path=stringManagerUtils.getFilePath("test2.json","test/");
 //		String diagramData=stringManagerUtils.readFile(path,"utf-8");
 //		
+//		path=stringManagerUtils.getFilePath("test3.json","test/");
+//		String onlineData=stringManagerUtils.readFile(path,"utf-8");
+//		
 //		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/group";
+//		String onlineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/online";
 //		while(true){
+////			StringManagerUtils.sendPostMethod(onlineUrl, onlineData,"utf-8");
+////			Thread.sleep(1000*10);
+//			
 //			StringManagerUtils.sendPostMethod(url, distreteData,"utf-8");
 //			Thread.sleep(1000*10);
 //			StringManagerUtils.sendPostMethod(url, diagramData,"utf-8");
@@ -66,17 +73,51 @@ public class EquipmentDriverServerTask {
 //		}
 		
 		loadProtocolConfig();
+		initServerConfig();
+		initProtocolConfig("","");
+		initDriverAcquisitionInfoConfig(null,"");
 		String probeUrl=Config.getInstance().configFile.getDriverConfig().getProbe();
 		do{
-			boolean currentStatus=StringManagerUtils.checkHttpConnection(probeUrl);
-			if((!adStatus)&&currentStatus){
-				initProtocolConfig("","");
-				initServerConfig();
-				initDriverAcquisitionInfoConfig(null,"");
+			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
+			type = new TypeToken<DriverProbeResponse>() {}.getType();
+			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+			if(driverProbeResponse!=null){
+				if(!driverProbeResponse.getHttpServerInitStatus()){
+					initServerConfig();
+				}
+				if(!driverProbeResponse.getProtocolInitStatus()){
+					initProtocolConfig("","");
+				}
+				if(!driverProbeResponse.getIDInitStatus()){
+					initDriverAcquisitionInfoConfig(null,"");
+				}
 			}
-			adStatus=currentStatus;
 			Thread.sleep(1000*1);
 		}while(true);
+	}
+	
+	public static class DriverProbeResponse{
+		public boolean ProtocolInitStatus;
+		public boolean IDInitStatus;
+		public boolean HttpServerInitStatus;
+		public boolean getProtocolInitStatus() {
+			return ProtocolInitStatus;
+		}
+		public void setProtocolInitStatus(boolean protocolInitStatus) {
+			ProtocolInitStatus = protocolInitStatus;
+		}
+		public boolean getIDInitStatus() {
+			return IDInitStatus;
+		}
+		public void setIDInitStatus(boolean iDInitStatus) {
+			IDInitStatus = iDInitStatus;
+		}
+		public boolean getHttpServerInitStatus() {
+			return HttpServerInitStatus;
+		}
+		public void setHttpServerInitStatus(boolean httpServerInitStatus) {
+			HttpServerInitStatus = httpServerInitStatus;
+		}
 	}
 	
 	@SuppressWarnings("static-access")
@@ -146,17 +187,21 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String sql="select wellname, signinid,slave,protocol,unit_code,group_code,acq_cycle,max(key) items from "
-				+ " (select  t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,"
-				+ " wm_concat(t5.itemname) over (partition by t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle order by t5.id) key"
+//		wellName="'POC1'";
+		String sql=""
+//				+ " select wellname, signinid,slave,protocol,unit_code,group_code,acq_cycle,max(key) items from ("
+				+ " select  t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,"
+//				+ " wm_concat(t5.itemname) over (partition by t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle order by t5.id) key"
+				+ " listagg(t5.itemname, ',') within group(order by t5.id ) key"
 				+ " from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_group_conf t4,tbl_acq_item2group_conf t5 "
 				+ " where t.unitcode=t2.unit_code and t2.id=t3.unitid and t3.groupid=t4.id and t4.id=t5.groupid "
 				+ " and t.signinid is not null and t.slave is not null and t.unitcode is not null ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and t.wellname in("+wellName+")";
 		}
-		sql+="  ) v "
-				+ " group by wellname,signinid,slave,protocol,unit_code,group_code,acq_cycle";
+		sql+="  group by t.wellname,t.signinid,t.slave,t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle ";
+//		sql+= ") v "
+//				+ " group by wellname,signinid,slave,protocol,unit_code,group_code,acq_cycle";
 		Map<String,InitId> wellListMap=new HashMap<String,InitId>();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
@@ -205,13 +250,14 @@ public class EquipmentDriverServerTask {
 			result=wellListMap.size();
 			for(Entry<String, InitId> entry:wellListMap.entrySet()){
 				try {
-					System.out.println("ID始化："+gson.toJson(entry.getValue()));
+					System.out.println("ID初始化："+gson.toJson(entry.getValue()));
 					StringManagerUtils.sendPostMethod(initUrl, gson.toJson(entry.getValue()),"utf-8");
 				}catch (Exception e) {
 					continue;
 				}
 			}
 		} catch (SQLException e) {
+			System.out.println("ID初始化sql："+sql);
 			e.printStackTrace();
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);

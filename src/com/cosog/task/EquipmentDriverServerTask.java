@@ -63,8 +63,8 @@ public class EquipmentDriverServerTask {
 //		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/group";
 //		String onlineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/online";
 //		while(true){
-////			StringManagerUtils.sendPostMethod(onlineUrl, onlineData,"utf-8");
-////			Thread.sleep(1000*10);
+//			StringManagerUtils.sendPostMethod(onlineUrl, onlineData,"utf-8");
+//			Thread.sleep(1000*10);
 //			
 //			StringManagerUtils.sendPostMethod(url, distreteData,"utf-8");
 //			Thread.sleep(1000*10);

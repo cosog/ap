@@ -289,7 +289,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			if(get_rawData.runStatus==1){
     				runStatus="运行";
     			}else{
-    				runStatus="停止";
+    				runStatus="停抽";
     			}
     		}else{
     			commStatus="离线";

@@ -60,72 +60,64 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                     	layout: "border",
                         border: false,
                         items: [{
-                            region: 'center',
+                            region: 'west',
                             title:'协议配置',
-                            border: false,
+//                            border: false,
                             layout: 'fit',
+                            width: '35%',
                             html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	CreateProtocolConfigInfoTable(true);
                                 }
                             }
-                        }, {
-                            region: 'east',
-                            title:'采控项配置',
-                            layout: 'fit',
-                            width: '60%',
-                            collapsible: true,
-                            split: true,
-//                            bbar: ['->', {
-//                                xtype: 'button',
-//                                text: '保存',
-//                                iconCls: 'save',
-//                                pressed: true,
-//                                handler: function () {
-//                                	grantAcquisitionItemsPermission();
-//                                }
-//                    		}, {
-//                                xtype: 'tbspacer',
-//                                flex: 1
-//                    		}],
-                            html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                }
-                            }
-                        }]
-                    },{
-                    	region: 'south',
-                    	height:'50%',
-                    	layout: "border",
-                        border: false,
-                        header: false,
-                        collapsible: true,
-                        split: true,
-                        items: [{
-                            region: 'center',
+                        },{
+                        	region: 'center',
                             title:'采集单元配置',
-                            border: false,
+//                            border: false,
                             layout: 'fit',
                             html:'<div class="AcquisitionUnitConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionUnitConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 }
                             }
-                        }, {
-                            region: 'east',
+                        },{
+                        	region: 'east',
                             title:'采集组配置',
                             layout: 'fit',
-                            width: '60%',
-                            collapsible: true,
-                            split: true,
+                            width: '35%',
                             html:'<div class="AcquisitionGroupConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionGroupConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 }
                             }
                         }]
+                    },{
+                        region: 'south',
+                    	height:'50%',
+                        title:'采控项配置',
+                        layout: 'fit',
+                        border: false,
+                        header: false,
+                        collapsible: true,
+                        split: true,
+//                        bbar: ['->', {
+//                            xtype: 'button',
+//                            text: '保存',
+//                            iconCls: 'save',
+//                            pressed: true,
+//                            handler: function () {
+//                            	grantAcquisitionItemsPermission();
+//                            }
+//                		}, {
+//                            xtype: 'tbspacer',
+//                            flex: 1
+//                		}],
+                        html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            }
+                        }
                     }]
                 },{
                 	title:'Kafka',
@@ -252,7 +244,7 @@ var ProtocolConfigHandsontableHelper = {
 	                    columns: [0,7],
 	                    indicators: true
 	                },
-	                colWidths: [80,80,170,120,120,120,120,120],
+//	                colWidths: [80,80,170,120,120,120,120,120],
 	                columns:protocolConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -1355,7 +1347,7 @@ var AcquisitionGroupConfigHandsontableHelper = {
 	                    columns: [1,3],
 	                    indicators: true
 	                },
-	        		colWidths: [5,50,50,50,50,50,100],
+//	        		colWidths: [5,50,50,50,50,50,100],
 	                columns:acquisitionGroupConfigHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

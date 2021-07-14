@@ -129,14 +129,16 @@ public class DriverAPIController extends BaseController{
 				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
+				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.acqTime=to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
+				String updateRunRangeClobSql="";
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-					updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
-					commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
-					
-					String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+					updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+				}
+				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(StringManagerUtils.isNotNull(updateRunRangeClobSql)){
 					List<String> clobCont=new ArrayList<String>();
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					int result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
@@ -244,10 +246,8 @@ public class DriverAPIController extends BaseController{
 						updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 								+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
 					}
-					
-					
-					for(int i=0;acqGroup.getAddr()!=null&&i<acqGroup.getAddr().size();i++){
-						for(int j=0;j<protocol.getItems().size();j++){
+					for(int i=0;acqGroup.getAddr()!=null && acqGroup.getValue()!=null  &&i<acqGroup.getAddr().size();i++){
+						for(int j=0;acqGroup.getValue().get(i)!=null && j<protocol.getItems().size();j++){
 							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 								String itemCode=protocol.getItems().get(j).getCode();
 								if("RunStatus".equalsIgnoreCase(itemCode)){//运行状态

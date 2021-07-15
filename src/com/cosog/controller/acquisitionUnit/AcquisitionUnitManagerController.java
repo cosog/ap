@@ -477,11 +477,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 					for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
 						boolean isAddItem=true;
-						String acqMode="possive";
+						String acqMode="passive";
 						if("主动上传".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
 							acqMode="active";
 						}else if("被动响应".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getAcqMode())){
-							acqMode="possive";
+							acqMode="passive";
 						}
 						String RWType="r";
 						if("读写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getRWType())){
@@ -536,11 +536,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocol.setHeartbeatSuffix(modbusDriverSaveData.getHeartbeatSuffix());
 				protocol.setItems(new ArrayList<ModbusProtocolConfig.Items>());
 				for(int i=0;i<modbusDriverSaveData.getDataConfig().size();i++){
-					String acqMode="possive";
+					String acqMode="passive";
 					if("主动上传".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getAcqMode())){
 						acqMode="active";
 					}else if("被动响应".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getAcqMode())){
-						acqMode="possive";
+						acqMode="passive";
 					}
 					
 					String RWType="r";

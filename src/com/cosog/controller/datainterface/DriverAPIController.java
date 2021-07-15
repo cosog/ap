@@ -82,7 +82,7 @@ public class DriverAPIController extends BaseController{
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired
-	CalculateDataService<?> calculateDataService;
+	private CalculateDataService<?> calculateDataService;
 	@Autowired
 	private CommonDataService commonDataService;
 	
@@ -156,17 +156,50 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	@RequestMapping("/acq/group")
-	public String acqGroupData() throws Exception {
+	public String acqGroupData() throws Exception{
 		ServletInputStream ss = request.getInputStream();
 		Gson gson=new Gson();
-		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
-		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
-		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
-		String FESdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
 		System.out.println("接收到ad推送group数据："+data);
 		java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 		AcqGroup acqGroup=gson.fromJson(data, type);
+		String json = "{success:true,flag:true}";
+		if(acqGroup!=null){
+			String sql="select t.wellname ,t2.protocol"
+					+ " from TBL_WELLINFORMATION t,tbl_acq_unit_conf t2  "
+					+ " where t.unitcode=t2.unit_code"
+					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
+			List list = this.commonDataService.findCallSql(sql);
+			if(list.size()>0){
+				Object[] obj=(Object[]) list.get(0);
+				String wellName=obj[0]+"";
+				String protocolName=obj[1]+"";
+				if("A11协议".equalsIgnoreCase(protocolName)){
+					this.dataProcessing_A11(acqGroup, protocolName);
+				}else{
+					this.dataProcessing_A11(acqGroup, protocolName);
+				}
+			}
+		}else{
+			json = "{success:true,flag:false}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	};
+	
+	public String dataProcessing_A11(AcqGroup acqGroup,String protocolName) throws Exception{
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		String energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy()[0];
+		String FESdiagramCalculateHttpServerURL=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
+		
 		AcquisitionGroupResolutionData acquisitionGroupResolutionData=new AcquisitionGroupResolutionData();
 		acquisitionGroupResolutionData.setSDiagram(new ArrayList<String>());
 		acquisitionGroupResolutionData.setFDiagram(new ArrayList<String>());
@@ -185,18 +218,17 @@ public class DriverAPIController extends BaseController{
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange,"
 					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
 					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH,"
-					+ " t.id,t3.protocol"
-					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2,tbl_acq_unit_conf t3  "
-					+ " where t.id=t2.wellid and t.unitcode=t3.unit_code"
+					+ " t.id"
+					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2  "
+					+ " where t.id=t2.wellid "
 					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
-			List list = this.commonDataService.findCallSql(sql);
+			List list = commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
 				String wellName=obj[0]+"";
 				acquisitionGroupResolutionData.setAcqTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				acquisitionGroupResolutionData.setWellName(wellName);
 				acquisitionGroupResolutionData.setWellId(StringManagerUtils.stringToInteger(obj[24]+""));
-				String protocolName=obj[obj.length-1]+"";
 				
 				Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 				if(equipmentDriveMap.size()==0){
@@ -359,22 +391,46 @@ public class DriverAPIController extends BaseController{
 									acquisitionGroupResolutionData.setStroke(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));
 									isFESDiagramData=true;
 								}else if("SDiagram".equalsIgnoreCase(itemCode)){
-									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
+									int point=acqGroup.getValue().get(i).size();
+									if(acquisitionGroupResolutionData.getFESDiagramPointCount()!=null && StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())>0){
+										if(StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())<point){
+											point=StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount());
+										}
+									}
+									for(int k=0;k<point;k++){
 										acquisitionGroupResolutionData.getSDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}else if("FDiagram".equalsIgnoreCase(itemCode)){
-									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
+									int point=acqGroup.getValue().get(i).size();
+									if(acquisitionGroupResolutionData.getFESDiagramPointCount()!=null && StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())>0){
+										if(StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())<point){
+											point=StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount());
+										}
+									}
+									for(int k=0;k<point;k++){
 										acquisitionGroupResolutionData.getFDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}else if("IDiagram".equalsIgnoreCase(itemCode)){
-									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
+									int point=acqGroup.getValue().get(i).size();
+									if(acquisitionGroupResolutionData.getFESDiagramPointCount()!=null && StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())>0){
+										if(StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())<point){
+											point=StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount());
+										}
+									}
+									for(int k=0;k<point;k++){
 										acquisitionGroupResolutionData.getIDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
 								}else if("WattDiagram".equalsIgnoreCase(itemCode)){
-									for(int k=0;k<acqGroup.getValue().get(i).size();k++){
+									int point=acqGroup.getValue().get(i).size();
+									if(acquisitionGroupResolutionData.getFESDiagramPointCount()!=null && StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())>0){
+										if(StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount())<point){
+											point=StringManagerUtils.stringToInteger(acquisitionGroupResolutionData.getFESDiagramPointCount());
+										}
+									}
+									for(int k=0;k<point;k++){
 										acquisitionGroupResolutionData.getWattDiagram().add(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(k), protocol.getItems().get(j).getIFDataType()));
 									}
 									isFESDiagramData=true;
@@ -526,7 +582,7 @@ public class DriverAPIController extends BaseController{
 					
 					//处理曲线数据
 					if(isFESDiagramData){
-//						acquisitionGroupResolutionData.setFESDiagramAcqTime(acquisitionGroupResolutionData.getAcqTime());
+						acquisitionGroupResolutionData.setFESDiagramAcqTime(acquisitionGroupResolutionData.getAcqTime());
 						String requestData=calculateDataService.getFESdiagramCalculateRequestData(acquisitionGroupResolutionData);
 						String responseData=StringManagerUtils.sendPostMethod(FESdiagramCalculateHttpServerURL, requestData,"utf-8");
 						System.out.println(requestData);
@@ -549,13 +605,6 @@ public class DriverAPIController extends BaseController{
 				}
 			}
 		}
-		String json = "{success:true,flag:true}";
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
 		return null;
 	}
 }

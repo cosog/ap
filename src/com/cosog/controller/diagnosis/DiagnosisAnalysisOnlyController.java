@@ -483,11 +483,54 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		return null;
 	}
 	
+	public void WellControlOperation_Kafka(){
+		
+	}
+	
+	public String WellControlOperation_Mdubus(String protocolCode,String ID,String Slave,String itemCode,String controlValue){
+		String json="";
+		String url=Config.getInstance().configFile.getDriverConfig().getCtrl();
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		
+		ModbusProtocolConfig.Protocol protocol=null;
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+				protocol=modbusProtocolConfig.getProtocol().get(i);
+				break;
+			}
+		}
+		int addr=0;
+		String dataType="";
+		for(int i=0;i<protocol.getItems().size();i++){
+			if(itemCode.equals(protocol.getItems().get(i).getCode())){
+				addr=protocol.getItems().get(i).getAddr();
+				dataType=protocol.getItems().get(i).getIFDataType();
+				break;
+			}
+		}
+		if(addr>0){
+			String ctrlJson="{"
+					+ "\"ID\":\""+ID+"\","
+					+ "\"Slave\":"+Slave+","
+					+ "\"Addr\":"+addr+","
+					+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
+					+ "}";
+			StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
+		}
+		json = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
+		return json;
+	}
+	
 	@RequestMapping("/wellControlOperation")
 	public String WellControlOperation() throws Exception {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
-		String url=Config.getInstance().configFile.getDriverConfig().getCtrl();
+		
 		String wellName = request.getParameter("wellName");
 		String password = request.getParameter("password");
 		String controlType = request.getParameter("controlType");
@@ -500,46 +543,19 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			String getUpwd = userInfo.getUserPwd();
 			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t2.protocol, t.signinid,to_number(t.slave) from tbl_wellinformation t,tbl_acq_unit_conf t2 "
-						+ " where t.unitcode=t2.unit_code and t.wellname='"+wellName+"'";
+				String sql="select t.protocolcode, t.signinid,to_number(t.slave) from tbl_wellinformation t "
+						+ " where  t.wellname='"+wellName+"'";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
+					
+					
 					if(StringManagerUtils.isNotNull(obj[0]+"") && StringManagerUtils.isNotNull(obj[1]+"") && StringManagerUtils.isNotNull(obj[2]+"")){
-						Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-						if(equipmentDriveMap.size()==0){
-							EquipmentDriverServerTask.loadProtocolConfig();
-							equipmentDriveMap = EquipmentDriveMap.getMapObject();
+						if((obj[0]+"").toUpperCase().contains("KAFKA".toUpperCase())){//kafka
+							
+						}else{
+							jsonLogin=WellControlOperation_Mdubus(obj[0]+"",obj[1]+"",obj[2]+"",controlType,controlValue);
 						}
-						ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
-						
-						ModbusProtocolConfig.Protocol protocol=null;
-						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if((obj[0]+"").equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-								protocol=modbusProtocolConfig.getProtocol().get(i);
-								break;
-							}
-						}
-						int addr=0;
-						String itemCode=controlType;
-						String dataType="";
-						for(int i=0;i<protocol.getItems().size();i++){
-							if(itemCode.equals(protocol.getItems().get(i).getCode())){
-								addr=protocol.getItems().get(i).getAddr();
-								dataType=protocol.getItems().get(i).getIFDataType();
-								break;
-							}
-						}
-						if(addr>0){
-							String ctrlJson="{"
-									+ "\"ID\":\""+obj[1]+"\","
-									+ "\"Slave\":"+obj[2]+","
-									+ "\"Addr\":"+addr+","
-									+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
-									+ "}";
-							StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
-						}
-						jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>协议配置有误，请核查！</font>'}";
 					}

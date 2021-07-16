@@ -100,7 +100,7 @@ public class DriverAPIController extends BaseController{
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
 					+ " where t.id=t2.wellid"
-					+ " and t.signinid='"+acqOnline.getID()+"' and to_number(t.slave)="+acqOnline.getSlave();
+					+ " and upper(t.protocolcode) not like '%KAFKA%' and t.signinid='"+acqOnline.getID()+"' and to_number(t.slave)="+acqOnline.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -168,7 +168,7 @@ public class DriverAPIController extends BaseController{
 			String sql="select t.wellname ,t2.protocol"
 					+ " from TBL_WELLINFORMATION t,tbl_acq_unit_conf t2  "
 					+ " where t.unitcode=t2.unit_code"
-					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
+					+ " and upper(t.protocolcode) not like '%KAFKA%' and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -221,7 +221,7 @@ public class DriverAPIController extends BaseController{
 					+ " t.id"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2  "
 					+ " where t.id=t2.wellid "
-					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
+					+ " and upper(t.protocolcode) not like '%KAFKA%' and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);

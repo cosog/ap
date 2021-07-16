@@ -64,6 +64,9 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             title:'协议配置',
 //                            border: false,
                             layout: 'fit',
+//                            header: false,
+                            collapsible: true,
+                            split: true,
                             width: '35%',
                             html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
                             listeners: {
@@ -75,6 +78,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         	region: 'center',
                             title:'采集单元配置',
 //                            border: false,
+//                            collapsible: true,
                             layout: 'fit',
                             html:'<div class="AcquisitionUnitConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionUnitConfigTableInfoDiv_id"></div></div>',
                             listeners: {
@@ -85,6 +89,9 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         	region: 'east',
                             title:'采集组配置',
                             layout: 'fit',
+//                            header: false,
+                            collapsible: true,
+                            split: true,
                             width: '35%',
                             html:'<div class="AcquisitionGroupConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionGroupConfigTableInfoDiv_id"></div></div>',
                             listeners: {
@@ -98,7 +105,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         title:'采控项配置',
                         layout: 'fit',
                         border: false,
-                        header: false,
+//                        header: false,
                         collapsible: true,
                         split: true,
 //                        bbar: ['->', {

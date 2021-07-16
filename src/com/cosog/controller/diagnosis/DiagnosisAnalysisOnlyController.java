@@ -23,10 +23,12 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.DiagnosisAnalysisOnly;
 import com.cosog.model.DiagnosisAnalysisStatistics;
 import com.cosog.model.User;
+import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.diagnosis.DiagnosisAnalysisOnlyService;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.task.KafkaServerTask;
 import com.cosog.utils.Config;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.I18NConfig;
@@ -36,6 +38,7 @@ import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 工况诊断 （单张功图诊断分析）- action类
@@ -483,11 +486,86 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		return null;
 	}
 	
+	public String WellControlOperation_Kafka(String ID,String itemCode,String controlValue){
+		String json="";
+		String topic="";
+		String data="";
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+		if(driveConfig==null){
+			Gson gson = new Gson();
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
+			String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
+			java.lang.reflect.Type reflectType = new TypeToken<KafkaConfig>() {}.getType();
+			driveConfig=gson.fromJson(driverConfigData, reflectType);
+		}
+		if("RunControl".equals(itemCode)){
+			if("1".equalsIgnoreCase(controlValue)){
+				topic=driveConfig.getTopic().getDown().getStartRPC().replace("-ID-", "-"+ID+"-");
+			}else{
+				topic=driveConfig.getTopic().getDown().getStopRPC().replace("-ID-", "-"+ID+"-");
+			}
+			data="";
+		}else if("SetFrequency".equals(itemCode)){
+			topic=driveConfig.getTopic().getDown().getFreq().replace("-ID-", "-"+ID+"-");
+			data=controlValue;
+		}
+		if(StringManagerUtils.isNotNull(topic)){
+			KafkaServerTask.producerMsg(topic, "下行数据", data);
+		}
+		json = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
+		return json;
+	}
+	
+	public String WellControlOperation_Mdubus(String protocolCode,String ID,String Slave,String itemCode,String controlValue){
+		String json="";
+		String url=Config.getInstance().configFile.getDriverConfig().getCtrl();
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		
+		ModbusProtocolConfig.Protocol protocol=null;
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+				protocol=modbusProtocolConfig.getProtocol().get(i);
+				break;
+			}
+		}
+		int addr=0;
+		String dataType="";
+		for(int i=0;i<protocol.getItems().size();i++){
+			if(itemCode.equals(protocol.getItems().get(i).getCode())){
+				addr=protocol.getItems().get(i).getAddr();
+				dataType=protocol.getItems().get(i).getIFDataType();
+				break;
+			}
+		}
+		if(addr>0){
+			String ctrlJson="{"
+					+ "\"ID\":\""+ID+"\","
+					+ "\"Slave\":"+Slave+","
+					+ "\"Addr\":"+addr+","
+					+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
+					+ "}";
+			StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
+		}
+		json = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
+		return json;
+	}
+	
 	@RequestMapping("/wellControlOperation")
 	public String WellControlOperation() throws Exception {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
-		String url=Config.getInstance().configFile.getDriverConfig().getCtrl();
+		
 		String wellName = request.getParameter("wellName");
 		String password = request.getParameter("password");
 		String controlType = request.getParameter("controlType");
@@ -500,46 +578,22 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 			String getUpwd = userInfo.getUserPwd();
 			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t2.protocol, t.signinid,to_number(t.slave) from tbl_wellinformation t,tbl_acq_unit_conf t2 "
-						+ " where t.unitcode=t2.unit_code and t.wellname='"+wellName+"'";
+				String sql="select t.protocolcode, t.signinid,to_number(t.slave) from tbl_wellinformation t "
+						+ " where  t.wellname='"+wellName+"'";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
-					if(StringManagerUtils.isNotNull(obj[0]+"") && StringManagerUtils.isNotNull(obj[1]+"") && StringManagerUtils.isNotNull(obj[2]+"")){
-						Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
-						if(equipmentDriveMap.size()==0){
-							EquipmentDriverServerTask.loadProtocolConfig();
-							equipmentDriveMap = EquipmentDriveMap.getMapObject();
-						}
-						ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
-						
-						ModbusProtocolConfig.Protocol protocol=null;
-						for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-							if((obj[0]+"").equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-								protocol=modbusProtocolConfig.getProtocol().get(i);
-								break;
+					String protocol=obj[0]+"";
+					String signinid=obj[1]+"";
+					String slave=obj[2]+"";
+					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(signinid)){
+						if(protocol.toUpperCase().contains("KAFKA".toUpperCase())){//kafka
+							jsonLogin=WellControlOperation_Kafka(signinid,controlType,controlValue);
+						}else{
+							if(StringManagerUtils.isNotNull(slave)){
+								jsonLogin=WellControlOperation_Mdubus(protocol,signinid,slave,controlType,controlValue);
 							}
 						}
-						int addr=0;
-						String itemCode=controlType;
-						String dataType="";
-						for(int i=0;i<protocol.getItems().size();i++){
-							if(itemCode.equals(protocol.getItems().get(i).getCode())){
-								addr=protocol.getItems().get(i).getAddr();
-								dataType=protocol.getItems().get(i).getIFDataType();
-								break;
-							}
-						}
-						if(addr>0){
-							String ctrlJson="{"
-									+ "\"ID\":\""+obj[1]+"\","
-									+ "\"Slave\":"+obj[2]+","
-									+ "\"Addr\":"+addr+","
-									+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
-									+ "}";
-							StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
-						}
-						jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
 					}else{
 						jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>协议配置有误，请核查！</font>'}";
 					}

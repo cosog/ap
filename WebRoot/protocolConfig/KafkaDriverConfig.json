@@ -1,5 +1,5 @@
 {
-    "ProtocolName": "Kafka",
+    "ProtocolName": "Kafka协议",
     "ProtocolCode": "KafkaDrive",
     "Sort": 8,
     "Server": {

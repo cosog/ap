@@ -118,7 +118,7 @@ public class ResourceMonitoringTask {
 			cs.setString(3, appVersion);
 			cs.setString(4, cpuUsedPercentValue);
 			cs.setString(5, memUsedPercentValue);
-			cs.setFloat(6, tableSpaceInfo.getUsed());
+			cs.setFloat(6, tableSpaceInfo.getUsedPercent());
 			cs.executeUpdate();
 			if(cs!=null){
 				cs.close();
@@ -135,7 +135,7 @@ public class ResourceMonitoringTask {
 				+ "\"memUsedPercent\":\""+memUsedPercent+"\","
 				+ "\"memUsedPercentAlarmLevel\":"+memUsedPercentAlarmLevel+","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
-				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent2()+"%")+"\","
+				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""
 				+ "}";
 		try {
@@ -175,18 +175,22 @@ public class ResourceMonitoringTask {
     }
 	
 	public static  TableSpaceInfo getTableSpaceInfo() throws SQLException{
-        String sql="SELECT a.tablespace_name,"
-        		+ "round(total / (1024 * 1024), 2) total,"
-        		+ "round(free / (1024 * 1024), 2) free,"
-        		+ "round((total - free) / (1024 * 1024), 2) used,"
-        		+ " round((total - free) / total, 4) * 100 usedpercent,"
-        		+ " round((total - free) / (1024*1024*1024*32), 4) * 100 usedpercent2 "
-        		+ " FROM  "
-        		+ " (SELECT tablespace_name, SUM(bytes) free FROM dba_free_space GROUP BY tablespace_name) a,  "
-        		+ " (SELECT file_id,tablespace_name, SUM(bytes) total FROM dba_data_files GROUP BY file_id,tablespace_name) b   "
-        		+ " WHERE a.tablespace_name = b.tablespace_name "
-        		+ " and Upper(a.tablespace_name) like 'AGILE_DATA%' "
-        		+ " order by b.file_id ";
+//        String sql="SELECT a.tablespace_name,"
+//        		+ "round(total / (1024 * 1024), 2) total,"
+//        		+ "round(free / (1024 * 1024), 2) free,"
+//        		+ "round((total - free) / (1024 * 1024), 2) used,"
+//        		+ " round((total - free) / total, 4) * 100 usedpercent,"
+//        		+ " round((total - free) / (1024*1024*1024*32), 4) * 100 usedpercent2 "
+//        		+ " FROM  "
+//        		+ " (SELECT tablespace_name, SUM(bytes) free FROM dba_free_space GROUP BY tablespace_name) a,  "
+//        		+ " (SELECT file_id,tablespace_name, SUM(bytes) total FROM dba_data_files GROUP BY file_id,tablespace_name) b   "
+//        		+ " WHERE a.tablespace_name = b.tablespace_name "
+//        		+ " and Upper(a.tablespace_name) like 'AGILE_DATA%' "
+//        		+ " order by b.file_id ";
+		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
+				+ "FROM dba_data_files t "
+				+ "where  Upper(t.tablespace_name) like 'AGILE_DATA%' "
+				+ "and t.BYTES<34359721984";
         TableSpaceInfo tableSpaceInfo=new TableSpaceInfo();
         conn=OracleJdbcUtis.getConnection();
         if(conn==null){
@@ -195,15 +199,15 @@ public class ResourceMonitoringTask {
 		pstmt = conn.prepareStatement(sql); 
 		rs=pstmt.executeQuery();
 		while(rs.next()){
-			tableSpaceInfo.setTableSpaceName(rs.getString(1));
-			tableSpaceInfo.setTotal(tableSpaceInfo.getTotal()+1024*32);
-			tableSpaceInfo.setFree(tableSpaceInfo.getFree()+rs.getFloat(3));
-			tableSpaceInfo.setUsed(tableSpaceInfo.getUsed()+rs.getFloat(4));
-			tableSpaceInfo.setUsedPercent2(StringManagerUtils.stringToFloat((tableSpaceInfo.getUsed()*100/tableSpaceInfo.getTotal())+"", 2));
+			tableSpaceInfo.setTableSpaceName("AGILE_DATA");
+			tableSpaceInfo.setUsed(rs.getFloat(1));
+			tableSpaceInfo.setTotal(rs.getFloat(2));
+			tableSpaceInfo.setFree(rs.getFloat(2)-rs.getFloat(1));
+			tableSpaceInfo.setUsedPercent(rs.getFloat(3));
 			
-			if(tableSpaceInfo.getUsedPercent2()>=60 && tableSpaceInfo.getUsedPercent2()<80){
+			if(tableSpaceInfo.getUsedPercent()>=60 && tableSpaceInfo.getUsedPercent()<80){
 				tableSpaceInfo.setAlarmLevel(1);
-			}else if(tableSpaceInfo.getUsedPercent2()>=80){
+			}else if(tableSpaceInfo.getUsedPercent()>=80){
 				tableSpaceInfo.setAlarmLevel(2);
 			}else{
 				tableSpaceInfo.setAlarmLevel(0);
@@ -221,27 +225,18 @@ public class ResourceMonitoringTask {
 		public float free=0;
 		public float used=0;
 		public float usedPercent=0;
-		public float usedPercent2=0;
 		public int alarmLevel=0;
 		public TableSpaceInfo() {
 			super();
 		}
-		public TableSpaceInfo(String tableSpaceName, float total, float free, float used, float usedPercent,
-				float usedPercent2,int alarmLevel) {
+		public TableSpaceInfo(String tableSpaceName, float total, float free, float used, float usedPercent,int alarmLevel) {
 			super();
 			this.tableSpaceName = tableSpaceName;
 			this.total = total;
 			this.free = free;
 			this.used = used;
 			this.usedPercent = usedPercent;
-			this.usedPercent2 = usedPercent2;
 			this.alarmLevel = alarmLevel;
-		}
-		public float getUsedPercent2() {
-			return usedPercent2;
-		}
-		public void setUsedPercent2(float usedPercent2) {
-			this.usedPercent2 = usedPercent2;
 		}
 		public String getTableSpaceName() {
 			return tableSpaceName;

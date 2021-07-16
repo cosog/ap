@@ -1348,13 +1348,13 @@ public class BaseDao extends HibernateDaoSupport {
 						String driverName=wellHandsontableChangedData.getUpdatelist().get(i).getProtocolName();
 						String driverCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-							if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+							if( ( entry.getValue() instanceof KafkaConfig ) ){
 								KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 								if(driverName.equals(protocolConfig.getProtocolName())){
-									driverCode=protocolConfig.getProtocolName();
+									driverCode=protocolConfig.getProtocolCode();
 									break;
 								}
-							}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+							}else if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
 								ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
@@ -1396,13 +1396,13 @@ public class BaseDao extends HibernateDaoSupport {
 						String driverName=wellHandsontableChangedData.getInsertlist().get(i).getProtocolName();
 						String driverCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-							if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+							if( ( entry.getValue() instanceof KafkaConfig ) ){
 								KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 								if(driverName.equals(protocolConfig.getProtocolName())){
-									driverCode=protocolConfig.getProtocolName();
+									driverCode=protocolConfig.getProtocolCode();
 									break;
 								}
-							}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+							}else if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
 								ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);

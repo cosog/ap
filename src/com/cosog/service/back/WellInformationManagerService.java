@@ -366,10 +366,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
-			if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
+			if( ( entry.getValue() instanceof KafkaConfig ) ){
 				KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
-			}else if(entry.getKey().toUpperCase().contains("modbusProtocolConfig".toUpperCase())){
+			}else if( ( entry.getValue() instanceof ModbusProtocolConfig ) ){
 				ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(i);

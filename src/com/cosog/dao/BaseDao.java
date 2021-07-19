@@ -1354,7 +1354,7 @@ public class BaseDao extends HibernateDaoSupport {
 									driverCode=protocolConfig.getProtocolCode();
 									break;
 								}
-							}else if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
+							}else if( ( entry.getValue() instanceof ModbusProtocolConfig ) ){
 								ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
@@ -1402,7 +1402,7 @@ public class BaseDao extends HibernateDaoSupport {
 									driverCode=protocolConfig.getProtocolCode();
 									break;
 								}
-							}else if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
+							}else if( ( entry.getValue() instanceof ModbusProtocolConfig ) ){
 								ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);

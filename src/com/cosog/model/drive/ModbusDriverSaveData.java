@@ -18,6 +18,8 @@ public class ModbusDriverSaveData {
 	private String HeartbeatPrefix;
 	
 	private String HeartbeatSuffix;
+	
+	private List<String> delidslist;
 
     private List<DataConfig> DataConfig;
     
@@ -163,6 +165,12 @@ public class ModbusDriverSaveData {
 	}
 	public void setProtocolCode(String protocolCode) {
 		ProtocolCode = protocolCode;
+	}
+	public List<String> getDelidslist() {
+		return delidslist;
+	}
+	public void setDelidslist(List<String> delidslist) {
+		this.delidslist = delidslist;
 	}
 	
 }

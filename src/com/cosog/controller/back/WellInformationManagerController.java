@@ -143,7 +143,8 @@ public class WellInformationManagerController extends BaseController {
 		int offset = (intPage - 1) * pageSize + 1;
 		//wellInformationName = new String(wellInformationName.getBytes("iso-8859-1"), "utf-8");
 //		String orgId=this.findCurrentUserOrgIdInfo("");
-		String jh = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "jh"),"utf-8");
+		wellInformationName = ParamUtils.getParameter(request, "wellInformationName");
+		liftingType=ParamUtils.getParameter(request, "liftingType");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
@@ -164,6 +165,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("wellInformationName", wellInformationName);
+		map.put("liftingType", liftingType);
 		map.put("orgCode", orgCode);
 		map.put("resCode", resCode);
 		map.put("orgId", orgId);

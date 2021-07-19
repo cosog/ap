@@ -2330,7 +2330,7 @@ begin
   p_sql:='select count(*)  from tbl_org t where t.org_name is not null and  t.org_id='||v_orgId||' and t.org_id in ('||v_ids||')';
   dbms_output.put_line('p_sql:' || p_sql);
   select count(1) into wellamount from tbl_wellinformation;
-  if wellamount>v_license then
+  if v_license>0 and wellamount>v_license then
     delete from tbl_wellinformation where id not in (select id from( select t.id from tbl_wellinformation t order by t.id) where rownum <= v_license);
     commit;
   end if;
@@ -2352,7 +2352,7 @@ begin
            commit;
            p_msg := 'ÐÞ¸Ä³É¹¦';
         elsif wellcount=0 then
-              if wellamount<v_license then
+              if v_license=0 or wellamount<v_license then
                   insert into tbl_wellinformation(wellName,protocolcode,signinid,slave,videourl,Sortnum)
                   values(v_wellName,v_protocolCode,v_signInId,v_slave,v_videourl,v_sortNum);
                   commit;

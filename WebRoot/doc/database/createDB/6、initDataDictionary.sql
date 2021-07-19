@@ -4069,7 +4069,7 @@ insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVA
 values ('114895', null, '87808f225d7240f68c2ab879347d818a', '举升方式', 'liftingTypeName', null, 5, 1, null, null, null, null);
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
-values ('116688', null, '87808f225d7240f68c2ab879347d818a', '协议名称', 'protocolName', 'width:120', 6, 0, null, '系统管理员', to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'));
+values ('116688', null, '87808f225d7240f68c2ab879347d818a', '协议名称', 'protocolName', 'width:120', 6, 1, null, '系统管理员', to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'), to_date('19-06-2020 11:32:24', 'dd-mm-yyyy hh24:mi:ss'));
 
 insert into tbl_dist_item (DATAITEMID, TENANTID, SYSDATAID, CNAME, ENAME, DATAVALUE, SORTS, STATUS, CREATOR, UPDATEUSER, UPDATETIME, CREATEDATE)
 values ('116689', null, '87808f225d7240f68c2ab879347d818a', '采集单元', 'acquisitionUnit', null, 8, 1, null, null, to_date('08-11-2018 14:59:54', 'dd-mm-yyyy hh24:mi:ss'), to_date('08-11-2018 14:59:54', 'dd-mm-yyyy hh24:mi:ss'));

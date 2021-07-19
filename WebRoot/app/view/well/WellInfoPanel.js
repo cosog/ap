@@ -32,7 +32,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('wellInfoPanel_jh_Id').getValue();
+                    var wellName = Ext.getCmp('wellInfoPanel_WellListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         wellName: wellName
@@ -57,7 +57,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
         var simpleCombo = Ext.create(
             'Ext.form.field.ComboBox', {
                 fieldLabel: cosog.string.wellName,
-                id: "wellInfoPanel_jh_Id",
+                id: "wellInfoPanel_WellListComb_Id",
                 labelWidth: 35,
                 width: 145,
                 labelAlign: 'left',
@@ -102,7 +102,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
         var liftingTypeCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '举升类型',
-                    id: "wellInfoPanel_jslx_Id",
+                    id: "wellInfoPanel_LiftingTypeComb_Id",
                     labelWidth: 70,
                     width: 180,
                     labelAlign: 'left',
@@ -143,7 +143,8 @@ Ext.define('AP.view.well.WellInfoPanel', {
             				var fields = "";
             			    var heads = "";
             			    var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-            				var jh = Ext.getCmp('wellInfoPanel_jh_Id').getValue();
+            				var wellInformationName = Ext.getCmp('wellInfoPanel_WellListComb_Id').getValue();
+            				var liftingType = Ext.getCmp('wellInfoPanel_LiftingTypeComb_Id').getValue();
             				var url=context + '/wellInformationManagerController/exportWellInformationData';
             				for(var i=0;i<wellInfoHandsontableHelper.colHeaders.length;i++){
             					fields+=wellInfoHandsontableHelper.columns[i].data+",";
@@ -154,7 +155,7 @@ Ext.define('AP.view.well.WellInfoPanel', {
             			        heads = heads.substring(0, heads.length - 1);
             			    }
             				
-            			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id  + "&jh=" + URLencode(URLencode(jh)) +"&recordCount=10000"+ "&fileName="+URLencode(URLencode("井名基本信息"))+ "&title="+URLencode(URLencode("井名基本信息"));
+            			    var param = "&fields=" + fields +"&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id+ "&liftingType=" + liftingType  + "&wellInformationName=" + URLencode(URLencode(wellInformationName)) +"&recordCount=10000"+ "&fileName="+URLencode(URLencode("井名基本信息"))+ "&title="+URLencode(URLencode("井名基本信息"));
             			    openExcelWindow(url + '?flag=true' + param);
             			}
             		},'-',{
@@ -211,8 +212,8 @@ function CreateAndLoadWellInfoTable(isNew){
         wellInfoHandsontableHelper=null;
 	}
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-	var wellInformationName_Id = Ext.getCmp('wellInfoPanel_jh_Id').getValue();
-	var liftingType = Ext.getCmp('wellInfoPanel_jslx_Id').getValue();
+	var wellInformationName_Id = Ext.getCmp('wellInfoPanel_WellListComb_Id').getValue();
+	var liftingType = Ext.getCmp('wellInfoPanel_LiftingTypeComb_Id').getValue();
 	
 	Ext.Ajax.request({
 		method:'POST',
@@ -225,11 +226,7 @@ function CreateAndLoadWellInfoTable(isNew){
 		        var columns="[";
 		       
 	            for(var i=0;i<result.columns.length;i++){
-	            	if(result.columns[i].dataIndex.toUpperCase()==="protocolName".toUpperCase()){
-	            		colHeaders+="'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+result.columns[i].header+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'";
-	            	}else{
-	            		colHeaders+="'"+result.columns[i].header+"'";
-	            	}
+	            	colHeaders+="'"+result.columns[i].header+"'";
 	            	if(result.columns[i].dataIndex.toUpperCase()==="orgName".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="liftingTypeName".toUpperCase()){

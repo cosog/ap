@@ -465,6 +465,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 			ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 			boolean isAdd=true;
 			
+			for(int i=0;i<modbusDriverSaveData.getDelidslist().size();i++){
+				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+					if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+						modbusProtocolConfig.getProtocol().remove(j);
+						break;
+					}
+				}
+			}
+			
 			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 				if(modbusDriverSaveData.getProtocolName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
 					isAdd=false;
@@ -518,6 +527,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 							item.setAcqMode(acqMode);
 							modbusProtocolConfig.getProtocol().get(i).getItems().add(item);
 						}
+					}
+					
+					//处理删除项
+					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+						boolean isDel=true;
+						for(int k=0;k<modbusDriverSaveData.getDataConfig().size();k++){
+							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getName().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(k).getName())){
+								isDel=false;
+								break;
+							}
+						}
+						if(isDel){
+							modbusProtocolConfig.getProtocol().get(i).getItems().remove(j);
+						}
+						
 					}
 					break;
 				}

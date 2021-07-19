@@ -329,7 +329,7 @@ var ProtocolConfigHandsontableHelper = {
 	                    if (amount != 0) {
 	                        for (var i = index; i < amount + index; i++) {
 	                            var rowdata = protocolConfigHandsontableHelper.hot.getDataAtRow(i);
-	                            ids.push(rowdata[0]);
+	                            ids.push(rowdata[1]);
 	                        }
 	                        protocolConfigHandsontableHelper.delExpressCount(ids);
 	                        protocolConfigHandsontableHelper.screening();
@@ -492,7 +492,6 @@ var ProtocolConfigHandsontableHelper = {
 	        	protocolConfigHandsontableHelper.updatelist = [];
 	        	protocolConfigHandsontableHelper.delidslist = [];
 	        	protocolConfigHandsontableHelper.insertlist = [];
-	        	protocolConfigHandsontableHelper.editWellNameList=[];
 	        }
 	        
 	        return protocolConfigHandsontableHelper;
@@ -620,12 +619,12 @@ var ProtocolConfigItemsHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
-	                	var row1=protocolConfigItemsHandsontableHelper.hot.getDataAtRow(row);
-	                	if(row1[0]){
-	                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(row, 0, false);
-	                	}else{
-	                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(row, 0, true);
-	                	}
+//	                	var row1=protocolConfigItemsHandsontableHelper.hot.getDataAtRow(row);
+//	                	if(row1[0]){
+//	                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(row, 0, false);
+//	                	}else{
+//	                		protocolConfigItemsHandsontableHelper.hot.setDataAtCell(row, 0, true);
+//	                	}
 	                }
 //	        		,colHeaders: function (col) { 
 //	                    switch (col) { 
@@ -857,6 +856,7 @@ function SaveModbusProtocolConfigData(){
 		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
 		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
 		var configInfo={};
+		configInfo.delidslist=protocolConfigHandsontableHelper.delidslist;
 		configInfo.ProtocolName=protocolConfigData[1];
 		configInfo.ProtocolType=protocolConfigData[2];
 		configInfo.SignInPrefix=protocolConfigData[3];
@@ -883,6 +883,7 @@ function SaveModbusProtocolConfigData(){
     		url:context + '/acquisitionUnitManagerController/saveModbusProtocolConfigData',
     		success:function(response) {
     			var data=Ext.JSON.decode(response.responseText);
+    			protocolConfigHandsontableHelper.clearContainer();
     			if (data.success) {
                 	Ext.MessageBox.alert("信息","保存成功");
 //                	CreateProtocolConfigInfoTable();

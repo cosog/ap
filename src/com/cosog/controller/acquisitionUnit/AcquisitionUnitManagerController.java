@@ -499,8 +499,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 							RWType="r";
 						}
 						for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getName().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getName())){
+							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(j).getTitle())){
 								isAddItem=false;
+//								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setTitle(modbusDriverSaveData.getDataConfig().get(j).getTitle());
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 								modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
@@ -514,9 +515,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 						}
 						if(isAddItem){
 							ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
-							String itemCode="item"+new Date().getDate();
-							item.setName(modbusDriverSaveData.getDataConfig().get(j).getName());
-							item.setCode(itemCode);
+//							item.setName(modbusDriverSaveData.getDataConfig().get(j).getName());
+							item.setTitle(modbusDriverSaveData.getDataConfig().get(j).getTitle());
 							item.setAddr(modbusDriverSaveData.getDataConfig().get(j).getAddr());
 							item.setQuantity(modbusDriverSaveData.getDataConfig().get(j).getQuantity());
 							item.setUnit(modbusDriverSaveData.getDataConfig().get(j).getUnit());
@@ -533,7 +533,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
 						boolean isDel=true;
 						for(int k=0;k<modbusDriverSaveData.getDataConfig().size();k++){
-							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getName().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(k).getName())){
+							if(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getTitle().equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(k).getTitle())){
 								isDel=false;
 								break;
 							}
@@ -575,7 +575,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 					
 					ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
-					item.setName(modbusDriverSaveData.getDataConfig().get(i).getName());
+//					item.setName(modbusDriverSaveData.getDataConfig().get(i).getName());
+					item.setTitle(modbusDriverSaveData.getDataConfig().get(i).getTitle());
 					item.setAddr(modbusDriverSaveData.getDataConfig().get(i).getAddr());
 					item.setQuantity(modbusDriverSaveData.getDataConfig().get(i).getQuantity());
 					item.setUnit(modbusDriverSaveData.getDataConfig().get(i).getUnit());

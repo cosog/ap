@@ -10,8 +10,8 @@
         "HeartbeatSuffix": "0D",
         "Sort": 1,
         "Items": [{
-            "Name": "运行状态",
-            "Code": "RunStatus",
+            "Title": "运行状态",
+            "Name": "RunStatus",
             "Addr": 40318,
             "StoreDataType": "uint16",
             "IFDataType": "int",
@@ -21,8 +21,8 @@
             "Unit": "",
             "AcqMode": "passive"
         }, {
-            "Name": "启停控制",
-            "Code": "RunControl",
+            "Title": "启停控制",
+            "Name": "RunControl",
             "Addr": 40320,
             "StoreDataType": "uint16",
             "IFDataType": "int",
@@ -32,8 +32,8 @@
             "Unit": "",
             "AcqMode": "passive"
         }, {
-            "Name": "A相电流",
-            "Code": "IA",
+            "Title": "A相电流",
+            "Name": "IA",
             "Addr": 40351,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -43,8 +43,8 @@
             "Unit": "A",
             "AcqMode": "passive"
         }, {
-            "Name": "B相电流",
-            "Code": "IB",
+            "Title": "B相电流",
+            "Name": "IB",
             "Addr": 40353,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -54,8 +54,8 @@
             "Unit": "A",
             "AcqMode": "passive"
         }, {
-            "Name": "C相电流",
-            "Code": "IC",
+            "Title": "C相电流",
+            "Name": "IC",
             "Addr": 40355,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -65,8 +65,8 @@
             "Unit": "V",
             "AcqMode": "passive"
         }, {
-            "Name": "A相电压",
-            "Code": "VA",
+            "Title": "A相电压",
+            "Name": "VA",
             "Addr": 40357,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -76,8 +76,8 @@
             "Unit": "V",
             "AcqMode": "passive"
         }, {
-            "Name": "B相电压",
-            "Code": "VB",
+            "Title": "B相电压",
+            "Name": "VB",
             "Addr": 40359,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -87,8 +87,8 @@
             "Unit": "V",
             "AcqMode": "passive"
         }, {
-            "Name": "C相电压",
-            "Code": "VC",
+            "Title": "C相电压",
+            "Name": "VC",
             "Addr": 40361,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -98,8 +98,8 @@
             "Unit": "V",
             "AcqMode": "passive"
         }, {
-            "Name": "有功功耗",
-            "Code": "KWattH",
+            "Title": "有功功耗",
+            "Name": "KWattH",
             "Addr": 40363,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -109,8 +109,8 @@
             "Unit": "kW·h",
             "AcqMode": "passive"
         }, {
-            "Name": "无功功耗",
-            "Code": "KVarH",
+            "Title": "无功功耗",
+            "Name": "KVarH",
             "Addr": 40365,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -120,8 +120,8 @@
             "Unit": "kVar·h",
             "AcqMode": "passive"
         }, {
-            "Name": "有功功率",
-            "Code": "Watt3",
+            "Title": "有功功率",
+            "Name": "Watt3",
             "Addr": 40367,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -131,8 +131,8 @@
             "Unit": "kW",
             "AcqMode": "passive"
         }, {
-            "Name": "无功功率",
-            "Code": "Var3",
+            "Title": "无功功率",
+            "Name": "Var3",
             "Addr": 40369,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -142,8 +142,8 @@
             "Unit": "kVar",
             "AcqMode": "passive"
         }, {
-            "Name": "反向功率",
-            "Code": "ReversePower",
+            "Title": "反向功率",
+            "Name": "ReversePower",
             "Addr": 40371,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -153,8 +153,8 @@
             "Unit": "kW",
             "AcqMode": "passive"
         }, {
-            "Name": "功率因数",
-            "Code": "PF3",
+            "Title": "功率因数",
+            "Name": "PF3",
             "Addr": 40373,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -164,8 +164,8 @@
             "Unit": "",
             "AcqMode": "passive"
         }, {
-            "Name": "油压",
-            "Code": "TubingPressure",
+            "Title": "油压",
+            "Name": "TubingPressure",
             "Addr": 40300,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -175,8 +175,8 @@
             "Unit": "MPa",
             "AcqMode": "passive"
         }, {
-            "Name": "套压",
-            "Code": "CasingPressure",
+            "Title": "套压",
+            "Name": "CasingPressure",
             "Addr": 40302,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -186,8 +186,8 @@
             "Unit": "MPa",
             "AcqMode": "passive"
         }, {
-            "Name": "回压",
-            "Code": "BackPressure",
+            "Title": "回压",
+            "Name": "BackPressure",
             "Addr": 40304,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -197,8 +197,8 @@
             "Unit": "MPa",
             "AcqMode": "passive"
         }, {
-            "Name": "井口流温",
-            "Code": "WellHeadFluidTemperature",
+            "Title": "井口流温",
+            "Name": "WellHeadFluidTemperature",
             "Addr": 40306,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -208,8 +208,8 @@
             "Unit": "℃",
             "AcqMode": "passive"
         }, {
-            "Name": "动液面",
-            "Code": "ProducingfluidLevel",
+            "Title": "动液面",
+            "Name": "ProducingfluidLevel",
             "Addr": 0,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -219,8 +219,8 @@
             "Unit": "m",
             "AcqMode": "passive"
         }, {
-            "Name": "含水率",
-            "Code": "WaterCut",
+            "Title": "含水率",
+            "Name": "WaterCut",
             "Addr": 0,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -230,8 +230,8 @@
             "Unit": "%",
             "AcqMode": "passive"
         }, {
-            "Name": "变频设置频率",
-            "Code": "SetFrequency",
+            "Title": "变频设置频率",
+            "Name": "SetFrequency",
             "Addr": 40402,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -241,8 +241,8 @@
             "Unit": "Hz",
             "AcqMode": "passive"
         }, {
-            "Name": "变频运行频率",
-            "Code": "RunFrequency",
+            "Title": "变频运行频率",
+            "Name": "RunFrequency",
             "Addr": 40404,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -252,8 +252,8 @@
             "Unit": "Hz",
             "AcqMode": "passive"
         }, {
-            "Name": "螺杆泵转速",
-            "Code": "RPM",
+            "Title": "螺杆泵转速",
+            "Name": "RPM",
             "Addr": 40430,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -263,8 +263,8 @@
             "Unit": "r/min",
             "AcqMode": "passive"
         }, {
-            "Name": "螺杆泵扭矩",
-            "Code": "Torque",
+            "Title": "螺杆泵扭矩",
+            "Name": "Torque",
             "Addr": 40432,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -274,8 +274,8 @@
             "Unit": "kN·m",
             "AcqMode": "passive"
         }, {
-            "Name": "功图采集间隔",
-            "Code": "FESDiagramAcquisitionInterval",
+            "Title": "功图采集间隔",
+            "Name": "FESDiagramAcquisitionInterval",
             "Addr": 40981,
             "StoreDataType": "uint16",
             "IFDataType": "int",
@@ -285,8 +285,8 @@
             "Unit": "min",
             "AcqMode": "passive"
         }, {
-            "Name": "功图设置点数",
-            "Code": "FESDiagramSetPointCount",
+            "Title": "功图设置点数",
+            "Name": "FESDiagramSetPointCount",
             "Addr": 40983,
             "StoreDataType": "uint16",
             "IFDataType": "int",
@@ -296,8 +296,8 @@
             "Unit": "",
             "AcqMode": "passive"
         }, {
-            "Name": "功图实测点数",
-            "Code": "FESDiagramPointCount",
+            "Title": "功图实测点数",
+            "Name": "FESDiagramPointCount",
             "Addr": 40984,
             "StoreDataType": "uint16",
             "IFDataType": "int",
@@ -307,8 +307,8 @@
             "Unit": "",
             "AcqMode": "passive"
         }, {
-            "Name": "功图采集时间",
-            "Code": "FESDiagramAcqTime",
+            "Title": "功图采集时间",
+            "Name": "FESDiagramAcqTime",
             "Addr": 40985,
             "StoreDataType": "bcd",
             "IFDataType": "string",
@@ -318,8 +318,8 @@
             "Unit": "",
             "AcqMode": "passive"
         }, {
-            "Name": "冲次",
-            "Code": "SPM",
+            "Title": "冲次",
+            "Name": "SPM",
             "Addr": 40991,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -329,8 +329,8 @@
             "Unit": "次/min",
             "AcqMode": "passive"
         }, {
-            "Name": "冲程",
-            "Code": "Stroke",
+            "Title": "冲程",
+            "Name": "Stroke",
             "Addr": 40993,
             "StoreDataType": "float32",
             "IFDataType": "float32",
@@ -340,8 +340,8 @@
             "Unit": "m",
             "AcqMode": "passive"
         }, {
-            "Name": "功图数据-位移",
-            "Code": "SDiagram",
+            "Title": "功图数据-位移",
+            "Name": "SDiagram",
             "Addr": 41001,
             "StoreDataType": "int16",
             "IFDataType": "float32",
@@ -351,8 +351,8 @@
             "Unit": "0.01m",
             "AcqMode": "passive"
         }, {
-            "Name": "功图数据-载荷",
-            "Code": "FDiagram",
+            "Title": "功图数据-载荷",
+            "Name": "FDiagram",
             "Addr": 41251,
             "StoreDataType": "int16",
             "IFDataType": "float32",
@@ -362,8 +362,8 @@
             "Unit": "0.01kN",
             "AcqMode": "passive"
         }, {
-            "Name": "功图数据-电流",
-            "Code": "IDiagram",
+            "Title": "功图数据-电流",
+            "Name": "IDiagram",
             "Addr": 41501,
             "StoreDataType": "int16",
             "IFDataType": "float32",
@@ -373,8 +373,8 @@
             "Unit": "0.01A",
             "AcqMode": "passive"
         }, {
-            "Name": "功图数据-功率",
-            "Code": "WattDiagram",
+            "Title": "功图数据-功率",
+            "Name": "WattDiagram",
             "Addr": 41751,
             "StoreDataType": "int16",
             "IFDataType": "float32",

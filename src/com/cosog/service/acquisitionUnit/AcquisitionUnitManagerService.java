@@ -135,7 +135,8 @@ private CommonDataService service;
 		
 		String diagramTableColumns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",width:120 ,children:[] },"
+//				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
 				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
 				+ "{ \"header\":\"数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
 				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
@@ -153,43 +154,43 @@ private CommonDataService service;
 		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 			i++;
 			ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
-			if(!protocolConfig.getCode().toUpperCase().contains("KAFKA") && !protocolConfig.getCode().toUpperCase().contains("MQTT")){
-				StringBuffer driverConfigData = new StringBuffer();
-				driverConfigData.append("[");
-				if("IntelligentPumpingUnitDrive".equalsIgnoreCase(protocolConfig.getCode())){
-					
-				}else{
-					
-				}
-				for(int j=0;j<protocolConfig.getItems().size();j++){
-					driverConfigData.append("{\"checked\":false,"
-							+ "\"id\":"+(j+1)+","
-							+ "\"item\":\""+protocolConfig.getItems().get(j).getName()+"\","
-							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
-							+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
-							+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
-							+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
-							+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
-							+ "\"RWType\":\""+("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())?"只读":"读写")+"\","
-							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
-							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
-				}
-				if(driverConfigData.toString().endsWith(",")){
-					driverConfigData.deleteCharAt(driverConfigData.length() - 1);
-				}
+
+			StringBuffer driverConfigData = new StringBuffer();
+			driverConfigData.append("[");
+			if("IntelligentPumpingUnitDrive".equalsIgnoreCase(protocolConfig.getCode())){
 				
-				driverConfigData.append("]");
-				result_json.append("{"
-						+ "\"id\":"+i+","
-						+ "\"ProtocolName\":\""+protocolConfig.getName()+"\","
-						+ "\"ProtocolType\":\""+protocolConfig.getType()+"\","
-						+ "\"SignInPrefix\":\""+protocolConfig.getSignInPrefix()+"\","
-						+ "\"SignInSuffix\":\""+protocolConfig.getSignInSuffix()+"\","
-						+ "\"HeartbeatPrefix\":\""+protocolConfig.getHeartbeatPrefix()+"\","
-						+ "\"HeartbeatSuffix\":\""+protocolConfig.getHeartbeatSuffix()+"\","
-						+ "\"dataConfig\":"+driverConfigData.toString()+""
-						+ "},");
+			}else{
+				
 			}
+			for(int j=0;j<protocolConfig.getItems().size();j++){
+				driverConfigData.append("{\"checked\":false,"
+						+ "\"id\":"+(j+1)+","
+//						+ "\"name\":\""+protocolConfig.getItems().get(j).getName()+"\","
+						+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+						+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+						+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
+						+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
+						+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
+						+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
+						+ "\"RWType\":\""+("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())?"只读":"读写")+"\","
+						+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+						+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
+			}
+			if(driverConfigData.toString().endsWith(",")){
+				driverConfigData.deleteCharAt(driverConfigData.length() - 1);
+			}
+			
+			driverConfigData.append("]");
+			result_json.append("{"
+					+ "\"id\":"+i+","
+					+ "\"ProtocolName\":\""+protocolConfig.getName()+"\","
+					+ "\"ProtocolType\":\""+protocolConfig.getType()+"\","
+					+ "\"SignInPrefix\":\""+protocolConfig.getSignInPrefix()+"\","
+					+ "\"SignInSuffix\":\""+protocolConfig.getSignInSuffix()+"\","
+					+ "\"HeartbeatPrefix\":\""+protocolConfig.getHeartbeatPrefix()+"\","
+					+ "\"HeartbeatSuffix\":\""+protocolConfig.getHeartbeatSuffix()+"\","
+					+ "\"dataConfig\":"+driverConfigData.toString()+""
+					+ "},");
 			
 		}
 		if(result_json.toString().endsWith(",")){

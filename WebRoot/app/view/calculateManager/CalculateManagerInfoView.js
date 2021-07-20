@@ -360,18 +360,18 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
             }
             ],
         	items: [{
-        		region: 'center',
+        		region: 'west',
+            	width: '25%',
             	title: '井列表',
             	id: 'CalculateManagerWellListPanel_Id',
-            	layout: "fit"
-            },{
-            	region: 'east',
-            	title:'计算数据',
-                width: '75%',
-                border: false,
-                collapsible: true, // 是否可折叠
+            	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠
                 split: true, // 竖折叠条
+            	layout: "fit"
+            },{
+            	region: 'center',
+            	title:'计算数据',
+                border: false,
         		xtype: 'tabpanel',
         		id:"CalculateManagerTabPanel",
         		activeTab: 0,
@@ -431,6 +431,21 @@ Ext.define("AP.view.calculateManager.CalculateManagerInfoView", {
         					}
         					calculateResultStore.loadPage(1);
         					CalculateManagerWellListStore.load();
+        				},
+        				resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+        					if(calculateManagerHandsontableHelper!=null){
+        						var bbarId="pumpingCalculateManagerBbar";
+        				        var tabPanelId = Ext.getCmp("CalculateManagerTabPanel").getActiveTab().id;
+        				        if(tabPanelId=="PumpingUnitCalculateManagerPanel"){
+        				        	bbarId="pumpingCalculateManagerBbar";
+        						}else if(tabPanelId=="ScrewPumpCalculateManagerPanel"){
+        							bbarId="screwPumpCalculateManagerBbar";
+        						}
+        				        var bbar=Ext.getCmp(bbarId);
+        				        if (isNotVal(bbar)) {
+        				        	bbar.getStore().loadPage(1);
+        				        }
+        					}
         				}
         			}
             	}]

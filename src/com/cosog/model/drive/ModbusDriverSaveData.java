@@ -40,6 +40,8 @@ public class ModbusDriverSaveData {
 	public static class DataConfig
 	{
 	    private String Name;
+	    
+	    private String Title;
 
 	    private int Addr;
 
@@ -127,6 +129,14 @@ public class ModbusDriverSaveData {
 
 		public void setRWType(String rWType) {
 			RWType = rWType;
+		}
+
+		public String getTitle() {
+			return Title;
+		}
+
+		public void setTitle(String title) {
+			Title = title;
 		}
 	}
 

@@ -161,18 +161,18 @@ Ext.define("AP.view.reportOut.ReportPumpingUnitPanel", {
             layout: 'border',
             border: false,
             items: [{
-            	region: 'center',
+            	region: 'west',
+            	width: '20%',
             	title: '井列表',
             	id: 'RPCDailyReportWellListPanel_Id',
-            	layout: "fit"
-            },{
-            	region: 'east',
-            	title:'报表数据',
-                width: '80%',
-                border: false,
-                collapsible: true, // 是否可折叠
+            	collapsible: true, // 是否可折叠
                 collapsed:false,//是否折叠
                 split: true, // 竖折叠条
+            	layout: "fit"
+            },{
+            	region: 'center',
+            	title:'报表数据',
+                border: false,
                 layout: "fit",
                 html:'<div class="DiagnosisDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="DiagnosisDailyReportDiv_id"></div></div>',
                 listeners: {

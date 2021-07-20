@@ -56,8 +56,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 	layout: "border",
                     border: false,
                     items: [{
-                    	region: 'center',
+                    	region: 'north',
+                    	height:'50%',
                     	layout: "border",
+                        border: false,
+                        collapsible: true,
+                        split: true,
                         border: false,
                         items: [{
                             region: 'west',
@@ -71,6 +75,12 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             html:'<div class="DriverConfigInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverConfigInfoInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                	CreateProtocolConfigInfoTable(true);
+                                },
+                                beforeCollapse: function (panel, eOpts) {
+                                	CreateProtocolConfigInfoTable(true);
+                                },
+                                expand: function (panel, eOpts) {
                                 	CreateProtocolConfigInfoTable(true);
                                 }
                             }
@@ -96,30 +106,27 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             html:'<div class="AcquisitionGroupConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionGroupConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                },
+                                beforeCollapse: function (panel, eOpts) {
+                                	CreateProtocolConfigInfoTable(true);
+                                },
+                                expand: function (panel, eOpts) {
+                                	CreateProtocolConfigInfoTable(true);
                                 }
                             }
-                        }]
+                        }],
+                        listeners: {
+                            beforeCollapse: function (panel, eOpts) {
+                            	CreateProtocolConfigInfoTable(true);
+                            },
+                            expand: function (panel, eOpts) {
+                            	CreateProtocolConfigInfoTable(true);
+                            }
+                        }
                     },{
-                        region: 'south',
-                    	height:'50%',
+                        region: 'center',
                         title:'采控项配置',
                         layout: 'fit',
-                        border: false,
-//                        header: false,
-                        collapsible: true,
-                        split: true,
-//                        bbar: ['->', {
-//                            xtype: 'button',
-//                            text: '保存',
-//                            iconCls: 'save',
-//                            pressed: true,
-//                            handler: function () {
-//                            	grantAcquisitionItemsPermission();
-//                            }
-//                		}, {
-//                            xtype: 'tbspacer',
-//                            flex: 1
-//                		}],
                         html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -501,7 +508,7 @@ var ProtocolConfigHandsontableHelper = {
 function CreateDriverConfigItemsInfoTable(data){
 	protocolConfigItemsHandsontableHelper = ProtocolConfigItemsHandsontableHelper.createNew("DriverItemsConfigTableInfoDiv_id");
 	var colHeaders="['','序号','名称','地址','数量','存储数据类型','接口数据类型','读写类型','单位','换算比例','采集模式']";
-	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'item'},"
+	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 		 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
 			+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
 			+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['byte','int16','uint16','float32','bcd','asc']}," 
@@ -518,13 +525,6 @@ function CreateDriverConfigItemsInfoTable(data){
 	}else{
 		protocolConfigItemsHandsontableHelper.createTable(data);
 	}
-	
-//	$('#'+protocolConfigItemsHandsontableHelper.divid).on('mouseup', 'input.checker', function (event) { 
-//	    var current = !$('input.checker').is(':checked'); //returns boolean 
-//	     for (var i = 0; i < data.length; i++) { 
-//	    	 protocolConfigItemsHandsontableHelper.hot.setDataAtCell(i, 0, current);
-//	     }
-//	});
 };
 
 
@@ -866,7 +866,7 @@ function SaveModbusProtocolConfigData(){
 		configInfo.DataConfig=[];
 		for(var i=0;i<driverConfigItemsData.length;i++){
 			var item={};
-			item.Name=driverConfigItemsData[i][2];
+			item.Title=driverConfigItemsData[i][2];
 			item.Addr=parseInt(driverConfigItemsData[i][3]);
 			item.Quantity=parseInt(driverConfigItemsData[i][4]);
 			item.StoreDataType=driverConfigItemsData[i][5];

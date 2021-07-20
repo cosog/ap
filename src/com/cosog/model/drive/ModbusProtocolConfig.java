@@ -17,7 +17,7 @@ public class ModbusProtocolConfig {
 	{
 	    private String Name;
 
-	    private String Code;
+	    private String Title;
 
 	    private int Addr;
 
@@ -41,11 +41,11 @@ public class ModbusProtocolConfig {
 	    public String getName(){
 	        return this.Name;
 	    }
-	    public void setCode(String Code){
-	        this.Code = Code;
+	    public void setTitle(String Title){
+	        this.Title = Title;
 	    }
-	    public String getCode(){
-	        return this.Code;
+	    public String getTitle(){
+	        return this.Title;
 	    }
 	    public void setAddr(int Addr){
 	        this.Addr = Addr;

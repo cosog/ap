@@ -142,18 +142,18 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
                 layout: 'border',
                 border: false,
                 items: [{
-                	region: 'center',
+                	region: 'west',
+                	width: '25%',
                 	title: '井列表',
                 	id: 'GraphicalQueryWellListPanel_Id',
-                	layout: "fit"
-                },{
-                	region: 'east',
-                	title:'图形数据',
-                    width: '75%',
-                    border: false,
-                    collapsible: true, // 是否可折叠
+                	collapsible: true, // 是否可折叠
                     collapsed:false,//是否折叠
                     split: true, // 竖折叠条
+                	layout: "fit"
+                },{
+                	region: 'center',
+                	title:'图形数据',
+                    border: false,
                     layout: "fit",
                     id: 'surfaceCardContent',
                     autoScroll: true,
@@ -183,42 +183,6 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
                         }
                     }
                 }]
-                
-                
-                
-                
-                
-//                items: [{
-//                border: false,
-//                layout: 'fit',
-//                id: 'surfaceCardContent',
-//                autoScroll: true,
-//                html: '<div id="surfaceCardContainer" class="hbox"></div>',
-//                listeners: {
-//                    render: function (p, o, i, c) {
-//                        p.body.on('scroll', function () {
-//                            var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-//                            if (diagramPage < totalPages) {
-//                                var surfaceCardContent = Ext.getCmp("surfaceCardContent");
-//                                var hRatio = surfaceCardContent.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-//                                if (hRatio > 0.5) {
-//                                    if (diagramPage < 2) {
-//                                        diagramPage++;
-//                                        loadSurfaceCardList(diagramPage);
-//                                    } else {
-//                                        var divCount = $("#surfaceCardContainer div ").size();
-//                                        var count = (diagramPage - 1) * defaultGraghSize * 3;
-//                                        if (divCount > count) {
-//                                            diagramPage++;
-//                                            loadSurfaceCardList(diagramPage);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }, this);
-//                    }
-//                }
-//            }]
         });
         me.callParent(arguments);
     }

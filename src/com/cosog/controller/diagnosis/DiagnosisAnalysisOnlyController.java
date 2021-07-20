@@ -542,7 +542,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 		int addr=0;
 		String dataType="";
 		for(int i=0;i<protocol.getItems().size();i++){
-			if(itemCode.equals(protocol.getItems().get(i).getCode())){
+			if(itemCode.equals(protocol.getItems().get(i).getName())){
 				addr=protocol.getItems().get(i).getAddr();
 				dataType=protocol.getItems().get(i).getIFDataType();
 				break;

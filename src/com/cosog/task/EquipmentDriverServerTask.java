@@ -46,7 +46,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -194,7 +194,9 @@ public class EquipmentDriverServerTask {
 				+ " listagg(t5.itemname, ',') within group(order by t5.id ) key"
 				+ " from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_group_conf t4,tbl_acq_item2group_conf t5 "
 				+ " where t.unitcode=t2.unit_code and t2.id=t3.unitid and t3.groupid=t4.id and t4.id=t5.groupid "
-				+ " and t.signinid is not null and t.slave is not null and t.unitcode is not null ";
+				+ " and t.signinid is not null and t.slave is not null and t.unitcode is not null "
+				+ " and upper(t.protocolcode) not like '%KAFKA%'"
+				+ " and upper(t.protocolcode) not like '%MQTT%'";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and t.wellname in("+wellName+")";
 		}
@@ -234,7 +236,7 @@ public class EquipmentDriverServerTask {
 					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(4))){
 						for(int j=0;j<itemsArr.length;j++){
 							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-								if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getName())){
+								if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
 									group.getAddr().add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr());
 									break;
 								}

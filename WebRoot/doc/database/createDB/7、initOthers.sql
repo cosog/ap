@@ -23,100 +23,100 @@ values (3, 'type3', '³éÓÍ»ú¹¦Í¼Êý¾Ý', '³å³Ì¡¢³å´ÎÒÔ¼°Î»ÒÆ¡¢ÔØºÉ¡¢¹¦ÂÊ¡¢µçÁ÷ÇúÏßÊ
 /* ³õÊ¼»¯tbl_acq_item2group_confÊý¾Ý                                          */
 /*==============================================================*/
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (1, null, '0,0,0', 1, 'ÔËÐÐ×´Ì¬', null);
+values (2290, null, '0,0,0', 1, 'ÔËÐÐ×´Ì¬', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2, null, '0,0,0', 1, 'ÆôÍ£¿ØÖÆ', null);
+values (2291, null, '0,0,0', 1, 'ÆôÍ£¿ØÖÆ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (3, null, '0,0,0', 1, 'AÏàµçÁ÷', null);
+values (2292, null, '0,0,0', 1, 'AÏàµçÁ÷', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (4, null, '0,0,0', 1, 'BÏàµçÁ÷', null);
+values (2293, null, '0,0,0', 1, 'BÏàµçÁ÷', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (5, null, '0,0,0', 1, 'CÏàµçÁ÷', null);
+values (2294, null, '0,0,0', 1, 'CÏàµçÁ÷', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (6, null, '0,0,0', 1, 'AÏàµçÑ¹', null);
+values (2295, null, '0,0,0', 1, 'AÏàµçÑ¹', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (7, null, '0,0,0', 1, 'BÏàµçÑ¹', null);
+values (2296, null, '0,0,0', 1, 'BÏàµçÑ¹', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (8, null, '0,0,0', 1, 'CÏàµçÑ¹', null);
+values (2297, null, '0,0,0', 1, 'CÏàµçÑ¹', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (9, null, '0,0,0', 1, 'ÓÐ¹¦¹¦ºÄ', null);
+values (2298, null, '0,0,0', 1, 'ÓÐ¹¦¹¦ºÄ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (10, null, '0,0,0', 1, 'ÎÞ¹¦¹¦ºÄ', null);
+values (2299, null, '0,0,0', 1, 'ÎÞ¹¦¹¦ºÄ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (11, null, '0,0,0', 1, 'ÓÐ¹¦¹¦ÂÊ', null);
+values (2300, null, '0,0,0', 1, 'ÓÐ¹¦¹¦ÂÊ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (12, null, '0,0,0', 1, 'ÎÞ¹¦¹¦ÂÊ', null);
+values (2301, null, '0,0,0', 1, 'ÎÞ¹¦¹¦ÂÊ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (13, null, '0,0,0', 1, '·´Ïò¹¦ÂÊ', null);
+values (2302, null, '0,0,0', 1, '·´Ïò¹¦ÂÊ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (14, null, '0,0,0', 1, '¹¦ÂÊÒòÊý', null);
+values (2303, null, '0,0,0', 1, '¹¦ÂÊÒòÊý', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (15, null, '0,0,0', 1, 'ÓÍÑ¹', null);
+values (2304, null, '0,0,0', 1, 'ÓÍÑ¹', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (16, null, '0,0,0', 1, 'Ì×Ñ¹', null);
+values (2305, null, '0,0,0', 1, 'Ì×Ñ¹', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (17, null, '0,0,0', 1, '»ØÑ¹', null);
+values (2306, null, '0,0,0', 1, '»ØÑ¹', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (18, null, '0,0,0', 1, '¾®¿ÚÁ÷ÎÂ', null);
+values (2307, null, '0,0,0', 1, '¾®¿ÚÁ÷ÎÂ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (19, null, '0,0,0', 1, '¶¯ÒºÃæ', null);
+values (2308, null, '0,0,0', 1, '¶¯ÒºÃæ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (20, null, '0,0,0', 1, 'º¬Ë®ÂÊ', null);
+values (2309, null, '0,0,0', 1, 'º¬Ë®ÂÊ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (21, null, '0,0,0', 1, '±äÆµÉèÖÃÆµÂÊ', null);
+values (2310, null, '0,0,0', 1, '±äÆµÉèÖÃÆµÂÊ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (22, null, '0,0,0', 1, '±äÆµÔËÐÐÆµÂÊ', null);
+values (2311, null, '0,0,0', 1, '±äÆµÔËÐÐÆµÂÊ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (23, null, '0,0,0', 2, '¹¦Í¼²É¼¯¼ä¸ô', null);
+values (2312, null, '0,0,0', 2, '¹¦Í¼²É¼¯¼ä¸ô', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (24, null, '0,0,0', 2, '¹¦Í¼ÉèÖÃµãÊý', null);
+values (2313, null, '0,0,0', 2, '¹¦Í¼ÉèÖÃµãÊý', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (25, null, '0,0,0', 2, '¹¦Í¼Êµ²âµãÊý', null);
+values (2314, null, '0,0,0', 2, '¹¦Í¼Êµ²âµãÊý', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (26, null, '0,0,0', 2, '¹¦Í¼²É¼¯Ê±¼ä', null);
+values (2315, null, '0,0,0', 2, '¹¦Í¼²É¼¯Ê±¼ä', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (27, null, '0,0,0', 2, '³å´Î', null);
+values (2316, null, '0,0,0', 2, '³å´Î', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (28, null, '0,0,0', 2, '³å³Ì', null);
+values (2317, null, '0,0,0', 2, '³å³Ì', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (29, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-Î»ÒÆ', null);
+values (2318, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-Î»ÒÆ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (30, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-ÔØºÉ', null);
+values (2319, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-ÔØºÉ', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (31, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-µçÁ÷', null);
+values (2320, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-µçÁ÷', null);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (32, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-¹¦ÂÊ', null);
+values (2321, null, '0,0,0', 2, '¹¦Í¼Êý¾Ý-¹¦ÂÊ', null);
 
 
 /*==============================================================*/

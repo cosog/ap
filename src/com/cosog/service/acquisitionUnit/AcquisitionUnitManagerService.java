@@ -224,9 +224,13 @@ private CommonDataService service;
 			
 			result_json.append("{\"id\":\"序号\",\"item\":\"名称\",\"value\":\"变量\"},");
 			
-			result_json.append("{\"id\":\"Server\",\"item\":\"\",\"value\":\"\"},");
+			result_json.append("{\"id\":\"基础信息\",\"item\":\"\",\"value\":\"\"},");
+			result_json.append("{\"id\":1,\"item\":\"协议名称\",\"value\":\""+driveConfig.getProtocolName()+"\"},");
+			result_json.append("{\"id\":2,\"item\":\"协议类型\",\"value\":\""+driveConfig.getVersion()+"\"},");
+			
+			result_json.append("{\"id\":\"服务器\",\"item\":\"\",\"value\":\"\"},");
 			result_json.append("{\"id\":1,\"item\":\"IP\",\"value\":\""+driveConfig.getServer().getIP()+"\"},");
-			result_json.append("{\"id\":2,\"item\":\"Port\",\"value\":\""+driveConfig.getServer().getPort()+"\"},");
+			result_json.append("{\"id\":2,\"item\":\"端口\",\"value\":\""+driveConfig.getServer().getPort()+"\"},");
 			
 			result_json.append("{\"id\":\"上行主题\",\"item\":\"\",\"value\":\"\"},");
 			result_json.append("{\"id\":1,\"item\":\"上行数据\",\"value\":\""+driveConfig.getTopic().getUp().getNormData()+"\"},");

@@ -76,12 +76,6 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	CreateProtocolConfigInfoTable(true);
-                                },
-                                beforeCollapse: function (panel, eOpts) {
-                                	CreateProtocolConfigInfoTable(true);
-                                },
-                                expand: function (panel, eOpts) {
-                                	CreateProtocolConfigInfoTable(true);
                                 }
                             }
                         },{
@@ -93,6 +87,9 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             html:'<div class="AcquisitionUnitConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionUnitConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                	if(protocolConfigHandsontableHelper!=null && acquisitionUnitConfigHandsontableHelper!=null){
+                                		CreateAcquisitionUnitConfigInfoTable(false);
+                                	}
                                 }
                             }
                         },{
@@ -106,22 +103,19 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                             html:'<div class="AcquisitionGroupConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="AcquisitionGroupConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                },
-                                beforeCollapse: function (panel, eOpts) {
-                                	CreateProtocolConfigInfoTable(true);
-                                },
-                                expand: function (panel, eOpts) {
-                                	CreateProtocolConfigInfoTable(true);
+                                	if(protocolConfigHandsontableHelper!=null && acquisitionUnitConfigHandsontableHelper!=null){
+                                		CreateAcquisitionGroupConfigInfoTable(false);
+                                	}
                                 }
                             }
                         }],
                         listeners: {
-                            beforeCollapse: function (panel, eOpts) {
-                            	CreateProtocolConfigInfoTable(true);
-                            },
-                            expand: function (panel, eOpts) {
-                            	CreateProtocolConfigInfoTable(true);
-                            }
+//                            beforeCollapse: function (panel, eOpts) {
+//                            	CreateProtocolConfigInfoTable(true);
+//                            },
+//                            expand: function (panel, eOpts) {
+//                            	CreateProtocolConfigInfoTable(true);
+//                            }
                         }
                     },{
                         region: 'center',
@@ -130,6 +124,13 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                         html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            	if(protocolConfigHandsontableHelper!=null && protocolConfigItemsHandsontableHelper!=null){
+                            		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
+                                	if(ScadaDriverModbusConfigSelectRow!=''){
+                                		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
+                                		CreateDriverConfigItemsInfoTable(protocolConfigData[7]);
+                                	}
+                            	}
                             }
                         }
                     }]
@@ -186,7 +187,7 @@ function CreateProtocolConfigInfoTable(isNew){
 	            for(var i=0;i<result.columns.length;i++){
 	            	colHeaders+="'"+result.columns[i].header+"'";
 	            	if(result.columns[i].dataIndex.toUpperCase()==="ProtocolType".toUpperCase()){
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu','private-kd93','private-lq1000']}";
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['modbus-tcp', 'modbus-rtu']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="StoreMode".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:['大端', '小端']}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="SignInPrefix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="SignInSuffix".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="HeartbeatPrefix".toUpperCase()){
@@ -658,19 +659,21 @@ var ProtocolConfigItemsHandsontableHelper = {
 //} 
 
 function CreateKafkaConfigInfoTable(){
+	if(kafkaProtocolConfigHandsontableHelper!=null){
+//		kafkaProtocolConfigHandsontableHelper.clearContainer();
+		kafkaProtocolConfigHandsontableHelper.hot.destroy();
+		kafkaProtocolConfigHandsontableHelper=null;
+	}
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getKafkaDriverConfigData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
-			
-			
 			if(kafkaProtocolConfigHandsontableHelper==null){
 				CreateKafkaConfigItemsInfoTable(result);
 			}else{
 				kafkaProtocolConfigHandsontableHelper.hot.loadData(result.totalRoot);
 			}
-			
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -802,7 +805,12 @@ var KafkaProtocolConfigHandsontableHelper = {
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
-	                        "row": 13,
+	                        "row": 7,
+	                        "col": 0,
+	                        "rowspan": 1,
+	                        "colspan": 3
+	                    },{
+	                        "row": 16,
 	                        "col": 0,
 	                        "rowspan": 1,
 	                        "colspan": 3
@@ -814,18 +822,27 @@ var KafkaProtocolConfigHandsontableHelper = {
 	                    if (visualColIndex ==0) {
 	                    	cellProperties.readOnly = true;
 		                }
-	                    if (visualRowIndex ==0 || visualRowIndex ==1 || visualRowIndex ==4 || visualRowIndex ==11) {
+	                    if (visualRowIndex ==0 || visualRowIndex ==1 || visualRowIndex ==4 || visualRowIndex ==7 || visualRowIndex ==16) {
 	                    	cellProperties.readOnly = true;
 	                    }
 						
 						if (visualColIndex==1
 								&&( (visualRowIndex>=2&&visualRowIndex<=3) 
-										|| (visualRowIndex>=5&&visualRowIndex<=12)
-										|| (visualRowIndex>=14&&visualRowIndex<=37)
+										|| (visualRowIndex>=5&&visualRowIndex<=6) 
+										|| (visualRowIndex>=8&&visualRowIndex<=15)
+										|| (visualRowIndex>=17&&visualRowIndex<=40)
 							)) {
 							cellProperties.renderer = kafkaProtocolConfigHandsontableHelper.addContentReadOnlyBg;
 							cellProperties.readOnly = true;
 		                }
+						
+	                    if (visualColIndex === 2 && visualRowIndex===3) {
+	                    	this.type = 'dropdown';
+	                    	this.source = ['kafka-2.7','kafka-2.6', 'kafka-2.5','kafka-2.4','kafka-2.3','kafka-2.2', 'kafka-2.1','kafka-2.0','kafka-1.1','kafka-1.0','kafka-0.11'];
+	                    	this.strict = true;
+	                    	this.allowInvalid = false;
+	                    }
+						
 	                    return cellProperties;
 	                },
 	                afterChange:function(changes, source){}
@@ -833,8 +850,6 @@ var KafkaProtocolConfigHandsontableHelper = {
 	        }
 	        kafkaProtocolConfigHandsontableHelper.getData = function (data) {
 	            kafkaProtocolConfigHandsontableHelper.get_data = data;
-	            
-	            
 	            var totalRoot = data.totalRoot;
 	            kafkaProtocolConfigHandsontableHelper.sum = totalRoot.length;
 	            kafkaProtocolConfigHandsontableHelper.updateArray();
@@ -911,46 +926,48 @@ function SaveScadaKafkaDriverConfigData(){
 	var protocolConfigData=kafkaProtocolConfigHandsontableHelper.hot.getData();
 	var configInfo={};
 	var KafkaData={};
+	KafkaData.ProtocolName=protocolConfigData[2][2];
+	KafkaData.Version=protocolConfigData[3][2];
 	KafkaData.Server={};
-	KafkaData.Server.IP=protocolConfigData[2][2];
-	KafkaData.Server.Port=parseInt(protocolConfigData[3][2]);
+	KafkaData.Server.IP=protocolConfigData[5][2];
+	KafkaData.Server.Port=parseInt(protocolConfigData[6][2]);
 	
 	KafkaData.Topic={};
 	KafkaData.Topic.Up={};
-	KafkaData.Topic.Up.NormData=protocolConfigData[5][2];
-	KafkaData.Topic.Up.RawData=protocolConfigData[6][2];
-	KafkaData.Topic.Up.Config=protocolConfigData[7][2];
-	KafkaData.Topic.Up.Model=protocolConfigData[8][2];
-	KafkaData.Topic.Up.Freq=protocolConfigData[9][2];
-	KafkaData.Topic.Up.RTC=protocolConfigData[10][2];
-	KafkaData.Topic.Up.Online=protocolConfigData[11][2];
-	KafkaData.Topic.Up.RunStatus=protocolConfigData[12][2];
+	KafkaData.Topic.Up.NormData=protocolConfigData[8][2];
+	KafkaData.Topic.Up.RawData=protocolConfigData[9][2];
+	KafkaData.Topic.Up.Config=protocolConfigData[10][2];
+	KafkaData.Topic.Up.Model=protocolConfigData[11][2];
+	KafkaData.Topic.Up.Freq=protocolConfigData[12][2];
+	KafkaData.Topic.Up.RTC=protocolConfigData[13][2];
+	KafkaData.Topic.Up.Online=protocolConfigData[14][2];
+	KafkaData.Topic.Up.RunStatus=protocolConfigData[15][2];
 	
 	KafkaData.Topic.Down={};
-	KafkaData.Topic.Down.Model=protocolConfigData[14][2];
-	KafkaData.Topic.Down.Model_FluidPVT=protocolConfigData[15][2];
-	KafkaData.Topic.Down.Model_Reservoir=protocolConfigData[16][2];
-	KafkaData.Topic.Down.Model_WellboreTrajectory=protocolConfigData[17][2];
-	KafkaData.Topic.Down.Model_RodString=protocolConfigData[18][2];
-	KafkaData.Topic.Down.Model_TubingString=protocolConfigData[19][2];
-	KafkaData.Topic.Down.Model_Pump=protocolConfigData[20][2];
-	KafkaData.Topic.Down.Model_TailtubingString=protocolConfigData[21][2];
-	KafkaData.Topic.Down.Model_CasingString=protocolConfigData[22][2];
-	KafkaData.Topic.Down.Model_PumpingUnit=protocolConfigData[23][2];
-	KafkaData.Topic.Down.Model_SystemEfficiency=protocolConfigData[24][2];
-	KafkaData.Topic.Down.Model_Production=protocolConfigData[25][2];
-	KafkaData.Topic.Down.Model_FeatureDB=protocolConfigData[26][2];
-	KafkaData.Topic.Down.Model_CalculationMethod=protocolConfigData[27][2];
-	KafkaData.Topic.Down.Model_ManualIntervention=protocolConfigData[28][2];
-	KafkaData.Topic.Down.Config=protocolConfigData[29][2];
-	KafkaData.Topic.Down.StartRPC=protocolConfigData[30][2];
-	KafkaData.Topic.Down.StopRPC=protocolConfigData[31][2];
-	KafkaData.Topic.Down.DogRestart=protocolConfigData[32][2];
-	KafkaData.Topic.Down.Freq=protocolConfigData[33][2];
-	KafkaData.Topic.Down.RTC=protocolConfigData[34][2];
-	KafkaData.Topic.Down.Req=protocolConfigData[35][2];
-	KafkaData.Topic.Down.A9=protocolConfigData[36][2];
-	KafkaData.Topic.Down.AC=protocolConfigData[37][2];
+	KafkaData.Topic.Down.Model=protocolConfigData[17][2];
+	KafkaData.Topic.Down.Model_FluidPVT=protocolConfigData[18][2];
+	KafkaData.Topic.Down.Model_Reservoir=protocolConfigData[19][2];
+	KafkaData.Topic.Down.Model_WellboreTrajectory=protocolConfigData[20][2];
+	KafkaData.Topic.Down.Model_RodString=protocolConfigData[21][2];
+	KafkaData.Topic.Down.Model_TubingString=protocolConfigData[22][2];
+	KafkaData.Topic.Down.Model_Pump=protocolConfigData[23][2];
+	KafkaData.Topic.Down.Model_TailtubingString=protocolConfigData[24][2];
+	KafkaData.Topic.Down.Model_CasingString=protocolConfigData[25][2];
+	KafkaData.Topic.Down.Model_PumpingUnit=protocolConfigData[26][2];
+	KafkaData.Topic.Down.Model_SystemEfficiency=protocolConfigData[27][2];
+	KafkaData.Topic.Down.Model_Production=protocolConfigData[28][2];
+	KafkaData.Topic.Down.Model_FeatureDB=protocolConfigData[29][2];
+	KafkaData.Topic.Down.Model_CalculationMethod=protocolConfigData[30][2];
+	KafkaData.Topic.Down.Model_ManualIntervention=protocolConfigData[31][2];
+	KafkaData.Topic.Down.Config=protocolConfigData[32][2];
+	KafkaData.Topic.Down.StartRPC=protocolConfigData[33][2];
+	KafkaData.Topic.Down.StopRPC=protocolConfigData[34][2];
+	KafkaData.Topic.Down.DogRestart=protocolConfigData[35][2];
+	KafkaData.Topic.Down.Freq=protocolConfigData[36][2];
+	KafkaData.Topic.Down.RTC=protocolConfigData[37][2];
+	KafkaData.Topic.Down.Req=protocolConfigData[38][2];
+	KafkaData.Topic.Down.A9=protocolConfigData[39][2];
+	KafkaData.Topic.Down.AC=protocolConfigData[40][2];
 
 	Ext.Ajax.request({
 		method:'POST',

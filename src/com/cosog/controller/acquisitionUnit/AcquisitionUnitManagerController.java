@@ -627,6 +627,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				type = new TypeToken<KafkaConfig>() {}.getType();
 				driveConfig=gson.fromJson(driverConfigData, type);
 			}
+			driveConfig.setProtocolName(KafkaConfigSaveData.getProtocolName());
+			driveConfig.setVersion(KafkaConfigSaveData.getVersion());
 			driveConfig.setServer(KafkaConfigSaveData.getServer());
 			driveConfig.setTopic(KafkaConfigSaveData.getTopic());
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));

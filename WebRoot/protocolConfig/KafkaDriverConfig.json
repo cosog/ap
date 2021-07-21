@@ -1,6 +1,7 @@
 {
-    "ProtocolName": "Kafka协议",
+    "ProtocolName": "A11-kafka",
     "ProtocolCode": "KafkaDrive",
+    "Version":"kafka-2.7",
     "Sort": 8,
     "Server": {
         "IP": "39.99.42.182",

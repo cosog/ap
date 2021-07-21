@@ -5,6 +5,8 @@ public class KafkaConfig {
 	private String ProtocolName;
 
     private String ProtocolCode;
+    
+    private String Version;
 
     private int Sort;
 
@@ -345,5 +347,12 @@ public class KafkaConfig {
 	    public Down getDown(){
 	        return this.Down;
 	    }
+	}
+
+	public String getVersion() {
+		return Version;
+	}
+	public void setVersion(String version) {
+		Version = version;
 	}
 }

@@ -2,22 +2,22 @@
 /* 初始化tbl_acq_group_conf数据                                          */
 /*==============================================================*/
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
-values (1, 'group1', '抽油机离散数据', '运行状态、电参、频率、压力、温度等数据', 300, 300, 'A11协议');
+values (1, 'group1', '抽油机离散数据', '运行状态、电参、频率、压力、温度等数据', 300, 300, 'A11-Modbus');
 
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
-values (2, 'group2', '抽油机功图数据', '冲程、冲次以及位移、载荷、功率、电流曲线数据', 3600, 3600, 'A11协议');
+values (2, 'group2', '抽油机功图数据', '冲程、冲次以及位移、载荷、功率、电流曲线数据', 3600, 3600, 'A11-Modbus');
 
 /*==============================================================*/
 /* 初始化tbl_acq_unit_conf数据                                    */
 /*==============================================================*/
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
-values (1, 'type1', '抽油机全部数据', '功图数据和离散数据', 'A11协议');
+values (1, 'type1', '抽油机全部数据', '功图数据和离散数据', 'A11-Modbus');
 
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
-values (2, 'type2', '抽油机离散数据', '运行状态、电参、频率、压力、温度等数据', 'A11协议');
+values (2, 'type2', '抽油机离散数据', '运行状态、电参、频率、压力、温度等数据', 'A11-Modbus');
 
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
-values (3, 'type3', '抽油机功图数据', '冲程、冲次以及位移、载荷、功率、电流曲线数据', 'A11协议');
+values (3, 'type3', '抽油机功图数据', '冲程、冲次以及位移、载荷、功率、电流曲线数据', 'A11-Modbus');
 
 /*==============================================================*/
 /* 初始化tbl_acq_item2group_conf数据                                          */

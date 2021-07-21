@@ -50,6 +50,8 @@ public class EquipmentDriverServerTask {
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		String allOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
+		String probeUrl=Config.getInstance().configFile.getDriverConfig().getProbe();
 //		String path="";
 //		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 //		path=stringManagerUtils.getFilePath("test1.json","test/");
@@ -75,7 +77,6 @@ public class EquipmentDriverServerTask {
 		initServerConfig();
 		initProtocolConfig("","");
 		initDriverAcquisitionInfoConfig(null,"");
-		String probeUrl=Config.getInstance().configFile.getDriverConfig().getProbe();
 		do{
 			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
 			type = new TypeToken<DriverProbeResponse>() {}.getType();
@@ -90,6 +91,8 @@ public class EquipmentDriverServerTask {
 				if(!driverProbeResponse.getIDInitStatus()){
 					initDriverAcquisitionInfoConfig(null,"");
 				}
+			}else{
+				StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8");
 			}
 			Thread.sleep(1000*1);
 		}while(true);

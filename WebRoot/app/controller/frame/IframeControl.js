@@ -320,6 +320,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			loadPCPRPMAnalysisSingleStatData();
 		}
 	}else if(module_Code=="FESDiagramQuery"){
+		
+		var GridPanel = Ext.getCmp("GraphicalQueryWellListGridPanel_Id");
+		if(isNotVal(GridPanel)){
+			GridPanel.getStore().load();
+		}else{
+			Ext.create("AP.store.graphicalQuery.GraphicalQueryWellListStore");
+		}
 		loadSurfaceCardList(1);
 	}else if(module_Code == "DailyEvaluation"){
 		var tabPanel = Ext.getCmp("ProductionWellDailyAnalisisPanel");

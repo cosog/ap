@@ -86,8 +86,89 @@ public class DriverAPIController extends BaseController{
 	@Autowired
 	private CommonDataService commonDataService;
 	
+	@RequestMapping("/acq/allDeviceOffline")
+	public String AllDeviceOffline() throws Exception {
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		System.out.println(currentTime+"：ad未运行，所有井离线");
+		String protocols="";
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			protocols+="'"+modbusProtocolConfig.getProtocol().get(i).getCode()+"'";
+			if(i<modbusProtocolConfig.getProtocol().size()-1){
+				protocols+=",";
+			}
+		}
+		if(StringManagerUtils.isNotNull(protocols)){
+			String sql="select t.wellname ,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
+					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
+					+ " where t.id=t2.wellid"
+					+ " and t.protocolcode in("+protocols+")"
+					+ " and t2.commstatus=1";
+			List list = this.commonDataService.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj=(Object[]) list.get(i);
+				CommResponseData commResponseData=null;
+				String commRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+obj[0]+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+					commRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"CommEfficiency\": {"
+							+ "\"Efficiency\": "+obj[4]+","
+							+ "\"Time\": "+obj[3]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
+							+ "}"
+							+ "},";
+				}	
+				commRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+currentTime+"\","
+						+ "\"CommStatus\":false"
+						+ "}"
+						+ "}";
+				String commResponse="";
+				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+				type = new TypeToken<CommResponseData>() {}.getType();
+				commResponseData=gson.fromJson(commResponse, type);
+				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.acqTime=to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
+				String updateRunRangeClobSql="";
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+					updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+				}
+				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(StringManagerUtils.isNotNull(updateRunRangeClobSql)){
+					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					int result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
+				}
+			}
+		}
+		
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/acq/online")
-	public String acqOnlineData() throws Exception {
+	public String AcqOnlineData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		Gson gson=new Gson();
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
@@ -100,7 +181,9 @@ public class DriverAPIController extends BaseController{
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
 					+ " where t.id=t2.wellid"
-					+ " and upper(t.protocolcode) not like '%KAFKA%' and t.signinid='"+acqOnline.getID()+"' and to_number(t.slave)="+acqOnline.getSlave();
+					+ " and upper(t.protocolcode) not like '%KAFKA%' "
+					+ " and upper(t.protocolcode) not like '%MQTT%' "
+					+ " and t.signinid='"+acqOnline.getID()+"' and to_number(t.slave)="+acqOnline.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -156,7 +239,7 @@ public class DriverAPIController extends BaseController{
 	}
 	
 	@RequestMapping("/acq/group")
-	public String acqGroupData() throws Exception{
+	public String AcqGroupData() throws Exception{
 		ServletInputStream ss = request.getInputStream();
 		Gson gson=new Gson();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
@@ -168,16 +251,18 @@ public class DriverAPIController extends BaseController{
 			String sql="select t.wellname ,t2.protocol"
 					+ " from TBL_WELLINFORMATION t,tbl_acq_unit_conf t2  "
 					+ " where t.unitcode=t2.unit_code"
-					+ " and upper(t.protocolcode) not like '%KAFKA%' and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
+					+ " and upper(t.protocolcode) not like '%KAFKA%' "
+					+ " and upper(t.protocolcode) not like '%MQTT%' "
+					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
 				String wellName=obj[0]+"";
 				String protocolName=obj[1]+"";
-				if("A11协议".equalsIgnoreCase(protocolName)){
-					this.dataProcessing_A11(acqGroup, protocolName);
+				if("A11-Modbus".equalsIgnoreCase(protocolName)){
+					this.DataProcessing_A11(acqGroup, protocolName);
 				}else{
-					this.dataProcessing_A11(acqGroup, protocolName);
+					this.DataProcessing_A11(acqGroup, protocolName);
 				}
 			}
 		}else{
@@ -192,7 +277,7 @@ public class DriverAPIController extends BaseController{
 		return null;
 	};
 	
-	public String dataProcessing_A11(AcqGroup acqGroup,String protocolName) throws Exception{
+	public String DataProcessing_A11(AcqGroup acqGroup,String protocolName) throws Exception{
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
@@ -280,7 +365,7 @@ public class DriverAPIController extends BaseController{
 					}
 					for(int i=0;acqGroup.getAddr()!=null && acqGroup.getValue()!=null  &&i<acqGroup.getAddr().size();i++){
 						for(int j=0;acqGroup.getValue().get(i)!=null && j<protocol.getItems().size();j++){
-							if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
+							if(acqGroup.getAddr().get(i)>0 && acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 								String itemName=protocol.getItems().get(j).getName();
 								if("RunStatus".equalsIgnoreCase(itemName)){//运行状态
 									acquisitionGroupResolutionData.setRunStatus(StringManagerUtils.objectToString(acqGroup.getValue().get(i).get(0), protocol.getItems().get(j).getIFDataType()));

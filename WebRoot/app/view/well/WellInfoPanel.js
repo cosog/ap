@@ -428,6 +428,10 @@ var WellInfoHandsontableHelper = {
 		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
 		                        	wellInfoHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
 		                        }
+		                        
+		                        if(params[1]=="protocolName" && params[3]=="Kafka协议"){
+		                        	wellInfoHandsontableHelper.hot.setDataAtCell(index, 6, '');
+		                        }
 
 		                        //仅当单元格发生改变的时候,id!=null,说明是更新
 		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {

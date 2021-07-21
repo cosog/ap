@@ -1,6 +1,6 @@
 {
     "Protocol": [{
-        "Name": "A11协议",
+        "Name": "A11-Modbus",
         "Code": "CNPCStandardDrive",
         "Type": "modbus-tcp",
         "StoreMode": 0,

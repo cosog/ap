@@ -8,7 +8,7 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
     maskElement: 'body',
     initComponent: function () {
         var me = this;
-        var GraphicalQueryWellListStore = Ext.create("AP.store.graphicalQuery.GraphicalQueryWellListStore");
+//        var GraphicalQueryWellListStore = Ext.create("AP.store.graphicalQuery.GraphicalQueryWellListStore");
         var org_Id = Ext.getCmp('leftOrg_Id').getValue();
         var wellListStore = new Ext.data.JsonStore({
             pageSize: defaultWellComboxSize,
@@ -159,7 +159,12 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
                     autoScroll: true,
                     html: '<div id="surfaceCardContainer" class="hbox"></div>',
                     listeners: {
-                        render: function (p, o, i, c) {
+                    	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    		var GridPanel = Ext.getCmp("GraphicalQueryWellListGridPanel_Id");
+                    		if(isNotVal(GridPanel)){
+                    			loadSurfaceCardList(1);
+                    		}
+                        },render: function (p, o, i, c) {
                             p.body.on('scroll', function () {
                                 var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
                                 if (diagramPage < totalPages) {

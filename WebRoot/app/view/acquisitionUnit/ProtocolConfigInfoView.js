@@ -512,8 +512,8 @@ function CreateDriverConfigItemsInfoTable(data){
 	var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'title'},"
 		 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}},"
 			+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
-			+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['byte','int16','uint16','float32','bcd','asc']}," 
-			+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string','bcd','asc']}," 
+			+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['byte','int16','uint16','float32','bcd']}," 
+			+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
 			+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 			+"{data:'unit'}," 
 			+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigItemsHandsontableHelper);}}," 
@@ -830,7 +830,7 @@ var KafkaProtocolConfigHandsontableHelper = {
 								&&( (visualRowIndex>=2&&visualRowIndex<=3) 
 										|| (visualRowIndex>=5&&visualRowIndex<=6) 
 										|| (visualRowIndex>=8&&visualRowIndex<=15)
-										|| (visualRowIndex>=17&&visualRowIndex<=40)
+										|| (visualRowIndex>=17&&visualRowIndex<=41)
 							)) {
 							cellProperties.renderer = kafkaProtocolConfigHandsontableHelper.addContentReadOnlyBg;
 							cellProperties.readOnly = true;
@@ -966,8 +966,9 @@ function SaveScadaKafkaDriverConfigData(){
 	KafkaData.Topic.Down.Freq=protocolConfigData[36][2];
 	KafkaData.Topic.Down.RTC=protocolConfigData[37][2];
 	KafkaData.Topic.Down.Req=protocolConfigData[38][2];
-	KafkaData.Topic.Down.A9=protocolConfigData[39][2];
-	KafkaData.Topic.Down.AC=protocolConfigData[40][2];
+	KafkaData.Topic.Down.Probe=protocolConfigData[39][2];
+	KafkaData.Topic.Down.A9=protocolConfigData[40][2];
+	KafkaData.Topic.Down.AC=protocolConfigData[41][2];
 
 	Ext.Ajax.request({
 		method:'POST',

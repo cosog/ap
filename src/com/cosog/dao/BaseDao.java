@@ -1346,12 +1346,12 @@ public class BaseDao extends HibernateDaoSupport {
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
 						String driverName=wellHandsontableChangedData.getUpdatelist().get(i).getProtocolName();
-						String driverCode="";
+						String protocolCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 							if( ( entry.getValue() instanceof KafkaConfig ) ){
 								KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 								if(driverName.equals(protocolConfig.getProtocolName())){
-									driverCode=protocolConfig.getProtocolCode();
+									protocolCode=protocolConfig.getProtocolCode();
 									break;
 								}
 							}else if( ( entry.getValue() instanceof ModbusProtocolConfig ) ){
@@ -1359,7 +1359,7 @@ public class BaseDao extends HibernateDaoSupport {
 								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
 									if(driverName.equals(protocolConfig.getName())){
-										driverCode=protocolConfig.getCode();
+										protocolCode=protocolConfig.getCode();
 										break;
 									}
 								}
@@ -1369,7 +1369,7 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getResName());
 						cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
 						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getLiftingTypeName());
-						cs.setString(5, driverCode);
+						cs.setString(5, protocolCode);
 						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getAcquisitionUnit());
 						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId());
 						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getSlave());
@@ -1383,7 +1383,7 @@ public class BaseDao extends HibernateDaoSupport {
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())
 								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSignInId()) 
 								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSlave()) 
-								&&StringManagerUtils.isNotNull(driverCode) 
+								&&StringManagerUtils.isNotNull(protocolCode) 
 								){
 							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName());
 						}
@@ -1394,12 +1394,12 @@ public class BaseDao extends HibernateDaoSupport {
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
 					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
 						String driverName=wellHandsontableChangedData.getInsertlist().get(i).getProtocolName();
-						String driverCode="";
+						String protocolCode="";
 						for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 							if( ( entry.getValue() instanceof KafkaConfig ) ){
 								KafkaConfig protocolConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 								if(driverName.equals(protocolConfig.getProtocolName())){
-									driverCode=protocolConfig.getProtocolCode();
+									protocolCode=protocolConfig.getProtocolCode();
 									break;
 								}
 							}else if( ( entry.getValue() instanceof ModbusProtocolConfig ) ){
@@ -1407,7 +1407,7 @@ public class BaseDao extends HibernateDaoSupport {
 								for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 									ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
 									if(driverName.equals(protocolConfig.getName())){
-										driverCode=protocolConfig.getCode();
+										protocolCode=protocolConfig.getCode();
 										break;
 									}
 								}
@@ -1417,7 +1417,7 @@ public class BaseDao extends HibernateDaoSupport {
 						cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getResName());
 						cs.setString(3, wellHandsontableChangedData.getInsertlist().get(i).getWellName());
 						cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getLiftingTypeName());
-						cs.setString(5, driverCode);
+						cs.setString(5, protocolCode);
 						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getAcquisitionUnit());
 						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getSignInId());
 						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getSlave());
@@ -1430,7 +1430,7 @@ public class BaseDao extends HibernateDaoSupport {
 						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())
 								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSignInId()) 
 								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSlave()) 
-								&&StringManagerUtils.isNotNull(driverCode) 
+								&&StringManagerUtils.isNotNull(protocolCode) 
 								){
 							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName());
 						}
@@ -3288,7 +3288,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(101,wellboreSliceClob);
 			
 			cs.setInt(102,kafkaUpData.getSignal());
-			cs.setInt(103,kafkaUpData.getTransferIntervel());
+			cs.setInt(103,kafkaUpData.getTransferInterval());
 			cs.setString(104,kafkaUpData.getVer());
 			cs.executeUpdate();
 		} catch (SQLException e) {
@@ -3732,7 +3732,7 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(2,kafkaUpRawData.getAcqTime());
 			cs.setString(3,kafkaUpRawData.getVer());
 			cs.setInt(4,kafkaUpRawData.getSignal());
-			cs.setInt(5,kafkaUpRawData.getTransferIntervel());
+			cs.setInt(5,kafkaUpRawData.getTransferInterval());
 			
 			cs.setClob(6,diagramClob_Interval);
 			cs.setClob(7,diagramClob_A);

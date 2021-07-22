@@ -38,14 +38,14 @@ import com.google.gson.reflect.TypeToken;
 public class KafkaServerTask {
 	public static  String HOST ="";
     public static  String[] TOPIC = {"Up-NormData","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
-    private static  String clientid = "apKafkaClient"+new Date().getTime();
+    private static  String clientid = "apKafkaClient"+StringManagerUtils.getMacAddress().replaceAll("-", "");
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;
 	
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
-		clientid = "apKafkaClient"+new Date().getTime();
+		clientid = "apKafkaClient"+StringManagerUtils.getMacAddress().replaceAll("-", "");
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
@@ -98,13 +98,12 @@ public class KafkaServerTask {
 	        	KafkaDataAnalysisThread kafkaDataAnalysisThread=new KafkaDataAnalysisThread(record);
 	        	kafkaDataAnalysisThread.start();
 	        }
-	            
 	    }
 	}
 	
 	public static void producerMsg(String topic,String title,String value){
 		if(StringManagerUtils.isNotNull(HOST)){
-			System.out.println("Kafka下行，topic："+topic+",title:"+title+",value:"+value);
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",Kafka下行，topic："+topic+",title:"+title+",value:"+value);
 			Properties props = new Properties();
 		    props.put("bootstrap.servers", HOST);
 		    //The "all" setting we have specified will result in blocking on the full commit of the record, the slowest but most durable setting.
@@ -141,7 +140,7 @@ public class KafkaServerTask {
 			this.record = record;
 		}
 		public void run(){
-			System.out.println("topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
+			System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+",kafka接收数据,"+"topic:"+record.topic()+",offset = "+record.offset()+", key = "+record.key()+", value = "+record.value());
 			Gson gson = new Gson();
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
 			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
@@ -338,7 +337,7 @@ public class KafkaServerTask {
 	    
 	    private String Key;
 	    
-	    private int TransferIntervel;
+	    private int TransferInterval;
 	    
 	    private Integer wellId;
 	    
@@ -756,11 +755,11 @@ public class KafkaServerTask {
 		public void setSignal(Integer signal) {
 			Signal = signal;
 		}
-		public int getTransferIntervel() {
-			return TransferIntervel;
+		public int getTransferInterval() {
+			return TransferInterval;
 		}
-		public void setTransferIntervel(int transferIntervel) {
-			TransferIntervel = transferIntervel;
+		public void setTransferInterval(int transferInterval) {
+			TransferInterval = transferInterval;
 		}
 		public float getIA() {
 			return IA;
@@ -835,7 +834,7 @@ public class KafkaServerTask {
 	    
 	    private String Key;
 	    
-	    private int TransferIntervel;
+	    private int TransferInterval;
 	    
 	    private List<Float> Interval;
 	    
@@ -927,12 +926,12 @@ public class KafkaServerTask {
 			I = i;
 		}
 
-		public int getTransferIntervel() {
-			return TransferIntervel;
+		public int getTransferInterval() {
+			return TransferInterval;
 		}
 
-		public void setTransferIntervel(int transferIntervel) {
-			TransferIntervel = transferIntervel;
+		public void setTransferInterval(int transferInterval) {
+			TransferInterval = transferInterval;
 		}
 	}
 	
@@ -948,7 +947,7 @@ public class KafkaServerTask {
 
 	    private int Signal;
 
-	    private int TransferIntervel;
+	    private int TransferInterval;
 
 	    private boolean CommStatus;
 
@@ -970,11 +969,11 @@ public class KafkaServerTask {
 	    public int getSignal(){
 	        return this.Signal;
 	    }
-	    public void setTransferIntervel(int TransferIntervel){
-	        this.TransferIntervel = TransferIntervel;
+	    public void setTransferInterval(int transferInterval){
+	        this.TransferInterval = transferInterval;
 	    }
-	    public int getTransferIntervel(){
-	        return this.TransferIntervel;
+	    public int getTransferInterval(){
+	        return this.TransferInterval;
 	    }
 	    public void setCommStatus(boolean CommStatus){
 	        this.CommStatus = CommStatus;
@@ -1008,7 +1007,7 @@ public class KafkaServerTask {
 
 	    private int Signal;
 
-	    private int TransferIntervel;
+	    private int TransferInterval;
 
 	    private boolean RunStatus;
 
@@ -1030,11 +1029,11 @@ public class KafkaServerTask {
 	    public int getSignal(){
 	        return this.Signal;
 	    }
-	    public void setTransferIntervel(int TransferIntervel){
-	        this.TransferIntervel = TransferIntervel;
+	    public void setTransferInterval(int TransferInterval){
+	        this.TransferInterval = TransferInterval;
 	    }
-	    public int getTransferIntervel(){
-	        return this.TransferIntervel;
+	    public int getTransferInterval(){
+	        return this.TransferInterval;
 	    }
 	    public void setRunStatus(boolean RunStatus){
 	        this.RunStatus = RunStatus;

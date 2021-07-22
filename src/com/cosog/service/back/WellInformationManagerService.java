@@ -400,17 +400,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String protocolName="";
-			String driverCode=obj[6]+"";
+			String protocolCode=obj[6]+"";
 			for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
 				if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
 					ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
-					if(driverCode.equals(protocolConfig.getCode())){
+					if(protocolCode.equals(protocolConfig.getCode())){
 						protocolName=protocolConfig.getName();
 						break;
 					}
 				}else if( ( entry.getValue() instanceof KafkaConfig ) ){
 					KafkaConfig driveConfig=(KafkaConfig)entry.getValue();
-					if(driverCode.equals(driveConfig.getProtocolCode())){
+					if(protocolCode.equals(driveConfig.getProtocolCode())){
 						protocolName=driveConfig.getProtocolName();
 						break;
 					}
@@ -475,11 +475,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String protocolName="";
-			String driverCode=obj[6]+"";
+			String protocolCode=obj[6]+"";
 			for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 				if(entry.getKey().toUpperCase().contains("KAFKA".toUpperCase())){
 					KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
-					if(driverCode.equals(driveConfig.getProtocolCode())){
+					if(protocolCode.equals(driveConfig.getProtocolCode())){
 						protocolName=driveConfig.getProtocolName();
 						break;
 					}
@@ -487,7 +487,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 					for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 						ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(j);
-						if(driverCode.equals(protocolConfig.getCode())){
+						if(protocolCode.equals(protocolConfig.getCode())){
 							protocolName=protocolConfig.getName();
 							break;
 						}

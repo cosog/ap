@@ -120,7 +120,7 @@ public class DriverAPIController extends BaseController{
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+obj[0]+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 					commRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
@@ -192,7 +192,7 @@ public class DriverAPIController extends BaseController{
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+obj[0]+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 					commRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
@@ -335,7 +335,7 @@ public class DriverAPIController extends BaseController{
 					String commRequest="{"
 							+ "\"AKString\":\"\","
 							+ "\"WellName\":\""+acquisitionGroupResolutionData.getWellName()+"\",";
-					if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+					if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 						commRequest+= "\"Last\":{"
 								+ "\"AcqTime\": \""+obj[1]+"\","
 								+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
@@ -531,7 +531,7 @@ public class DriverAPIController extends BaseController{
 						String tiemEffRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+acquisitionGroupResolutionData.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[9]+"")){
+						if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[9]))){
 							tiemEffRequest+= "\"Last\":{"
 									+ "\"AcqTime\": \""+obj[1]+"\","
 									+ "\"RunStatus\": "+("1".equals(obj[6]+"")?true:false)+","

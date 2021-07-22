@@ -70,7 +70,8 @@ driverConfig:
    server: http://8.130.30.138:19200/api/init/server
    protocol: http://8.130.30.138:19200/api/init/protocol
    id: http://8.130.30.138:19200/api/init/id
-   ctrl: http://8.130.30.138:19200/api/ctrl
+   readAddr: http://8.130.30.138:19200/api/read/addr
+   writeAddr: http://8.130.30.138:19200/api/write/addr
    probe: http://8.130.30.138:19200/api/probe/init
 others:
    cache: false

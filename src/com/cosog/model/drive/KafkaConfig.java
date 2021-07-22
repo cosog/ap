@@ -178,6 +178,8 @@ public class KafkaConfig {
 	    private String RTC;
 
 	    private String Req;
+	    
+	    private String Probe;
 
 	    private String A9;
 
@@ -326,6 +328,12 @@ public class KafkaConfig {
 		}
 		public void setStartRPC(String startRPC) {
 			StartRPC = startRPC;
+		}
+		public String getProbe() {
+			return Probe;
+		}
+		public void setProbe(String probe) {
+			Probe = probe;
 		}
 	}
 

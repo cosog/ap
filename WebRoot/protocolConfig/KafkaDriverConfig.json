@@ -41,6 +41,7 @@
             "Freq": "Down-ID-Freq",
             "RTC": "Down-ID-RTC",
             "Req": "Down-ID-Req",
+            "Probe": "Down-ID-Probe",
             "A9": "Down-App-A9",
             "AC": "Down-App-AC"
         }

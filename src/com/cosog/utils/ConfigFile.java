@@ -483,7 +483,8 @@ public class ConfigFile {
 		private String server;
 		private String protocol;
 		private String id;
-		private String ctrl;
+		private String readAddr;
+		private String writeAddr;
 		private String probe;
 		public String getServer() {
 			return server;
@@ -503,17 +504,23 @@ public class ConfigFile {
 		public void setId(String id) {
 			this.id = id;
 		}
-		public String getCtrl() {
-			return ctrl;
-		}
-		public void setCtrl(String ctrl) {
-			this.ctrl = ctrl;
-		}
 		public String getProbe() {
 			return probe;
 		}
 		public void setProbe(String probe) {
 			this.probe = probe;
+		}
+		public String getReadAddr() {
+			return readAddr;
+		}
+		public void setReadAddr(String readAddr) {
+			this.readAddr = readAddr;
+		}
+		public String getWriteAddr() {
+			return writeAddr;
+		}
+		public void setWriteAddr(String writeAddr) {
+			this.writeAddr = writeAddr;
 		}
 	}
 	

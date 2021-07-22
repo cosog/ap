@@ -524,7 +524,8 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 	
 	public String WellControlOperation_Mdubus(String protocolCode,String ID,String Slave,String itemCode,String controlValue){
 		String json="";
-		String url=Config.getInstance().configFile.getDriverConfig().getCtrl();
+		String url=Config.getInstance().configFile.getDriverConfig().getWriteAddr();
+		String readUrl=Config.getInstance().configFile.getDriverConfig().getReadAddr();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
 			EquipmentDriverServerTask.loadProtocolConfig();
@@ -555,7 +556,15 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 					+ "\"Addr\":"+addr+","
 					+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
 					+ "}";
+			String readJson="{"
+					+ "\"ID\":\""+ID+"\","
+					+ "\"Slave\":"+Slave+","
+					+ "\"Addr\":"+addr+""
+					+ "}";
 			StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
+			String readResult=StringManagerUtils.sendPostMethod(readUrl, readJson,"utf-8");
+			
+			
 		}
 		json = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
 		return json;

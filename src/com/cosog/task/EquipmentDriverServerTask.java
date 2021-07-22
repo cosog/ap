@@ -166,6 +166,7 @@ public class EquipmentDriverServerTask {
 					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
 						initProtocol=new InitProtocol(modbusProtocolConfig.getProtocol().get(i));
 						initProtocol.setMethod(method);
+						System.out.println("协议初始化："+gson.toJson(initProtocol));
 						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initProtocol),"utf-8");
 						break;
 					}

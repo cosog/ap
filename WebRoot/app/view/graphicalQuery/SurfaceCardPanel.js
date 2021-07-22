@@ -164,7 +164,8 @@ Ext.define("AP.view.graphicalQuery.SurfaceCardPanel", { // 定义光杆功图查
                     		if(isNotVal(GridPanel)){
                     			loadSurfaceCardList(1);
                     		}
-                        },render: function (p, o, i, c) {
+                        },
+                        render: function (p, o, i, c) {
                             p.body.on('scroll', function () {
                                 var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
                                 if (diagramPage < totalPages) {

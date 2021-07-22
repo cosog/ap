@@ -266,8 +266,9 @@ private CommonDataService service;
 			result_json.append("{\"id\":20,\"item\":\"下行频率\",\"value\":\""+driveConfig.getTopic().getDown().getFreq()+"\"},");
 			result_json.append("{\"id\":21,\"item\":\"下行时钟\",\"value\":\""+driveConfig.getTopic().getDown().getRTC()+"\"},");
 			result_json.append("{\"id\":22,\"item\":\"下行请求读驱动配置\",\"value\":\""+driveConfig.getTopic().getDown().getReq()+"\"},");
-			result_json.append("{\"id\":23,\"item\":\"下行程序A9\",\"value\":\""+driveConfig.getTopic().getDown().getA9()+"\"},");
-			result_json.append("{\"id\":24,\"item\":\"下行程序AC\",\"value\":\""+driveConfig.getTopic().getDown().getAC()+"\"}");
+			result_json.append("{\"id\":23,\"item\":\"下行状态检测\",\"value\":\""+driveConfig.getTopic().getDown().getProbe()+"\"},");
+			result_json.append("{\"id\":24,\"item\":\"下行程序A9\",\"value\":\""+driveConfig.getTopic().getDown().getA9()+"\"},");
+			result_json.append("{\"id\":25,\"item\":\"下行程序AC\",\"value\":\""+driveConfig.getTopic().getDown().getAC()+"\"}");
 		}
 		result_json.append("]");
 		result_json.append("}");

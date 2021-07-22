@@ -2,6 +2,7 @@ package com.cosog.utils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -1024,6 +1025,16 @@ public class StringManagerUtils {
 		 return sum;
 	 }
 	 
+	 public static boolean stringToBoolean(String value){
+		 boolean result=false;
+		 try{
+			 result=Boolean.parseBoolean(value);
+		 }catch(Exception e){
+			 return false;
+		 }
+		 return result;
+	 }
+	 
 	 public static int stringToInteger(String value){
 		 int sum=0;
 		 if(StringManagerUtils.isNotNull(value)){
@@ -1703,14 +1714,19 @@ public class StringManagerUtils {
 	    
 	 // 把json格式的字符串写到文件
 	    public static boolean writeFile(String filePath, String sets) {
-	        FileWriter fw;
+//	        FileWriter fw;
 	        try {
-	            fw = new FileWriter(filePath);
-	            PrintWriter out = new PrintWriter(fw);
-	            out.write(sets);
-	            out.println();
-	            fw.close();
-	            out.close();
+//	            fw = new FileWriter(filePath);
+////	            PrintWriter out = new PrintWriter(fw);
+//	            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath),"UTF-8")));
+//	            out.write(sets);
+//	            out.println();
+//	            fw.close();
+//	            out.close();
+	        	OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filePath, true),"UTF-8");
+	        	osw.write(sets);
+	        	osw.flush();
+	        	osw.close();
 	            return true;
 	        } catch (IOException e) {
 	            e.printStackTrace();
@@ -2284,9 +2300,11 @@ public class StringManagerUtils {
 	    		result=StringManagerUtils.stringToDouble(obj+"")+"";
 	    	}else if("string".equalsIgnoreCase(dataType)){
 	    		result=obj+"";
-	    	}else if("bcd".equalsIgnoreCase(dataType)){
-	    		result=obj+"";
+	    	}else if("bool".equalsIgnoreCase(dataType)||"boolean".equalsIgnoreCase(dataType)){
+	    		result=StringManagerUtils.stringToBoolean(obj+"")+"";
 	    	}else if("asc".equalsIgnoreCase(dataType)){
+	    		result=obj+"";
+	    	}else if("bcd".equalsIgnoreCase(dataType)){
 	    		result=obj+"";
 	    	}
 	    	return result;

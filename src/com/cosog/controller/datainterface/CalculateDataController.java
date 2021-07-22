@@ -41,13 +41,17 @@ import com.cosog.model.calculate.TotalAnalysisRequestData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.calculate.TotalCalculateRequestData;
 import com.cosog.model.calculate.TotalCalculateResponseData;
+import com.cosog.model.drive.KafkaConfig;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
+import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.task.KafkaServerTask;
 import com.cosog.thread.calculate.CalculateThread;
 import com.cosog.thread.calculate.TotalCalculateThread;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
+import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
@@ -426,91 +430,99 @@ public class CalculateDataController extends BaseController{
 	}
 	
 	@RequestMapping("/pubSubModelCommCalculation")
-	public String PubSubModelCommCalculation() throws ParseException, SQLException, IOException{
+	public String PubSubModelCommCalculation() throws ParseException, SQLException, IOException, InterruptedException{
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		Gson gson = new Gson();
 		boolean acqTimeChange=false;
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		
+		KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
 		String sql="select t.wellid,"
 				+ " comm.wellName,comm.commstatus,"
 				+ " to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as lastacqTime,"
-				+ " t.commstatus as lastcCommstatus,t.commtime as lastCommtime,t.commtimeefficiency as lastCommtimeefficiency,t.commrange as lastCommrange"
+				+ " t.commstatus as lastcCommstatus,t.commtime as lastCommtime,t.commtimeefficiency as lastCommtimeefficiency,t.commrange as lastCommrange,"
+				+ " comm.signinid"
 				+ " from tbl_rpc_discrete_latest t,viw_commstatus comm"
-				+ " where t.wellid=comm.id";
+				+ " where t.wellid=comm.id"
+				+ " and t.commstatus=1 and comm.commstatus=0";
+		
 //		sql+=" and t.wellid=106";
 		List<?> list = calculateDataService.findCallSql(sql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			//当离线时进行通信计算
-			if("0".equals(obj[2]+"")&&"1".equals(obj[4]+"")){
-				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-				String commRequest="{"
-						+ "\"AKString\":\"\","
-						+ "\"WellName\":\""+obj[1]+"\",";
-				if(StringManagerUtils.isNotNull(obj[3]+"")&&StringManagerUtils.isNotNull(obj[7]+"")){
-					commRequest+= "\"Last\":{"
-							+ "\"AcqTime\": \""+obj[3]+"\","
-							+ "\"CommStatus\": "+(("1".equals(obj[4]+""))?true:false)+","
-							+ "\"CommEfficiency\": {"
-							+ "\"Efficiency\": "+obj[6]+","
-							+ "\"Time\": "+obj[5]+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[7]))+""
+			String signinid=obj[8]+"";
+			String probeTopic=driveConfig.getTopic().getDown().getProbe().replace("-ID-", "-"+signinid+"-");
+			KafkaServerTask.producerMsg(probeTopic, "下行状态检测", "");
+		}
+		if(list.size()>0){
+			Thread.sleep(1000*30);
+			list = calculateDataService.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj = (Object[]) list.get(i);
+				//当离线时进行通信计算
+				if("0".equals(obj[2]+"")&&"1".equals(obj[4]+"")){
+					String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+					String commRequest="{"
+							+ "\"AKString\":\"\","
+							+ "\"WellName\":\""+obj[1]+"\",";
+					if(StringManagerUtils.isNotNull(obj[3]+"")&&StringManagerUtils.isNotNull(obj[7]+"")){
+						commRequest+= "\"Last\":{"
+								+ "\"AcqTime\": \""+obj[3]+"\","
+								+ "\"CommStatus\": "+(("1".equals(obj[4]+""))?true:false)+","
+								+ "\"CommEfficiency\": {"
+								+ "\"Efficiency\": "+obj[6]+","
+								+ "\"Time\": "+obj[5]+","
+								+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[7]))+""
+								+ "}"
+								+ "},";
+					}	
+					
+					commRequest+= "\"Current\": {"
+							+ "\"AcqTime\":\""+acqTime+"\","
+							+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
 							+ "}"
-							+ "},";
-				}	
-				
-				commRequest+= "\"Current\": {"
-						+ "\"AcqTime\":\""+acqTime+"\","
-						+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
-						+ "}"
-						+ "}";
-				
-				String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
-				java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
-				CommResponseData commResponseData=gson.fromJson(commResponse, type);
-				String commRange="";
-				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String currentDate=acqTime.split(" ")[0];
-					String lastDate=(obj[3]+"").split(" ")[0];
-					String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
-							+ "t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"
-							+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
-							+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency();
-							//+ ",t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
-					commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
-//					if(!currentDate.equals(lastDate)){//如果跨天
-//						updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getDaily().getCommStatus()?1:0)+","
-//								+ "t.commtime="+commResponseData.getDaily().getCommEfficiency().getTime()+","
-//								+ "t.commtimeefficiency="+commResponseData.getDaily().getCommEfficiency().getEfficiency();
-//								//+ ",t.commrange='"+commResponseData.getDaily().getCommEfficiency().getRangeString()+"'";
-//						commRange=commResponseData.getDaily().getCommEfficiency().getRangeString();
-//					}
-					//如果通信状态改变
-//					if(!(obj[4]+"").equals(obj[2]+"")){
-//						updateSql+=",t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
-//						acqTimeChange=true;
-//					}
-					//如果跨天 重置运行状态
-					if(!StringManagerUtils.isNotNull(obj[3]+"") || !currentDate.equals(lastDate) ){
-//						if(acqTimeChange)
-							updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
+							+ "}";
+					
+					String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+					java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
+					CommResponseData commResponseData=gson.fromJson(commResponse, type);
+					String commRange="";
+					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+						String currentDate=acqTime.split(" ")[0];
+						String lastDate=(obj[3]+"").split(" ")[0];
+						String updateSql="update tbl_rpc_discrete_latest t set t.commstatus="+(commResponseData.getCurrent().getCommStatus()?1:0)+","
+								+ "t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"
+								+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
+								+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency();
+								//+ ",t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+						commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+						//如果跨天 重置运行状态
+						if(!StringManagerUtils.isNotNull(obj[3]+"") || !currentDate.equals(lastDate) ){
+//							if(acqTimeChange)
+								updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
+						}
+						
+						updateSql+= " where t.wellid="+obj[0];
+						int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
+						
+						//更新clob类型数据  通信区间
+						String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellid="+obj[0];
+						List<String> clobCont=new ArrayList<String>();
+						clobCont.add(commRange);
+						result=calculateDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 					}
-					
-					updateSql+= " where t.wellid="+obj[0];
-					int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
-					
-					//更新clob类型数据  通信区间
-					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellid="+obj[0];
-					List<String> clobCont=new ArrayList<String>();
-					clobCont.add(commRange);
-					result=calculateDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 				}
 			}
+			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+			infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+			
+			infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+			infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 		}
-		infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
-		infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
-		
-		infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
-		infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");

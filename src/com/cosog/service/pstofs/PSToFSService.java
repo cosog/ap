@@ -1128,7 +1128,7 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ "t.AcqTime=to_date('"+transferDiscrete.getAcquisitionTime()+"','yyyy-mm-dd hh24:mi:ss')"
 				+ ",t.RunTimeEfficiency= "+transferDiscrete.getRunEfficiency().getEfficiency()
 				+ " ,t.RunTime= "+transferDiscrete.getRunEfficiency().getTime()
-				+ " ,t.RunRange= '"+transferDiscrete.getRunEfficiency().getRangeString()+"'"
+//				+ " ,t.RunRange= '"+transferDiscrete.getRunEfficiency().getRangeString()+"'"
 				+ " ,t.todayKWattH= "+transferDiscrete.getTodayEnergy().getWatt()
 				+ " ,t.todayPKWattH= "+transferDiscrete.getTodayEnergy().getPWatt()
 				+ " ,t.todayNKWattH= "+transferDiscrete.getTodayEnergy().getNWatt()
@@ -1197,7 +1197,14 @@ public class PSToFSService<T> extends BaseService<T> {
 				+ " ,t.VcDownLimit= "+transferDiscrete.getElectricLimit().getV().getC().getMin()+""
 				+ " ,t.VcZero= "+transferDiscrete.getElectricLimit().getV().getC().getZero()+""
 				+ " where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+transferDiscrete.getWellName()+"') ";
-		return this.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+		int result= this.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+		
+		String updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+transferDiscrete.getWellName()+"') ";
+		List<String> clobCont=new ArrayList<String>();
+		clobCont.add(transferDiscrete.getRunEfficiency().getRangeString());
+		result=this.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
+		
+		return result;
 	}
 	
 	public boolean saveMQTTTransferElecDailyData(TransferDaily transferDaily) throws SQLException, ParseException{

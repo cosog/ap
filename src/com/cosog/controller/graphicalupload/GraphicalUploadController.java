@@ -1195,7 +1195,7 @@ public class GraphicalUploadController extends BaseController {
 					+ " t2.totalKWattH,t2.totalPKWattH,t2.totalNKWattH,t2.totalKVarH,t2.totalpKVarH,t2.totalNKVarH,t2.totalKVAH,"
 					+ " t2.todayKWattH,t2.todayPKWattH,t2.todayNKWattH,t2.todayKVarH,t2.todaypKVarH,t2.todayNKVarH,t2.todayKVAH "
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and upper(t.drivercode) like '%KAFKA%' and t.signinid='"+kafkaUpData.getKey()+"'";
+					+ " where t2.wellId=t.id and upper(t.protocolcode) like '%KAFKA%' and t.signinid='"+kafkaUpData.getKey()+"'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -1206,7 +1206,7 @@ public class GraphicalUploadController extends BaseController {
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+kafkaUpData.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 					commRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
@@ -1233,7 +1233,7 @@ public class GraphicalUploadController extends BaseController {
 				String tiemEffRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+kafkaUpData.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[9]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[9]))){
 					tiemEffRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"RunStatus\": "+("1".equals(obj[6]+"")?true:false)+","
@@ -1326,7 +1326,7 @@ public class GraphicalUploadController extends BaseController {
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.CommStatus=1,"
 						+ "t.signal="+kafkaUpData.getSignal()+","
 						+ "t.deviceVer='"+kafkaUpData.getVer()+"',"
-						+ "t.interval="+kafkaUpData.getTransferIntervel()+","
+						+ "t.interval="+kafkaUpData.getTransferInterval()+","
 						+ "t.runStatus="+(kafkaUpData.getRunStatus()?1:0)+","
 						+ "t.resultcode="+kafkaUpData.getResultCode()+","
 						+ "t.runFrequency="+kafkaUpData.getFreq()+","
@@ -1492,7 +1492,7 @@ public class GraphicalUploadController extends BaseController {
 			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and t.signinid='"+aggrOnline2Kafka.getKey()+"'";
+					+ " where t2.wellId=t.id and t.signinid='"+aggrOnline2Kafka.getKey()+"' and upper(t.protocolcode) like '%KAFKA%'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -1502,7 +1502,7 @@ public class GraphicalUploadController extends BaseController {
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+aggrOnline2Kafka.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 					commRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
@@ -1522,14 +1522,11 @@ public class GraphicalUploadController extends BaseController {
 				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
-				
 				//更新数据
 				String updateDailyData="";
-				
-				
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set  "
 						+ " t.commStatus="+(aggrOnline2Kafka.getCommStatus()?1:0)+","
-						+ " t.interval="+aggrOnline2Kafka.getTransferIntervel()+","
+						+ " t.interval="+aggrOnline2Kafka.getTransferInterval()+","
 						+ " t.signal="+aggrOnline2Kafka.getSignal()+","
 						+ " t.deviceVer='"+aggrOnline2Kafka.getVer()+"',"
 						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
@@ -1543,8 +1540,6 @@ public class GraphicalUploadController extends BaseController {
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
 				int result= commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
-				
-				
 				//更新clob类型数据  通信区间
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
@@ -1552,8 +1547,6 @@ public class GraphicalUploadController extends BaseController {
 					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 				}
-				
-				
 				if(StringManagerUtils.isNotNull(updateDailyData)){
 					result=commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
 				}
@@ -1563,7 +1556,6 @@ public class GraphicalUploadController extends BaseController {
 				infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
 				infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 			}
-			
 		}
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -1588,7 +1580,7 @@ public class GraphicalUploadController extends BaseController {
 			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange"
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
-					+ " where t2.wellId=t.id and t.signinid='"+aggrRunStatus2Kafka.getKey()+"'";
+					+ " where t2.wellId=t.id and t.signinid='"+aggrRunStatus2Kafka.getKey()+"' and upper(t.protocolcode) like '%KAFKA%'";
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
@@ -1598,7 +1590,7 @@ public class GraphicalUploadController extends BaseController {
 				String tiemEffRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+aggrRunStatus2Kafka.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(obj[5]+"")){
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 					tiemEffRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
 							+ "\"RunStatus\": "+("1".equals(obj[2]+"")?true:false)+","
@@ -1618,13 +1610,12 @@ public class GraphicalUploadController extends BaseController {
 				timeEffResponse=StringManagerUtils.sendPostMethod(tiemEffUrl, tiemEffRequest,"utf-8");
 				type = new TypeToken<TimeEffResponseData>() {}.getType();
 				timeEffResponseData=gson.fromJson(timeEffResponse, type);
-				
 				//更新数据
 				String updateDailyData="";
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set  "
 						+ " t.commStatus=1,"
 						+ " t.runStatus="+(aggrRunStatus2Kafka.getRunStatus()?1:0)+","
-						+ " t.interval="+aggrRunStatus2Kafka.getTransferIntervel()+","
+						+ " t.interval="+aggrRunStatus2Kafka.getTransferInterval()+","
 						+ " t.signal="+aggrRunStatus2Kafka.getSignal()+","
 						+ " t.deviceVer='"+aggrRunStatus2Kafka.getVer()+"',"
 						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
@@ -1646,19 +1637,15 @@ public class GraphicalUploadController extends BaseController {
 					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 					commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql,clobCont);
 				}
-				
-				
 				if(StringManagerUtils.isNotNull(updateDailyData)){
 					commonDataService.getBaseDao().updateOrDeleteBySql(updateDailyData);
 				}
-				
 				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 				
 				infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
 				infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 			}
-			
 		}
 		String json = "{success:true,flag:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

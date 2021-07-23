@@ -541,7 +541,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 						if(isDel){
 							modbusProtocolConfig.getProtocol().get(i).getItems().remove(j);
 						}
-						
 					}
 					break;
 				}

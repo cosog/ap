@@ -141,18 +141,25 @@ public class DriverAPIController extends BaseController{
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.acqTime=to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
-				String updateRunRangeClobSql="";
+				String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
+				List<String> clobCont=new ArrayList<String>();
+				
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-					updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					//跨天
+					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
+						updateDiscreteData+=",t.runTime=0,t.runTimeEfficiency=0";
+						updateCommRangeClobSql+=",t.runRange=?";
+						clobCont.add("");
+					}
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
-				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
-				if(StringManagerUtils.isNotNull(updateRunRangeClobSql)){
-					List<String> clobCont=new ArrayList<String>();
-					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-					int result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
+				updateCommRangeClobSql+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+				int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 				}
 			}
 		}
@@ -213,18 +220,25 @@ public class DriverAPIController extends BaseController{
 				type = new TypeToken<CommResponseData>() {}.getType();
 				commResponseData=gson.fromJson(commResponse, type);
 				String updateDiscreteData="update tbl_rpc_discrete_latest t set t.acqTime=to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
-				String updateRunRangeClobSql="";
+				String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
+				List<String> clobCont=new ArrayList<String>();
+				
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-					updateRunRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					//跨天
+					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
+						updateDiscreteData+=",t.runTime=0,t.runTimeEfficiency=0";
+						updateCommRangeClobSql+=",t.runRange=?";
+						clobCont.add("");
+					}
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
-				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
-				if(StringManagerUtils.isNotNull(updateRunRangeClobSql)){
-					List<String> clobCont=new ArrayList<String>();
-					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
-					int result=commonDataService.getBaseDao().executeSqlUpdateClob(updateRunRangeClobSql,clobCont);
+				updateCommRangeClobSql+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+				int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 				}
 			}
 		}
@@ -306,7 +320,9 @@ public class DriverAPIController extends BaseController{
 					+ " t.id"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2  "
 					+ " where t.id=t2.wellid "
-					+ " and upper(t.protocolcode) not like '%KAFKA%' and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
+					+ " and upper(t.protocolcode) not like '%KAFKA%' "
+					+ " and upper(t.protocolcode) not like '%MQTT%' "
+					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = commonDataService.findCallSql(sql);
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);

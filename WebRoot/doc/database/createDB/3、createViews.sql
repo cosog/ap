@@ -2,7 +2,7 @@
 /* View: viw_commstatus                                         */
 /*==============================================================*/
 create or replace view viw_commstatus as
-select well.id, well.wellName,greatest(decode(v.commstatus,null,0,v.commstatus),decode(v2.commstatus,null,0,v2.commstatus),decode(v3.commstatus,null,0,v3.commstatus)) as commstatus from
+select well.id, well.wellName,well.protocolcode,well.signinid,greatest(decode(v.commstatus,null,0,v.commstatus),decode(v2.commstatus,null,0,v2.commstatus),decode(v3.commstatus,null,0,v3.commstatus)) as commstatus from
 tbl_wellinformation well
 left outer join
 (select t.wellid, (sysdate- t.savetime)*24*60 as interval2,t.interval,
@@ -22,7 +22,7 @@ left outer join
        or (sysdate- t.AcqTime)*24*60 >decode(t.TransferIntervel,null,1,t.TransferIntervel)*1.5 then 0
        else 1 end as commstatus
 from tbl_a9rawdata_latest t,tbl_wellinformation t2 where t.deviceId=t2.signinid) v3 on well.id=v3.wellid
-where well.protocolcode='MQTTDrive' or well.protocolcode='KafkaDrive';
+where well.protocolcode='MQTTDrive' or well.protocolcode='KafkaDrive' and well.signinid is not null;
 /
 
 /*==============================================================*/

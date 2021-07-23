@@ -26,6 +26,7 @@ import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
+import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -72,30 +73,30 @@ public class EquipmentDriverServerTask {
 //			StringManagerUtils.sendPostMethod(url, diagramData,"utf-8");
 //			Thread.sleep(1000*60*5);
 //		}
-		
+		initWellCommStatus();
 		loadProtocolConfig();
-		initServerConfig();
-		initProtocolConfig("","");
-		initDriverAcquisitionInfoConfig(null,"");
-		do{
-			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
-			type = new TypeToken<DriverProbeResponse>() {}.getType();
-			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-			if(driverProbeResponse!=null){
-				if(!driverProbeResponse.getHttpServerInitStatus()){
-					initServerConfig();
-				}
-				if(!driverProbeResponse.getProtocolInitStatus()){
-					initProtocolConfig("","");
-				}
-				if(!driverProbeResponse.getIDInitStatus()){
-					initDriverAcquisitionInfoConfig(null,"");
-				}
-			}else{
-				StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8");
-			}
-			Thread.sleep(1000*1);
-		}while(true);
+//		initServerConfig();
+//		initProtocolConfig("","");
+//		initDriverAcquisitionInfoConfig(null,"");
+//		do{
+//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
+//			type = new TypeToken<DriverProbeResponse>() {}.getType();
+//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+//			if(driverProbeResponse!=null){
+//				if(!driverProbeResponse.getHttpServerInitStatus()){
+//					initServerConfig();
+//				}
+//				if(!driverProbeResponse.getProtocolInitStatus()){
+//					initProtocolConfig("","");
+//				}
+//				if(!driverProbeResponse.getIDInitStatus()){
+//					initDriverAcquisitionInfoConfig(null,"");
+//				}
+//			}else{
+//				StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8");
+//			}
+//			Thread.sleep(1000*1);
+//		}while(true);
 	}
 	
 	public static class DriverProbeResponse{
@@ -409,5 +410,23 @@ public class EquipmentDriverServerTask {
 			dataModelMap.put("AlarmShowStyle", alarmShowStyle);
 		}
 		OracleJdbcUtis.closeDBConnection(conn, stmt, pstmt, rs);
+	}
+	
+	public static int initWellCommStatus(){
+		String sql="update tbl_rpc_discrete_latest t set t.commstatus=0 "
+				+ "where t.wellid in("
+				+ "select t2.id from tbl_wellinformation t2 "
+				+ "where upper(t2.protocolcode) not like '%KAFKA%' "
+				+ " and upper(t2.protocolcode) not like '%MQTT%' "
+				+ " and t2.protocolcode is not null"
+				+ ")";
+		int result=0;
+		try {
+			result = JDBCUtil.updateRecord(sql, null);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

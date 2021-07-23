@@ -498,30 +498,34 @@ public class CalculateDataController extends BaseController{
 								+ "t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"
 								+ "t.commtime="+commResponseData.getCurrent().getCommEfficiency().getTime()+","
 								+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency();
-								//+ ",t.commrange='"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
-						commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
-						//如果跨天 重置运行状态
-						if(!StringManagerUtils.isNotNull(obj[3]+"") || !currentDate.equals(lastDate) ){
-//							if(acqTimeChange)
-								updateSql+=",t.runTime=0,t.runTimeEfficiency=0,t.runRange=''";
-						}
-						
-						updateSql+= " where t.wellid="+obj[0];
-						int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
-						
-						//更新clob类型数据  通信区间
-						String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellid="+obj[0];
+						String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
 						List<String> clobCont=new ArrayList<String>();
 						clobCont.add(commRange);
+						
+						
+						commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+						//如果跨天 重置运行状态
+						if(!StringManagerUtils.isNotNull(obj[3]+"") 
+								|| !currentDate.equals(lastDate) 
+								||(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate()))
+								){
+								updateSql+=",t.runTime=0,t.runTimeEfficiency=0";
+								updateCommRangeClobSql+=",t.runRange=?";
+								clobCont.add("");
+						}
+						updateSql+= " where t.wellid="+obj[0];
+						updateCommRangeClobSql+= " where t.wellid="+obj[0];
+						int result=calculateDataService.getBaseDao().executeSqlUpdate(updateSql);
 						result=calculateDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 					}
 				}
+				infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+				infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+				
+				infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+				infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 			}
-			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
-			infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 			
-			infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
-			infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
 		}
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

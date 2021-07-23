@@ -377,7 +377,7 @@ public class JDBCUtil {
      * @return 1、有数据被更新：则返回更新的记录数；2、没有记录被更新：返回0；     either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing 
      * @throws SQLException 
      */  
-    public static int updateRecord(String sql,List<Object>params) throws SQLException{  
+    public synchronized static int updateRecord(String sql,List<Object>params) throws SQLException{  
         int iNum=0;  
         try{  
             preparePstmt(sql, params);  

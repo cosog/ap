@@ -497,7 +497,9 @@ public class PSToFSService<T> extends BaseService<T> {
 			JSONArray jsonArray = jsonObject.getJSONArray("data");
 			for(int i=0;i<jsonArray.size();i++){
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-				String sql="select t.protocolcode,t.signinid from tbl_wellinformation t where t.wellname='"+everydata.getString("WellName")+"'";
+				String sql="select t.protocolcode,t.signinid from tbl_wellinformation t "
+						+ " where t.wellname='"+everydata.getString("WellName")+"'"
+						+ " and upper(t.protocolcode) like '%KAFKA%' ";
 				List list = this.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);

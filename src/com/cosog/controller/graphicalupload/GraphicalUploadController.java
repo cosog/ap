@@ -1530,21 +1530,25 @@ public class GraphicalUploadController extends BaseController {
 						+ " t.signal="+aggrOnline2Kafka.getSignal()+","
 						+ " t.deviceVer='"+aggrOnline2Kafka.getVer()+"',"
 						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+				String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
+				List<String> clobCont=new ArrayList<String>();
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
 						+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
-//						+ " ,t.commRange= '"+commResponseData.getCurrent().getCommEfficiency().getRangeString()+"'";
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					
+					//跨天
 					if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
-						
+						updateDiscreteData+=",t.runTime=0,t.runTimeEfficiency=0";
+						updateCommRangeClobSql+=",t.runRange=?";
+						clobCont.add("");
 					}
 				}
 				updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
+				updateCommRangeClobSql+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
 				int result= commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
 				//更新clob类型数据  通信区间
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
-					String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrOnline2Kafka.getWellName()+"') ";
-					List<String> clobCont=new ArrayList<String>();
-					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 				}
 				if(StringManagerUtils.isNotNull(updateDailyData)){

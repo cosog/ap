@@ -12,7 +12,7 @@
         "Items": [{
             "Title": "运行状态",
             "Name": "RunStatus",
-            "Addr": 40318,
+            "Addr": 40317,
             "StoreDataType": "uint16",
             "IFDataType": "int",
             "Quantity": 1,
@@ -221,7 +221,7 @@
         }, {
             "Title": "含水率",
             "Name": "WaterCut",
-            "Addr": 0,
+            "Addr": 40314,
             "StoreDataType": "float32",
             "IFDataType": "float32",
             "Quantity": 2,

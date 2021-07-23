@@ -1,6 +1,7 @@
 package com.cosog.task;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import org.springframework.web.socket.TextMessage;
 import com.cosog.model.drive.KafkaConfig;
 import com.cosog.utils.Config;
 import com.cosog.utils.EquipmentDriveMap;
+import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
 import com.cosog.websocket.handler.SpringWebSocketHandler;
@@ -45,6 +47,8 @@ public class KafkaServerTask {
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
+		initWellCommStatus();
+		
 		clientid = "apKafkaClient"+StringManagerUtils.getMacAddress().replaceAll("-", "");
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
@@ -323,6 +327,18 @@ public class KafkaServerTask {
 		public void setRecord(ConsumerRecord<String, String> record) {
 			this.record = record;
 		}
+	}
+	
+	public static int initWellCommStatus(){
+		String sql="update tbl_rpc_discrete_latest t set t.commstatus=0 where t.wellid in(select t2.id from tbl_wellinformation t2 where upper(t2.protocolcode) like '%KAFKA%' )";
+		int result=0;
+		try {
+			result = JDBCUtil.updateRecord(sql, null);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	public static class KafkaUpData

@@ -2,6 +2,8 @@ drop sequence ACT_EVT_LOG_SEQ;
 drop sequence HIBERNATE_SEQUENCE;
 drop sequence SEQ_A9RAWDATA_HIST;
 drop sequence SEQ_A9RAWDATA_LATEST;
+drop sequence SEQ_A9RAWWATERCUTDATA_HIST;
+drop sequence SEQ_A9RAWWATERCUTDATA_LATEST;
 drop sequence SEQ_ACQUISITIONGROUP;
 drop sequence SEQ_ACQUISITIONUNIT;
 drop sequence SEQ_ACQ_GROUP_ITEM;

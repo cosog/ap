@@ -23,6 +23,7 @@ import com.cosog.model.calculate.WellAcquisitionData;
 import com.cosog.service.base.BaseService;
 import com.cosog.task.KafkaServerTask.KafkaUpData;
 import com.cosog.task.KafkaServerTask.KafkaUpRawData;
+import com.cosog.task.KafkaServerTask.KafkaUpRawWaterCut;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -701,6 +702,12 @@ public class GraphicalUploadService<T> extends BaseService<T> {
 	public boolean saveKafkaUpRawData(KafkaUpRawData kafkaUpRawData) throws SQLException, ParseException{
 		boolean result=false;
 		result=this.getBaseDao().saveKafkaUpRawData(kafkaUpRawData);
+		return result;
+	}
+	
+	public boolean saveKafkaUpRawWaterCut(KafkaUpRawWaterCut kafkaUpRawWaterCut) throws SQLException, ParseException{
+		boolean result=false;
+		result=this.getBaseDao().saveKafkaUpRawWaterCut(kafkaUpRawWaterCut);
 		return result;
 	}
 }

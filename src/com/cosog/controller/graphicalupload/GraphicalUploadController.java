@@ -65,6 +65,7 @@ import com.cosog.task.KafkaServerTask.AggrOnline2Kafka;
 import com.cosog.task.KafkaServerTask.AggrRunStatus2Kafka;
 import com.cosog.task.KafkaServerTask.KafkaUpData;
 import com.cosog.task.KafkaServerTask.KafkaUpRawData;
+import com.cosog.task.KafkaServerTask.KafkaUpRawWaterCut;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
@@ -1463,6 +1464,32 @@ public class GraphicalUploadController extends BaseController {
 		KafkaUpRawData kafkaUpRawData=gson.fromJson(data, type);
 		if(kafkaUpRawData!=null){
 			raphicalUploadService.saveKafkaUpRawData(kafkaUpRawData);
+			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
+			infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
+			
+			infoHandler2().sendMessageToBy("kafkaConfig_kafkaConfigGridPanel", "dataFresh");
+			infoHandler2().sendMessageToBy("kafkaConfig_A9RawDataGridPanel", "dataFresh");
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveKafkaUpRawWaterCut")
+	public String saveKafkaUpRawWaterCut() throws Exception {
+		Gson gson=new Gson();
+		
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		java.lang.reflect.Type type = new TypeToken<KafkaUpRawWaterCut>() {}.getType();
+		KafkaUpRawWaterCut kafkaUpRawWaterCut=gson.fromJson(data, type);
+		if(kafkaUpRawWaterCut!=null){
+			raphicalUploadService.saveKafkaUpRawWaterCut(kafkaUpRawWaterCut);
 			infoHandler().sendMessageToUserByModule("kafkaConfig_kafkaConfigGridPanel", new TextMessage("dataFresh"));
 			infoHandler().sendMessageToUserByModule("kafkaConfig_A9RawDataGridPanel", new TextMessage("dataFresh"));
 			

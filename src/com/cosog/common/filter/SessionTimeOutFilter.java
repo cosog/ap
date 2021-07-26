@@ -99,6 +99,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 						||urlString.equals("saveMQTTTransferElecDiscreteData")||urlString.equals("saveMQTTTransferElecDiagramData")||urlString.equals("saveMQTTTransferElecDailyData")
 						||urlString.equals("saveKafkaUpData")
 						||urlString.equals("saveKafkaUpRawData")
+						||urlString.equals("saveKafkaUpRawWaterCut")
 						||urlString.equals("saveKafkaUpAggrOnlineData")
 						||urlString.equals("saveKafkaUpAggrRunStatusData")
 						||urlString.equals("reTotalCalculation")

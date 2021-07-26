@@ -11,6 +11,10 @@ public final class LicenseMap {
 	public static int SN=0;
 	public static int modulesSN=0;
 	public static int dataSourceSN=0;//数据源 0-采控直读和数据库直读 1-采控直读 2-数据库直读
+	public static boolean pcp=true;
+	public static boolean rawWaterCut=true;
+	public static boolean dynamicCurve=true;
+	public static boolean electricalHidden=false;
 	static {
 		map = new HashMap<Integer, License>();
 		map.put(0, new License("阿里云服务器 Windows Server2019", "00:16:3E:01:D8:63", 0,"IP:8.130.30.138"));

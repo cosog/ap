@@ -11,6 +11,7 @@
         "Up": {
             "NormData": "Up-NormData",
             "RawData": "Up-RawData",
+            "RawWaterCut": "Up-RawWaterCut",
             "Config": "Up-Config",
             "Model": "Up-Model",
             "Freq": "Up-Freq",

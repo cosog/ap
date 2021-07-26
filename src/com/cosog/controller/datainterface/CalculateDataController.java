@@ -486,11 +486,9 @@ public class CalculateDataController extends BaseController{
 							+ "\"CommStatus\":"+(("1".equals(obj[2]+""))?true:false)
 							+ "}"
 							+ "}";
-					
 					String commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
 					java.lang.reflect.Type type = new TypeToken<CommResponseData>() {}.getType();
 					CommResponseData commResponseData=gson.fromJson(commResponse, type);
-					String commRange="";
 					if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 						String currentDate=acqTime.split(" ")[0];
 						String lastDate=(obj[3]+"").split(" ")[0];
@@ -500,10 +498,7 @@ public class CalculateDataController extends BaseController{
 								+ "t.commtimeefficiency="+commResponseData.getCurrent().getCommEfficiency().getEfficiency();
 						String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
 						List<String> clobCont=new ArrayList<String>();
-						clobCont.add(commRange);
-						
-						
-						commRange=commResponseData.getCurrent().getCommEfficiency().getRangeString();
+						clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						//如果跨天 重置运行状态
 						if(!StringManagerUtils.isNotNull(obj[3]+"") 
 								|| !currentDate.equals(lastDate) 

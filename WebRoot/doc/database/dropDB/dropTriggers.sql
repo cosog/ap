@@ -1,6 +1,9 @@
 drop trigger TRG_A_A9RAWDATA_HIST_I_U;
 drop trigger TRG_B_A9RAWDATA_HIST_I;
 drop trigger TRG_B_A9RAWDATA_LATEST_I;
+drop trigger TRG_A_A9RAWWATERCUT_HIST_I_U;
+drop trigger TRG_B_A9RAWWATERCUT_HIST_I;
+drop trigger TRG_B_A9RAWWATERCUT_LATEST_I;
 drop trigger TRG_B_ACQ_GROUP2UNIT_CONF_I;
 drop trigger TRG_B_ACQ_GROUP_CONF_I;
 drop trigger TRG_B_ACQ_ITEM2GROUP_CONF_I;

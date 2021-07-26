@@ -49,11 +49,14 @@
 <script> 
  var user_ = "${userLogin.userNo}";
  var viewInformation = ${configFile}.viewInformation;
- var pcpHidden = !${configFile}.others.pcp;
- var electricalHidden = !${configFile}.others.electrical;
- var dynamicCurveHidden = !${configFile}.others.dynamicCurve;
+ 
  var productionUnit = ${configFile}.others.productionUnit;
+ 
  var dataSourceSN=${dataSourceSN};
+ var rawWaterCutHidden = !${rawWaterCut};
+ var pcpHidden = !${pcp};
+ var dynamicCurveHidden = !${dynamicCurve};
+ var electricalHidden = !${electricalHidden};
 if (user_ == null || "" == (user_)) {
 			window.location.href = "../login/toLogin";
 }

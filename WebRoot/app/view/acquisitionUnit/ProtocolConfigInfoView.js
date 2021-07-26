@@ -810,7 +810,7 @@ var KafkaProtocolConfigHandsontableHelper = {
 	                        "rowspan": 1,
 	                        "colspan": 3
 	                    },{
-	                        "row": 16,
+	                        "row": 17,
 	                        "col": 0,
 	                        "rowspan": 1,
 	                        "colspan": 3
@@ -822,15 +822,15 @@ var KafkaProtocolConfigHandsontableHelper = {
 	                    if (visualColIndex ==0) {
 	                    	cellProperties.readOnly = true;
 		                }
-	                    if (visualRowIndex ==0 || visualRowIndex ==1 || visualRowIndex ==4 || visualRowIndex ==7 || visualRowIndex ==16) {
+	                    if (visualRowIndex ==0 || visualRowIndex ==1 || visualRowIndex ==4 || visualRowIndex ==7 || visualRowIndex ==17) {
 	                    	cellProperties.readOnly = true;
 	                    }
 						
 						if (visualColIndex==1
 								&&( (visualRowIndex>=2&&visualRowIndex<=3) 
 										|| (visualRowIndex>=5&&visualRowIndex<=6) 
-										|| (visualRowIndex>=8&&visualRowIndex<=15)
-										|| (visualRowIndex>=17&&visualRowIndex<=41)
+										|| (visualRowIndex>=8&&visualRowIndex<=16)
+										|| (visualRowIndex>=18&&visualRowIndex<=42)
 							)) {
 							cellProperties.renderer = kafkaProtocolConfigHandsontableHelper.addContentReadOnlyBg;
 							cellProperties.readOnly = true;
@@ -936,39 +936,40 @@ function SaveScadaKafkaDriverConfigData(){
 	KafkaData.Topic.Up={};
 	KafkaData.Topic.Up.NormData=protocolConfigData[8][2];
 	KafkaData.Topic.Up.RawData=protocolConfigData[9][2];
-	KafkaData.Topic.Up.Config=protocolConfigData[10][2];
-	KafkaData.Topic.Up.Model=protocolConfigData[11][2];
-	KafkaData.Topic.Up.Freq=protocolConfigData[12][2];
-	KafkaData.Topic.Up.RTC=protocolConfigData[13][2];
-	KafkaData.Topic.Up.Online=protocolConfigData[14][2];
-	KafkaData.Topic.Up.RunStatus=protocolConfigData[15][2];
+	KafkaData.Topic.Up.RawWaterCut=protocolConfigData[10][2];
+	KafkaData.Topic.Up.Config=protocolConfigData[11][2];
+	KafkaData.Topic.Up.Model=protocolConfigData[12][2];
+	KafkaData.Topic.Up.Freq=protocolConfigData[13][2];
+	KafkaData.Topic.Up.RTC=protocolConfigData[14][2];
+	KafkaData.Topic.Up.Online=protocolConfigData[15][2];
+	KafkaData.Topic.Up.RunStatus=protocolConfigData[16][2];
 	
 	KafkaData.Topic.Down={};
-	KafkaData.Topic.Down.Model=protocolConfigData[17][2];
-	KafkaData.Topic.Down.Model_FluidPVT=protocolConfigData[18][2];
-	KafkaData.Topic.Down.Model_Reservoir=protocolConfigData[19][2];
-	KafkaData.Topic.Down.Model_WellboreTrajectory=protocolConfigData[20][2];
-	KafkaData.Topic.Down.Model_RodString=protocolConfigData[21][2];
-	KafkaData.Topic.Down.Model_TubingString=protocolConfigData[22][2];
-	KafkaData.Topic.Down.Model_Pump=protocolConfigData[23][2];
-	KafkaData.Topic.Down.Model_TailtubingString=protocolConfigData[24][2];
-	KafkaData.Topic.Down.Model_CasingString=protocolConfigData[25][2];
-	KafkaData.Topic.Down.Model_PumpingUnit=protocolConfigData[26][2];
-	KafkaData.Topic.Down.Model_SystemEfficiency=protocolConfigData[27][2];
-	KafkaData.Topic.Down.Model_Production=protocolConfigData[28][2];
-	KafkaData.Topic.Down.Model_FeatureDB=protocolConfigData[29][2];
-	KafkaData.Topic.Down.Model_CalculationMethod=protocolConfigData[30][2];
-	KafkaData.Topic.Down.Model_ManualIntervention=protocolConfigData[31][2];
-	KafkaData.Topic.Down.Config=protocolConfigData[32][2];
-	KafkaData.Topic.Down.StartRPC=protocolConfigData[33][2];
-	KafkaData.Topic.Down.StopRPC=protocolConfigData[34][2];
-	KafkaData.Topic.Down.DogRestart=protocolConfigData[35][2];
-	KafkaData.Topic.Down.Freq=protocolConfigData[36][2];
-	KafkaData.Topic.Down.RTC=protocolConfigData[37][2];
-	KafkaData.Topic.Down.Req=protocolConfigData[38][2];
-	KafkaData.Topic.Down.Probe=protocolConfigData[39][2];
-	KafkaData.Topic.Down.A9=protocolConfigData[40][2];
-	KafkaData.Topic.Down.AC=protocolConfigData[41][2];
+	KafkaData.Topic.Down.Model=protocolConfigData[18][2];
+	KafkaData.Topic.Down.Model_FluidPVT=protocolConfigData[19][2];
+	KafkaData.Topic.Down.Model_Reservoir=protocolConfigData[20][2];
+	KafkaData.Topic.Down.Model_WellboreTrajectory=protocolConfigData[21][2];
+	KafkaData.Topic.Down.Model_RodString=protocolConfigData[22][2];
+	KafkaData.Topic.Down.Model_TubingString=protocolConfigData[23][2];
+	KafkaData.Topic.Down.Model_Pump=protocolConfigData[24][2];
+	KafkaData.Topic.Down.Model_TailtubingString=protocolConfigData[25][2];
+	KafkaData.Topic.Down.Model_CasingString=protocolConfigData[26][2];
+	KafkaData.Topic.Down.Model_PumpingUnit=protocolConfigData[27][2];
+	KafkaData.Topic.Down.Model_SystemEfficiency=protocolConfigData[28][2];
+	KafkaData.Topic.Down.Model_Production=protocolConfigData[29][2];
+	KafkaData.Topic.Down.Model_FeatureDB=protocolConfigData[30][2];
+	KafkaData.Topic.Down.Model_CalculationMethod=protocolConfigData[31][2];
+	KafkaData.Topic.Down.Model_ManualIntervention=protocolConfigData[32][2];
+	KafkaData.Topic.Down.Config=protocolConfigData[33][2];
+	KafkaData.Topic.Down.StartRPC=protocolConfigData[34][2];
+	KafkaData.Topic.Down.StopRPC=protocolConfigData[35][2];
+	KafkaData.Topic.Down.DogRestart=protocolConfigData[36][2];
+	KafkaData.Topic.Down.Freq=protocolConfigData[37][2];
+	KafkaData.Topic.Down.RTC=protocolConfigData[38][2];
+	KafkaData.Topic.Down.Req=protocolConfigData[39][2];
+	KafkaData.Topic.Down.Probe=protocolConfigData[40][2];
+	KafkaData.Topic.Down.A9=protocolConfigData[41][2];
+	KafkaData.Topic.Down.AC=protocolConfigData[42][2];
 
 	Ext.Ajax.request({
 		method:'POST',

@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -1714,25 +1715,52 @@ public class StringManagerUtils {
 	    
 	 // 把json格式的字符串写到文件
 	    public static boolean writeFile(String filePath, String sets) {
-//	        FileWriter fw;
+////	        FileWriter fw;
+//	        try {
+////	            fw = new FileWriter(filePath);
+//////	            PrintWriter out = new PrintWriter(fw);
+////	            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath),"UTF-8")));
+////	            out.write(sets);
+////	            out.println();
+////	            fw.close();
+////	            out.close();
+//	        	OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filePath, true),"UTF-8");
+//	        	osw.write(sets);
+//	        	osw.flush();
+//	        	osw.close();
+//	            return true;
+//	        } catch (IOException e) {
+//	            e.printStackTrace();
+//	            return false;
+//	        }
+	        
+	        FileOutputStream fileOutputStream=null;
+	        OutputStreamWriter writer=null;
+	        Boolean result=false;
 	        try {
-//	            fw = new FileWriter(filePath);
-////	            PrintWriter out = new PrintWriter(fw);
-//	            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath),"UTF-8")));
-//	            out.write(sets);
-//	            out.println();
-//	            fw.close();
-//	            out.close();
-	        	OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filePath, true),"UTF-8");
-	        	osw.write(sets);
-	        	osw.flush();
-	        	osw.close();
-	            return true;
+	            fileOutputStream=new FileOutputStream(filePath,false);
+	            writer=new OutputStreamWriter(fileOutputStream,"UTF-8");
+	            writer.write(sets);
+	            result=true;
+	        } catch (FileNotFoundException e) {
+	        	 e.printStackTrace();
+	        	 result=false;
+	        } catch (UnsupportedEncodingException e) {
+	        	 e.printStackTrace();
+	        	 result=false;
 	        } catch (IOException e) {
-	            e.printStackTrace();
-	            return false;
+	        	 e.printStackTrace();
+	        	 result=false;
+	        }finally {
+	            try {
+	                writer.close();
+	                fileOutputStream.close();
+	            } catch (IOException e) {
+	            	 e.printStackTrace();
+	            }
 	        }
 
+	        return result;
 	    }
 	    
 	    /**

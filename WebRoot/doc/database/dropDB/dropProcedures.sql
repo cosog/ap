@@ -4,6 +4,7 @@ drop procedure PRD_CLEAR_DATA;
 drop procedure PRD_INIT_RPC_DAILY;
 drop procedure PRD_RESET_SEQUENCE;
 drop procedure PRD_SAVE_A9RAWDATA;
+drop procedure PRD_SAVE_A9RAWWATERCUTDATA;
 drop procedure PRD_SAVE_ALARMCOLOR;
 drop procedure PRD_SAVE_PCP_DISCRETEDAILY;
 drop procedure PRD_SAVE_PCP_PRODUCTIONDATA;

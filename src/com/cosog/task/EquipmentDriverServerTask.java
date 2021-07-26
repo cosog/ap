@@ -75,28 +75,28 @@ public class EquipmentDriverServerTask {
 //		}
 		initWellCommStatus();
 		loadProtocolConfig();
-//		initServerConfig();
-//		initProtocolConfig("","");
-//		initDriverAcquisitionInfoConfig(null,"");
-//		do{
-//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
-//			type = new TypeToken<DriverProbeResponse>() {}.getType();
-//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-//			if(driverProbeResponse!=null){
-//				if(!driverProbeResponse.getHttpServerInitStatus()){
-//					initServerConfig();
-//				}
-//				if(!driverProbeResponse.getProtocolInitStatus()){
-//					initProtocolConfig("","");
-//				}
-//				if(!driverProbeResponse.getIDInitStatus()){
-//					initDriverAcquisitionInfoConfig(null,"");
-//				}
-//			}else{
-//				StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8");
-//			}
-//			Thread.sleep(1000*1);
-//		}while(true);
+		initServerConfig();
+		initProtocolConfig("","");
+		initDriverAcquisitionInfoConfig(null,"");
+		do{
+			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
+			type = new TypeToken<DriverProbeResponse>() {}.getType();
+			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+			if(driverProbeResponse!=null){
+				if(!driverProbeResponse.getHttpServerInitStatus()){
+					initServerConfig();
+				}
+				if(!driverProbeResponse.getProtocolInitStatus()){
+					initProtocolConfig("","");
+				}
+				if(!driverProbeResponse.getIDInitStatus()){
+					initDriverAcquisitionInfoConfig(null,"");
+				}
+			}else{
+				StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8");
+			}
+			Thread.sleep(1000*1);
+		}while(true);
 	}
 	
 	public static class DriverProbeResponse{

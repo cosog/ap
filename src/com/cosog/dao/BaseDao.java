@@ -102,6 +102,7 @@ import com.cosog.model.scada.CallbackDataItems;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.KafkaServerTask.KafkaUpData;
 import com.cosog.task.KafkaServerTask.KafkaUpRawData;
+import com.cosog.task.KafkaServerTask.KafkaUpRawWaterCut;
 import com.cosog.task.MQTTServerTask.TransferDaily;
 import com.cosog.task.MQTTServerTask.TransferDiagram;
 import com.cosog.utils.DataModelMap;
@@ -3739,6 +3740,43 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setClob(8,diagramClob_F);
 			cs.setClob(9,diagramClob_Watt);
 			cs.setClob(10,diagramClob_I);
+			
+			cs.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(cs!=null)
+				cs.close();
+			conn.close();
+		}
+		return true;
+	}
+	
+	public Boolean saveKafkaUpRawWaterCut(KafkaUpRawWaterCut kafkaUpRawWaterCut) throws SQLException, ParseException {
+		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
+		CallableStatement cs=null;
+		
+		CLOB diagramClob_Interval=new CLOB((OracleConnection) conn);
+		diagramClob_Interval = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_Interval.putString(1, StringUtils.join(kafkaUpRawWaterCut.getInterval(), ","));
+		
+		CLOB diagramClob_WaterCut=new CLOB((OracleConnection) conn);
+		diagramClob_WaterCut = oracle.sql.CLOB.createTemporary(conn,false,1);
+		diagramClob_WaterCut.putString(1, StringUtils.join(kafkaUpRawWaterCut.getWaterCut(), ","));
+		
+		try {
+			cs = conn.prepareCall("{call prd_save_a9RawWaterCutData("
+					+ "?,?,?,?,?,"
+					+ "?,?)}");
+			cs.setString(1,kafkaUpRawWaterCut.getKey());
+			cs.setString(2,kafkaUpRawWaterCut.getAcqTime());
+			cs.setString(3,kafkaUpRawWaterCut.getVer());
+			cs.setInt(4,kafkaUpRawWaterCut.getSignal());
+			cs.setInt(5,kafkaUpRawWaterCut.getTransferInterval());
+			
+			cs.setClob(6,diagramClob_Interval);
+			cs.setClob(7,diagramClob_WaterCut);
 			
 			cs.executeUpdate();
 		} catch (SQLException e) {

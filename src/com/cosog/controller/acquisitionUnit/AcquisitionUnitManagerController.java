@@ -592,7 +592,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
 			equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
 			EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolCode(),"update");
-			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocol(modbusDriverSaveData.getProtocolName());
+//			EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocol(modbusDriverSaveData.getProtocolName());
 		}
 		json ="{success:true}";
 		response.setContentType("application/json;charset="+Constants.ENCODING_UTF8);

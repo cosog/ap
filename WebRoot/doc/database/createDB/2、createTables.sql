@@ -71,6 +71,66 @@ create index IDX_A9RAWDATA_LATEST_TIME on TBL_A9RAWDATA_LATEST (ACQTIME)
 /
 
 /*==============================================================*/
+/* Table: TBL_A9RAWWATERCUTDATA_HIST                                  */
+/*==============================================================*/
+create table TBL_A9RAWWATERCUTDATA_HIST
+(
+  id               NUMBER(10) not null,
+  deviceid         VARCHAR2(200),
+  acqtime          DATE,
+  signal           NUMBER(8,2),
+  devicever        VARCHAR2(50),
+  transferintervel NUMBER(10),
+  interval         CLOB,
+  watercut         CLOB
+)
+tablespace AGILE_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_A9RAWWATERCUTDATA_HIST
+  add constraint PK_A9RAWWATERCUTDATA_HIST primary key (ID)
+/
+create index IDX_A9RAWWATERCUTDATA_H_KEY on TBL_A9RAWWATERCUTDATA_HIST (DEVICEID)
+/
+create index IDX_A9RAWWATERCUTDATA_H_TIME on TBL_A9RAWWATERCUTDATA_HIST (ACQTIME)
+/
+
+/*==============================================================*/
+/* Table: TBL_A9RAWWATERCUTDATA_LATEST                                  */
+/*==============================================================*/
+create table TBL_A9RAWWATERCUTDATA_LATEST
+(
+  id               NUMBER(10) not null,
+  deviceid         VARCHAR2(200),
+  acqtime          DATE,
+  signal           NUMBER(8,2),
+  devicever        VARCHAR2(50),
+  transferintervel NUMBER(10),
+  interval         CLOB,
+  watercut         CLOB
+)
+tablespace AGILE_DATA
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  )
+/
+alter table TBL_A9RAWWATERCUTDATA_LATEST
+  add constraint PK_A9RAWWATERCUTDATA_LATEST primary key (ID)
+/
+create index IDX_A9RAWWATERCUTDATA_L_KEY on TBL_A9RAWWATERCUTDATA_LATEST (DEVICEID)
+/
+create index IDX_A9RAWWATERCUTDATA_L_TIME on TBL_A9RAWWATERCUTDATA_LATEST (ACQTIME)
+/
+
+/*==============================================================*/
 /* Table: TBL_ACQ_GROUP2UNIT_CONF                               */
 /*==============================================================*/
 create table TBL_ACQ_GROUP2UNIT_CONF

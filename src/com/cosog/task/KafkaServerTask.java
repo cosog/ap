@@ -48,7 +48,6 @@ public class KafkaServerTask {
 	@SuppressWarnings("deprecation")
 	public void runKafkaServer() {
 		initWellCommStatus();
-		
 		clientid = "apKafkaClient"+StringManagerUtils.getMacAddress().replaceAll("-", "");
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		if(equipmentDriveMap.size()==0){
@@ -66,15 +65,16 @@ public class KafkaServerTask {
 		}
 		if(driveConfig!=null){
 			HOST=driveConfig.getServer().getIP()+":"+driveConfig.getServer().getPort();
-			TOPIC=new String[8];
+			TOPIC=new String[9];
 			TOPIC[0]=driveConfig.getTopic().getUp().getNormData();
 			TOPIC[1]=driveConfig.getTopic().getUp().getRawData();
-			TOPIC[2]=driveConfig.getTopic().getUp().getConfig();
-			TOPIC[3]=driveConfig.getTopic().getUp().getModel();
-			TOPIC[4]=driveConfig.getTopic().getUp().getFreq();
-			TOPIC[5]=driveConfig.getTopic().getUp().getRTC();
-			TOPIC[6]=driveConfig.getTopic().getUp().getOnline();
-			TOPIC[7]=driveConfig.getTopic().getUp().getRunStatus();
+			TOPIC[2]=driveConfig.getTopic().getUp().getRawWaterCut();
+			TOPIC[3]=driveConfig.getTopic().getUp().getConfig();
+			TOPIC[4]=driveConfig.getTopic().getUp().getModel();
+			TOPIC[5]=driveConfig.getTopic().getUp().getFreq();
+			TOPIC[6]=driveConfig.getTopic().getUp().getRTC();
+			TOPIC[7]=driveConfig.getTopic().getUp().getOnline();
+			TOPIC[8]=driveConfig.getTopic().getUp().getRunStatus();
 		}
 		
 		Properties props = new Properties();
@@ -148,10 +148,12 @@ public class KafkaServerTask {
 			Gson gson = new Gson();
 			String saveDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpData";
 			String saveRawDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawData";
+			String saveRawWaterCutUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpRawWaterCut";
 			String saveAggrOnlineDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrOnlineData";
 			String saveAggrRunStatusDataUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/graphicalUploadController/saveKafkaUpAggrRunStatusData";
 			String UpNormDataTopic="Up-NormData";
 			String UpRawDataTopic="Up-RawData";
+			String RawWaterCutTopic="Up-RawWaterCut";
 			String UpConfigTopic="Up-Config";
 			String UpModelTopic="Up-Model";
 			String UpFreqTopic="Up-Freq";
@@ -174,6 +176,7 @@ public class KafkaServerTask {
 			if(driveConfig!=null){
 				UpNormDataTopic=driveConfig.getTopic().getUp().getNormData();
 				UpRawDataTopic=driveConfig.getTopic().getUp().getRawData();
+				RawWaterCutTopic=driveConfig.getTopic().getUp().getRawWaterCut();
 				UpConfigTopic=driveConfig.getTopic().getUp().getConfig();
 				UpModelTopic=driveConfig.getTopic().getUp().getModel();
 				UpFreqTopic=driveConfig.getTopic().getUp().getFreq();
@@ -232,6 +235,32 @@ public class KafkaServerTask {
 							long devAcqAndSysDiffTime=Math.abs(format.parse(kafkaUpRawData.getAcqTime()).getTime()/1000-format.parse(kafkaUpRawData.getSysTime()).getTime()/1000);
 							kafkaUpRawData.setKey(record.key());
 		        			StringManagerUtils.sendPostMethod(saveRawDataUrl, gson.toJson(kafkaUpRawData),"utf-8");
+						}else{
+							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println(record.value());
+					}
+        		}
+        	}else if(RawWaterCutTopic.equalsIgnoreCase(record.topic())){//含水率原始数据
+        		java.lang.reflect.Type type = new TypeToken<KafkaUpRawWaterCut>() {}.getType();
+        		KafkaUpRawWaterCut kafkaUpRawWaterCut=gson.fromJson(record.value(), type);
+        		if(kafkaUpRawWaterCut!=null){
+        			try {
+        				String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            			//如果时间差达到半小时，校正时间
+            			long diffTime=Math.abs(format.parse(currentTime).getTime()/1000-format.parse(kafkaUpRawWaterCut.getSysTime()).getTime()/1000);
+						if(diffTime>60*30){
+							System.out.println("设备ID:"+record.key()+",系统时间差距大于半小时，校正时间。currentTime:"+currentTime+",deviceSysTime:"+kafkaUpRawWaterCut.getSysTime()+",时间差:"+diffTime+"秒");
+							kafkaUpRawWaterCut.setAcqTime(currentTime);
+							String topic="Down-"+record.key()+"-RTC";
+							KafkaServerTask.producerMsg(topic, "下行时钟-"+record.key(), currentTime);
+						}
+						if(StringManagerUtils.isNotNull(kafkaUpRawWaterCut.getAcqTime())){
+							kafkaUpRawWaterCut.setKey(record.key());
+		        			StringManagerUtils.sendPostMethod(saveRawWaterCutUrl, gson.toJson(kafkaUpRawWaterCut),"utf-8");
 						}else{
 							System.out.println("接收到"+record.key()+"设备无效上传数据:"+record.value());
 						}
@@ -948,6 +977,88 @@ public class KafkaServerTask {
 
 		public void setTransferInterval(int transferInterval) {
 			TransferInterval = transferInterval;
+		}
+	}
+	
+	public static class KafkaUpRawWaterCut{
+		private String Ver;
+		
+		private String SysTime;
+		
+		private String AcqTime;
+		
+		private int Signal;
+	    
+	    private String Key;
+	    
+	    private int TransferInterval;
+	    
+	    private List<Float> Interval;
+	    
+	    private List<Float> WaterCut;
+
+		public String getVer() {
+			return Ver;
+		}
+
+		public void setVer(String ver) {
+			Ver = ver;
+		}
+
+		public String getSysTime() {
+			return SysTime;
+		}
+
+		public void setSysTime(String sysTime) {
+			SysTime = sysTime;
+		}
+
+		public String getAcqTime() {
+			return AcqTime;
+		}
+
+		public void setAcqTime(String acqTime) {
+			AcqTime = acqTime;
+		}
+
+		public int getSignal() {
+			return Signal;
+		}
+
+		public void setSignal(int signal) {
+			Signal = signal;
+		}
+
+		public String getKey() {
+			return Key;
+		}
+
+		public void setKey(String key) {
+			Key = key;
+		}
+
+		public int getTransferInterval() {
+			return TransferInterval;
+		}
+
+		public void setTransferInterval(int transferInterval) {
+			TransferInterval = transferInterval;
+		}
+
+		public List<Float> getInterval() {
+			return Interval;
+		}
+
+		public void setInterval(List<Float> interval) {
+			Interval = interval;
+		}
+
+		public List<Float> getWaterCut() {
+			return WaterCut;
+		}
+
+		public void setWaterCut(List<Float> waterCut) {
+			WaterCut = waterCut;
 		}
 	}
 	

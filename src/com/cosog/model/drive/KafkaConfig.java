@@ -70,6 +70,8 @@ public class KafkaConfig {
 	    private String NormData;
 
 	    private String RawData;
+	    
+	    private String RawWaterCut;
 
 	    private String Config;
 
@@ -131,6 +133,12 @@ public class KafkaConfig {
 	    public String getRunStatus(){
 	        return this.RunStatus;
 	    }
+		public String getRawWaterCut() {
+			return RawWaterCut;
+		}
+		public void setRawWaterCut(String rawWaterCut) {
+			RawWaterCut = rawWaterCut;
+		}
 	}
 	
 	public static class Down

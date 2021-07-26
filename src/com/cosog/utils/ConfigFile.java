@@ -541,19 +541,7 @@ public class ConfigFile {
 	    private int defaultGraghSize;
 	    
 	    private int productionUnit;
-	    
-	    private boolean pcp;
-	    
-	    private boolean electrical;
-	    
-	    private boolean dynamicCurve;
 
-	    public boolean isPcp() {
-			return pcp;
-		}
-		public void setPcp(boolean pcp) {
-			this.pcp = pcp;
-		}
 		private String serialnumber;
 
 	    public void setCache(boolean cache){
@@ -609,18 +597,6 @@ public class ConfigFile {
 		}
 		public void setProductionUnit(int productionUnit) {
 			this.productionUnit = productionUnit;
-		}
-		public boolean isDynamicCurve() {
-			return dynamicCurve;
-		}
-		public void setDynamicCurve(boolean dynamicCurve) {
-			this.dynamicCurve = dynamicCurve;
-		}
-		public boolean isElectrical() {
-			return electrical;
-		}
-		public void setElectrical(boolean electrical) {
-			this.electrical = electrical;
 		}
 	}
 

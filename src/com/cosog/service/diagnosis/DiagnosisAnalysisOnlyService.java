@@ -548,7 +548,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			if("1232".equals(obj[11]+"") || !StringManagerUtils.isNotNull(pumpFSDiagram)){//采集异常
 				String positionCurveDataArr[]=positionCurveData.split(",");
 				String loadCurveDataArr[]=loadCurveData.split(",");
-				for(int i=0;i<positionCurveDataArr.length;i++){
+				for(int i=0;i<positionCurveDataArr.length&&i<loadCurveDataArr.length;i++){
 					pumpFSDiagramStrBuff.append(positionCurveDataArr[i]+",").append(loadCurveDataArr[i]+",");
 				}
 			}else{

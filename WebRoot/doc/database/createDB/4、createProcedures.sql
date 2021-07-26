@@ -139,7 +139,6 @@ CREATE OR REPLACE PROCEDURE prd_clear_data is
 begin
 --清空所有数据
 EXECUTE IMMEDIATE 'truncate table tbl_org';
-
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_productiondata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_productiondata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_discrete_latest';
@@ -149,11 +148,12 @@ EXECUTE IMMEDIATE 'truncate table tbl_rpc_diagram_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_diagram_total';
 EXECUTE IMMEDIATE 'truncate table tbl_a9rawdata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_a9rawdata_hist';
+EXECUTE IMMEDIATE 'truncate table tbl_a9rawwatercutdata_latest';
+EXECUTE IMMEDIATE 'truncate table tbl_a9rawwatercutdata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_motor';
 EXECUTE IMMEDIATE 'truncate table tbl_rpcinformation';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_inver_opt';
 EXECUTE IMMEDIATE 'truncate table tbl_rpc_total_day';
-
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_productiondata_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_productiondata_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_discrete_latest';
@@ -162,12 +162,10 @@ EXECUTE IMMEDIATE 'truncate table tbl_pcp_rpm_latest';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_rpm_hist';
 EXECUTE IMMEDIATE 'truncate table tbl_pcp_total_day';
 EXECUTE IMMEDIATE 'truncate table tbl_wellboretrajectory';
-
 EXECUTE IMMEDIATE 'truncate table tbl_wellinformation';
 
 --重置所有序列
  prd_reset_sequence('seq_org');
-
  prd_reset_sequence('seq_outputwellproduction_rt');
  prd_reset_sequence('seq_outputwellproduction');
  prd_reset_sequence('seq_discretedata_rt');
@@ -177,11 +175,12 @@ EXECUTE IMMEDIATE 'truncate table tbl_wellinformation';
  prd_reset_sequence('seq_rpc_diagram_total');
  prd_reset_sequence('seq_a9rawdata_hist');
  prd_reset_sequence('seq_a9rawdata_latest');
+ prd_reset_sequence('seq_a9rawwatercutdata_hist');
+ prd_reset_sequence('seq_a9rawwatercutdata_latest');
  prd_reset_sequence('seq_inver_motor');
  prd_reset_sequence('seq_inver_pumpingunit');
  prd_reset_sequence('seq_inver_optimize');
  prd_reset_sequence('seq_outputwellaggregation');
-
  prd_reset_sequence('seq_pcp_productiondata_latest');
  prd_reset_sequence('seq_pcp_productiondata_hist');
  prd_reset_sequence('seq_pcp_discrete_latest');
@@ -189,38 +188,8 @@ EXECUTE IMMEDIATE 'truncate table tbl_wellinformation';
  prd_reset_sequence('seq_pcp_rpm_latest');
  prd_reset_sequence('seq_pcp_rpm_hist');
  prd_reset_sequence('seq_pcp_total_day');
- 
  prd_reset_sequence('seq_wellboretrajectory');
-
  prd_reset_sequence('seq_wellinformation');
-
-end prd_clear_data;
---重置所有序列
- prd_reset_sequence('seq_org');
-
- prd_reset_sequence('seq_outputwellproduction_rt');
- prd_reset_sequence('seq_outputwellproduction');
- prd_reset_sequence('seq_discretedata_rt');
- prd_reset_sequence('seq_discretedata');
- prd_reset_sequence('seq_indicatordiagram_rt');
- prd_reset_sequence('seq_indicatordiagram');
- prd_reset_sequence('seq_a9rawdata_hist');
- prd_reset_sequence('seq_a9rawdata_latest');
- prd_reset_sequence('seq_inver_motor');
- prd_reset_sequence('seq_inver_pumpingunit');
- prd_reset_sequence('seq_inver_optimize');
- prd_reset_sequence('seq_outputwellaggregation');
-
- prd_reset_sequence('seq_pcp_productiondata_latest');
- prd_reset_sequence('seq_pcp_productiondata_hist');
- prd_reset_sequence('seq_pcp_discrete_latest');
- prd_reset_sequence('seq_pcp_discrete_hist');
- prd_reset_sequence('seq_pcp_rpm_latest');
- prd_reset_sequence('seq_pcp_rpm_hist');
- prd_reset_sequence('seq_pcp_total_day');
-
- prd_reset_sequence('seq_wellinformation');
-
 end prd_clear_data;
 /
 
@@ -289,6 +258,51 @@ Exception
     p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_a9RawData;
+/
+
+CREATE OR REPLACE PROCEDURE prd_save_a9RawWaterCutData (
+       v_DeviceId in varchar2,
+       v_AcqTime in varchar2,
+       v_Ver in varchar2,
+       v_Signal in NUMBER,
+       v_TransferIntervel in NUMBER,
+       v_Interval_CURVE in tbl_a9rawwatercutdata_hist.interval%TYPE,
+       v_WaterCut_CURVE in tbl_a9rawwatercutdata_hist.watercut%TYPE
+       ) as
+  p_recordNum     number :=0;
+  p_msg varchar2(3000) := 'error';
+begin
+  select count(id) into p_recordNum from tbl_a9rawwatercutdata_hist t
+  where t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
+  and t.deviceid=v_DeviceId;
+  if p_recordNum>0 then
+      update tbl_a9rawwatercutdata_hist t
+      set t.signal=v_Signal,t.devicever=v_Ver,
+      t.transferintervel=v_TransferIntervel,
+      t.interval=v_Interval_CURVE,t.watercut=v_WaterCut_CURVE
+      where t.AcqTime=to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss')
+      and t.deviceid=v_DeviceId;
+      commit;
+      p_msg := '修改成功';
+  elsif p_recordNum=0 then
+      insert into tbl_a9rawwatercutdata_hist(
+          deviceid,AcqTime,
+          signal,devicever,transferintervel,
+          interval,watercut
+      )values(
+          v_DeviceId,to_date(v_AcqTime,'yyyy-mm-dd hh24:mi:ss'),
+          v_Signal,v_Ver,v_TransferIntervel,
+          v_Interval_CURVE,v_WaterCut_CURVE
+      );
+      commit;
+      p_msg := '添加成功';
+  end if;
+  dbms_output.put_line('p_msg:' || p_msg);
+Exception
+  When Others Then
+    p_msg :=p_msg||','|| Sqlerrm || ',' || '操作失败';
+    dbms_output.put_line('p_msg:' || p_msg);
+end prd_save_a9RawWaterCutData;
 /
 
 CREATE OR REPLACE PROCEDURE prd_save_alarmcolor (    backgroundColor0   in varchar2,

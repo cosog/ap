@@ -33,6 +33,33 @@ begin
 end;
 /
 
+CREATE OR REPLACE TRIGGER trg_a_a9rawwatercut_hist_i_u
+    before update or insert  on tbl_a9rawwatercutdata_hist
+    for each row
+declare
+    recordCount number(8,2);
+begin
+    if 1=1 then
+       select count(id) into recordCount from tbl_a9rawwatercutdata_latest t where t.deviceid=:new.deviceid;
+       if recordCount=0 then
+          insert into tbl_a9rawwatercutdata_latest (
+              deviceid,acqtime,signal,devicever,transferintervel,
+              interval,watercut
+          )values(
+              :new.deviceid,:new.acqtime,:new.signal,:new.devicever,:new.transferintervel,
+              :new.interval,:new.watercut
+          );
+       elsif recordCount>0  then
+          update tbl_a9rawwatercutdata_latest t set
+              t.AcqTime=:new.AcqTime,t.signal=:new.signal,t.devicever=:new.devicever,
+              t.transferintervel=:new.transferintervel,
+              t.interval=:new.interval,t.watercut=:new.watercut
+           where t.deviceid=:new.deviceid;
+       end if;
+    end if;
+end;
+/
+
 CREATE OR REPLACE TRIGGER trg_a_pcp_rpm_hist_i_u
     before update or insert  on TBL_pcp_rpm_HIST
     for each row
@@ -477,6 +504,18 @@ end;
 create or replace trigger trg_b_a9rawdata_latest_i   before  insert on tbl_a9rawdata_latest FOR EACH ROW
 BEGIN
   SELECT Seq_A9rawdata_Latest.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_a9rawwatercut_hist_i   before  insert on TBL_A9RAWWATERCUTDATA_HIST FOR EACH ROW
+BEGIN
+  SELECT SEQ_A9RAWWATERCUTDATA_HIST.nextval INTO :new.id FROM dual;
+end;
+/
+
+CREATE OR REPLACE TRIGGER trg_b_a9rawwatercut_latest_i   before  insert on TBL_A9RAWWATERCUTDATA_LATEST FOR EACH ROW
+BEGIN
+  SELECT SEQ_A9RAWWATERCUTDATA_LATEST.nextval INTO :new.id FROM dual;
 end;
 /
 

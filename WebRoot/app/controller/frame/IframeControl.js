@@ -173,7 +173,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "ElectricAnalysis_ElectricAnalysisRealtimeProfile"
 		&& module_Code != "ElectricAnalysis_ElectricAnalysisRealtimeDetails"
 		&& module_Code != "ElectricAnalysis_ElectricAnalysisRealtimeDiagram"
-		&& module_Code !="ElectricAnalysis_ElectricAnalysisDailyProfile") {
+		&& module_Code !="ElectricAnalysis_ElectricAnalysisDailyProfile"
+		&& module_Code !="kafkaConfig_A9RawDataGridPanel") {
 		if (modules.length > 2) {
 			if(secondTab_Code!= modules[2]){
 				modules[2]=secondTab_Code;
@@ -384,6 +385,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		loadElectricInverDiagramList(1);
 	}else if(module_Code=="ElectricAnalysis_ElectricAnalysisDailyProfile"){
 		getElectricAnalysisDailyProfileData();
+	}else if(module_Code=="kafkaConfig_A9RawDataGridPanel"){
+		reLoadA9RawData();
 	}else {
 		return false;
 	}

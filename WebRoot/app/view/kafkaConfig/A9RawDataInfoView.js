@@ -87,6 +87,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                 id: "a9RawDataTblPanel_Id",
                 title: '实时数据',
                 activeTab: 0,
+                layout: "fit",
                 border: false,
                 tabPosition: 'bottom',
                 tbar: [deviceComboBox, '-', {
@@ -309,7 +310,7 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                     title: '含水率数据',
                     border: false,
                     id: 'a9RawWaterCutDataInfoPanelId',
-                    height: 600,
+//                    height: 600,
                     hidden: rawWaterCutHidden,
                     autoScroll: false,
                     scrollable: true,
@@ -334,14 +335,15 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
                         collapseDirection: 'right',
                         autoScroll: false,
                         scrollable: true,
-                        height: 600,
+//                        height: 600,
                         layout: {
                             type: 'vbox',
                             pack: 'start',
                             align: 'stretch'
                         },
                         items: [{
-                            height: 600,
+//                            height: 600,
+                        	flex: 1,
                             layout: {
                                 type: 'vbox',
                                 pack: 'start',
@@ -442,7 +444,6 @@ Ext.define('AP.view.kafkaConfig.A9RawDataInfoView', {
             }
         });
         this.callParent(arguments);
-
     }
 });
 

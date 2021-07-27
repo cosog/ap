@@ -39,7 +39,7 @@ import com.google.gson.reflect.TypeToken;
 @Component("KafkaServerTast")  
 public class KafkaServerTask {
 	public static  String HOST ="";
-    public static  String[] TOPIC = {"Up-NormData","Up-RawData","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
+    public static  String[] TOPIC = {"Up-Norm","Up-RawFEA","Up-RawWaterCut","Up-Config","Up-Model","Up-Freq","Up-RTC","Up-Online","Up-RunStatus"};
     private static  String clientid = "apKafkaClient"+StringManagerUtils.getMacAddress().replaceAll("-", "");
     @SuppressWarnings("unused")
 	private ScheduledExecutorService scheduler;

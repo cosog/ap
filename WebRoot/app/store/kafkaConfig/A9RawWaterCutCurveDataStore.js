@@ -24,7 +24,7 @@ Ext.define('AP.store.kafkaConfig.A9RawWaterCutCurveDataStore', {
 //        	colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1']
         	
         	showPContinuousDiagram(get_rawData.intervalCurveData,"采集间隔曲线",get_rawData.deviceId+' ['+get_rawData.acqTime+']',"点数","采集间隔(ms)",'#7cb5ec', "A9RawWaterCutDataCurveChartDiv1_Id");
-        	showPContinuousDiagram(get_rawData.waterCutCurveData,"含水率曲线",get_rawData.deviceId+' ['+get_rawData.acqTime+']',"点数","角度电流值(mA)",'#f7a35c', "A9RawWaterCutDataCurveChartDiv2_Id");
+        	showPContinuousDiagram(get_rawData.waterCutCurveData,"含水率曲线",get_rawData.deviceId+' ['+get_rawData.acqTime+']',"点数","含水率(%)",'#f7a35c', "A9RawWaterCutDataCurveChartDiv2_Id");
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("A9RawWaterCutDataGridPanel_Id").getSelectionModel().getSelection()[0].data.id;// 获取图形数据id

@@ -506,8 +506,10 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("DiagnosisTotalData_Id").getSelectionModel().getSelection()[0].data.id;
+        	var wellName  = Ext.getCmp("DiagnosisTotalData_Id").getSelectionModel().getSelection()[0].data.wellName;
         	var new_params = {
-        			id: id
+        			id: id,
+        			wellName: wellName
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

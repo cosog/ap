@@ -1608,11 +1608,7 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 			tableName="viw_pcp_comprehensive_hist";
 		}
 		String isControlSql="select t2.role_flag from tbl_user t,tbl_role t2 where t.user_type=t2.role_id and t.user_no="+userId;
-		String controlItemSql="select t.wellname,t3.itemname,t3.itemcode "
-				+ " from tbl_wellinformation t,tbl_acq_unit_conf t2,tbl_acq_item_conf t3,tbl_acq_item2group_conf t4 "
-				+ " where t.unitcode=t2.unit_code and t2.id=t4.unitid and t4.itemid=t3.id "
-				+ " and t.wellname='"+selectedWellName+"' and t3.operationtype=2 "
-				+ " order by t3.seq";
+		
 		String sql="select "+prodCol
 				+ " qpr,"
 				+ " averageWatt,waterPower,systemEfficiency,energyPer100mLift,"
@@ -1632,28 +1628,139 @@ public class DiagnosisAnalysisOnlyService<T> extends BaseService<T> {
 				+ " videourl,"
 				+ " runRange"
 				+ " from "+tableName+" t where id="+recordId;
+		String protocolSql="select upper(t.protocolcode) from TBL_WELLINFORMATION t where t.wellname='"+selectedWellName+"'";
 		List<?> isControlList = this.findCallSql(isControlSql);
-		List<?> controlItemsList = this.findCallSql(controlItemSql);
+		List<?> protocolList = this.findCallSql(protocolSql);
 		List<?> list = this.findCallSql(sql);
 		
 		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpRealtimeAnalysis");
 		String analysisDataList = ddic.getTableHeader();
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpRealtimeAcquisition");
-		String acquisitionDataList = ddic.getTableHeader();
+//		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("screwPumpRealtimeAcquisition");
+//		String acquisitionDataList = ddic.getTableHeader();
 		
 		String isControl=isControlList.size()>0?isControlList.get(0).toString():"0";
 		result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
+		StringBuffer acquisitionDataList=new StringBuffer();
+		StringBuffer controlItems=new StringBuffer();
+		acquisitionDataList.append("[");
+		controlItems.append("[");
+		
+		acquisitionDataList.append("{\"header\": \"采集时间\",\"dataIndex\": \"acqTime_d\",children: []},");
+		acquisitionDataList.append("{\"header\": \"通信状态\",\"dataIndex\": \"commStatus\",children: []},");
+		
 		result_json.append("\"analysisDataList\":"+analysisDataList+",");
-		result_json.append("\"acquisitionDataList\":"+acquisitionDataList+",");
-		result_json.append("\"controlItems\":[");
-		for(int i=0;i<controlItemsList.size();i++){
-			Object[] obj=(Object[]) controlItemsList.get(i);
-			result_json.append("{\"item\":\""+obj[2]+"\"},");
+		
+		String protocolCode="";
+		if(protocolList.size()>0){
+			protocolCode=protocolList.get(0)+"";
+			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			if(equipmentDriveMap.size()==0){
+				EquipmentDriverServerTask.loadProtocolConfig();
+				equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			}
+			if(StringManagerUtils.isNotNull(protocolCode)&&protocolCode.contains("KAFKA")){
+				acquisitionDataList.append("{\"header\": \"运行状态\",\"dataIndex\": \"runStatus\",children: []},");
+				acquisitionDataList.append("{\"header\": \"A相电流(A)\",\"dataIndex\": \"Ia\",children: []},");
+				acquisitionDataList.append("{\"header\": \"B相电流(A)\",\"dataIndex\": \"Ib\",children: []},");
+				acquisitionDataList.append("{\"header\": \"C相电流(A)\",\"dataIndex\": \"Ic\",children: []},");
+				acquisitionDataList.append("{\"header\": \"A相电压(V)\",\"dataIndex\": \"Va\",children: []},");
+				acquisitionDataList.append("{\"header\": \"B相电压(V)\",\"dataIndex\": \"Vb\",children: []},");
+				acquisitionDataList.append("{\"header\": \"C相电压(V)\",\"dataIndex\": \"Vc\",children: []},");
+				acquisitionDataList.append("{\"header\": \"有功功率(kW)\",\"dataIndex\": \"watt3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"无功功率(kVar)\",\"dataIndex\": \"var3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"视在功率(kVA)\",\"dataIndex\": \"va3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"功率因数\",\"dataIndex\": \"pf3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"有功功耗(kW·h)\",\"dataIndex\": \"totalKWattH\",children: []},");
+				acquisitionDataList.append("{\"header\": \"无功功耗(kVar·h)\",\"dataIndex\": \"totalKVarH\",children: []},");
+				acquisitionDataList.append("{\"header\": \"视在功耗(kVA·h)\",\"dataIndex\": \"totalKVAH\",children: []},");
+				acquisitionDataList.append("{\"header\": \"油压(MPa)\",\"dataIndex\": \"tubingPressure\",children: []},");
+				acquisitionDataList.append("{\"header\": \"套压(MPa)\",\"dataIndex\": \"casingPressure\",children: []},");
+				acquisitionDataList.append("{\"header\": \"井口油温(℃)\",\"dataIndex\": \"wellheadFluidTemperature\",children: []},");
+				acquisitionDataList.append("{\"header\": \"动液面(m)\",\"dataIndex\": \"ProducingfluidLevel\",children: []},");
+				if(configFile.getOthers().getProductionUnit()!=0){
+					acquisitionDataList.append("{\"header\": \"含水率(%)\",\"dataIndex\": \"volumeWaterCut\",children: []},");
+				}else{
+					acquisitionDataList.append("{\"header\": \"含水率(%)\",\"dataIndex\": \"weightWaterCut\",children: []},");
+				}
+				acquisitionDataList.append("{\"header\": \"变频运行频率(Hz)\",\"dataIndex\": \"runFrequency\",children: []},");
+				acquisitionDataList.append("{\"header\": \"信号强度\",\"dataIndex\": \"signal\",children: []},");
+				acquisitionDataList.append("{\"header\": \"设备版本\",\"dataIndex\": \"deviceVer\",children: []},");
+				
+				controlItems.append("{\"item\":\"RunControl\"},");
+				controlItems.append("{\"item\":\"SetFrequency\"},");
+			}else if(StringManagerUtils.isNotNull(protocolCode)&&protocolCode.contains("MQTT")){
+				acquisitionDataList.append("{\"header\": \"运行状态\",\"dataIndex\": \"runStatus\",children: []},");
+				acquisitionDataList.append("{\"header\": \"A相电流(A)\",\"dataIndex\": \"Ia\",children: []},");
+				acquisitionDataList.append("{\"header\": \"B相电流(A)\",\"dataIndex\": \"Ib\",children: []},");
+				acquisitionDataList.append("{\"header\": \"C相电流(A)\",\"dataIndex\": \"Ic\",children: []},");
+				acquisitionDataList.append("{\"header\": \"A相电压(V)\",\"dataIndex\": \"Va\",children: []},");
+				acquisitionDataList.append("{\"header\": \"B相电压(V)\",\"dataIndex\": \"Vb\",children: []},");
+				acquisitionDataList.append("{\"header\": \"C相电压(V)\",\"dataIndex\": \"Vc\",children: []},");
+				acquisitionDataList.append("{\"header\": \"有功功率(kW)\",\"dataIndex\": \"watt3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"无功功率(kVar)\",\"dataIndex\": \"var3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"视在功率(kVA)\",\"dataIndex\": \"va3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"功率因数\",\"dataIndex\": \"pf3\",children: []},");
+				acquisitionDataList.append("{\"header\": \"有功功耗(kW·h)\",\"dataIndex\": \"totalKWattH\",children: []},");
+				acquisitionDataList.append("{\"header\": \"无功功耗(kVar·h)\",\"dataIndex\": \"totalKVarH\",children: []},");
+				acquisitionDataList.append("{\"header\": \"视在功耗(kVA·h)\",\"dataIndex\": \"totalKVAH\",children: []},");
+				acquisitionDataList.append("{\"header\": \"油压(MPa)\",\"dataIndex\": \"tubingPressure\",children: []},");
+				acquisitionDataList.append("{\"header\": \"套压(MPa)\",\"dataIndex\": \"casingPressure\",children: []},");
+				acquisitionDataList.append("{\"header\": \"井口油温(℃)\",\"dataIndex\": \"wellheadFluidTemperature\",children: []},");
+				acquisitionDataList.append("{\"header\": \"动液面(m)\",\"dataIndex\": \"ProducingfluidLevel\",children: []},");
+				if(configFile.getOthers().getProductionUnit()!=0){
+					acquisitionDataList.append("{\"header\": \"含水率(%)\",\"dataIndex\": \"volumeWaterCut\",children: []},");
+				}else{
+					acquisitionDataList.append("{\"header\": \"含水率(%)\",\"dataIndex\": \"weightWaterCut\",children: []},");
+				}
+				acquisitionDataList.append("{\"header\": \"变频运行频率(Hz)\",\"dataIndex\": \"runFrequency\",children: []},");
+				acquisitionDataList.append("{\"header\": \"信号强度\",\"dataIndex\": \"signal\",children: []},");
+				acquisitionDataList.append("{\"header\": \"设备版本\",\"dataIndex\": \"deviceVer\",children: []},");
+				
+				controlItems.append("{\"item\":\"RunControl\"},");
+				controlItems.append("{\"item\":\"SetFrequency\"},");
+			}else{
+				ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
+					for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+						if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+							for(int j=0;j<modbusProtocolConfig.getProtocol().get(i).getItems().size();j++){
+								if("rw".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getRWType())){//如果可读可写
+									controlItems.append("{\"item\":\""+modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getName()+"\"},");
+								}else{
+									if("WaterCut".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).getName())){
+										if(configFile.getOthers().getProductionUnit()!=0){
+											acquisitionDataList.append("{\"header\": \"含水率(%)\",\"dataIndex\": \"volumeWaterCut\",children: []},");
+										}else{
+											acquisitionDataList.append("{\"header\": \"含水率(%)\",\"dataIndex\": \"weightWaterCut\",children: []},");
+										}
+									}
+									acquisitionDataList.append(modbusProtocolConfig.getProtocol().get(i).getItems().get(j).toString()+",");
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+			
+			if(acquisitionDataList.toString().endsWith(",")){
+				acquisitionDataList.deleteCharAt(acquisitionDataList.length() - 1);
+			}
+			if(controlItems.toString().endsWith(",")){
+				controlItems.deleteCharAt(controlItems.length() - 1);
+			}
 		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+		
+		acquisitionDataList.append("]");
+		controlItems.append("]");
+		
+		if(StringManagerUtils.isNotNull(protocolCode)){
+			result_json.append("\"acquisitionDataList\":"+acquisitionDataList+",");
+		}else{
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAcquisition");
+			result_json.append("\"acquisitionDataList\":"+ddic.getTableHeader()+",");
 		}
-		result_json.append("],");
+		result_json.append("\"controlItems\":"+controlItems+",");
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);
 			result_json.append("\"liquidProduction\":\""+obj[0]+"\",");

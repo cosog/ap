@@ -347,8 +347,10 @@ public class DiagnosisTotalController extends BaseController {
 	@RequestMapping("/getAnalysisAndAcqAndControlData")
 	public String getAnalysisAndAcqAndControlData() throws Exception {
 		String id = ParamUtils.getParameter(request, "id");
+		wellName=ParamUtils.getParameter(request, "wellName");
 		this.pager = new Page("pagerForm", request);
-		String json =diagnosisTotalService.getAnalysisAndAcqAndControlData(id);
+		String json =diagnosisTotalService.getAnalysisAndAcqAndControlData(id,wellName);
+		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

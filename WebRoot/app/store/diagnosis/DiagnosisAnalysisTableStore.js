@@ -248,34 +248,6 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         			break;
     			}
     		}
-//    		dataStr+="{\"item\":\"上载荷(kN)\",\"itemCode\":\"upperLoadLineOfExact\",\"value\":\""+get_rawData.upperLoadLineOfExact+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"一级杆最大载荷(kN)\",\"itemCode\":\"yjzdzh\",\"value\":\""+get_rawData.yjzdzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"一级杆最小载荷(kN)\",\"itemCode\":\"yjzxzh\",\"value\":\""+get_rawData.yjzxzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"一级杆最大应力(MPa)\",\"itemCode\":\"yjzdyl\",\"value\":\""+get_rawData.yjzdyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"一级杆最小应力(MPa)\",\"itemCode\":\"yjzxyl\",\"value\":\""+get_rawData.yjzxyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"一级杆许用应力(MPa)\",\"itemCode\":\"yjxyyl\",\"value\":\""+get_rawData.yjxyyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"一级杆应力百分比(%)\",\"itemCode\":\"yjylbfb\",\"value\":\""+get_rawData.yjylbfb+"\",\"curve\":\"\"},";
-//    		
-//    		dataStr+="{\"item\":\"二级杆最大载荷(kN)\",\"itemCode\":\"ejzdzh\",\"value\":\""+get_rawData.ejzdzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"二级杆最小载荷(kN)\",\"itemCode\":\"ejzxzh\",\"value\":\""+get_rawData.ejzxzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"二级杆最大应力(MPa)\",\"itemCode\":\"ejzdyl\",\"value\":\""+get_rawData.ejzdyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"二级杆最小应力(MPa)\",\"itemCode\":\"ejzxyl\",\"value\":\""+get_rawData.ejzxyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"二级杆许用应力(MPa)\",\"itemCode\":\"ejxyyl\",\"value\":\""+get_rawData.ejxyyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"二级杆应力百分比(%)\",\"itemCode\":\"ejylbfb\",\"value\":\""+get_rawData.ejylbfb+"\",\"curve\":\"\"},";
-//    		
-//    		dataStr+="{\"item\":\"三级杆最大载荷(kN)\",\"itemCode\":\"sjzdzh\",\"value\":\""+get_rawData.sjzdzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"三级杆最小载荷(kN)\",\"itemCode\":\"sjzxzh\",\"value\":\""+get_rawData.sjzxzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"三级杆最大应力(MPa)\",\"itemCode\":\"sjzdyl\",\"value\":\""+get_rawData.sjzdyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"三级杆最小应力(MPa)\",\"itemCode\":\"sjzxyl\",\"value\":\""+get_rawData.sjzxyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"三级杆许用应力(MPa)\",\"itemCode\":\"sjxyyl\",\"value\":\""+get_rawData.sjxyyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"三级杆应力百分比(%)\",\"itemCode\":\"sjylbfb\",\"value\":\""+get_rawData.sjylbfb+"\",\"curve\":\"\"},";
-//    		
-//    		dataStr+="{\"item\":\"四级杆最大载荷(kN)\",\"itemCode\":\"sijzdzh\",\"value\":\""+get_rawData.sijzdzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"四级杆最小载荷(kN)\",\"itemCode\":\"sijzxzh\",\"value\":\""+get_rawData.sijzxzh+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"四级杆最大应力(MPa)\",\"itemCode\":\"sijzdyl\",\"value\":\""+get_rawData.sijzdyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"四级杆最小应力(MPa)\",\"itemCode\":\"sijzxyl\",\"value\":\""+get_rawData.sijzxyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"四级杆许用应力(MPa)\",\"itemCode\":\"sijxyyl\",\"value\":\""+get_rawData.sijxyyl+"\",\"curve\":\"\"},";
-//    		dataStr+="{\"item\":\"四级杆应力百分比(%)\",\"itemCode\":\"sijylbfb\",\"value\":\""+get_rawData.sijylbfb+"\",\"curve\":\"\"}";
     		
     		if(stringEndWith(dataStr,",")){
         		dataStr = dataStr.substring(0, dataStr.length - 1);
@@ -370,6 +342,12 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			case "totalKVAH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
         			break;
+    			case "KWattH".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVarH\",\"value\":\""+get_rawData.totalKVarH+"\",\"curve\":\"\"},";
+        			break;
+    			case "KVarH".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
+        			break;
     			case "weightWaterCut".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
         			break;
@@ -384,6 +362,9 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
         			break;
     			case "wellHeadFluidTemperature".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wellHeadFluidTemperature\",\"value\":\""+get_rawData.wellHeadFluidTemperature+"\",\"curve\":\"\"},";
+        			break;
+    			case "producingFluidLevel".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
         			break;
     			case "signal".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"signal\",\"value\":\""+get_rawData.signal+"\",\"curve\":\"\"},";
@@ -404,7 +385,7 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     		var controlSataStr="{\"items\":[";
     		var isHaveBalanceControl=false;
     		for(var i=0;i<get_rawData.controlItems.length;i++){
-    			switch(get_rawData.controlItems[i].tiem) {
+    			switch(get_rawData.controlItems[i].item) {
     			case "ImmediatelyAcquisition":
    		    	 controlSataStr+="{\"item\":\"即时采集\",\"itemcode\":\"ImmediatelyAcquisition\",\"value\":\"\",\"commStatus\":"+get_rawData.commStatus+",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1},";
    		    	 break; 

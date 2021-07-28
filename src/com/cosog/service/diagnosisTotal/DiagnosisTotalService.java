@@ -539,7 +539,7 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 		return dynSbf.toString();
 	}
 	
-	public String getAnalysisAndAcqAndControlData(String id)throws Exception {
+	public String getAnalysisAndAcqAndControlData(String id,String wellName)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		String prodCol=" t.liquidWeightProduction,t.liquidWeightProductionMax,t.liquidWeightProductionMin,"
@@ -632,13 +632,19 @@ public class DiagnosisTotalService<T> extends BaseService<T> {
 				+ " t.noLiquidAvailableStroke,t.noLiquidAvailableStrokeMax,t.noLiquidAvailableStrokeMin,"
 				+ " t.noLiquidFullnessCoefficient,t.noLiquidFullnessCoefficientMax,t.noLiquidFullnessCoefficientMin"
 				+ " from tbl_rpc_total_day t where id="+id;
+		String protocolSql="select upper(t.protocolcode) from TBL_WELLINFORMATION t where t.wellname='"+wellName+"'";
 		List<?> list = this.findCallSql(sql);
+		List<?> protocolList = this.findCallSql(protocolSql);
 		DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyAnalysis");
 		String analysisDataList = ddic.getTableHeader();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("dailyAcquisition");
 		String acquisitionDataList = ddic.getTableHeader();
 		result_json.append("{ \"success\":true,");
 		result_json.append("\"analysisDataList\":"+analysisDataList+",");
+		
+//		StringBuffer acquisitionDataList=new StringBuffer();
+//		acquisitionDataList.append("[");
+		
 		result_json.append("\"acquisitionDataList\":"+acquisitionDataList+",");
 		if(list.size()>0){
 			Object[] obj=(Object[]) list.get(0);

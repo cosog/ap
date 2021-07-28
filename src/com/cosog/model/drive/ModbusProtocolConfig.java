@@ -2,6 +2,8 @@ package com.cosog.model.drive;
 
 import java.util.List;
 
+import com.cosog.utils.StringManagerUtils;
+
 public class ModbusProtocolConfig {
 	
 	private List<Protocol> Protocol;
@@ -94,6 +96,16 @@ public class ModbusProtocolConfig {
 		}
 		public void setIFDataType(String IFDataType) {
 			this.IFDataType = IFDataType;
+		}
+		
+		public String toString(){
+			StringBuffer result=new StringBuffer();
+			result.append("{\"header\": \""+this.Title);
+			if(StringManagerUtils.isNotNull(this.Unit)){
+				result.append("("+this.Unit+")");
+			}
+			result.append("\",\"dataIndex\": \""+this.Name+"\", children: []}");
+			return result.toString();
 		}
 	}
 	

@@ -228,7 +228,7 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
 var controlSataStr="{\"items\":[";
     		
     		for(var i=0;i<get_rawData.controlItems.length;i++){
-    			switch(get_rawData.controlItems[i].tiem) {
+    			switch(get_rawData.controlItems[i].item) {
     		     case "RunControl":
     		    	 var runStatus="停抽";
     		    	 if(get_rawData.commStatus==1){

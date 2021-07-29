@@ -206,6 +206,18 @@ Ext.define('AP.store.diagnosis.ScrewPumpRTAnalysisTableStore', {
     			case "totalKVAH".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
         			break;
+    			case "KWattH".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVarH\",\"value\":\""+get_rawData.totalKVarH+"\",\"curve\":\"\"},";
+        			break;
+    			case "KVarH".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"totalKVAH\",\"value\":\""+get_rawData.totalKVAH+"\",\"curve\":\"\"},";
+        			break;
+    			case "weightWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        			break;
+    			case "volumeWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        			break;
     			case "tubingPressure".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
         			break;

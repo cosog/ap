@@ -256,6 +256,9 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     			case "frequency".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"frequency\",\"value\":\""+get_rawData.frequencyMax+"/"+get_rawData.frequencyMin+"/"+get_rawData.frequency+"\",\"curve\":\"\"},";
         			break;
+    			case "runFrequency".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"frequency\",\"value\":\""+get_rawData.frequencyMax+"/"+get_rawData.frequencyMin+"/"+get_rawData.frequency+"\",\"curve\":\"\"},";
+        			break;
     			case "Ia".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.IaMax+"/"+get_rawData.IaMin+"/"+get_rawData.Ia+"\",\"curve\":\"\"},";
         			break;
@@ -295,6 +298,15 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     			case "wellHeadFluidTemperature".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wellHeadFluidTemperature\",\"value\":\""+get_rawData.wellHeadFluidTemperatureMax+"/"+get_rawData.wellHeadFluidTemperatureMin+"/"+get_rawData.wellHeadFluidTemperature+"\",\"curve\":\"\"},";
         			break;
+    			case "weightWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+            		break;
+    			case "volumeWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCutMax+"/"+get_rawData.waterCutMin+"/"+get_rawData.waterCut+"\",\"curve\":\"\"},";
+            		break;
+    			case "producingFluidLevel".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevelMax+"/"+get_rawData.producingFluidLevelMin+"/"+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
+            		break;
     			case "signal".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"signal\",\"value\":\""+get_rawData.signalMax+"/"+get_rawData.signalMin+"/"+get_rawData.signal+"\",\"curve\":\"\"},";
         			break;
@@ -306,15 +318,8 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		}
     		acqSataStr+="]}";
     		
-    		var controlSataStr="{\"items\":[";
-    		controlSataStr+="{\"item\":\"启/停抽\",\"value\":\"运行\",\"operation\":\"\"},";
-    		controlSataStr+="{\"item\":\"运行频率(Hz)\",\"value\":\"60.5\",\"operation\":\"\"},";
-    		controlSataStr+="{\"item\":\"功图采集周期(min)\",\"value\":\"60\",\"operation\":\"\"}";
-    		controlSataStr+="]}";
-    		
     		var storeData=Ext.JSON.decode(dataStr);
     		var acqStoreData=Ext.JSON.decode(acqSataStr);
-    		var controlStoreData=Ext.JSON.decode(controlSataStr);
     		
     		var store=Ext.create('Ext.data.Store', {
 			    fields:['item', 'itemCode','value', 'curve'],
@@ -330,17 +335,6 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		var acqStore=Ext.create('Ext.data.Store', {
 			    fields:['item', 'itemCode','value', 'curve'],
 			    data:acqStoreData,
-			    proxy: {
-			        type: 'memory',
-			        reader: {
-			            type: 'json',
-			            root: 'items'
-			        }
-			    }
-			});
-    		var controlStore=Ext.create('Ext.data.Store', {
-			    fields:['item','value','operation'],
-			    data:controlStoreData,
 			    proxy: {
 			        type: 'memory',
 			        reader: {
@@ -419,87 +413,6 @@ Ext.define('AP.store.diagnosisTotal.DiagnosisTotalAnalysisTableStore', {
     		}else{
     			acqGridPanel.reconfigure(acqStore);
     		}
-    		
-    		
-//    		var controlGridPanel=Ext.getCmp("TotalControlDataGridPanel_Id");
-//    		if(!isNotVal(controlGridPanel)){
-//    			controlGridPanel=Ext.create('Ext.grid.Panel', {
-//    				id:'TotalControlDataGridPanel_Id',
-//    				requires: [
-//                       	'Ext.grid.selection.SpreadsheetModel',
-//                       	'Ext.grid.plugin.Clipboard'
-//                       	],
-//                    xtype:'spreadsheet-checked',
-//                    plugins: [
-//                        'clipboard',
-//                        'selectionreplicator',
-//                        new Ext.grid.plugin.CellEditing({
-//                      	  clicksToEdit:2
-//                        })
-//                    ],
-//    				border: false,
-//    				columnLines: true,
-//    				forceFit: false,
-//    				store: controlStore,
-//    			    columns: [
-//    			        { header: '操作项',  dataIndex: 'item',align:'left',flex:3},
-//    			        { header: '状态/值', dataIndex: 'value',align:'center',flex:1,editor:{allowBlank:false}},
-//    			        { 	header: '操作', 
-//    			        	dataIndex: 'operation',
-//    			        	align:'center',
-//    			        	flex:1,
-//    			        	renderer :function(value,e,o){
-//    			        		var id = e.record.id;
-//    			        		var item=o.data.item;
-//    			        		var text="";
-//    			        		if(item=="启/停抽"){
-//    			        			if(o.data.value=="运行"){
-//    			        				text="停抽";
-//    			        			}else{
-//    			        				text="启抽";
-//    			        			}
-//    			        		}else{
-//    			        			text="设置";
-//    			        		}
-//    		                    Ext.defer(function () {
-//    		                        Ext.widget('button', {
-//    		                            renderTo: id,
-//    		                            height: 18,
-//    		                            width: 50,
-//    		                            text: text,
-//    		                            handler: function () {
-//    		                            	var operaName="";
-//    		                            	if(text=="停抽"||text=="启抽"){
-//    		                            		operaName="是否执行"+text+"操作";
-//    		                            	}else{
-//    		                            		operaName="是否执行"+text+item.split("(")[0]+"操作";
-//    		                            	}
-//    		                            	 Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
-//    		                                 Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
-//    		                                 Ext.Msg.confirm("操作确认", operaName, function (btn) {
-//    		                                     if (btn == "yes") {
-//    		                                         var win_Obj = Ext.getCmp("WellControlCheckPassWindow_Id")
-//    		                                         if (win_Obj != undefined) {
-//    		                                             win_Obj.destroy();
-//    		                                         }
-//    		                                         var WellControlCheckPassWindow = Ext.create("AP.view.diagnosis.WellControlCheckPassWindow", {
-//    		                                             title: '批量停井'
-//    		                                         });
-//    		                                         WellControlCheckPassWindow.show();
-//    		                                     }
-//    		                                 });
-//    		                            }
-//    		                        });
-//    		                    }, 50);
-//    		                    return Ext.String.format('<div id="{0}"></div>', id);
-//    			        	} 
-//    			        }
-//    			    ]
-//    			});
-//    			Ext.getCmp("TotalControlDataPanel_Id").add(controlGridPanel);
-//    		}else{
-//    			controlGridPanel.reconfigure(controlStore);
-//    		}
     		
     		Ext.getCmp("FSDiagramAnalysisDailyDetailsRightRunRangeTextArea_Id").setValue(get_rawData.runRange);
     		Ext.getCmp("FSDiagramAnalysisDailyDetailsRightResultCodeTextArea_Id").setValue(get_rawData.resultString);

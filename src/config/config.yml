@@ -64,8 +64,6 @@ mqtt:
    server: tcp://dq1c6knb.hinnotek.cn:1883
    userName: hinnotekClient1
    passWord: ZJ6m*#D4pd%b
-kafka:
-   server: 39.98.64.56:9092
 driverConfig:
    server: http://8.130.30.138:19200/api/init/server
    protocol: http://8.130.30.138:19200/api/init/protocol

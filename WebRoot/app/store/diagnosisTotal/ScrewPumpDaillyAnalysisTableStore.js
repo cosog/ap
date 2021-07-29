@@ -116,6 +116,9 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     			case "frequency".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"frequency\",\"value\":\""+get_rawData.frequencyMax+"/"+get_rawData.frequencyMin+"/"+get_rawData.frequency+"\",\"curve\":\"\"},";
         			break;
+    			case "runFrequency".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"frequency\",\"value\":\""+get_rawData.frequencyMax+"/"+get_rawData.frequencyMin+"/"+get_rawData.frequency+"\",\"curve\":\"\"},";
+        			break;
     			case "Ia".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"Ia\",\"value\":\""+get_rawData.IaMax+"/"+get_rawData.IaMin+"/"+get_rawData.Ia+"\",\"curve\":\"\"},";
         			break;
@@ -146,14 +149,23 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     			case "pf3".toUpperCase():
     				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"pf3\",\"value\":\""+get_rawData.pf3Max+"/"+get_rawData.pf3Min+"/"+get_rawData.pf3+"\",\"curve\":\"\"},";
         			break;
+    			case "weightWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"weightWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        			break;
+    			case "volumeWaterCut".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"volumeWaterCut\",\"value\":\""+get_rawData.waterCut+"\",\"curve\":\"\"},";
+        			break;
     			case "tubingPressure".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressureMax+"/"+get_rawData.tubingPressureMin+"/"+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"tubingPressure\",\"value\":\""+get_rawData.tubingPressure+"\",\"curve\":\"\"},";
         			break;
     			case "casingPressure".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressureMax+"/"+get_rawData.casingPressureMin+"/"+get_rawData.casingPressure+"\",\"curve\":\"\"},";
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"casingPressure\",\"value\":\""+get_rawData.casingPressure+"\",\"curve\":\"\"},";
         			break;
     			case "wellHeadFluidTemperature".toUpperCase():
-    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wellHeadFluidTemperature\",\"value\":\""+get_rawData.wellHeadFluidTemperatureMax+"/"+get_rawData.wellHeadFluidTemperatureMin+"/"+get_rawData.wellHeadFluidTemperature+"\",\"curve\":\"\"},";
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"wellHeadFluidTemperature\",\"value\":\""+get_rawData.wellHeadFluidTemperature+"\",\"curve\":\"\"},";
+        			break;
+    			case "producingFluidLevel".toUpperCase():
+    				acqSataStr+="{\"item\":\""+acquisitionDataList[i].header+"\",\"itemCode\":\"producingFluidLevel\",\"value\":\""+get_rawData.producingFluidLevel+"\",\"curve\":\"\"},";
         			break;
     			}
     		}
@@ -162,14 +174,8 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     		}
     		acqSataStr+="]}";
     		
-    		var controlSataStr="{\"items\":[";
-    		controlSataStr+="{\"item\":\"启/停抽\",\"value\":\"运行\",\"operation\":\"\"},";
-    		controlSataStr+="{\"item\":\"运行频率(Hz)\",\"value\":\"60.5\",\"operation\":\"\"}";
-    		controlSataStr+="]}";
-    		
     		var storeData=Ext.JSON.decode(dataStr);
     		var acqStoreData=Ext.JSON.decode(acqSataStr);
-    		var controlStoreData=Ext.JSON.decode(controlSataStr);
     		
     		var store=Ext.create('Ext.data.Store', {
 			    fields:['item', 'itemCode','value', 'curve'],
@@ -185,17 +191,6 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
     		var acqStore=Ext.create('Ext.data.Store', {
 			    fields:['item', 'itemCode','value', 'curve'],
 			    data:acqStoreData,
-			    proxy: {
-			        type: 'memory',
-			        reader: {
-			            type: 'json',
-			            root: 'items'
-			        }
-			    }
-			});
-    		var controlStore=Ext.create('Ext.data.Store', {
-			    fields:['item','value','operation'],
-			    data:controlStoreData,
 			    proxy: {
 			        type: 'memory',
 			        reader: {
@@ -277,8 +272,10 @@ Ext.define('AP.store.diagnosisTotal.ScrewPumpDaillyAnalysisTableStore', {
         },
         beforeload: function (store, options) {
         	var id  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.id;
+        	var wellName  = Ext.getCmp("ScrewPumpDailyAnalysisWellList_Id").getSelectionModel().getSelection()[0].data.wellName;
         	var new_params = {
-        			id: id
+        			id: id,
+        			wellName: wellName
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

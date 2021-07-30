@@ -554,7 +554,7 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 					+ "\"ID\":\""+ID+"\","
 					+ "\"Slave\":"+Slave+","
 					+ "\"Addr\":"+addr+","
-					+ "\"Value\":"+StringManagerUtils.objectToString(controlValue, dataType)+","
+					+ "\"Value\":["+StringManagerUtils.objectToString(controlValue, dataType)+"]"
 					+ "}";
 			String readJson="{"
 					+ "\"ID\":\""+ID+"\","
@@ -563,8 +563,6 @@ public class DiagnosisAnalysisOnlyController extends BaseController {
 					+ "}";
 			StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
 			String readResult=StringManagerUtils.sendPostMethod(readUrl, readJson,"utf-8");
-			
-			
 		}
 		json = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
 		return json;

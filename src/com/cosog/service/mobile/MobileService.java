@@ -125,8 +125,8 @@ public class MobileService<T> extends BaseService<T> {
 		sql+=" group by "+statType;
 		
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{ \"Success\":true,");
-		result_json.append("\"TotalRoot\":[");
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			if(StringManagerUtils.isNotNull(obj[0]+"")){
@@ -163,122 +163,61 @@ public class MobileService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		DataDictionary ddic = null;
-		String columns= "";
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="";
 		String tableName_latest="viw_rpc_comprehensive_latest";
-		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="resultName";
 		if(type==1){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeFSDiagram";
-			}
 			typeColumnName="resultName";
 		}else if(type==2){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeProdDist";
-			}else{//默认为抽油机
-				ddicName="realtimeProdDist";
-			}
 			typeColumnName="liquidWeightProductionlevel";
 			if(configFile.getOthers().getProductionUnit()!=0){
 				typeColumnName="liquidVolumeProductionlevel";
 			}
 		}else if(type==3){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimePowerBalance";
-			}
 			typeColumnName="wattDegreeBalanceName";
 		}else if(type==4){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeCurrentBalance";
-			}
 			typeColumnName="iDegreeBalanceName";
 		}else if(type==5){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeSystemEff";
-			}else{//默认为抽油机
-				ddicName="realtimeSystemEff";
-			}
 			typeColumnName="systemEfficiencyLevel";
 		}else if(type==6){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeSurfaceEff";
-			}
 			typeColumnName="surfaceSystemEfficiencyLevel";
 		}else if(type==7){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeDownholeEff";
-			}
 			typeColumnName="wellDownSystemEfficiencyLevel";
 		}else if(type==8){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimePowerDist";
-			}else{//默认为抽油机
-				ddicName="realtimePowerDist";
-			}
 			typeColumnName="todayKWattHLevel";
 		}else if(type==9){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeRunStatus";
-			}else{//默认为抽油机
-				ddicName="realtimeRunStatus";
-			}
 			typeColumnName="runStatusName";
 		}else if(type==10){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeTimeDist";
-			}else{//默认为抽油机
-				ddicName="realtimeTimeDist";
-			}
 			typeColumnName="runtimeEfficiencyLevel";
 		}else if(type==11){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeCommStatus";
-			}else{//默认为抽油机
-				ddicName="realtimeCommStatus";
-			}
 			typeColumnName="commStatusName";
 		}else if(type==12){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeCommDist";
-			}else{//默认为抽油机
-				ddicName="realtimeCommDist";
-			}
 			typeColumnName="commtimeefficiencyLevel";
 		}else{
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeFSDiagram";
-			}
 			typeColumnName="resultName";
 		}
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		columns = ddic.getTableHeader();
 		if(liftingType==2){//螺杆泵井
 			tableName_latest="viw_pcp_comprehensive_latest";
-			tableName_hist="viw_pcp_comprehensive_hist";
-			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
-					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+			sql="select id,wellName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
+					+ "deltaRadius,wattDegreeBalanceName,wattDegreeBalance,wattRatio,iDegreeBalanceName,iDegreeBalance,iRatio,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel";
 		}else{//默认为抽油机
 			tableName_latest="viw_rpc_comprehensive_latest";
-			tableName_hist="viw_rpc_comprehensive_hist";
-			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
-					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql="select id,wellName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
+					+ "deltaRadius,wattDegreeBalanceName,wattDegreeBalance,wattRatio,iDegreeBalanceName,iDegreeBalance,iRatio,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel";
 		}
 		sql+= " from "+tableName_latest+" t where 1=1 ";
 		if(StringManagerUtils.isNotNull(wells.toString())){
@@ -288,13 +227,71 @@ public class MobileService<T> extends BaseService<T> {
 			sql+=" and "+typeColumnName+"='"+statValue+"' ";
 		}
 		sql+=" order by t.sortNum, t.wellName";
-		sqlAll=sql;
-//		int maxvalue=pager.getLimit()+pager.getStart();
-//		finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		finalSql=sqlAll;
-		String getResult = this.findExportDataBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
-		getResult="{\"totalRoot\":"+getResult+"}";
-		return getResult;
+		
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				result_json.append("{\"id\":"+obj[0]+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"acqTime\":\""+obj[2]+"\",");
+				result_json.append("\"resultName\":\""+obj[3]+"\",");
+				result_json.append("\"optimizationSuggestion\":\""+obj[4]+"\",");
+				
+				result_json.append("\"commStatus\":\""+obj[5]+"\",");
+				result_json.append("\"commTime\":"+obj[6]+",");
+				result_json.append("\"commTimeEfficiency\":"+obj[7]+",");
+				result_json.append("\"commRange\":\""+obj[8]+"\",");
+				
+				result_json.append("\"runStatus\":\""+obj[9]+"\",");
+				result_json.append("\"runTime\":"+obj[10]+",");
+				result_json.append("\"runTimeEfficiency\":"+obj[11]+",");
+				result_json.append("\"runRange\":\""+obj[12]+"\",");
+				
+				result_json.append("\"liquidWeightProduction\":"+obj[13]+",");
+				result_json.append("\"oilWeightProduction\":"+obj[14]+",");
+				result_json.append("\"waterWeightProduction\":"+obj[15]+",");
+				result_json.append("\"weightWaterCut\":"+obj[16]+",");
+				result_json.append("\"liquidWeightProduction_L\":"+obj[17]+",");
+				result_json.append("\"oilWeightProduction_L\":"+obj[18]+",");
+				result_json.append("\"waterWeightProduction_L\":"+obj[19]+",");
+				
+				result_json.append("\"liquidVolumetricProduction\":"+obj[20]+",");
+				result_json.append("\"oilVolumetricProduction\":"+obj[21]+",");
+				result_json.append("\"waterVolumetricProduction\":"+obj[22]+",");
+				result_json.append("\"volumeWaterCut\":"+obj[23]+",");
+				result_json.append("\"liquidVolumetricProduction_L\":"+obj[24]+",");
+				result_json.append("\"oilVolumetricProduction_L\":"+obj[25]+",");
+				result_json.append("\"waterVolumetricProduction_L\":"+obj[26]+",");
+				
+				result_json.append("\"deltaRadius\":"+obj[27]+",");
+				result_json.append("\"wattDegreeBalanceName\":\""+obj[28]+"\",");
+				result_json.append("\"wattDegreeBalance\":"+obj[29]+",");
+				result_json.append("\"wattRatio\":\""+obj[30]+"\",");
+				result_json.append("\"iDegreeBalanceName\":\""+obj[31]+"\",");
+				result_json.append("\"iDegreeBalance\":"+obj[32]+",");
+				result_json.append("\"iRatio\":\""+obj[33]+"\",");
+				
+				result_json.append("\"systemEfficiency\":"+obj[34]+",");
+				result_json.append("\"surfaceSystemEfficiency\":"+obj[35]+",");
+				result_json.append("\"welldownSystemEfficiency\":"+obj[36]+",");
+				result_json.append("\"energyPer100mLift\":"+obj[37]+",");
+				result_json.append("\"todayKWattH\":"+obj[38]+",");
+				
+				result_json.append("\"resultAlarmLevel\":"+obj[39]+",");
+				result_json.append("\"commAlarmLevel\":"+obj[40]+",");
+				result_json.append("\"runAlarmLevel\":"+obj[41]+",");
+				result_json.append("\"iDegreeBalanceAlarmLevel\":"+obj[42]+",");
+				result_json.append("\"wattDegreeBalanceAlarmLevel\":"+obj[43]+"},");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
 	}
 	
 	public String getOilWellRealtimeWellHistoryData(String data,Page pager)throws Exception {
@@ -318,136 +315,134 @@ public class MobileService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		DataDictionary ddic = null;
-		String columns= "";
+		
 		String sql="";
-		String finalSql="";
-		String sqlAll="";
-		String ddicName="";
-		String tableName_latest="viw_rpc_comprehensive_latest";
 		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="resultName";
 		if(type==1){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeFSDiagram";
-			}
 			typeColumnName="resultName";
 		}else if(type==2){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeProdDist";
-			}else{//默认为抽油机
-				ddicName="realtimeProdDist";
-			}
 			typeColumnName="liquidWeightProductionlevel";
 			if(configFile.getOthers().getProductionUnit()!=0){
 				typeColumnName="liquidVolumeProductionlevel";
 			}
 		}else if(type==3){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimePowerBalance";
-			}
 			typeColumnName="wattDegreeBalanceName";
 		}else if(type==4){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeCurrentBalance";
-			}
 			typeColumnName="iDegreeBalanceName";
 		}else if(type==5){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeSystemEff";
-			}else{//默认为抽油机
-				ddicName="realtimeSystemEff";
-			}
 			typeColumnName="systemEfficiencyLevel";
 		}else if(type==6){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeSurfaceEff";
-			}
 			typeColumnName="surfaceSystemEfficiencyLevel";
 		}else if(type==7){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeDownholeEff";
-			}
 			typeColumnName="wellDownSystemEfficiencyLevel";
 		}else if(type==8){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimePowerDist";
-			}else{//默认为抽油机
-				ddicName="realtimePowerDist";
-			}
 			typeColumnName="todayKWattHLevel";
 		}else if(type==9){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeRunStatus";
-			}else{//默认为抽油机
-				ddicName="realtimeRunStatus";
-			}
 			typeColumnName="runStatusName";
 		}else if(type==10){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeTimeDist";
-			}else{//默认为抽油机
-				ddicName="realtimeTimeDist";
-			}
 			typeColumnName="runtimeEfficiencyLevel";
 		}else if(type==11){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeCommStatus";
-			}else{//默认为抽油机
-				ddicName="realtimeCommStatus";
-			}
 			typeColumnName="commStatusName";
 		}else if(type==12){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeCommDist";
-			}else{//默认为抽油机
-				ddicName="realtimeCommDist";
-			}
 			typeColumnName="commtimeefficiencyLevel";
 		}else{
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpRealtimeETValue";
-			}else{//默认为抽油机
-				ddicName="realtimeFSDiagram";
-			}
 			typeColumnName="resultName";
 		}
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		columns = ddic.getTableHeader();
 		if(liftingType==2){//螺杆泵井
-			tableName_latest="viw_pcp_comprehensive_latest";
 			tableName_hist="viw_pcp_comprehensive_hist";
-			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel_E,"
-					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+			sql="select id,wellName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
+					+ "deltaRadius,wattDegreeBalanceName,wattDegreeBalance,wattRatio,iDegreeBalanceName,iDegreeBalance,iRatio,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel";
 		}else{//默认为抽油机
-			tableName_latest="viw_rpc_comprehensive_latest";
 			tableName_hist="viw_rpc_comprehensive_hist";
-			sql=ddic.getSql()+",resultString_E,videourl,resultAlarmLevel,resultAlarmLevel_E,"
-					+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql="select id,wellName,to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,liquidWeightProduction_L,oilWeightProduction_L,waterWeightProduction_L,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,liquidVolumetricProduction_L,oilVolumetricProduction_L,waterVolumetricProduction_L,"
+					+ "deltaRadius,wattDegreeBalanceName,wattDegreeBalance,wattRatio,iDegreeBalanceName,iDegreeBalance,iRatio,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel";
 		}
 		sql+= " from "+tableName_hist+" t where 1=1";
 		sql+=" and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') + 1 ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "'";
 		}
+		if(StringManagerUtils.isNotNull(statValue)){
+			sql+=" and "+typeColumnName+"='"+statValue+"' ";
+		}
 		sql+= " order by t.acqTime desc";
-		sqlAll=sql;
-//		int maxvalue=pager.getLimit()+pager.getStart();
-//		finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		finalSql=sqlAll;
-		String getResult = this.findExportDataBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
-		getResult="{\"totalRoot\":"+getResult+"}";
-		return getResult;
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				result_json.append("{\"id\":"+obj[0]+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"acqTime\":\""+obj[2]+"\",");
+				result_json.append("\"resultName\":\""+obj[3]+"\",");
+				result_json.append("\"optimizationSuggestion\":\""+obj[4]+"\",");
+				
+				result_json.append("\"commStatus\":\""+obj[5]+"\",");
+				result_json.append("\"commTime\":"+obj[6]+",");
+				result_json.append("\"commTimeEfficiency\":"+obj[7]+",");
+				result_json.append("\"commRange\":\""+obj[8]+"\",");
+				
+				result_json.append("\"runStatus\":\""+obj[9]+"\",");
+				result_json.append("\"runTime\":"+obj[10]+",");
+				result_json.append("\"runTimeEfficiency\":"+obj[11]+",");
+				result_json.append("\"runRange\":\""+obj[12]+"\",");
+				
+				result_json.append("\"liquidWeightProduction\":"+obj[13]+",");
+				result_json.append("\"oilWeightProduction\":"+obj[14]+",");
+				result_json.append("\"waterWeightProduction\":"+obj[15]+",");
+				result_json.append("\"weightWaterCut\":"+obj[16]+",");
+				result_json.append("\"liquidWeightProduction_L\":"+obj[17]+",");
+				result_json.append("\"oilWeightProduction_L\":"+obj[18]+",");
+				result_json.append("\"waterWeightProduction_L\":"+obj[19]+",");
+				
+				result_json.append("\"liquidVolumetricProduction\":"+obj[20]+",");
+				result_json.append("\"oilVolumetricProduction\":"+obj[21]+",");
+				result_json.append("\"waterVolumetricProduction\":"+obj[22]+",");
+				result_json.append("\"volumeWaterCut\":"+obj[23]+",");
+				result_json.append("\"liquidVolumetricProduction_L\":"+obj[24]+",");
+				result_json.append("\"oilVolumetricProduction_L\":"+obj[25]+",");
+				result_json.append("\"waterVolumetricProduction_L\":"+obj[26]+",");
+				
+				result_json.append("\"deltaRadius\":"+obj[27]+",");
+				result_json.append("\"wattDegreeBalanceName\":\""+obj[28]+"\",");
+				result_json.append("\"wattDegreeBalance\":"+obj[29]+",");
+				result_json.append("\"wattRatio\":\""+obj[30]+"\",");
+				result_json.append("\"iDegreeBalanceName\":\""+obj[31]+"\",");
+				result_json.append("\"iDegreeBalance\":"+obj[32]+",");
+				result_json.append("\"iRatio\":\""+obj[33]+"\",");
+				
+				result_json.append("\"systemEfficiency\":"+obj[34]+",");
+				result_json.append("\"surfaceSystemEfficiency\":"+obj[35]+",");
+				result_json.append("\"welldownSystemEfficiency\":"+obj[36]+",");
+				result_json.append("\"energyPer100mLift\":"+obj[37]+",");
+				result_json.append("\"todayKWattH\":"+obj[38]+",");
+				
+				result_json.append("\"resultAlarmLevel\":"+obj[39]+",");
+				result_json.append("\"commAlarmLevel\":"+obj[40]+",");
+				result_json.append("\"runAlarmLevel\":"+obj[41]+",");
+				result_json.append("\"iDegreeBalanceAlarmLevel\":"+obj[42]+",");
+				result_json.append("\"wattDegreeBalanceAlarmLevel\":"+obj[43]+"},");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
 	}
 	
 	public String getOilWellRealtimeWellAnalysisData(String data) throws SQLException, IOException{
@@ -500,9 +495,7 @@ public class MobileService<T> extends BaseService<T> {
 							+ " from "+tableName+" t where wellname='"+wellName+"' and t.acqtime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')";
 					List<?> list = this.findCallSql(sql);
 					DataDictionary ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAnalysis");
-					String analysisDataList = ddic.getTableHeader();
 					ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("realtimeAcquisition");
-					String acquisitionDataList = ddic.getTableHeader();
 					result_json.append("{ \"success\":true,");
 					if(list.size()>0){
 						Object[] obj=(Object[]) list.get(0);
@@ -517,7 +510,7 @@ public class MobileService<T> extends BaseService<T> {
 						result_json.append("\"liquidProduction\":\""+obj[6]+"\",");
 						result_json.append("\"oilProduction\":\""+obj[7]+"\",");
 						result_json.append("\"waterProduction\":\""+obj[8]+"\",");
-						result_json.append("\"volumeWaterCut\":\""+obj[9]+"\",");
+						result_json.append("\"waterCut\":\""+obj[9]+"\",");
 						
 						result_json.append("\"availablePlungerstrokeProd\":\""+obj[10]+"\",");
 						result_json.append("\"pumpClearanceLeakProd\":\""+obj[11]+"\",");
@@ -643,8 +636,8 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		sql+=" group by rollup("+statType+")";
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{ \"success\":true,\"totalDate\":\""+date+"\",");
-		result_json.append("\"List\":[");
+		result_json.append("{ \"success\":true,\"date\":\""+date+"\",");
+		result_json.append("\"totalRoot\":[");
 		int totalCount=0;
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
@@ -664,6 +657,7 @@ public class MobileService<T> extends BaseService<T> {
 	public String getOilWellTotalWellListData(String data,Page pager)throws Exception {
 		StringBuffer wells= new StringBuffer();
 		String getResult="";
+		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int liftingType=1;
 		String date=StringManagerUtils.getCurrentTime();
@@ -684,108 +678,63 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			liftingType=1;
+			date=StringManagerUtils.getCurrentTime();
+			type=1;
+			statValue="";
 		}
-		String columns= "";
-		DataDictionary ddic = null;
-		String ddicName="";
 		String tableName="viw_rpc_total_day";
 		String typeColumnName="resultName";
 		if(type==1){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyETValue";
-			}else{//默认为抽油机
-				ddicName="dailyFSDiagram";
-			}
 			typeColumnName="resultName";
 		}else if(type==2){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyProdDist";
-			}else{//默认为抽油机
-				ddicName="dailyProdDist";
-			}
 			typeColumnName="liquidWeightProductionlevel";
 			if(configFile.getOthers().getProductionUnit()!=0){
 				typeColumnName="liquidVolumeProductionlevel";
 			}
 		}else if(type==3){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyETValue";
-			}else{//默认为抽油机
-				ddicName="dailyPowerBalance";
-			}
 			typeColumnName="wattdegreebalanceLevel";
 		}else if(type==4){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyETValue";
-			}else{//默认为抽油机
-				ddicName="dailyCurrentBalance";
-			}
 			typeColumnName="idegreebalanceLevel";
 		}else if(type==5){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailySystemEff";
-			}else{//默认为抽油机
-				ddicName="dailySystemEff";
-			}
 			typeColumnName="systemEfficiencyLevel";
 		}else if(type==6){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailySystemEff";
-			}else{//默认为抽油机
-				ddicName="dailySurfaceEff";
-			}
 			typeColumnName="surfaceSystemEfficiencyLevel";
 		}else if(type==7){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailySystemEff";
-			}else{//默认为抽油机
-				ddicName="dailyDownholeEff";
-			}
 			typeColumnName="wellDownSystemEfficiencyLevel";
 		}else if(type==8){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyPowerDist";
-			}else{//默认为抽油机
-				ddicName="dailyPowertDist";
-			}
 			typeColumnName="todayKWattHLevel";
 		}else if(type==9){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyRunStatus";
-			}else{//默认为抽油机
-				ddicName="dailyRunStatus";
-			}
-			typeColumnName="runStatusName";
-		}else if(type==10){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyTimeDist";
-			}else{//默认为抽油机
-				ddicName="dailyTimeDist";
-			}
-			typeColumnName="runtimeEfficiencyLevel";
-		}else if(type==11){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyCommStatus";
-			}else{//默认为抽油机
-				ddicName="dailyCommStatus";
-			}
 			typeColumnName="commStatusName";
-		}else if(type==12){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyCommDist";
-			}else{//默认为抽油机
-				ddicName="dailyCommDist";
-			}
+		}else if(type==10){
 			typeColumnName="commtimeefficiencyLevel";
+		}else if(type==11){
+			typeColumnName="runStatusName";
+		}else if(type==12){
+			typeColumnName="runtimeEfficiencyLevel";
 		}
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",resultString,resultAlarmLevel,"
-				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		String sql="";
 		if(liftingType!=2){
-			sql+= " ,resultString_E,resultAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "resultName,optimizationSuggestion,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
 			tableName="viw_rpc_total_day";
 		}else{
+			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
+					+ "resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
 			tableName="viw_pcp_total_day";
 		}
 				
@@ -799,17 +748,71 @@ public class MobileService<T> extends BaseService<T> {
 			sql+=" and "+typeColumnName+"='"+statValue+"'";
 		}
 		sql+=" order by t.sortnum, t.wellName";
-//		int maxvalue=pager.getLimit()+pager.getStart();
-//		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		String finalSql=sql;
-		getResult = this.findExportDataBySqlEntity(sql,finalSql, columns, 20 + "", pager);
-		getResult="{\"totalRoot\":"+getResult+"}";
-		return getResult.replaceAll("null", "").replaceAll("//", "");
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				result_json.append("{\"id\":"+obj[0]+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
+				result_json.append("\"acquisitionDate\":\""+obj[3]+"\",");
+				result_json.append("\"extendedDays\":"+obj[4]+",");
+				
+				result_json.append("\"resultName\":\""+obj[5]+"\",");
+				result_json.append("\"optimizationSuggestion\":\""+obj[6]+"\",");
+				
+				result_json.append("\"commStatus\":\""+obj[7]+"\",");
+				result_json.append("\"commTime\":"+obj[5]+",");
+				result_json.append("\"commTimeEfficiency\":"+obj[9]+",");
+				result_json.append("\"commRange\":\""+obj[10]+"\",");
+				
+				result_json.append("\"runStatus\":\""+obj[11]+"\",");
+				result_json.append("\"runTime\":"+obj[12]+",");
+				result_json.append("\"runTimeEfficiency\":"+obj[13]+",");
+				result_json.append("\"runRange\":\""+obj[14]+"\",");
+				
+				result_json.append("\"liquidWeightProduction\":"+obj[15]+",");
+				result_json.append("\"oilWeightProduction\":"+obj[16]+",");
+				result_json.append("\"waterWeightProduction\":"+obj[17]+",");
+				result_json.append("\"weightWaterCut\":"+obj[18]+",");
+				
+				result_json.append("\"liquidVolumetricProduction\":"+obj[19]+",");
+				result_json.append("\"oilVolumetricProduction\":"+obj[20]+",");
+				result_json.append("\"waterVolumetricProduction\":"+obj[21]+",");
+				result_json.append("\"volumeWaterCut\":"+obj[22]+",");
+				
+				result_json.append("\"wattDegreeBalanceName\":\""+obj[23]+"\",");
+				result_json.append("\"wattDegreeBalance\":"+obj[24]+",");
+				result_json.append("\"iDegreeBalanceName\":\""+obj[25]+"\",");
+				result_json.append("\"iDegreeBalance\":"+obj[26]+",");
+				result_json.append("\"deltaRadius\":"+obj[27]+",");
+				
+				result_json.append("\"systemEfficiency\":"+obj[28]+",");
+				result_json.append("\"surfaceSystemEfficiency\":"+obj[29]+",");
+				result_json.append("\"welldownSystemEfficiency\":"+obj[30]+",");
+				result_json.append("\"energyPer100mLift\":"+obj[31]+",");
+				result_json.append("\"todayKWattH\":"+obj[32]+",");
+				
+				result_json.append("\"resultAlarmLevel\":"+obj[33]+",");
+				result_json.append("\"commAlarmLevel\":"+obj[34]+",");
+				result_json.append("\"runAlarmLevel\":"+obj[35]+",");
+				result_json.append("\"iDegreeBalanceAlarmLevel\":"+obj[36]+",");
+				result_json.append("\"wattDegreeBalanceAlarmLevel\":"+obj[37]+"},");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
 	}
 	
 	public String getOilWellTotalHistoryData(String data,Page pager)throws Exception {
 		StringBuffer wells= new StringBuffer();
 		String getResult="";
+		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int liftingType=1;
 		String startDate=StringManagerUtils.getCurrentTime();
@@ -835,108 +838,65 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			liftingType=1;
+			startDate=StringManagerUtils.getCurrentTime();
+			endDate=StringManagerUtils.getCurrentTime();
+			wellName="";
+			type=1;
+			statValue="";
 		}
-		String columns= "";
-		DataDictionary ddic = null;
-		String ddicName="";
 		String tableName="viw_rpc_total_day";
 		String typeColumnName="resultName";
 		if(type==1){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyETValue";
-			}else{//默认为抽油机
-				ddicName="dailyFSDiagram";
-			}
 			typeColumnName="resultName";
 		}else if(type==2){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyProdDist";
-			}else{//默认为抽油机
-				ddicName="dailyProdDist";
-			}
 			typeColumnName="liquidWeightProductionlevel";
 			if(configFile.getOthers().getProductionUnit()!=0){
 				typeColumnName="liquidVolumeProductionlevel";
 			}
 		}else if(type==3){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyETValue";
-			}else{//默认为抽油机
-				ddicName="dailyPowerBalance";
-			}
 			typeColumnName="wattdegreebalanceLevel";
 		}else if(type==4){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyETValue";
-			}else{//默认为抽油机
-				ddicName="dailyCurrentBalance";
-			}
 			typeColumnName="idegreebalanceLevel";
 		}else if(type==5){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailySystemEff";
-			}else{//默认为抽油机
-				ddicName="dailySystemEff";
-			}
 			typeColumnName="systemEfficiencyLevel";
 		}else if(type==6){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailySystemEff";
-			}else{//默认为抽油机
-				ddicName="dailySurfaceEff";
-			}
 			typeColumnName="surfaceSystemEfficiencyLevel";
 		}else if(type==7){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailySystemEff";
-			}else{//默认为抽油机
-				ddicName="dailyDownholeEff";
-			}
 			typeColumnName="wellDownSystemEfficiencyLevel";
 		}else if(type==8){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyPowerDist";
-			}else{//默认为抽油机
-				ddicName="dailyPowertDist";
-			}
 			typeColumnName="todayKWattHLevel";
 		}else if(type==9){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyRunStatus";
-			}else{//默认为抽油机
-				ddicName="dailyRunStatus";
-			}
-			typeColumnName="runStatusName";
-		}else if(type==10){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyTimeDist";
-			}else{//默认为抽油机
-				ddicName="dailyTimeDist";
-			}
-			typeColumnName="runtimeEfficiencyLevel";
-		}else if(type==11){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyCommStatus";
-			}else{//默认为抽油机
-				ddicName="dailyCommStatus";
-			}
 			typeColumnName="commStatusName";
-		}else if(type==12){
-			if(liftingType==2){//螺杆泵井
-				ddicName="screwPumpDailyCommDist";
-			}else{//默认为抽油机
-				ddicName="dailyCommDist";
-			}
+		}else if(type==10){
 			typeColumnName="commtimeefficiencyLevel";
+		}else if(type==11){
+			typeColumnName="runStatusName";
+		}else if(type==12){
+			typeColumnName="runtimeEfficiencyLevel";
 		}
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+",resultString,resultAlarmLevel,"
-				+ " commStatus,runStatus,commAlarmLevel,runAlarmLevel ";
+		String sql="";
 		if(liftingType!=2){
-			sql+= " ,resultString_E,resultAlarmLevel_E,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel ";
+			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
+					+ "resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
 			tableName="viw_rpc_total_day";
 		}else{
+			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
+					+ "resultName,optimizationSuggestion,"
+					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
+					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
+					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
+					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
+					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
+					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
 			tableName="viw_pcp_total_day";
 		}
 				
@@ -954,11 +914,64 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		sql+= " order by t.calculateDate desc";
 		
-//		int maxvalue=pager.getLimit()+pager.getStart();
-//		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		String finalSql=sql;
-		getResult = this.findExportDataBySqlEntity(sql,finalSql, columns, 20 + "", pager);
-		getResult="{\"totalRoot\":"+getResult+"}";
-		return getResult.replaceAll("null", "").replaceAll("//", "");
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.isNotNull(obj[0]+"")){
+				result_json.append("{\"id\":"+obj[0]+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
+				result_json.append("\"acquisitionDate\":\""+obj[3]+"\",");
+				result_json.append("\"extendedDays\":"+obj[4]+",");
+				
+				result_json.append("\"resultName\":\""+obj[5]+"\",");
+				result_json.append("\"optimizationSuggestion\":\""+obj[6]+"\",");
+				
+				result_json.append("\"commStatus\":\""+obj[7]+"\",");
+				result_json.append("\"commTime\":"+obj[5]+",");
+				result_json.append("\"commTimeEfficiency\":"+obj[9]+",");
+				result_json.append("\"commRange\":\""+obj[10]+"\",");
+				
+				result_json.append("\"runStatus\":\""+obj[11]+"\",");
+				result_json.append("\"runTime\":"+obj[12]+",");
+				result_json.append("\"runTimeEfficiency\":"+obj[13]+",");
+				result_json.append("\"runRange\":\""+obj[14]+"\",");
+				
+				result_json.append("\"liquidWeightProduction\":"+obj[15]+",");
+				result_json.append("\"oilWeightProduction\":"+obj[16]+",");
+				result_json.append("\"waterWeightProduction\":"+obj[17]+",");
+				result_json.append("\"weightWaterCut\":"+obj[18]+",");
+				
+				result_json.append("\"liquidVolumetricProduction\":"+obj[19]+",");
+				result_json.append("\"oilVolumetricProduction\":"+obj[20]+",");
+				result_json.append("\"waterVolumetricProduction\":"+obj[21]+",");
+				result_json.append("\"volumeWaterCut\":"+obj[22]+",");
+				
+				result_json.append("\"wattDegreeBalanceName\":\""+obj[23]+"\",");
+				result_json.append("\"wattDegreeBalance\":"+obj[24]+",");
+				result_json.append("\"iDegreeBalanceName\":\""+obj[25]+"\",");
+				result_json.append("\"iDegreeBalance\":"+obj[26]+",");
+				result_json.append("\"deltaRadius\":"+obj[27]+",");
+				
+				result_json.append("\"systemEfficiency\":"+obj[28]+",");
+				result_json.append("\"surfaceSystemEfficiency\":"+obj[29]+",");
+				result_json.append("\"welldownSystemEfficiency\":"+obj[30]+",");
+				result_json.append("\"energyPer100mLift\":"+obj[31]+",");
+				result_json.append("\"todayKWattH\":"+obj[32]+",");
+				
+				result_json.append("\"resultAlarmLevel\":"+obj[33]+",");
+				result_json.append("\"commAlarmLevel\":"+obj[34]+",");
+				result_json.append("\"runAlarmLevel\":"+obj[35]+",");
+				result_json.append("\"iDegreeBalanceAlarmLevel\":"+obj[36]+",");
+				result_json.append("\"wattDegreeBalanceAlarmLevel\":"+obj[37]+"},");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
 	}
 }

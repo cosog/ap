@@ -364,20 +364,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		unitDropdownData.append("]");
 		driverDropdownData.append("[");
 		
-		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
+		Map<String,Object> equipmentDriveSortMap=new TreeMap<String,Object>();
 		for(Entry<String, Object> entry:equipmentDriveMap.entrySet()){
 			if( ( entry.getValue() instanceof KafkaConfig ) ){
 				KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
-				equipmentDriveSortMap.put(driveConfig.getSort(), driveConfig);
+				equipmentDriveSortMap.put(driveConfig.getProtocolName(), driveConfig);
 			}else if( ( entry.getValue() instanceof ModbusProtocolConfig ) ){
 				ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(i);
-					equipmentDriveSortMap.put(protocolConfig.getSort(), protocolConfig);
+					equipmentDriveSortMap.put(protocolConfig.getName(), protocolConfig);
 				}
 			}
 		}
-		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
+		for(Entry<String, Object> entry:equipmentDriveSortMap.entrySet()){
 			if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
 				ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
 				driverDropdownData.append("'"+protocolConfig.getName()+"',");
@@ -401,7 +401,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			String protocolName="";
 			String protocolCode=obj[6]+"";
-			for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
+			for(Entry<String, Object> entry:equipmentDriveSortMap.entrySet()){
 				if( ( entry.getValue() instanceof ModbusProtocolConfig.Protocol ) ){
 					ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
 					if(protocolCode.equals(protocolConfig.getCode())){

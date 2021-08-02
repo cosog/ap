@@ -708,4 +708,87 @@ public class DriverAPIController extends BaseController{
 		}
 		return null;
 	}
+	
+	public String DataProcessing_Unknown(AcqGroup acqGroup,String protocolName) throws Exception{
+		Gson gson=new Gson();
+		java.lang.reflect.Type type=null;
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
+		
+		
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		
+		ModbusProtocolConfig.Protocol protocol=null;
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+				protocol=modbusProtocolConfig.getProtocol().get(i);
+				break;
+			}
+		}
+
+		String sql="select t.wellname ,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
+				+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
+				+ " where t.id=t2.wellid"
+//				+ " and upper(t.protocolcode) not like '%KAFKA%' "
+//				+ " and upper(t.protocolcode) not like '%MQTT%' "
+				+ " and t.protocolcode ='"+(protocol!=null?protocol.getCode():"")+"'"
+				+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
+		List list = this.commonDataService.findCallSql(sql);
+		if(list.size()>0){
+			Object[] obj=(Object[]) list.get(0);
+			String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			CommResponseData commResponseData=null;
+			String commRequest="{"
+					+ "\"AKString\":\"\","
+					+ "\"WellName\":\""+obj[0]+"\",";
+			if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
+				commRequest+= "\"Last\":{"
+						+ "\"AcqTime\": \""+obj[1]+"\","
+						+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+						+ "\"CommEfficiency\": {"
+						+ "\"Efficiency\": "+obj[4]+","
+						+ "\"Time\": "+obj[3]+","
+						+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
+						+ "}"
+						+ "},";
+			}	
+			commRequest+= "\"Current\": {"
+					+ "\"AcqTime\":\""+currentTime+"\","
+					+ "\"CommStatus\":true"
+					+ "}"
+					+ "}";
+			String commResponse="";
+			commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+			type = new TypeToken<CommResponseData>() {}.getType();
+			commResponseData=gson.fromJson(commResponse, type);
+			String updateDiscreteData="update tbl_rpc_discrete_latest t set t.acqTime=to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(commResponseData.getCurrent().getCommStatus()?1:0);
+			String updateCommRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?";
+			List<String> clobCont=new ArrayList<String>();
+			
+			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+				updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+						+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+				clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+				//跨天
+				if(commResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(commResponseData.getDaily().getDate())){
+					updateDiscreteData+=",t.runTime=0,t.runTimeEfficiency=0";
+					updateCommRangeClobSql+=",t.runRange=?";
+					clobCont.add("");
+				}
+			}
+			updateDiscreteData+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+			updateCommRangeClobSql+=" where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+commResponseData.getWellName()+"') ";
+			int result=commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
+			if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+				result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
+			}
+		}
+	
+		return null;
+	}
 }

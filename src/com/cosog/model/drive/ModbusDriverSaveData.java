@@ -1,6 +1,9 @@
 package com.cosog.model.drive;
 
 import java.util.List;
+
+import com.cosog.utils.StringManagerUtils;
+
 import java.util.ArrayList;
 
 public class ModbusDriverSaveData {
@@ -11,13 +14,13 @@ public class ModbusDriverSaveData {
 	
 	private String ProtocolType;
 	
-	private String SignInPrefix;
+	private String SignInPrefix="";
 	
-	private String SignInSuffix;
+	private String SignInSuffix="";
 	
-	private String HeartbeatPrefix;
+	private String HeartbeatPrefix="";
 	
-	private String HeartbeatSuffix;
+	private String HeartbeatSuffix="";
 	
 	private List<String> delidslist;
 
@@ -36,6 +39,54 @@ public class ModbusDriverSaveData {
     public List<DataConfig> getDataConfig(){
         return this.DataConfig;
     }
+    
+    public void dataFiltering(){
+    	if(!StringManagerUtils.isNotNull(this.getProtocolName())){
+    		this.setProtocolName("");
+    	}
+    	if(!StringManagerUtils.isNotNull(this.getProtocolType())){
+    		this.setProtocolType("");
+    	}
+    	
+    	if(!StringManagerUtils.isNotNull(this.getHeartbeatPrefix())){
+    		this.setHeartbeatPrefix("");
+    	}
+    	if(!StringManagerUtils.isNotNull(this.getHeartbeatSuffix())){
+    		this.setHeartbeatSuffix("");
+    	}
+    	if(!StringManagerUtils.isNotNull(this.getSignInPrefix())){
+    		this.setSignInPrefix("");
+    	}
+    	if(!StringManagerUtils.isNotNull(this.getSignInSuffix())){
+    		this.setSignInSuffix("");
+    	}
+    	if(this.getDataConfig()!=null){
+    		for(int i=0;i<this.getDataConfig().size();i++){
+    			if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getTitle())){
+    				this.getDataConfig().remove(i);
+    			}else{
+    				if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getTitle())){
+        				this.getDataConfig().get(i).setTitle("");
+        	    	}
+        			if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getStoreDataType())){
+        				this.getDataConfig().get(i).setStoreDataType("");
+        	    	}
+        			if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getIFDataType())){
+        				this.getDataConfig().get(i).setIFDataType("");
+        	    	}
+        			if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getRWType())){
+        				this.getDataConfig().get(i).setRWType("");
+        	    	}
+        			if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getUnit())){
+        				this.getDataConfig().get(i).setUnit("");
+        	    	}
+        			if(!StringManagerUtils.isNotNull(this.getDataConfig().get(i).getAcqMode())){
+        				this.getDataConfig().get(i).setAcqMode("");
+        	    	}
+    			}
+    		}
+    	}
+    }
 	
 	public static class DataConfig
 	{
@@ -47,17 +98,17 @@ public class ModbusDriverSaveData {
 
 	    private int Quantity;
 
-	    private String StoreDataType;
+	    private String StoreDataType="";
 	    
-	    private String IFDataType;
+	    private String IFDataType="";
 	    
-	    private String Unit;
+	    private String Unit="";
 
-	    private float Ratio;
+	    private float Ratio=1;
 	    
-	    private String AcqMode;
+	    private String AcqMode="";
 	    
-	    private String RWType;
+	    private String RWType="";
 
 		public String getName() {
 			return Name;

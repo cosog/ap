@@ -20,6 +20,8 @@ public final class LicenseMap {
 		map.put(0, new License("阿里云服务器 Windows Server2019", "00:16:3E:01:D8:63", 0,"IP:8.130.30.138"));
 		map.put(1, new License("必创", "EC:D6:8A:5A:CC:77", 160,"大庆九厂试验项目"));
 		map.put(2, new License("青海", "00:50:56:9D:6B:D3", 200,"青海项目"));
+		map.put(3, new License("西安健丰A9", "00:16:3E:01:47:51", 500,"外网-阿里云"));
+		map.put(4, new License("西安健丰A9", "00:16:3E:01:47:51", 500,"内网"));
 		
 		moduleMap=new HashMap<Integer, List<Integer>>();//全集
 		List<Integer> moduleList0=new ArrayList<Integer>();

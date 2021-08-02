@@ -107,6 +107,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doAcquisitionUnitShow() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		unitName = ParamUtils.getParameter(request, "unitName");
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1": page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "10": limit);
 		int offset = (intPage - 1) * pageSize;
@@ -114,6 +115,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("protocolName", protocolName);
+		map.put("unitName", unitName);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json = this.acquisitionUnitManagerService.getAcquisitionUnitList(map,pager);
@@ -455,7 +457,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
-		if(modbusDriverSaveData!=null){
+		if(modbusDriverSaveData!=null&&StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
+			modbusDriverSaveData.dataFiltering();
 			String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
@@ -547,7 +550,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}
 			if(isAdd){
 				ModbusProtocolConfig.Protocol protocol=new ModbusProtocolConfig.Protocol();
-				String protocolCode="protocol"+new Date().getDate();
+				String protocolCode=modbusDriverSaveData.getProtocolName();
 				protocol.setName(modbusDriverSaveData.getProtocolName());
 				protocol.setCode(protocolCode);
 				modbusDriverSaveData.setProtocolCode(protocolCode);

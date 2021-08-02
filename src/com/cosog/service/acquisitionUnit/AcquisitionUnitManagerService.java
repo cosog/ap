@@ -40,12 +40,21 @@ private CommonDataService service;
 
 	public String getAcquisitionUnitList(Map map,Page pager) {
 		String protocolName = (String) map.get("protocolName");
+		String unitName = (String) map.get("unitName");
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark "
 				+ " from tbl_acq_unit_conf t where 1=1");
-		if (StringManagerUtils.isNotNull(protocolName)) {
-			sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
+//		if (StringManagerUtils.isNotNull(protocolName)) {
+//			sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
+//		}
+		sqlBuffer.append(" and t.protocol = '" + protocolName + "' ");
+		
+		
+		sqlBuffer.append(" and t.protocol='"+protocolName+"'");
+		if (StringManagerUtils.isNotNull(unitName)) {
+			sqlBuffer.append(" and t.unit_name like '%" + unitName + "%' ");
 		}
+		
 		sqlBuffer.append(" order by t.id  asc");
 		String json = "";
 		String columns=service.showTableHeadersColumns("acquisitionUnit");
@@ -118,10 +127,10 @@ private CommonDataService service;
 		}
 		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 		//驱动排序
-		Map<Integer,Object> equipmentDriveSortMap=new TreeMap<Integer,Object>();
+		Map<String,Object> equipmentDriveSortMap=new TreeMap<String,Object>();
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 			ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)modbusProtocolConfig.getProtocol().get(i);
-			equipmentDriveSortMap.put(protocolConfig.getSort(), protocolConfig);
+			equipmentDriveSortMap.put(protocolConfig.getName(), protocolConfig);
 		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
@@ -151,7 +160,7 @@ private CommonDataService service;
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",\"diagramTableColumns\":"+diagramTableColumns+",");
 		result_json.append("\"totalRoot\":[");
 		int i=0;
-		for(Entry<Integer, Object> entry:equipmentDriveSortMap.entrySet()){
+		for(Entry<String, Object> entry:equipmentDriveSortMap.entrySet()){
 			i++;
 			ModbusProtocolConfig.Protocol protocolConfig=(ModbusProtocolConfig.Protocol)entry.getValue();
 

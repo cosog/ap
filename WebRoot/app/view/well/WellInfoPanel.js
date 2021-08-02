@@ -413,40 +413,43 @@ var WellInfoHandsontableHelper = {
 	                },
 	                afterChange: function (changes, source) {
 	                    //params 参数 1.column num , 2,id, 3,oldvalue , 4.newvalue
-	                    
-	                    if (changes != null) {
-	                    	for(var i=0;i<changes.length;i++){
-	                    		var params = [];
-	                    		var index = changes[i][0]; //行号码
-		                        var rowdata = wellInfoHandsontableHelper.hot.getDataAtRow(index);
-		                        params.push(rowdata[0]);
-		                        params.push(changes[i][1]);
-		                        params.push(changes[i][2]);
-		                        params.push(changes[i][3]);
-		                        
-		                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
-		                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
-		                        	wellInfoHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
-		                        }
-		                        
-		                        if(params[1]=="protocolName" && params[3]=="Kafka协议"){
-		                        	wellInfoHandsontableHelper.hot.setDataAtCell(index, 6, '');
-		                        }
+	    	        	if (changes != null) {
+	    	        		var IframeViewSelection  = Ext.getCmp("IframeView_Id").getSelectionModel().getSelection();
+		    	        	if(IframeViewSelection.length>0&&IframeViewSelection[0].isLeaf()){
+		    	        		for(var i=0;i<changes.length;i++){
+		                    		var params = [];
+		                    		var index = changes[i][0]; //行号码
+			                        var rowdata = wellInfoHandsontableHelper.hot.getDataAtRow(index);
+			                        params.push(rowdata[0]);
+			                        params.push(changes[i][1]);
+			                        params.push(changes[i][2]);
+			                        params.push(changes[i][3]);
+			                        
+			                        if("edit"==source&&params[1]=="wellName"){//编辑井号单元格
+			                        	var data="{\"oldWellName\":\""+params[2]+"\",\"newWellName\":\""+params[3]+"\"}";
+			                        	wellInfoHandsontableHelper.editWellNameList.push(Ext.JSON.decode(data));
+			                        }
+			                        
+			                        if(params[1]=="protocolName" && params[3]=="Kafka协议"){
+			                        	wellInfoHandsontableHelper.hot.setDataAtCell(index, 6, '');
+			                        }
 
-		                        //仅当单元格发生改变的时候,id!=null,说明是更新
-		                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
-		                        	var data="{";
-		                        	for(var j=0;j<wellInfoHandsontableHelper.columns.length;j++){
-		                        		data+=wellInfoHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
-		                        		if(j<wellInfoHandsontableHelper.columns.length-1){
-		                        			data+=","
-		                        		}
-		                        	}
-		                        	data+="}"
-		                            wellInfoHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
-		                        }
-	                    	}
-	                        
+			                        //仅当单元格发生改变的时候,id!=null,说明是更新
+			                        if (params[2] != params[3] && params[0] != null && params[0] >0) {
+			                        	var data="{";
+			                        	for(var j=0;j<wellInfoHandsontableHelper.columns.length;j++){
+			                        		data+=wellInfoHandsontableHelper.columns[j].data+":'"+rowdata[j]+"'";
+			                        		if(j<wellInfoHandsontableHelper.columns.length-1){
+			                        			data+=","
+			                        		}
+			                        	}
+			                        	data+="}"
+			                            wellInfoHandsontableHelper.updateExpressCount(Ext.JSON.decode(data));
+			                        }
+		                    	}
+		    	        	}else{
+		    	        		Ext.MessageBox.alert("信息","编辑前，请先在左侧选择对应组织节点");
+		    	        	}
 	                    }
 	                }
 	        	});

@@ -343,6 +343,13 @@ var ProtocolConfigHandsontableHelper = {
 	                        protocolConfigHandsontableHelper.screening();
 	                    }
 	                },
+	                afterRemoveRow: function (index, amount) {
+	                	Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").setValue(0);
+                        var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(0);
+            			CreateDriverConfigItemsInfoTable(protocolConfigData[7]);
+            			CreateAcquisitionUnitConfigInfoTable(true);
+            			CreateAcquisitionGroupConfigInfoTable(true);
+	                },
 	                afterChange: function (changes, source) {
 	                    if (changes != null) {
 	                    	for(var i=0;i<changes.length;i++){
@@ -870,55 +877,62 @@ function SaveModbusProtocolConfigData(){
 		var driverConfigItemsSaveData=[];
 		var protocolConfigData=protocolConfigHandsontableHelper.hot.getDataAtRow(ScadaDriverModbusConfigSelectRow);
 		var driverConfigItemsData=protocolConfigItemsHandsontableHelper.hot.getData();
-		var configInfo={};
-		configInfo.delidslist=protocolConfigHandsontableHelper.delidslist;
-		configInfo.ProtocolName=protocolConfigData[1];
-		configInfo.ProtocolType=protocolConfigData[2];
-		configInfo.SignInPrefix=protocolConfigData[3];
-		configInfo.SignInSuffix=protocolConfigData[4];
-		configInfo.HeartbeatPrefix=protocolConfigData[5];
-		configInfo.HeartbeatSuffix=protocolConfigData[6];
-		configInfo.DataConfig=[];
-		for(var i=0;i<driverConfigItemsData.length;i++){
-			var item={};
-			item.Title=driverConfigItemsData[i][2];
-			item.Addr=parseInt(driverConfigItemsData[i][3]);
-			item.Quantity=parseInt(driverConfigItemsData[i][4]);
-			item.StoreDataType=driverConfigItemsData[i][5];
-			item.IFDataType=driverConfigItemsData[i][6];
-			item.RWType=driverConfigItemsData[i][7];
-			item.Unit=driverConfigItemsData[i][8];
-			item.Ratio=parseFloat(driverConfigItemsData[i][9]);
-			item.AcqMode=driverConfigItemsData[i][10];
-			configInfo.DataConfig.push(item);
+		
+		if(isNotVal(protocolConfigData[1])){
+			var configInfo={};
+			configInfo.delidslist=protocolConfigHandsontableHelper.delidslist;
+			configInfo.ProtocolName=protocolConfigData[1];
+			configInfo.ProtocolType=protocolConfigData[2];
+			configInfo.SignInPrefix=protocolConfigData[3];
+			configInfo.SignInSuffix=protocolConfigData[4];
+			configInfo.HeartbeatPrefix=protocolConfigData[5];
+			configInfo.HeartbeatSuffix=protocolConfigData[6];
+			configInfo.DataConfig=[];
+			for(var i=0;i<driverConfigItemsData.length;i++){
+				if(isNotVal(driverConfigItemsData[i][2])){
+					var item={};
+					item.Title=driverConfigItemsData[i][2];
+					item.Addr=parseInt(driverConfigItemsData[i][3]);
+					item.Quantity=parseInt(driverConfigItemsData[i][4]);
+					item.StoreDataType=driverConfigItemsData[i][5];
+					item.IFDataType=driverConfigItemsData[i][6];
+					item.RWType=driverConfigItemsData[i][7];
+					item.Unit=driverConfigItemsData[i][8];
+					item.Ratio=parseFloat(driverConfigItemsData[i][9]);
+					item.AcqMode=driverConfigItemsData[i][10];
+					configInfo.DataConfig.push(item);
+				}
+			}
+			
+			Ext.Ajax.request({
+	    		method:'POST',
+	    		url:context + '/acquisitionUnitManagerController/saveModbusProtocolConfigData',
+	    		success:function(response) {
+	    			var data=Ext.JSON.decode(response.responseText);
+	    			protocolConfigHandsontableHelper.clearContainer();
+	    			if (data.success) {
+	                	Ext.MessageBox.alert("信息","保存成功");
+//	                	CreateProtocolConfigInfoTable();
+	                } else {
+	                	Ext.MessageBox.alert("信息","数据保存失败");
+	                }
+	    		},
+	    		failure:function(){
+	    			Ext.MessageBox.alert("信息","请求失败");
+	    		},
+	    		params: {
+	    			data:JSON.stringify(configInfo)
+	            }
+	    	}); 
+			
+			acquisitionUnitConfigHandsontableHelper.saveData(configInfo.ProtocolName);
+			acquisitionGroupConfigHandsontableHelper.saveData(configInfo.ProtocolName);
+			
+			grantAcquisitionItemsPermission();
+			grantAcquisitionGroupsPermission();
+		}else{
+			Ext.MessageBox.alert("提示","协议名称不能为空！");
 		}
-		
-		Ext.Ajax.request({
-    		method:'POST',
-    		url:context + '/acquisitionUnitManagerController/saveModbusProtocolConfigData',
-    		success:function(response) {
-    			var data=Ext.JSON.decode(response.responseText);
-    			protocolConfigHandsontableHelper.clearContainer();
-    			if (data.success) {
-                	Ext.MessageBox.alert("信息","保存成功");
-//                	CreateProtocolConfigInfoTable();
-                } else {
-                	Ext.MessageBox.alert("信息","数据保存失败");
-                }
-    		},
-    		failure:function(){
-    			Ext.MessageBox.alert("信息","请求失败");
-    		},
-    		params: {
-    			data:JSON.stringify(configInfo)
-            }
-    	}); 
-		
-		acquisitionUnitConfigHandsontableHelper.saveData(configInfo.ProtocolName);
-		acquisitionGroupConfigHandsontableHelper.saveData(configInfo.ProtocolName);
-		
-		grantAcquisitionItemsPermission();
-		grantAcquisitionGroupsPermission();
 	}
 };
 

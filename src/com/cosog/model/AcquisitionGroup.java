@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.cosog.utils.StringManagerUtils;
 /**
  *  <p>描述：采集组实体类  tbl_acq_group_conf</p>
  *  
@@ -94,7 +96,11 @@ public class AcquisitionGroup implements java.io.Serializable {
 	}
 
 	public void setRemark(String remark) {
-		this.remark = remark;
+		if(!StringManagerUtils.isNotNull(remark)){
+			this.remark = "";
+		}else{
+			this.remark = remark;
+		}
 	}
 	
 	@Column(name = "protocol", nullable = true, length = 10)

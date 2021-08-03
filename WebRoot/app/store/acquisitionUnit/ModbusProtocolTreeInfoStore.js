@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.acquisitionItemsTreeInfoStore',
+    alias: 'widget.modbusProtocolTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/constructAcquisitionItemsTreeData',
+        url: context + '/acquisitionUnitManagerController/modbusConfigTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -20,10 +20,10 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore', {
         beforeload: function (store, options) {
         },
         load: function (store, options, eOpts) {
-        	var acquisitionItemsTreeGridPanel = Ext.getCmp("acquisitionItemsTreeGridPanel_Id");
-            if (!isNotVal(acquisitionItemsTreeGridPanel)) {
-                acquisitionItemsTreeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "acquisitionItemsTreeGridPanel_Id",
+        	var ModbusProtocolConfigTreeGridPanel = Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id");
+            if (!isNotVal(ModbusProtocolConfigTreeGridPanel)) {
+                ModbusProtocolConfigTreeGridPanel = Ext.create('Ext.tree.Panel', {
+                    id: "ModbusProtocolConfigTreeGridPanel_Id",
                     layout: "fit",
                     border: false,
                     animate: true,
@@ -40,7 +40,7 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore', {
                     columns: [
                         {
                             xtype: 'treecolumn',
-                            text: '采控项列表',
+                            text: '协议列表',
                             flex: 8,
                             align: 'left',
                             dataIndex: 'text'
@@ -52,15 +52,20 @@ Ext.define('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore', {
                         }],
                     listeners: {
                     	checkchange: function (node, checked) {
-                            listenerCheck(node, checked);
+//                            alert("aa");
+                        },
+                        selectionchange ( view, selected, eOpts ){
+                        	if(selected.length>0&&selected[0].data.classes==1){
+                        		CreateProtocolItemsConfigInfoTable(selected[0].data.text);
+                        	}
                         }
                     }
 
                 });
-                var acquisitionItemsTreePanel = Ext.getCmp("acquisitionItemsTreePanel_Id");
-                acquisitionItemsTreePanel.add(acquisitionItemsTreeGridPanel);
+                var ModbusProtocolConfigPanel = Ext.getCmp("ModbusProtocolConfigPanel_Id");
+                ModbusProtocolConfigPanel.add(ModbusProtocolConfigTreeGridPanel);
             }
-            showAcquisitionGroupOwnItems(store);
+            ModbusProtocolConfigTreeGridPanel.getSelectionModel().select(0, true);
         }
     }
 });

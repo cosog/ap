@@ -1,5 +1,7 @@
 package com.cosog.service.acquisitionUnit;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -207,6 +209,116 @@ private CommonDataService service;
 		}
 		result_json.append("]");
 		result_json.append("}");
+		return result_json.toString();
+	}
+	
+	public String getProtocolItemsConfigData(String protocolName){
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+//				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"title\",width:120 ,children:[] },"
+				+ "{ \"header\":\"地址\",\"dataIndex\":\"addr\",width:80 ,children:[] },"
+				+ "{ \"header\":\"数量\",\"dataIndex\":\"quantity\",width:80 ,children:[] },"
+				+ "{ \"header\":\"存储数据类型\",\"dataIndex\":\"storeDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"接口数据类型\",\"dataIndex\":\"IFDataType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"读写类型\",\"dataIndex\":\"RWType\",width:80 ,children:[] },"
+				+ "{ \"header\":\"单位\",\"dataIndex\":\"unit\",width:80 ,children:[] },"
+				+ "{ \"header\":\"换算比例\",\"dataIndex\":\"ratio\",width:80 ,children:[] },"
+				+ "{ \"header\":\"采集模式\",\"dataIndex\":\"acqMode\",width:80 ,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			ModbusProtocolConfig.Protocol protocolConfig=modbusProtocolConfig.getProtocol().get(i);
+			if(protocolName.equalsIgnoreCase(protocolConfig.getName())){
+				for(int j=0;j<protocolConfig.getItems().size();j++){
+					result_json.append("{\"checked\":false,"
+							+ "\"id\":"+(j+1)+","
+							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
+							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","
+							+ "\"quantity\":"+protocolConfig.getItems().get(j).getQuantity()+","
+							+ "\"storeDataType\":\""+protocolConfig.getItems().get(j).getStoreDataType()+"\","
+							+ "\"IFDataType\":\""+protocolConfig.getItems().get(j).getIFDataType()+"\","
+							+ "\"ratio\":"+protocolConfig.getItems().get(j).getRatio()+","
+							+ "\"RWType\":\""+("r".equalsIgnoreCase(protocolConfig.getItems().get(j).getRWType())?"只读":"读写")+"\","
+							+ "\"unit\":\""+protocolConfig.getItems().get(j).getUnit()+"\","
+							+ "\"acqMode\":\""+("active".equalsIgnoreCase(protocolConfig.getItems().get(j).getAcqMode())?"主动上传":"被动响应")+"\"},");
+				}
+				break;
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		result_json.append("}");
+		System.out.println(result_json.toString());
+		return result_json.toString();
+	}
+	
+	public String getModbusProtocolConfigTreeData(){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		result_json.append("[");
+		if(modbusProtocolConfig!=null){
+			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol from tbl_acq_unit_conf t order by t.protocol,t.id";
+			String groupSql="select t.id as id,t.group_name as groupName,t.group_code as groupCode,t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark,t.protocol from tbl_acq_group_conf t order by t.protocol,t.id";
+			List<?> unitList=this.findCallSql(unitSql);
+			List<?> groupList=this.findCallSql(groupSql);
+			//排序
+			Collections.sort(modbusProtocolConfig.getProtocol());
+			
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				result_json.append("{\"classes\":1,");
+				result_json.append("\"text\":\""+modbusProtocolConfig.getProtocol().get(i).getName()+"\",");
+				result_json.append("\"code\":\""+modbusProtocolConfig.getProtocol().get(i).getCode()+"\",");
+				result_json.append("\"type\":\""+modbusProtocolConfig.getProtocol().get(i).getType()+"\",");
+				result_json.append("\"signInPrefix\":\""+modbusProtocolConfig.getProtocol().get(i).getSignInPrefix()+"\",");
+				result_json.append("\"signInSuffix\":\""+modbusProtocolConfig.getProtocol().get(i).getSignInSuffix()+"\",");
+				result_json.append("\"heartbeatPrefix\":\""+modbusProtocolConfig.getProtocol().get(i).getHeartbeatPrefix()+"\",");
+				result_json.append("\"heartbeatSuffix\":\""+modbusProtocolConfig.getProtocol().get(i).getHeartbeatSuffix()+"\",");
+				result_json.append("\"sort\":"+modbusProtocolConfig.getProtocol().get(i).getSort()+",");
+				result_json.append("\"iconCls\": \"System\",");
+				result_json.append("\"expanded\": true,");
+				result_json.append("\"children\": [");
+				for(int j=0;j<unitList.size();j++){
+					Object[] unitObj = (Object[]) unitList.get(j);
+					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(unitObj[unitObj.length-1]+"")){
+						result_json.append("{\"classes\":2,");
+						result_json.append("\"id\":"+unitObj[0]+",");
+						result_json.append("\"code\":\""+unitObj[1]+"\",");
+						result_json.append("\"text\":\""+unitObj[2]+"\",");
+						result_json.append("\"remark\":\""+unitObj[3]+"\",");
+						result_json.append("\"protocol\":\""+unitObj[4]+"\",");
+						result_json.append("\"iconCls\": \"Dictionary\",");
+						result_json.append("\"expanded\": true,");
+						result_json.append("\"children\": [");
+						result_json.append("]},");
+					}
+				}
+				if(result_json.toString().endsWith(",")){
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("]},");
+			}
+			if(result_json.toString().endsWith(",")){
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}
+		result_json.append("]");
 		return result_json.toString();
 	}
 	

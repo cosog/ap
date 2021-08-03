@@ -448,6 +448,32 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getProtocolItemsConfigData")
+	public String getProtocolItemsConfigData() throws Exception {
+		String protocolName = ParamUtils.getParameter(request, "protocolName");
+		String json = "";
+		json = acquisitionUnitItemManagerService.getProtocolItemsConfigData(protocolName);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/modbusConfigTreeData")
+	public String modbusConfigTreeData() throws IOException {
+		String json = acquisitionUnitItemManagerService.getModbusProtocolConfigTreeData();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveModbusProtocolConfigData")
 	public String SaveModbusProtocolConfigData() throws Exception {
 		String json = "";
@@ -828,6 +854,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	
 
 	public String getLimit() {
 		return limit;

@@ -276,7 +276,7 @@ public class DriverAPIController extends BaseController{
 				if("A11-Modbus".equalsIgnoreCase(protocolName)){
 					this.DataProcessing_A11(acqGroup, protocolName);
 				}else{
-					this.DataProcessing_A11(acqGroup, protocolName);
+					this.DataProcessing_Unknown(acqGroup, protocolName);
 				}
 			}
 		}else{
@@ -734,9 +734,9 @@ public class DriverAPIController extends BaseController{
 				+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 				+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
 				+ " where t.id=t2.wellid"
-//				+ " and upper(t.protocolcode) not like '%KAFKA%' "
-//				+ " and upper(t.protocolcode) not like '%MQTT%' "
-				+ " and t.protocolcode ='"+(protocol!=null?protocol.getCode():"")+"'"
+				+ " and upper(t.protocolcode) not like '%KAFKA%' "
+				+ " and upper(t.protocolcode) not like '%MQTT%' "
+//				+ " and t.protocolcode ='"+(protocol!=null?protocol.getCode():"")+"'"
 				+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 		List list = this.commonDataService.findCallSql(sql);
 		if(list.size()>0){

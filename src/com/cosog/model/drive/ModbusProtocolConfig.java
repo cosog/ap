@@ -15,7 +15,7 @@ public class ModbusProtocolConfig {
         return this.Protocol;
     }
     
-	public static class Items
+	public static class Items implements Comparable<Items>
 	{
 	    private String Name;
 
@@ -107,9 +107,14 @@ public class ModbusProtocolConfig {
 			result.append("\",\"dataIndex\": \""+this.Name+"\", children: []}");
 			return result.toString();
 		}
+		
+		@Override
+		public int compareTo(Items item) {     //重写Comparable接口的compareTo方法
+			return this.Addr-item.getAddr();   // 根据地址升序排列，降序修改相减顺序即可
+		}
 	}
 	
-	public static class Protocol
+	public static class Protocol  implements Comparable<Protocol>
 	{
 	    private String Name;
 
@@ -183,5 +188,10 @@ public class ModbusProtocolConfig {
 	    public List<Items> getItems(){
 	        return this.Items;
 	    }
+	    
+	    @Override
+		public int compareTo(Protocol protocol) {     //重写Comparable接口的compareTo方法
+			return this.Sort-protocol.getSort();   // 根据地址升序排列，降序修改相减顺序即可
+		}
 	}
 }

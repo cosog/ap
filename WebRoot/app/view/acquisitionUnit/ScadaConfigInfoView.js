@@ -64,13 +64,7 @@ Ext.define("AP.view.acquisitionUnit.ScadaConfigInfoView", {
                 items: DataSourceConfigItems,
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
-                    	if(newCard.id=="DriverConfigInfoPanel_Id"){
-//                    		loadFSDiagramAnalysisSingleStatData();
-                    	}else if(newCard.id=="AcquisitionUnitInfoPanel_Id"){
-                    		var AcquisitionUnitInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionUnitInfoStore');
-                    		var AcquisitionGroupInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionGroupInfoStore');
-                            var AcquisitionItemsTreeInfoStore= Ext.create('AP.store.acquisitionUnit.AcquisitionItemsTreeInfoStore');
-                    	}
+                    	
                     }
                 }
              }]

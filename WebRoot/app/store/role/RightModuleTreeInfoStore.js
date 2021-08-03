@@ -1,5 +1,3 @@
-all_loading = "";
-
 Ext.define('AP.store.role.RightModuleTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
     alias: 'widget.RightModuleTreeInfoStore',
@@ -20,15 +18,10 @@ Ext.define('AP.store.role.RightModuleTreeInfoStore', {
     },
     listeners: {
         beforeload: function (store, options) {
-//            all_loading = new Ext.LoadMask(Ext.getBody().component, {
-//                msg: cosog.string.loading
-//            });
-//            all_loading.show();
         },
         load: function (store, options, eOpts) {
             var store_ = store;
             clkLoadAjaxFn(store);
-//            all_loading.hide();
             var roleCode="";
             if(Ext.getCmp("RoleInfoGridPanel_Id")!=undefined){
             	var _record = Ext.getCmp("RoleInfoGridPanel_Id").getSelectionModel().getSelection();

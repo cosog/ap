@@ -11,9 +11,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -47,7 +49,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -239,6 +241,26 @@ public class EquipmentDriverServerTask {
 				String[] itemsArr=rs.getString(8).split(",");
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(4))){
+//						List<ModbusProtocolConfig.Items> itemsSortList=new ArrayList<ModbusProtocolConfig.Items>();
+//						for(int j=0;j<itemsArr.length;j++){
+//							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+//								if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
+//									itemsSortList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k));
+//									break;
+//								}
+//							}
+//						}
+//						Collections.sort(itemsSortList); // 按地址排序
+//						
+//						for(int j=0;j<itemsSortList.size();j++){
+//							for(int k=0;k<itemsArr.length;k++ ){
+//								if(itemsArr[k].equalsIgnoreCase(itemsSortList.get(j).getTitle())){
+//									group.getAddr().add(itemsSortList.get(j).getAddr());
+//									break;
+//								}
+//							}
+//						}
+						
 						for(int j=0;j<itemsArr.length;j++){
 							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 								if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
@@ -247,6 +269,8 @@ public class EquipmentDriverServerTask {
 								}
 							}
 						}
+						Collections.sort(group.getAddr());
+						
 						break;
 					}
 				}

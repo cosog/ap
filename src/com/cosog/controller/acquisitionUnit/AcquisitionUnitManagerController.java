@@ -3,6 +3,7 @@ package com.cosog.controller.acquisitionUnit;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -128,12 +129,93 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doModbusProtocolAdd")
+	public String doModbusProtocolAdd() throws IOException {
+		String result = "";
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		Gson gson = new Gson();
+		String fileName="ModbusProtocolConfig.json";
+		String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
+		PrintWriter out = response.getWriter();
+		try {
+			String name = ParamUtils.getParameter(request, "modbusProtocol.name");
+			String type = ParamUtils.getParameter(request, "modbusProtocol.type");
+			String signInPrefix = ParamUtils.getParameter(request, "modbusProtocol.signInPrefix");
+			String signInSuffix = ParamUtils.getParameter(request, "modbusProtocol.signInSuffix");
+			String heartbeatPrefix = ParamUtils.getParameter(request, "modbusProtocol.heartbeatPrefix");
+			String heartbeatSuffix = ParamUtils.getParameter(request, "modbusProtocol.heartbeatSuffix");
+			String sort = ParamUtils.getParameter(request, "modbusProtocol.sort");
+			
+			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			if(equipmentDriveMap.size()==0){
+				EquipmentDriverServerTask.loadProtocolConfig();
+				equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			}
+			ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+			boolean isAdd=true;
+			if(modbusProtocolConfig!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(name.equals(modbusProtocolConfig.getProtocol().get(i).getName())){
+						modbusProtocolConfig.getProtocol().get(i).setType(type);
+						modbusProtocolConfig.getProtocol().get(i).setSignInPrefix(signInPrefix);
+						modbusProtocolConfig.getProtocol().get(i).setSignInSuffix(signInSuffix);
+						modbusProtocolConfig.getProtocol().get(i).setHeartbeatPrefix(heartbeatPrefix);
+						modbusProtocolConfig.getProtocol().get(i).setHeartbeatSuffix(heartbeatSuffix);
+						modbusProtocolConfig.getProtocol().get(i).setSort(StringManagerUtils.stringToInteger(sort));
+						isAdd=false;
+						break;
+					}
+				}
+			}
+			if(isAdd){
+				ModbusProtocolConfig.Protocol protocol=new ModbusProtocolConfig.Protocol();
+				String protocolCode=name;
+				protocol.setName(name);
+				protocol.setCode(protocolCode);
+				protocol.setType(type);
+				
+				protocol.setSignInPrefix(signInPrefix);
+				protocol.setSignInSuffix(signInSuffix);
+				protocol.setHeartbeatPrefix(heartbeatPrefix);
+				protocol.setHeartbeatSuffix(heartbeatSuffix);
+				protocol.setSort(StringManagerUtils.stringToInteger(sort));
+				protocol.setItems(new ArrayList<ModbusProtocolConfig.Items>());
+				modbusProtocolConfig.getProtocol().add(protocol);
+			}
+			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
+			equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
+			EquipmentDriverServerTask.initProtocolConfig(name,"update");
+//			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
+			result = "{success:true,msg:true}";
+			response.setCharacterEncoding(Constants.ENCODING_UTF8);
+			out.print(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = "{success:false,msg:false}";
+			out.print(result);
+		}
+		return null;
+	}
+	
 	@RequestMapping("/doAcquisitionGroupAdd")
 	public String doAcquisitionGroupAdd(@ModelAttribute AcquisitionGroup acquisitionGroup) throws IOException {
 		String result = "";
+		String acqUnit = ParamUtils.getParameter(request, "acquisitionGroup.acqUnit");
 		PrintWriter out = response.getWriter();
 		try {
 			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
+			String sql="select t.id from TBL_ACQ_GROUP_CONF t where t.group_name='"+acquisitionGroup.getGroupName()+"' and t.protocol='"+acquisitionGroup.getProtocol()+"'";
+			String groupId="";
+			List list = this.service.findCallSql(sql);
+			if(list.size()>0){
+				groupId=list.get(0).toString();
+				AcquisitionUnitGroup acquisitionUnitGroup = new AcquisitionUnitGroup();
+				acquisitionUnitGroup.setUnitId(Integer.parseInt(acqUnit));
+				acquisitionUnitGroup.setGroupId(StringManagerUtils.stringTransferInteger(groupId));
+				acquisitionUnitGroup.setMatrix("0,0,0");
+				this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
+			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -474,6 +556,31 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getModbusProtoclCombList")
+	public String getModbusProtoclCombList() throws IOException {
+		String json=acquisitionUnitItemManagerService.getModbusProtoclCombList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getAcquisitionUnitCombList")
+	public String getAcquisitionUnitCombList() throws IOException {
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		String json=acquisitionUnitItemManagerService.getAcquisitionUnitCombList(protocol);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/saveModbusProtocolConfigData")
 	public String SaveModbusProtocolConfigData() throws Exception {
 		String json = "";
@@ -486,6 +593,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(modbusDriverSaveData!=null&&StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
 			modbusDriverSaveData.dataFiltering();
 			String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
+			
 			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 			if(equipmentDriveMap.size()==0){
 				EquipmentDriverServerTask.loadProtocolConfig();
@@ -494,7 +602,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
 			boolean isAdd=true;
 			
-			for(int i=0;i<modbusDriverSaveData.getDelidslist().size();i++){
+			for(int i=0;modbusDriverSaveData.getDelidslist()!=null&&i<modbusDriverSaveData.getDelidslist().size();i++){
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 					if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
 						modbusProtocolConfig.getProtocol().remove(j);
@@ -512,7 +620,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					modbusProtocolConfig.getProtocol().get(i).setSignInSuffix(modbusDriverSaveData.getSignInSuffix());
 					modbusProtocolConfig.getProtocol().get(i).setHeartbeatPrefix(modbusDriverSaveData.getHeartbeatPrefix());
 					modbusProtocolConfig.getProtocol().get(i).setHeartbeatSuffix(modbusDriverSaveData.getHeartbeatSuffix());
-					
+					modbusProtocolConfig.getProtocol().get(i).setSort(modbusDriverSaveData.getSort());
 					for(int j=0;j<modbusDriverSaveData.getDataConfig().size();j++){
 						boolean isAddItem=true;
 						String acqMode="passive";

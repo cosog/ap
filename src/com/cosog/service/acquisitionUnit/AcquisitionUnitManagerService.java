@@ -260,7 +260,6 @@ private CommonDataService service;
 		}
 		result_json.append("]");
 		result_json.append("}");
-		System.out.println(result_json.toString());
 		return result_json.toString();
 	}
 	
@@ -275,7 +274,10 @@ private CommonDataService service;
 		result_json.append("[");
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol from tbl_acq_unit_conf t order by t.protocol,t.id";
-			String groupSql="select t.id as id,t.group_name as groupName,t.group_code as groupCode,t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark,t.protocol from tbl_acq_group_conf t order by t.protocol,t.id";
+			String groupSql="select t3.id,t3.group_code,t3.group_name,t3.acq_cycle,t3.save_cycle,t3.remark,t3.protocol,t2.id as unitId "
+					+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3 "
+					+ " where t.unitid=t2.id and t.groupid=t3.id "
+					+ " order by t3.protocol,t2.unit_code,t3.group_code";
 			List<?> unitList=this.findCallSql(unitSql);
 			List<?> groupList=this.findCallSql(groupSql);
 			//排序
@@ -291,7 +293,7 @@ private CommonDataService service;
 				result_json.append("\"heartbeatPrefix\":\""+modbusProtocolConfig.getProtocol().get(i).getHeartbeatPrefix()+"\",");
 				result_json.append("\"heartbeatSuffix\":\""+modbusProtocolConfig.getProtocol().get(i).getHeartbeatSuffix()+"\",");
 				result_json.append("\"sort\":"+modbusProtocolConfig.getProtocol().get(i).getSort()+",");
-				result_json.append("\"iconCls\": \"System\",");
+				result_json.append("\"iconCls\": \"Protocol\",");
 				result_json.append("\"expanded\": true,");
 				result_json.append("\"children\": [");
 				for(int j=0;j<unitList.size();j++){
@@ -303,9 +305,30 @@ private CommonDataService service;
 						result_json.append("\"text\":\""+unitObj[2]+"\",");
 						result_json.append("\"remark\":\""+unitObj[3]+"\",");
 						result_json.append("\"protocol\":\""+unitObj[4]+"\",");
-						result_json.append("\"iconCls\": \"Dictionary\",");
+						result_json.append("\"iconCls\": \"AcqUnit\",");
 						result_json.append("\"expanded\": true,");
 						result_json.append("\"children\": [");
+						for(int k=0;k<groupList.size();k++){
+							Object[] groupObj = (Object[]) groupList.get(k);
+							if((unitObj[0]+"").equalsIgnoreCase(groupObj[groupObj.length-1]+"")){
+								result_json.append("{\"classes\":3,");
+								result_json.append("\"id\":"+groupObj[0]+",");
+								result_json.append("\"code\":\""+groupObj[1]+"\",");
+								result_json.append("\"text\":\""+groupObj[2]+"\",");
+								result_json.append("\"acq_cycle\":"+groupObj[3]+",");
+								result_json.append("\"save_cycle\":"+groupObj[4]+",");
+								result_json.append("\"remark\":\""+groupObj[5]+"\",");
+								result_json.append("\"protocol\":\""+groupObj[6]+"\",");
+								result_json.append("\"unitId\":"+groupObj[7]+",");
+								result_json.append("\"iconCls\": \"AcqGroup\",");
+								result_json.append("\"leaf\": true");
+								result_json.append("},");
+							}
+						}
+						if(result_json.toString().endsWith(",")){
+							result_json.deleteCharAt(result_json.length() - 1);
+						}
+						
 						result_json.append("]},");
 					}
 				}
@@ -501,6 +524,49 @@ private CommonDataService service;
 		return result_json.toString();
 	}
 	
+	public String getModbusProtoclCombList(){
+		StringBuffer result_json = new StringBuffer();
+		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		if(equipmentDriveMap.size()==0){
+			EquipmentDriverServerTask.loadProtocolConfig();
+			equipmentDriveMap = EquipmentDriveMap.getMapObject();
+		}
+		ModbusProtocolConfig modbusProtocolConfig=(ModbusProtocolConfig) equipmentDriveMap.get("modbusProtocolConfig");
+		//排序
+		Collections.sort(modbusProtocolConfig.getProtocol());
+		
+		result_json.append("{\"totals\":"+modbusProtocolConfig.getProtocol().size()+",\"list\":[");
+		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+			result_json.append("{boxkey:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\",");
+			result_json.append("boxval:\"" + modbusProtocolConfig.getProtocol().get(i).getName() + "\"},");
+		}
+		if (result_json.toString().length() > 1) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public String getAcquisitionUnitCombList(String protocol){
+		StringBuffer result_json = new StringBuffer();
+		String sql="select t.id,t.unit_name from TBL_ACQ_UNIT_CONF t where 1=1";
+		if(StringManagerUtils.isNotNull(protocol)){
+			sql+=" and t.protocol='"+protocol+"'";
+		}
+		
+		List<?> list=this.findCallSql(sql);
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			result_json.append("{boxkey:\"" + obj[0] + "\",");
+			result_json.append("boxval:\"" + obj[1] + "\"},");
+		}
+		if (result_json.toString().length() > 1) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
 	
 	public void doAcquisitionGroupAdd(AcquisitionGroup acquisitionGroup) throws Exception {
 		getBaseDao().addObject(acquisitionGroup);
@@ -561,6 +627,7 @@ private CommonDataService service;
 	public void grantAcquisitionGroupsPermission(AcquisitionUnitGroup r) throws Exception {
 		getBaseDao().saveOrUpdateObject(r);
 	}
+	
 	
 	
 	

@@ -17,7 +17,113 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
-        var postacquisitionGroupEditForm = Ext.create('Ext.form.Panel', {
+        var modbusProtocolStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/acquisitionUnitManagerController/getModbusProtoclCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var modbusProtocolComb = Ext.create(
+				'Ext.form.field.ComboBox', {
+					fieldLabel :  '协议',
+					id : 'formAcquisitionGroupProtocolComb_Id',
+					anchor : '100%',
+					store: modbusProtocolStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : false,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							Ext.getCmp("formAcquisitionGroupProtocol_Id").setValue(this.value);
+	                    }
+					}
+				});
+        var acqUnitStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/acquisitionUnitManagerController/getAcquisitionUnitCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var protocol=Ext.getCmp('formAcquisitionGroupProtocolComb_Id').getValue();
+					var new_params = {
+						protocol:protocol
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var acqUnitComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '采集单元',
+					id : 'formAcquisitionGroupAcqUnitComb_Id',
+					anchor : '100%',
+					store: acqUnitStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : false,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						expand: function (sm, selections) {
+							acqUnitComb.getStore().load();
+		                },
+						select: function (v,o) {
+							Ext.getCmp("formAcquisitionGroupAcqUnit_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
+        var postAcquisitionGroupEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
@@ -26,7 +132,17 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 id: 'formAcquisitionGroupJlbh_Id',
                 anchor: '100%',
                 name: "acquisitionGroup.id"
-            }, {
+            },{
+				xtype : "hidden",
+				id : 'formAcquisitionGroupProtocol_Id',
+				value:'',
+				name : "acquisitionGroup.protocol"
+			},modbusProtocolComb,{
+				xtype : "hidden",
+				id : 'formAcquisitionGroupAcqUnit_Id',
+				value:'',
+				name : "acquisitionGroup.acqUnit"
+			},acqUnitComb, {
                 id: 'formAcquisitionGroupName_Id',
                 name: "acquisitionGroup.groupName",
                 fieldLabel: '组名称',
@@ -36,20 +152,21 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 id: 'formAcquisitionGroupCode_Id',
                 name: "acquisitionGroup.groupCode",
                 fieldLabel: '组编码',
+                hidden:true,
                 anchor: '100%',
                 value: ''
                 
             }, {
                 id: 'formAcquisitionGroupAcqCycle_Id',
                 name: "acquisitionGroup.acqCycle",
-                fieldLabel: '采集周期(min)',
+                fieldLabel: '采集周期(s)',
                 anchor: '100%',
                 value: ''
                 
             }, {
                 id: 'formAcquisitionGroupSaveCycle_Id',
                 name: "acquisitionGroup.saveCycle",
-                fieldLabel: '保存周期(min)',
+                fieldLabel: '保存周期(s)',
                 anchor: '100%',
                 value: ''
                 
@@ -89,7 +206,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
          }]
         });
         Ext.apply(me, {
-            items: postacquisitionGroupEditForm
+            items: postAcquisitionGroupEditForm
         });
         me.callParent(arguments);
     }

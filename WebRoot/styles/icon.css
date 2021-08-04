@@ -253,6 +253,15 @@
 .Resdata{
 	background-image: url(../images/icon/resdata.png) !important;
 }
+.Protocol{
+	background-image: url(../images/icon/protocol.png) !important;
+}
+.AcqUnit{
+	background-image: url(../images/icon/acqUnit.png) !important;
+}
+.AcqGroup{
+	background-image: url(../images/icon/acqGroup.png) !important;
+}
  /* shared styles for the ActionColumn icons */
 .x-action-col-cell img {
 	height: 16px;

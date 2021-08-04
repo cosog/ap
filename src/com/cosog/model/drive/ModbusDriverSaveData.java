@@ -22,6 +22,8 @@ public class ModbusDriverSaveData {
 	
 	private String HeartbeatSuffix="";
 	
+	private int Sort=0;
+	
 	private List<String> delidslist;
 
     private List<DataConfig> DataConfig;
@@ -232,6 +234,12 @@ public class ModbusDriverSaveData {
 	}
 	public void setDelidslist(List<String> delidslist) {
 		this.delidslist = delidslist;
+	}
+	public int getSort() {
+		return Sort;
+	}
+	public void setSort(int sort) {
+		Sort = sort;
 	}
 	
 }

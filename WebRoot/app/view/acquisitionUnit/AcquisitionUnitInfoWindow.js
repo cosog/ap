@@ -17,25 +17,83 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
+        var modbusProtocolStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/acquisitionUnitManagerController/getModbusProtoclCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var modbusProtocolComb = Ext.create(
+				'Ext.form.field.ComboBox', {
+					fieldLabel :  '协议名称',
+					id : 'formAcquisitionUnitProtocolComb_Id',
+					anchor : '100%',
+					store: modbusProtocolStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : false,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							Ext.getCmp("formAcquisitionUnitProtocol_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         var postacquisitionUnitEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
             items: [{
                 xtype: "hidden",
                 fieldLabel: '序号',
-                id: 'formAcquisitionUnitJlbh_Id',
+                id: 'formAcquisitionUnit_Id',
                 anchor: '100%',
                 name: "acquisitionUnit.id"
-            }, {
+            },{
+				xtype : "hidden",
+				id : 'formAcquisitionUnitProtocol_Id',
+				value:'',
+				name : "acquisitionUnit.protocol"
+			},modbusProtocolComb, {
                 id: 'formAcquisitionUnitName_Id',
                 name: "acquisitionUnit.unitName",
-                fieldLabel: '类型名称',
+                fieldLabel: '单元名称',
+                allowBlank: false,
                 anchor: '100%',
                 value: ''
             }, {
                 id: 'formAcquisitionUnitCode_Id',
                 name: "acquisitionUnit.unitCode",
                 fieldLabel: '类型编码',
+                hidden:true,
                 anchor: '100%',
                 value: ''
                 

@@ -55,9 +55,25 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
 //                            alert("aa");
                         },
                         selectionchange ( view, selected, eOpts ){
-                        	if(selected.length>0&&selected[0].data.classes==1){
-                        		CreateProtocolItemsConfigInfoTable(selected[0].data.text);
+//                        	if(selected.length>0&&selected[0].data.classes==1){
+//                        		CreateProtocolItemsConfigInfoTable(selected[0].data.text);
+//                        	}else if(selected.length>0&&selected[0].data.classes==2||selected.length>0&&selected[0].data.classes==3){
+//                        		CreateProtocolItemsConfigInfoTable(selected[0].data.protocol);
+//                        	}
+//                        	else if(selected.length>0&&selected[0].data.classes==3){
+//                        		showAcquisitionGroupOwnItems(selected[0].data.code);
+//                        	}
+                        },select( v, record, index, eOpts ){
+                        	Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").setValue(index);
+                        	if(record.data.classes==1){
+                        		CreateProtocolItemsConfigInfoTable(record.data.text);
+                        	}else if(record.data.classes==2||record.data.classes==3){
+                        		CreateProtocolItemsConfigInfoTable(record.data.protocol);
                         	}
+                        	if(record.data.classes==3){
+                        		showAcquisitionGroupOwnItems(record.data.code);
+                        	}
+                        	CreateProtocolConfigPropertiesInfoTable(record.data);
                         }
                     }
 

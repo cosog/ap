@@ -212,7 +212,7 @@ private CommonDataService service;
 		return result_json.toString();
 	}
 	
-	public String getProtocolItemsConfigData(String protocolName){
+	public String getProtocolItemsConfigData(String protocolName,String classes,String code){
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
@@ -236,11 +236,22 @@ private CommonDataService service;
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalRoot\":[");
+		
+		List<String> itemsList=new ArrayList<String>();
+		if("3".equalsIgnoreCase(classes)){
+			String sql="select t.itemname from TBL_ACQ_ITEM2GROUP_CONF t,tbl_acq_group_conf t2 where t.groupid=t2.id and t2.group_code='"+code+"' order by t.id";
+			List<?> list=this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				itemsList.add(list.get(i)+"");
+			}
+		}
 		for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 			ModbusProtocolConfig.Protocol protocolConfig=modbusProtocolConfig.getProtocol().get(i);
 			if(protocolName.equalsIgnoreCase(protocolConfig.getName())){
 				for(int j=0;j<protocolConfig.getItems().size();j++){
-					result_json.append("{\"checked\":false,"
+					boolean checked=false;
+					checked=StringManagerUtils.existOrNot(itemsList, protocolConfig.getItems().get(j).getTitle());
+					result_json.append("{\"checked\":"+checked+","
 							+ "\"id\":"+(j+1)+","
 							+ "\"title\":\""+protocolConfig.getItems().get(j).getTitle()+"\","
 							+ "\"addr\":"+protocolConfig.getItems().get(j).getAddr()+","

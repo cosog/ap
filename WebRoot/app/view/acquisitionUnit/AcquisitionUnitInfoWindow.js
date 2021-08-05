@@ -92,7 +92,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             }, {
                 id: 'formAcquisitionUnitCode_Id',
                 name: "acquisitionUnit.unitCode",
-                fieldLabel: '类型编码',
+                fieldLabel: '单元编码',
                 hidden:true,
                 anchor: '100%',
                 value: ''
@@ -100,7 +100,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
             }, {
             	id: 'acquisitionUnitRemark_Id',
             	name: "acquisitionUnit.remark",
-                fieldLabel: '类型描述',
+                fieldLabel: '单元描述',
                 anchor: '100%',
                 value: '',
                 xtype: 'textareafield',

@@ -49,7 +49,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel :  '协议',
+					fieldLabel :  '协议名称',
 					id : 'formAcquisitionGroupProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -101,7 +101,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         
         var acqUnitComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '采集单元',
+					fieldLabel :  '单元名称',
 					id : 'formAcquisitionGroupAcqUnitComb_Id',
 					anchor : '100%',
 					store: acqUnitStore,

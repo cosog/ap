@@ -271,10 +271,21 @@ public class StringManagerUtils {
 		for (String d : data) {
 			if (d.equalsIgnoreCase(key)) {
 				flag = true;
+				break;
 			}
 		}
 		return flag;
-
+	}
+	
+	public static boolean existOrNot(List<String> list, String key) {
+		boolean flag = false;
+		for (int i=0;i<list.size();i++) {
+			if (list.get(i).equals(key)) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
 	}
 
 	public static String filterHtml(Object oIn) {

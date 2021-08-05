@@ -67,7 +67,31 @@ Ext.define("AP.view.acquisitionUnit.ScadaConfigInfoView", {
                     	
                     }
                 }
-             }]
+             }],
+             listeners: {
+                 beforeclose: function ( panel, eOpts) {
+                	 if(protocolConfigItemsHandsontableHelper!=null){
+                		 if(protocolConfigItemsHandsontableHelper.hot!=undefined){
+                			 protocolConfigItemsHandsontableHelper.hot.destroy();
+                		 }
+                		 protocolConfigItemsHandsontableHelper=null;
+                	}
+                	 
+                	if(protocolConfigPropertiesHandsontableHelper!=null){
+                		 if(protocolConfigPropertiesHandsontableHelper.hot!=undefined){
+                			 protocolConfigPropertiesHandsontableHelper.hot.destroy();
+                		}
+                		 protocolConfigPropertiesHandsontableHelper=null;
+                	}
+                	
+                	if(kafkaProtocolConfigHandsontableHelper!=null){
+                		if(kafkaProtocolConfigHandsontableHelper.hot!=undefined){
+                			kafkaProtocolConfigHandsontableHelper.hot.destroy();
+               		 	}
+                		kafkaProtocolConfigHandsontableHelper=null;
+                	}
+     			}
+             }
         });
         this.callParent(arguments);
     }

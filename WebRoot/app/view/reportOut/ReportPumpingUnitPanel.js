@@ -442,35 +442,51 @@ var DiagnoseDailyReportHelper = {
 	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
 	                        destinationColumn: 3,
 	                        type: 'average',
+	                        
 	                        roundFloat:true,
-	                        forceNumeric: true
+	                        forceNumeric: true,
+//	                        reversedRowCoords: true,
+	                        suppressDataTypeErrors: true,
+	                        readOnly: true
 	                    },{
 	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
 	                        destinationColumn: 6,
 	                        type: 'average',
 	                        roundFloat:true,
-	                        forceNumeric: true
+	                        forceNumeric: true,
+//	                        reversedRowCoords: true,
+	                        suppressDataTypeErrors: true,
+	                        readOnly: true
 	                    },
 	                    {
 	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
 	                        destinationColumn: 11,
 	                        type: 'average',
 	                        roundFloat:true,
-	                        forceNumeric: true
+	                        forceNumeric: true,
+//	                        reversedRowCoords: true,
+	                        suppressDataTypeErrors: true,
+	                        readOnly: true
 	                    },
 						{
 	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
 	                        destinationColumn: 12,
 	                        type: 'average',
 	                        roundFloat:true,
-	                        forceNumeric: true
+	                        forceNumeric: true,
+//	                        reversedRowCoords: true,
+	                        suppressDataTypeErrors: true,
+	                        readOnly: true
 						},
 						{
 	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
 	                        destinationColumn: 13,
 	                        type: 'average',
 	                        roundFloat:true,
-	                        forceNumeric: true
+	                        forceNumeric: true,
+//	                        reversedRowCoords: true,
+	                        suppressDataTypeErrors: true,
+	                        readOnly: true
 						}
 	                ],
 	                afterChange:function(changes, source){}

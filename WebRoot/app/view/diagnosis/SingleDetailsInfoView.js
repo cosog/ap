@@ -65,10 +65,23 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                 		xtype: 'button',
 //                		width:150,
                         id:"appRunStatusProbeLabel_id",
-                        text: 'SDK运行状态:',
+                        text: 'ac状态:',
                         handler: function (v, o) {
-                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("SDK运行状态");
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("ac运行状态");
                             Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("appRunStatus");
+                            var itemCode= Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').getValue();
+                        	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
+            				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
+                        	});
+                        	ResourceProbeHistoryCurveWindow.show();
+                        }
+                	},{
+                		xtype: 'button',
+                        id:"adRunStatusProbeLabel_id",
+                        text: 'ad状态:',
+                        handler: function (v, o) {
+                        	Ext.getCmp('DiagnosisAnalysisCurveItem_Id').setValue("ad运行状态");
+                            Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').setValue("adRunStatus");
                             var itemCode= Ext.getCmp('DiagnosisAnalysisCurveItemCode_Id').getValue();
                         	var ResourceProbeHistoryCurveWindow=Ext.create("AP.view.diagnosis.ResourceProbeHistoryCurveWindow", {
             				    html:'<div id="ResourceProbeHistoryCurve_'+itemCode+'_DivId" style="width:100%;height:100%;"></div>'
@@ -177,12 +190,18 @@ function probeWebsocketOnMessage(evt) {
 			
 			if(data.appRunStatus=="运行"){
 				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtgreen");
-//				Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK"+data.appVersion);
 			}else{
 				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtyellow");
-//				Ext.getCmp("appRunStatusProbeLabel_id").setText("");
 			}
-			Ext.getCmp("appRunStatusProbeLabel_id").setText("SDK"+data.appVersion);
+			Ext.getCmp("appRunStatusProbeLabel_id").setText("ac"+data.appVersion);
+			
+			if(data.adRunStatus=="运行"){
+				Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtgreen");
+			}else{
+				Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtyellow");
+			}
+			Ext.getCmp("adRunStatusProbeLabel_id").setText("ad"+data.adVersion);
+			
 		}
 	}
 }

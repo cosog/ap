@@ -142,10 +142,51 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		result_json.append("{ \"success\":true,\"wellName\":\""+wellName+"\",\"calculateDate\":\""+calculateDate+"\",\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":"+totals+",");
 		result_json.append("\"totalRoot\":[");
+		float sumCommTime=0;
+        float sumRunTime=0;
+        float sumLiquidProduction=0;
+        float sumOilProduction=0;
+        float sumWaterProduction=0;
+        
+        float averageCommTime=0;
+        float averageRunTime=0;
+        float averageLiquidProduction=0;
+        float averageOilProduction=0;
+        float averageWaterProduction=0;
+        
+        int commTimeRecords=0;
+        int runTimeRecords=0;
+        int liquidProductionRecords=0;
+        int oilProductionRecords=0;
+        int waterProductionRecords=0;
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			result_json.append("{\"id\":"+obj[0]+",");
-			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			
+			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"",2);
+ 		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"",2);
+ 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"",2);
+ 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"",2);
+ 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"",2);
+ 		   	
+ 		   	if(StringManagerUtils.stringToFloat(obj[3]+"")>0){
+ 		   		commTimeRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[6]+"")>0){
+ 		   		runTimeRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[11]+"")>0){
+ 		   		liquidProductionRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[12]+"")>0){
+ 		   		oilProductionRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[13]+"")>0){
+ 		   		waterProductionRecords+=1;
+ 		   	}
+			
+			
+    	    result_json.append("{\"id\":"+obj[0]+",");
+    	    result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
 			result_json.append("\"commTime\":\""+obj[3]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
@@ -174,9 +215,88 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"welldownSystemEfficiency\":\""+obj[23]+"\",");
 			result_json.append("\"remark\":\""+obj[26]+"\"},");
 		}
-		if(list.size()>0){
+		
+		if(commTimeRecords>0){
+			averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
+		}
+		if(runTimeRecords>0){
+			averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
+		}
+		if(liquidProductionRecords>0){
+			averageLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction/liquidProductionRecords+"",2);
+		}
+		if(oilProductionRecords>0){
+			averageOilProduction=StringManagerUtils.stringToFloat(sumOilProduction/oilProductionRecords+"",2);
+		}
+		if(waterProductionRecords>0){
+			averageWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction/waterProductionRecords+"",2);
+		}
+		
+		
+		result_json.append("{\"id\":\"合计\",");
+	    result_json.append("\"wellName\":\"\",");
+		result_json.append("\"calculateDate\":\"\",");
+		result_json.append("\"commTime\":\""+sumCommTime+"\",");
+		result_json.append("\"commRange\":\"\",");
+		result_json.append("\"commTimeEfficiency\":\"\",");
+		result_json.append("\"runTime\":\""+sumRunTime+"\",");
+		result_json.append("\"runRange\":\"\",");
+		result_json.append("\"runTimeEfficiency\":\"\",");
+		
+		result_json.append("\"optimizationSuggestion\":\"\",");
+		result_json.append("\"liquidProduction\":\""+sumLiquidProduction+"\",");
+		result_json.append("\"oilProduction\":\""+sumOilProduction+"\",");
+		result_json.append("\"waterProduction\":\""+sumWaterProduction+"\",");
+		result_json.append("\"waterCut\":\"\",");
+		result_json.append("\"systemEfficiency\":\"\",");
+		result_json.append("\"energyPer100mLift\":\"\",");
+		result_json.append("\"todayKWattH\":\"\",");
+		
+		result_json.append("\"resultName\":\"\",");
+		result_json.append("\"fullnesscoEfficient\":\"\",");
+		result_json.append("\"wattDegreeBalanceLevel\":\"\",");
+		result_json.append("\"wattDegreeBalance\":\"\",");
+		result_json.append("\"iDegreeBalanceLevel\":\"\",");
+		result_json.append("\"iDegreeBalance\":\"\",");
+		result_json.append("\"deltaRadius\":\"\",");
+		result_json.append("\"surfaceSystemEfficiency\":\"\",");
+		result_json.append("\"welldownSystemEfficiency\":\"\",");
+		result_json.append("\"remark\":\"\"},");
+		
+		result_json.append("{\"id\":\"平均\",");
+	    result_json.append("\"wellName\":\"\",");
+		result_json.append("\"calculateDate\":\"\",");
+		result_json.append("\"commTime\":\""+averageCommTime+"\",");
+		result_json.append("\"commRange\":\"\",");
+		result_json.append("\"commTimeEfficiency\":\"\",");
+		result_json.append("\"runTime\":\""+averageRunTime+"\",");
+		result_json.append("\"runRange\":\"\",");
+		result_json.append("\"runTimeEfficiency\":\"\",");
+		
+		result_json.append("\"optimizationSuggestion\":\"\",");
+		result_json.append("\"liquidProduction\":\""+averageLiquidProduction+"\",");
+		result_json.append("\"oilProduction\":\""+averageOilProduction+"\",");
+		result_json.append("\"waterProduction\":\""+averageWaterProduction+"\",");
+		result_json.append("\"waterCut\":\"\",");
+		result_json.append("\"systemEfficiency\":\"\",");
+		result_json.append("\"energyPer100mLift\":\"\",");
+		result_json.append("\"todayKWattH\":\"\",");
+		
+		result_json.append("\"resultName\":\"\",");
+		result_json.append("\"fullnesscoEfficient\":\"\",");
+		result_json.append("\"wattDegreeBalanceLevel\":\"\",");
+		result_json.append("\"wattDegreeBalance\":\"\",");
+		result_json.append("\"iDegreeBalanceLevel\":\"\",");
+		result_json.append("\"iDegreeBalance\":\"\",");
+		result_json.append("\"deltaRadius\":\"\",");
+		result_json.append("\"surfaceSystemEfficiency\":\"\",");
+		result_json.append("\"welldownSystemEfficiency\":\"\",");
+		result_json.append("\"remark\":\"\"}");
+		
+		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
+		
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
 	}
@@ -279,6 +399,25 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		sql+=" order by t.sortNum, t.wellName";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
+		
+		float sumCommTime=0;
+        float sumRunTime=0;
+        float sumLiquidProduction=0;
+        float sumOilProduction=0;
+        float sumWaterProduction=0;
+        
+        float averageCommTime=0;
+        float averageRunTime=0;
+        float averageLiquidProduction=0;
+        float averageOilProduction=0;
+        float averageWaterProduction=0;
+        
+        int commTimeRecords=0;
+        int runTimeRecords=0;
+        int liquidProductionRecords=0;
+        int oilProductionRecords=0;
+        int waterProductionRecords=0;
+		
 		String columns= "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50},"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\"},"
@@ -312,6 +451,29 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
+			
+			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"",2);
+ 		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"",2);
+ 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"",2);
+ 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"",2);
+ 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"",2);
+ 		   	
+ 		   	if(StringManagerUtils.stringToFloat(obj[3]+"")>0){
+ 		   		commTimeRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[6]+"")>0){
+ 		   		runTimeRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[11]+"")>0){
+ 		   		liquidProductionRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[12]+"")>0){
+ 		   		oilProductionRecords+=1;
+ 		   	}
+ 		   	if(StringManagerUtils.stringToFloat(obj[13]+"")>0){
+ 		   		waterProductionRecords+=1;
+ 		   	}
+			
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
 			result_json.append("\"calculateDate\":\""+obj[2]+"\",");
@@ -336,6 +498,72 @@ public class ReportProductionWellService<T> extends BaseService<T> {
 			result_json.append("\"todayKWattH\":\""+obj[19]+"\",");
 			result_json.append("\"remark\":\""+obj[20]+"\"},");
 		}
+		
+		if(commTimeRecords>0){
+			averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
+		}
+		if(runTimeRecords>0){
+			averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
+		}
+		if(liquidProductionRecords>0){
+			averageLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction/liquidProductionRecords+"",2);
+		}
+		if(oilProductionRecords>0){
+			averageOilProduction=StringManagerUtils.stringToFloat(sumOilProduction/oilProductionRecords+"",2);
+		}
+		if(waterProductionRecords>0){
+			averageWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction/waterProductionRecords+"",2);
+		}
+		
+		result_json.append("{\"id\":\"合计\",");
+		result_json.append("\"wellName\":\"\",");
+		result_json.append("\"calculateDate\":\"\",");
+		result_json.append("\"commTime\":\""+sumCommTime+"\",");
+		result_json.append("\"commRange\":\"\",");
+		result_json.append("\"commTimeEfficiency\":\"\",");
+		result_json.append("\"runTime\":\""+sumRunTime+"\",");
+		result_json.append("\"runRange\":\"\",");
+		result_json.append("\"runTimeEfficiency\":\"\",");
+	
+		result_json.append("\"liquidProduction\":\""+sumLiquidProduction+"\",");
+		result_json.append("\"oilProduction\":\""+sumOilProduction+"\",");
+		result_json.append("\"waterProduction\":\""+sumWaterProduction+"\",");
+		result_json.append("\"waterCut\":\"\",");
+		result_json.append("\"rpm\":\"\",");
+		result_json.append("\"pumpSettingDepth\":\"\",");
+		result_json.append("\"producingFluidLevel\":\"\",");
+		result_json.append("\"submergence\":\"\",");
+		
+		result_json.append("\"systemEfficiency\":\"\",");
+		result_json.append("\"energyPer100mLift\":\"\",");
+		result_json.append("\"todayKWattH\":\"\",");
+		result_json.append("\"remark\":\"\"},");
+		
+		
+		result_json.append("{\"id\":\"平均\",");
+		result_json.append("\"wellName\":\"\",");
+		result_json.append("\"calculateDate\":\"\",");
+		result_json.append("\"commTime\":\""+averageCommTime+"\",");
+		result_json.append("\"commRange\":\"\",");
+		result_json.append("\"commTimeEfficiency\":\"\",");
+		result_json.append("\"runTime\":\""+averageRunTime+"\",");
+		result_json.append("\"runRange\":\"\",");
+		result_json.append("\"runTimeEfficiency\":\"\",");
+	
+		result_json.append("\"liquidProduction\":\""+averageLiquidProduction+"\",");
+		result_json.append("\"oilProduction\":\""+averageOilProduction+"\",");
+		result_json.append("\"waterProduction\":\""+averageWaterProduction+"\",");
+		result_json.append("\"waterCut\":\"\",");
+		result_json.append("\"rpm\":\"\",");
+		result_json.append("\"pumpSettingDepth\":\"\",");
+		result_json.append("\"producingFluidLevel\":\"\",");
+		result_json.append("\"submergence\":\"\",");
+		
+		result_json.append("\"systemEfficiency\":\"\",");
+		result_json.append("\"energyPer100mLift\":\"\",");
+		result_json.append("\"todayKWattH\":\"\",");
+		result_json.append("\"remark\":\"\"}");
+		
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}

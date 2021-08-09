@@ -367,25 +367,38 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		}
 		if(weightItemIds.toString().endsWith(",")){
 			weightItemIds.deleteCharAt(weightItemIds.length() - 1);
-//			System.out.println(weightItemIds.toString().split(",").length);
 		}
 		if(volumetricItemIds.toString().endsWith(",")){
 			volumetricItemIds.deleteCharAt(volumetricItemIds.length() - 1);
-//			System.out.println(volumetricItemIds.toString().split(",").length);
 		}
 		
-		
+		String updateWeightItemsSql="";
+		String updateVolumetricItemsSql="";
+		String updateWeightCutSql="";
+		String updateVolumetricCutSql="";
 		if(productionUnit==0&&showVolumetricItemCount>showWeightItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置的时重量
-			String updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+weightItemIds+")";
-			String updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+volumetricItemIds+")";
-			r=this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
-			r=this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
+			updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+weightItemIds+")";
+			updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+volumetricItemIds+")";
+			
+			updateWeightCutSql="update TBL_DIST_ITEM t set t.status=1 where lower(t.ename)='weightwatercut'";
+			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.ename)='volumewatercut'";
+			
+			
 		}else if(productionUnit!=0&&showWeightItemCount>showVolumetricItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置体积
-			String updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+weightItemIds+")";
-			String updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+volumetricItemIds+")";
+			updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+weightItemIds+")";
+			updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+volumetricItemIds+")";
+			
+			updateWeightCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.ename)='weightwatercut' and t.sysdataid not in('436802a1c0074a79aafd00ce539166f4','aad8b76fdaf84a1194de5ec0a4453631')";
+			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=1 where lower(t.ename)='volumewatercut'";
+		}
+		if(StringManagerUtils.isNotNull(updateWeightItemsSql)){
 			r=this.getBaseDao().updateOrDeleteBySql(updateWeightItemsSql);
 			r=this.getBaseDao().updateOrDeleteBySql(updateVolumetricItemsSql);
+			
+			r=this.getBaseDao().updateOrDeleteBySql(updateWeightCutSql);
+			r=this.getBaseDao().updateOrDeleteBySql(updateVolumetricCutSql);
 		}
+		
 		return strBuf.toString();
 	}
 }

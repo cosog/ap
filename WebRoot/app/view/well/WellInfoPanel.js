@@ -431,7 +431,7 @@ var WellInfoHandsontableHelper = {
 			                        }
 			                        
 			                        if(params[1]=="protocolName" && params[3]=="Kafka协议"){
-			                        	wellInfoHandsontableHelper.hot.setDataAtCell(index, 6, '');
+			                        	wellInfoHandsontableHelper.hot.getCell(index, 6).source=['modbus-tcp','modbus-rtu'];
 			                        }
 
 			                        //仅当单元格发生改变的时候,id!=null,说明是更新

@@ -84,6 +84,7 @@ public class EquipmentDriverServerTask {
 			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
 			type = new TypeToken<DriverProbeResponse>() {}.getType();
 			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+			String Ver="";
 			if(driverProbeResponse!=null){
 				if(!driverProbeResponse.getHttpServerInitStatus()){
 					initServerConfig();
@@ -94,6 +95,7 @@ public class EquipmentDriverServerTask {
 				if(!driverProbeResponse.getIDInitStatus()){
 					initDriverAcquisitionInfoConfig(null,"");
 				}
+				Ver=driverProbeResponse.getVer();
 			}else{
 				StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8");
 			}
@@ -105,6 +107,8 @@ public class EquipmentDriverServerTask {
 		public boolean ProtocolInitStatus;
 		public boolean IDInitStatus;
 		public boolean HttpServerInitStatus;
+		public String Ver;
+		
 		public boolean getProtocolInitStatus() {
 			return ProtocolInitStatus;
 		}
@@ -122,6 +126,12 @@ public class EquipmentDriverServerTask {
 		}
 		public void setHttpServerInitStatus(boolean httpServerInitStatus) {
 			HttpServerInitStatus = httpServerInitStatus;
+		}
+		public String getVer() {
+			return Ver;
+		}
+		public void setVer(String ver) {
+			Ver = ver;
 		}
 	}
 	

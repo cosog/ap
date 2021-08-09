@@ -414,7 +414,7 @@ function CreateProtocolConfigPropertiesInfoTable(data){
 	
 	if(protocolConfigPropertiesHandsontableHelper==null || protocolConfigPropertiesHandsontableHelper.hot==undefined){
 		protocolConfigPropertiesHandsontableHelper = ProtocolConfigPropertiesHandsontableHelper.createNew("ProtocolConfigPropertiesTableInfoDiv_id");
-		var colHeaders="['序号','名称','值']";
+		var colHeaders="['序号','名称','变量']";
 		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
 		protocolConfigPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolConfigPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);

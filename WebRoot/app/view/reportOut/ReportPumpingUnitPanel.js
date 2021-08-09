@@ -240,9 +240,9 @@ var DiagnoseDailyReportHelper = {
 	        diagnoseDailyReportHelper.my_data = [
 	    ['抽油机井生产报表', '', '', '', '', '', '', '', '', '',  '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
 	    ['序号', '井名', '日期','通信','','', '时率', '','', '工况','', '产量', '','','','','平衡','','','','','效率', '', '','','日用电量(kW·h)', '备注'],
-	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','功图工况','优化建议','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','充满系数(小数)','功率平衡状态','功率平衡度(%)','电流平衡状态','电流平衡度(%)','移动距离(cm)', '系统效率(%)', '地面效率(%)', '井下效率(%)','吨液百米耗电量(kW·h/100·t)','',''],
-	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','功图工况','优化建议','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','充满系数(小数)','功率平衡状态','功率平衡度(%)','电流平衡状态','电流平衡度(%)','移动距离(cm)', '系统效率(%)', '地面效率(%)', '井下效率(%)','吨液百米耗电量(kW·h/100·t)','','']
+//	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+//	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 	  ];
 	        diagnoseDailyReportHelper.updateArray = function () {
 	            for (var i = 0; i < diagnoseDailyReportHelper.sum; i++) {
@@ -407,88 +407,88 @@ var DiagnoseDailyReportHelper = {
 						
 	                    return cellProperties;
 	                },
-	                columnSummary: [
-	                    {
-	                        destinationRow: diagnoseDailyReportHelper.last_index,
-	                        destinationColumn: 3,
-	                        type: 'sum',
-	                        forceNumeric: true
-	                    },
-	                    {
-	                        destinationRow: diagnoseDailyReportHelper.last_index,
-	                        destinationColumn: 6,
-	                        type: 'sum',
-	                        forceNumeric: true
-	                    },
-	                    {
-	                        destinationRow: diagnoseDailyReportHelper.last_index,
-	                        destinationColumn: 11,
-	                        type: 'sum',
-	                        forceNumeric: true
-	                    },
-						{
-	                        destinationRow: diagnoseDailyReportHelper.last_index,
-	                        destinationColumn: 12,
-	                        type: 'sum',
-	                        forceNumeric: true
-						},
-						{
-	                        destinationRow: diagnoseDailyReportHelper.last_index,
-	                        destinationColumn: 13,
-	                        type: 'sum',
-	                        forceNumeric: true
-						},
-						{
-	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
-	                        destinationColumn: 3,
-	                        type: 'average',
-	                        
-	                        roundFloat:true,
-	                        forceNumeric: true,
-//	                        reversedRowCoords: true,
-	                        suppressDataTypeErrors: true,
-	                        readOnly: true
-	                    },{
-	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
-	                        destinationColumn: 6,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true,
-//	                        reversedRowCoords: true,
-	                        suppressDataTypeErrors: true,
-	                        readOnly: true
-	                    },
-	                    {
-	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
-	                        destinationColumn: 11,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true,
-//	                        reversedRowCoords: true,
-	                        suppressDataTypeErrors: true,
-	                        readOnly: true
-	                    },
-						{
-	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
-	                        destinationColumn: 12,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true,
-//	                        reversedRowCoords: true,
-	                        suppressDataTypeErrors: true,
-	                        readOnly: true
-						},
-						{
-	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
-	                        destinationColumn: 13,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true,
-//	                        reversedRowCoords: true,
-	                        suppressDataTypeErrors: true,
-	                        readOnly: true
-						}
-	                ],
+//	                columnSummary: [
+//	                    {
+//	                        destinationRow: diagnoseDailyReportHelper.last_index,
+//	                        destinationColumn: 3,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//	                    },
+//	                    {
+//	                        destinationRow: diagnoseDailyReportHelper.last_index,
+//	                        destinationColumn: 6,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//	                    },
+//	                    {
+//	                        destinationRow: diagnoseDailyReportHelper.last_index,
+//	                        destinationColumn: 11,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//	                    },
+//						{
+//	                        destinationRow: diagnoseDailyReportHelper.last_index,
+//	                        destinationColumn: 12,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//						},
+//						{
+//	                        destinationRow: diagnoseDailyReportHelper.last_index,
+//	                        destinationColumn: 13,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//						},
+//						{
+//	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
+//	                        destinationColumn: 3,
+//	                        type: 'average',
+//	                        
+//	                        roundFloat:true,
+//	                        forceNumeric: true,
+////	                        reversedRowCoords: true,
+//	                        suppressDataTypeErrors: true,
+//	                        readOnly: true
+//	                    },{
+//	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
+//	                        destinationColumn: 6,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true,
+////	                        reversedRowCoords: true,
+//	                        suppressDataTypeErrors: true,
+//	                        readOnly: true
+//	                    },
+//	                    {
+//	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
+//	                        destinationColumn: 11,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true,
+////	                        reversedRowCoords: true,
+//	                        suppressDataTypeErrors: true,
+//	                        readOnly: true
+//	                    },
+//						{
+//	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
+//	                        destinationColumn: 12,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true,
+////	                        reversedRowCoords: true,
+//	                        suppressDataTypeErrors: true,
+//	                        readOnly: true
+//						},
+//						{
+//	                        destinationRow: diagnoseDailyReportHelper.last_index+1,
+//	                        destinationColumn: 13,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true,
+////	                        reversedRowCoords: true,
+//	                        suppressDataTypeErrors: true,
+//	                        readOnly: true
+//						}
+//	                ],
 	                afterChange:function(changes, source){}
 	            });
 	        }
@@ -503,7 +503,12 @@ var DiagnoseDailyReportHelper = {
 	            diagnoseDailyReportHelper.updateArray();
 	            _daily.forEach(function (_day, index) {
 
-	                diagnoseDailyReportHelper.my_data[index + 3][0] = index+1;
+	            	if(_day.id=="合计" || _day.id=="平均"){
+	            		diagnoseDailyReportHelper.my_data[index + 3][0] = _day.id;
+	            	}else{
+	            		diagnoseDailyReportHelper.my_data[index + 3][0] = index+1;
+	            	}
+	                
 	                diagnoseDailyReportHelper.my_data[index + 3][1] = _day.wellName;
 	                diagnoseDailyReportHelper.my_data[index + 3][2] = _day.calculateDate;
 	                

@@ -809,6 +809,8 @@ CREATE OR REPLACE PROCEDURE prd_save_resourcemonitoring (
   v_acqTime in varchar2,
   v_appRunStatus in number,
   v_appVersion in varchar2,
+  v_adRunStatus in number,
+  v_adVersion in varchar2,
   v_cpuUsedPercent in varchar2,
   v_memUsedPercent in number,
   v_tableSpaceSize in number
@@ -823,6 +825,7 @@ begin
     update TBL_RESOURCEMONITORING t
     set t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
         t.apprunstatus=v_appRunStatus,t.appversion=v_appVersion,t.cpuusedpercent=v_cpuUsedPercent,
+        t.adrunstatus=v_adRunStatus,t.adversion=v_adVersion,
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
@@ -831,18 +834,21 @@ begin
     update TBL_RESOURCEMONITORING t
     set t.acqtime=to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
         t.apprunstatus=v_appRunStatus,t.appversion=v_appVersion,t.cpuusedpercent=v_cpuUsedPercent,
+        t.adrunstatus=v_adRunStatus,t.adversion=v_adVersion,
         t.memusedpercent=v_memUsedPercent,t.tablespacesize=v_tableSpaceSize
     where t.id=(select id from (select id from TBL_RESOURCEMONITORING  order by acqtime ) where rownum=1);
     commit;
     p_msg := '更新成功';
    elsif counts<1000 then
      insert into tbl_resourcemonitoring (
-         acqtime,apprunstatus,appversion,cpuusedpercent,memusedpercent,tablespacesize
+         acqtime,apprunstatus,appversion,cpuusedpercent,adrunstatus,adversion,memusedpercent,tablespacesize
       )values(
          to_date(v_acqTime,'yyyy-mm-dd hh24:mi:ss'),
          v_appRunStatus,
          v_appVersion,
          v_cpuUsedPercent,
+         v_adRunStatus,
+         v_adVersion,
          v_memUsedPercent,
          v_tableSpaceSize
       );

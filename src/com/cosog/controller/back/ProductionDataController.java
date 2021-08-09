@@ -258,7 +258,7 @@ public class ProductionDataController extends BaseController {
 										+ "}";
 								
 								String PumpData="{"
-										+ "\"PumpType\":\""+("管式泵".equals(wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())?"T":"R")  +"\","
+										+ "\"PumpType\":\""+("管式泵".equals(wellProHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())?"T":"R")  +"\","
 										+ "\"BarrelType\":\""+("组合泵".equals(wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())?"L":"H")  +"\","
 										+ "\"PumpGrade\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()+","
 										+ "\"BarrelLength\":"+wellProHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()+","

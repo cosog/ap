@@ -29,6 +29,7 @@ import com.cosog.model.calculate.CPUProbeResponseData;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.drive.KafkaConfig;
+import com.cosog.task.EquipmentDriverServerTask.DriverProbeResponse;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.OracleJdbcUtis;
@@ -56,9 +57,18 @@ public class ResourceMonitoringTask {
 		String probeAppUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
 		String probeMemUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getMem()[0];
 		String probeCPUUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getCpu()[0];
+		
+		String adAllOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
+		String adProbeUrl=Config.getInstance().configFile.getDriverConfig().getProbe();
+		
 		String appRunStatus="停止";
 		int appRunStatusValue=0;
 		String appVersion="";
+		
+		String adRunStatus="停止";
+		int adRunStatusValue=0;
+		String adVersion="";
+		
 		
 		String cpuUsedPercent="";
 		String cpuUsedPercentValue="";
@@ -71,6 +81,8 @@ public class ResourceMonitoringTask {
 		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		
+		//ac状态检测
 		String appProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeAppUrl, "","utf-8");
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 		AppRunStatusProbeResonanceData appRunStatusProbeResonanceData=gson.fromJson(appProbeResponseDataStr, type);
@@ -110,15 +122,26 @@ public class ResourceMonitoringTask {
 				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
 			}
 		}
+		//ad状态检测
+		String responseData=StringManagerUtils.sendPostMethod(adProbeUrl, "","utf-8");
+		type = new TypeToken<DriverProbeResponse>() {}.getType();
+		DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+		if(driverProbeResponse!=null){
+			adRunStatus="运行";
+			adRunStatusValue=1;
+			adVersion=driverProbeResponse.getVer();
+		}
 		conn=OracleJdbcUtis.getConnection();
 		if(conn!=null){
-			cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?)}");
 			cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 			cs.setInt(2, appRunStatusValue);
 			cs.setString(3, appVersion);
-			cs.setString(4, cpuUsedPercentValue);
-			cs.setString(5, memUsedPercentValue);
-			cs.setFloat(6, tableSpaceInfo.getUsedPercent());
+			cs.setInt(4, adRunStatusValue);
+			cs.setString(5, adVersion);
+			cs.setString(6, cpuUsedPercentValue);
+			cs.setString(7, memUsedPercentValue);
+			cs.setFloat(8, tableSpaceInfo.getUsedPercent());
 			cs.executeUpdate();
 			if(cs!=null){
 				cs.close();
@@ -134,6 +157,8 @@ public class ResourceMonitoringTask {
 				+ "\"cpuUsedPercentAlarmLevel\":"+cpuUsedPercentAlarmLevel+","
 				+ "\"memUsedPercent\":\""+memUsedPercent+"\","
 				+ "\"memUsedPercentAlarmLevel\":"+memUsedPercentAlarmLevel+","
+				+ "\"adRunStatus\":\""+adRunStatus+"\","
+				+ "\"adVersion\":\""+adVersion+"\","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""

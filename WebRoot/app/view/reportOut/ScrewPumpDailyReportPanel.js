@@ -234,9 +234,9 @@ var ScrewPumpDailyReportHelper = {
 	        screwPumpDailyReportHelper.my_data = [
 	    ['螺杆泵井生产报表', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
 	    ['序号', '井名', '日期','通信','','', '时率', '','', '产量', '','','','','','','','效率','','日用电量(kW·h)', '备注'],
-	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','转速(r/min)','泵挂(m)','动液面(m)','沉没度(m)','系统效率(%)','吨液百米耗电量(kW·h/100·t)','',''],
-	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+	    ['', '', '','在线时间(h)','在线区间', '在线时率(小数)','运行时间(h)','运行区间', '运行时率(小数)','产液量（'+productionUnitStr+'）', '产油量（'+productionUnitStr+'）','产水量（'+productionUnitStr+'）', '含水率(%)','转速(r/min)','泵挂(m)','动液面(m)','沉没度(m)','系统效率(%)','吨液百米耗电量(kW·h/100·t)','','']
+//	    ['合计', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+//	    ['平均', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 	  ];
 	        screwPumpDailyReportHelper.updateArray = function () {
 	            for (var i = 0; i < screwPumpDailyReportHelper.sum; i++) {
@@ -391,73 +391,73 @@ var ScrewPumpDailyReportHelper = {
 						
 	                    return cellProperties;
 	                },
-	                columnSummary: [
-	                    {
-	                        destinationRow: screwPumpDailyReportHelper.last_index,
-	                        destinationColumn: 3,
-	                        type: 'sum',
-	                        forceNumeric: true
-	                    },
-	                    {
-	                        destinationRow: screwPumpDailyReportHelper.last_index,
-	                        destinationColumn: 6,
-	                        type: 'sum',
-	                        forceNumeric: true
-	                    },
-	                    {
-	                        destinationRow: screwPumpDailyReportHelper.last_index,
-	                        destinationColumn: 9,
-	                        type: 'sum',
-	                        forceNumeric: true
-	                    },
-						{
-	                        destinationRow: screwPumpDailyReportHelper.last_index,
-	                        destinationColumn: 10,
-	                        type: 'sum',
-	                        forceNumeric: true
-						},
-						{
-	                        destinationRow: screwPumpDailyReportHelper.last_index,
-	                        destinationColumn: 11,
-	                        type: 'sum',
-	                        forceNumeric: true
-						},
-						{
-	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
-	                        destinationColumn: 3,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true
-	                    },
-	                    {
-	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
-	                        destinationColumn: 6,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true
-	                    },
-	                    {
-	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
-	                        destinationColumn: 9,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true
-	                    },
-						{
-	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
-	                        destinationColumn: 10,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true
-						},
-						{
-	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
-	                        destinationColumn: 11,
-	                        type: 'average',
-	                        roundFloat:true,
-	                        forceNumeric: true
-						}
-	                ],
+//	                columnSummary: [
+//	                    {
+//	                        destinationRow: screwPumpDailyReportHelper.last_index,
+//	                        destinationColumn: 3,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//	                    },
+//	                    {
+//	                        destinationRow: screwPumpDailyReportHelper.last_index,
+//	                        destinationColumn: 6,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//	                    },
+//	                    {
+//	                        destinationRow: screwPumpDailyReportHelper.last_index,
+//	                        destinationColumn: 9,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//	                    },
+//						{
+//	                        destinationRow: screwPumpDailyReportHelper.last_index,
+//	                        destinationColumn: 10,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//						},
+//						{
+//	                        destinationRow: screwPumpDailyReportHelper.last_index,
+//	                        destinationColumn: 11,
+//	                        type: 'sum',
+//	                        forceNumeric: true
+//						},
+//						{
+//	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
+//	                        destinationColumn: 3,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true
+//	                    },
+//	                    {
+//	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
+//	                        destinationColumn: 6,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true
+//	                    },
+//	                    {
+//	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
+//	                        destinationColumn: 9,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true
+//	                    },
+//						{
+//	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
+//	                        destinationColumn: 10,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true
+//						},
+//						{
+//	                        destinationRow: screwPumpDailyReportHelper.last_index+1,
+//	                        destinationColumn: 11,
+//	                        type: 'average',
+//	                        roundFloat:true,
+//	                        forceNumeric: true
+//						}
+//	                ],
 	                afterChange:function(changes, source){}
 	            });
 	        }
@@ -471,8 +471,12 @@ var ScrewPumpDailyReportHelper = {
 	            screwPumpDailyReportHelper.sum = _daily.length;
 	            screwPumpDailyReportHelper.updateArray();
 	            _daily.forEach(function (_day, index) {
-
-	                screwPumpDailyReportHelper.my_data[index + 3][0] = index+1;
+	            	if(_day.id=="合计" || _day.id=="平均"){
+	            		screwPumpDailyReportHelper.my_data[index + 3][0] = _day.id;
+	            	}else{
+	            		screwPumpDailyReportHelper.my_data[index + 3][0] = index+1;
+	            	}
+//	                screwPumpDailyReportHelper.my_data[index + 3][0] = index+1;
 	                screwPumpDailyReportHelper.my_data[index + 3][1] = _day.wellName;
 	                screwPumpDailyReportHelper.my_data[index + 3][2] = _day.calculateDate;
 	                

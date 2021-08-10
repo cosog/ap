@@ -6,145 +6,153 @@
 
 **目 录**
 
-[一、表	1](#_Toc76488290)
+[一、表	1](#_Toc79482499)
 
->   [1.1 概览	1](#_Toc76488291)
+>   [1.1 概览	1](#_Toc79482500)
 
->   [1.2 逻辑结构	3](#_Toc76488292)
+>   [1.2 逻辑结构	3](#_Toc79482501)
 
->   [1.3 详述	4](#_Toc76488293)
+>   [1.3 详述	4](#_Toc79482502)
 
->   [1.3.1 tbl_org	4](#_Toc76488294)
+>   [1.3.1 tbl_org	4](#_Toc79482503)
 
->   [1.3.2 tbl_user	5](#_Toc76488295)
+>   [1.3.2 tbl_user	5](#_Toc79482504)
 
->   [1.3.3 tbl_role	6](#_Toc76488296)
+>   [1.3.3 tbl_role	6](#_Toc79482505)
 
->   [1.3.4 tbl_module	6](#_Toc76488297)
+>   [1.3.4 tbl_module	6](#_Toc79482506)
 
->   [1.3.5 tbl_module2role	7](#_Toc76488298)
+>   [1.3.5 tbl_module2role	7](#_Toc79482507)
 
->   [1.3.6 tbl_dist_name	7](#_Toc76488299)
+>   [1.3.6 tbl_dist_name	7](#_Toc79482508)
 
->   [1.3.7 tbl_dist_item	8](#_Toc76488300)
+>   [1.3.7 tbl_dist_item	8](#_Toc79482509)
 
->   [1.3.8 tbl_code	8](#_Toc76488301)
+>   [1.3.8 tbl_code	8](#_Toc79482510)
 
->   [1.3.9 tbl_acq_unit_conf	9](#_Toc76488302)
+>   [1.3.9 tbl_acq_unit_conf	9](#_Toc79482511)
 
->   [1.3.10 tbl_acq_group_conf	9](#_Toc76488303)
+>   [1.3.10 tbl_acq_group_conf	9](#_Toc79482512)
 
->   [1.3.11 tbl_acq_item2group_conf	10](#_Toc76488304)
+>   [1.3.11 tbl_acq_item2group_conf	10](#_Toc79482513)
 
->   [1.3.12 tbl_acq_group2unit_conf	10](#_Toc76488305)
+>   [1.3.12 tbl_acq_group2unit_conf	10](#_Toc79482514)
 
->   [1.3.13 tbl_wellinformation	11](#_Toc76488306)
+>   [1.3.13 tbl_wellinformation	11](#_Toc79482515)
 
->   [1.3.14 tbl_wellboretrajectory	12](#_Toc76488307)
+>   [1.3.14 tbl_wellboretrajectory	12](#_Toc79482516)
 
->   [1.3.15 tbl_rpc_productiondata_latest	12](#_Toc76488308)
+>   [1.3.15 tbl_rpc_productiondata_latest	12](#_Toc79482517)
 
->   [1.3.16 tbl_rpc_productiondata_hist	14](#_Toc76488309)
+>   [1.3.16 tbl_rpc_productiondata_hist	14](#_Toc79482518)
 
->   [1.3.17 tbl_rpc_discrete_latest	14](#_Toc76488310)
+>   [1.3.17 tbl_rpc_discrete_latest	14](#_Toc79482519)
 
->   [1.3.18 tbl_rpc_discrete_hist	18](#_Toc76488311)
+>   [1.3.18 tbl_rpc_discrete_hist	18](#_Toc79482520)
 
->   [1.3.19 tbl_rpc_diagram_latest	18](#_Toc76488312)
+>   [1.3.19 tbl_rpc_diagram_latest	18](#_Toc79482521)
 
->   [1.3.20 tbl_rpc_diagram_hist	22](#_Toc76488313)
+>   [1.3.20 tbl_rpc_diagram_hist	22](#_Toc79482522)
 
->   [1.3.21 tbl_rpc_worktype	22](#_Toc76488314)
+>   [1.3.21 tbl_rpc_diagram_total	22](#_Toc79482523)
 
->   [1.3.22 tbl_rpc_alarmtype_conf	23](#_Toc76488315)
+>   [1.3.22 tbl_rpc_worktype	23](#_Toc79482524)
 
->   [1.3.23 tbl_rpc_total_day	23](#_Toc76488316)
+>   [1.3.23 tbl_rpc_alarmtype_conf	25](#_Toc79482525)
 
->   [1.3.24 tbl_rpc_statistics_conf	34](#_Toc76488317)
+>   [1.3.24 tbl_rpc_total_day	25](#_Toc79482526)
 
->   [1.3.25 tbl_rpcinformation	35](#_Toc76488318)
+>   [1.3.25 tbl_rpc_statistics_conf	36](#_Toc79482527)
 
->   [1.3.26 tbl_rpc_motor	36](#_Toc76488319)
+>   [1.3.26 tbl_rpcinformation	37](#_Toc79482528)
 
->   [1.3.27 tbl_rpc_inver_opt	36](#_Toc76488320)
+>   [1.3.27 tbl_rpc_motor	38](#_Toc79482529)
 
->   [1.3.28 tbl_pcp_productiondata_latest	37](#_Toc76488321)
+>   [1.3.28 tbl_rpc_inver_opt	38](#_Toc79482530)
 
->   [1.3.29 tbl_pcp_productiondata_hist	38](#_Toc76488322)
+>   [1.3.29 tbl_pcp_productiondata_latest	39](#_Toc79482531)
 
->   [1.3.30 tbl_pcp_discrete_latest	38](#_Toc76488323)
+>   [1.3.30 tbl_pcp_productiondata_hist	40](#_Toc79482532)
 
->   [1.3.31 tbl_pcp_discrete_hist	42](#_Toc76488324)
+>   [1.3.31 tbl_pcp_discrete_latest	40](#_Toc79482533)
 
->   [1.3.32 tbl_pcp_rpm_latest	43](#_Toc76488325)
+>   [1.3.32 tbl_pcp_discrete_hist	44](#_Toc79482534)
 
->   [1.3.33 tbl_pcp_rpm_hist	44](#_Toc76488326)
+>   [1.3.33 tbl_pcp_rpm_latest	45](#_Toc79482535)
 
->   [1.3.34 tbl_pcp_total_day	45](#_Toc76488327)
+>   [1.3.34 tbl_pcp_rpm_hist	46](#_Toc79482536)
 
->   [1.3.35 tbl_a9rawdata_latest	51](#_Toc76488328)
+>   [1.3.35 tbl_pcp_total_day	47](#_Toc79482537)
 
->   [1.3.36 tbl_a9rawdata_hist	51](#_Toc76488329)
+>   [1.3.36 tbl_a9rawdata_latest	53](#_Toc79482538)
 
->   [1.3.37 tbl_resourcemonitoring	52](#_Toc76488330)
+>   [1.3.37 tbl_a9rawdata_hist	53](#_Toc79482539)
 
-[二、视图	53](#_Toc76488331)
+>   [1.3.38 tbl_a9rawwatercutdata_latest	54](#_Toc79482540)
 
->   [2.1 概览	53](#_Toc76488332)
+>   [1.3.39 tbl_a9rawwatercutdata_hist	54](#_Toc79482541)
 
->   [2.2 详述	54](#_Toc76488333)
+>   [1.3.40 tbl_resourcemonitoring	54](#_Toc79482542)
 
->   [2.2.1 viw_wellinformation	54](#_Toc76488334)
+[二、视图	55](#_Toc79482543)
 
->   [2.2.2 viw_wellboretrajectory	54](#_Toc76488335)
+>   [2.1 概览	55](#_Toc79482544)
 
->   [2.2.3 viw_rpc_productiondata_latest	55](#_Toc76488336)
+>   [2.2 详述	56](#_Toc79482545)
 
->   [2.2.4 viw_rpc_productiondata_hist	57](#_Toc76488337)
+>   [2.2.1 viw_commstatus	56](#_Toc79482546)
 
->   [2.2.6 viw_rpc_diagram_latest	58](#_Toc76488338)
+>   [2.2.2 viw_wellinformation	56](#_Toc79482547)
 
->   [2.2.7 viw_rpc_diagram_hist	62](#_Toc76488339)
+>   [2.2.3 viw_wellboretrajectory	57](#_Toc79482548)
 
->   [2.2.8 viw_rpc_discrete_latest	62](#_Toc76488340)
+>   [2.2.4 viw_rpc_productiondata_latest	57](#_Toc79482549)
 
->   [2.2.9 viw_rpc_discrete_hist	66](#_Toc76488341)
+>   [2.2.5 viw_rpc_productiondata_hist	59](#_Toc79482550)
 
->   [2.2.10 viw_rpc_comprehensive_latest	66](#_Toc76488342)
+>   [2.2.6 viw_rpc_diagram_latest	60](#_Toc79482551)
 
->   [2.2.11 viw_rpc_comprehensive_hist	74](#_Toc76488343)
+>   [2.2.7 viw_rpc_diagram_hist	64](#_Toc79482552)
 
->   [2.2.12 viw_rpc_diagramquery_latest	74](#_Toc76488344)
+>   [2.2.8 viw_rpc_discrete_latest	64](#_Toc79482553)
 
->   [2.2.13 viw_rpc_diagramquery_hist	76](#_Toc76488345)
+>   [2.2.9 viw_rpc_discrete_hist	68](#_Toc79482554)
 
->   [2.2.14 viw_rpc_total_day	77](#_Toc76488346)
+>   [2.2.10 viw_rpc_comprehensive_latest	68](#_Toc79482555)
 
->   [2.1.15 viw_rpc_calculatemain	82](#_Toc76488347)
+>   [2.2.11 viw_rpc_comprehensive_hist	76](#_Toc79482556)
 
->   [2.1.16 viw_rpc_calculatemain_elec	83](#_Toc76488348)
+>   [2.2.12 viw_rpc_diagramquery_latest	76](#_Toc79482557)
 
->   [2.1.17 viw_pcp_productiondata_latest	84](#_Toc76488349)
+>   [2.2.13 viw_rpc_diagramquery_hist	78](#_Toc79482558)
 
->   [2.1.18 viw_pcp_productiondata_hist	86](#_Toc76488350)
+>   [2.2.14 viw_rpc_total_day	79](#_Toc79482559)
 
->   [2.1.19 viw_pcp_rpm_latest	87](#_Toc76488351)
+>   [2.1.15 viw_rpc_calculatemain	84](#_Toc79482560)
 
->   [2.1.20 viw_pcp_rpm_hist	89](#_Toc76488352)
+>   [2.1.16 viw_rpc_calculatemain_elec	85](#_Toc79482561)
 
->   [2.1.21 viw_pcp_discrete_latest	89](#_Toc76488353)
+>   [2.1.17 viw_pcp_productiondata_latest	86](#_Toc79482562)
 
->   [2.1.22 viw_pcp_discrete_hist	93](#_Toc76488354)
+>   [2.1.18 viw_pcp_productiondata_hist	88](#_Toc79482563)
 
->   [2.1.23 viw_pcp_comprehensive_latest	93](#_Toc76488355)
+>   [2.1.19 viw_pcp_rpm_latest	89](#_Toc79482564)
 
->   [2.1.24 viw_pcp_comprehensive_hist	98](#_Toc76488356)
+>   [2.1.20 viw_pcp_rpm_hist	91](#_Toc79482565)
 
->   [2.1.25 viw_pcp_total_day	99](#_Toc76488357)
+>   [2.1.21 viw_pcp_discrete_latest	91](#_Toc79482566)
 
-[三、存储过程	103](#_Toc76488358)
+>   [2.1.22 viw_pcp_discrete_hist	95](#_Toc79482567)
 
-[四、触发器	104](#_Toc76488359)
+>   [2.1.23 viw_pcp_comprehensive_latest	95](#_Toc79482568)
+
+>   [2.1.24 viw_pcp_comprehensive_hist	100](#_Toc79482569)
+
+>   [2.1.25 viw_pcp_total_day	101](#_Toc79482570)
+
+[三、存储过程	105](#_Toc79482571)
+
+[四、触发器	106](#_Toc79482572)
 
 # 一、表
 
@@ -711,9 +719,49 @@
 
 同tbl_rpc_diagram_latest
 
-### 1.3.21 tbl_rpc_worktype
+### 1.3.21 tbl_rpc_diagram_total
 
-表1-19 抽油机工况类型表
+表1-19 抽油机曲线累计数据表
+
+| **序号** | **代码**                   | **名称**           | **类型**     | **单位**    | **为空** | **键** | **备注** |
+|----------|----------------------------|--------------------|--------------|-------------|----------|--------|----------|
+| 1        | ID                         | 记录编号           | NUMBER(10)   |             | N        | 主键   |          |
+| 2        | WELLID                     | 井编号             | NUMBER(10)   |             | N        |        |          |
+| 3        | COMMSTATUS                 | 通信状态           | NUMBER(2)    |             | Y        |        |          |
+| 4        | COMMTIME                   | 在线时间           | NUMBER(8,2)  |             | Y        |        |          |
+| 5        | COMMTIMEEFFICIENCY         | 在线时率           | NUMBER(12,3) |             | Y        |        |          |
+| 6        | COMMRANGE                  | 在线区间           | CLOB         |             | Y        |        |          |
+| 7        | RUNSTATUS                  | 运行状态           | NUMBER(2)    |             | Y        |        |          |
+| 8        | RUNTIME                    | 运行时间           | NUMBER(8,2)  |             | Y        |        |          |
+| 9        | RUNTIMEEFFICIENCY          | 运行时率           | NUMBER(12,3) |             | Y        |        |          |
+| 10       | RUNRANGE                   | 运行区间           | CLOB         |             | Y        |        |          |
+| 11       | ACQTIME                    | 功图采集时间       | DATE         |             | Y        |        |          |
+| 12       | RESULTCODE                 | 工况代码           | NUMBER(4)    |             | Y        |        |          |
+| 13       | STROKE                     | 冲程               | NUMBER(8,2)  |             | Y        |        |          |
+| 14       | SPM                        | 冲次               | NUMBER(8,2)  |             | Y        |        |          |
+| 15       | FMAX                       | 最大载荷           | NUMBER(8,2)  |             | Y        |        |          |
+| 16       | FMIN                       | 最小载荷           | NUMBER(8,2)  |             | Y        |        |          |
+| 17       | FULLNESSCOEFFICIENT        | 充满系数           | NUMBER(10,4) | 小数        | Y        |        |          |
+| 18       | LIQUIDVOLUMETRICPRODUCTION | 日累计产液量方     | NUMBER(8,2)  |             | Y        |        |          |
+| 19       | OILVOLUMETRICPRODUCTION    | 日累计产油量方     | NUMBER(8,2)  |             | Y        |        |          |
+| 20       | WATERVOLUMETRICPRODUCTION  | 日累计产水量方     | NUMBER(8,2)  |             | Y        |        |          |
+| 21       | VOLUMEWATERCUT             | 体积含水率         | NUMBER(10,4) | 小数        | Y        |        |          |
+| 22       | LIQUIDWEIGHTPRODUCTION     | 日累计产液量吨     | NUMBER(8,2)  |             | Y        |        |          |
+| 23       | OILWEIGHTPRODUCTION        | 日累计产油量吨     | NUMBER(8,2)  |             | Y        |        |          |
+| 24       | WATERWEIGHTPRODUCTION      | 日累计产水量吨     | NUMBER(8,2)  |             | Y        |        |          |
+| 25       | WEIGHTWATERCUT             | 重量含水率         | NUMBER(10,4) | 小数        | Y        |        |          |
+| 26       | WATTDEGREEBALANCE          | 功率平衡度         | NUMBER(8,2)  |             | Y        |        |          |
+| 27       | IDEGREEBALANCE             | 电流平衡度         | NUMBER(8,2)  |             | Y        |        |          |
+| 28       | DELTARADIUS                | 曲柄平衡块移动距离 | NUMBER(8,2)  |             | Y        |        |          |
+| 29       | SYSTEMEFFICIENCY           | 系统效率           | NUMBER(10,4) | 小数        | Y        |        |          |
+| 30       | SURFACESYSTEMEFFICIENCY    | 地面效率           | NUMBER(10,4) | 小数        | Y        |        |          |
+| 31       | WELLDOWNSYSTEMEFFICIENCY   | 井下效率           | NUMBER(10,4) | 小数        | Y        |        |          |
+| 32       | ENERGYPER100MLIFT          | 吨液百米耗电量     | NUMBER(8,2)  | kW·h/100m·t | Y        |        |          |
+| 33       | PUMPEFF                    | 总泵效             | NUMBER(10,4) |             | Y        |        |          |
+
+### 1.3.22 tbl_rpc_worktype
+
+表1-20 抽油机工况类型表
 
 | **序号** | **代码**               | **名称** | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|------------------------|----------|---------------|----------|----------|--------|----------|
@@ -725,9 +773,9 @@
 | 6        | OPTIMIZATIONSUGGESTION | 优化建议 | VARCHAR2(200) |          | Y        |        |          |
 | 7        | REMARK                 | 备注     | VARCHAR2(200) |          | Y        |        |          |
 
-### 1.3.22 tbl_rpc_alarmtype_conf
+### 1.3.23 tbl_rpc_alarmtype_conf
 
-表1-20 抽油机报警类型表
+表1-21 抽油机报警类型表
 
 | **序号** | **代码**   | **名称** | **类型**      | **单位** | **为空** | **键** | **备注**                                                                                                                                                                     |
 |----------|------------|----------|---------------|----------|----------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -738,9 +786,9 @@
 | 5        | ALARMSIGN  | 报警标志 | NUMBER(1)     |          | Y        |        | 0-正常，1-报警                                                                                                                                                               |
 | 6        | REMARK     | 备注     | VARCHAR2(200) |          | Y        |        |                                                                                                                                                                              |
 
-### 1.3.23 tbl_rpc_total_day
+### 1.3.24 tbl_rpc_total_day
 
-表1-21 抽油机日累计数据表
+表1-22 抽油机日累计数据表
 
 | **序号** | **代码**                       | **名称**                         | **类型**     | **单位**    | **为空** | **键** | **备注**      |
 |----------|--------------------------------|----------------------------------|--------------|-------------|----------|--------|---------------|
@@ -1047,9 +1095,9 @@
 | 301      | NOLIQUIDAVAILABLESTROKEMAX     | 抽空柱塞有效冲程最大值           | NUMBER(10,4) | m           | Y        |        |               |
 | 302      | NOLIQUIDAVAILABLESTROKEMIN     | 抽空柱塞有效冲程最小值           | NUMBER(10,4) | m           | Y        |        |               |
 
-### 1.3.24 tbl_rpc_statistics_conf
+### 1.3.25 tbl_rpc_statistics_conf
 
-表1-22 抽油机统计配置表
+表1-23 抽油机统计配置表
 
 | **序号** | **代码** | **名称**   | **类型**     | **单位** | **为空** | **键** | **备注** |
 |----------|----------|------------|--------------|----------|----------|--------|----------|
@@ -1060,9 +1108,9 @@
 | 5        | S_MAX    | 范围最大值 | NUMBER(11,3) |          | Y        |        |          |
 | 6        | S_TYPE   | 统计类型   | VARCHAR2(20) |          | Y        |        |          |
 
-### 1.3.25 tbl_rpcinformation
+### 1.3.26 tbl_rpcinformation
 
-表1-23 抽油机设备表
+表1-24 抽油机设备表
 
 | **序号** | **代码**                      | **名称**         | **类型**      | **单位** | **为空** | **键** | **备注**                             |
 |----------|-------------------------------|------------------|---------------|----------|----------|--------|--------------------------------------|
@@ -1083,9 +1131,9 @@
 | 15       | BALANCEWEIGHT                 | 平衡块重量       | VARCHAR2(200) | kN       | Y        |        |                                      |
 | 16       | PRTF                          | 位置扭矩因数     | CLOB          |          | Y        |        |                                      |
 
-### 1.3.26 tbl_rpc_motor
+### 1.3.27 tbl_rpc_motor
 
-表1-24 抽油机电机数据表
+表1-25 抽油机电机数据表
 
 | **序号** | **代码**           | **名称**   | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|--------------------|------------|---------------|----------|----------|--------|----------|
@@ -1097,9 +1145,9 @@
 | 6        | BELTPULLEYDIAMETER | 皮带轮直径 | NUMBER(10,4)  | m        | Y        |        |          |
 | 7        | PERFORMANCECURVER  | 特性曲线   | CLOB          |          | Y        |        |          |
 
-### 1.3.27 tbl_rpc_inver_opt
+### 1.3.28 tbl_rpc_inver_opt
 
-表1-25 抽油机电参反演参数优化表
+表1-26 抽油机电参反演参数优化表
 
 | **序号** | **代码**                | **名称**             | **类型**    | **单位** | **为空** | **键** | **备注** |
 |----------|-------------------------|----------------------|-------------|----------|----------|--------|----------|
@@ -1117,9 +1165,9 @@
 | 12       | FILTERTIME_FSDIAGRAM_R  | 地面功图右侧滤波次数 | NUMBER(3)   |          | Y        |        |          |
 | 13       | WATTANGLE               | 功率滤波角度         | NUMBER(8,2) | 度       | Y        |        |          |
 
-### 1.3.28 tbl_pcp_productiondata_latest
+### 1.3.29 tbl_pcp_productiondata_latest
 
-表1-26 螺杆泵生产数据实时表
+表1-27 螺杆泵生产数据实时表
 
 | **序号** | **代码**                   | **名称**       | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|----------------------------|----------------|---------------|----------|----------|--------|----------|
@@ -1162,13 +1210,13 @@
 | 37       | RUNTIMEEFFICIENCYSOURCE    | 时率来源       | NUMBER(2)     |          | Y        |        |          |
 | 38       | REMARK                     | 备注           | VARCHAR2(200) |          | Y        |        |          |
 
-### 1.3.29 tbl_pcp_productiondata_hist
+### 1.3.30 tbl_pcp_productiondata_hist
 
 同tbl_pcp_productiondata_latest
 
-### 1.3.30 tbl_pcp_discrete_latest
+### 1.3.31 tbl_pcp_discrete_latest
 
-表1-27 螺杆泵离散数据实时表
+表1-28 螺杆泵离散数据实时表
 
 | **序号** | **代码**                 | **名称**       | **类型**     | **单位** | **为空** | **键** | **备注**                |
 |----------|--------------------------|----------------|--------------|----------|----------|--------|-------------------------|
@@ -1258,13 +1306,13 @@
 | 84       | INTERVAL                 | 传输间隔       | NUMBER(10)   | min      | Y        |        |                         |
 | 85       | DEVICEVER                | 设备版本信息   | VARCHAR2(50) |          | Y        |        |                         |
 
-### 1.3.31 tbl_pcp_discrete_hist
+### 1.3.32 tbl_pcp_discrete_hist
 
 同tbl_pcp_discrete_latest
 
-### 1.3.32 tbl_pcp_rpm_latest
+### 1.3.33 tbl_pcp_rpm_latest
 
-表1-28 螺杆泵转速数据实时表
+表1-29 螺杆泵转速数据实时表
 
 | **序号** | **代码**                   | **名称**           | **类型**      | **单位**    | **为空** | **键** | **备注**                                                                                       |
 |----------|----------------------------|--------------------|---------------|-------------|----------|--------|------------------------------------------------------------------------------------------------|
@@ -1305,13 +1353,13 @@
 | 35       | DISCRETEDATAID             | 离散数据编号       | NUMBER(10)    |             | Y        |        |                                                                                                |
 | 36       | REMARK                     | 备注               | VARCHAR2(200) |             | Y        |        |                                                                                                |
 
-### 1.3.33 tbl_pcp_rpm_hist
+### 1.3.34 tbl_pcp_rpm_hist
 
 同tbl_pcp_rpm_latest
 
-### 1.3.34 tbl_pcp_total_day
+### 1.3.35 tbl_pcp_total_day
 
-表1-29 螺杆泵日累计数据表
+表1-30 螺杆泵日累计数据表
 
 | **序号** | **代码**                      | **名称**             | **类型**     | **单位**    | **为空** | **键** | **备注**      |
 |----------|-------------------------------|----------------------|--------------|-------------|----------|--------|---------------|
@@ -1466,9 +1514,9 @@
 | 149      | VA3MAX                        | 视在功率最大值       | NUMBER(8,2)  | kVA         | Y        |        |               |
 | 150      | VA3MIN                        | 视在功率最小值       | NUMBER(8,2)  | kVA         | Y        |        |               |
 
-### 1.3.35 tbl_a9rawdata_latest
+### 1.3.36 tbl_a9rawdata_latest
 
-表1-30 a9设备原始数据实时表
+表1-31 a9设备原始数据实时表
 
 | **序号** | **代码**         | **名称**         | **类型**      | **单位** | **为空** | **键** | **备注** |
 |----------|------------------|------------------|---------------|----------|----------|--------|----------|
@@ -1484,13 +1532,32 @@
 | 10       | I                | 电流曲线数据     | CLOB          |          | Y        |        |          |
 | 11       | TRANSFERINTERVEL | 数据上传间隔     | NUMBER(10)    | min      | Y        |        |          |
 
-### 1.3.36 tbl_a9rawdata_hist
+### 1.3.37 tbl_a9rawdata_hist
 
 同tbl_a9rawdata_latest
 
-### 1.3.37 tbl_resourcemonitoring
+### 1.3.38 tbl_a9rawwatercutdata_latest
 
-表1-31 资源监测数据表
+表1-32 含水率原始数据实时表
+
+| **序号** | **代码**         | **名称**     | **类型**      | **单位** | **为空** | **键** | **备注** |
+|----------|------------------|--------------|---------------|----------|----------|--------|----------|
+| 1        | ID               | 记录编号     | NUMBER(10)    |          | N        | 主键   |          |
+| 2        | DEVICEID         | 设备注册包ID | VARCHAR2(200) |          | Y        |        |          |
+| 3        | ACQTIME          | 采集时间     | DATE          |          | Y        |        |          |
+| 4        | SIGNAL           | 信号强度     | NUMBER(8,2)   |          | Y        |        |          |
+| 5        | DEVICEVER        | 设备版本信息 | VARCHAR2(50)  |          | Y        |        |          |
+| 6        | TRANSFERINTERVEL | 数据上传间隔 | NUMBER(10)    |          | Y        |        |          |
+| 7        | INTERVAL         | 传输间隔     | CLOB          |          | Y        |        |          |
+|          | WATERCUT         | 含水率       | CLOB          |          | Y        |        |          |
+
+### 1.3.39 tbl_a9rawwatercutdata_hist
+
+同tbl_a9rawwatercutdata_latest
+
+### 1.3.40 tbl_resourcemonitoring
+
+表1-33 资源监测数据表
 
 | **序号** | **代码**       | **名称**         | **类型**     | **单位** | **为空** | **键** | **备注** |
 |----------|----------------|------------------|--------------|----------|----------|--------|----------|
@@ -1538,9 +1605,21 @@
 
 ## 2.2 详述
 
-### 2.2.1 viw_wellinformation
+### 2.2.1 viw_commstatus
 
-表2-1 井名基本信息视图
+表2-1 发布订阅模式通信状态视图
+
+| **序号** | **代码**     | **名称** | **类型** | **单位** |
+|----------|--------------|----------|----------|----------|
+| 1        | ID           | 记录编号 | NUMBER   |          |
+| 2        | WELLNAME     | 井名     | VARCHAR2 |          |
+| 3        | PROTOCOLCODE | 协议     | VARCHAR2 |          |
+| 4        | SIGNINID     | 注册包ID | VARCHAR2 |          |
+| 5        | COMMSTATUS   | 通信状态 | NUMBER   |          |
+
+### 2.2.2 viw_wellinformation
+
+表2-2 井名基本信息视图
 
 | **序号** | **代码**        | **名称**     | **类型** | **单位** |
 |----------|-----------------|--------------|----------|----------|
@@ -1558,9 +1637,9 @@
 | 12       | ACQUISITIONUNIT | 采集单元     | VARCHAR2 |          |
 | 13       | SORTNUM         | 排序编号     | NUMBER   |          |
 
-### 2.2.2 viw_wellboretrajectory
+### 2.2.3 viw_wellboretrajectory
 
-表2-2 井身轨迹视图
+表2-3 井身轨迹视图
 
 | **序号** | **代码**       | **名称**  | **类型**      | **单位** |
 |----------|----------------|-----------|---------------|----------|
@@ -1579,9 +1658,9 @@
 | 13       | RESULTSTATUS   | 计算标志  | NUMBER(4)     |          |
 | 14       | SORTNUM        | 排序编号  | NUMBER(10)    |          |
 
-### 2.2.3 viw_rpc_productiondata_latest
+### 2.2.4 viw_rpc_productiondata_latest
 
-表2-3 抽油机生产数据实时视图
+表2-4 抽油机生产数据实时视图
 
 | **序号** | **代码**                    | **名称**       | **类型**      | **单位** |
 |----------|-----------------------------|----------------|---------------|----------|
@@ -1629,12 +1708,12 @@
 | 42       | SORTNUM                     | 井排序编号     | NUMBER(10)    |          |
 | 43       | ORG_ID                      | 组织编号       | NUMBER(10)    |          |
 
-### 2.2.4 viw_rpc_productiondata_hist
+### 2.2.5 viw_rpc_productiondata_hist
 
 同viw_rpc_productiondata_latest  
 2.2.5 viw_commstatus
 
-表2-4 通信状态视图
+表2-5 通信状态视图
 
 | **序号** | **代码**   | **名称** | **类型**      | **单位** |
 |----------|------------|----------|---------------|----------|
@@ -1644,7 +1723,7 @@
 
 ### 2.2.6 viw_rpc_diagram_latest
 
-表2-5 抽油机曲线数据实时视图
+表2-6 抽油机曲线数据实时视图
 
 | **序号** | **代码**                       | **名称**           | **类型**      | **单位**    |
 |----------|--------------------------------|--------------------|---------------|-------------|
@@ -1767,7 +1846,7 @@
 
 ### 2.2.8 viw_rpc_discrete_latest
 
-表2-6 抽油机离散数据实时视图
+表2-7 抽油机离散数据实时视图
 
 | **序号** | **代码**                 | **名称**           | **类型**       | **单位** |
 |----------|--------------------------|--------------------|----------------|----------|
@@ -1891,7 +1970,7 @@
 
 ### 2.2.10 viw_rpc_comprehensive_latest
 
-表2-7 抽油机综合数据实时视图
+表2-8 抽油机综合数据实时视图
 
 | **序号** | **代码**                       | **名称**                     | **类型**       | **单位**    |
 |----------|--------------------------------|------------------------------|----------------|-------------|
@@ -2123,7 +2202,7 @@
 
 ### 2.2.12 viw_rpc_diagramquery_latest
 
-表2-8 抽油机图形查询实时视图
+表2-9 抽油机图形查询实时视图
 
 | **序号** | **代码**                     | **名称**         | **类型**      | **单位** |
 |----------|------------------------------|------------------|---------------|----------|
@@ -2174,7 +2253,7 @@
 
 ### 2.2.14 viw_rpc_total_day
 
-表2-9 抽油机日累计数据视图
+表2-10 抽油机日累计数据视图
 
 | **序号** | **代码**                      | **名称**         | **类型**       | **单位**    |
 |----------|-------------------------------|------------------|----------------|-------------|
@@ -2316,7 +2395,7 @@
 
 ### 2.1.15 viw_rpc_calculatemain
 
-表2-10 抽油机计算结果管理视图
+表2-11 抽油机计算结果管理视图
 
 | **序号** | **代码**                   | **名称**       | **类型**      | **单位** |
 |----------|----------------------------|----------------|---------------|----------|
@@ -2359,7 +2438,7 @@
 
 ### 2.1.16 viw_rpc_calculatemain\_elec
 
-表2-11 电参反演计算结果管理视图
+表2-12 电参反演计算结果管理视图
 
 | **序号** | **代码**                | **名称**              | **类型** | **单位** |
 |----------|-------------------------|-----------------------|----------|----------|
@@ -2393,7 +2472,7 @@
 
 ### 2.1.17 viw_pcp_productiondata_latest
 
-表2-12 螺杆泵生产数据实时视图
+表2-13 螺杆泵生产数据实时视图
 
 | **序号** | **代码**                    | **名称**       | **类型**      | **单位** |
 |----------|-----------------------------|----------------|---------------|----------|
@@ -2447,7 +2526,7 @@
 
 ### 2.1.19 viw_pcp_rpm_latest
 
-表2-13 螺杆泵曲线数据实时视图
+表2-14 螺杆泵曲线数据实时视图
 
 | **序号** | **代码**                    | **名称**           | **类型**      | **单位**    |
 |----------|-----------------------------|--------------------|---------------|-------------|
@@ -2517,7 +2596,7 @@
 
 ### 2.1.21 viw_pcp_discrete_latest
 
-表2-14 螺杆泵离散数据实时视图
+表2-15 螺杆泵离散数据实时视图
 
 | **序号** | **代码**                    | **名称**         | **类型**       | **单位** |
 |----------|-----------------------------|------------------|----------------|----------|
@@ -2630,7 +2709,7 @@
 
 ### 2.1.23 viw_pcp_comprehensive_latest
 
-表2-15 螺杆泵综合数据实时视图
+表2-16 螺杆泵综合数据实时视图
 
 | **序号** | **名称**                    | **代码**           | **类型**      | **单位**    |
 |----------|-----------------------------|--------------------|---------------|-------------|
@@ -2789,7 +2868,7 @@
 
 ### 2.1.25 viw_pcp_total_day
 
-表2-16 螺杆泵日累计数据视图
+表2-17 螺杆泵日累计数据视图
 
 | **序号** | **名称**                    | **代码**         | **类型**       | **单位**    |
 |----------|-----------------------------|------------------|----------------|-------------|
@@ -2925,45 +3004,48 @@
 
 | **序号** | **名称**                      | **描述**                                 |
 |----------|-------------------------------|------------------------------------------|
-| 1        | TRG_A_A9RAWDATA_HIST_I_U      | A9原始数据历史表插入、更新数据后触发     |
-| 2        | TRG_B_A9RAWDATA_HIST_I        | A9原始数据历史表插入数据前触发           |
-| 3        | TRG_B_A9RAWDATA_LATEST_I      | A9原始数据实时表插入数据前触发           |
-| 4        | TRG_B_ACQ_GROUP2UNIT_CONF_I   | 采控单元、组关系表插入数据前触发         |
-| 5        | TRG_B_ACQ_GROUP_CONF_I        | 采控组表插入数据前触发                   |
-| 6        | TRG_B_ACQ_ITEM2GROUP_CONF_I   | 采控组、项关系表插入数据前触发           |
-| 7        | TRG_B_ACQ_UNIT_CONF_I         | 采控单元表插入数据前触发                 |
-| 8        | TRG_B_CODE_I                  | 代码表插入数据前触发                     |
-| 9        | BEF_HIBERNATE_SEQUENCE_INSERT | 数据字典项数据表插入数据前触发           |
-| 10       | TRG_B_MODULE_I                | 模块表插入数据前触发                     |
-| 11       | TRG_B_ORG_I_U                 | 组织表插入、修改数据前触发               |
-| 12       | TRG_B_PCP_DISCRETE_HIST_I     | 螺杆泵离散数据历史表插入数据前触发       |
-| 13       | TRG_B_PCP_DISCRETE_LATEST_I   | 螺杆泵离散数据实时表插入数据前触发       |
-| 14       | TRG_B_PCP_PRODDATA_HIST_I     | 螺杆泵生产数据历史表插入数据前触发抽     |
-| 15       | TRG_B_PCP_PRODDATA_LATEST_I   | 螺杆泵生产数据实时表插入数据前触发       |
-| 16       | TRG_A_PCP_RPM_HIST_I_U        | 螺杆泵曲线数据历史表插入、更新数据后触发 |
-| 17       | TRG_B_PCP_RPM_HIST_I          | 螺杆泵曲线数据历史表插入数据前触发       |
-| 18       | TRG_B_PCP_RPM_LATEST_I        | 螺杆泵曲线数据实时表插入数据前触发       |
-| 19       | TRG_B_PCP_TOTAL_DAY_I         | 螺杆泵日累计数据表插入数据前触发         |
-| 20       | TRG_B_RESOURCEMONITORING_I    | 资源监测数据表插入数据前触发             |
-| 21       | TRG_B_ROLE_I                  | 角色表插入数据前触发                     |
-| 22       | TRG_B_RPCINFORMATION_I        | 抽油机设备表插入数据前触发               |
-| 23       | TRG_B_RPC_ALARMTYPE_CONF_I    | 抽油机工况报警配置表插入数据前触发       |
-| 24       | TRG_A_RPC_DIAGRAM_HIST_I_U    | 抽油机曲线数据历史表插入、更新数据后触发 |
-| 25       | TRG_B_RPC_DIAGRAM_HIST_I      | 抽油机曲线数据历史表插入数据前触发       |
-| 26       | TRG_B_RPC_DIAGRAM_LATEST_I    | 抽油机曲线数据实时表插入数据前触发       |
-| 27       | TRG_B_RPC_DIAGRAM_TOTAL_I     | 抽油机日累计数据表插入数据前触发         |
-| 28       | TRG_B_RPC_DISCRETE_HIST_I     | 抽油机离散数据历史表插入数据前触发       |
-| 29       | TRG_A_RPC_DISCRETE_LATEST_I_U | 抽油机离散数据实时表插入、更新数据后触发 |
-| 30       | TRG_B_RPC_DISCRETE_LATEST_I   | 抽油机离散数据实时表插入数据前触发       |
-| 31       | TRG_B_RPC_INVER_OPT_I         | 抽油机电参反演参数优化表插入数据前触发   |
-| 32       | TRG_B_RPC_MOTOR_I             | 抽油机电机数据表插入数据前触发           |
-| 33       | TRG_B_RPC_PRODDATA_HIST_I     | 油机生产数据历史表插入数据前触发         |
-| 34       | TRG_A_RPC_PRODDATA_LATEST_I_U | 抽油机生产数据实时表插入、更新数据后触发 |
-| 35       | TRG_B_RPC_PRODDATA_LATEST_I   | 抽油机生产数据实时表插入数据前触发       |
-| 36       | TRG_B_RPC_STATISTICS_CONF_I   | 抽油机统计配置表插入数据前触发           |
-| 37       | TRG_B_RPC_TOTAL_DAY_I         | 抽油机日累计数据表插入数据前触发         |
-| 38       | TRG_B_RPC_WORKTYPE_I          | 抽油机工况类型表插入数据前触发           |
-| 39       | TRG_B_USER_I                  | 用户表插入数据前触发                     |
-| 40       | TRG_B_WELLBORETRAJECTORY_I    | 井身轨迹表插入数据前触发                 |
-| 41       | TRG_A_WELLINFORMATION_I       | 井信息表插入数据后触发                   |
-| 42       | TRG_B_WELLINFORMATION_I       | 井信息表插入数据前触发                   |
+| 1        | TRG_A_A9RAWDATA_HIST_I_U      | 功图原始数据历史表插入、更新数据后触发   |
+| 2        | TRG_B_A9RAWDATA_HIST_I        | 功图原始数据历史表插入数据前触发         |
+| 3        | TRG_B_A9RAWDATA_LATEST_I      | 功图原始数据实时表插入数据前触发         |
+| 4        | TRG_A_A9RAWWATERCUT_HIST_I_U  | 含水率原始数据历史表插入、更新数据后触发 |
+| 5        | TRG_B_A9RAWWATERCUT_HIST_I    | 含水率原始数据历史表插入数据前触发       |
+| 6        | TRG_B_A9RAWWATERCUT_LATEST_I  | 含水率原始数据实时表插入数据前触发       |
+| 7        | TRG_B_ACQ_GROUP2UNIT_CONF_I   | 采控单元、组关系表插入数据前触发         |
+| 8        | TRG_B_ACQ_GROUP_CONF_I        | 采控组表插入数据前触发                   |
+| 9        | TRG_B_ACQ_ITEM2GROUP_CONF_I   | 采控组、项关系表插入数据前触发           |
+| 10       | TRG_B_ACQ_UNIT_CONF_I         | 采控单元表插入数据前触发                 |
+| 11       | TRG_B_CODE_I                  | 代码表插入数据前触发                     |
+| 12       | BEF_HIBERNATE_SEQUENCE_INSERT | 数据字典项数据表插入数据前触发           |
+| 13       | TRG_B_MODULE_I                | 模块表插入数据前触发                     |
+| 14       | TRG_B_ORG_I_U                 | 组织表插入、修改数据前触发               |
+| 15       | TRG_B_PCP_DISCRETE_HIST_I     | 螺杆泵离散数据历史表插入数据前触发       |
+| 16       | TRG_B_PCP_DISCRETE_LATEST_I   | 螺杆泵离散数据实时表插入数据前触发       |
+| 17       | TRG_B_PCP_PRODDATA_HIST_I     | 螺杆泵生产数据历史表插入数据前触发抽     |
+| 18       | TRG_B_PCP_PRODDATA_LATEST_I   | 螺杆泵生产数据实时表插入数据前触发       |
+| 19       | TRG_A_PCP_RPM_HIST_I_U        | 螺杆泵曲线数据历史表插入、更新数据后触发 |
+| 20       | TRG_B_PCP_RPM_HIST_I          | 螺杆泵曲线数据历史表插入数据前触发       |
+| 21       | TRG_B_PCP_RPM_LATEST_I        | 螺杆泵曲线数据实时表插入数据前触发       |
+| 22       | TRG_B_PCP_TOTAL_DAY_I         | 螺杆泵日累计数据表插入数据前触发         |
+| 23       | TRG_B_RESOURCEMONITORING_I    | 资源监测数据表插入数据前触发             |
+| 24       | TRG_B_ROLE_I                  | 角色表插入数据前触发                     |
+| 25       | TRG_B_RPCINFORMATION_I        | 抽油机设备表插入数据前触发               |
+| 26       | TRG_B_RPC_ALARMTYPE_CONF_I    | 抽油机工况报警配置表插入数据前触发       |
+| 27       | TRG_A_RPC_DIAGRAM_HIST_I_U    | 抽油机曲线数据历史表插入、更新数据后触发 |
+| 28       | TRG_B_RPC_DIAGRAM_HIST_I      | 抽油机曲线数据历史表插入数据前触发       |
+| 29       | TRG_B_RPC_DIAGRAM_LATEST_I    | 抽油机曲线数据实时表插入数据前触发       |
+| 30       | TRG_B_RPC_DIAGRAM_TOTAL_I     | 抽油机曲线累计数据表插入数据前触发       |
+| 31       | TRG_B_RPC_DISCRETE_HIST_I     | 抽油机离散数据历史表插入数据前触发       |
+| 32       | TRG_A_RPC_DISCRETE_LATEST_I_U | 抽油机离散数据实时表插入、更新数据后触发 |
+| 33       | TRG_B_RPC_DISCRETE_LATEST_I   | 抽油机离散数据实时表插入数据前触发       |
+| 34       | TRG_B_RPC_INVER_OPT_I         | 抽油机电参反演参数优化表插入数据前触发   |
+| 35       | TRG_B_RPC_MOTOR_I             | 抽油机电机数据表插入数据前触发           |
+| 36       | TRG_B_RPC_PRODDATA_HIST_I     | 油机生产数据历史表插入数据前触发         |
+| 37       | TRG_A_RPC_PRODDATA_LATEST_I_U | 抽油机生产数据实时表插入、更新数据后触发 |
+| 38       | TRG_B_RPC_PRODDATA_LATEST_I   | 抽油机生产数据实时表插入数据前触发       |
+| 39       | TRG_B_RPC_STATISTICS_CONF_I   | 抽油机统计配置表插入数据前触发           |
+| 40       | TRG_B_RPC_TOTAL_DAY_I         | 抽油机日累计数据表插入数据前触发         |
+| 41       | TRG_B_RPC_WORKTYPE_I          | 抽油机工况类型表插入数据前触发           |
+| 42       | TRG_B_USER_I                  | 用户表插入数据前触发                     |
+| 43       | TRG_B_WELLBORETRAJECTORY_I    | 井身轨迹表插入数据前触发                 |
+| 44       | TRG_A_WELLINFORMATION_I       | 井信息表插入数据后触发                   |
+| 45       | TRG_B_WELLINFORMATION_I       | 井信息表插入数据前触发                   |

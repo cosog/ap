@@ -49,7 +49,7 @@ cache 20;
 create sequence SEQ_ACQUISITIONGROUP
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 81
+start with 5
 increment by 1
 cache 20;
 /
@@ -57,7 +57,7 @@ cache 20;
 create sequence SEQ_ACQUISITIONUNIT
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 4
+start with 6
 increment by 1
 cache 20;
 /
@@ -65,7 +65,7 @@ cache 20;
 create sequence SEQ_ACQ_GROUP_ITEM
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 33
+start with 1413
 increment by 1
 cache 20;
 /
@@ -73,7 +73,7 @@ cache 20;
 create sequence SEQ_ACQ_UNIT_GROUP
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 5
+start with 7
 increment by 1
 cache 20;
 /

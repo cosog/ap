@@ -1,122 +1,536 @@
 /*==============================================================*/
 /* 初始化tbl_acq_group_conf数据                                          */
 /*==============================================================*/
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
-values (1, 'group1', '抽油机离散数据', '运行状态、电参、频率、压力、温度等数据', 300, 300, 'A11-Modbus');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
+values (1, 'group1', '抽油机离散数据', 300, 300, 'A11-Modbus', '运行状态、电参、频率、压力、温度等数据');
 
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, REMARK, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL)
-values (2, 'group2', '抽油机功图数据', '冲程、冲次以及位移、载荷、功率、电流曲线数据', 3600, 3600, 'A11-Modbus');
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
+values (2, 'group2', '抽油机功图数据', 300, 300, 'A11-Modbus', '冲程、冲次以及位移、载荷、功率、电流曲线数据');
+
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
+values (3, 'group3', '灵旗采集组', 60, 60, 'private-lq1000', '灵旗采集组');
+
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
+values (4, 'group4', '科台斯采集组', 60, 60, 'private-kd93', '科台斯采集组');
 
 /*==============================================================*/
 /* 初始化tbl_acq_unit_conf数据                                    */
 /*==============================================================*/
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
-values (1, 'type1', '抽油机全部数据', '功图数据和离散数据', 'A11-Modbus');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
+values (1, 'unit1', '抽油机全部数据', 'A11-Modbus', '功图数据和离散数据');
 
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
-values (2, 'type2', '抽油机离散数据', '运行状态、电参、频率、压力、温度等数据', 'A11-Modbus');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
+values (2, 'unit2', '抽油机离散数据', 'A11-Modbus', '运行状态、电参、频率、压力、温度等数据');
 
-insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, REMARK, PROTOCOL)
-values (3, 'type3', '抽油机功图数据', '冲程、冲次以及位移、载荷、功率、电流曲线数据', 'A11-Modbus');
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
+values (3, 'unit3', '抽油机功图数据', 'A11-Modbus', '冲程、冲次以及位移、载荷、功率、电流曲线数据');
+
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
+values (4, 'unit4', '科台斯采集单元', 'private-kd93', '科台斯采集单元');
+
+insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
+values (5, 'unit5', '灵旗采集单元', 'private-lq1000', '灵旗采集单元');
 
 /*==============================================================*/
 /* 初始化tbl_acq_item2group_conf数据                                          */
 /*==============================================================*/
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2290, null, '0,0,0', 1, '运行状态', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1245, null, '运行状态', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2291, null, '0,0,0', 1, '启停控制', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1246, null, '启停控制', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2292, null, '0,0,0', 1, 'A相电流', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1247, null, 'A相电流', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2293, null, '0,0,0', 1, 'B相电流', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1248, null, 'B相电流', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2294, null, '0,0,0', 1, 'C相电流', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1249, null, 'C相电流', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2295, null, '0,0,0', 1, 'A相电压', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1250, null, 'A相电压', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2296, null, '0,0,0', 1, 'B相电压', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1251, null, 'B相电压', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2297, null, '0,0,0', 1, 'C相电压', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1252, null, 'C相电压', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2298, null, '0,0,0', 1, '有功功耗', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1253, null, '有功功耗', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2299, null, '0,0,0', 1, '无功功耗', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1254, null, '无功功耗', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2300, null, '0,0,0', 1, '有功功率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1255, null, '有功功率', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2301, null, '0,0,0', 1, '无功功率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1256, null, '无功功率', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2302, null, '0,0,0', 1, '反向功率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1257, null, '反向功率', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2303, null, '0,0,0', 1, '功率因数', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1258, null, '功率因数', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2304, null, '0,0,0', 1, '油压', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1259, null, '油压', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2305, null, '0,0,0', 1, '套压', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1260, null, '套压', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2306, null, '0,0,0', 1, '回压', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1261, null, '回压', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2307, null, '0,0,0', 1, '井口流温', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1262, null, '井口流温', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2308, null, '0,0,0', 1, '动液面', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1263, null, '动液面', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2309, null, '0,0,0', 1, '含水率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1264, null, '含水率', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2310, null, '0,0,0', 1, '变频设置频率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1265, null, '变频设置频率', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2311, null, '0,0,0', 1, '变频运行频率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1266, null, '变频运行频率', null, '0,0,0', 1);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2312, null, '0,0,0', 2, '功图采集间隔', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1235, null, '功图采集间隔', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2313, null, '0,0,0', 2, '功图设置点数', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1236, null, '功图设置点数', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2314, null, '0,0,0', 2, '功图实测点数', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1237, null, '功图实测点数', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2315, null, '0,0,0', 2, '功图采集时间', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1238, null, '功图采集时间', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2316, null, '0,0,0', 2, '冲次', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1239, null, '冲次', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2317, null, '0,0,0', 2, '冲程', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1240, null, '冲程', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2318, null, '0,0,0', 2, '功图数据-位移', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1241, null, '功图数据-位移', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2319, null, '0,0,0', 2, '功图数据-载荷', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1242, null, '功图数据-载荷', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2320, null, '0,0,0', 2, '功图数据-电流', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1243, null, '功图数据-电流', null, '0,0,0', 2);
 
-insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, MATRIX, GROUPID, ITEMNAME, ITEMCODE)
-values (2321, null, '0,0,0', 2, '功图数据-功率', null);
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1244, null, '功图数据-功率', null, '0,0,0', 2);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1334, null, '设备型号标识位', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1335, null, '变频器运行状态', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1336, null, '变频器故障代码', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1337, null, 'A相电压', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1338, null, 'A相电流', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1339, null, 'B相电压', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1340, null, 'B相电流', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1341, null, 'C相电压', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1342, null, 'C相电流', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1343, null, '平均电压', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1344, null, '平均电流', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1345, null, '总功率', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1346, null, '合计功率因数', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1347, null, '总频率', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1348, null, '总电能', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1349, null, '总累计时间', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1350, null, '井口温度', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1351, null, '井口压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1352, null, '井下温度', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1353, null, '井下压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1354, null, '套管压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1355, null, '柜内温度', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1356, null, '自制井下温度', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1357, null, '自制井下压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1358, null, '自制故障码', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1359, null, '保护开关', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1360, null, '保护执行状态', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1361, null, '欠压保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1362, null, '欠压延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1363, null, '过压保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1364, null, '过压延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1365, null, '欠载保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1366, null, '欠载延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1367, null, '过载保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1368, null, '过载延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1369, null, '电压不平衡保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1370, null, '电压不平衡延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1371, null, '电流不平衡保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1372, null, '电流不平衡延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1373, null, '井口温度保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1374, null, '井口温度保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1375, null, '井口压力保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1376, null, '井口压力保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1377, null, '井下温度保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1378, null, '井下温度保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1379, null, '内置井下温度保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1380, null, '内置井下温度保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1381, null, '井下压力保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1382, null, '井下压力保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1383, null, '自制井下压力保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1384, null, '自制井下压力保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1385, null, '液面保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1386, null, '液面保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1387, null, '自制液面保护值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1388, null, '自制液面保护延时值', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1389, null, '运行模式', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1390, null, '间歇运行时间', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1391, null, '间歇停机时间', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1392, null, '目标井下压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1393, null, '自制目标井下压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1394, null, '目标液面深度', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1395, null, '自制目标液面深度', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1396, null, '程序版本号', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1397, null, '气体压力', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1398, null, '气体瞬时流量', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1399, null, '气体累计流量', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1400, null, '瞬时排量', null, '0,0,0', 3);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1267, null, '设备型号标识位', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1268, null, '变频器运行状态', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1269, null, '变频器故障代码', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1270, null, 'A相电压', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1271, null, 'A相电流', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1272, null, 'B相电压', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1273, null, 'B相电流', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1274, null, 'C相电压', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1275, null, 'C相电流', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1276, null, '平均电压', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1277, null, '平均电流', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1278, null, '总功率', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1279, null, '合计功率因数', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1280, null, '总频率', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1281, null, '总电能', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1282, null, '总累计时间', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1283, null, '井口温度', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1284, null, '井口压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1285, null, '井下温度', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1286, null, '井下压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1287, null, '套管压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1288, null, '柜内温度', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1289, null, '自制井下温度', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1290, null, '自制井下压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1291, null, '自制故障码', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1292, null, '保护开关', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1293, null, '保护执行状态', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1294, null, '欠压保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1295, null, '欠压延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1296, null, '过压保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1297, null, '过压延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1298, null, '欠载保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1299, null, '欠载延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1300, null, '过载保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1301, null, '过载延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1302, null, '电压不平衡保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1303, null, '电压不平衡延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1304, null, '电流不平衡保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1305, null, '电流不平衡延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1306, null, '井口温度保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1307, null, '井口温度保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1308, null, '井口压力保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1309, null, '井口压力保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1310, null, '井下温度保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1311, null, '井下温度保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1312, null, '内置井下温度保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1313, null, '内置井下温度保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1314, null, '井下压力保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1315, null, '井下压力保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1316, null, '自制井下压力保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1317, null, '自制井下压力保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1318, null, '液面保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1319, null, '液面保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1320, null, '自制液面保护值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1321, null, '自制液面保护延时值', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1322, null, '运行模式', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1323, null, '间歇运行时间', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1324, null, '间歇停机时间', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1325, null, '目标井下压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1326, null, '自制目标井下压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1327, null, '目标液面深度', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1328, null, '自制目标液面深度', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1329, null, '程序版本号', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1330, null, '气体压力', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1331, null, '气体瞬时流量', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1332, null, '气体累计流量', null, '0,0,0', 4);
+
+insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
+values (1333, null, '瞬时排量', null, '0,0,0', 4);
 
 
 /*==============================================================*/
@@ -133,6 +547,12 @@ values (3, 1, '0,0,0', 2);
 
 insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
 values (4, 2, '0,0,0', 3);
+
+insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
+values (5, 3, '0,0,0', 5);
+
+insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
+values (6, 4, '0,0,0', 4);
 
 /*==============================================================*/
 /* 初始化tbl_code数据                                          */

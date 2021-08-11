@@ -441,6 +441,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
+	public String getAcquisitionUnitList(String protocol){
+		StringBuffer result_json = new StringBuffer();
+		String unitSql="select t.unit_name from tbl_acq_unit_conf t where 1=1";
+		if(StringManagerUtils.isNotNull(protocol)){
+			unitSql+=" and t.protocol='"+protocol+"'";
+		}
+		unitSql+= " order by t.id";
+		List<?> unitList = this.findCallSql(unitSql);
+		result_json.append("{\"data\":[");
+		for(int i=0;i<unitList.size();i++){
+			result_json.append("\""+unitList.get(i)+"\",");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
 	public String exportWellInformationData(Map map,Page pager,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();

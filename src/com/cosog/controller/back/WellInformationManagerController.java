@@ -134,6 +134,19 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getAcquisitionUnitList")
+	public String getAcquisitionUnitList() throws Exception{
+		String protocol = ParamUtils.getParameter(request, "protocol");
+		String json = this.wellInformationManagerService.getAcquisitionUnitList(protocol);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/exportWellInformationData")
 	public String exportWellInformationData() throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();

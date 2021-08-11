@@ -215,6 +215,8 @@ function CreateAndLoadWellInfoTable(isNew){
 	var wellInformationName_Id = Ext.getCmp('wellInfoPanel_WellListComb_Id').getValue();
 	var liftingType = Ext.getCmp('wellInfoPanel_LiftingTypeComb_Id').getValue();
 	
+	var acqUnitListUrl=context + '/wellInformationManagerController/getAcquisitionUnitList';
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/doWellInformationShow',
@@ -248,15 +250,20 @@ function CreateAndLoadWellInfoTable(isNew){
 	            		source+="]";
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="acquisitionUnit".toUpperCase()){
-	            		var source="[";
-	            		for(var j=0;j<result.unitDropdownData.length;j++){
-	            			source+="\'"+result.unitDropdownData[j]+"\'";
-	            			if(j<result.unitDropdownData.length-1){
-	            				source+=",";
-	            			}
-	            		}
-	            		source+="]";
-	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
+//	            		var source="[";
+//	            		for(var j=0;j<result.unitDropdownData.length;j++){
+//	            			source+="\'"+result.unitDropdownData[j]+"\'";
+//	            			if(j<result.unitDropdownData.length-1){
+//	            				source+=",";
+//	            			}
+//	            		}
+//	            		source+="]";
+//	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'dropdown',strict:true,allowInvalid:false,source:"+source+"}";
+	            		
+	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'autocomplete',strict:true,allowInvalid:false,source(query, process) {fetch('"+acqUnitListUrl+"').then(response => response.json()).then(response => process(response.data));}}";
+	            		
+	            		
+	            		
 	            	}else if(result.columns[i].dataIndex.toUpperCase()==="sortNum".toUpperCase()){
 	            		columns+="{data:'"+result.columns[i].dataIndex+"',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,wellInfoHandsontableHelper);}}";
 	            	}else{

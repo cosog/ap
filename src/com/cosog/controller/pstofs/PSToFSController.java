@@ -149,7 +149,6 @@ public class PSToFSController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String orgid=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
-		System.out.println(data);
 		String orgCode = ParamUtils.getParameter(request, "orgCode");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<InverOptimizeHandsontableChangedData>() {}.getType();

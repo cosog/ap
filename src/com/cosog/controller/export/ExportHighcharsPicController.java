@@ -60,6 +60,7 @@ public class ExportHighcharsPicController extends BaseController {
         try {
             request.setCharacterEncoding("utf-8");// 注意编码  
             ServletOutputStream out = response.getOutputStream();  
+            StringReader sr=new StringReader(svg);
             if (null != type && null != svg) {  
                 svg = svg.replaceAll(":rect", "rect").replaceAll("''", "'").replaceAll("<br>", "<br/>");
                 String ext = "";  
@@ -81,13 +82,15 @@ public class ExportHighcharsPicController extends BaseController {
                 response.addHeader("Content-Type", type);  
   
                 if (null != t) {  
-                    TranscoderInput input = new TranscoderInput(new StringReader(svg));  
+                    TranscoderInput input = new TranscoderInput(sr);  
                     TranscoderOutput output = new TranscoderOutput(out);  
-                    t.transcode(input, output);  
+                    t.transcode(input, output); 
+                   
                 }  
             }  
             out.flush();  
-            out.close();  
+            out.close(); 
+            sr.close();
         } catch (Exception e) {  
             e.printStackTrace();  
         }  

@@ -571,7 +571,6 @@ public class KafkaConfigController extends BaseController {
 //					topic+="Model";
 					topic=driveConfig.getTopic().getDown().getModel().replace("-ID-", "-"+ID+"-");
 				}
-				System.out.println("Kafka下行数据，设备："+ID+",主题："+topic+",数据"+data);
 				//不执行启抽指令
 				if(!"2".equals(type)&&StringManagerUtils.isNotNull(topic)){
 					KafkaServerTask.producerMsg(topic, "下行数据", data);
@@ -630,7 +629,6 @@ public class KafkaConfigController extends BaseController {
 		}else if("7".equals(type)){
 			data="Model";
 		}
-		System.out.println("Kafka下行数据，设备："+deviceId+",主题："+topic+",数据"+data);
 		if(StringManagerUtils.isNotNull(data)){
 			KafkaServerTask.producerMsg(topic, deviceId, data);
 		}

@@ -74,13 +74,15 @@ Port											 缺省：9092
 
 ##### Pub										    发布
 
-NormData								标准数据
+Norm       								  标准数据
 
-RawData								   原始数据
+RawFES								      原始功图数据
 
-LogData									日志数据
+RawFES								      原始含水率数据
 
-ResourceData						  资源数据
+Log         									日志数据
+
+Resource         						  资源数据
 
 ##### Sub											订阅
 
@@ -176,9 +178,11 @@ EnterWellSiteSoundPath    进入井场音乐路径							 缺省：sound/enter_w
 
 StartOverload					  启抽过载定时器		缺省：5分钟	
 
-TransferIntervel				  传输间隔定时器		缺省：3分钟
+TransferInterval				  传输间隔定时器		缺省：3分钟
 
 HeartbeatInterval               心跳包间隔定时器    缺省：10秒
+
+AcqSampleInterval             采样间隔                   缺省： 50毫秒
 
 DailyStartTimer	               日报上传起始时间，区间内随机时间上传，填写1-24整型  缺省：2
 

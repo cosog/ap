@@ -108,7 +108,6 @@ public class SurfaceCardService <T> extends BaseService<T>{
 			dynSbf.deleteCharAt(dynSbf.length() - 1);
 		}
 		dynSbf.append("]}");
-//		System.out.println(dynSbf.toString().replaceAll("null", ""));
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	

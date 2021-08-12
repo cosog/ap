@@ -1592,7 +1592,6 @@ public class PSToFSService<T> extends BaseService<T> {
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sqlAll+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		String getResult = this.findCustomPageBySqlEntity(sqlAll,finalSql, columns, 20 + "", pager);
-//		System.out.println(getResult);
 		return getResult.replaceAll("//", "");
 	}
 	

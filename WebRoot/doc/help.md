@@ -106,6 +106,20 @@ Tomcat：9.0及以上
 
 1、正确安装并配置jdk(版本：1.8)、tomcat(版本：9.0)、oracle(版本：11g及以上)，如现场设备采用kafka协议，还需安装kafka服务端(推荐版本：2.7)。
 
+注意：随着系统的运行，oracle的日志文件会越来越大，当达到4G时，会影响到数据库的正常运行，可以选择关闭oracle日志文件的生成。
+
+运行“cmd”，打开命令窗口，依次执行以下命令进行关闭oracle日志操作：
+
+1）lsnrctl
+
+2）set log_status off
+
+3）save_config
+
+4）show log_status
+
+![](../images/helpdoc/PNG/1ddd3ebcef28e66a22327ee0f124a801.png)
+
 2、创建数据库
 
 1）打开《数据库》文件夹下《createDB》文件夹，打开1、createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息
@@ -242,7 +256,7 @@ Tomcat：9.0及以上
 | 4        | 100%＜平衡度≤115% | 过平衡     |
 | 5        | 平衡度\>115%      | 严重过平衡 |
 
-# <h1><a name="第2章应用介绍"></a>第2章 应用介绍</h1> 
+# <h1><a name="第2章应用介绍"></a>第2章 应用介绍</h1>
 
 浏览器要求：建议谷歌浏览器、360浏览器极速模式、IE9以上版本。
 
@@ -260,7 +274,7 @@ Tomcat：9.0及以上
 
 通过点击界面中缝位置的图标![G:\\work\\github\\apmd\\Image\\PNG\\025.png](../images/helpdoc/PNG/31c6015dc83f2a40f02cd33a2419f5a9.png)或![G:\\work\\github\\apmd\\Image\\PNG\\026.png](../images/helpdoc/PNG/74e5710c75eecf890973c56e5ba93a49.png)可实现界面伸缩。
 
-![](../images/helpdoc/PNG/4a407e9f49bfc439688837bbdf939818.png)
+![](../images/helpdoc/PNG/a8931810d699ddc4d58b53792d34b69c.png)
 
 图2-1 界面概览
 
@@ -270,15 +284,26 @@ Tomcat：9.0及以上
 
 ### <h3><a name="2.2.1统计"></a>2.2.1 统计</h3>
 
-统计主标签：包括功图工况、产量、平衡、时率、效率、电量、通信；
+1）统计主标签：包括功图工况、产量、平衡、时率、效率、电量、通信；
 
-统计子标签：各主标签包含的子项，如平衡包括电流平衡和功率平衡；
+2）统计子标签：各主标签包含的子项，如平衡包括电流平衡和功率平衡；
 
-统计表/图：根据选择的各主标签、子标签显示相关统计信息。
+3）统计表/图：根据选择的各主标签、子标签显示相关统计信息。
 
-资源监测：动态监测服务器的资源使用率、数据库表空间使用率、ac运行状态与版本信息。
+4）资源监测：动态监测服务器的资源使用率、数据库表空间使用率、ac运行状态与版本信息、ad运行状态及版本信息。
 
-![](../images/helpdoc/PNG/bc6523080108b753554e4d82042736f2.png)
+注意：当数据库表空间接近100%时，需对表空间进行扩容，否则影响数据保存和数据库的正常运行。执行以下命令，进行扩容操作：
+
+alter tablespace 表空间名称 add datafile '添加的数据文件路径及名称' size 350M
+autoextend on next 50M Maxsize UNLIMITED；
+
+例如给表空间agile_data添加数据文件agile_data02.DBF命令如下
+
+alter tablespace agile_data add datafile
+'C:\\oracle11g\\oradata\\orcl\\agile_data02.DBF' size 350M autoextend on next
+50M Maxsize UNLIMITED；
+
+![](../images/helpdoc/PNG/a5dc6ab2ab429ae2393e4bb5507d5b4b.png)
 
 图2-2 统计
 
@@ -294,7 +319,7 @@ Tomcat：9.0及以上
 
 4、选择某井所在行后点击“单井历史”或“双击该行”可查看该井的历史信息。
 
-![](../images/helpdoc/PNG/034506ea9ede8ae515534394b993e8e4.png)
+![](../images/helpdoc/PNG/c343efdd26547726db5ec28fc3a6269a.png)
 
 图2-3 目标井
 
@@ -302,7 +327,7 @@ Tomcat：9.0及以上
 
 包括图形及分析、采集、控制。
 
-![](../images/helpdoc/PNG/fc03513e2cbae06c9bc0a300401f3b3c.png)
+![](../images/helpdoc/PNG/293fc1925bfb2b4ac2443f22d7cc8cbb.png)
 
 图2-4 单井数据
 

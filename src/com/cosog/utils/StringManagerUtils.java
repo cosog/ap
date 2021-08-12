@@ -1109,12 +1109,15 @@ public class StringManagerUtils {
 	 public static String CLOBtoString2(Clob clob) throws SQLException, IOException  
 	 {
 		 BufferedReader reader = null;
-		 reader = new BufferedReader(new InputStreamReader(clob.getAsciiStream()));
+		 InputStreamReader is=new InputStreamReader(clob.getAsciiStream());
+		 reader = new BufferedReader(is);
 		 String result ="";  
 		 String line = "";
          while ((line = reader.readLine()) != null) {
         	 result+=line;
          }
+         is.close();
+         reader.close();
          return result;
 	 }
 	 
@@ -1182,6 +1185,8 @@ public class StringManagerUtils {
 	        PrintWriter out = null;
 	        BufferedReader in = null;
 	        HttpURLConnection conn=null;
+	        OutputStreamWriter os=null;
+	        InputStreamReader is=null;
 	        String result = "";
 	        if(!StringManagerUtils.isNotNull(encoding)){
 	        	encoding="utf-8";
@@ -1201,12 +1206,16 @@ public class StringManagerUtils {
 	            // 发送POST请求必须设置如下两行
 	            conn.setDoOutput(true);
 	            conn.setDoInput(true);
-	            out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(),encoding));
+	            os=new OutputStreamWriter(conn.getOutputStream(),encoding);
+	            out = new PrintWriter(os);
 	            out.print(param);
 	            out.flush();
 //	            // 定义BufferedReader输入流来读取URL的响应
+	            
+	            
 	            if(conn.getResponseCode()==HttpURLConnection.HTTP_OK){
-	            	in = new BufferedReader(new InputStreamReader(conn.getInputStream(),encoding));
+	            	is=new InputStreamReader(conn.getInputStream(),encoding);
+	            	in = new BufferedReader(is);
 		            String line;
 		            while ((line = in.readLine()) != null) {
 		                result += line;
@@ -1214,7 +1223,8 @@ public class StringManagerUtils {
 		            return result;
 	            }else if(conn.getResponseCode()>=400){
 	            	String errorInfo="";
-	            	in = new BufferedReader(new InputStreamReader(conn.getErrorStream(),encoding));
+	            	is=new InputStreamReader(conn.getInputStream(),encoding);
+	            	in = new BufferedReader(is);
 		            String line;
 		            while ((line = in.readLine()) != null) {
 		            	errorInfo += line;
@@ -1230,7 +1240,13 @@ public class StringManagerUtils {
 	        }
 	        finally{
 	            try{
-	                if(out!=null){
+	            	if(os!=null){
+	            		os.close();
+	                }
+	            	if(is!=null){
+	            		is.close();
+	                }
+	            	if(out!=null){
 	                    out.close();
 	                }
 	                if(in!=null){
@@ -1274,54 +1290,15 @@ public class StringManagerUtils {
 	        return result;
 	    }
 	    
-	    
-	    public static String post(String path,String params) throws Exception{
-	    	HttpURLConnection httpConn=null;
-	    	BufferedReader in=null;
-	    	//PrintWriter out=null;
-	    	try {
-	    		URL url=new URL(path);
-	    		httpConn=(HttpURLConnection)url.openConnection();
-	    		httpConn.setRequestMethod("POST");
-	    		httpConn.setDoInput(true);
-	    		httpConn.setDoOutput(true);
-	    		System.out.print("params="+params);
-	    		PrintWriter ot = new PrintWriter(new OutputStreamWriter(httpConn.getOutputStream(),"utf-8"));
-	    		ot.println(params);
-	    		ot.flush();
-	    	 
-	    		//读取响应
-	    		if(httpConn.getResponseCode()==HttpURLConnection.HTTP_OK){
-	    			StringBuffer content=new StringBuffer();
-	    			String tempStr="";
-	    			//utf-8
-	    			in=new BufferedReader(new InputStreamReader(httpConn.getInputStream(),"utf-8"));
-	    			while((tempStr=in.readLine())!=null){
-	    				content.append(tempStr);
-	    			}
-	    			return content.toString();
-	    		}else{
-	    	       
-	    			throw new Exception("请求出现了问题!");
-	    	    
-	    		}
-	    	} catch (IOException e) {
-	    		e.printStackTrace();
-	    	}finally{
-	    		in.close();
-	    		// out.close();
-	    		httpConn.disconnect();
-	    	}
-	    	return null;
-	    }
-	    
 	  //读文件，返回字符串
 		public static String readFile(String path) {
 		    File file = new File(path);
 		    BufferedReader reader = null;
+		    FileReader fr = null;
 		    String laststr = "";
 		    try {
-		        reader = new BufferedReader(new FileReader(file));
+		    	fr=new FileReader(file);
+		    	reader = new BufferedReader(fr);
 		        String tempString = null;
 				int line = 1;
 		        //一次读入一行，直到读入null为文件结束
@@ -1331,6 +1308,7 @@ public class StringManagerUtils {
 		            laststr = laststr + tempString;
 		            line++;
 		        }
+		        fr.close();
 		        reader.close();
 		    } catch (IOException e) {
 		        e.printStackTrace();
@@ -1352,14 +1330,17 @@ public class StringManagerUtils {
 		        File f = new File(path);      
 		        if(f.isFile()&&f.exists())  
 		        {       
-		            InputStreamReader read = new InputStreamReader(new FileInputStream(f),encode);       
+		        	FileInputStream fs=new FileInputStream(f);
+		        	InputStreamReader read = new InputStreamReader(fs,encode);       
 		            BufferedReader reader=new BufferedReader(read);       
 		            String line;       
 		            while ((line = reader.readLine()) != null)   
 		            {        
 		                fileContent += line;       
-		            }         
-		            read.close();      
+		            }  
+		            fs.close();
+		            read.close();  
+		            reader.close();
 		        }     
 		    } catch (Exception e)   
 		    {         
@@ -1453,13 +1434,16 @@ public class StringManagerUtils {
 	    public static void convertToPng(String svgCode,OutputStream outputStream) throws TranscoderException,IOException{  
 	        try {  
 	            byte[] bytes = svgCode.getBytes ("UTF-8");  
+	            ByteArrayInputStream bi=new ByteArrayInputStream (bytes);
 	            PNGTranscoder t = new PNGTranscoder ();  
-	            TranscoderInput input = new TranscoderInput (new ByteArrayInputStream (bytes));  
+	            TranscoderInput input = new TranscoderInput (bi);  
 	            TranscoderOutput output = new TranscoderOutput (outputStream);  
 	            t.transcode (input, output);  
 	            outputStream.flush ();  
+	            bi.close();
 	        } finally {  
-	            if (outputStream != null) {  
+	        	
+	        	if (outputStream != null) {  
 	                try {  
 	                    outputStream.close ();  
 	                } catch (IOException e) {  
@@ -1588,9 +1572,11 @@ public class StringManagerUtils {
 	            jsonString = toPrettyFormat(jsonString);
 
 	            // 将格式化后的字符串写入文件
-	            Writer write = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+	            FileOutputStream fos=new FileOutputStream(file);
+	            Writer write = new OutputStreamWriter(fos, "UTF-8");
 	            write.write(jsonString);
 	            write.flush();
+	            fos.close();
 	            write.close();
 	        } catch (Exception e) {
 	            flag = false;
@@ -1726,25 +1712,6 @@ public class StringManagerUtils {
 	    
 	 // 把json格式的字符串写到文件
 	    public static boolean writeFile(String filePath, String sets) {
-////	        FileWriter fw;
-//	        try {
-////	            fw = new FileWriter(filePath);
-//////	            PrintWriter out = new PrintWriter(fw);
-////	            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath),"UTF-8")));
-////	            out.write(sets);
-////	            out.println();
-////	            fw.close();
-////	            out.close();
-//	        	OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(filePath, true),"UTF-8");
-//	        	osw.write(sets);
-//	        	osw.flush();
-//	        	osw.close();
-//	            return true;
-//	        } catch (IOException e) {
-//	            e.printStackTrace();
-//	            return false;
-//	        }
-	        
 	        FileOutputStream fileOutputStream=null;
 	        OutputStreamWriter writer=null;
 	        Boolean result=false;
@@ -2284,11 +2251,14 @@ public class StringManagerUtils {
 	    public static String convertStreamToString(InputStream is,String encoding) {      
 			StringBuilder sb = new StringBuilder();
 	       try {
-	    	   BufferedReader reader = new BufferedReader(new InputStreamReader(is,encoding));
+	    	   InputStreamReader isr=new InputStreamReader(is,encoding);
+	    	   BufferedReader reader = new BufferedReader(isr);
 	           String line = null;    
-	           while ((line = reader.readLine()) != null) {      
-	                sb.append(line + "\n");      
-	            }      
+	           while ((line = reader.readLine()) != null) {
+	        	   sb.append(line + "\n");      
+	           }   
+	           isr.close();
+	           reader.close();
 	        } catch (IOException e) {      
 	            e.printStackTrace();      
 	        } finally {      

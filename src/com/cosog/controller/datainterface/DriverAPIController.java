@@ -686,8 +686,8 @@ public class DriverAPIController extends BaseController{
 						acquisitionGroupResolutionData.setFESDiagramAcqTime(acquisitionGroupResolutionData.getAcqTime());
 						String requestData=calculateDataService.getFESdiagramCalculateRequestData(acquisitionGroupResolutionData);
 						String responseData=StringManagerUtils.sendPostMethod(FESdiagramCalculateHttpServerURL, requestData,"utf-8");
-						System.out.println(requestData);
-						System.out.println(responseData);
+//						System.out.println(requestData);
+//						System.out.println(responseData);
 						type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 						RPCCalculateResponseData rpcCalculateResponseData=gson.fromJson(responseData, type);
 						calculateDataService.saveFESDiagramAndCalculateData(acquisitionGroupResolutionData,rpcCalculateResponseData);

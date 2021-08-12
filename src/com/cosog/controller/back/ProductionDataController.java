@@ -129,7 +129,6 @@ public class ProductionDataController extends BaseController {
 		String orgid=user.getUserorgids();
 		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "");
 		wellType=ParamUtils.getParameter(request, "wellType");
-//		System.out.println(data);
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellProHandsontableChangedData>() {}.getType();
 		WellProHandsontableChangedData wellProHandsontableChangedData=gson.fromJson(data, type);

@@ -124,7 +124,7 @@ Tomcat：9.0及以上
 
 1）打开《数据库》文件夹下《createDB》文件夹，打开1、createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息
 
-![](../images/helpdoc/PNG/ae638c732ed9cbea36f49b5c366cea50.png)
+![](../images/helpdoc/PNG/40e736bea4c60b0cd1bbb7a3790a2f98.png)
 
 1.  临时表空间文件路径
 
@@ -136,13 +136,36 @@ Tomcat：9.0及以上
 
 2）编辑批处理文件autorun.bat中的数据库连接信息，保存关闭后执行，执行完毕后按任意键退出，数据库创建完毕
 
-![](../images/helpdoc/PNG/26ac1da95fd5bbdbb7b78c231f15528a.png)
+![](../images/helpdoc/PNG/ba3744113039f4a15d8e9a8331cda0ff.png)
 
 1.  管理员用户名/密码@数据库实例名
 
 2.  自建的用户名/密码@数据库实例名
 
-3、软件部署：打开《软件》文件夹，将《ac.rar》和《ad.rar》解压到服务器中（路径自定义）；将《ap.rar》解压到tomcat安装目录\\webapps文件夹下。
+3、软件部署：打开
+“2、ap/1、软件”目录，将ac和ad拷贝到服务器中（路径自定义）；将《ap.rar》解压到tomcat安装目录\\webapps文件夹下。
+
+4、端口开放
+
+必开放端口，如有改变按实际情况执行：
+
+1）16100：ap平台web访问端口；
+
+2）18100：ac计算分析访问端口；
+
+3）19100：ad驱动程序主站端口，用于设备连接；
+
+4）19200：ap访问ad程序端口；
+
+5）9092：如使用了kafka协议，需开放该端口；
+
+6）2181：如安装了kafka服务器，需开放该端口。
+
+可开放端口，如有改变按实际情况执行
+
+1）3389：远程桌面连接端口
+
+2）1521：oracle数据库端口
 
 ##  <h2><a name="1.4系统配置"></a>1.4 系统配置</h2>
 
@@ -154,7 +177,7 @@ Tomcat：9.0及以上
 
 2、数据库连接配置
 
-![](../images/helpdoc/PNG/9571c6c5579e62cf9f6a6eee42db7164.png)
+![](../images/helpdoc/PNG/409cebec39b10e094144855c686e18e5.png)
 
 一般只需修改IP、端口、数据库实例名、用户名、密码即可。
 
@@ -297,11 +320,11 @@ Tomcat：9.0及以上
 alter tablespace 表空间名称 add datafile '添加的数据文件路径及名称' size 350M
 autoextend on next 50M Maxsize UNLIMITED；
 
-例如给表空间agile_data添加数据文件agile_data02.DBF命令如下
+例如给表空间ap\_data添加数据文件ap\_data02.DBF命令如下
 
-alter tablespace agile_data add datafile
-'C:\\oracle11g\\oradata\\orcl\\agile_data02.DBF' size 350M autoextend on next
-50M Maxsize UNLIMITED；
+alter tablespace ap\_data add datafile
+'C:\\oracle11g\\oradata\\orcl\\ap\_data02.DBF' size 350M autoextend on next 50M
+Maxsize UNLIMITED；
 
 ![](../images/helpdoc/PNG/a5dc6ab2ab429ae2393e4bb5507d5b4b.png)
 

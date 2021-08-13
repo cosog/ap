@@ -7,11 +7,13 @@ values (1, 'group1', '³éÓÍ»úÀëÉ¢Êý¾Ý', 300, 300, 'A11-Modbus', 'ÔËÐÐ×´Ì¬¡¢µç²Î¡¢
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
 values (2, 'group2', '³éÓÍ»ú¹¦Í¼Êý¾Ý', 300, 300, 'A11-Modbus', '³å³Ì¡¢³å´ÎÒÔ¼°Î»ÒÆ¡¢ÔØºÉ¡¢¹¦ÂÊ¡¢µçÁ÷ÇúÏßÊý¾Ý');
 
+/*
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
 values (3, 'group3', 'ÁéÆì²É¼¯×é', 60, 60, 'private-lq1000', 'ÁéÆì²É¼¯×é');
 
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, REMARK)
 values (4, 'group4', '¿ÆÌ¨Ë¹²É¼¯×é', 60, 60, 'private-kd93', '¿ÆÌ¨Ë¹²É¼¯×é');
+*/
 
 /*==============================================================*/
 /* ³õÊ¼»¯tbl_acq_unit_confÊý¾Ý                                    */
@@ -25,11 +27,13 @@ values (2, 'unit2', '³éÓÍ»úÀëÉ¢Êý¾Ý', 'A11-Modbus', 'ÔËÐÐ×´Ì¬¡¢µç²Î¡¢ÆµÂÊ¡¢Ñ¹Á¦¡
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
 values (3, 'unit3', '³éÓÍ»ú¹¦Í¼Êý¾Ý', 'A11-Modbus', '³å³Ì¡¢³å´ÎÒÔ¼°Î»ÒÆ¡¢ÔØºÉ¡¢¹¦ÂÊ¡¢µçÁ÷ÇúÏßÊý¾Ý');
 
+/*
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
 values (4, 'unit4', '¿ÆÌ¨Ë¹²É¼¯µ¥Ôª', 'private-kd93', '¿ÆÌ¨Ë¹²É¼¯µ¥Ôª');
 
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
 values (5, 'unit5', 'ÁéÆì²É¼¯µ¥Ôª', 'private-lq1000', 'ÁéÆì²É¼¯µ¥Ôª');
+*/
 
 /*==============================================================*/
 /* ³õÊ¼»¯tbl_acq_item2group_confÊý¾Ý                                          */
@@ -130,6 +134,7 @@ values (1243, null, '¹¦Í¼Êý¾Ý-µçÁ÷', null, '0,0,0', 2);
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
 values (1244, null, '¹¦Í¼Êý¾Ý-¹¦ÂÊ', null, '0,0,0', 2);
 
+/*
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
 values (1334, null, 'Éè±¸ÐÍºÅ±êÊ¶Î»', null, '0,0,0', 3);
 
@@ -531,6 +536,7 @@ values (1332, null, 'ÆøÌåÀÛ¼ÆÁ÷Á¿', null, '0,0,0', 4);
 
 insert into TBL_ACQ_ITEM2GROUP_CONF (ID, ITEMID, ITEMNAME, ITEMCODE, MATRIX, GROUPID)
 values (1333, null, 'Ë²Ê±ÅÅÁ¿', null, '0,0,0', 4);
+*/
 
 
 /*==============================================================*/
@@ -548,11 +554,13 @@ values (3, 1, '0,0,0', 2);
 insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
 values (4, 2, '0,0,0', 3);
 
+/*
 insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
 values (5, 3, '0,0,0', 5);
 
 insert into TBL_ACQ_GROUP2UNIT_CONF (ID, GROUPID, MATRIX, UNITID)
 values (6, 4, '0,0,0', 4);
+*/
 
 /*==============================================================*/
 /* ³õÊ¼»¯tbl_codeÊý¾Ý                                          */

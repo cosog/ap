@@ -21,7 +21,7 @@ create table TBL_A9RAWDATA_HIST
   I                CLOB,
   TRANSFERINTERVEL NUMBER(10)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -54,7 +54,7 @@ create table TBL_A9RAWDATA_LATEST
   I                CLOB,
   TRANSFERINTERVEL NUMBER(10)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -84,7 +84,7 @@ create table TBL_A9RAWWATERCUTDATA_HIST
   interval         CLOB,
   watercut         CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -114,7 +114,7 @@ create table TBL_A9RAWWATERCUTDATA_LATEST
   interval         CLOB,
   watercut         CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -140,7 +140,7 @@ create table TBL_ACQ_GROUP2UNIT_CONF
   MATRIX  VARCHAR2(8) not null,
   UNITID  NUMBER(10) not null
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -169,7 +169,7 @@ create table TBL_ACQ_GROUP_CONF
   PROTOCOL   VARCHAR2(50),
   REMARK     VARCHAR2(2000)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -193,7 +193,7 @@ create table TBL_ACQ_ITEM2GROUP_CONF
   MATRIX  VARCHAR2(8),
   GROUPID NUMBER(10) not null
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -220,7 +220,7 @@ create table TBL_ACQ_UNIT_CONF
   PROTOCOL   VARCHAR2(50),
   REMARK    VARCHAR2(2000)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -245,7 +245,7 @@ create table TBL_CODE
   ITEMVALUE VARCHAR2(20),
   TABLECODE VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -279,7 +279,7 @@ create table TBL_DIST_NAME
   UPDATETIME DATE default sysdate not null,
   CREATEDATE DATE default sysdate
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -309,7 +309,7 @@ create table TBL_DIST_ITEM
   UPDATETIME DATE default sysdate,
   CREATEDATE DATE default sysdate
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -343,7 +343,7 @@ create table TBL_MODULE
   MD_TYPE     NUMBER(1) default 0,
   MD_CONTROL  VARCHAR2(100)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -370,7 +370,7 @@ create table TBL_ROLE
   ROLE_FLAG NUMBER(10),
   REMARK    VARCHAR2(2000)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -394,7 +394,7 @@ create table TBL_MODULE2ROLE
   RM_ID       NUMBER(10) not null,
   RM_ROLEID   NUMBER(10) not null
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -435,7 +435,7 @@ create table TBL_ORG
   ORG_COORDY NUMBER(10,6) default 0.00,
   SHOW_LEVEL NUMBER(2) default 1
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -544,7 +544,7 @@ create table TBL_PCP_DISCRETE_HIST
   runrange                 CLOB,
   resultstring   CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -663,7 +663,7 @@ create table TBL_PCP_DISCRETE_LATEST
   runrange                 CLOB,
   resultstring             CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -735,7 +735,7 @@ create table TBL_PCP_PRODUCTIONDATA_HIST
   RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -797,7 +797,7 @@ create table TBL_PCP_PRODUCTIONDATA_LATEST
   RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -857,7 +857,7 @@ create table TBL_PCP_RPM_HIST
   DISCRETEDATAID             NUMBER(10),
   REMARK                     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -921,7 +921,7 @@ create table TBL_PCP_RPM_LATEST
   DISCRETEDATAID             NUMBER(10),
   REMARK                     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1099,7 +1099,7 @@ create table TBL_PCP_TOTAL_DAY
   runrange                      CLOB,
   resultstring                  CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1152,7 +1152,7 @@ create table TBL_RESOURCEMONITORING
   MEMUSEDPERCENT NUMBER(8,2),
   TABLESPACESIZE NUMBER(10,2)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1188,7 +1188,7 @@ create table TBL_RPCINFORMATION
   BALANCEWEIGHT                 VARCHAR2(200),
   PRTF                          CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1212,7 +1212,7 @@ create table TBL_RPC_ALARMTYPE_CONF
   alarmsign  NUMBER(1) default 0,
   remark     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1347,7 +1347,7 @@ create table TBL_RPC_DIAGRAM_HIST
   NOLIQUIDFULLNESSCOEFFICIENT    NUMBER(10,4),
   NOLIQUIDAVAILABLEPLUNGERSTROKE NUMBER(10,4)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1504,7 +1504,7 @@ create table TBL_RPC_DIAGRAM_LATEST
   NOLIQUIDFULLNESSCOEFFICIENT    NUMBER(10,4),
   NOLIQUIDAVAILABLEPLUNGERSTROKE NUMBER(10,4)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1581,7 +1581,7 @@ create table TBL_RPC_DIAGRAM_TOTAL
   energyper100mlift          NUMBER(8,2),
   pumpeff                    NUMBER(10,4)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1713,7 +1713,7 @@ create table TBL_RPC_DISCRETE_HIST
   runrange                  CLOB,
   resultstring              CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1858,7 +1858,7 @@ create table TBL_RPC_DISCRETE_LATEST
   runrange                  CLOB,
   resultstring              CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1905,7 +1905,7 @@ create table TBL_RPC_INVER_OPT
   FILTERTIME_FSDIAGRAM_R  NUMBER(3) default 0,
   WATTANGLE               NUMBER(8,2) default 89
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1932,7 +1932,7 @@ create table TBL_RPC_MOTOR
   BELTPULLEYDIAMETER NUMBER(10,4),
   PERFORMANCECURVER  CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1985,7 +1985,7 @@ create table TBL_RPC_PRODUCTIONDATA_HIST
   RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2047,7 +2047,7 @@ create table TBL_RPC_PRODUCTIONDATA_LATEST
   RUNTIMEEFFICIENCYSOURCE    NUMBER(2) default 1,
   REMARK                     VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2077,7 +2077,7 @@ create table TBL_RPC_STATISTICS_CONF
   S_MAX   NUMBER(11,3),
   S_TYPE  VARCHAR2(20)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2409,7 +2409,7 @@ create table TBL_RPC_TOTAL_DAY
   resultstring                   CLOB,
   resultstring_e                 CLOB
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2464,7 +2464,7 @@ create table TBL_RPC_WORKTYPE
   optimizationsuggestion VARCHAR2(200),
   remark                 VARCHAR2(200)
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2498,7 +2498,7 @@ create table TBL_USER
   USER_STYLE      VARCHAR2(20) default 'basic',
   USER_QUICKLOGIN NUMBER(1) default 0
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2537,7 +2537,7 @@ create table TBL_WELLBORETRAJECTORY
   SAVETIME       DATE default sysdate,
   RESULTSTATUS   NUMBER(4) default 0
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -2569,7 +2569,7 @@ create table TBL_WELLINFORMATION
   SORTNUM                    NUMBER(10) default 9999,
   LEVELCORRECTVALUE          NUMBER(2) default 0
 )
-tablespace AGILE_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K

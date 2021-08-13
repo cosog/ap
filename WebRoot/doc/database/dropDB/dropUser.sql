@@ -1,1 +1,1 @@
-drop user agile cascade;
+drop user ap cascade;

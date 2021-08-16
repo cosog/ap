@@ -1524,7 +1524,7 @@ public class GraphicalUploadController extends BaseController {
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
 				aggrOnline2Kafka.setWellName(obj[0]+"");
-				//进行时率计算
+				//进行通信计算
 				CommResponseData commResponseData=null;
 				String commRequest="{"
 						+ "\"AKString\":\"\","
@@ -1602,6 +1602,7 @@ public class GraphicalUploadController extends BaseController {
 	public String SaveKafkaUpAggrRunStatusData() throws Exception {
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		Gson gson=new Gson();
+		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String tiemEffUrl=Config.getInstance().configFile.getAgileCalculate().getRun()[0];
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
@@ -1609,6 +1610,7 @@ public class GraphicalUploadController extends BaseController {
 		AggrRunStatus2Kafka aggrRunStatus2Kafka=gson.fromJson(data, type);
 		if(aggrRunStatus2Kafka!=null){
 			String sql="select t.wellName,to_char(t2.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange,"
 					+ " t2.runstatus,t2.runtime,t2.runtimeefficiency,t2.runrange"
 					+ " from tbl_wellinformation t ,tbl_rpc_discrete_latest  t2 "
 					+ " where t2.wellId=t.id and t.signinid='"+aggrRunStatus2Kafka.getKey()+"' and upper(t.protocolcode) like '%KAFKA%'";
@@ -1616,6 +1618,35 @@ public class GraphicalUploadController extends BaseController {
 			if(list.size()>0){
 				Object[] obj=(Object[]) list.get(0);
 				aggrRunStatus2Kafka.setWellName(obj[0]+"");
+				//进行通信计算
+				CommResponseData commResponseData=null;
+				String commRequest="{"
+						+ "\"AKString\":\"\","
+						+ "\"WellName\":\""+aggrRunStatus2Kafka.getWellName()+"\",";
+				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
+					commRequest+= "\"Last\":{"
+							+ "\"AcqTime\": \""+obj[1]+"\","
+							+ "\"CommStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"CommEfficiency\": {"
+							+ "\"Efficiency\": "+obj[4]+","
+							+ "\"Time\": "+obj[3]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
+							+ "}"
+							+ "},";
+				}	
+				commRequest+= "\"Current\": {"
+						+ "\"AcqTime\":\""+currentTime+"\","
+						+ "\"CommStatus\":true"
+						+ "}"
+						+ "}";
+				String commResponse="";
+				commResponse=StringManagerUtils.sendPostMethod(commUrl, commRequest,"utf-8");
+				type = new TypeToken<CommResponseData>() {}.getType();
+				commResponseData=gson.fromJson(commResponse, type);
+				
+				
+				
+				
 				//进行时率计算
 				TimeEffResponseData timeEffResponseData=null;
 				String tiemEffRequest="{"
@@ -1624,11 +1655,11 @@ public class GraphicalUploadController extends BaseController {
 				if(StringManagerUtils.isNotNull(obj[1]+"")&&StringManagerUtils.isNotNull(StringManagerUtils.CLOBObjectToString(obj[5]))){
 					tiemEffRequest+= "\"Last\":{"
 							+ "\"AcqTime\": \""+obj[1]+"\","
-							+ "\"RunStatus\": "+("1".equals(obj[2]+"")?true:false)+","
+							+ "\"RunStatus\": "+("1".equals(obj[6]+"")?true:false)+","
 							+ "\"RunEfficiency\": {"
-							+ "\"Efficiency\": "+obj[4]+","
-							+ "\"Time\": "+obj[3]+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[5]))+""
+							+ "\"Efficiency\": "+obj[8]+","
+							+ "\"Time\": "+obj[7]+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(StringManagerUtils.CLOBObjectToString(obj[9]))+""
 							+ "}"
 							+ "},";
 				}	
@@ -1650,10 +1681,18 @@ public class GraphicalUploadController extends BaseController {
 						+ " t.signal="+aggrRunStatus2Kafka.getSignal()+","
 						+ " t.deviceVer='"+aggrRunStatus2Kafka.getVer()+"',"
 						+ " t.acqTime=to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss')";
+				
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
+					updateDiscreteData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
+							+ " ,t.commTime= "+commResponseData.getCurrent().getCommEfficiency().getTime();
+					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
+						
+					}
+				}
+				
 				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
 					updateDiscreteData+=",t.runTimeEfficiency= "+timeEffResponseData.getCurrent().getRunEfficiency().getEfficiency()
-						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime()
-						+ " ,t.runRange= '"+timeEffResponseData.getCurrent().getRunEfficiency().getRangeString()+"'";
+						+ " ,t.runTime= "+timeEffResponseData.getCurrent().getRunEfficiency().getTime();
 					if(timeEffResponseData.getDaily()!=null&&StringManagerUtils.isNotNull(timeEffResponseData.getDaily().getDate())){
 						
 					}
@@ -1662,9 +1701,10 @@ public class GraphicalUploadController extends BaseController {
 				commonDataService.getBaseDao().updateOrDeleteBySql(updateDiscreteData);
 				
 				//更新clob类型数据  运行区间
-				if(timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
-					String updateRangeClobSql="update tbl_rpc_discrete_latest t set t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
+				if(commResponseData!=null&&commResponseData.getResultStatus()==1&&timeEffResponseData!=null&&timeEffResponseData.getResultStatus()==1){
+					String updateRangeClobSql="update tbl_rpc_discrete_latest t set t.commrange=?,t.runrange=? where t.wellId= (select t2.id from tbl_wellinformation t2 where t2.wellName='"+aggrRunStatus2Kafka.getWellName()+"') ";
 					List<String> clobCont=new ArrayList<String>();
+					clobCont.add(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					clobCont.add(timeEffResponseData.getCurrent().getRunEfficiency().getRangeString());
 					commonDataService.getBaseDao().executeSqlUpdateClob(updateRangeClobSql,clobCont);
 				}

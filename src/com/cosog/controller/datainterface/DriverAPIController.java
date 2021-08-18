@@ -257,7 +257,7 @@ public class DriverAPIController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		Gson gson=new Gson();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-		System.out.println("接收到ad推送group数据："+data);
+		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data);
 		java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 		AcqGroup acqGroup=gson.fromJson(data, type);
 		String json = "{success:true,flag:true}";

@@ -41,14 +41,27 @@ public class MobileService<T> extends BaseService<T> {
 	public List<T> getOrganizationData(Class<Org> class1, String userAccount) {
 		String queryString="";
 		if(StringManagerUtils.isNotNull(userAccount)){
-			queryString = "SELECT {Org.*} FROM tbl_org Org   "
-					+ " start with Org.org_id=( select t2.user_orgid from tbl_user t2 where t2.user_id='"+userAccount+"' )   "
-					+ " connect by Org.org_parent= prior Org.org_id "
-					+ " order by Org.org_code  ";
+			String sql="select t.user_orgid from tbl_user t where t.user_id='"+userAccount+"'";
+			List<?> list = this.findCallSql(sql);
+			String orgId="";
+			if(list.size()>0){
+				orgId=list.get(0).toString();
+			}
+			if("0".equals(orgId)){
+				queryString = "SELECT {Org.*} FROM tbl_org Org   "
+//						+ " start with Org.org_id=1  "
+//						+ " connect by Org.org_parent= prior Org.org_id "
+						+ " order by Org.org_code  ";
+			}else{
+				queryString = "SELECT {Org.*} FROM tbl_org Org   "
+						+ " start with Org.org_id=( select t2.user_orgid from tbl_user t2 where t2.user_id='"+userAccount+"' )   "
+						+ " connect by Org.org_parent= prior Org.org_id "
+						+ " order by Org.org_code  ";
+			}
 		}else{
 			queryString = "SELECT {Org.*} FROM tbl_org Org   "
-					+ " start with Org.org_id=1  "
-					+ " connect by Org.org_parent= prior Org.org_id "
+//					+ " start with Org.org_id=1  "
+//					+ " connect by Org.org_parent= prior Org.org_id "
 					+ " order by Org.org_code  ";
 		}
 		
@@ -306,16 +319,44 @@ public class MobileService<T> extends BaseService<T> {
 		String endDate=StringManagerUtils.getCurrentTime();
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			liftingType=jsonObject.getInt("LiftingType");
-			type=jsonObject.getInt("StatType");
-			statValue=jsonObject.getString("StatValue");
-			wellName=jsonObject.getString("WellName");
-			startDate=jsonObject.getString("StartDate");
-			endDate=jsonObject.getString("EndDate");
+			try{
+				liftingType=jsonObject.getInt("LiftingType");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				type=jsonObject.getInt("StatType");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				statValue=jsonObject.getString("StatValue");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				wellName=jsonObject.getString("WellName");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				startDate=jsonObject.getString("StartDate");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				endDate=jsonObject.getString("EndDate");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
 		String sql="";
 		String tableName_hist="viw_rpc_comprehensive_hist";
 		String typeColumnName="resultName";
@@ -470,8 +511,18 @@ public class MobileService<T> extends BaseService<T> {
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			String json="";
 			if(jsonObject!=null){
-				wellName=jsonObject.getString("WellName");
-				acqTime=jsonObject.getString("AcqTime");
+				
+				try{
+					wellName=jsonObject.getString("WellName");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try{
+					acqTime=jsonObject.getString("AcqTime");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
 				if(StringManagerUtils.isNotNull(wellName) && StringManagerUtils.isNotNull(acqTime)){
 					String prodCol=" liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
 							+ " availablePlungerstrokeProd_W,pumpClearanceLeakProd_W,tvleakWeightProduction,svleakWeightProduction,gasInfluenceProd_W,";
@@ -581,16 +632,36 @@ public class MobileService<T> extends BaseService<T> {
 		String date=StringManagerUtils.getCurrentTime();
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			liftingType=jsonObject.getInt("LiftingType");
-			type=jsonObject.getInt("StatType");
-			date=jsonObject.getString("Date");
-			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-				wells.append("'"+jsonArray.getString(i)+"',");
+			
+			try{
+				liftingType=jsonObject.getInt("LiftingType");
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-			if(wells.toString().endsWith(",")){
-				wells.deleteCharAt(wells.length() - 1);
+			try{
+				type=jsonObject.getInt("StatType");
+			}catch(Exception e){
+				e.printStackTrace();
 			}
+			try{
+				date=jsonObject.getString("Date");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+					wells.append("'"+jsonArray.getString(i)+"',");
+				}
+				if(wells.toString().endsWith(",")){
+					wells.deleteCharAt(wells.length() - 1);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -665,16 +736,37 @@ public class MobileService<T> extends BaseService<T> {
 		String statValue="";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			liftingType=jsonObject.getInt("LiftingType");
-			date=jsonObject.getString("Date");
-			type=jsonObject.getInt("StatType");
-			statValue=jsonObject.getString("StatValue");
-			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-				wells.append("'"+jsonArray.getString(i)+"',");
+			
+			try{
+				liftingType=jsonObject.getInt("LiftingType");
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-			if(wells.toString().endsWith(",")){
-				wells.deleteCharAt(wells.length() - 1);
+			try{
+				date=jsonObject.getString("Date");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				type=jsonObject.getInt("StatType");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				statValue=jsonObject.getString("StatValue");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+					wells.append("'"+jsonArray.getString(i)+"',");
+				}
+				if(wells.toString().endsWith(",")){
+					wells.deleteCharAt(wells.length() - 1);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -822,19 +914,47 @@ public class MobileService<T> extends BaseService<T> {
 		String statValue="";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-
-			liftingType=jsonObject.getInt("LiftingType");
-			startDate=jsonObject.getString("StartDate");
-			endDate=jsonObject.getString("EndDate");
-			wellName=jsonObject.getString("WellName");
-			type=jsonObject.getInt("StatType");
-			statValue=jsonObject.getString("StatValue");
-			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-				wells.append("'"+jsonArray.getString(i)+"',");
+			
+			try{
+				liftingType=jsonObject.getInt("LiftingType");
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-			if(wells.toString().endsWith(",")){
-				wells.deleteCharAt(wells.length() - 1);
+			try{
+				startDate=jsonObject.getString("StartDate");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				endDate=jsonObject.getString("EndDate");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				wellName=jsonObject.getString("WellName");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				type=jsonObject.getInt("StatType");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				statValue=jsonObject.getString("StatValue");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+					wells.append("'"+jsonArray.getString(i)+"',");
+				}
+				if(wells.toString().endsWith(",")){
+					wells.deleteCharAt(wells.length() - 1);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}catch(Exception e){
 			e.printStackTrace();

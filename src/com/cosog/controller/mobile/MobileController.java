@@ -54,8 +54,27 @@ public class MobileController extends BaseController{
 	
 	@RequestMapping("/userLogin")
 	public String userLogin() throws Exception {
-		String account = URLDecoder.decode(ParamUtils.getParameter(request, "account"), "UTF-8");
-		String password = URLDecoder.decode(ParamUtils.getParameter(request, "password"), "UTF-8");
+		String account = "";
+		String password = "";
+		
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			try{
+				account=jsonObject.getString("account");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				password=jsonObject.getString("password");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		HttpSession session=request.getSession();
 		String result="";
 		if (!StringManagerUtils.isNotNull(account)) {
@@ -88,11 +107,17 @@ public class MobileController extends BaseController{
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/getOrganizationData")
 	public String getOrganizationData() throws Exception {
-		StringBuffer orgIdString = new StringBuffer();
-		String userAccount = URLDecoder.decode(ParamUtils.getParameter(request, "account"), "UTF-8");
-		List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, userAccount);
-		
 		String json = "";
+		String userAccount = "";;
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+			userAccount=jsonObject.getString("userAccount");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, userAccount);
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
 		for (Org org : list) {
@@ -101,10 +126,13 @@ public class MobileController extends BaseController{
 			}
 		}
 		json = json.replaceAll(",]", "]");
-		if(json.lastIndexOf(",")==json.length()-1){
-			json=json.substring(0, json.length()-1);
-		}
+//		if(json.lastIndexOf(",")==json.length()-1){
+//			json=json.substring(0, json.length()-1);
+//		}
 		strBuf.append(json);
+		if(strBuf.toString().endsWith(",")){
+			strBuf.deleteCharAt(strBuf.length() - 1);
+		}
 		json = strBuf.toString();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -122,7 +150,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/realtime/statisticsData")
 	public String getPumpingRealtimeStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"StatType\":1,\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
@@ -141,7 +169,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/realtime/wellListData")
 	public String getOilWellRealtimeWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -167,7 +195,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/realtime/wellHistoryData")
 	public String getOilWellRealtimeWellHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2021-03-09\",\"EndDate\":\"2021-03-09\",\"WellName\":\"长庆现场智能油田测试井\"}";
 		this.pager = new Page("pagerForm", request);
@@ -190,7 +218,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/realtime/wellAnalysisData")
 	public String getOilWellRealtimeWellAnalysisData()throws Exception{
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"WellName\":\"长庆现场智能油田测试井\",\"AcqTime\":\"2021-03-09 14:08:45\"}";
 		String json = this.mobileService.getOilWellRealtimeWellAnalysisData(data);
@@ -209,7 +237,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/total/statisticsData")
 	public String getOilWellTotalStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"Date\":\"2021-03-09\",\"StatType\":1,\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
@@ -228,7 +256,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/total/wellListData")
 	public String getOilWellTotalWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\":1,\"Date\":\"2021-03-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
 		this.pager = new Page("pagerForm", request);
@@ -254,7 +282,7 @@ public class MobileController extends BaseController{
 	@RequestMapping("/oilWell/total/wellHistoryData")
 	public String getOilWellTotalHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
 //		data="{\"LiftingType\": 1,\"WellName\":\"长庆现场智能油田测试井\",\"StartDate\": \"2021-03-01\",\"EndDate\": \"2021-03-09\",\"StatType\": 1,\"StatValue\": \"正常\",\"WellList\": [\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
 		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";

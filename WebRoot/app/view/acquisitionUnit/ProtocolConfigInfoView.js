@@ -19,7 +19,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 tabPosition: 'top',
                 items: [{
                 	title:'Modbus',
-                	id:"ScadaDriverModbusConfigTabPanel_Id",
+                	id:"ScadaDriverModbusProtocolConfigTabPanel_Id",
                 	tbar: [{
                         id: 'ScadaProtocolModbusConfigSelectRow_Id',
                         xtype: 'textfield',
@@ -147,7 +147,7 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
-                    	if(newCard.id=="ScadaDriverModbusConfigTabPanel_Id"){
+                    	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
 //                    		loadFSDiagramAnalysisSingleStatData();
                     	}else if(newCard.id=="ScadaDriverKafkaConfigTabPanel_Id"){
                     		CreateKafkaConfigInfoTable();

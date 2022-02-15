@@ -180,7 +180,7 @@ var FSToPSPumpingUnitHandsontableHelper = {
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: [0,13],
-	                    indicators: true
+	                    indicators: false
 	                },
 	                columns:fsToPSPumpingUnitHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -251,7 +251,7 @@ var FSToPSPumpingUnitPTFHandsontableHelper = {
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: true
+	                    indicators: false
 	                },
 	                columns:fsToPSPumpingUnitPTFHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

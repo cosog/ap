@@ -235,10 +235,6 @@ var ProtocolConfigItemsHandsontableHelper = {
 	        	protocolConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	        		colWidths: [25,50,120,80,80,80,80,80,80,80,80],
-//	                hiddenColumns: {
-//	                    columns: [0],
-//	                    indicators: true
-//	                },
 	                columns:protocolConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -457,10 +453,6 @@ var ProtocolConfigPropertiesHandsontableHelper = {
 	        	protocolConfigPropertiesHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		data: data,
 	        		colWidths: [2,5,5],
-//	                hiddenColumns: {
-//	                    columns: [0],
-//	                    indicators: true
-//	                },
 	                columns:protocolConfigPropertiesHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

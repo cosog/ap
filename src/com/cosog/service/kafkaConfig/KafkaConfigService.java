@@ -167,18 +167,18 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 			
 			if(i==0&&pager.getStart()==0 &&firstHisRecordCommStatusList!=null&&firstHisRecordCommStatusList.size()>0){
 				Object[] objComm=(Object[]) firstHisRecordCommStatusList.get(0);
-				result_json.append("\"commStatus\":"+objComm[0]+",");
+				result_json.append("\"commStatus\":\""+objComm[0]+"\",");
 				result_json.append("\"commStatusName\":\""+objComm[1]+"\",");
-				result_json.append("\"commAlarmLevel\":"+objComm[2]+"},");
+				result_json.append("\"commAlarmLevel\":\""+objComm[2]+"\"},");
 			}else{
 				if(StringManagerUtils.isNotNull(deviceId.trim())){
 					result_json.append("\"commStatus\":0,");
 					result_json.append("\"commStatusName\":\"\",");
 					result_json.append("\"commAlarmLevel\":0},");
 				}else{
-					result_json.append("\"commStatus\":"+obj[6]+",");
+					result_json.append("\"commStatus\":\""+obj[6]+"\",");
 					result_json.append("\"commStatusName\":\""+obj[7]+"\",");
-					result_json.append("\"commAlarmLevel\":"+obj[8]+"},");
+					result_json.append("\"commAlarmLevel\":\""+obj[8]+"\"},");
 				}
 				
 				
@@ -254,18 +254,18 @@ public class KafkaConfigService<T> extends BaseService<T>  {
 			
 			if(i==0&&pager.getStart()==0 &&firstHisRecordCommStatusList!=null&&firstHisRecordCommStatusList.size()>0){
 				Object[] objComm=(Object[]) firstHisRecordCommStatusList.get(0);
-				result_json.append("\"commStatus\":"+objComm[0]+",");
+				result_json.append("\"commStatus\":\""+objComm[0]+"\",");
 				result_json.append("\"commStatusName\":\""+objComm[1]+"\",");
-				result_json.append("\"commAlarmLevel\":"+objComm[2]+"},");
+				result_json.append("\"commAlarmLevel\":\""+objComm[2]+"\"},");
 			}else{
 				if(StringManagerUtils.isNotNull(deviceId.trim())){
 					result_json.append("\"commStatus\":0,");
 					result_json.append("\"commStatusName\":\"\",");
 					result_json.append("\"commAlarmLevel\":0},");
 				}else{
-					result_json.append("\"commStatus\":"+obj[6]+",");
+					result_json.append("\"commStatus\":\""+obj[6]+"\",");
 					result_json.append("\"commStatusName\":\""+obj[7]+"\",");
-					result_json.append("\"commAlarmLevel\":"+obj[8]+"},");
+					result_json.append("\"commAlarmLevel\":\""+obj[8]+"\"},");
 				}
 			}	
 		}

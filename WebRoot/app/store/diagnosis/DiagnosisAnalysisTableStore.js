@@ -625,7 +625,8 @@ Ext.define('AP.store.diagnosis.DiagnosisAnalysisTableStore', {
     			        	}
 //    			        	editor:{allowBlank:false}
     			        },
-    			        { 	header: '操作', 
+    			        { 	
+    			        	header: '操作', 
     			        	dataIndex: 'operation',
     			        	align:'center',
     			        	flex:4,

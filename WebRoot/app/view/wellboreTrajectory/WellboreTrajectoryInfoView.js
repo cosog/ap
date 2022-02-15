@@ -197,7 +197,7 @@ var WellboreTrajectoryHandsontableHelper = {
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: [0,12],
-	                    indicators: true
+	                    indicators: false
 	                },
 	                columns:wellboreTrajectoryHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -295,7 +295,7 @@ var WellboreTrajectoryDetailsHandsontableHelper = {
 	        		data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: true
+	                    indicators: false
 	                },
 	                columns:wellboreTrajectoryDetailsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

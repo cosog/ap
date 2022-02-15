@@ -420,7 +420,7 @@ public class PSToFSService<T> extends BaseService<T> {
 					result_json.append("{boxkey:\"" + get_key + "\",");
 					result_json.append("boxval:\"" + get_val + "\"},");
 				}
-				if (result_json.toString().length() > 1) {
+				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
 			}
@@ -462,7 +462,7 @@ public class PSToFSService<T> extends BaseService<T> {
 					result_json.append("{boxkey:\"" + get_key + "\",");
 					result_json.append("boxval:\"" + get_val + "\"},");
 				}
-				if (result_json.toString().length() > 1) {
+				if (result_json.toString().endsWith(",")) {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
 			}

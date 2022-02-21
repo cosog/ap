@@ -18,6 +18,7 @@ import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.Page;
+import com.cosog.utils.PageHandler;
 import com.cosog.utils.StringManagerUtils;
 
 import net.sf.json.JSONArray;
@@ -161,21 +162,24 @@ public class MobileService<T> extends BaseService<T> {
 		int liftingType=1;
 		int type=1;
 		String statValue="";
-		try{
-			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			liftingType=jsonObject.getInt("LiftingType");
-			type=jsonObject.getInt("StatType");
-			statValue=jsonObject.getString("StatValue");
-			JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-			for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-				wells.append("'"+jsonArray.getString(i)+"',");
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				liftingType=jsonObject.getInt("LiftingType");
+				type=jsonObject.getInt("StatType");
+				statValue=jsonObject.getString("StatValue");
+				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
+				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
+					wells.append("'"+jsonArray.getString(i)+"',");
+				}
+				if(wells.toString().endsWith(",")){
+					wells.deleteCharAt(wells.length() - 1);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-			if(wells.toString().endsWith(",")){
-				wells.deleteCharAt(wells.length() - 1);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
+		
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
@@ -317,45 +321,47 @@ public class MobileService<T> extends BaseService<T> {
 		String wellName="";
 		String startDate=StringManagerUtils.getCurrentTime();
 		String endDate=StringManagerUtils.getCurrentTime();
-		try{
-			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+		if(StringManagerUtils.isNotNull(data)){
 			try{
-				liftingType=jsonObject.getInt("LiftingType");
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				try{
+					liftingType=jsonObject.getInt("LiftingType");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					type=jsonObject.getInt("StatType");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					statValue=jsonObject.getString("StatValue");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					wellName=jsonObject.getString("WellName");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					startDate=jsonObject.getString("StartDate");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					endDate=jsonObject.getString("EndDate");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			
-			try{
-				type=jsonObject.getInt("StatType");
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			try{
-				statValue=jsonObject.getString("StatValue");
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			try{
-				wellName=jsonObject.getString("WellName");
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			try{
-				startDate=jsonObject.getString("StartDate");
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			
-			try{
-				endDate=jsonObject.getString("EndDate");
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
 		String sql="";
 		String tableName_hist="viw_rpc_comprehensive_hist";
@@ -488,18 +494,223 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getOilWellRealtimeWellAnalysisData(String data) throws SQLException, IOException{
 		String json="";
-		try{
-			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			if(jsonObject!=null){
-				int liftingType=jsonObject.getInt("LiftingType");
-				if(liftingType!=2){
-					json=getPumpunitRealtimeWellAnalysisData(data);
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				if(jsonObject!=null){
+					int liftingType=jsonObject.getInt("LiftingType");
+					if(liftingType!=2){
+						json=getPumpunitRealtimeWellAnalysisData(data);
+					}
 				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
 		return json;
+	}
+	
+	public String singleFESDiagramData(String data) throws SQLException, IOException {
+		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" liquidWeightProduction";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction";
+		}
+		String wellName="";
+		String acqTime="";
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				try{
+					wellName=jsonObject.getString("WellName");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					acqTime=jsonObject.getString("AcqTime");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		String sql="";
+		String tableName="VIW_RPC_DIAGRAMQUERY_HIST";
+		
+		sql="select id, wellName, to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+				+ " position_curve,load_curve,power_curve,current_curve,"
+				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, "+prodCol+", resultName "
+				+ " from  "+tableName+" where 1=1";
+		sql+= " and wellName='" + wellName + "' ";
+		sql+= " and acqTime = to_date('"+ acqTime +"','yyyy-MM-dd hh24:mi:ss')";
+		
+		List<?> list=this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalRoot\":[");
+		
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			CLOB realClob=null;
+			SerializableClobProxy   proxy=null;
+			String sStr="";
+	        String fStr="";
+	        String wattStr="";
+	        String aStr="";
+	        String pointCount="";
+	        if(obj[3]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[3]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				sStr=StringManagerUtils.CLOBtoString(realClob);
+				if(StringManagerUtils.isNotNull(sStr)){
+					pointCount=sStr.split(",").length+"";
+				}
+			}
+	        if(obj[4]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[4]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				fStr=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        if(obj[5]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[5]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				wattStr=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        if(obj[6]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[6]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				aStr=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        
+			result_json.append("{ \"id\":\"" + obj[0] + "\",");
+			result_json.append("\"wellName\":\"" + obj[1] + "\",");
+			result_json.append("\"acqTime\":\"" + obj[2] + "\",");
+			result_json.append("\"pointCount\":\""+pointCount+"\","); 
+			result_json.append("\"upperLoadLine\":\"" + obj[7] + "\",");
+			result_json.append("\"lowerLoadLine\":\"" + obj[8] + "\",");
+			result_json.append("\"fmax\":\""+obj[9]+"\",");
+			result_json.append("\"fmin\":\""+obj[10]+"\",");
+			result_json.append("\"stroke\":\""+obj[11]+"\",");
+			result_json.append("\"spm\":\""+obj[12]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[13]+"\",");
+			result_json.append("\"resultName\":\""+obj[14]+"\",");
+			result_json.append("\"S\":["+sStr+"],"); 
+			result_json.append("\"F\":["+fStr+"],"); 
+			result_json.append("\"Watt\":["+wattStr+"],"); 
+			result_json.append("\"A\":["+aStr+"]},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String historyFESDiagramData(String data) throws SQLException, IOException {
+		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		String prodCol=" liquidWeightProduction";
+		if(configFile.getOthers().getProductionUnit()!=0){
+			prodCol=" liquidVolumetricProduction";
+		}
+		String wellName="";
+		String startDate=StringManagerUtils.getCurrentTime();
+		String endDate=StringManagerUtils.getCurrentTime();
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				try{
+					wellName=jsonObject.getString("WellName");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					startDate=jsonObject.getString("StartDate");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					endDate=jsonObject.getString("EndDate");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		String sql="";
+		String tableName="VIW_RPC_DIAGRAMQUERY_HIST";
+		
+		sql="select id, wellName, to_char(acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+				+ " position_curve,load_curve,power_curve,current_curve,"
+				+ " upperLoadline, lowerloadline, fmax, fmin, stroke, SPM, "+prodCol+", resultName "
+				+ " from  "+tableName+" where 1=1";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+= " and wellName='" + wellName + "' ";
+		}
+		sql+= " and acqTime between to_date('"+ startDate +"','yyyy-MM-dd') and to_date('"+ endDate +"','yyyy-MM-dd')+1";
+		sql+=" order by acqTime desc";
+		List<?> list=this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalRoot\":[");
+		
+		for (int i = 0; i < list.size(); i++) {
+			Object[] obj = (Object[]) list.get(i);
+			CLOB realClob=null;
+			SerializableClobProxy   proxy=null;
+			String sStr="";
+	        String fStr="";
+	        String wattStr="";
+	        String aStr="";
+	        String pointCount="";
+	        if(obj[3]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[3]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				sStr=StringManagerUtils.CLOBtoString(realClob);
+				if(StringManagerUtils.isNotNull(sStr)){
+					pointCount=sStr.split(",").length+"";
+				}
+			}
+	        if(obj[4]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[4]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				fStr=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        if(obj[5]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[5]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				wattStr=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        if(obj[6]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[6]);
+				realClob = (CLOB) proxy.getWrappedClob(); 
+				aStr=StringManagerUtils.CLOBtoString(realClob);
+			}
+	        
+			result_json.append("{ \"id\":\"" + obj[0] + "\",");
+			result_json.append("\"wellName\":\"" + obj[1] + "\",");
+			result_json.append("\"acqTime\":\"" + obj[2] + "\",");
+			result_json.append("\"pointCount\":\""+pointCount+"\","); 
+			result_json.append("\"upperLoadLine\":\"" + obj[7] + "\",");
+			result_json.append("\"lowerLoadLine\":\"" + obj[8] + "\",");
+			result_json.append("\"fmax\":\""+obj[9]+"\",");
+			result_json.append("\"fmin\":\""+obj[10]+"\",");
+			result_json.append("\"stroke\":\""+obj[11]+"\",");
+			result_json.append("\"spm\":\""+obj[12]+"\",");
+			result_json.append("\"liquidProduction\":\""+obj[13]+"\",");
+			result_json.append("\"resultName\":\""+obj[14]+"\",");
+			result_json.append("\"S\":["+sStr+"],"); 
+			result_json.append("\"F\":["+fStr+"],"); 
+			result_json.append("\"Watt\":["+wattStr+"],"); 
+			result_json.append("\"A\":["+aStr+"]},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getPumpunitRealtimeWellAnalysisData(String data) throws SQLException, IOException{

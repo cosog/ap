@@ -9,7 +9,7 @@
     },
     "Topic": {
         "Up": {
-            "NormData": "Up-Norm",
+            "NormData": "Up-Main",
             "RawData": "Up-RawFEA",
             "RawWaterCut": "Up-RawWaterCut",
             "Config": "Up-Config",

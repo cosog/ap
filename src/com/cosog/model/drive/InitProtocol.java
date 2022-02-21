@@ -9,16 +9,6 @@ public class InitProtocol {
 	
 	private String ProtocolName;
     
-    private String ProtocolType;
-    
-    private String SignInPrefix;
-    
-    private String SignInSuffix;
-    
-    private String HeartbeatPrefix;
-    
-    private String HeartbeatSuffix;
-    
     private List<Integer> Addr;
     
     private List<Integer> Quantity;
@@ -39,11 +29,6 @@ public class InitProtocol {
     
     public InitProtocol(ModbusProtocolConfig.Protocol protocolConfig) {
     	this.setProtocolName(protocolConfig.getName());
-    	this.setProtocolType(protocolConfig.getType());
-    	this.setSignInPrefix(protocolConfig.getSignInPrefix());
-    	this.setSignInSuffix(protocolConfig.getSignInSuffix());
-    	this.setHeartbeatPrefix(protocolConfig.getHeartbeatPrefix());
-    	this.setHeartbeatSuffix(protocolConfig.getHeartbeatSuffix());
     	this.Addr=new ArrayList<Integer>();
     	this.Quantity=new ArrayList<Integer>();
     	this.StoreDataType=new ArrayList<String>();
@@ -68,46 +53,6 @@ public class InitProtocol {
 
 	public void setProtocolName(String protocolName) {
 		ProtocolName = protocolName;
-	}
-
-	public String getProtocolType() {
-		return ProtocolType;
-	}
-
-	public void setProtocolType(String protocolType) {
-		ProtocolType = protocolType;
-	}
-
-	public String getSignInPrefix() {
-		return SignInPrefix;
-	}
-
-	public void setSignInPrefix(String signInPrefix) {
-		SignInPrefix = signInPrefix;
-	}
-
-	public String getSignInSuffix() {
-		return SignInSuffix;
-	}
-
-	public void setSignInSuffix(String signInSuffix) {
-		SignInSuffix = signInSuffix;
-	}
-
-	public String getHeartbeatPrefix() {
-		return HeartbeatPrefix;
-	}
-
-	public void setHeartbeatPrefix(String heartbeatPrefix) {
-		HeartbeatPrefix = heartbeatPrefix;
-	}
-
-	public String getHeartbeatSuffix() {
-		return HeartbeatSuffix;
-	}
-
-	public void setHeartbeatSuffix(String heartbeatSuffix) {
-		HeartbeatSuffix = heartbeatSuffix;
 	}
 
 	public List<Integer> getAddr() {

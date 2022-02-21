@@ -65,12 +65,27 @@ mqtt:
    userName: hinnotekClient1
    passWord: ZJ6m*#D4pd%b
 driverConfig:
-   server: http://8.130.30.138:19200/api/init/server
-   protocol: http://8.130.30.138:19200/api/init/protocol
-   id: http://8.130.30.138:19200/api/init/id
-   readAddr: http://8.130.30.138:19200/api/read/addr
-   writeAddr: http://8.130.30.138:19200/api/write/addr
-   probe: http://8.130.30.138:19200/api/probe/init
+   server: http://39.99.42.182:19200/api/init/server
+   protocol: http://39.99.42.182:19200/api/init/protocol
+   instance: http://39.99.42.182:19200/api/init/instance
+   id: http://39.99.42.182:19200/api/init/id
+   SMS: http://39.99.42.182:19200/api/init/sms
+   readAddr: http://39.99.42.182:19200/api/read/addr
+   writeAddr: http://39.99.42.182:19200/api/write/addr
+   writeSMS: http://39.99.42.182:19200/api/write/sms
+   probe:
+      init: http://39.99.42.182:19200/api/probe/init
+      app: http://39.99.42.182:19200/api/probe/app
+      cpu: http://39.99.42.182:19200/api/probe/cpu
+      mem: http://39.99.42.182:19200/api/probe/mem
+      disk: http://39.99.42.182:19200/api/probe/disk
+      host: http://39.99.42.182:19200/api/probe/host
+email:
+   snedAccount:
+      account: shfzby@126.com
+      password: CANDRMRCDLKHUKQX
+      smtpHost: smtp.126.com
+      smtpPort: 465
 others:
    cache: false
    language: zh_CN
@@ -80,5 +95,8 @@ others:
    defaultComboxSize: 10000
    defaultGraghSize: 60
    productionUnit: 1
+   dataSaveMode: 1
+   showLogo: true
+   printLog: true
    serialnumber: God bless you!
       

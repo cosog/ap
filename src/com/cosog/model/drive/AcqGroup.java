@@ -13,6 +13,8 @@ public class AcqGroup {
 	private List<Integer> Addr;
 	
 	private List<List<Object>> Value;
+	
+	private String RawData;
 
 	public String getID() {
 		return ID;
@@ -52,6 +54,14 @@ public class AcqGroup {
 
 	public void setValue(List<List<Object>> value) {
 		Value = value;
+	}
+
+	public String getRawData() {
+		return RawData;
+	}
+
+	public void setRawData(String rawData) {
+		RawData = rawData;
 	}
 	
 }

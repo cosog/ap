@@ -2,16 +2,11 @@
     "Protocol": [
         {
             "Name": "A11-Modbus",
-            "Code": "CNPCStandardDrive",
-            "Type": "modbus-tcp",
-            "SignInPrefix": "AA01",
-            "SignInSuffix": "0D",
-            "HeartbeatPrefix": "AA01",
-            "HeartbeatSuffix": "0D",
+            "Code": "A11-Modbus",
+            "DeviceType": 0,
             "Sort": 1,
             "Items": [
                 {
-                    "Name": "RunStatus",
                     "Title": "运行状态",
                     "Addr": 40317,
                     "StoreDataType": "uint16",
@@ -20,10 +15,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "RunControl",
                     "Title": "启停控制",
                     "Addr": 40320,
                     "StoreDataType": "uint16",
@@ -32,10 +27,10 @@
                     "Ratio": 1.0,
                     "RWType": "rw",
                     "Unit": "",
+                    "ResolutionMode": 1,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "IA",
                     "Title": "A相电流",
                     "Addr": 40351,
                     "StoreDataType": "float32",
@@ -44,10 +39,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "A",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "IB",
                     "Title": "B相电流",
                     "Addr": 40353,
                     "StoreDataType": "float32",
@@ -56,10 +51,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "A",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "IC",
                     "Title": "C相电流",
                     "Addr": 40355,
                     "StoreDataType": "float32",
@@ -68,10 +63,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "V",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "VA",
                     "Title": "A相电压",
                     "Addr": 40357,
                     "StoreDataType": "float32",
@@ -80,10 +75,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "V",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "VB",
                     "Title": "B相电压",
                     "Addr": 40359,
                     "StoreDataType": "float32",
@@ -92,10 +87,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "V",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "VC",
                     "Title": "C相电压",
                     "Addr": 40361,
                     "StoreDataType": "float32",
@@ -104,10 +99,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "V",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "KWattH",
                     "Title": "有功功耗",
                     "Addr": 40363,
                     "StoreDataType": "float32",
@@ -116,10 +111,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "kW·h",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "KVarH",
                     "Title": "无功功耗",
                     "Addr": 40365,
                     "StoreDataType": "float32",
@@ -128,10 +123,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "kVar·h",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "Watt3",
                     "Title": "有功功率",
                     "Addr": 40367,
                     "StoreDataType": "float32",
@@ -140,10 +135,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "kW",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "Var3",
                     "Title": "无功功率",
                     "Addr": 40369,
                     "StoreDataType": "float32",
@@ -152,10 +147,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "kVar",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "ReversePower",
                     "Title": "反向功率",
                     "Addr": 40371,
                     "StoreDataType": "float32",
@@ -164,10 +159,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "kW",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "PF3",
                     "Title": "功率因数",
                     "Addr": 40373,
                     "StoreDataType": "float32",
@@ -176,10 +171,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "TubingPressure",
                     "Title": "油压",
                     "Addr": 40300,
                     "StoreDataType": "float32",
@@ -188,10 +183,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "MPa",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "CasingPressure",
                     "Title": "套压",
                     "Addr": 40302,
                     "StoreDataType": "float32",
@@ -200,10 +195,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "MPa",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "BackPressure",
                     "Title": "回压",
                     "Addr": 40304,
                     "StoreDataType": "float32",
@@ -212,10 +207,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "MPa",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "WellHeadFluidTemperature",
                     "Title": "井口流温",
                     "Addr": 40306,
                     "StoreDataType": "float32",
@@ -224,10 +219,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "℃",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "ProducingfluidLevel",
                     "Title": "动液面",
                     "Addr": 0,
                     "StoreDataType": "float32",
@@ -236,10 +231,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "m",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "WaterCut",
                     "Title": "含水率",
                     "Addr": 40314,
                     "StoreDataType": "float32",
@@ -248,10 +243,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "%",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "SetFrequency",
                     "Title": "变频设置频率",
                     "Addr": 40402,
                     "StoreDataType": "float32",
@@ -260,10 +255,10 @@
                     "Ratio": 1.0,
                     "RWType": "rw",
                     "Unit": "Hz",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "RunFrequency",
                     "Title": "变频运行频率",
                     "Addr": 40404,
                     "StoreDataType": "float32",
@@ -272,10 +267,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "Hz",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "RPM",
                     "Title": "螺杆泵转速",
                     "Addr": 40430,
                     "StoreDataType": "float32",
@@ -284,10 +279,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "r/min",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "Torque",
                     "Title": "螺杆泵扭矩",
                     "Addr": 40432,
                     "StoreDataType": "float32",
@@ -296,10 +291,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "kN·m",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "FESDiagramAcquisitionInterval",
                     "Title": "功图采集间隔",
                     "Addr": 40981,
                     "StoreDataType": "uint16",
@@ -308,10 +303,10 @@
                     "Ratio": 1.0,
                     "RWType": "rw",
                     "Unit": "min",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "FESDiagramSetPointCount",
                     "Title": "功图设置点数",
                     "Addr": 40983,
                     "StoreDataType": "uint16",
@@ -320,10 +315,10 @@
                     "Ratio": 1.0,
                     "RWType": "rw",
                     "Unit": "",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "FESDiagramPointCount",
                     "Title": "功图实测点数",
                     "Addr": 40984,
                     "StoreDataType": "uint16",
@@ -332,10 +327,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "FESDiagramAcqTime",
                     "Title": "功图采集时间",
                     "Addr": 40985,
                     "StoreDataType": "bcd",
@@ -344,10 +339,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "SPM",
                     "Title": "冲次",
                     "Addr": 40991,
                     "StoreDataType": "float32",
@@ -356,10 +351,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "次/min",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "Stroke",
                     "Title": "冲程",
                     "Addr": 40993,
                     "StoreDataType": "float32",
@@ -368,10 +363,10 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "m",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "SDiagram",
                     "Title": "功图数据-位移",
                     "Addr": 41001,
                     "StoreDataType": "int16",
@@ -380,10 +375,10 @@
                     "Ratio": 0.01,
                     "RWType": "r",
                     "Unit": "0.01m",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "FDiagram",
                     "Title": "功图数据-载荷",
                     "Addr": 41251,
                     "StoreDataType": "int16",
@@ -392,10 +387,10 @@
                     "Ratio": 0.01,
                     "RWType": "r",
                     "Unit": "0.01kN",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "IDiagram",
                     "Title": "功图数据-电流",
                     "Addr": 41501,
                     "StoreDataType": "int16",
@@ -404,10 +399,10 @@
                     "Ratio": 0.01,
                     "RWType": "r",
                     "Unit": "0.01A",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Name": "WattDiagram",
                     "Title": "功图数据-功率",
                     "Addr": 41751,
                     "StoreDataType": "int16",
@@ -416,6 +411,7 @@
                     "Ratio": 0.01,
                     "RWType": "r",
                     "Unit": "0.01kW",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
@@ -427,6 +423,7 @@
                     "Ratio": 1.0,
                     "RWType": "rw",
                     "Unit": "",
+                    "ResolutionMode": 0,
                     "AcqMode": "passive"
                 }
             ]

@@ -2,6 +2,10 @@ package com.cosog.utils;
 
 import java.util.List;
 
+import com.cosog.utils.ConfigFile.DriverProbe;
+import com.cosog.utils.ConfigFile.Email;
+import com.cosog.utils.ConfigFile.mailAccount;
+
 public class ConfigFile {
 	
 	private Server server;
@@ -18,6 +22,8 @@ public class ConfigFile {
     
     private DriverConfig driverConfig;
 
+    private Email email;
+    
     private Others others;
 
     public void setServer(Server server){
@@ -459,13 +465,61 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class DriverProbe{
+		private String init;
+		private String app;
+		private String mem;
+		private String disk;
+		private String host;
+		private String cpu;
+		public String getInit() {
+			return init;
+		}
+		public void setInit(String init) {
+			this.init = init;
+		}
+		public String getMem() {
+			return mem;
+		}
+		public void setMem(String mem) {
+			this.mem = mem;
+		}
+		public String getDisk() {
+			return disk;
+		}
+		public void setDisk(String disk) {
+			this.disk = disk;
+		}
+		public String getHost() {
+			return host;
+		}
+		public void setHost(String host) {
+			this.host = host;
+		}
+		public String getCpu() {
+			return cpu;
+		}
+		public void setCpu(String cpu) {
+			this.cpu = cpu;
+		}
+		public String getApp() {
+			return app;
+		}
+		public void setApp(String app) {
+			this.app = app;
+		}
+	}
+	
 	public static class DriverConfig{
 		private String server;
 		private String protocol;
+		private String instance;
 		private String id;
+		private String SMS;
 		private String readAddr;
 		private String writeAddr;
-		private String probe;
+		private String writeSMS;
+		private DriverProbe probe;
 		public String getServer() {
 			return server;
 		}
@@ -484,10 +538,10 @@ public class ConfigFile {
 		public void setId(String id) {
 			this.id = id;
 		}
-		public String getProbe() {
+		public DriverProbe getProbe() {
 			return probe;
 		}
-		public void setProbe(String probe) {
+		public void setProbe(DriverProbe probe) {
 			this.probe = probe;
 		}
 		public String getReadAddr() {
@@ -501,6 +555,67 @@ public class ConfigFile {
 		}
 		public void setWriteAddr(String writeAddr) {
 			this.writeAddr = writeAddr;
+		}
+		public String getInstance() {
+			return instance;
+		}
+		public void setInstance(String instance) {
+			this.instance = instance;
+		}
+		public String getSMS() {
+			return SMS;
+		}
+		public void setSMS(String sMS) {
+			SMS = sMS;
+		}
+		public String getWriteSMS() {
+			return writeSMS;
+		}
+		public void setWriteSMS(String writeSMS) {
+			this.writeSMS = writeSMS;
+		}
+	}
+	
+	public static class mailAccount{
+		private String account;
+		private String password;
+		private String smtpHost;
+		private String smtpPort;
+		public String getAccount() {
+			return account;
+		}
+		public void setAccount(String account) {
+			this.account = account;
+		}
+		public String getPassword() {
+			return password;
+		}
+		public void setPassword(String password) {
+			this.password = password;
+		}
+		public String getSmtpHost() {
+			return smtpHost;
+		}
+		public void setSmtpHost(String smtpHost) {
+			this.smtpHost = smtpHost;
+		}
+		public String getSmtpPort() {
+			return smtpPort;
+		}
+		public void setSmtpPort(String smtpPort) {
+			this.smtpPort = smtpPort;
+		}
+	}
+	
+	public static class Email{
+		private mailAccount snedAccount;
+
+		public mailAccount getSnedAccount() {
+			return snedAccount;
+		}
+
+		public void setSnedAccount(mailAccount snedAccount) {
+			this.snedAccount = snedAccount;
 		}
 	}
 	
@@ -521,6 +636,12 @@ public class ConfigFile {
 	    private int defaultGraghSize;
 	    
 	    private int productionUnit;
+	    
+	    private int dataSaveMode;
+	    
+	    private boolean showLogo;
+	    
+	    private boolean printLog;
 
 		private String serialnumber;
 
@@ -578,6 +699,24 @@ public class ConfigFile {
 		public void setProductionUnit(int productionUnit) {
 			this.productionUnit = productionUnit;
 		}
+		public int getDataSaveMode() {
+			return dataSaveMode;
+		}
+		public void setDataSaveMode(int dataSaveMode) {
+			this.dataSaveMode = dataSaveMode;
+		}
+		public boolean getShowLogo() {
+			return showLogo;
+		}
+		public void setShowLogo(boolean showLogo) {
+			this.showLogo = showLogo;
+		}
+		public boolean getPrintLog() {
+			return printLog;
+		}
+		public void setPrintLog(boolean printLog) {
+			this.printLog = printLog;
+		}
 	}
 
 	public TcpServer getTcpServer() {
@@ -591,5 +730,11 @@ public class ConfigFile {
 	}
 	public void setDriverConfig(DriverConfig driverConfig) {
 		this.driverConfig = driverConfig;
+	}
+	public Email getEmail() {
+		return email;
+	}
+	public void setEmail(Email email) {
+		this.email = email;
 	}
 }

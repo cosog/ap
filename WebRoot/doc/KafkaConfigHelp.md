@@ -12,7 +12,7 @@ State										  开关		off-失效  on-使能
 
 Wifi_interface						   针对该设备为固定值wlan1					
 
-Interface_with_internet		  建立AP时的外网路由，eth0：网卡1 eth1：网卡2 eth2：代表4g wlan0：代表sta
+Interface_with_internet		  建立AP时的外网路由，eth0：网卡1；eth1：网卡2；eth2：代表4g；wlan0：代表sta
 
 SSID									   	名称			缺省：AP_ID
 
@@ -56,228 +56,318 @@ GW										   网关
 
 DNS										 域名服务器	可以设置与网关一致
 
-#### Eth2				   		   4G模组
+#### Eth2				   		    4G模组
 
-State									   开关			off-失效  on-使能
+State									    开关			off-失效  on-使能
 
-## Server		  	 服务器
+## Server		  	  服务器
 
-### RemoteKafka
+### RemoteModbus   Modbus 连接的TCP服务器
 
-State									       开关			off-失效  on-使能
+State									     开关			off-失效  on-使能
 
-IP 												缺省：39.98.64.56
+ProtocolType						   协议类型  modbus-tcp或modbus-rtu 		缺省：modbus-tcp
 
-Port											 缺省：9092
+IP					
 
-#### Topic							主题
+Port
 
-##### Pub										    发布
+### RemoteKafka       远程Kafka服务器
 
-Norm       								  标准数据
+State									    开关			off-失效  on-使能
 
-RawFES								      原始功图数据
+IP 											 缺省：39.98.64.56
 
-RawFES								      原始含水率数据
+Port										  缺省：9092
 
-Log         									日志数据
+#### Topic							 主题
 
-Resource         						  资源数据
+##### Pub										  发布
 
-##### Sub											订阅
+Main       								  主数据
 
-### LocalApp								 APP
+RawFES								    原始功图数据
+
+RawWaterCut 					    原始含水率数据
+
+Log         								  日志数据
+
+Resource         						资源数据
+
+##### Sub										   订阅
+
+### RPC						  远程过程调用
+
+State									    开关			off-失效  on-使能
+
+UpIP										上行IP
+
+UpPort									上行端口
+
+DownIP								   下行IP
+
+DownPort							   下行端口
+
+#### Topic							 主题
+
+##### Pub										  发布
+
+Main       								  主数据
+
+RawFES								    原始功图数据
+
+RawWaterCut 					    原始含水率数据
+
+Log         								  日志数据
+
+Resource         						资源数据
+
+##### Sub										   订阅
+
+### LocalModbus        本地Modbus
+
+State										 开关			off-失效  on-使能
+
+IP											   缺省：127.0.0.1
+
+Port										   缺省：502
+
+### LocalApp   			 APP
 
 State										  开关			off-失效  on-使能
 
 IP											    缺省：192.168.12.1
 
-Port										   缺省：17100
+Port										    缺省：17100
 
-## Terminal	       端子配置
+## Terminal	        端子配置
 
 ### RS485
 
-Num										端子号，最小值为1，端子1默认健丰含水仪，端子2默认健丰动液面仪
+State										 开关			off-失效  on-使能
 
-Driver  									驱动名称，jf-hs/50：健丰含水仪  jf-dym-01：健丰动液面仪
+SN											 端子号，最小值为1，端子1默认健丰含水仪，端子2默认健丰动液面仪
+
+Baud										 波特率
+
+DataBit									 数据位
+
+Parity								   	 校验
+
+StopBits							   	 停止位
+
+Timeout							   	 超时   		ms
+
+#### Slaves							从地址数组，支持总线模式
+
+State										 开关			off-失效  on-使能
+
+Slave										 从地址        填写十进制数值，例如1、2、3......
+
+Driver  									 驱动名称，jf-hs/50：健丰含水仪  hik-ds-2ta21-2avf:海康红外测温仪仪
+
+Tag									   	 预留
 
 ### RS232
 
-Num									   端子号，最小值为1
+State										 开关			off-失效  on-使能
 
-Driver									 驱动名称
+SN											 端子号，最小值为1，调试端口
+
+Baud										 波特率
+
+DataBit									 数据位
+
+Parity								   	 校验
+
+StopBits							   	停止位
 
 ### DI
 
-Num									   端子号，最小值为1，缺省端子1：抽油机运行状态
+State										开关			off-失效  on-使能
 
-Driver	                                 驱动名称，rpc_run_status：抽油机运行状态
+SN											端子号，最小值为1，缺省端子1：抽油机运行状态
+
+Tag  	                                	 标签，rpc_run_status：抽油机运行状态
 
 ### DO
 
-Num	                                   端子号，最小值为1，缺省端子1：启抽继电器  端子2：停抽继电器
+State										开关			off-失效  on-使能
 
-Driver	                                 驱动名称，rpc_start_relay ：启抽继电器  rpc_stop_relay ：停抽继电器   
+SN 	                                   	端子号，最小值为1，缺省端子1：启抽继电器  端子2：停抽继电器
+
+Tag 	                                 	 标签，rpc_start_relay ：启抽继电器  rpc_stop_relay ：停抽继电器   
 
 ### AI
 
-Num									   端子号，最小值为1，缺省端子1：载荷传感器  端子2：角位移传感器
+State										开关			off-失效  on-使能
 
-Driver									 驱动名称，load ：载荷传感器 angle：角位移传感器 
+SN											端子号，最小值为1，缺省端子1：载荷传感器  端子2：角位移传感器 
 
-### AO
+Tag									   	标签，load-载荷传感器	angle：角位移传感器 
 
-Num										端子号，最小值为1
+#### Range							量程
 
-Driver									  驱动名称
+MinCurrent						 	最小电流					缺省：4mA
 
-## FRange			  载荷量程
+MaxCurrent					    	最大电流					缺省：20mA
 
-MinCurrent							最小电流					缺省：4mA
+MinValue						     	量程下限					缺省：角度 -45度；载荷 0kN
 
-MaxCurrent						   最大电流					缺省：20mA
+MaxValue						    	量程上限					缺省：角度 45度；载荷 150kN
 
-MinF								        最小载荷		    		缺省：0kN								
+### AO						   预留
 
-MaxF								       最大载荷					缺省：150kN
+## Ratio				  互感器变比
 
-## ARange			 角度量程
+V											    电压变比					 缺省：1
 
-MinCurrent						    最小电流					缺省：4mA
+I									 		    电流变比					 缺省：1
 
-MaxCurrent					       最大电流					缺省：20mA
+## Ctrl 				    控制配置
 
-MinAngle						        最小角度					缺省：-45度
+RPCStopPosition	                间开抽油机停抽位置 top：驴头上死点 bottom：驴头下死点 空：即时停抽
 
-MaxAngle						       最大角度					缺省：45度
+RPCStopAngleTHR	             抽油机停抽角度阈值						缺省：2度
 
-## Ratio				 互感器变比
+RPCStartRelayDuration	     抽油机启抽继电器吸合时间			缺省：60秒
 
-V											 电压变比					 缺省：1
+RPCStartSoundDuration	   抽油机启抽音乐时间						缺省：60秒
 
-I									 		 电流变比					 缺省：1
+RPCStopRelayDuration		 抽油机停抽继电器吸合时间			 缺省：10秒
 
-## Ctrl 				   控制配置
+RPCStartSoundPath	          启抽音乐路径									 缺省：sound/rpc_start.wav
 
-RPCStopPosition	              间开抽油机停抽位置 top：驴头上死点 bottom：驴头下死点 空：即时停抽
+EnterWellSiteSoundPath      进入井场音乐路径							 缺省：sound/enter_wellsite.wav
 
-RPCStopAngleTHR	           抽油机停抽角度阈值						缺省：2度
+## Timer			     定时器
 
-RPCStartRelayDuration	   抽油机启抽继电器吸合时间			缺省：60秒
+StartOverload					    启抽过载定时器		缺省：5分钟	
 
-RPCStartSoundDuration	 抽油机启抽音乐时间						缺省：60秒
+TransferInterval				    传输间隔定时器		缺省：3分钟
 
-RPCStopRelayDuration	   抽油机停抽继电器吸合时间			 缺省：10秒
+HeartbeatInterval                 心跳包间隔定时器    缺省：10秒
 
-RPCStartSoundPath	        启抽音乐路径									 缺省：sound/rpc_start.wav
+AcqSampleInterval               采样间隔                   缺省： 50毫秒
 
-EnterWellSiteSoundPath    进入井场音乐路径							 缺省：sound/enter_wellsite.wav
+DailyStartTimer	                 日报上传起始时间，区间内随机时间上传，填写1-24整型  缺省：2
 
-## Timer			    定时器
+DailyEndTimer					   日报上传结束时间，区间内随机时间上传，填写1-24整型  缺省：5
 
-StartOverload					  启抽过载定时器		缺省：5分钟	
+## Counter		    计数器
 
-TransferInterval				  传输间隔定时器		缺省：3分钟
+StopCNT								 停抽计数器													缺省：1000
 
-HeartbeatInterval               心跳包间隔定时器    缺省：10秒
+UnderloadCNT					  欠载计数器													缺省：1000
 
-AcqSampleInterval             采样间隔                   缺省： 50毫秒
+OverloadCNT					     过载计数器													缺省：1
 
-DailyStartTimer	               日报上传起始时间，区间内随机时间上传，填写1-24整型  缺省：2
+OpenPhaseCNT					 缺相计数器													缺省：1000
 
-DailyEndTimer	                 日报上传结束时间，区间内随机时间上传，填写1-24整型  缺省：5
+Imbalance3ICNT				    三相电流不平衡计数器				 				缺省：1000
 
-## Counter		   计数器
+## Limit				  界限值
 
-StopCNT								停抽计数器									缺省：1000
-
-UnderloadCNT					 欠载计数器									缺省：1000
-
-OverloadCNT					    过载计数器									缺省：1
-
-OpenPhaseCNT					缺相计数器									缺省：1000
-
-Imbalance3ICNT				   三相电流不平衡计数器				 缺省：1000
-
-## Limit				界限值
-
-### I							 电流
+### I							   电流
 
 #### A								 								
 
-Zero									 零值界限，需考虑冬季电保温等接入		缺省：3A
+Noload								   空载电流													  	 缺省：20A
+
+Zero									    零值界限，需考虑冬季电保温等接入			缺省：3A
 
 #### B								  
 
-Zero									 零值界限，需考虑冬季电保温等接入		缺省：3A
+Noload								   空载电流													   	缺省：20A
+
+Zero									    零值界限，需考虑冬季电保温等接入			缺省：3A
 
 #### C								  
 
-Zero									 零值界限，需考虑冬季电保温等接入		缺省：3A
+Noload								   空载电流													   	缺省：20A
 
-## Length			记录数
+Zero									    零值界限，需考虑冬季电保温等接入			缺省：3A
 
-FEAStack							采集载荷-电参-角度原始数据曲线点数			缺省：1000
+## Length			  记录数
 
-StoreFEA							存储载荷-电参-角度功图记录数						缺省：100
+FEAStack							   采集载荷-电参-角度原始数据曲线点数			缺省：1000
 
-StoreFES							存储载荷-电参-位移功图记录数						缺省：100
+StoreFEA							   存储载荷-电参-角度功图记录数						缺省：100
 
-StoreFESR						  存储功图计算结果记录数								  缺省：100
+StoreFES							   存储载荷-电参-位移功图记录数						缺省：100
 
-StoreAcqWaterCut		   存储采集含水仪数据记录数			                  缺省：1000
+StoreFESR						     存储功图计算结果记录数								  缺省：100
 
-StoreCalcWaterCut	      存储计算含水仪数据记录数			                  缺省：1000
+StoreAcqWaterCut		      存储采集含水仪数据记录数			                  缺省：1000
 
-StoreAcqLevel	               存储采集动液面仪记录数						          缺省：1000
+StoreCalcWaterCut	         存储计算含水仪数据记录数			                  缺省：1000
 
-StoreCalcLevel	              存储计算动液面仪记录数						          缺省：1000
+StoreCalcInfrared				存储计算红外温度数据记录数		                  缺省：1000
 
-StoreAcqTP					    存储采集油压记录数										 缺省：1000
+StoreAcqLevel	                  存储采集动液面仪记录数						          缺省：1000
 
-StoreCalcTP					   存储计算油压记录数										 缺省：1000
+StoreCalcLevel	                 存储计算动液面仪记录数						          缺省：1000
 
-StoreAcqTT					    存储采集井口流温记录数								 缺省：1000
+StoreAcqBP					      存储采集回压记录数										 缺省：1000
 
-StoreCalcTT					   存储计算井口流温记录数							     缺省：1000
+StoreCalcBP					      存储计算回压记录数										 缺省：1000
 
-StoreAcqCP					   存储采集套压记录数									     缺省：1000
+StoreAcqTP					       存储采集油压记录数										 缺省：1000
 
-StoreCalcCP					  存储计算套压记录数									     缺省：1000
+StoreCalcTP					      存储计算油压记录数										 缺省：1000
 
-StoreAcqFreq				   存储采集变频器频率记录数						      缺省：1000
+StoreAcqWT					      存储采集井口流温记录数								 缺省：1000
 
-StoreCalcFreq				  存储计算变频器频率记录数						      缺省：1000
+StoreCalcWT					     存储计算井口流温记录数							     缺省：1000
 
-StoreAcqE					     存储采集电参记录数										 缺省：1000
+StoreAcqCP					      存储采集套压记录数									     缺省：1000
 
-StoreCalcE					    存储计算电参记录数										 缺省：1000
+StoreCalcCP					     存储计算套压记录数									     缺省：1000
 
-StoreAcqRun				    存储采集运行状态记录数							     缺省：1000
+StoreAcqFreq				      存储采集变频器频率记录数						      缺省：1000
 
-StoreCalcRun				   存储计算运行状态记录数							     缺省：1000
+StoreCalcFreq				     存储计算变频器频率记录数						      缺省：1000
 
-StoreAcqComm			   存储采集通信状态记录数						         缺省：1000
+StoreAcqE					        存储采集电参记录数										 缺省：1000
 
-StoreCalcComm			  存储计算通信状态记录数						         缺省：1000
+StoreCalcE					       存储计算电参记录数										 缺省：1000
 
-StoreDaily					    存储日报记录数										         缺省：10
+StoreAcqF					        存储采集载荷记录数										 缺省：1000
 
-Log					   			 启动日志记录数										         缺省：10
+StoreCalcF					       存储计算载荷记录数										 缺省：1000
 
-## Filter			 滤波配置
+StoreAcqA					        存储采集角度记录数										 缺省：1000
 
-FTimes							载荷滤波次数								缺省：0
+StoreCalcA					       存储计算角度记录数										 缺省：1000
 
-ATimes						   角度滤波次数								缺省：0
+StoreAcqRun				       存储采集运行状态记录数							     缺省：1000
 
-WattTimes					 功率滤波次数							    缺省：0
+StoreCalcRun				      存储计算运行状态记录数							     缺省：1000
 
-ITimes							电流滤波次数								缺省：0
+StoreAcqComm			      存储采集通信状态记录数						         缺省：1000
 
-FZero						     载荷零值滤波数值						 缺省：0kN
+StoreCalcComm			     存储计算通信状态记录数						         缺省：1000
 
-AZero							 角度零值滤波数值						 缺省：0度
+StoreDaily					       存储日报记录数										         缺省：10
 
-## Rate			 速率配置  20,45,90,175,330,600,1000 缺省：1000
+StoreYHHDAngle			   预留																	缺省：1000
+
+StoreYHHDLFJ					预留																	缺省：1000
+
+StoreYHHDFSL				   预留																	缺省：1000
+
+Log					   			    启动日志记录数										         缺省：10
+
+## Filter			   滤波配置
+
+FTimes							   载荷滤波次数														缺省：0
+
+ATimes						      角度滤波次数														缺省：0
+
+WattTimes					    功率滤波次数							   						 缺省：0
+
+ITimes							   电流滤波次数														缺省：0
+
+FZero						        载荷零值滤波数值						 						缺省：0kN
+
+AZero							    角度零值滤波数值						 						缺省：0度

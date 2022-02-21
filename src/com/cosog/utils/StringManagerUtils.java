@@ -46,10 +46,14 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -102,9 +106,162 @@ public class StringManagerUtils {
 	private final static String[] jsSpecialChars = { "\\", "\'", "\"" };
 
 	// 单位字符，
-	public static final char[] ascchars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '|', '\\', '[', ']', '{', '}', '\'', '\"', ';', ':', ',', '.',
-			'<', '>', '/', '?' };
+	public static final char[] ascchars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '|', '\\', '[', ']', '{', '}', '\'', '\"', ';', ':', ',', '.','<', '>', '/', '?' };
 
+	private final static int[] li_SecPosValue = { 1601, 1637, 1833, 2078, 2274,2302, 2433, 2594, 2787, 3106, 3212, 3472, 3635, 3722, 3730, 3858,4027, 4086, 4390, 4558, 4684, 4925, 5249, 5590 };
+    private final static String[] lc_FirstLetter = { "a", "b", "c", "d", "e","f", "g", "h", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s","t", "w", "x", "y", "z" };
+	
+    //验证手机号码的正则表达式
+    /**
+     * ^ 匹配输入字符串开始的位置
+     * \d 匹配一个或多个数字，其中 \ 要转义，所以是 \\d
+     * $ 匹配输入字符串结尾的位置
+     */
+    private static final Pattern HK_PATTERN = Pattern.compile("^(5|6|8|9)\\d{7}$");
+    private static final Pattern CHINA_PATTERN = Pattern.compile("^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\\d{8}$");
+    private static final Pattern NUM_PATTERN = Pattern.compile("[0-9]+");
+    private static final Pattern COLOR_PATTERN = Pattern.compile("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
+
+    public static String protocolItemNameToCol(String str) {
+        return "c_"+getAllFirstLetter(str);
+    }
+    
+    /**
+     * 取得给定汉字串的首字母串,即声母串 
+     * @param str 给定汉字串 
+     * @return 声母串
+     */
+    public static String getAllFirstLetter(String str) {
+        if (str == null || str.trim().length() == 0) {
+            return "";
+        }
+
+        String _str = "";
+        for (int i = 0; i < str.length(); i++) {
+            _str = _str + getFirstLetter(str.substring(i, i + 1));
+        }
+
+        return _str;
+    }
+
+    /**
+     * 取得给定汉字的首字母,即声母 
+     * @param chinese 给定的汉字 
+     * @return 给定汉字的声母
+     */
+    public static String getFirstLetter(String chinese) {
+        if (chinese == null || chinese.trim().length() == 0) {
+            return "";
+        }
+        chinese = conversionStr(chinese, "GB2312", "ISO8859-1");
+
+        if (chinese.length() > 1) // 判断是不是汉字  
+        {
+            int li_SectorCode = (int) chinese.charAt(0); // 汉字区码  
+            int li_PositionCode = (int) chinese.charAt(1); // 汉字位码  
+            li_SectorCode = li_SectorCode - 160;
+            li_PositionCode = li_PositionCode - 160;
+            int li_SecPosCode = li_SectorCode * 100 + li_PositionCode; // 汉字区位码  
+            if (li_SecPosCode > 1600 && li_SecPosCode < 5590) {
+                for (int i = 0; i < 23; i++) {
+                    if (li_SecPosCode >= li_SecPosValue[i]
+                            && li_SecPosCode < li_SecPosValue[i + 1]) {
+                        chinese = lc_FirstLetter[i];
+                        break;
+                    }
+                }
+            } else // 非汉字字符,如图形符号或ASCII码  
+            {
+                chinese = conversionStr(chinese, "ISO8859-1", "GB2312");
+                chinese = chinese.substring(0, 1);
+            }
+        }else{
+        	int asciiValue=Integer.valueOf(chinese.charAt(0));
+        	if(!((asciiValue>=48&&asciiValue<=57)||(asciiValue>=65&&asciiValue<=90)||(asciiValue>=97&&asciiValue<=122))){//如果是特殊字符
+        		chinese="";
+        	}
+        }
+
+        return chinese;
+    }
+	
+    /**
+     * 字符串编码转换 
+     * @param str 要转换编码的字符串 
+     * @param charsetName 原来的编码 
+     * @param toCharsetName 转换后的编码 
+     * @return 经过编码转换后的字符串
+     */
+    private static String conversionStr(String str, String charsetName,String toCharsetName) {
+        try {
+            str = new String(str.getBytes(charsetName), toCharsetName);
+        } catch (UnsupportedEncodingException ex) {
+            StringManagerUtils.printLog("字符串编码转换异常：" + ex.getMessage());
+        }
+        return str;
+    }
+    
+    //    //邮件正则表达式
+    private static final Pattern MAIL_PATTERN = Pattern.compile("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
+    /**
+     * 大陆号码或香港号码均可
+     */
+    public static boolean isPhoneLegal(String str) throws PatternSyntaxException {
+        return isChinaPhoneLegal(str) || isHKPhoneLegal(str);
+    }
+
+    /**
+     * 大陆手机号码11位数，匹配格式：前三位固定格式+后8位任意数
+     * 此方法中前三位格式有：
+     * 13+任意数
+     * 145,147,149
+     * 15+除4的任意数(不要写^4，这样的话字母也会被认为是正确的)
+     * 166
+     * 17+3,5,6,7,8
+     * 18+任意数
+     * 198,199
+     */
+    public static boolean isChinaPhoneLegal(String str) throws PatternSyntaxException {
+        Matcher m = CHINA_PATTERN.matcher(str);
+        return m.matches();
+    }
+
+    /**
+     * 香港手机号码8位数，5|6|8|9开头+7位任意数
+     */
+    public static boolean isHKPhoneLegal(String str) throws PatternSyntaxException {
+
+        Matcher m = HK_PATTERN.matcher(str);
+        return m.matches();
+    }
+    /**
+     * 邮箱
+     */
+    public static boolean isMailLegal(String str) throws PatternSyntaxException {
+        Matcher m = MAIL_PATTERN.matcher(str);
+        return m.matches();
+    }
+    
+    public static void printLog(String x){
+    	if(Config.getInstance().configFile.getOthers().getPrintLog()){
+    		System.out.println(x);
+    	}
+    }
+    
+    public static void printLog(Object x){
+    	if(Config.getInstance().configFile.getOthers().getPrintLog()){
+    		System.out.println(x);
+    	}
+    }
+    
+    /**
+     * 16进制颜色
+     */
+    public static boolean isColor16(String str) throws PatternSyntaxException {
+        Matcher m = COLOR_PATTERN.matcher(str);
+        return m.matches();
+    }
+	
 	public static Date addDate(Date date) {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date newDate2 = new Date(date.getTime() + 1000 * 60 * 60 * 24);
@@ -267,26 +424,126 @@ public class StringManagerUtils {
 	}
 
 	public static boolean existOrNot(String data[], String key) {
-		boolean flag = false;
-		for (String d : data) {
-			if (d.equalsIgnoreCase(key)) {
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
-	
-	public static boolean existOrNot(List<String> list, String key) {
-		boolean flag = false;
-		for (int i=0;i<list.size();i++) {
-			if (list.get(i).equals(key)) {
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
+        boolean flag = false;
+        for (String d: data) {
+            if (d.equalsIgnoreCase(key)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    public static boolean existOrNot(String data[], String key, boolean caseSensitive) {
+        boolean flag = false;
+        for (int i = 0; i < data.length; i++) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = data[i].equals(key);
+            } else {
+                match = data[i].equalsIgnoreCase(key);
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    public static boolean existOrNot(List < String > list, String key, boolean caseSensitive) {
+        boolean flag = false;
+        for (int i = 0; i < list.size(); i++) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = list.get(i).equals(key);
+            } else {
+                match = list.get(i).equalsIgnoreCase(key);
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+    
+    public static boolean existOrNot(Map <String,String > map, String str, boolean caseSensitive) {
+        boolean flag = false;
+        for(String key : map.keySet()) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = key.equals(str);
+            } else {
+                match = key.equalsIgnoreCase(str);
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+    
+    public static boolean existOrNot(Map <String,String > map, String keyStr,String valueStr, boolean caseSensitive) {
+        boolean flag = false;
+        for(String key : map.keySet()) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = key.equals(keyStr)&&map.get(key).equals(valueStr);
+            } else {
+                match = key.equalsIgnoreCase(keyStr)&&map.get(key).equalsIgnoreCase(valueStr);
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+    
+    public static boolean existOrNotByValue(Map <String,String > map, String str, boolean caseSensitive) {
+        boolean flag = false;
+        for(String key : map.keySet()) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = map.get(key).equals(str);
+            } else {
+                match = map.get(key).equalsIgnoreCase(str);
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+    
+    public static boolean existOrNot(Map <String,Object > map, String str) {
+        boolean flag = false;
+        for(String key : map.keySet()) {
+            boolean match = false;
+            match = key.equals(str);
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    public static boolean existOrNot(List < Integer > list, int key) {
+        boolean flag = false;
+        for (int i = 0; i < list.size(); i++) {
+            boolean match = false;
+            match = list.get(i) == key;
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
 
 	public static String filterHtml(Object oIn) {
 		// 如果是空对象，返回空字符串

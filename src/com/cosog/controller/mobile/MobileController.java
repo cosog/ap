@@ -3,6 +3,7 @@ package com.cosog.controller.mobile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.mobile.MobileService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.utils.Config;
+import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
@@ -222,6 +224,34 @@ public class MobileController extends BaseController{
 //		data="{}";
 //		data="{\"LiftingType\":1,\"WellName\":\"长庆现场智能油田测试井\",\"AcqTime\":\"2021-03-09 14:08:45\"}";
 		String json = this.mobileService.getOilWellRealtimeWellAnalysisData(data);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/oilWell/realtime/singleFESDiagramData")
+	public String singleFESDiagramData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String json = this.mobileService.singleFESDiagramData(data);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/oilWell/realtime/historyFESDiagramData")
+	public String historyFESDiagramData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

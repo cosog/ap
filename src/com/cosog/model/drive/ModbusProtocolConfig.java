@@ -15,6 +15,34 @@ public class ModbusProtocolConfig {
         return this.Protocol;
     }
     
+    public static class ItemsMeaning implements Comparable<ItemsMeaning>
+    {
+    	private int Value;
+    	
+    	private String Meaning;
+
+		public int getValue() {
+			return Value;
+		}
+
+		public void setValue(int value) {
+			Value = value;
+		}
+
+		public String getMeaning() {
+			return Meaning;
+		}
+
+		public void setMeaning(String meaning) {
+			Meaning = meaning;
+		}
+    	
+		@Override
+		public int compareTo(ItemsMeaning itemsMeaning) {     //重写Comparable接口的compareTo方法
+			return this.Value-itemsMeaning.getValue();   // 根据值或者位升序排列，降序修改相减顺序即可
+		}
+    }
+    
 	public static class Items implements Comparable<Items>
 	{
 	    private String Name;
@@ -34,8 +62,12 @@ public class ModbusProtocolConfig {
 	    private String RWType;
 
 	    private String Unit;
+	    
+	    private int ResolutionMode;
 
 	    private String AcqMode;
+	    
+	    private List<ItemsMeaning> Meaning;
 
 	    public void setName(String Name){
 	        this.Name = Name;
@@ -97,6 +129,20 @@ public class ModbusProtocolConfig {
 		public void setIFDataType(String IFDataType) {
 			this.IFDataType = IFDataType;
 		}
+
+		public int getResolutionMode() {
+			return ResolutionMode;
+		}
+		public void setResolutionMode(int resolutionMode) {
+			ResolutionMode = resolutionMode;
+		}
+
+		public List<ItemsMeaning> getMeaning() {
+			return Meaning;
+		}
+		public void setMeaning(List<ItemsMeaning> meaning) {
+			Meaning = meaning;
+		}
 		
 		public String toString(){
 			StringBuffer result=new StringBuffer();
@@ -119,16 +165,8 @@ public class ModbusProtocolConfig {
 	    private String Name;
 
 	    private String Code;
-
-	    private String Type;
-
-	    private String SignInPrefix;
-
-	    private String SignInSuffix;
-
-	    private String HeartbeatPrefix;
-
-	    private String HeartbeatSuffix;
+	    
+	    private int DeviceType;
 
 	    private int Sort;
 
@@ -146,36 +184,6 @@ public class ModbusProtocolConfig {
 	    public String getCode(){
 	        return this.Code;
 	    }
-	    public void setType(String Type){
-	        this.Type = Type;
-	    }
-	    public String getType(){
-	        return this.Type;
-	    }
-	    public void setSignInPrefix(String SignInPrefix){
-	        this.SignInPrefix = SignInPrefix;
-	    }
-	    public String getSignInPrefix(){
-	        return this.SignInPrefix;
-	    }
-	    public void setSignInSuffix(String SignInSuffix){
-	        this.SignInSuffix = SignInSuffix;
-	    }
-	    public String getSignInSuffix(){
-	        return this.SignInSuffix;
-	    }
-	    public void setHeartbeatPrefix(String HeartbeatPrefix){
-	        this.HeartbeatPrefix = HeartbeatPrefix;
-	    }
-	    public String getHeartbeatPrefix(){
-	        return this.HeartbeatPrefix;
-	    }
-	    public void setHeartbeatSuffix(String HeartbeatSuffix){
-	        this.HeartbeatSuffix = HeartbeatSuffix;
-	    }
-	    public String getHeartbeatSuffix(){
-	        return this.HeartbeatSuffix;
-	    }
 	    public void setSort(int Sort){
 	        this.Sort = Sort;
 	    }
@@ -192,6 +200,12 @@ public class ModbusProtocolConfig {
 	    @Override
 		public int compareTo(Protocol protocol) {     //重写Comparable接口的compareTo方法
 			return this.Sort-protocol.getSort();   // 根据地址升序排列，降序修改相减顺序即可
+		}
+		public int getDeviceType() {
+			return DeviceType;
+		}
+		public void setDeviceType(int deviceType) {
+			DeviceType = deviceType;
 		}
 	}
 }

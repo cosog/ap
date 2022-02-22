@@ -392,34 +392,6 @@ public class BaseService<T> {
 		return json;
 	}
 	
-	/**
-	 * <p>
-	 * 描述：漏失分析json，含平均值
-	 * </p>
-	 * @throws SQLException 
-	 * @throws IOException 
-	 */
-	public String findLeakageAnalysisBySqlEntity(String sqlAll, String sql, String columns, String limit, Page pager, Object... values) throws IOException, SQLException {
-		String[] str = splitPageSql(sqlAll);
-		int index = sql.indexOf("@");
-		String oldsqlString = sql;
-		if (index > -1) {
-			sql = getSqlReplace(sql.toString());
-		}
-		int indexall = sqlAll.indexOf("@");
-		if (indexall > -1) {
-			sqlAll = getSqlReplace(sqlAll.toString());
-		}
-		List<T> pageList = baseDao.getMyCustomPageBySql(sqlAll, sql, pager, values);
-		List<T> aveList = baseDao.getAverageBySql(sqlAll, str, values);
-		if (null != aveList && aveList.size() > 0) {
-			pageList.add(aveList.get(0));
-		}
-		// sql 转化为json格式
-		String json = jsonPageSql(pageList, oldsqlString, columns, "10000", pager);// 该方法中存在处理数据保留2为小数的方法
-		return json;
-	}
-	
 	public String findAllDataBySqlEntity(String sql, String columns, Page pager, Object... values) {
 		int index = sql.indexOf("@");
 		String oldsqlString = sql;
@@ -1126,10 +1098,6 @@ public class BaseService<T> {
 	 */
 	public void bulkObjectDelete(final String hql) throws Exception {
 		this.baseDao.bulkObjectDelete(hql);
-	}
-	
-	public void OnGetDate(List<CallbackDataItems> list,String RTUName) throws HibernateException, SQLException{
-			baseDao.OnGetDate(list,RTUName);
 	}
 	
 	public Integer getTotalCountRows(String sql, final Object... values) {

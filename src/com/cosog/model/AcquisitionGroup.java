@@ -27,7 +27,7 @@ public class AcquisitionGroup implements java.io.Serializable {
 	private Integer acqCycle;
 	private Integer saveCycle;
 	private String protocol;
-	
+	private Integer type;
 	private String remark;
 
 	// Constructors
@@ -37,10 +37,17 @@ public class AcquisitionGroup implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public AcquisitionGroup(String groupCode, String groupName,String remark) {
+	public AcquisitionGroup(Integer id, String groupCode, String groupName, Integer acqCycle, Integer saveCycle,
+			String protocol, Integer type, String remark) {
+		super();
+		this.id = id;
 		this.groupCode = groupCode;
 		this.groupName = groupName;
-		this.remark=remark;
+		this.acqCycle = acqCycle;
+		this.saveCycle = saveCycle;
+		this.protocol = protocol;
+		this.type = type;
+		this.remark = remark;
 	}
 
 	@Id
@@ -110,6 +117,15 @@ public class AcquisitionGroup implements java.io.Serializable {
 
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
+	}
+
+	@Column(name = "type", precision = 22, scale = 0)
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

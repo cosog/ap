@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,10 +29,12 @@ import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CPUProbeResponseData;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.MemoryProbeResponseData;
+import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.model.drive.KafkaConfig;
 import com.cosog.task.EquipmentDriverServerTask.DriverProbeResponse;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
+import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
@@ -53,13 +56,15 @@ public class ResourceMonitoringTask {
     
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
-	public void checkAndSendResourceMonitoring() throws SQLException, UnsupportedEncodingException, ParseException{
+	public void checkAndSendResourceMonitoring() throws SQLException, ParseException, IOException{
 		String probeAppUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
 		String probeMemUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getMem()[0];
 		String probeCPUUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getCpu()[0];
 		
 		String adAllOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
-		String adProbeUrl=Config.getInstance().configFile.getDriverConfig().getProbe();
+		String adStatusUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getApp();
+		
+		int deviceAmount=getDeviceAmount();
 		
 		String appRunStatus="停止";
 		int appRunStatusValue=0;
@@ -68,7 +73,8 @@ public class ResourceMonitoringTask {
 		String adRunStatus="停止";
 		int adRunStatusValue=0;
 		String adVersion="";
-		
+		int adLicense=0;
+		boolean adLicenseSign=false;
 		
 		String cpuUsedPercent="";
 		String cpuUsedPercentValue="";
@@ -123,13 +129,17 @@ public class ResourceMonitoringTask {
 			}
 		}
 		//ad状态检测
-		String responseData=StringManagerUtils.sendPostMethod(adProbeUrl, "","utf-8");
-		type = new TypeToken<DriverProbeResponse>() {}.getType();
-		DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-		if(driverProbeResponse!=null){
+		String responseData=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8");
+		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
+		AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(responseData, type);
+		if(adStatusProbeResonanceData!=null){
 			adRunStatus="运行";
 			adRunStatusValue=1;
-			adVersion=driverProbeResponse.getVer();
+			adVersion=adStatusProbeResonanceData.getVer();
+			adLicense=adStatusProbeResonanceData.getLicenseNumber();
+			if(adLicense>0&&deviceAmount>adLicense){
+				adLicenseSign=true;
+			}
 		}
 		conn=OracleJdbcUtis.getConnection();
 		if(conn!=null){
@@ -180,6 +190,16 @@ public class ResourceMonitoringTask {
     public static WebSocketByJavax infoHandler2() {
         return new WebSocketByJavax();
     }
+	
+	public static  int getDeviceAmount() throws IOException, SQLException{
+		int deviceAmount=0;
+		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+		Map<Integer,InitializedDeviceInfo> initializedDeviceList=(Map<Integer,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+		if(initializedDeviceList!=null){
+			deviceAmount=initializedDeviceList.size();
+		}
+		return deviceAmount;
+	}
 	
 	public static  float getTableSpaceSize() throws SQLException{  
         float result=0;

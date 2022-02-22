@@ -25,27 +25,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class User implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private String orgName;
-	private String userTitleName;
-	private String userAddress;
 	private String userId;
 	private String userInEmail;
-	private String userIsleader;
-	private String userMobile;
 	private String userName;
 	private Integer userNo;
 	private Integer userOrgid;
-	private String userOutEmail;
 	private String userPhone;
-	private String userPostcode;
 	private String userPwd;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date userRegtime;
-	private String userStyle;
-	private String userTitle;
 	private String picUrl;
 	private String pageSize;
 	private Integer userType;
 	private Integer userQuickLogin;
+	private Integer userEnable;
+	private Integer receiveSMS;
+	private Integer receiveMail;
 	private String userOrgids;
 	private String userOrgNames;
 	private String userParentOrgids;
@@ -54,6 +49,8 @@ public class User implements java.io.Serializable {
 	private String syncOrAsync;
 	private String defaultComboxSize;
 	private String defaultGraghSize;
+	
+	private String loginIp;
 
 	/**
 	 * 组织节点orgCode集合
@@ -71,9 +68,6 @@ public class User implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue
-	// @GeneratedValue(generator = "paymentableGenerator")
-	// @GenericGenerator(name = "paymentableGenerator", strategy =
-	// "com.gao.utils.UUIDGenerator")
 	@Column(name = "user_No", nullable = false, insertable = true, updatable = true, length = 32)
 	public Integer getUserNo() {
 		return this.userNo;
@@ -86,15 +80,6 @@ public class User implements java.io.Serializable {
 
 	public void setPicUrl(String picUrl) {
 		this.picUrl = picUrl;
-	}
-
-	@Transient
-	public String getUserTitleName() {
-		return userTitleName;
-	}
-
-	public void setUserTitleName(String userTitleName) {
-		this.userTitleName = userTitleName;
 	}
 
 	@Transient
@@ -111,11 +96,6 @@ public class User implements java.io.Serializable {
 		return orgName;
 	}
 
-	@Column(name = "USER_ADDRESS", length = 200)
-	public String getUserAddress() {
-		return this.userAddress;
-	}
-
 	@Column(name = "USER_ID", unique = true, nullable = false, length = 20)
 	public String getUserId() {
 		return this.userId;
@@ -124,16 +104,6 @@ public class User implements java.io.Serializable {
 	@Column(name = "USER_IN_EMAIL", length = 40)
 	public String getUserInEmail() {
 		return this.userInEmail;
-	}
-
-	@Column(name = "USER_ISLEADER", length = 1)
-	public String getUserIsleader() {
-		return this.userIsleader;
-	}
-
-	@Column(name = "USER_MOBILE", length = 40)
-	public String getUserMobile() {
-		return this.userMobile;
 	}
 
 	@Column(name = "USER_NAME", nullable = false, length = 40)
@@ -146,19 +116,9 @@ public class User implements java.io.Serializable {
 		return this.userOrgid;
 	}
 
-	@Column(name = "USER_OUT_EMAIL", length = 100)
-	public String getUserOutEmail() {
-		return this.userOutEmail;
-	}
-
 	@Column(name = "USER_PHONE", length = 40)
 	public String getUserPhone() {
 		return this.userPhone;
-	}
-
-	@Column(name = "USER_POSTCODE", length = 6)
-	public String getUserPostcode() {
-		return this.userPostcode;
 	}
 
 	@Column(name = "USER_PWD", length = 20)
@@ -170,16 +130,6 @@ public class User implements java.io.Serializable {
 	@Column(name = "USER_REGTIME", length = 7)
 	public Date getUserRegtime() {
 		return this.userRegtime;
-	}
-
-	@Column(name = "USER_STYLE", length = 20)
-	public String getUserStyle() {
-		return this.userStyle;
-	}
-
-	@Column(name = "USER_TITLE", length = 100)
-	public String getUserTitle() {
-		return this.userTitle;
 	}
 
 	@Column(name = "USER_TYPE", precision = 38, scale = 0)
@@ -195,13 +145,38 @@ public class User implements java.io.Serializable {
 	public void setUserQuickLogin(Integer userQuickLogin) {
 		this.userQuickLogin = userQuickLogin;
 	}
+	
+
+
+	@Column(name = "USER_ENABLE", precision = 38, scale = 0)
+	public Integer getUserEnable() {
+		return userEnable;
+	}
+
+	public void setUserEnable(Integer userEnable) {
+		this.userEnable = userEnable;
+	}
+
+	@Column(name = "USER_RECEIVESMS", precision = 38, scale = 0)
+	public Integer getReceiveSMS() {
+		return receiveSMS;
+	}
+
+	public void setReceiveSMS(Integer receiveSMS) {
+		this.receiveSMS = receiveSMS;
+	}
+
+	@Column(name = "USER_RECEIVEMAIL", precision = 38, scale = 0)
+	public Integer getReceiveMail() {
+		return receiveMail;
+	}
+
+	public void setReceiveMail(Integer receiveMail) {
+		this.receiveMail = receiveMail;
+	}
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
-	}
-
-	public void setUserAddress(String userAddress) {
-		this.userAddress = userAddress;
 	}
 
 	public void setUserId(String userId) {
@@ -210,14 +185,6 @@ public class User implements java.io.Serializable {
 
 	public void setUserInEmail(String userInEmail) {
 		this.userInEmail = userInEmail;
-	}
-
-	public void setUserIsleader(String userIsleader) {
-		this.userIsleader = userIsleader;
-	}
-
-	public void setUserMobile(String userMobile) {
-		this.userMobile = userMobile;
 	}
 
 	public void setUserName(String userName) {
@@ -232,16 +199,8 @@ public class User implements java.io.Serializable {
 		this.userOrgid = userOrgid;
 	}
 
-	public void setUserOutEmail(String userOutEmail) {
-		this.userOutEmail = userOutEmail;
-	}
-
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
-	}
-
-	public void setUserPostcode(String userPostcode) {
-		this.userPostcode = userPostcode;
 	}
 
 	public void setUserPwd(String userPwd) {
@@ -250,14 +209,6 @@ public class User implements java.io.Serializable {
 
 	public void setUserRegtime(Date userRegtime) {
 		this.userRegtime = userRegtime;
-	}
-
-	public void setUserStyle(String userStyle) {
-		this.userStyle = userStyle;
-	}
-
-	public void setUserTitle(String userTitle) {
-		this.userTitle = userTitle;
 	}
 
 	public void setUserType(Integer userType) {
@@ -357,5 +308,12 @@ public class User implements java.io.Serializable {
 		this.userOrgNames = userOrgNames;
 	}
 
-	
+	@Transient
+	public String getLoginIp() {
+		return loginIp;
+	}
+
+	public void setLoginIp(String loginIp) {
+		this.loginIp = loginIp;
+	}
 }

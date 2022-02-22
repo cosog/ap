@@ -38,6 +38,8 @@ public class AcquisitionGroupHandsontableChangeData {
         private String groupName;
 
         private String groupCode;
+        
+        private String typeName;
 
         private String acqCycle;
 
@@ -87,5 +89,11 @@ public class AcquisitionGroupHandsontableChangeData {
         public String getRemark(){
             return this.remark;
         }
+		public String getTypeName() {
+			return typeName;
+		}
+		public void setTypeName(String typeName) {
+			this.typeName = typeName;
+		}
     }
 }

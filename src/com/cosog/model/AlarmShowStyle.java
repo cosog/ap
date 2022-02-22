@@ -3,10 +3,16 @@ package com.cosog.model;
 public class AlarmShowStyle implements java.io.Serializable {
 	
 	public AlarmShowStyle() {
-		this.Normal=new AlarmStyle();
-		this.FirstLevel=new AlarmStyle();
-		this.SecondLevel=new AlarmStyle();
-		this.ThirdLevel=new AlarmStyle();
+		this.Comm=new CommAlarmStyle();
+		this.Data=new AlarmLevelStyle();
+		
+		this.Comm.setOnline(new AlarmStyle());
+		this.Comm.setOffline(new AlarmStyle());
+		
+		this.Data.setNormal(new AlarmStyle());
+		this.Data.setFirstLevel(new AlarmStyle());
+		this.Data.setSecondLevel(new AlarmStyle());
+		this.Data.setThirdLevel(new AlarmStyle());
 	}
 
 	/**
@@ -14,37 +20,72 @@ public class AlarmShowStyle implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private AlarmStyle Normal;
+	private CommAlarmStyle Comm;
+	
+	private AlarmLevelStyle Data;
 
-    private AlarmStyle FirstLevel;
+	public static class CommAlarmStyle{
+    	private AlarmStyle online;
 
-    private AlarmStyle SecondLevel;
+        private AlarmStyle offline;
 
-    private AlarmStyle ThirdLevel;
+		public AlarmStyle getOnline() {
+			return online;
+		}
 
-    public void setNormal(AlarmStyle Normal){
-        this.Normal = Normal;
+		public void setOnline(AlarmStyle online) {
+			this.online = online;
+		}
+
+		public AlarmStyle getOffline() {
+			return offline;
+		}
+
+		public void setOffline(AlarmStyle offline) {
+			this.offline = offline;
+		}
     }
-    public AlarmStyle getNormal(){
-        return this.Normal;
-    }
-    public void setFirstLevel(AlarmStyle FirstLevel){
-        this.FirstLevel = FirstLevel;
-    }
-    public AlarmStyle getFirstLevel(){
-        return this.FirstLevel;
-    }
-    public void setSecondLevel(AlarmStyle SecondLevel){
-        this.SecondLevel = SecondLevel;
-    }
-    public AlarmStyle getSecondLevel(){
-        return this.SecondLevel;
-    }
-    public void setThirdLevel(AlarmStyle ThirdLevel){
-        this.ThirdLevel = ThirdLevel;
-    }
-    public AlarmStyle getThirdLevel(){
-        return this.ThirdLevel;
+    
+    public static class AlarmLevelStyle{
+    	private AlarmStyle Normal;
+
+        private AlarmStyle FirstLevel;
+
+        private AlarmStyle SecondLevel;
+
+        private AlarmStyle ThirdLevel;
+
+		public AlarmStyle getNormal() {
+			return Normal;
+		}
+
+		public void setNormal(AlarmStyle normal) {
+			Normal = normal;
+		}
+
+		public AlarmStyle getFirstLevel() {
+			return FirstLevel;
+		}
+
+		public void setFirstLevel(AlarmStyle firstLevel) {
+			FirstLevel = firstLevel;
+		}
+
+		public AlarmStyle getSecondLevel() {
+			return SecondLevel;
+		}
+
+		public void setSecondLevel(AlarmStyle secondLevel) {
+			SecondLevel = secondLevel;
+		}
+
+		public AlarmStyle getThirdLevel() {
+			return ThirdLevel;
+		}
+
+		public void setThirdLevel(AlarmStyle thirdLevel) {
+			ThirdLevel = thirdLevel;
+		}
     }
 	
 	public static class AlarmStyle
@@ -89,5 +130,21 @@ public class AlarmShowStyle implements java.io.Serializable {
 		public void setOpacity(String opacity) {
 			Opacity = opacity;
 		}
+	}
+
+	public AlarmLevelStyle getData() {
+		return Data;
+	}
+
+	public void setData(AlarmLevelStyle data) {
+		Data = data;
+	}
+
+	public CommAlarmStyle getComm() {
+		return Comm;
+	}
+
+	public void setComm(CommAlarmStyle comm) {
+		Comm = comm;
 	}
 }

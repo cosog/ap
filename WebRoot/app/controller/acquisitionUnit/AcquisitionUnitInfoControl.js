@@ -11,11 +11,11 @@ Ext.define('AP.controller.acquisitionUnit.AcquisitionUnitInfoControl', {
     }
 });
 
-function addModbusProtocolConfigData() {
-    var ModbusProtocolInfoWindow = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
+function addModbusProtocolAddrMappingConfigData() {
+    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
         title: '创建协议'
     });
-    ModbusProtocolInfoWindow.show();
+    window.show();
     Ext.getCmp("addFormModbusProtocol_Id").show();
     Ext.getCmp("updateFormaModbusProtocol_Id").hide();
     return false;
@@ -34,7 +34,7 @@ var saveModbusProtocolSubmitBtnForm = function () {
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('modbusProtocol_editWin_Id').close();
-                Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id").getStore().load();
+                Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
                 }
@@ -48,7 +48,7 @@ var saveModbusProtocolSubmitBtnForm = function () {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.validdata + "</font>");
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -59,7 +59,7 @@ var saveModbusProtocolSubmitBtnForm = function () {
 
 function addAcquisitionUnitInfo() {
     var AcquisitionUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
-        title: '创建采集单元'
+        title: '创建采控单元'
     });
     AcquisitionUnitInfoWindow.show();
     Ext.getCmp("addFormAcquisitionUnit_Id").show();
@@ -69,7 +69,7 @@ function addAcquisitionUnitInfo() {
 
 function addAcquisitionGroupInfo() {
     var AcquisitionGroupInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
-        title: '创建采集组'
+        title: '创建采控组'
     });
     AcquisitionGroupInfoWindow.show();
     Ext.getCmp("addFormAcquisitionGroup_Id").show();
@@ -77,7 +77,7 @@ function addAcquisitionGroupInfo() {
     return false;
 };
 
-//采集组窗体创建按钮事件
+//采控组窗体创建按钮事件
 var SaveAcquisitionGroupSubmitBtnForm = function () {
     var saveAcquisitionGroupWinForm = Ext.getCmp("acquisitionGroup_editWin_Id").down('form');
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
@@ -90,7 +90,7 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('acquisitionGroup_editWin_Id').close();
-                Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id").getStore().load();
+                Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
                 }
@@ -104,7 +104,7 @@ var SaveAcquisitionGroupSubmitBtnForm = function () {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -123,7 +123,7 @@ function UpdateAcquisitionGroupDataInfoSubmitBtnForm() {
             success: function (response, action) {
                 Ext.getCmp("acquisitionGroup_editWin_Id").getEl().unmask();
                 Ext.getCmp('acquisitionGroup_editWin_Id').close();
-                Ext.getCmp("AcquisitionGroupInfoGridPanel_Id").getStore().load();
+                Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
 
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
@@ -148,7 +148,7 @@ function modifyAcquisitionGroupInfo() {
     var _record = selectedModel.getSelection();
     if (_record.length > 0) {
         var editWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
-            title: '编辑采集组'
+            title: '编辑采控组'
         });
         editWindow.show();
         Ext.getCmp("addFormAcquisitionGroup_Id").hide();
@@ -209,7 +209,7 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('acquisitionUnit_editWin_Id').close();
-                Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id").getStore().load();
+                Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().load();
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
                 }
@@ -223,7 +223,7 @@ var SaveAcquisitionUnitSubmitBtnForm = function () {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！" + cosog.string.validdata + ".</font>。");
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
     }
     // 设置返回值 false : 让Extjs4 自动回调 success函数
     return false;
@@ -267,7 +267,7 @@ function modifyAcquisitionUnitInfo() {
     var _record = AcquisitionUnit_model.getSelection();
     if (_record.length > 0) {
         var AcquisitionUnitInfoWindow = Ext.create("AP.view.acquisitionUnit.AcquisitionUnitInfoWindow", {
-            title: '编辑采集单元'
+            title: '编辑采控单元'
         });
         AcquisitionUnitInfoWindow.show();
         Ext.getCmp("addFormAcquisitionUnit_Id").hide();
@@ -434,59 +434,74 @@ showAcquisitionUnitOwnGroups = function (selectedAcquisitionUnitId) {
     return false;
 }
 
-//为当前采集组安排采集项
+//为当前采控组安排采控项
 var grantAcquisitionItemsPermission = function () {
-    if (protocolConfigItemsHandsontableHelper == null) {
+    if (protocolAcqUnitConfigItemsHandsontableHelper == null) {
         return false;
     }
-    var driverConfigItemsData = protocolConfigItemsHandsontableHelper.hot.getData();
+    var driverConfigItemsData = protocolAcqUnitConfigItemsHandsontableHelper.hot.getData();
     var addUrl = context + '/acquisitionUnitManagerController/grantAcquisitionItemsPermission'
     // 添加条件
     var addjson = [];
+    var addItemSort=[];
     var matrixData = "";
     var matrixDataArr = "";
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
    
-    var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
-    var selectedItem=Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
+    var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").getValue();
+    var selectedItem=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
     
     var groupCode = selectedItem.data.code;
+    var protocol=selectedItem.data.protocol;
     if (!isNotVal(groupCode)) {
-//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集组!');
+//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采控组!');
         return false
     }
     if (driverConfigItemsData.length > 0) {
         Ext.Array.each(driverConfigItemsData, function (name, index, countriesItSelf) {
             if (driverConfigItemsData[index][0]) {
-                var itemName = driverConfigItemsData[index][2];
+            	var itemName = driverConfigItemsData[index][2];
+            	var itemAddr = driverConfigItemsData[index][3];
+            	var resolutionMode = driverConfigItemsData[index][6];
+            	var itemShowLevel = driverConfigItemsData[index][7];
+            	var itemSort = driverConfigItemsData[index][8];
+            	var isRealtimeCurve=driverConfigItemsData[index][9];
+            	var realtimeCurveColor=driverConfigItemsData[index][10];
+            	var isHistoryCurve=driverConfigItemsData[index][11];
+            	var historyCurveColor=driverConfigItemsData[index][12];
+                
                 addjson.push(itemName);
+                addItemSort.push(itemSort);
                 var matrix_value = "";
                 matrix_value = '0,0,0,';
                 if (matrix_value != "" || matrix_value != null) {
                     matrix_value = matrix_value.substring(0, matrix_value.length - 1);
                 }
-                matrixData += itemName + ":" + matrix_value + "|";
+                matrixData += itemName + ":"+itemAddr+ ":"+resolutionMode+ ":"+itemSort+ ":"+itemShowLevel  + ":" + isRealtimeCurve+ ":" + realtimeCurveColor+ ":" + isHistoryCurve + ":" + historyCurveColor + ":" + matrix_value+ "|";
             }
         });
         if (addjson.length > 0) {
             matrixData = matrixData.substring(0, matrixData.length - 1);
             var addparams = "" + addjson.join(",");
+            var addSortParams = "" + addItemSort.join(",");
             var matrixCodes_ = "" + matrixData;
             Ext.Ajax.request({
                 url: addUrl,
                 method: "POST",
                 params: {
                     params: addparams,
+                    sorts: addSortParams,
+                    protocol :protocol,
                     groupCode: groupCode,
                     matrixCodes: matrixCodes_
                 },
                 success: function (response) {
                     var result = Ext.JSON.decode(response.responseText);
                     if (result.msg == true) {
-                        Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采集项' + "。");
+                        Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控项' + "。");
                     }
                     if (result.msg == false) {
-                        Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+                        Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控项安排失败' + "。</font>");
                     }
                 },
                 failure: function () {
@@ -494,15 +509,15 @@ var grantAcquisitionItemsPermission = function () {
                 }
             });
         } else {
-            Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采集项!' + '！</font>');
+            Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控项!' + '！</font>');
         }
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采集项!' + '！</font>');
+        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控项!' + '！</font>');
     }
     return false;
 }
 
-//为当前采集单元安排采集组
+//为当前采控单元安排采控组
 var grantAcquisitionGroupsPermission = function () {
 	if (acquisitionGroupConfigHandsontableHelper == null) {
         return false;
@@ -516,7 +531,7 @@ var grantAcquisitionGroupsPermission = function () {
     Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
     var unitId = Ext.getCmp("selectedAcquisitionUnitId_Id").getValue();
     if (!isNotVal(unitId)) {
-//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采集单元!');
+//        Ext.Msg.alert(cosog.string.ts, '请先选择一个采控单元!');
         return false
     }
     if (acquisitionData.length > 0) {
@@ -546,10 +561,10 @@ var grantAcquisitionGroupsPermission = function () {
             success: function (response) {
                 var result = Ext.JSON.decode(response.responseText);
                 if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采集组' + "。");
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + '成功安排了' + "</font>】" + addjson.length + "" + '个采控组' + "。");
                 }
                 if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集组安排失败' + "。</font>");
+                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '采控组安排失败' + "。</font>");
                 }
             },
             failure: function () {
@@ -557,7 +572,263 @@ var grantAcquisitionGroupsPermission = function () {
             }
         });
     } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采集单元!' + '！</font>');
+        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + '无选中的采控单元!' + '！</font>');
+    }
+    return false;
+};
+function addModbusProtocolInstanceConfigData() {
+    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
+        title: '创建实例'
+    });
+    window.show();
+    Ext.getCmp("addFormModbusProtocolInstance_Id").show();
+    Ext.getCmp("updateFormaModbusProtocolInstance_Id").hide();
+    return false;
+};
+
+//协议实例配置窗体创建按钮事件
+var saveModbusProtocolInstanceSubmitBtnForm = function () {
+    var winForm = Ext.getCmp("modbusProtocolInstanceInfoWindow_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (winForm.getForm().isValid()) {
+        winForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doModbusProtocolInstanceAdd',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            waitMsg: cosog.string.sendServer,
+            waitTitle: 'Please Wait...',
+            success: function (response, action) {
+                Ext.getCmp('modbusProtocolInstanceInfoWindow_Id').close();
+                Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    } else {
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    }
+    // 设置返回值 false : 让Extjs4 自动回调 success函数
+    return false;
+};
+
+function addAlarmUnitInfo() {
+    var window = Ext.create("AP.view.acquisitionUnit.AlarmUnitInfoWindow", {
+        title: '创建报警单元'
+    });
+    window.show();
+    Ext.getCmp("addFormAlarmUnit_Id").show();
+    Ext.getCmp("updateFormaAquisitionUnit_Id").hide();
+    return false;
+};
+
+//窗体创建按钮事件
+var SaveAlarmUnitSubmitBtnForm = function () {
+    var winForm = Ext.getCmp("alarmUnit_editWin_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (winForm.getForm().isValid()) {
+        winForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doAlarmUnitAdd',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            waitMsg: cosog.string.sendServer,
+            waitTitle: 'Please Wait...',
+            success: function (response, action) {
+                Ext.getCmp('alarmUnit_editWin_Id').close();
+                Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id").getStore().load();
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
+
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    } else {
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    }
+    // 设置返回值 false : 让Extjs4 自动回调 success函数
+    return false;
+};
+
+function addModbusProtocolAlarmInstanceConfigData() {
+    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolAlarmInstanceInfoWindow", {
+        title: '创建报警实例'
+    });
+    window.show();
+    Ext.getCmp("addFormModbusProtocolAlarmInstance_Id").show();
+    Ext.getCmp("updateFormaModbusProtocolAlarmInstance_Id").hide();
+    return false;
+};
+
+//协议实例配置窗体创建按钮事件
+var saveModbusProtocolAlarmInstanceSubmitBtnForm = function () {
+    var winForm = Ext.getCmp("modbusProtocolAlarmInstanceInfoWindow_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (winForm.getForm().isValid()) {
+        winForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doModbusProtocolAlarmInstanceAdd',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            waitMsg: cosog.string.sendServer,
+            waitTitle: 'Please Wait...',
+            success: function (response, action) {
+                Ext.getCmp('modbusProtocolAlarmInstanceInfoWindow_Id').close();
+                Ext.getCmp("ModbusProtocolAlarmInstanceConfigTreeGridPanel_Id").getStore().load();
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    } else {
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    }
+    // 设置返回值 false : 让Extjs4 自动回调 success函数
+    return false;
+};
+
+function addModbusProtocolSMSInstanceConfigData() {
+    var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
+        title: '创建实例'
+    });
+    window.show();
+    Ext.getCmp("addFormModbusprotocolSMSInstance_Id").show();
+    Ext.getCmp("updateFormaModbusprotocolSMSInstance_Id").hide();
+    return false;
+};
+
+function modifyModbusProtocolSMSInstanceConfigData() {
+    var gridPanel = Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id");
+    var selectedModel = gridPanel.getSelectionModel();
+    var _record = selectedModel.getSelection();
+    if (_record.length > 0) {
+        var editWindow = Ext.create("AP.view.acquisitionUnit.ModbusProtocolSMSInstanceInfoWindow", {
+            title: '编辑短信实例'
+        });
+        editWindow.show();
+        Ext.getCmp("addFormModbusprotocolSMSInstance_Id").hide();
+        Ext.getCmp("updateFormaModbusprotocolSMSInstance_Id").show();
+        SelectModbusProtocolSMSInstanceGridPanel();
+    } else {
+        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
+    }
+    return false;
+}
+
+SelectModbusProtocolSMSInstanceGridPanel = function () {
+    var dataattr_row = Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getSelectionModel().getSelection();
+    var id = dataattr_row[0].data.id;
+    var name = dataattr_row[0].data.name;
+    var code = dataattr_row[0].data.code;
+    var acqProtocolType = dataattr_row[0].data.acqProtocolType;
+    var ctrlProtocolType = dataattr_row[0].data.ctrlProtocolType;
+    var sort = dataattr_row[0].data.sort;
+    Ext.getCmp('formModbusprotocolSMSInstance_Id').setValue(id);
+    Ext.getCmp('formModbusprotocolSMSInstanceName_Id').setValue(name);
+    Ext.getCmp('formModbusprotocolSMSInstanceCode_Id').setValue(code);
+    Ext.getCmp('modbusSMSInstanceAcqProtocolType_Id').setValue(acqProtocolType);
+    Ext.getCmp('modbusInstanceAcqProtocolTypeComb_Id').setValue(acqProtocolType);
+    Ext.getCmp('modbusInstanceAcqProtocolTypeComb_Id').setRawValue(acqProtocolType);
+    
+    Ext.getCmp('modbusSMSInstanceCtrlProtocolType_Id').setValue(ctrlProtocolType);
+    Ext.getCmp('modbusInstanceCtrlProtocolTypeComb_Id').setValue(ctrlProtocolType);
+    Ext.getCmp('modbusInstanceCtrlProtocolTypeComb_Id').setRawValue(ctrlProtocolType);
+    
+    Ext.getCmp('modbusProtocolSMSInstanceSort_Id').setValue(sort);
+};
+
+//短信实例配置窗体创建按钮事件
+var saveModbusProtocolSMSInstanceSubmitBtnForm = function () {
+    var winForm = Ext.getCmp("modbusProtocolSMSInstanceInfoWindow_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (winForm.getForm().isValid()) {
+        winForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceAdd',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            waitMsg: cosog.string.sendServer,
+            waitTitle: 'Please Wait...',
+            success: function (response, action) {
+                Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
+                Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    } else {
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    }
+    // 设置返回值 false : 让Extjs4 自动回调 success函数
+    return false;
+};
+
+function UpdateModbusProtocolSMSInstanceSubmitBtnForm() {
+    var winForm = Ext.getCmp("modbusProtocolSMSInstanceInfoWindow_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (winForm.getForm().isValid()) {
+        winForm.getForm().submit({
+            url: context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceEdit',
+            clientValidation: true, // 进行客户端验证
+            method: "POST",
+            success: function (response, action) {
+            	Ext.getCmp('modbusProtocolSMSInstanceInfoWindow_Id').close();
+                Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id").getStore().load();
+                if (action.result.msg == true) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.sucupate + "</font>");
+                }
+                if (action.result.msg == false) {
+                    Ext.Msg.alert(cosog.string.ts, "<font color=red>" + cosog.string.failInfo + "</font>");
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    }
+    return false;
+};
+
+function delModbusProtocolSMSInstanceInfo() {
+    var gridPanel = Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id");
+    var _model = gridPanel.getSelectionModel();
+    var _record = _model.getSelection();
+    var delUrl = context + '/acquisitionUnitManagerController/doModbusProtocolSMSInstanceDelete'
+    if (_record.length>0) {
+        // 提示是否删除数据
+        Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+            if (btn == "yes") {
+                ExtDel_ObjectInfo("ModbusProtocolSMSInstanceGridPanel_Id", _record,"id", delUrl);
+            }
+        });
+    } else {
+        Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
     return false;
 }

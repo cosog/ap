@@ -53,7 +53,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -223,6 +223,13 @@ public class EquipmentDriverServerTask {
 			Collections.sort(modbusProtocolConfig.getProtocol());
 		}
 		equipmentDriveMap.put("modbusProtocolConfig", modbusProtocolConfig);
+		
+		//添加Kafka协议配置
+		path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
+		protocolConfigData=stringManagerUtils.readFile(path,"utf-8");
+		type = new TypeToken<KafkaConfig>() {}.getType();
+		KafkaConfig kafkaConfig=gson.fromJson(protocolConfigData, type);
+		equipmentDriveMap.put("KafkaDrive", kafkaConfig);
 		
 		StringManagerUtils.printLog("驱动加载结束");
 	}

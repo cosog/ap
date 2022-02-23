@@ -40,10 +40,11 @@ public final class LicenseMap {
 		moduleList0.add(28);//用户管理
 		moduleList0.add(29);//角色管理
 		moduleList0.add(31);//数据配置
-		moduleList0.add(1777);//数据源
 		moduleList0.add(34);//井名信息
 		moduleList0.add(35);//生产数据
 		moduleList0.add(36);//井身轨迹
+		moduleList0.add(1777);//驱动配置
+		moduleList0.add(2021);//数据源配置
 		moduleList0.add(1718);//抽油机信息
 		moduleList0.add(2000);//数据维护
 		moduleList0.add(1797);//计算维护
@@ -72,10 +73,11 @@ public final class LicenseMap {
 		moduleList1.add(28);//用户管理
 		moduleList1.add(29);//角色管理
 		moduleList1.add(31);//数据配置
-		moduleList1.add(1777);//数据源
 		moduleList1.add(34);//井名信息
 		moduleList1.add(35);//生产数据
 		moduleList1.add(36);//井身轨迹
+		moduleList1.add(1777);//驱动配置
+		moduleList1.add(2021);//数据源配置
 		moduleList1.add(1718);//抽油机信息
 		moduleList1.add(2000);//数据维护
 		moduleList1.add(1797);//计算维护
@@ -104,10 +106,11 @@ public final class LicenseMap {
 		moduleList2.add(28);//用户管理
 		moduleList2.add(29);//角色管理
 		moduleList2.add(31);//数据配置
-		moduleList2.add(1777);//数据源
 		moduleList2.add(34);//井名信息
 		moduleList2.add(35);//生产数据
 		moduleList2.add(36);//井身轨迹
+		moduleList2.add(1777);//驱动配置
+		moduleList2.add(2021);//数据源配置
 		moduleList2.add(1718);//抽油机信息
 		moduleList2.add(2000);//数据维护
 		moduleList2.add(1797);//计算维护

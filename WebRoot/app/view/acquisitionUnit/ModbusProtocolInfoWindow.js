@@ -26,73 +26,79 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
                 id: 'formModbusProtocol_Id',
                 anchor: '100%',
                 name: "modbusProtocol.id"
-            }, {
-                id: 'formModbusProtocolName_Id',
-                name: "modbusProtocol.name",
-                fieldLabel: '协议名称',
-                allowBlank: false,
-                anchor: '100%',
-                value: ''
             },{
 				xtype : "hidden",
-				id : 'modbusProtocolType_Id',
-				value:'modbus-tcp',
-				name : "modbusProtocol.type"
+				id : 'modbusProtocolDeviceType_Id',
+				value:'0',
+				name : "modbusProtocol.deviceType"
 			},{
             	xtype : "combobox",
-				fieldLabel : '协议类型',
-				id : 'modbusProtocolTypeComb_Id',
+				fieldLabel : '设备类型<font color=red>*</font>',
+				id : 'modbusProtocolDeviceTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
-				selectOnFocus : true,
+				selectOnFocus : false,
 			    forceSelection : true,
-			    value:'modbus-tcp',
+			    value:0,
 			    allowBlank: false,
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [['modbus-tcp', 'modbus-tcp'],['modbus-rtu', 'modbus-rtu']]
+							data : [[0, '泵设备'],[1, '管设备']]
 						}),
 				displayField : 'text',
 				valueField : 'value',
 				queryMode : 'local',
-				emptyText : '请选择协议类型',
-				blankText : '请选择协议类型',
+				emptyText : '请选择设备类型',
+				blankText : '请选择设备类型',
 				listeners : {
 					select:function(v,o){
-						Ext.getCmp("modbusProtocolType_Id").setValue(this.value);
+						Ext.getCmp("modbusProtocolDeviceType_Id").setValue(this.value);
 					}
 				}
             }, {
-                id: 'formModbusProtocolSignInPrefix_Id',
-                name: "modbusProtocol.signInPrefix",
-                fieldLabel: '注册包前缀',
+                id: 'formModbusProtocolName_Id',
+                name: "modbusProtocol.name",
+                fieldLabel: '协议名称<font color=red>*</font>',
+                allowBlank: false,
                 anchor: '100%',
-                value: ''
-            }, {
-            	id: 'modbusProtocolSignInSuffix_Id',
-            	name: "modbusProtocol.signInSuffix",
-                fieldLabel: '注册包后缀',
-                anchor: '100%',
-                value: ''
-            }, {
-            	id: 'modbusProtocolHeartbeatPrefix_Id',
-            	name: "modbusProtocol.heartbeatPrefix",
-                fieldLabel: '心跳包前缀',
-                anchor: '100%',
-                value: ''
-            }, {
-            	id: 'modbusProtocolHeartbeatSuffix_Id',
-            	name: "modbusProtocol.heartbeatSuffix",
-                fieldLabel: '心跳包后缀',
-                anchor: '100%',
-                value: ''
+                value: '',
+                listeners: {
+                    blur: function (t, e) {
+                        var value_ = t.getValue();
+                        if(value_!=''){
+                        	var deviceType=Ext.getCmp("modbusProtocolDeviceType_Id").getValue();
+                        	Ext.Ajax.request({
+                                method: 'POST',
+                                params: {
+                                	deviceType:deviceType,
+                                	protocolName: t.value
+                                },
+                                url: context + '/acquisitionUnitManagerController/judgeProtocolExistOrNot',
+                                success: function (response, opts) {
+                                    var obj = Ext.decode(response.responseText);
+                                    var msg_ = obj.msg;
+                                    if (msg_ == "1") {
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【协议已存在】</font>,请确认！", function(btn, text){
+                                    	    if (btn == 'ok'){
+                                    	    	t.focus(true, 100);
+                                    	    }
+                                    	});
+                                    }
+                                },
+                                failure: function (response, opts) {
+                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                }
+                            });
+                        }
+                    }
+                }
             }, {
             	xtype: 'numberfield',
             	id: "modbusProtocolSort_Id",
                 name: 'modbusProtocol.sort',
                 fieldLabel: '排序',
-                allowBlank: false,
+                allowBlank: true,
                 minValue: 1,
                 anchor: '100%',
                 msgTarget: 'side'

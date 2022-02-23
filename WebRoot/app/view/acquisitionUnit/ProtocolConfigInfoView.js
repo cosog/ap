@@ -1,6 +1,4 @@
-var protocolConfigItemsHandsontableHelper=null;
 var kafkaProtocolConfigHandsontableHelper=null;
-var protocolConfigPropertiesHandsontableHelper=null;
 Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.protocolConfigInfoView',
@@ -9,7 +7,9 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
     border: false,
     initComponent: function () {
     	var me = this;
-    	var ModbusProtocolTreeInfoStore = Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
+    	var ModbusProtocolConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView');
+    	var ModbusProtocolUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView');
+        var ModbusProtocolInstanceConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolInstanceConfigInfoView');
     	Ext.apply(me, {
     		items: [{
     			xtype: 'tabpanel',
@@ -19,114 +19,51 @@ Ext.define('AP.view.acquisitionUnit.ProtocolConfigInfoView', {
                 tabPosition: 'top',
                 items: [{
                 	title:'Modbus',
-                	id:"ScadaDriverModbusProtocolConfigTabPanel_Id",
-                	tbar: [{
-                        id: 'ScadaProtocolModbusConfigSelectRow_Id',
-                        xtype: 'textfield',
-                        value: 0,
-                        hidden: true
-                    },'->',{
-            			xtype: 'button',
-                        text: '添加协议',
-                        iconCls: 'add',
-                        handler: function (v, o) {
-            				addModbusProtocolConfigData();
-            			}
-            		}, "-",{
-            			xtype: 'button',
-                        text: '添加采集单元',
-                        iconCls: 'add',
-                        handler: function (v, o) {
-                        	addAcquisitionUnitInfo();
-            			}
-            		}, "-",{
-            			xtype: 'button',
-                        text: '添加采集组',
-                        iconCls: 'add',
-                        handler: function (v, o) {
-                        	addAcquisitionGroupInfo();
-            			}
-            		},"-",{
-                    	xtype: 'button',
-            			pressed: true,
-            			text: cosog.string.save,
-            			iconCls: 'save',
-            			handler: function (v, o) {
-            				SaveModbusProtocolConfigTreeData();
-            			}
-                    }],
-//            		layout: {
-//                        type: 'hbox',
-//                        pack: 'start',
-//                        align: 'stretch'
-//                    },
-                    layout: "border",
+                	xtype: 'tabpanel',
+                    activeTab: 0,
+                    border: false,
+                    tabPosition: 'bottom',
                     items: [{
-                    	border: true,
-//                        flex: 1,
-                    	region: 'west',
-                    	width:'25%',
-                        layout: "border",
-                        border: true,
-//                        header: false,
-                        header: false,
-                        collapsible: true,
-                        split: true,
-                        collapseDirection: 'left',
-                        hideMode:'offsets',
-                        items: [{
-                        	region: 'center',
-                        	title:'协议配置',
-//                        	autoScroll:true,
-                            scrollable: true,
-                        	id:"ModbusProtocolConfigPanel_Id"
-                        },{
-                        	region: 'south',
-                        	height:'42%',
-                        	title:'属性',
-                        	collapsible: true,
-                            split: true,
-                        	layout: 'fit',
-                            html:'<div class="ProtocolConfigPropertiesTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ProtocolConfigPropertiesTableInfoDiv_id"></div></div>',
-                            listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if(protocolConfigPropertiesHandsontableHelper!=null && protocolConfigPropertiesHandsontableHelper.hot!=undefined){
-                                		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
-                                		
-                                		var ModbusProtocolConfigTreeGridPanel=Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id");
-                                		if(isNotVal(ModbusProtocolConfigTreeGridPanel)){
-                                			var selectedItem=ModbusProtocolConfigTreeGridPanel.getStore().getAt(ScadaDriverModbusConfigSelectRow);
-                                    	    CreateProtocolConfigPropertiesInfoTable(selectedItem.data);
-                                		}
-                                	}
-                                }
-                            }
-                        }]
+                    	title:'协议配置',
+                    	id:"ScadaDriverModbusProtocolConfigTabPanel_Id",
+                    	items: [ModbusProtocolConfigInfoView],
+        				layout: "fit",
+        				border: false
                     },{
-                    	border: true,
-//                        flex: 4,
-                    	region: 'center',
-                        title:'采控项配置',
-                        layout: 'fit',
-                        html:'<div class="DriverItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="DriverItemsConfigTableInfoDiv_id"></div></div>',
-                        listeners: {
-                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                            	if(protocolConfigItemsHandsontableHelper!=null && protocolConfigItemsHandsontableHelper.hot!=undefined){
-                            		var ScadaDriverModbusConfigSelectRow= Ext.getCmp("ScadaProtocolModbusConfigSelectRow_Id").getValue();
-                            		var ModbusProtocolConfigTreeGridPanel=Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id");
-                            		if(isNotVal(ModbusProtocolConfigTreeGridPanel)){
-                            			var selectedItem=Ext.getCmp("ModbusProtocolConfigTreeGridPanel_Id").getStore().getAt(ScadaDriverModbusConfigSelectRow);
-                                	    if(selectedItem.data.classes==1){
-                                    		CreateProtocolItemsConfigInfoTable(selectedItem.data.text,selectedItem.data.classes,selectedItem.data.code);
-                                    	}else if(selectedItem.data.classes==2||selectedItem.data.classes==3){
-                                    		CreateProtocolItemsConfigInfoTable(selectedItem.data.protocol,selectedItem.data.classes,selectedItem.data.code);
-                                    	}
-                            		}
-                            	}
-                            }
+                    	title:'单元配置',
+                    	id:'ScadaDriverModbusUnitConfigTabPanel_Id',
+                    	items: [ModbusProtocolUnitConfigInfoView],
+        				layout: "fit",
+        				border: false
+                    },{
+                    	title:'实例配置',
+                    	id:'ScadaDriverModbusInstanceConfigTabPanel_Id',
+                    	items: [ModbusProtocolInstanceConfigInfoView],
+        				layout: "fit",
+        				border: false
+                    }],
+                    listeners: {
+                        tabchange: function (tabPanel, newCard, oldCard, obj) {
+                        	if(newCard.id=="ScadaDriverModbusProtocolConfigTabPanel_Id"){
+//                        		loadFSDiagramAnalysisSingleStatData();
+                        	}else if(newCard.id=="ScadaDriverModbusUnitConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+                        		}
+                        	}else if(newCard.id=="ScadaDriverModbusInstanceConfigTabPanel_Id"){
+                        		var treePanel=Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
+                        		if(isNotVal(treePanel)){
+                        			treePanel.getStore().load();
+                        		}else{
+                        			Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
+                        		}
+                        	}
                         }
-                    }]
-                },{
+                    }
+        		},{
                 	title:'Kafka',
                 	id:"ScadaDriverKafkaConfigTabPanel_Id",
                 	layout: 'fit',

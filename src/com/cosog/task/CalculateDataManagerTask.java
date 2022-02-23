@@ -41,7 +41,7 @@ public class CalculateDataManagerTask {
     private static ResultSet rs_outer = null; 
 	
 	
-	@Scheduled(cron = "0/1 * * * * ?")
+//	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断SDK是否启动
 		String probeUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];

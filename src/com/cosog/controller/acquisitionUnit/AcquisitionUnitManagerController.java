@@ -1739,6 +1739,114 @@ public class AcquisitionUnitManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/getKafkaDriverConfigData")
+	public String getKafkaDriverConfigData() throws Exception {
+		String json = "";
+		json = acquisitionUnitItemManagerService.getKafkaDriverConfigData();
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveKafkaDriverConfigData")
+	public String saveKafkaDriverConfigData() throws Exception {
+		String json = "";
+		Gson gson = new Gson();
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String KafkaData = ParamUtils.getParameter(request, "KafkaData");
+		java.lang.reflect.Type type = new TypeToken<KafkaConfig>() {}.getType();
+		KafkaConfig KafkaConfigSaveData=gson.fromJson(KafkaData, type);
+		if(KafkaConfigSaveData!=null){
+			Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			if(equipmentDriveMap.size()==0){
+				EquipmentDriverServerTask.loadProtocolConfig();
+				equipmentDriveMap = EquipmentDriveMap.getMapObject();
+			}
+			KafkaConfig driveConfig=(KafkaConfig)equipmentDriveMap.get("KafkaDrive");
+			
+			String path=stringManagerUtils.getFilePath("KafkaDriverConfig.json","protocolConfig/");
+			if(driveConfig==null){
+				String driverConfigData=stringManagerUtils.readFile(path,"utf-8");
+				type = new TypeToken<KafkaConfig>() {}.getType();
+				driveConfig=gson.fromJson(driverConfigData, type);
+			}
+			driveConfig.setProtocolName(KafkaConfigSaveData.getProtocolName());
+			driveConfig.setVersion(KafkaConfigSaveData.getVersion());
+			driveConfig.setServer(KafkaConfigSaveData.getServer());
+			driveConfig.setTopic(KafkaConfigSaveData.getTopic());
+			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(driveConfig)));
+			equipmentDriveMap.put(driveConfig.getProtocolCode(), driveConfig);
+		}
+		json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDataSourceConfigData")
+	public String getDataSourceConfigData() throws Exception {
+		String json = "";
+		
+		json = acquisitionUnitItemManagerService.getKafkaConfigWellList();
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/saveDataSourceConfigData")
+	public String SaveDataSourceConfigData() throws Exception {
+		String json = "";
+		Gson gson = new Gson();
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String dataSourceConfigData = ParamUtils.getParameter(request, "dataSourceConfigData");
+		java.lang.reflect.Type type = new TypeToken<DataSourceConfigSaveData>() {}.getType();
+		DataSourceConfigSaveData dataSourceConfigSaveData=gson.fromJson(dataSourceConfigData, type);
+		if(dataSourceConfigSaveData!=null){
+			String path=stringManagerUtils.getFilePath("config.json","dataSource/");
+			DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
+			
+			dataSourceConfig.setIP(dataSourceConfigSaveData.getIP());
+			dataSourceConfig.setPort(StringManagerUtils.stringToInteger(dataSourceConfigSaveData.getPort()));
+			dataSourceConfig.setType((dataSourceConfigSaveData.getType().toLowerCase().indexOf("oracle")>=0)?0:1);
+			dataSourceConfig.setVersion(dataSourceConfigSaveData.getVersion());
+			dataSourceConfig.setInstanceName(dataSourceConfigSaveData.getInstanceName());
+			dataSourceConfig.setUser(dataSourceConfigSaveData.getUser());
+			dataSourceConfig.setPassword(dataSourceConfigSaveData.getPassword());
+			
+			dataSourceConfig.setDiagramTable(dataSourceConfigSaveData.getDiagramTable());
+			dataSourceConfig.setReservoirTable(dataSourceConfigSaveData.getReservoirTable());
+			dataSourceConfig.setRodStringTable(dataSourceConfigSaveData.getRodStringTable());
+			dataSourceConfig.setTubingStringTable(dataSourceConfigSaveData.getTubingStringTable());
+			dataSourceConfig.setCasingStringTable(dataSourceConfigSaveData.getCasingStringTable());
+			dataSourceConfig.setPumpTable(dataSourceConfigSaveData.getPumpTable());
+			dataSourceConfig.setProductionTable(dataSourceConfigSaveData.getProductionTable());
+			
+			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(dataSourceConfig)));
+		}
+		json ="{success:true}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	public String getLimit() {
 		return limit;

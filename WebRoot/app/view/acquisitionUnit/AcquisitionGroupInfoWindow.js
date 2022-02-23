@@ -49,7 +49,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         
         var modbusProtocolComb = Ext.create(
 				'Ext.form.field.ComboBox', {
-					fieldLabel :  '协议名称',
+					fieldLabel :  '协议名称<font color=red>*</font>',
 					id : 'formAcquisitionGroupProtocolComb_Id',
 					anchor : '100%',
 					store: modbusProtocolStore,
@@ -101,7 +101,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
         
         var acqUnitComb = Ext.create(
         		'Ext.form.field.ComboBox', {
-					fieldLabel :  '单元名称',
+					fieldLabel :  '单元名称<font color=red>*</font>',
 					id : 'formAcquisitionGroupAcqUnitComb_Id',
 					anchor : '100%',
 					store: acqUnitStore,
@@ -145,9 +145,72 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
 			},acqUnitComb, {
                 id: 'formAcquisitionGroupName_Id',
                 name: "acquisitionGroup.groupName",
-                fieldLabel: '组名称',
+                fieldLabel: '组名称<font color=red>*</font>',
+                allowBlank: false,
                 anchor: '100%',
-                value: ''
+                value: '',
+                listeners: {
+                    blur: function (t, e) {
+                        var value_ = t.getValue();
+                        if(value_!=''){
+                        	var protocolName=Ext.getCmp("formAcquisitionGroupProtocolComb_Id").rawValue;
+                        	var unitName=Ext.getCmp("formAcquisitionGroupAcqUnitComb_Id").rawValue;
+                        	Ext.Ajax.request({
+                                method: 'POST',
+                                params: {
+                                	protocolName:protocolName,
+                                	unitName:unitName,
+                                	groupName: t.value
+                                },
+                                url: context + '/acquisitionUnitManagerController/judgeAcqGroupExistOrNot',
+                                success: function (response, opts) {
+                                    var obj = Ext.decode(response.responseText);
+                                    var msg_ = obj.msg;
+                                    if (msg_ == "1") {
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【采控单元已存在相同采集组】</font>,请确认！", function(btn, text){
+                                    	    if (btn == 'ok'){
+                                    	    	t.focus(true, 100);
+                                    	    }
+                                    	});
+                                    }
+                                },
+                                failure: function (response, opts) {
+                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                }
+                            });
+                        }
+                    }
+                }
+            },{
+				xtype : "hidden",
+				id : 'formAcquisitionGroupType_Id',
+				value:'0',
+				name : "acquisitionGroup.type"
+			},{
+            	xtype : "combobox",
+				fieldLabel : '组类型<font color=red>*</font>',
+				id : 'formAcquisitionGroupTypeComb_Id',
+				anchor : '100%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:0,
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, '采集组'],[1, '控制组']]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : '请选择组类型',
+				blankText : '请选择组类型',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("formAcquisitionGroupType_Id").setValue(this.value);
+					}
+				}
             }, {
                 id: 'formAcquisitionGroupCode_Id',
                 name: "acquisitionGroup.groupCode",
@@ -161,6 +224,7 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 name: "acquisitionGroup.acqCycle",
                 fieldLabel: '采集周期(s)',
                 anchor: '100%',
+                hidden: false,
                 value: ''
                 
             }, {

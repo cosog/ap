@@ -1,13 +1,13 @@
-Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
+Ext.define('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore', {
     extend: 'Ext.data.TreeStore',
-    alias: 'widget.modbusProtocolTreeInfoStore',
+    alias: 'widget.modbusProtocolAcqUnitTreeInfoStore',
     model: 'AP.model.acquisitionUnit.AcquisitionItemsTreeInfoModel',
     autoLoad: true,
     folderSort: false,
     defaultRootId: '0',
     proxy: {
         type: 'ajax',
-        url: context + '/acquisitionUnitManagerController/modbusProtocolAddrMappingTreeData',
+        url: context + '/acquisitionUnitManagerController/acquisitionUnitTreeData',
         actionMethods: {
             read: 'POST'
         },
@@ -20,10 +20,10 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
         beforeload: function (store, options) {
         },
         load: function (store, options, eOpts) {
-        	var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
-            if (!isNotVal(treeGridPanel)) {
-            	treeGridPanel = Ext.create('Ext.tree.Panel', {
-                    id: "ModbusProtocolAddrMappingConfigTreeGridPanel_Id",
+        	var gridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+            if (!isNotVal(gridPanel)) {
+                gridPanel = Ext.create('Ext.tree.Panel', {
+                    id: "ModbusProtocolAcqGroupConfigTreeGridPanel_Id",
 //                    layout: "fit",
                     border: false,
                     animate: true,
@@ -39,7 +39,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                     store: store,
                     columns: [{
                     	xtype: 'treecolumn',
-                    	text: '协议列表',
+                    	text: '采控单元列表',
                         flex: 8,
                         align: 'left',
                         dataIndex: 'text'
@@ -55,30 +55,28 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                         selectionchange ( view, selected, eOpts ){
                         	
                         },select( v, record, index, eOpts ){
-                        	Ext.getCmp("ModbusProtocolAddrMappingConfigSelectRow_Id").setValue(index);
+                        	Ext.getCmp("ModbusProtocolAcqGroupConfigSelectRow_Id").setValue(index);
                         	if(record.data.classes==0){
                         		if(isNotVal(record.data.children) && record.data.children.length>0){
-                        			CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
-                        		}else{
-                        			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle('采控项');
-                        			if(protocolConfigAddrMappingItemsHandsontableHelper!=null && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-                        				protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-                        			}
-                        			if(protocolAddrMappingItemsMeaningConfigHandsontableHelper!=null && protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot!=undefined){
-                        				protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
-                        			}
+                        			CreateProtocolAcqUnitItemsConfigInfoTable(record.data.children[0].text,record.data.children[0].classes,record.data.children[0].code);
                         		}
                         	}else if(record.data.classes==1){
-                        		CreateModbusProtocolAddrMappingItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
+                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.text,record.data.classes,record.data.code);
+                        	}else if(record.data.classes==2){
+                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code);
+                        	}else if(record.data.classes==3){
+                        		CreateProtocolAcqUnitItemsConfigInfoTable(record.data.protocol,record.data.classes,record.data.code,record.data.type);
                         	}
-                        	CreateProtocolConfigAddrMappingPropertiesInfoTable(record.data);
+                        	CreateProtocolAcqUnitConfigPropertiesInfoTable(record.data);
                         },beforecellcontextmenu: function (pl, td, cellIndex, record, tr, rowIndex, e, eOpts) {//右键事件
                         	e.preventDefault();//去掉点击右键是浏览器的菜单
                         	var info='节点';
-                        	if(record.data.classes==0){
+                        	if(record.data.classes==0 || record.data.classes==1){
                         		return;
-                        	}if(record.data.classes==1){
-                        		info='协议';
+                        	}if(record.data.classes==2){
+                        		info='采控单元';
+                        	}else if(record.data.classes==3){
+                        		info='采控组';
                         	}
                         	var menu = Ext.create('Ext.menu.Menu', {
                                 floating: true,
@@ -89,11 +87,16 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
 //                                        Ext.MessageBox.confirm("确认","您确定要进行删除操作吗?",
 //                                            function(ok){
 //                                                if("yes"==ok) {
-                                                	if(record.data.classes==1){
-                                                		var configInfo={};
-                                            			configInfo.delidslist=[];
-                                            			configInfo.delidslist.push(record.data.text);
-                                            			saveModbusProtocolAddrMappingConfigData(configInfo);
+                                                	if(record.data.classes==2){
+                                                		var acqUnitSaveData={};
+                                                		acqUnitSaveData.delidslist=[];
+                                                		acqUnitSaveData.delidslist.push(record.data.id);
+                                                		saveAcquisitionUnitConfigData(acqUnitSaveData,record.data.protocol,record.parentNode.data.deviceType);
+                                                	}else if(record.data.classes==3){
+                                                		var acqGroupSaveData={};
+                                                		acqGroupSaveData.delidslist=[];
+                                                		acqGroupSaveData.delidslist.push(record.data.id);
+                                                		saveAcquisitionGroupConfigData(acqGroupSaveData,record.data.protocol,record.parentNode.data.id);
                                                 	}
 //                                                }
 //                                            }
@@ -109,11 +112,11 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore', {
                     }
 
                 });
-                var panel = Ext.getCmp("ModbusProtocolAddrMappingConfigPanel_Id");
-                panel.add(treeGridPanel);
+                var panel = Ext.getCmp("ModbusProtocolAcqGroupConfigPanel_Id");
+                panel.add(gridPanel);
             }
-            treeGridPanel.getSelectionModel().deselectAll(true);
-            treeGridPanel.getSelectionModel().select(0, true);
+            gridPanel.getSelectionModel().deselectAll(true);
+            gridPanel.getSelectionModel().select(0, true);
         }
     }
 });

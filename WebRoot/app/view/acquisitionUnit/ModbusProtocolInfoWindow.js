@@ -44,7 +44,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInfoWindow", {
 				editable : false,
 				store : new Ext.data.SimpleStore({
 							fields : ['value', 'text'],
-							data : [[0, '泵设备'],[1, '管设备']]
+							data : [[0, '井设备']]
 						}),
 				displayField : 'text',
 				valueField : 'value',

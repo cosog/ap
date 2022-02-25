@@ -213,7 +213,7 @@ function CreateProtocolAlarmInstancePropertiesInfoTable(data){
 		var item2={};
 		item2.id=2;
 		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"泵设备":"管设备");
+		item2.value=(data.deviceType==0?"井设备":"管设备");
 		root.push(item2);
 		
 		var item3={};
@@ -294,7 +294,7 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 	                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===1){
 	                    	if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['泵设备','管设备'];
+		                    	this.source = ['井设备'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
@@ -624,7 +624,7 @@ function SaveModbusProtocolAlarmInstanceConfigTreeData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-			saveData.deviceType=(propertiesData[1][2]=="泵设备"?0:1);
+			saveData.deviceType=(propertiesData[1][2]=="井设备"?0:1);
 			saveData.alarmUnitId=selectedItem.data.alarmUnitId;
 			saveData.sort=propertiesData[3][2];
 			SaveModbusProtocolAlarmInstanceData(saveData);

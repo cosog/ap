@@ -95,7 +95,7 @@ others:
    defaultComboxSize: 10000
    defaultGraghSize: 60
    productionUnit: 1
-   dataSaveMode: 1
+   dataSaveMode: 0
    showLogo: true
    printLog: true
    serialnumber: God bless you!

@@ -333,3 +333,15 @@
 .MeteringPlant{
 	background-image: url(../images/icon/meteringPlant.png) !important;
 }
+.device{
+	background-image: url(../images/icon/device.png) !important;
+}
+.protocol{
+	background-image: url(../images/icon/protocol.png) !important;
+}
+.acqUnit{
+	background-image: url(../images/icon/acqUnit.png) !important;
+}
+.acqGroup{
+	background-image: url(../images/icon/acqGroup.png) !important;
+}

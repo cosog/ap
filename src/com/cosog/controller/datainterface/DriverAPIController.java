@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.socket.TextMessage;
 
 import com.cosog.controller.base.BaseController;
+import com.cosog.model.CommStatus;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.ElectricCalculateResponseData;
 import com.cosog.model.calculate.EnergyCalculateResponseData;
@@ -58,6 +59,7 @@ import com.cosog.thread.calculate.TotalCalculateThread;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
+import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.ParamUtils;
@@ -85,10 +87,16 @@ public class DriverAPIController extends BaseController{
 	private CalculateDataService<?> calculateDataService;
 	@Autowired
 	private CommonDataService commonDataService;
+	@Bean
+    public static WebSocketByJavax infoHandler() {
+        return new WebSocketByJavax();
+    }
 	
 	@RequestMapping("/acq/allDeviceOffline")
 	public String AllDeviceOffline() throws Exception {
 		Gson gson=new Gson();
+		String functionCode="adExitAndDeviceOffline";
+		StringBuffer webSocketSendData = new StringBuffer();
 		java.lang.reflect.Type type=null;
 		String commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication()[0];
 		String currentTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
@@ -111,7 +119,7 @@ public class DriverAPIController extends BaseController{
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
 					+ " where t.id=t2.wellid"
-					+ " and t.protocolcode in("+protocols+")"
+					+ " and t.instancecode in(select t3.code from tbl_protocolinstance t3)"
 					+ " and t2.commstatus=1";
 			List list = this.commonDataService.findCallSql(sql);
 			for(int i=0;i<list.size();i++){
@@ -162,6 +170,22 @@ public class DriverAPIController extends BaseController{
 					result=commonDataService.getBaseDao().executeSqlUpdateClob(updateCommRangeClobSql,clobCont);
 				}
 			}
+			
+			Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+			List<CommStatus> commStatusList=(List<CommStatus>) dataModelMap.get("DeviceCommStatus");
+			if(commStatusList!=null&&commStatusList.size()>0){
+				for(int i=0;i<commStatusList.size();i++){
+					commStatusList.get(i).setCommStatus(0);
+				}
+				dataModelMap.put("DeviceCommStatus", commStatusList);
+			}
+			
+			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+			webSocketSendData.append("\"time\":\""+currentTime+"\"");
+			webSocketSendData.append("}");
+			if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
+				infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+			}
 		}
 		
 		String json = "{success:true,flag:true}";
@@ -188,8 +212,7 @@ public class DriverAPIController extends BaseController{
 					+ " t2.commstatus,t2.commtime,t2.commtimeefficiency,t2.commrange"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2 "
 					+ " where t.id=t2.wellid"
-					+ " and upper(t.protocolcode) not like '%KAFKA%' "
-					+ " and upper(t.protocolcode) not like '%MQTT%' "
+					+ " and t.instancecode in(select t3.code from tbl_protocolinstance t3)"
 					+ " and t.signinid='"+acqOnline.getID()+"' and to_number(t.slave)="+acqOnline.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
@@ -265,8 +288,7 @@ public class DriverAPIController extends BaseController{
 			String sql="select t.wellname ,t2.protocol"
 					+ " from TBL_WELLINFORMATION t,tbl_acq_unit_conf t2  "
 					+ " where t.unitcode=t2.unit_code"
-					+ " and upper(t.protocolcode) not like '%KAFKA%' "
-					+ " and upper(t.protocolcode) not like '%MQTT%' "
+					+ " and t.instancecode in(select t3.code from tbl_protocolinstance t3)"
 					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = this.commonDataService.findCallSql(sql);
 			if(list.size()>0){
@@ -320,8 +342,7 @@ public class DriverAPIController extends BaseController{
 					+ " t.id"
 					+ " from TBL_WELLINFORMATION t,tbl_rpc_discrete_latest  t2  "
 					+ " where t.id=t2.wellid "
-					+ " and upper(t.protocolcode) not like '%KAFKA%' "
-					+ " and upper(t.protocolcode) not like '%MQTT%' "
+					+ " and t.instancecode in(select t3.code from tbl_protocolinstance t3)"
 					+ " and t.signinid='"+acqGroup.getID()+"' and to_number(t.slave)="+acqGroup.getSlave();
 			List list = commonDataService.findCallSql(sql);
 			if(list.size()>0){

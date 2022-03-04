@@ -1,185 +1,147 @@
-* {
-    margin: 0px;
-    padding: 0px;
-    border: 0px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -o-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    font-size: 12px;
-    word-break: keep-all;
-    white-space: nowrap;
+html {
+    height: 100%
 }
 
-@font-face {
-    font-family: 'FontAwesome';
-    src: url('../fonts/fontawesome-webfont.eot?v=4.3.0');
-    src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), 
-         url('../fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), 
-         url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), 
-         url('../fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), 
-         url('../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
-    font-weight: normal;
-    font-style: normal
-}
-
-html,
-body {
-    width: 100%;
+.page-login {
     height: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    min-height: 600px;
+    padding-top: 0;
+    overflow: hidden
 }
 
-body,
-#loginBody,
-#loginImg {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    display: -moz-flex;
-    -moz-flex-direction: column;
-    -moz-flex-wrap: nowrap;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-flex-wrap: nowrap;
-    display: -o-flex;
-    -o-flex-direction: column;
-    -o-flex-wrap: nowrap;
-    display: -ms-flex;
-    -ms-flex-direction: column;
-    -ms-flex-wrap: nowrap;
+.page-login:before {
+    background-image: url(../images/login.jpg)
 }
 
-#loginTop,
-#loginInfo,
-#imgTitle {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    display: -moz-flex;
-    -moz-flex-direction: row;
-    -moz-flex-wrap: nowrap;
-    display: -webkit-flex;
-    -webkit-flex-direction: row;
-    -webkit-flex-wrap: nowrap;
-    display: -o-flex;
-    -o-flex-direction: row;
-    -o-flex-wrap: nowrap;
-    display: -ms-flex;
-    -ms-flex-direction: row;
-    -ms-flex-wrap: nowrap;
+.page-login.page-dark.layout-full:after {
+    background-color: rgba(38, 50, 56, .6)
 }
 
-#loginTop,
-#loginBody,
-#loginInfo {
-    justify-content: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    -webkit-align-items: center;
-    -moz-justify-content: center;
-    -moz-align-items: center;
-    -o-justify-content: center;
-    -o-align-items: center;
-    -ms-justify-content: center;
-    -ms-align-items: center;
-    
+.page-login .page-brand-info {
+    height: 100%
 }
 
-#topLeft,
-#topRight,
-#loginBody,
-#imgTop,
-#imgBottom {
-    flex: 1;
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -o-flex: 1;
-    -ms-flex: 1;
+.page-login .page-brand-info .page-brand {
+    padding: 0 80px 150px
 }
 
-#loginTop {
-    height: 30px;
-    width: 100%;
-    border-bottom: 1px solid #F0F0F0;
-    color: #666666;
+.page-login .page-brand-info .page-brand .brand-img {
+    vertical-align: middle
 }
 
-#leftWeather {
-    padding-left: 10px;
-    width: 300px;
-    height: 22px;
-    border: 0;
+.page-login .page-brand-info .page-brand h3 {
+    max-width: 650px;
+    color: #fff
 }
 
-#rightAbout {
-    padding-right: 10px;
-    float: right;
+.page-login .page-brand-info .page-brand .list-icons {
+    padding-left: 0;
+    margin: 30px 0
 }
 
-#loginBody {
-    width: 100%;
+.page-login-main {
+    position: absolute;
+    top: 0;
+    right: 0;
     height: 100%;
+    min-height: 600px;
+    padding: 150px 60px 180px;
+    padding: 0 60px;
+    color: #76838f;
+    background: #fff
 }
 
-#loginImg {
-    visibility: hidden;
-    height: 100%;
-}
-
-#imgBottom {
-    padding-top: 10px;
-    width: 100%;
+.page-login-main>.alert {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
     text-align: center;
-    color: #666;
+    border-radius: 0
 }
 
-#imgTitle {
+.page-login-main .vertical-align {
+    height: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-bottom: 65px
+}
+
+.page-login-main>.alert {
+    padding-right: 10px
+}
+
+.page-login-main>.alert+.vertical-align {
+    padding-top: 65px
+}
+
+.page-login .login-form {
+    width: 350px;
+    margin: 30px 0 20px
+}
+
+.page-login .login-form .form-control {
+    height: 42px
+}
+
+input.page-login .login-form .form-control {
+    padding: 0 12px
+}
+
+.page-login .login-form .form-control .btn {
+    height: 100%
+}
+
+.page-login .login-form.fv-form-bootstrap .form-control-feedback {
+    margin: 6px;
+    background-color: transparent
+}
+
+.page-login .login-form .input-group+.form-control-feedback {
+    display: none!important
+}
+
+.page-login .login-form>button {
+    padding: 8px 0
+}
+
+.page-login .page-copyright {
     position: absolute;
-    align-items: center;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -o-align-items: center;
-    -ms-align-items: center;
+    right: 0;
+    bottom: 15px;
+    left: 0;
+    text-align: center
 }
 
-#logoImg {
-	width: 42px;
-	height: 42px;
+@media (max-height: 600px) {
+    .page-login .page-copyright {
+        display: none
+    }
 }
 
-#titleText {
-    font-family: KaiTi;
-    font-weight: bold;
-    color: #d12;
-    -webkit-mask-image: -webkit-linear-gradient(top, rgba(255, 51, 0, 1) 0, rgba(153, 0, 0, 1) 100%), -webkit-linear-gradient(right, rgba(255, 51, 0, 1) 0, rgba(153, 0, 0, 1) 100%);
-    /* text-shadow: #FFFFFF 2px 0 0, #FFFFFF 0 2px 0, #FFFFFF -2px 0 0, #FFFFFF 0 -2px 0;*/
+@media (min-width: 992px) {
+    .page-login .page-content {
+        padding-right: 500px
+    }
 }
 
-#loginInfo {
-	width: 100%;
-    position: absolute;
-    left: 0px;
+@media (max-width: 767px) {
+    .page-login {
+        overflow: auto;
+        background: #fff;
+        background-image: none
+    }
+    .page-login .login-form {
+        width: auto
+    }
 }
 
-.input {
-    border: 1px solid #ABADB3;
-    width: 80px;
-}
-
-.button {
-	width: 50px;
-}
-
-[data-icon]:before {
-  font-family: FontAwesome;
-  content: attr(data-icon);
-  speak: none;
-  color: #ff6633;
-}
-
-.errorMsg {
-    color: #FF0000;
+@media (max-width: 480px) {
+    .page-login-main {
+        width: 100%
+    }
+    .page-login .login-form {
+        width: auto
+    }
 }

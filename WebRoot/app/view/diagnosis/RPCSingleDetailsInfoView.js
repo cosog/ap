@@ -2781,51 +2781,51 @@ initRPCDynamicCurveChartFn = function (get_rawData, divId) {
 	});
 };
 
-var FSDiagramAnalysisRealtimeRefreshTask = {
-	    run: function() {
-	    	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
-			if (activeId == "RealtimeEvaluation") {
-				if (isNotVal(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id"))) {
-					var FSDiagramMaxAcqTime=Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue();
-					var DiscreteMaxAcqTime=Ext.getCmp("DiscreteMaxAcqTime_Id").getValue();
-					var orgId = Ext.getCmp('leftOrg_Id').getValue();
-					Ext.Ajax.request({
-			    		method:'POST',
-			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcqTime',
-			    		success:function(response) {
-			    			var result = Ext.decode(response.responseText);
-			    			if(Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue()==''){
-			    				Ext.getCmp("FSDiagramMaxAcqTime_Id").setValue(result.newestFSDiagramAcqTime);
-			    			}
-			    			
-			    			if(Ext.getCmp("DiscreteMaxAcqTime_Id").getValue()==''){
-			    				Ext.getCmp("DiscreteMaxAcqTime_Id").setValue(result.newestDiscreteAcqTime);
-			    			}
-			    			
-			    			
-			    			if(result.diagramRecords>0 || result.discreteRecords>0){
-			    				if(result.diagramRecords>0){
-			    					Ext.getCmp("FSDiagramMaxAcqTime_Id").setValue(result.newestFSDiagramAcqTime);
-			    				}
-			    				if(result.discreteRecords>0){
-			    					Ext.getCmp("DiscreteMaxAcqTime_Id").setValue(result.newestDiscreteAcqTime);
-			    				}
-			    				Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
-			    			}
-			    		},
-			    		failure:function(){
-			    			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
-			    		},
-			    		params: {
-			    			orgId: orgId,
-			    			FSDiagramMaxAcqTime: FSDiagramMaxAcqTime,
-			    			DiscreteMaxAcqTime:DiscreteMaxAcqTime
-			            }
-			    	});
-		    	}
-			}
-	    },
-	    interval: 5000
-};
-
-Ext.TaskManager.start(FSDiagramAnalysisRealtimeRefreshTask);
+//var FSDiagramAnalysisRealtimeRefreshTask = {
+//	    run: function() {
+//	    	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
+//			if (activeId == "RealtimeEvaluation") {
+//				if (isNotVal(Ext.getCmp("FSDiagramAnalysisSingleDetails_Id"))) {
+//					var FSDiagramMaxAcqTime=Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue();
+//					var DiscreteMaxAcqTime=Ext.getCmp("DiscreteMaxAcqTime_Id").getValue();
+//					var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//					Ext.Ajax.request({
+//			    		method:'POST',
+//			    		url:context + '/diagnosisAnalysisOnlyController/getNewestAcqTime',
+//			    		success:function(response) {
+//			    			var result = Ext.decode(response.responseText);
+//			    			if(Ext.getCmp("FSDiagramMaxAcqTime_Id").getValue()==''){
+//			    				Ext.getCmp("FSDiagramMaxAcqTime_Id").setValue(result.newestFSDiagramAcqTime);
+//			    			}
+//			    			
+//			    			if(Ext.getCmp("DiscreteMaxAcqTime_Id").getValue()==''){
+//			    				Ext.getCmp("DiscreteMaxAcqTime_Id").setValue(result.newestDiscreteAcqTime);
+//			    			}
+//			    			
+//			    			
+//			    			if(result.diagramRecords>0 || result.discreteRecords>0){
+//			    				if(result.diagramRecords>0){
+//			    					Ext.getCmp("FSDiagramMaxAcqTime_Id").setValue(result.newestFSDiagramAcqTime);
+//			    				}
+//			    				if(result.discreteRecords>0){
+//			    					Ext.getCmp("DiscreteMaxAcqTime_Id").setValue(result.newestDiscreteAcqTime);
+//			    				}
+//			    				Ext.create("AP.store.diagnosis.WorkStatusStatisticsInfoStore");
+//			    			}
+//			    		},
+//			    		failure:function(){
+//			    			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+//			    		},
+//			    		params: {
+//			    			orgId: orgId,
+//			    			FSDiagramMaxAcqTime: FSDiagramMaxAcqTime,
+//			    			DiscreteMaxAcqTime:DiscreteMaxAcqTime
+//			            }
+//			    	});
+//		    	}
+//			}
+//	    },
+//	    interval: 5000
+//};
+//
+//Ext.TaskManager.start(FSDiagramAnalysisRealtimeRefreshTask);

@@ -58,7 +58,7 @@ import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DistreteAlarmLimit;
 import com.cosog.model.KeyParameter;
 import com.cosog.model.Org;
-import com.cosog.model.Outputwellproduction;
+import com.cosog.model.RPCProductionData;
 import com.cosog.model.User;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.ElectricCalculateResponseData;
@@ -1958,47 +1958,6 @@ public class BaseDao extends HibernateDaoSupport {
 			conn.close();
 		}
 		return true;
-	}
-	
-	public List<Outputwellproduction> queryOutputwellproductionDatas(String sql) throws SQLException {
-		List<Outputwellproduction> list = new ArrayList<Outputwellproduction>();
-		ResultSet rs = null;
-		Outputwellproduction well = null;
-		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
-		CallableStatement cs=null;
-		try {
-			cs = conn.prepareCall("{ call PRO_QUERY_OBJECTDATA(?,?) }");
-			cs.setString(1, sql);
-			cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-			cs.execute();
-			rs = (ResultSet) cs.getObject(2);
-			while (rs.next()) {
-				well = new Outputwellproduction();
-				well.setJlbh(rs.getInt(1));
-				well.setJbh(rs.getInt(2));
-				well.setRcyl(rs.getDouble(3));
-				well.setCjsj(rs.getDate(4));
-				list.add(well);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			try {
-				if(rs!=null){
-					rs.close();
-				}
-				if(cs!=null){
-					cs.close();
-				}
-				if(conn!=null){
-					conn.close();
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return list;
 	}
 	
 	public Boolean saveProductionDataEditerGridData(WellProHandsontableChangedData wellProHandsontableChangedData,String wellType, String ids) throws SQLException {

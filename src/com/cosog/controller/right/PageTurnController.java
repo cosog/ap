@@ -19,11 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cosog.controller.base.BaseController;
-import com.cosog.model.DiagnosisAnalysisOnly;
-import com.cosog.model.DiagnosisAnalysisStatistics;
 import com.cosog.model.User;
 import com.cosog.service.base.CommonDataService;
-import com.cosog.service.diagnosis.DiagnosisAnalysisOnlyService;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.I18NConfig;
@@ -35,13 +32,6 @@ import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
 
-/**
- * 工况诊断 （单张功图诊断分析）- action类
- * 
- * @author gao 2014-05-09
- * @version 1.0
- * 
- */
 @Controller
 @RequestMapping("/login")
 @Scope("prototype")
@@ -61,14 +51,10 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
-		session.setAttribute("dataSourceSN", LicenseMap.dataSourceSN);
-		session.setAttribute("pcp", LicenseMap.pcp);
-		session.setAttribute("rawWaterCut", LicenseMap.rawWaterCut);
-		session.setAttribute("dynamicCurve", LicenseMap.dynamicCurve);
-		session.setAttribute("electricalHidden", LicenseMap.electricalHidden);
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
 		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
+		session.setAttribute("showLogo", configFile.getOthers().getShowLogo());
 		return "Login";
 	}
 	@RequestMapping("/toTouchLogin")
@@ -81,14 +67,10 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
-		session.setAttribute("dataSourceSN", LicenseMap.dataSourceSN);
-		session.setAttribute("pcp", LicenseMap.pcp);
-		session.setAttribute("rawWaterCut", LicenseMap.rawWaterCut);
-		session.setAttribute("dynamicCurve", LicenseMap.dynamicCurve);
-		session.setAttribute("electricalHidden", LicenseMap.electricalHidden);
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
 		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
+		session.setAttribute("showLogo", configFile.getOthers().getShowLogo());
 		return "app/main";
 	}
 	@RequestMapping("/toTouchMain")

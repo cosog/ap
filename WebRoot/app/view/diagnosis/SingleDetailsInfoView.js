@@ -1,4 +1,3 @@
-var probeWebsocketClient = null;
 Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.DiagnosisSingleDetailsInfoView', //别名
@@ -119,32 +118,6 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
                     },beforeclose: function ( panel, eOpts) {
 //        				alert("关闭");
         				probeWebsocketClose(probeWebsocketClient);
-        			},
-        			afterrender: function ( panel, eOpts) {
-        				var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
-        				var moduleCode = Ext.getCmp("frame_center_ids").getActiveTab().id;
-        				if ('WebSocket' in window) {
-//        					probeWebsocketClient = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
-        					probeWebsocketClient = new ReconnectingWebSocket(baseUrl+"/websocketServer/"+moduleCode);
-        					probeWebsocketClient.debug = true;
-        					probeWebsocketClient.reconnectInterval = 1000;
-        					probeWebsocketClient.timeoutInterval = 2000;
-        					probeWebsocketClient.maxReconnectInterval = 30000;
-        					probeWebsocketClient.reconnectDecay=1.5;
-        					probeWebsocketClient.automaticOpen = true;
-//        					probeWebsocketClient.maxReconnectAttempts = 5;
-        				}
-        				else if ('MozWebSocket' in window) {
-//        					probeWebsocketClient = new MozWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
-        					probeWebsocketClient = new MozWebSocket(baseUrl+"/websocketServer/"+moduleCode);
-        				}else {
-//        					probeWebsocketClient = new SockJS(getBaseUrl()+"/sockjs/socketServer?module_Code="+moduleCode);
-        					probeWebsocketClient = new SockJS(getBaseUrl()+"/websocketServer/"+moduleCode);
-        				}
-        				probeWebsocketClient.onopen = probeWebsocketOnOpen;
-        				probeWebsocketClient.onmessage = probeWebsocketOnMessage;
-        				probeWebsocketClient.onerror = probeWebsocketOnError;
-        				probeWebsocketClient.onclose = probeWebsocketOnClose;
         			}
                 }
              }]
@@ -152,74 +125,6 @@ Ext.define("AP.view.diagnosis.SingleDetailsInfoView", {
         this.callParent(arguments);
     }
 });
-
-function probeWebsocketOnOpen(openEvt) {
-//  alert(openEvt.Data);
-}
-
-function probeWebsocketOnMessage(evt) {
-	var activeId = Ext.getCmp("frame_center_ids").getActiveTab().id;
-	
-	if (activeId === "RealtimeEvaluation") {
-		if(evt.data!='Connect successfully!'){
-			var data=Ext.JSON.decode(evt.data);
-			
-			if(data.cpuUsedPercentAlarmLevel==1){
-				Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#F09614 >CPU:"+data.cpuUsedPercent+"</font>");
-			}else if(data.cpuUsedPercentAlarmLevel==2){
-				Ext.getCmp("CPUUsedPercentLabel_id").setText("<font color=#DC2828 >CPU:"+data.cpuUsedPercent+"</font>");
-			}else{
-				Ext.getCmp("CPUUsedPercentLabel_id").setText("CPU:"+data.cpuUsedPercent);
-			}
-			
-			if(data.memUsedPercentAlarmLevel==1){
-				Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#F09614 >内存:"+data.memUsedPercent+"</font>");
-			}else if(data.memUsedPercentAlarmLevel==2){
-				Ext.getCmp("memUsedPercentLabel_id").setText("<font color=#DC2828 >内存:"+data.memUsedPercent+"</font>");
-			}else{
-				Ext.getCmp("memUsedPercentLabel_id").setText("内存:"+data.memUsedPercent);
-			}
-			
-			if(data.tableSpaceUsedPercentAlarmLevel==1){
-				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >表空间:"+data.tableSpaceUsedPercent+"</font>");
-			}else if(data.tableSpaceUsedPercentAlarmLevel==2){
-				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >表空间:"+data.tableSpaceUsedPercent+"</font>");
-			}else{
-				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
-			}
-			
-			if(data.appRunStatus=="运行"){
-				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtgreen");
-			}else{
-				Ext.getCmp("appRunStatusProbeLabel_id").setIconCls("dtyellow");
-			}
-			Ext.getCmp("appRunStatusProbeLabel_id").setText("ac"+data.appVersion);
-			
-			if(data.adRunStatus=="运行"){
-				Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtgreen");
-			}else{
-				Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtyellow");
-			}
-			Ext.getCmp("adRunStatusProbeLabel_id").setText("ad"+data.adVersion);
-			
-		}
-	}
-}
-function probeWebsocketOnOpen() {
-//	alert("WebSocket连接成功");
-}
-function probeWebsocketOnError() {
-//	alert("WebSocket连接发生错误");
-}
-function probeWebsocketOnClose() {
-//	alert("WebSocket连接关闭");
-}
-
-function probeWebsocketClose(websocket) {
-	if(websocket!=null){
-		websocket.close();
-	}
-}
 
 ResourceProbeHistoryCurveChartFn = function (get_rawData, itemName, itemCode, divId) {
     var tickInterval = 1;

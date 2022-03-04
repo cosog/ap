@@ -253,12 +253,12 @@ public class EquipmentDriverServerTask {
 			pstmt = conn.prepareStatement(delSql);
 			result=pstmt.executeUpdate();
 			if(result>0){//字段映射模式改变，删除历史数据
-				String delPumpHis="truncate table tbl_pumpacqdata_hist";
-				String delPipelineHis="truncate table tbl_pipelineacqdata_hist";
-				pstmt = conn.prepareStatement(delPumpHis);
-				result=pstmt.executeUpdate();
-				pstmt = conn.prepareStatement(delPipelineHis);
-				result=pstmt.executeUpdate();
+//				String delPumpHis="truncate table tbl_pumpacqdata_hist";
+//				String delPipelineHis="truncate table tbl_pipelineacqdata_hist";
+//				pstmt = conn.prepareStatement(delPumpHis);
+//				result=pstmt.executeUpdate();
+//				pstmt = conn.prepareStatement(delPipelineHis);
+//				result=pstmt.executeUpdate();
 			}
 			
 			Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
@@ -303,51 +303,6 @@ public class EquipmentDriverServerTask {
 						pstmt.executeUpdate();
 						result++;
 					}
-				}
-			}
-			
-			
-			if(pipelineDeviceAcquisitionItemColumns!=null){
-				//同步管设备字段映射表
-				sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=1 order by t.id";
-				pstmt = conn.prepareStatement(sql);
-				rs=pstmt.executeQuery();
-				mappingTableRecordMap=new HashMap<String,String>();
-				while(rs.next()){
-					if(dataSaveMode==0){//以地址为准
-						mappingTableRecordMap.put(rs.getString(2), rs.getString(1));//以地址为准
-					}else{
-						mappingTableRecordMap.put(rs.getString(1), rs.getString(2));//以名称为准
-					}
-				}
-				//如驱动配置中不存在，删除记录
-				for(String key : mappingTableRecordMap.keySet()) {
-					if(!StringManagerUtils.existOrNot(pipelineDeviceAcquisitionItemColumns,key,mappingTableRecordMap.get(key),false)){
-						String deleteSql="";
-						if(dataSaveMode==0){//以地址为准
-							deleteSql="delete from tbl_datamapping t where t.name='"+mappingTableRecordMap.get(key)+"' and t.mappingcolumn='"+key+"' and t.protocoltype=1";
-						}else{
-							deleteSql="delete from tbl_datamapping t where t.name='"+key+"' and t.mappingcolumn='"+mappingTableRecordMap.get(key)+"' and t.protocoltype=1";
-						}
-						pstmt = conn.prepareStatement(deleteSql);
-						pstmt.executeUpdate();
-						result++;
-					}
-				}
-				//如数据库中不存在，添加记录
-				for(String key : pipelineDeviceAcquisitionItemColumns.keySet()) {
-					if(!StringManagerUtils.existOrNot(mappingTableRecordMap,key,pipelineDeviceAcquisitionItemColumns.get(key),false)){
-						String addSql="";
-						if(dataSaveMode==0){//以地址为准
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+pipelineDeviceAcquisitionItemColumns.get(key)+"','"+key+"',1,"+dataSaveMode+")";
-						}else{
-							addSql="insert into tbl_datamapping(name,mappingcolumn,protocoltype,mappingmode) values('"+key+"','"+pipelineDeviceAcquisitionItemColumns.get(key)+"',1,"+dataSaveMode+")";
-						}
-						pstmt = conn.prepareStatement(addSql);
-						pstmt.executeUpdate();
-						result++;
-					}
-					
 				}
 			}
 		} catch (SQLException e) {
@@ -796,7 +751,7 @@ public class EquipmentDriverServerTask {
 					}
 				}
 			}
-//			loadAcquisitionItemColumns();
+			loadAcquisitionItemColumns();
 			//同步数据库字段
 //			initAcquisitionItemDataBaseColumns();
 			//同步数据字典

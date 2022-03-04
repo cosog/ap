@@ -24,6 +24,8 @@ import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.ModbusProtocolConfig.Protocol;
+import com.cosog.model.gridmodel.DatabaseMappingProHandsontableChangedData;
+import com.cosog.model.gridmodel.WellHandsontableChangedData;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
@@ -1714,11 +1716,14 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	
 	public String getDatabaseColumnMappingTable(String deviceType) {
 		StringBuffer result_json = new StringBuffer();
-		String sql="select t.id,t.name,t.mappingcolumn from tbl_datamapping t where t.protocoltype="+deviceType+" order by t.id";
+		String sql="select t.id,t.name,t.mappingcolumn,t.savetable,t.savecolumn "
+				+ " from tbl_datamapping t where t.protocoltype="+deviceType+" order by t.id";
 		String columns="["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\" ,children:[] },"
-				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",children:[] }"
+				+ "{ \"header\":\"字段\",\"dataIndex\":\"itemColumn\",children:[] },"
+				+ "{ \"header\":\"保存数据表\",\"dataIndex\":\"saveTable\",children:[] },"
+				+ "{ \"header\":\"保存字段\",\"dataIndex\":\"saveColumn\",children:[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"columns\":"+columns+",\"totalRoot\":[");
@@ -1726,13 +1731,29 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			Object[] obj = (Object[]) list.get(i);
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"itemName\":\""+obj[1]+"\",");
-			result_json.append("\"itemColumn\":\""+obj[2]+"\"},");
+			result_json.append("\"itemColumn\":\""+obj[2]+"\",");
+			result_json.append("\"saveTable\":\""+obj[3]+"\",");
+			result_json.append("\"saveColumn\":\""+obj[4]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public void saveDatabaseColumnMappingTable(DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData,String protocolType) throws Exception {
+		if(databaseMappingProHandsontableChangedData.getUpdatelist()!=null){
+			String updateSql="";
+			for(int i=0;i<databaseMappingProHandsontableChangedData.getUpdatelist().size();i++){
+				updateSql="update tbl_datamapping t set t.savetable='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getSaveTable()+"',"
+						+ " t.savecolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getSaveColumn()+"' "
+						+ " where t.name='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemName()+"' "
+						+ " and t.mappingcolumn='"+databaseMappingProHandsontableChangedData.getUpdatelist().get(i).getItemColumn()+"' "
+						+ " and t.protocoltype="+protocolType;
+				getBaseDao().updateOrDeleteBySql(updateSql);
+			}
+		}
 	}
 	
 	public boolean judgeProtocolExistOrNot(int deviceType,String protocolName) {

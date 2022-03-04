@@ -10,7 +10,7 @@ body {
     -o-box-sizing: border-box;
     -ms-box-sizing: border-box;
 }
-
+/*
 #imgTitle {
     position: absolute;
     border-bottom: 2px solid #FBC02D;
@@ -130,6 +130,7 @@ body {
     margin-left: 0px;
     padding-left: 20px;
 }
+*/
 
 .hbox {
 	-webkit-flex: 1;

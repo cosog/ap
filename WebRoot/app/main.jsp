@@ -5,41 +5,22 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
 	String path = request.getContextPath();
-   String browserLang=(String)request.getAttribute("browserLang");
-   String viewProjectName=(String)session.getAttribute("viewProjectName");
-   request.setAttribute("browserLang",browserLang );
-   
-   /*
-   boolean isConnection=false;
-   HttpURLConnection http=null; 
-   String youURL= "http://www.cosogoil.com";//输入一个网站，判断能否连接上。 
-   try { 
-   		URL url = new URL(youURL); 
-   		http = (HttpURLConnection) url.openConnection(); 
-   } 
-   catch (IOException ex) { 
-   		ex.printStackTrace(); 
-   		//System.out.println( "建立网络连接发生错误: " + ex.getMessage()); 
-   		isConnection =false; 
-   } 
-   if (http.getResponseCode() != 200) { 
-	   isConnection =false; 
-   		//System.out.println( "网络连接失败 "); 
-   }else{
-	   //System.out.println( "网络连接成功 "); 
-	   isConnection=true;
-   }*/
+   	String browserLang=(String)request.getAttribute("browserLang");
+   	String viewProjectName=(String)session.getAttribute("viewProjectName");
+   	boolean showLogo=(boolean)session.getAttribute("showLogo");
+   	request.setAttribute("browserLang",browserLang );
 %>
 <html>
 <head>
 <!--<fmt:setBundle basename="config/messages"/>-->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title><%=viewProjectName%></title>
-<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico" />
-<link rel="icon" href="<%=path%>/images/logo/favicon.ico" type="image/x-icon" />
-<link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico"
-	type="image/x-icon" />
+<%if(showLogo){ %>
+<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" />
+<link rel="icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" type="image/x-icon" />
+<link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" type="image/x-icon" />
 <link rel="Bookmark" href="favicon.ico" />
+<%} %>
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
@@ -51,15 +32,11 @@
  var viewInformation = ${configFile}.viewInformation;
  
  var productionUnit = ${configFile}.others.productionUnit;
- 
- var dataSourceSN=${dataSourceSN};
- var rawWaterCutHidden = !${rawWaterCut};
- var pcpHidden = !${pcp};
- var dynamicCurveHidden = !${dynamicCurve};
- var electricalHidden = !${electricalHidden};
-if (user_ == null || "" == (user_)) {
-			window.location.href = "../login/toLogin";
-}
+ var showLogo = ${configFile}.others.showLogo;
+ var userAccount="${userLogin.userId}";
+ if (user_ == null || "" == (user_)) {
+	 window.location.href = "../login/toLogin";
+ }
 </script>
 <!-- 加载类库 -->
 <jsp:include flush="true" page="./tags.jsp" />
@@ -91,9 +68,7 @@ if (user_ == null || "" == (user_)) {
 	<!-- 加载效果 -->
 	<div id="loading_div_id">
 		<div class="loading-indicator">
-			<img src="<%=path%>/images/large-loading.gif" width="32" height="32"
-				style="margin-right:8px;float:left;vertical-align:top;" /> <span
-				id="loading-msg">正在加载前台UI ...</span>
+			<img src="<%=path%>/images/large-loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">正在加载前台UI ...</span>
 		</div>
 	</div>
 	<script type="text/javascript"> 
@@ -117,6 +92,9 @@ if (user_ == null || "" == (user_)) {
     var treeInfo;
     var nav_html="";
     var user_Type="";
+    var electricalHidden=false;
+    var dynamicCurveHidden=false;
+    var pcpHidden=false;
  	  //启动Extjs
 	  Ext.onReady(function(){
 			    Ext.BLANK_IMAGE_URL="<%=path%>/scripts/extjs/resources/themesimages/default/s.gif";

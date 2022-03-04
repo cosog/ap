@@ -9,6 +9,7 @@
 	String name="";
 	String password="";
 	String viewProjectName=(String)session.getAttribute("viewProjectName");
+	boolean showLogo=(boolean)session.getAttribute("showLogo");
 	try{
 		Cookie[] cookies=request.getCookies();
 		System.out.println(cookies.length);
@@ -55,14 +56,17 @@
     <meta http-equiv="expires" content="0" />
     <title><%=viewProjectName%></title>
     <!-- 链接外部图标，如：中石油、中石化 -->
-	<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico" />
-	<link rel="icon" href="<%=path%>/images/logo/favicon.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico" type="image/x-icon" />
+    <%if(showLogo){ %>
+	<link rel="Bookmark" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" />
+	<link rel="icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" type="image/x-icon" />
+	<link rel="shortcut icon" href="<%=path%>/images/logo/favicon.ico?timestamp=202202231815" type="image/x-icon" />
+	<%} %>
     <!-- 链接css -->
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/bootstrap-select.min.css" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css" type="text/css" />
-    <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/login2.css" type="text/css" />
+    <!--<link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/login2.css" type="text/css" /> -->
+    <link rel="stylesheet" href="<%=path%>/styles/login.css?timestamp=202111252128" type="text/css"/>
 
     <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-2.2.0.min.js"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js"></script>

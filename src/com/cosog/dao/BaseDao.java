@@ -1034,7 +1034,7 @@ public class BaseDao extends HibernateDaoSupport {
 				}
 			}
 			if(disableWellIdList.size()>0){
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfigById(disableWellIdList,"delete");
+				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfigById(disableWellIdList,"delete");
 			}
 			if(wellHandsontableChangedData.getDelidslist()!=null&&wellHandsontableChangedData.getDelidslist().size()>0){
 				String delIds="";
@@ -1059,7 +1059,7 @@ public class BaseDao extends HibernateDaoSupport {
 					deleteWellList.add(list.get(i)+"");
 				}
 				if(deleteWellList.size()>0){
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigById(wellHandsontableChangedData.getDelidslist(),"delete");
+					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfigById(wellHandsontableChangedData.getDelidslist(),"delete");
 				}
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
@@ -1067,7 +1067,7 @@ public class BaseDao extends HibernateDaoSupport {
 			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,deviceType,user);
 			
 			if(initWellList.size()>0){
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,"update");
+				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1215,7 +1215,7 @@ public class BaseDao extends HibernateDaoSupport {
 			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,deviceType,user);
 			
 			if(initWellList.size()>0){
-				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,"update");
+				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -2345,7 +2345,7 @@ public class BaseDao extends HibernateDaoSupport {
 			}
 			
 			if(initWellList.size()>0){
-//				EquipmentDriverServerTask.initDriverAcquisitionInfoConfig(initWellList,"update");
+//				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,"update");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

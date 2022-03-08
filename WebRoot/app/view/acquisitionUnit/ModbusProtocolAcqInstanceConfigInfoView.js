@@ -116,7 +116,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 		var item2={};
 		item2.id=2;
 		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"井设备":"管设备");
+		item2.value=(data.deviceType==0?"抽油机":"螺杆泵");
 		root.push(item2);
 		
 		var item3={};
@@ -233,7 +233,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
 	                    	if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['井设备'];
+		                    	this.source = ['抽油机','螺杆泵'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
@@ -375,7 +375,7 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-			saveData.deviceType=(propertiesData[1][2]=="井设备"?0:1);
+			saveData.deviceType=(propertiesData[1][2]=="抽油机"?0:1);
 			saveData.unitId=selectedItem.data.unitId;
 			saveData.unitName=propertiesData[2][2];
 			saveData.acqProtocolType=propertiesData[3][2];

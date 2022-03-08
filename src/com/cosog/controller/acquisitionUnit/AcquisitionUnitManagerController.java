@@ -935,7 +935,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			for(int i=0;modbusDriverSaveData.getDelidslist()!=null&&i<modbusDriverSaveData.getDelidslist().size();i++){
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 					if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),modbusProtocolConfig.getProtocol().get(j).getDeviceType(),"delete");
+						EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),modbusProtocolConfig.getProtocol().get(j).getDeviceType(),"delete");
 						EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
 						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
 						this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getDeviceType(),modbusProtocolConfig.getProtocol().get(j).getName());
@@ -1136,7 +1136,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(acquisitionUnitHandsontableChangeData!=null){
 			if(acquisitionUnitHandsontableChangeData.getDelidslist()!=null){
 				for(int i=0;i<acquisitionUnitHandsontableChangeData.getDelidslist().size();i++){
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
+					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
 					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
 					this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(acquisitionUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
 				}
@@ -1410,7 +1410,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				for(int i=0;i<modbusProtocolInstanceSaveData.getDelidslist().size();i++){
 					List<String> deleteInstanceList=new ArrayList<String>();
 					deleteInstanceList.add(modbusProtocolInstanceSaveData.getName());
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
+					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
 					EquipmentDriverServerTask.initInstanceConfig(deleteInstanceList, "delete");
 					this.acquisitionUnitManagerService.doModbusProtocolInstanceBulkDelete(modbusProtocolInstanceSaveData.getDelidslist().get(i),modbusProtocolInstanceSaveData.getDeviceType());
 				}
@@ -1456,7 +1456,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 							instanceList=new ArrayList<String>();
 							instanceList.add(modbusProtocolInstanceSaveData.getName());
 							EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
-							EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
+							EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
 						}
 						
 						json = "{success:true,msg:true}";

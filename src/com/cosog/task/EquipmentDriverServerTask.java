@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 		return instance;
 	}
 	
-	@SuppressWarnings({ "static-access", "unused" })
+//	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
@@ -108,6 +108,7 @@ public class EquipmentDriverServerTask {
 		initSMSInstanceConfig(null,"");
 		initSMSDevice(null,"");
 		initRPCDriverAcquisitionInfoConfig(null,"");
+		initPCPDriverAcquisitionInfoConfig(null,"");
 		boolean sendMsg=false;
 		do{
 			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
@@ -1134,8 +1135,8 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String sql="select t.wellname,t.signinid,t.slave,t2.name,t.liftingtype,t.id,t.orgid,t.status "
-				+ " from tbl_wellinformation t,tbl_protocolinstance t2 "
+		String sql="select t.wellname,t.signinid,t.slave,t2.name,t.devicetype,t.id,t.orgid,t.status "
+				+ " from tbl_rpcdevice t,tbl_protocolinstance t2 "
 				+ " where t.instancecode=t2.code ";
 //		if("update".equalsIgnoreCase(method)){
 //			sql+= " and t.signinid is not null and t.slave is not null and t.status=1";
@@ -1246,7 +1247,7 @@ public class EquipmentDriverServerTask {
 			method="update";
 		}
 		String sql="select t.wellname,t.signinid,t.slave,t2.name,t.devicetype,t.id,t.orgid,t.status "
-				+ " from tbl_wellinformation t left outer join tbl_protocolinstance t2  on t.instancecode=t2.code "
+				+ " from tbl_rpcdevice t left outer join tbl_protocolinstance t2  on t.instancecode=t2.code "
 				+ " where 1=1 ";
 //		if("update".equalsIgnoreCase(method)){
 //			sql+= " and t.signinid is not null and t.slave is not null and t.status=1";
@@ -1354,7 +1355,7 @@ public class EquipmentDriverServerTask {
         }
 		try {
 			if(deviceType==0){
-				sql="select t.wellname from tbl_wellinformation t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
+				sql="select t.wellname from tbl_rpcdevice t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
 				while(rs.next()){
@@ -1382,7 +1383,7 @@ public class EquipmentDriverServerTask {
         	return -1;
         }
 		try {
-			String sql="select t.wellname from tbl_wellinformation t where t.instancecode='"+instanceCode+"'";
+			String sql="select t.wellname from tbl_rpcdevice t where t.instancecode='"+instanceCode+"'";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
@@ -1409,7 +1410,7 @@ public class EquipmentDriverServerTask {
         	return -1;
         }
 		try {
-			String sql="select t.wellname from tbl_wellinformation t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id="+instanceId;
+			String sql="select t.wellname from tbl_rpcdevice t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id="+instanceId;
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
@@ -1437,7 +1438,342 @@ public class EquipmentDriverServerTask {
         	return -1;
         }
 		try {
-			String sql="select t.wellname from tbl_wellinformation t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id and t3.id="+unitId;
+			String sql="select t.wellname from tbl_rpcdevice t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id and t3.id="+unitId;
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getString(1));
+			}
+			if(wellList.size()>0){
+				initRPCDriverAcquisitionInfoConfig(wellList,method);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
+	}
+	
+	public static int initPCPDriverAcquisitionInfoConfig(List<String> wellList,String method){
+		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		Gson gson = new Gson();
+		int result=0;
+		
+		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+		Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+		if(initializedDeviceList==null){
+			initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+		}
+		
+		String wellName=StringManagerUtils.joinStringArr2(wellList, ",");
+		if(!StringManagerUtils.isNotNull(method)){
+			method="update";
+		}
+		String sql="select t.wellname,t.signinid,t.slave,t2.name,t.devicetype,t.id,t.orgid,t.status "
+				+ " from tbl_pcpdevice t,tbl_protocolinstance t2 "
+				+ " where t.instancecode=t2.code ";
+//		if("update".equalsIgnoreCase(method)){
+//			sql+= " and t.signinid is not null and t.slave is not null and t.status=1";
+//		}	
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+=" and t.wellname in("+wellName+")";
+		}
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null ){
+        	return -1;
+        }
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				InitializedDeviceInfo initialized=initializedDeviceList.get(0+"_"+rs.getInt(6));
+				int status=rs.getInt(8);
+				if("update".equalsIgnoreCase(method)&&status==1){
+					if(initialized==null&&StringManagerUtils.isNotNull(rs.getString(2))&& rs.getInt(3)>0 &&StringManagerUtils.isNotNull(rs.getString(4))){//如果未初始化
+						InitId initId=new InitId();
+						initId.setMethod("update");
+						initId.setID(rs.getString(2));
+						initId.setSlave((byte) rs.getInt(3));
+						initId.setInstanceName(rs.getString(4));
+						StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+						String response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+						if(StringManagerUtils.isNotNull(response)){
+							InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(rs.getInt(7),rs.getInt(6),rs.getString(1),rs.getInt(5),rs.getString(2),(byte) rs.getInt(3),rs.getString(4));
+							initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+						}
+					}else if(initialized!=null){
+						//如果已经初始化但注册包ID、设备从地址、实例有一项为空，删除设备
+						if( (!StringManagerUtils.isNotNull(rs.getString(2))) || rs.getInt(3)==0 || (!StringManagerUtils.isNotNull(rs.getString(4))) ){
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							initId.setID(initialized.getSigninid());
+							initId.setSlave(initialized.getSlave());
+							initId.setInstanceName(initialized.getInstanceName());
+							StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+							String response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+							if(StringManagerUtils.isNotNull(response)){
+								initializedDeviceList.remove(1+"_"+rs.getInt(6));
+							}
+						}
+						//如果已经初始化但信息有变化
+						else if(! (initialized.getSigninid().equalsIgnoreCase(rs.getString(2))&&initialized.getSlave()==(byte) rs.getInt(3)&& initialized.getInstanceName().equalsIgnoreCase(rs.getString(4)))   ){
+							//删掉原有初始化
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							initId.setID(initialized.getSigninid());
+							initId.setSlave(initialized.getSlave());
+							initId.setInstanceName(initialized.getInstanceName());
+							StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+							//重新初始化
+							initId.setMethod("update");
+							initId.setID(rs.getString(2));
+							initId.setSlave((byte) rs.getInt(3));
+							initId.setInstanceName(rs.getString(4));
+							StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+							String response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+							if(StringManagerUtils.isNotNull(response)){
+								InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(rs.getInt(7),rs.getInt(6),rs.getString(1),rs.getInt(5),rs.getString(2),(byte) rs.getInt(3),rs.getString(4));
+								initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+							}
+						}
+					}
+				}else{
+					if(initialized!=null){
+						//删掉原有初始化
+						InitId initId=new InitId();
+						initId.setMethod("delete");
+						initId.setID(initialized.getSigninid());
+						initId.setSlave(initialized.getSlave());
+						initId.setInstanceName(initialized.getInstanceName());
+						StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+						initializedDeviceList.remove(1+"_"+rs.getInt(6));
+					}
+				}
+			}
+			dataModelMap.put("InitializedDeviceList", initializedDeviceList);
+		} catch (SQLException e) {
+			StringManagerUtils.printLog("ID初始化sql："+sql);
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return result;
+	}
+	
+	public static int initPCPDriverAcquisitionInfoConfigById(List<String> wellIdList,String method){
+		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		Gson gson = new Gson();
+		int result=0;
+		
+		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+		Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+		if(initializedDeviceList==null){
+			initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+		}
+		
+		String wellId=StringUtils.join(wellIdList, ",");
+		if(!StringManagerUtils.isNotNull(method)){
+			method="update";
+		}
+		String sql="select t.wellname,t.signinid,t.slave,t2.name,t.devicetype,t.id,t.orgid,t.status "
+				+ " from tbl_pcpdevice t left outer join tbl_protocolinstance t2  on t.instancecode=t2.code "
+				+ " where 1=1 ";
+//		if("update".equalsIgnoreCase(method)){
+//			sql+= " and t.signinid is not null and t.slave is not null and t.status=1";
+//		}	
+		if(StringManagerUtils.isNotNull(wellId)){
+			sql+=" and t.id in("+wellId+")";
+		}
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null ){
+        	return -1;
+        }
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				InitializedDeviceInfo initialized=initializedDeviceList.get(0+"_"+rs.getInt(6));
+				int status=rs.getInt(8);
+				if("update".equalsIgnoreCase(method)&&status==1){
+					if(initialized==null&&StringManagerUtils.isNotNull(rs.getString(2))&& rs.getInt(3)>0 &&StringManagerUtils.isNotNull(rs.getString(4))){//如果未初始化
+						InitId initId=new InitId();
+						initId.setMethod("update");
+						initId.setID(rs.getString(2));
+						initId.setSlave((byte) rs.getInt(3));
+						initId.setInstanceName(rs.getString(4));
+						StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+						String response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+						if(StringManagerUtils.isNotNull(response)){
+							InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(rs.getInt(7),rs.getInt(6),rs.getString(1),rs.getInt(5),rs.getString(2),(byte) rs.getInt(3),rs.getString(4));
+							initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+						}
+					}else if(initialized!=null){
+						//如果已经初始化但注册包ID、设备从地址、实例有一项为空，删除设备
+						if( (!StringManagerUtils.isNotNull(rs.getString(2))) || rs.getInt(3)==0 || (!StringManagerUtils.isNotNull(rs.getString(4))) ){
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							initId.setID(initialized.getSigninid());
+							initId.setSlave(initialized.getSlave());
+							initId.setInstanceName(initialized.getInstanceName());
+							StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+							String response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+							if(StringManagerUtils.isNotNull(response)){
+								initializedDeviceList.remove(1+"_"+rs.getInt(6));
+							}
+						}
+						//如果已经初始化但信息有变化
+						else if(! (initialized.getSigninid().equalsIgnoreCase(rs.getString(2))&&initialized.getSlave()==(byte) rs.getInt(3)&& initialized.getInstanceName().equalsIgnoreCase(rs.getString(4)))   ){
+							//删掉原有初始化
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							initId.setID(initialized.getSigninid());
+							initId.setSlave(initialized.getSlave());
+							initId.setInstanceName(initialized.getInstanceName());
+							StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+							StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+							//重新初始化
+							initId.setMethod("update");
+							initId.setID(rs.getString(2));
+							initId.setSlave((byte) rs.getInt(3));
+							initId.setInstanceName(rs.getString(4));
+							StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+							String response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+							if(StringManagerUtils.isNotNull(response)){
+								InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(rs.getInt(7),rs.getInt(6),rs.getString(1),rs.getInt(5),rs.getString(2),(byte) rs.getInt(3),rs.getString(4));
+								initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+							}
+						}
+					}
+				}else{
+					if(initialized!=null){
+						//删掉原有初始化
+						InitId initId=new InitId();
+						initId.setMethod("delete");
+						initId.setID(initialized.getSigninid());
+						initId.setSlave(initialized.getSlave());
+						initId.setInstanceName(initialized.getInstanceName());
+						StringManagerUtils.printLog("设备ID初始化："+gson.toJson(initId));
+						StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8");
+						initializedDeviceList.remove(1+"_"+rs.getInt(6));
+					}
+				}
+			}
+			dataModelMap.put("InitializedDeviceList", initializedDeviceList);
+		} catch (SQLException e) {
+			StringManagerUtils.printLog("ID初始化sql："+sql);
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("resource")
+	public static int initPCPDriverAcquisitionInfoConfigByProtocolName(String protocolName,int deviceType,String method){
+		List<String> wellList=new ArrayList<String>();
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		String sql="";
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			if(deviceType==0){
+				sql="select t.wellname from tbl_pcpdevice t where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
+				pstmt = conn.prepareStatement(sql);
+				rs=pstmt.executeQuery();
+				while(rs.next()){
+					wellList.add(rs.getString(1));
+				}
+				if(wellList.size()>0){
+					initRPCDriverAcquisitionInfoConfig(wellList,method);
+				}
+			}else if(deviceType==1){}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
+	}
+	
+	public static int initPCPDriverAcquisitionInfoConfigByProtocolInstance(String instanceCode,String method){
+		List<String> wellList=new ArrayList<String>();
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			String sql="select t.wellname from tbl_pcpdevice t where t.instancecode='"+instanceCode+"'";
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getString(1));
+			}
+			if(wellList.size()>0){
+				initRPCDriverAcquisitionInfoConfig(wellList,method);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
+	}
+	
+	public static int initPCPDriverAcquisitionInfoConfigByProtocolInstanceId(String instanceId,String method){
+		List<String> wellList=new ArrayList<String>();
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			String sql="select t.wellname from tbl_pcpdevice t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id="+instanceId;
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getString(1));
+			}
+			if(wellList.size()>0){
+				initRPCDriverAcquisitionInfoConfig(wellList,method);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return 0;
+	}
+	
+	@SuppressWarnings("resource")
+	public static int initPCPDriverAcquisitionInfoConfigByAcqUnitId(String unitId,String method){
+		List<String> wellList=new ArrayList<String>();
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return -1;
+        }
+		try {
+			String sql="select t.wellname from tbl_pcpdevice t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id and t3.id="+unitId;
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
@@ -1662,8 +1998,8 @@ public class EquipmentDriverServerTask {
 		if(conn==null){
 			return ;
 		}
-		String sql="select t.wellname,t.liftingtype,t.orgid,t2.commstatus,t.status "
-				+ " from tbl_wellinformation t "
+		String sql="select t.wellname,t.devicetype,t.orgid,t2.commstatus,t.status "
+				+ " from tbl_rpcdevice t "
 				+ " left outer join tbl_rpc_discrete_latest t2 on t2.wellid=t.id "
 				+ " order by t.sortnum";
 		pstmt = conn.prepareStatement(sql); 
@@ -1678,8 +2014,8 @@ public class EquipmentDriverServerTask {
 			commStatusList.add(commStatus);
 		}
 		
-		sql="select t.wellname,t.liftingtype,t.orgid,t2.commstatus,t.status "
-				+ " from tbl_pipelinedevice t "
+		sql="select t.wellname,t.devicetype,t.orgid,t2.commstatus,t.status "
+				+ " from tbl_pcpdevice t "
 				+ " left outer join tbl_pcp_discrete_latest t2 on t2.wellid=t.id "
 				+ " order by t.sortnum";
 		pstmt = conn.prepareStatement(sql); 
@@ -1701,12 +2037,19 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initWellCommStatus(){
-		String initRPCCommSql="update tbl_rpc_discrete_latest t set t.commstatus=0 where t.wellid in ( select t2.id from tbl_wellinformation t2,tbl_protocolinstance t3 where t2.instancecode=t3.code )";
-		String initPCPCommSql="update tbl_pcp_discrete_latest t set t.commstatus=0 where t.wellid in ( select t2.id from tbl_wellinformation t2,tbl_protocolinstance t3 where t2.instancecode=t3.code )";
+		String initRPCCommSql="update tbl_rpc_discrete_latest t set t.commstatus=0 where t.wellid in ( select t2.id from tbl_rpcdevice t2,tbl_protocolinstance t3 where t2.instancecode=t3.code )";
+		String initPCPCommSql="update tbl_pcp_discrete_latest t set t.commstatus=0 where t.wellid in ( select t2.id from tbl_pcpdevice t2,tbl_protocolinstance t3 where t2.instancecode=t3.code )";
+		
+		String initRPCAcqCommSql="update tbl_rpc_acqdata_latest t set t.commstatus=0 where t.wellid in ( select t2.id from tbl_rpcdevice t2,tbl_protocolinstance t3 where t2.instancecode=t3.code )";
+		String initPCPAcqCommSql="update tbl_pcp_acqdata_latest t set t.commstatus=0 where t.wellid in ( select t2.id from tbl_pcpdevice t2,tbl_protocolinstance t3 where t2.instancecode=t3.code )";
+		
 		int result=0;
 		try {
 			result = JDBCUtil.updateRecord(initRPCCommSql, null);
 			result = JDBCUtil.updateRecord(initPCPCommSql, null);
+			
+			result = JDBCUtil.updateRecord(initRPCAcqCommSql, null);
+			result = JDBCUtil.updateRecord(initPCPAcqCommSql, null);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -914,7 +914,7 @@ function SaveModbusProtocolAlarmUnitConfigTreeData(){
         	}
 			saveData.alarmItems=[];
 			Ext.Array.each(alarmItemsData, function (name, index, countriesItSelf) {
-				var checked=alarmItemsData[index][0];
+				var checked=(alarmItemsData[index][0]+'')==='true';
 				if(checked){
 					var item={};
 					if(saveData.resolutionMode==2){//数据量

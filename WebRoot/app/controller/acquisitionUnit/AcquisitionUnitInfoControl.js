@@ -459,7 +459,7 @@ var grantAcquisitionItemsPermission = function () {
     }
     if (driverConfigItemsData.length > 0) {
         Ext.Array.each(driverConfigItemsData, function (name, index, countriesItSelf) {
-            if (driverConfigItemsData[index][0]) {
+            if ((driverConfigItemsData[index][0]+'')==='true') {
             	var itemName = driverConfigItemsData[index][2];
             	var itemAddr = driverConfigItemsData[index][3];
             	var resolutionMode = driverConfigItemsData[index][6];
@@ -469,6 +469,7 @@ var grantAcquisitionItemsPermission = function () {
             	var realtimeCurveColor=driverConfigItemsData[index][10];
             	var isHistoryCurve=driverConfigItemsData[index][11];
             	var historyCurveColor=driverConfigItemsData[index][12];
+            	var bitIndex=driverConfigItemsData[index][13];
                 
                 addjson.push(itemName);
                 addItemSort.push(itemSort);
@@ -477,7 +478,7 @@ var grantAcquisitionItemsPermission = function () {
                 if (matrix_value != "" || matrix_value != null) {
                     matrix_value = matrix_value.substring(0, matrix_value.length - 1);
                 }
-                matrixData += itemName + ":"+itemAddr+ ":"+resolutionMode+ ":"+itemSort+ ":"+itemShowLevel  + ":" + isRealtimeCurve+ ":" + realtimeCurveColor+ ":" + isHistoryCurve + ":" + historyCurveColor + ":" + matrix_value+ "|";
+                matrixData += itemName + ":"+itemAddr+ ":"+resolutionMode+ ":"+itemSort+ ":"+itemShowLevel  + ":" + isRealtimeCurve+ ":" + realtimeCurveColor+ ":" + isHistoryCurve + ":" + historyCurveColor + ":" + bitIndex +":"+matrix_value+ "|";
             }
         });
         if (addjson.length > 0) {

@@ -497,7 +497,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 							for(int j=0;j<protocol.getItems().size();j++){
 								if(itemAddr==protocol.getItems().get(j).getAddr()){
 									for(int k=0;protocol.getItems().get(j).getMeaning()!=null&&k<protocol.getItems().get(j).getMeaning().size();k++){
-										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())){
+										if(itemName.equalsIgnoreCase(protocol.getItems().get(j).getMeaning().get(k).getMeaning())
+												&&(StringManagerUtils.isNotNull(module_[9])&&StringManagerUtils.stringToInteger(module_[9])==protocol.getItems().get(j).getMeaning().get(k).getValue())  ){
 											itemName=protocol.getItems().get(j).getTitle();
 											bitIndex=protocol.getItems().get(j).getMeaning().get(k).getValue();
 											break;
@@ -522,7 +523,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						acquisitionGroupItem.setRealtimeCurveColor(StringManagerUtils.isNumber(module_[5]) && !"开关量".equalsIgnoreCase(resolutionMode)&&StringManagerUtils.isColor16("#"+module_[6])?module_[6]:"");
 						acquisitionGroupItem.setHistoryCurve((StringManagerUtils.isNumber(module_[7]) && !"开关量".equalsIgnoreCase(resolutionMode))?StringManagerUtils.stringTransferInteger(module_[7]):null);
 						acquisitionGroupItem.setHistoryCurveColor(StringManagerUtils.isNumber(module_[7]) && !"开关量".equalsIgnoreCase(resolutionMode)&&StringManagerUtils.isColor16("#"+module_[8])?module_[8]:"");
-						acquisitionGroupItem.setMatrix(module_[9]);
+						acquisitionGroupItem.setMatrix(module_[10]);
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 				}

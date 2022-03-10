@@ -122,7 +122,8 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 						+"{data:'isRealtimeCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
 						+"{data:'realtimeCurveColor'},"
 						+"{data:'isHistoryCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}},"
-						+"{data:'historyCurveColor'}"
+						+"{data:'historyCurveColor'},"
+						+"{data:'bitIndex'}"
 						+"]";
 				
 				protocolAcqUnitConfigItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -185,6 +186,10 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        	protocolAcqUnitConfigItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [13],
+	                    indicators: false
+	                },
 	        		colWidths: [25,50,140,60,80,80,80,60,60,60,70,60,70],
 	                columns:protocolAcqUnitConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

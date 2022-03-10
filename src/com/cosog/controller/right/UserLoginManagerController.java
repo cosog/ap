@@ -63,101 +63,6 @@ public class UserLoginManagerController extends BaseController {
 	private OrgManagerService<Org> orgService;
 	@Autowired
 	private ModuleManagerService<Module> modService;
-	/**
-	 * 管理员用户登录时，判断该用户是否合法并且为管理员权限
-	 * @author gao 2014-05-08
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/adminLogin")
-	public String adminLogin() throws Exception {
-		response.setContentType("text/html;charset=utf-8");
-		PrintWriter out = response.getWriter();
-		String userId = ParamUtils.getParameter(request, "userId");
-		String userPwd = ParamUtils.getParameter(request, "userPwd");
-		String imgCode = ParamUtils.getParameter(request, "imgCode");
-		String sessionCode = (String) session.get("sessionCode");
-		String username = URLDecoder.decode(userId, "UTF-8");
-		log.debug("userId" + username);
-		String userPass = URLDecoder.decode(userPwd, "UTF-8");
-		String code = URLDecoder.decode(imgCode, "UTF-8");
-		HttpSession session = request.getSession(true);
-		// 功图图形服务内外网判断
-//		String picUrl = "";
-		String ip = request.getServerName();
-//		picUrl = Config2.getPicUrlByClientIp(ip, Config2.getUrl_filter());
-		String locale=Config.getInstance().configFile.getOthers().getLanguage();
-		Locale l = Locale.getDefault(); 
-		if(locale==null){ 
-		l = new Locale("zh", "CN"); 
-		}else if (locale.equals("zh_CN")) { 
-		l = new Locale("zh", "CN"); 
-		} else if (locale.equals("en")) { 
-		l = new Locale("en", "US"); 
-		} 
-		ActionContext.getContext().setLocale(l);   
-		session.setAttribute("WW_TRANS_I18N_LOCALE", l);
-		session.setAttribute("browserLang", locale);
-		session.setAttribute("WEBSOCKET_USERID", username);
-        if(locale.equalsIgnoreCase("zh_CN")){
-		if (null == username || "".equals(username)) {
-			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户名不能为空!</font>'}");
-		} else if (null == userPass || "".equals(userPass)) {
-			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户密码不能为空!</font>'}");
-		} else if (null == code || "".equals(code)) {
-			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">请输入验证码!!</font>'}");
-		} else if (!(sessionCode.equals(imgCode))) {
-			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">抱歉输入的验证码有误!</font>'}");
-		} else {
-			user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
-			if(user!=null){
-			if (user.getUserType() == 1 || user.getUserType() == 2||user.getUserType() == 3) {
-//				user.setPicUrl(picUrl);// 通过session传到前台
-				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
-				user.setPageSize(pageSize + "");
-				user.setOrgtreeid(findUserToOrgString(user.getUserOrgid()));
-				session.setAttribute("userLogin", user);
-				out.print("{success:true,flag:'admin'}");
-			} else if (user != null && user.getUserType() == 0) {
-				out.print("{success:true,flag:'normal','msg':'<font color=\"red\"> 您是普通用户，请从其前台登录界面登录!</font>'}");
-			} 
-			}else {
-				out.print("{success:true,flag:false,'msg':'<font color=\"red\">用户" + username + "的账号或密码错误  !</font>'}");
-			}
-		}
-        }else if(locale.equalsIgnoreCase("en")){
-        	if (null == username || "".equals(username)) {
-    			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">The user name cannot be empty!</font>'}");
-    		} else if (null == userPass || "".equals(userPass)) {
-    			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">The user password can not be empty!</font>'}");
-    		} else if (null == code || "".equals(code)) {
-    			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">Please enter the verification code!</font>'}");
-    		} else if (!(sessionCode.equals(imgCode))) {
-    			out.print("{success:true,flag:false,'msg':'<font color=\"purple\">I am sorry to verify code entered is incorrect!</font>'}");
-    		} else {
-    			user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
-    			if(user!=null){
-    				if (user.getUserType() == 1 || user.getUserType() == 2||user.getUserType() == 3) {
-    			if ( user.getUserType() == 1 || user.getUserType() == 2||user.getUserType() == 3) {
-//    				user.setPicUrl(picUrl);// 通过session传到前台
-    				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
-    				user.setPageSize(pageSize + "");
-    				user.setOrgtreeid(findUserToOrgString(user.getUserOrgid()));
-    				session.setAttribute("userLogin", user);
-    				out.print("{success:true,flag:'admin'}");
-    			} else if (user != null && user.getUserType() == 0) {
-    				out.print("{success:true,flag:'normal','msg':'<font color=\"red\"> You are a regular user, please login interface login from the front!</font>'}");
-    			} 
-    		}else {
-        			out.print("{success:true,flag:false,'msg':'<font color=\"red\">User "+ username +"\\'s account or password is wrong !</font>'}");
-        			}
-    		
-    			}
-    			}
-        }
-		return null;
-
-	}
 
 	/**
 	 * 登录用户所属组织编码
@@ -192,9 +97,10 @@ public class UserLoginManagerController extends BaseController {
 		// 用户不存在
 		if (null != userInfo) {
 			String getUpwd = userInfo.getUserPwd();
-			String getOld = UnixPwdCrypt.crypt("dogVSgod", oldPassword);
+			String getOld =StringManagerUtils.stringToMD5(oldPassword);// UnixPwdCrypt.crypt("dogVSgod", oldPassword);
 			if (getOld.equals(getUpwd)) {
-				userInfo.setUserPwd(UnixPwdCrypt.crypt("dogVSgod", newPassword));
+//				userInfo.setUserPwd(UnixPwdCrypt.crypt("dogVSgod", newPassword));
+				userInfo.setUserPwd(StringManagerUtils.stringToMD5(newPassword));
 				//service.edit(userInfo);
 				this.service.modifyUser(userInfo);
 				jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>密码修改成功。</font>'}";
@@ -248,23 +154,8 @@ public class UserLoginManagerController extends BaseController {
 		// 功图图形服务内外网判断
 		String picUrl = "";
 		String ip = request.getServerName();
-		String clientIp=request.getHeader("x-forwarded-for");
-        if(clientIp==null || clientIp.length()==0 || "unknown".equalsIgnoreCase(clientIp)){
-        	clientIp=request.getHeader("Proxy-Client-IP");
-        }
-        if(clientIp==null || clientIp.length()==0 || "unknown".equalsIgnoreCase(clientIp)){
-        	clientIp=request.getHeader("WL-Proxy-Client-IP");
-        }
-        if(clientIp==null || clientIp.length()==0 || "unknown".equalsIgnoreCase(clientIp)){
-        	clientIp=request.getHeader("X-Real-IP");
-        }
-        if(clientIp==null || clientIp.length()==0 || "unknown".equalsIgnoreCase(clientIp)){
-        	clientIp=request.getRemoteAddr();
-        }
+		String clientIp=StringManagerUtils.getIpAddr(request);
 		
-//		picUrl = Config2.getPicUrlByClientIp(ip, Config2.getUrl_filter());
-		// String code = URLDecoder.decode(imgCode, "UTF-8");
-//		HttpSession session = ServletActionContext.getRequest().getSession(true);
 		HttpSession session=request.getSession();
 		String locale=Config.getInstance().configFile.getOthers().getLanguage();
 		Locale l = Locale.getDefault(); 
@@ -299,9 +190,10 @@ public class UserLoginManagerController extends BaseController {
 			if("1".equals(autoLogin)){
 				user = this.service.doLogin(username, userPass);
 			}else{
-				user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
+//				user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
+				user = this.service.doLogin(username, StringManagerUtils.stringToMD5(userPass));
 			}
-			if (user != null) {
+			if (user != null&&user.getUserEnable()==1) {
 				user.setPicUrl(picUrl);// 通过session传到前台
 				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
 				boolean SyncOrAsync=Config.getInstance().configFile.getOthers().getSyncOrAsync();
@@ -317,12 +209,16 @@ public class UserLoginManagerController extends BaseController {
 				user.setUserOrgNames(orgService.findChildNames(user.getUserOrgid()));
 				user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
+				user.setLoginIp(clientIp);
 				session.setAttribute("userLogin", user);
 				session.setAttribute("SESSION_USERNAME", username);
 				out.print("{success:true,flag:'normal'}");
+				this.service.saveSystemLog(user);
+			}else if(user != null && user.getUserEnable()!=1){
+				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "已被禁用 !</font>' }");
 			} else {
 				if(locale.equalsIgnoreCase("zh_CN")){
-				out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "的账号或密码错误 !</font>' }");
+					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">用户" + username + "的账号或密码错误 !</font>' }");
 				}else if(locale.equalsIgnoreCase("en")){
 					out.print("{success:true,flag:false,'msg':'<font color=\"purple\">User "+ username +"\\'s account or password is wrong!</font>' }");
 				}
@@ -351,7 +247,8 @@ public class UserLoginManagerController extends BaseController {
 		} else if (null == userPass || "".equals(userPass)) {
 			out.print("");
 		} else {
-			user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
+//			user = this.service.doLogin(username, UnixPwdCrypt.crypt("dogVSgod", userPass));
+			user = this.service.doLogin(username, StringManagerUtils.stringToMD5(userPass));
 			if (user != null&&user.getUserType()==3) {
 				String 	orgId = this.systemdataInfoService.findCurrentUserOrgIdInfo(user.getUserOrgid()+"");
 				if(!StringManagerUtils.isNotNull(orgId)){

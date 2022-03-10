@@ -91,6 +91,36 @@ public class OrgManagerController extends BaseController {
 
 		return null;
 	}
+	
+	@RequestMapping("/loadOrgComboxTreeData")
+	public String loadOrgComboxTreeData() throws IOException {
+		String orgId = ParamUtils.getParameter(request, "orgId");
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			User user = null;
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		list = this.orgService.loadOrgs(Org.class,"",orgId);
+		String json = "";
+		Recursion r = new Recursion();
+		for (Org org : list) {
+			if (!r.hasParent(list, org)) {
+				json = r.recursionOrgCombTree(list, org);
+			}
+		}
+		json = r.modifyStr(json);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+
+		return null;
+	}
 
 	/**
 	 * <p>
@@ -148,15 +178,14 @@ public class OrgManagerController extends BaseController {
 				if (map.get("orgTree") != null && oldUserId.equalsIgnoreCase(curUserId)) {
 					list = (List<Org>) map.get("orgTree");
 				} else {
-					list = orgService.findloadOrgTreeListById(Org.class, user.getUserorgids());
+					list = orgService.loadOrgAndChildTreeListById(Org.class, user.getUserOrgid());
 					map.put("oldUser", "");
 					map.put("oldUser", user);
 					map.put("orgTree", list);
 				}
 			}else{
 				log.warn("用户拥有的组织未启用缓存...");
-//				list = orgService.findloadOrgTreeListById(Org.class, user.getOrgtreeid());
-				list = orgService.findloadOrgTreeListById(Org.class, user.getUserorgids());
+				list = orgService.loadOrgAndChildTreeListById(Org.class, user.getUserOrgid());
 			}
 
 			for (Org o : list) {
@@ -258,19 +287,13 @@ public class OrgManagerController extends BaseController {
 					}
 					strBuf.append(",\"orgId\":\"" + org.getOrgId() + "\"");
 					strBuf.append(",\"orgParent\":\""+org.getOrgParent() + "\"");
-					strBuf.append(",\"orgCode\":\""+org.getOrgCode()+"\"");
-					strBuf.append(",\"orgShowLevel\":\""+org.getShowlevel()+"\"");
-					strBuf.append(",\"orgCoordX\":\""+org.getOrgCoordX()+"\"");
-					strBuf.append(",\"orgCoordY\":\""+org.getOrgCoordY()+"\"},");
+					strBuf.append(",\"orgCode\":\""+org.getOrgCode()+"\"},");
 				}else{
 					strBuf.append("{\"text\":\"" + org.getOrgName() + "\"");
 					strBuf.append(",\"leaf\" : true");
 					strBuf.append(",\"orgId\":\"" + org.getOrgId() + "\"");
 					strBuf.append(",\"orgParent\":\""+org.getOrgParent() + "\"");
-					strBuf.append(",\"orgCode\":\""+org.getOrgCode()+"\"");
-					strBuf.append(",\"orgShowLevel\":\""+org.getShowlevel()+"\"");
-					strBuf.append(",\"orgCoordX\":\""+org.getOrgCoordX()+"\"");
-					strBuf.append(",\"orgCoordY\":\""+org.getOrgCoordY()+"\"},");
+					strBuf.append(",\"orgCode\":\""+org.getOrgCode()+"\"},");
 				}
 			}
 			strBuf=strBuf.deleteCharAt(strBuf.length()-1);
@@ -299,6 +322,14 @@ public class OrgManagerController extends BaseController {
 	public String constructOrgTreeGridTree() throws IOException {
 		String orgName = ParamUtils.getParameter(request, "orgName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			User user = null;
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
 		List<?> list = this.orgService.queryOrgs(Org.class, orgName,orgId);
 		String json = "";
 		OrgRecursion r = new OrgRecursion();
@@ -409,8 +440,14 @@ public class OrgManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		try {
-			if (org.getOrgParent() == null) {
-				org.setOrgParent(0);
+			if (org.getOrgParent() == null || org.getOrgParent()==0) {
+				String sql = "select t.org_id from tbl_org t where t.org_name='组织根节点' and t.org_parent=0 and rownum=1";
+				List list = this.service.findCallSql(sql);
+				if(list.size()>0){
+					org.setOrgParent(StringManagerUtils.stringToInteger(list.get(0)+""));
+				}else{
+					org.setOrgParent(0);
+				}
 			}
 			this.orgService.addOrg(org);
 			result = "{success:true,msg:true}";
@@ -451,9 +488,12 @@ public class OrgManagerController extends BaseController {
 	public String doOrgBulkDelete() {
 		try {
 			String OrgIds = ParamUtils.getParameter(request, "paramsId");
-			this.orgService.bulkDelete(OrgIds);
+			int deleteCount=0;
+			if(StringManagerUtils.isNotNull(OrgIds)){
+				deleteCount=this.orgService.bulkDelete(OrgIds);
+			}
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			String result = "{success:true,flag:true}";
+			String result = "{success:true,flag:true,\"deleteCount\":"+deleteCount+"}";
 			Map<String, Object> map = DataModelMap.getMapObject();
 			HttpSession session=request.getSession();
 			User userInfo = this.findCurrentUserInfo();
@@ -712,11 +752,6 @@ public class OrgManagerController extends BaseController {
 			org.setOrgName(list.get(i).getText());
 			org.setOrgMemo(list.get(i).getOrgMemo());
 			org.setOrgParent(Integer.parseInt(list.get(i).getOrgParent()));
-			org.setOrgLevel(Integer.parseInt(list.get(i).getOrgLevel()));
-			org.setOrgType(list.get(i).getOrgType());
-			org.setOrgCoordX(Double.parseDouble(list.get(i).getOrgCoordX()));
-			org.setOrgCoordY(Double.parseDouble(list.get(i).getOrgCoordY()));
-			org.setShowlevel(Integer.parseInt(list.get(i).getShowLevel()));
 			this.orgService.modifyOrg(org);
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();

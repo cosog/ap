@@ -53,10 +53,36 @@ public class Recursion {
 			returnStr.append(node.getOrgName());
 			returnStr.append("\",\"orgCode\":\"");
 			returnStr.append(node.getOrgCode());
-			returnStr.append("\",\"orgLevel\":\"");
-			returnStr.append(node.getOrgLevel());
 			//returnStr.append("\",\"iconCls\":\"tree_leaf_icon");
 			returnStr.append("\",\"leaf\":true },");
+		}
+		data = returnStr.toString();
+		return data;
+	}
+	
+	public String recursionOrgCombTree(List list, Org node) {
+
+		String data = "";
+		if (hasChild(list, node)) {
+			returnStr.append("{\"text\":\"" + node.getOrgName() + "\",");
+			returnStr.append("\"expanded\":true,");
+			returnStr.append("\"id\":" + node.getOrgId() + ",");
+			returnStr.append("\"orgParent\":" + node.getOrgParent() + ",");
+			returnStr.append("\"orgCode\":\""+node.getOrgCode()+"\",");
+			returnStr.append("\"children\":[");
+			List childList = getChildList(list, node);
+			Iterator it = childList.iterator();
+			while (it.hasNext()) {
+				Org n = (Org) it.next();
+				recursionOrgCombTree(list, n);
+			}
+			returnStr.append("]},");
+		} else {
+			returnStr.append("{\"id\":"+node.getOrgId()+",");
+			returnStr.append("\"orgParent\":"+node.getOrgParent()+",");
+			returnStr.append("\"text\":\""+node.getOrgName()+"\",");
+			returnStr.append("\"orgCode\":\""+node.getOrgCode()+"\",");
+			returnStr.append("\"leaf\":true },");
 		}
 		data = returnStr.toString();
 		return data;
@@ -115,23 +141,14 @@ public class Recursion {
 	}
 
 	public String recursionOrgFn(List list, Org node) {
-
 		String data = "";
 		if (hasChild(list, node)) {
 			returnStr.append("{\"text\":\"" + node.getOrgName() + "\"");
 			returnStr.append(",\"expanded\" : true");
 			returnStr.append(",\"orgId\":\"" + node.getOrgId() + "\"");
-			returnStr.append(",\"orgLevel\":\"" + node.getOrgLevel() + "\"");
-			returnStr.append(",\"orgType\":\""
-					+ (node.getOrgType() == null ? "1" : node.getOrgType())
-					+ "\"");
 			returnStr.append(",\"orgParent\":\"" + node.getOrgParent() + "\"");
-			returnStr
-					.append(",\"orgMemo\":\""
-							+ (node.getOrgMemo() == null ? "无" : node
-									.getOrgMemo()) + "\"");
+			returnStr.append(",\"orgMemo\":\""+ (node.getOrgMemo() == null ? "无" : node.getOrgMemo()) + "\"");
 			returnStr.append(",\"orgCode\":\"" + node.getOrgCode() + "\"");
-			// returnStr.append(",\"iconCls\":\"Image\"");
 			returnStr.append(",\"children\":[");
 			List childList = getChildList(list, node);
 			Iterator it = childList.iterator();
@@ -145,18 +162,12 @@ public class Recursion {
 			returnStr.append(node.getOrgId());
 			returnStr.append("\",\"orgParent\":\"");
 			returnStr.append(node.getOrgParent());
-			returnStr.append("\",\"orgLevel\":\"");
-			returnStr.append(node.getOrgLevel());
-			returnStr.append("\",\"orgType\":\"");
-			returnStr.append((node.getOrgType() == null ? "1" : node
-					.getOrgType()));
 			returnStr.append("\",\"text\":\"");
 			returnStr.append(node.getOrgName());
 			returnStr.append("\",\"orgCode\":\"");
 			returnStr.append(node.getOrgCode());
 			returnStr.append("\",\"orgMemo\":\"");
-			returnStr.append((node.getOrgMemo() == null ? "无" : node
-					.getOrgMemo()));
+			returnStr.append((node.getOrgMemo() == null ? "无" : node.getOrgMemo()));
 			returnStr.append("\",\"leaf\":true },");
 		}
 		data = returnStr.toString();
@@ -216,6 +227,6 @@ public class Recursion {
 	public static void main(String[] args) {
 	//	Recursion r = new Recursion();
 		// r.recursionFn(r.nodeList, new Node(1, 0));
-		// System.out.println(r.modifyStr(r.returnStr.toString()));
+		// StringManagerUtils.printLog(r.modifyStr(r.returnStr.toString()));
 	}
 }

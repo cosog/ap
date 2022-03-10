@@ -98,7 +98,7 @@ public class OrgManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(orgId)){
 			sqlBuffer.append(" and u.orgId in ("+orgId+")");
 		}
-		sqlBuffer.append(" order by u.orgId ");
+		sqlBuffer.append(" order by u.orgSeq,u.orgId ");
 		return getBaseDao().find(sqlBuffer.toString());
 		
 	}
@@ -154,12 +154,19 @@ public class OrgManagerService<T> extends BaseService<T> {
 	 * @return
 	 */
 	public List<T> findloadOrgTreeListById(Class<T> clazz, String orgTreeId) {
-//		String queryString = "SELECT u FROM Org u  where u.orgCode like  '" + orgTreeId + "%'  order by u.orgCode  ";
 		String queryString = "SELECT u FROM Org u  where u.orgId in  (" + orgTreeId + ")  order by u.orgCode  ";
 		return getBaseDao().find(queryString);
 	}
 	
-	
+	public List<T> loadOrgAndChildTreeListById(Class<T> clazz, int orgId) {
+		String queryString = "select u from Org u  ";
+		if(orgId!=0){
+			String orgIds=findChildIds(orgId);
+			queryString+=" where u.orgId in  ("+orgIds+")";
+		}
+		queryString+= "  order by u.orgSeq,u.orgId  ";
+		return getBaseDao().find(queryString);
+	}
 	
 	//递归查询一个节点的父节点（oracle sql实现）
 	public String findParentIds(int orgid){
@@ -182,26 +189,25 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return parentIds;
 	}
 	
-	//递归查询一个节点的父节点（oracle sql实现）
-		public String findChildIds(int orgid){
-			String childIds="0";
-			StringBuffer orgIdString = new StringBuffer();
-			List<?> list;
-			//递归查询子节点所有父节点sql语句
-			String queryString="select org_id from tbl_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
-			if(orgid==0){
-				queryString="select org_id from tbl_org t ";
-			}
-			list=getBaseDao().findCallSql(queryString);
-			if(list.size()>0){
-				for(int i=0;i<list.size();i++){
-					orgIdString.append(list.get(i)+",");
-				}
-				orgIdString.deleteCharAt(orgIdString.length() - 1);
-				childIds=orgIdString.toString();
-			}
-			return childIds;
+	//递归查询一个节点及其子节点
+	public String findChildIds(int orgid){
+		String childIds="0";
+		StringBuffer orgIdString = new StringBuffer();
+		List<?> list;
+		String queryString="select org_id from tbl_org t start with org_id="+orgid+" connect by prior  org_id=org_parent";
+		if(orgid==0){
+			queryString="select org_id from tbl_org t ";
 		}
+		list=getBaseDao().findCallSql(queryString);
+		if(list.size()>0){
+			for(int i=0;i<list.size();i++){
+				orgIdString.append(list.get(i)+",");
+			}
+			orgIdString.deleteCharAt(orgIdString.length() - 1);
+			childIds=orgIdString.toString();
+		}
+		return childIds;
+	}
 		
 		public String findChildNames(int orgid){
 			String childNames="";
@@ -247,14 +253,17 @@ public class OrgManagerService<T> extends BaseService<T> {
 
 	public List<?> queryOrgs(Class<T> clazz, String orgName,String orgId) {
 		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append("SELECT org_id,org_code,org_name,org_memo,org_parent,org_level,org_type,c.itemname as orgTypeName ,org_coordx,org_coordy,show_level as showLevel FROM tbl_org u,tbl_code c WHERE c.itemcode='ORG_TYPE' and c.itemvalue=u.org_type ");
+		sqlBuffer.append("SELECT org_id,org_parent,org_name,org_memo,org_seq "
+				+ " FROM tbl_org t "
+				+ " WHERE 1=1");
+//				+ " and t.org_id not in( select o2.org_id from tbl_org o2 where o2.org_name='组织根节点' and o2.org_parent=0 )");
 		if(StringManagerUtils.isNotNull(orgId)){
-			sqlBuffer.append(" and u.org_id in ("+orgId+")");
+			sqlBuffer.append(" and t.org_id in ("+orgId+")");
 		}
 		if(StringManagerUtils.isNotNull(orgName)){
-			sqlBuffer.append(" and u.org_Name like '%" + orgName + "%' ");
+			sqlBuffer.append(" and t.org_Name like '%" + orgName + "%' ");
 		}
-		sqlBuffer.append(" order by u.org_code  asc");
+		sqlBuffer.append(" order by t.org_seq,t.org_id");
 		return this.findCallSql(sqlBuffer.toString());
 	}
 	
@@ -360,12 +369,21 @@ public class OrgManagerService<T> extends BaseService<T> {
 	 * @throws Exception
 	 */
 
-	public void bulkDelete(final String ids) throws Exception {
+	public int  bulkDelete(final String ids) throws Exception {
 		Log.debug("bulkDelete" + ids);
-		final String hql = "DELETE Org u where u.orgId in (" + ids + ")";
-		final String delUserHql = "DELETE User u where u.userOrgid in (" + ids + ")";
-		getBaseDao().bulkObjectDelete(hql);
-		this.getBaseDao().bulkObjectDelete(delUserHql);
+		String deleteUserSql="delete from tbl_user t where t.user_orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
+		String deletePumpDeviceSql="delete from tbl_pumpdevice t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
+		String deletePipelineDeviceSql="delete from tbl_pipelinedevice t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
+		String deleteOrgSql="delete from tbl_org t where t.org_id in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
+		getBaseDao().updateOrDeleteBySql(deleteUserSql);
+		getBaseDao().updateOrDeleteBySql(deletePumpDeviceSql);
+		getBaseDao().updateOrDeleteBySql(deletePipelineDeviceSql);
+		return getBaseDao().updateOrDeleteBySql(deleteOrgSql);
+		
+//		final String hql = "DELETE Org u where u.orgId in (" + ids + ") or u.orgParent in(" + ids + ")";
+//		final String delUserHql = "DELETE User u where u.userOrgid in (" + ids + ")";
+//		getBaseDao().bulkObjectDelete(hql);
+//		this.getBaseDao().bulkObjectDelete(delUserHql);
 	}
 
 	public T getOrg(Class<T> clazz, int id) {

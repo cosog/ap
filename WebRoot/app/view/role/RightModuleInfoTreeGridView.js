@@ -28,7 +28,8 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
             columns: [
                 {
                     xtype: 'treecolumn',
-                    text: cosog.string.funcList,
+//                    text: cosog.string.funcList,
+                    text: '模块列表',
                     flex: 8,
                     align: 'left',
                     dataIndex: 'text'

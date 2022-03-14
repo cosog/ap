@@ -17,35 +17,32 @@ Ext.define("AP.view.role.RoleInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
-        var RoleTypeStore = new Ext.data.SimpleStore({
-        	autoLoad : false,
-            fields: ['roleFlag', 'roleFlagName'],
-            data: [['0', '否'], ['1', '是']]
-        });
-
-        // Simple ComboBox using the data store
         var RoleTypeCombox = new Ext.form.ComboBox({
             id: 'roleFlagComboxfield_Id',
             value: 0,
-            fieldLabel: '控制权限',
+            fieldLabel: '设备控制权限<font color=red>*</font>',
             typeAhead : true,
             allowBlank: false,
             autoSelect:true,
             editable:false,
-			
             anchor: '100%',
             emptyText: '--请选择--',
             triggerAction: 'all',
-            store: RoleTypeStore,
+            store: new Ext.data.SimpleStore({
+            	autoLoad : false,
+                fields: ['roleFlag', 'roleFlagName'],
+                data: [['0', '否'], ['1', '是']]
+            }),
             displayField: 'roleFlagName',
             valueField: 'roleFlag',
             queryMode : 'local',
             listeners: {
-                select: function (picker,record,eOpts) {
-                	Ext.getCmp("role_addwin_Id").down('form').getChildByElement("roleFlag_Id").setValue(record.data.roleFlag);
+            	select: function (v,o) {
+					Ext.getCmp("roleFlag_Id").setValue(this.value);
                 }
             }
         });
+        
         var postroleEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
             defaultType: 'textfield',
@@ -61,16 +58,30 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 id: 'roleFlag_Id',
                 value: 0
             }, {
-                fieldLabel: cosog.string.roleName,
+                fieldLabel: cosog.string.roleName+'<font color=red>*</font>',
+                allowBlank: false,
                 anchor: '100%',
                 id: 'role_Name_Id',
                 name: "role.roleName"
-            }, {
-                id: 'roleCode_Id',
-                fieldLabel: cosog.string.roleCode,
+            },{
+            	xtype: 'numberfield',
+            	id: "roleLevel_Id",
+                name: 'role.roleLevel',
+                fieldLabel: '角色等级<font color=red>*</font>',
+                allowBlank: false,
+                minValue: 1,
+                value:1,
                 anchor: '100%',
-                value: '',
-                name: "role.roleCode"
+                msgTarget: 'side'
+            },{
+            	xtype: 'numberfield',
+            	id: "roleShowLevel_Id",
+                name: 'role.showLevel',
+                fieldLabel: '数据显示级别<font color=red>*</font>',
+                allowBlank: false,
+                minValue: 1,
+                anchor: '100%',
+                msgTarget: 'side'
             },RoleTypeCombox, {
                 fieldLabel: '角色描述',
                 id: 'roleRemark_Id',
@@ -78,9 +89,7 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 xtype: 'textareafield',
                 value: '',
                 name: "role.remark"
-            }
-            //, RoleTypeCombox
-            ],
+            }],
             buttons: [{
                 id: 'addFormrole_Id',
                 xtype: 'button',

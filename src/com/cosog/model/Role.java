@@ -20,9 +20,10 @@ public class Role implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer roleId;
-	private String roleCode;
 	private String roleName;
-	private String roleFlag;
+	private Integer roleLevel;
+	private Integer roleFlag;
+	private Integer showLevel;
 	private String remark;
 
 	// Constructors
@@ -32,11 +33,15 @@ public class Role implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Role(String roleCode, String roleName, String roleFlag,String remark) {
-		this.roleCode = roleCode;
+	public Role(Integer roleId,String roleName, Integer roleLevel, Integer roleFlag,
+			Integer showLevel, String remark) {
+		super();
+		this.roleId = roleId;
 		this.roleName = roleName;
+		this.roleLevel = roleLevel;
 		this.roleFlag = roleFlag;
-		this.remark=remark;
+		this.showLevel = showLevel;
+		this.remark = remark;
 	}
 
 	@Id
@@ -50,15 +55,6 @@ public class Role implements java.io.Serializable {
 		this.roleId = roleId;
 	}
 
-	@Column(name = "ROLE_CODE", nullable = false, length = 20)
-	public String getRoleCode() {
-		return this.roleCode;
-	}
-
-	public void setRoleCode(String roleCode) {
-		this.roleCode = roleCode;
-	}
-
 	@Column(name = "ROLE_NAME", nullable = false, length = 40)
 	public String getRoleName() {
 		return this.roleName;
@@ -68,12 +64,21 @@ public class Role implements java.io.Serializable {
 		this.roleName = roleName;
 	}
 
+	@Column(name = "ROLE_LEVEL", nullable = false, length = 10)
+	public Integer getRoleLevel() {
+		return roleLevel;
+	}
+
+	public void setRoleLevel(Integer roleLevel) {
+		this.roleLevel = roleLevel;
+	}
+
 	@Column(name = "ROLE_FLAG", nullable = false, length = 10)
-	public String getRoleFlag() {
+	public Integer getRoleFlag() {
 		return this.roleFlag;
 	}
 
-	public void setRoleFlag(String roleFlag) {
+	public void setRoleFlag(Integer roleFlag) {
 		this.roleFlag = roleFlag;
 	}
 	
@@ -84,6 +89,15 @@ public class Role implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	@Column(name = "showLevel", nullable = false, length = 10)
+	public Integer getShowLevel() {
+		return showLevel;
+	}
+
+	public void setShowLevel(Integer showLevel) {
+		this.showLevel = showLevel;
 	}
 
 }

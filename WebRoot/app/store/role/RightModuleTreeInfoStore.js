@@ -22,17 +22,22 @@ Ext.define('AP.store.role.RightModuleTreeInfoStore', {
         load: function (store, options, eOpts) {
             var store_ = store;
             clkLoadAjaxFn(store);
+            var roleId='';
             var roleCode="";
+            var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
             if(Ext.getCmp("RoleInfoGridPanel_Id")!=undefined){
             	var _record = Ext.getCmp("RoleInfoGridPanel_Id").getSelectionModel().getSelection();
                 if(_record.length>0){
+                	roleId = _record[0].data.roleId;
                 	roleCode=_record[0].data.roleCode;
                 }
             }
-            if(roleCode=="systemRole"){
+            if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
                 Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();
+                Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
             }else{
             	Ext.getCmp("RightModuleTreeInfoGridPanel_Id").enable();
+            	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
             }
         }
     }

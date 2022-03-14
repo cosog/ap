@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.utils.Page;
@@ -64,6 +65,11 @@ private CommonDataService service;
 		String queryString = "SELECT u FROM Role u order by u.roleId ";
 		return getBaseDao().find(queryString);
 	}
+	
+	public List<T> loadRolesById(Class<T> clazz,int roleId) {
+		String queryString = "SELECT u FROM Role u where roleId= "+roleId;
+		return getBaseDao().find(queryString);
+	}
 
 	public List<T> queryRoles(Class<T> clazz, String roleName) {
 		if (roleName == null || "".equals(roleName))
@@ -84,25 +90,63 @@ private CommonDataService service;
 	}
 
 	
-	public String getRoleList(Map map,Page pager) {
+	public String getRoleList(Map map,Page pager,User user) {
 		String roleName = (String) map.get("roleName");
-		StringBuffer sqlBuffer = new StringBuffer();
-		sqlBuffer.append(" select roleCode,roleName,roleFlag,roleFlagName,roleId,remark from ( ");
-		sqlBuffer.append(" select role_code as roleCode,role_name as roleName,role_flag as roleFlag,decode(u.role_flag,1,'是','否') as roleFlagName,role_id as roleId,remark from  tbl_role u where 1=1");
+		StringBuffer result_json = new StringBuffer();
+		String currentId="";
+		String currentLevel="";
+		String currentShowLevel="";
+		String currentFlag="";
+		String currentRoleLevel="select t3.role_id,t3.role_level,t3.showLevel,t3.role_flag from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo();
+		String sql="select role_id as roleId,role_name as roleName,role_level as roleLevel,role_flag as roleFlag,decode(t.role_flag,1,'是','否') as roleFlagName,showLevel,remark"
+				+ " from  tbl_role t"
+				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+						+ " or t.role_id=(select t3.role_id from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")";
 		if (StringManagerUtils.isNotNull(roleName)) {
-			sqlBuffer.append(" and u.role_Name like '%" + roleName + "%' ");
+			sql+=" and t.role_Name like '%" + roleName + "%' ";
 		}
-		sqlBuffer.append(" order by u.role_id  asc ");
-		sqlBuffer.append(" ) ");
-		String json = "";
+		sql+=" order by t.role_id ";
 		String columns=service.showTableHeadersColumns("roleManage");
-		try {
-			json=this.findPageBySqlEntity(sqlBuffer.toString(),columns , pager );
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		List<?> list = this.findCallSql(sql);
+		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);
+		if(currentUserLevelList.size()>0){
+			Object[] obj = (Object[]) currentUserLevelList.get(0);
+			currentId=obj[0]+"";
+			currentLevel=obj[1]+"";
+			currentShowLevel=obj[2]+"";
+			currentFlag=obj[3]+"";
 		}
-		return json;
+		result_json.append("{\"success\":true,\"totalCount\":"+list.size()
+		+",\"currentId\":"+currentId
+		+",\"currentLevel\":"+currentLevel
+		+",\"currentShowLevel\":"+currentShowLevel
+		+",\"currentFlag\":"+currentFlag
+		+",\"columns\":"+columns+",\"totalRoot\":[");
+		
+		for (Object o : list) {
+			Object[] obj = (Object[]) o;
+			result_json.append("{\"roleId\":"+obj[0]+",");
+			result_json.append("\"roleName\":\""+obj[1]+"\",");
+			result_json.append("\"roleLevel\":\""+obj[2]+"\",");
+			result_json.append("\"roleFlag\":\""+obj[3]+"\",");
+			result_json.append("\"roleFlagName\":\""+obj[4]+"\",");
+			result_json.append("\"showLevel\":\""+obj[5]+"\",");
+			result_json.append("\"remark\":\""+obj[6]+"\"},");
+		}
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+		
+		
+//		try {
+//			json=this.findPageBySqlEntity(sql,columns , pager );
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return json;
 	}
 
 	public void addRole(T role) throws Exception {

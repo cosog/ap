@@ -23,10 +23,15 @@ Ext.define('AP.store.role.RoleInfoStore', {
         load: function (store, options, eOpts) {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
+            Ext.getCmp("currentUserRoleId_Id").setValue(get_rawData.currentId);
+            Ext.getCmp("currentUserRoleLevel_Id").setValue(get_rawData.currentLevel);
+            Ext.getCmp("currentUserRoleShowLevel_Id").setValue(get_rawData.currentShowLevel);
+            Ext.getCmp("currentUserRoleFlag_Id").setValue(get_rawData.currentFlag);
+            
             var ResHeadInfoGridPanel_Id = Ext.getCmp("RoleInfoGridPanel_Id");
             if (!isNotVal(ResHeadInfoGridPanel_Id)) {
                 var arrColumns = get_rawData.columns;
-                var cloums = createDiagStatisticsColumn(arrColumns);
+                var cloums = createRoleGridColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(cloums);
                 //分页工具栏
                 var bbar = new Ext.PageNumberToolbar({
@@ -77,7 +82,8 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         	}
                             Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
                             Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
-                            if(roleCode=="systemRole"){
+                            var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                            if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改和删除自己
                             	Ext.getCmp("delroleLabelClassBtn_Id").disable();
                             	Ext.getCmp("editroleLabelClassBtn_Id").disable();
                             }else{
@@ -85,15 +91,19 @@ Ext.define('AP.store.role.RoleInfoStore', {
                             	Ext.getCmp("editroleLabelClassBtn_Id").enable();
                             }
                         },
-                        itemdblclick: function () {
-                            modifyroleInfo();
+                        itemdblclick: function ( grid, record, item, index, e, eOpts) {
+                        	var roleId = record.data.roleId;
+                            var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                            if(parseInt(currentRoleId)!=parseInt(roleId)){//不能修改和删除自己
+                            	modifyroleInfo();
+                            }
                         }
                     }
                 });
                 var OrgInfoTreeGridViewPanel_Id = Ext.getCmp("RoleInfoGridPanelView_id");
                 OrgInfoTreeGridViewPanel_Id.add(SystemdataInfoGridPanel_panel);
             }
-
+            
         },
         beforeload: function (store, options) {
             var RoleName_Id = Ext.getCmp('RoleName_Id');

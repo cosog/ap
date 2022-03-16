@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.AcquisitionUnit;
 import com.cosog.model.Org;
-import com.cosog.model.PCPDeviceInformation;
-import com.cosog.model.RPCDeviceInformation;
+import com.cosog.model.PcpDeviceInformation;
+import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
@@ -54,9 +54,9 @@ public class WellInformationManagerController extends BaseController {
 	@Autowired
 	private WellInformationManagerService<?> wellInformationManagerService;
 	@Autowired
-	private WellInformationManagerService<RPCDeviceInformation> rpcDeviceManagerService;
+	private WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService;
 	@Autowired
-	private WellInformationManagerService<PCPDeviceInformation> pcpDeviceManagerService;
+	private WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService;
 	@Autowired
 	private WellInformationManagerService<SmsDeviceInformation> smsDeviceManagerService;
 	@Autowired
@@ -266,11 +266,11 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
 		String json="";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+		if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			json = this.wellInformationManagerService.getRPCDeviceInfoList(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=400&&StringManagerUtils.stringToInteger(deviceType)<500){
 			json = this.wellInformationManagerService.getPipeDeviceInfoList(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=800){
 			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
@@ -315,11 +315,11 @@ public class WellInformationManagerController extends BaseController {
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		String json="";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+		if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			json = this.wellInformationManagerService.getRPCDeviceInformationData(recordId);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=400&&StringManagerUtils.stringToInteger(deviceType)<500){
 //			json = this.wellInformationManagerService.getPipeDeviceInfoList(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=800){
 //			json = this.wellInformationManagerService.getSMSDeviceInfoList(map, pager,recordCount);
 		}
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
@@ -482,11 +482,11 @@ public class WellInformationManagerController extends BaseController {
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
 		String json="[]";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+		if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			json = this.wellInformationManagerService.getRPCDeviceInfoExportData(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=400&&StringManagerUtils.stringToInteger(deviceType)<500){
 			json = this.wellInformationManagerService.getPipeDeviceInfoExportData(map, pager,recordCount);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=800){
 			json = this.wellInformationManagerService.getSMSDeviceInfoExportData(map, pager,recordCount);
 		}
 		
@@ -559,13 +559,13 @@ public class WellInformationManagerController extends BaseController {
 		String deviceTableName="tbl_rpcdevice";
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+		if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			deviceTableName="tbl_rpcdevice";
 			json=this.wellInformationManagerService.saveRPCDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=400&&StringManagerUtils.stringToInteger(deviceType)<500){
 			deviceTableName="tbl_pcpdevice";
 			json=this.wellInformationManagerService.savePCPDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=800){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}
 		
@@ -593,11 +593,11 @@ public class WellInformationManagerController extends BaseController {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
-		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+		if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			json=this.wellInformationManagerService.batchAddRPCDevice(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=400&&StringManagerUtils.stringToInteger(deviceType)<500){
 			json=this.wellInformationManagerService.batchAddPCPDevice(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=800){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}
 		
@@ -658,15 +658,26 @@ public class WellInformationManagerController extends BaseController {
 	}
 	
 	@RequestMapping("/doRPCDeviceAdd")
-	public String doRPCDeviceAdd(@ModelAttribute RPCDeviceInformation rpcDeviceInformation) throws IOException {
+	public String doRPCDeviceAdd(@ModelAttribute RpcDeviceInformation rpcDeviceInformation) throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		HttpSession session=request.getSession();
+		String wellName = ParamUtils.getParameter(request, "rpcDeviceInformation.wellName");
+		String id = ParamUtils.getParameter(request, "rpcDeviceInformation.id");
+		String orgId = ParamUtils.getParameter(request, "rpcDeviceInformation.orgId");
+		String deviceType = ParamUtils.getParameter(request, "rpcDeviceInformation.deviceType");
+		String instanceCode = ParamUtils.getParameter(request, "rpcDeviceInformation.instanceCode");
+		String alarmInstanceCode = ParamUtils.getParameter(request, "rpcDeviceInformation.alarmInstanceCode");
+		String signInId = ParamUtils.getParameter(request, "rpcDeviceInformation.signInId");
+		String slave = ParamUtils.getParameter(request, "rpcDeviceInformation.slave");
+		String status = ParamUtils.getParameter(request, "rpcDeviceInformation.status");
+		String sortNum = ParamUtils.getParameter(request, "rpcDeviceInformation.sortNum");
 		try {
 			User user = (User) session.getAttribute("userLogin");
 			if(rpcDeviceInformation.getOrgId()==null){
 				rpcDeviceInformation.setOrgId(user.getUserOrgid());
 			}
+			this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
 			EquipmentDriverServerTask.LoadDeviceCommStatus();
 			List<String> addWellList=new ArrayList<String>();
 			addWellList.add(rpcDeviceInformation.getWellName());
@@ -687,8 +698,8 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/doPumpDeviceEdit")
-	public String doPumpDeviceEdit(@ModelAttribute RPCDeviceInformation rpcDeviceInformation) throws IOException {
+	@RequestMapping("/doRPCDeviceEdit")
+	public String doRPCDeviceEdit(@ModelAttribute RpcDeviceInformation rpcDeviceInformation) throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		HttpSession session=request.getSession();
@@ -714,8 +725,8 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
-	@RequestMapping("/doPipelineDeviceAdd")
-	public String doPipelineDeviceAdd(@ModelAttribute PCPDeviceInformation pcpDeviceInformation) throws IOException {
+	@RequestMapping("/doPCPDeviceAdd")
+	public String doPCPDeviceAdd(@ModelAttribute PcpDeviceInformation pcpDeviceInformation) throws IOException {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		HttpSession session=request.getSession();

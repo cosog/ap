@@ -175,6 +175,10 @@
 	background-image: url(../images/icon/add.png) !important;
 }
 
+.batchAdd {
+	background-image: url(../images/icon/add_batch.png) !important;
+}
+
 .cancel {
 	background-image: url(../images/icon/cancel.png) !important;
 }
@@ -189,6 +193,10 @@
 
 .export {
 	background-image: url(../images/icon/export.png) !important;
+}
+
+.move {
+	background-image: url(../images/icon/move.png) !important;
 }
 
 .Stat {

@@ -35,7 +35,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                     var wellName = Ext.getCmp('rpcDeviceListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        deviceType: 0,
+                        deviceType: 200,
                         wellName: wellName
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
@@ -107,7 +107,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                         heads = heads.substring(0, heads.length - 1);
                     }
 
-                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=101&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机设备")) + "&title=" + URLencode(URLencode("抽油机设备"));
+                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=200&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机设备")) + "&title=" + URLencode(URLencode("抽油机设备"));
                     openExcelWindow(url + '?flag=true' + param);
                 }
             }, '-', {
@@ -146,15 +146,15 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 		}
                 	}
                 	
-                	var window = Ext.create("AP.view.well.PumpDeviceInfoWindow", {
+                	var window = Ext.create("AP.view.well.RPCDeviceInfoWindow", {
                         title: '添加设备'
                     });
                     window.show();
-                    Ext.getCmp("pumpDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
-                    Ext.getCmp("pumpDeviceType_Id").setValue(101);
-                    Ext.getCmp("pumpDeviceOrg_Id").setValue(selectedOrgId);
-                    Ext.getCmp("addFormPumpDevice_Id").show();
-                    Ext.getCmp("updateFormPumpDevice_Id").hide();
+                    Ext.getCmp("rpcDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
+                    Ext.getCmp("rpcDeviceType_Id").setValue(200);
+                    Ext.getCmp("rpcDeviceOrg_Id").setValue(selectedOrgId);
+                    Ext.getCmp("addFormRPCDevice_Id").show();
+                    Ext.getCmp("updateFormRPCDevice_Id").hide();
                     return false;
     			}
     		}, '-',{
@@ -209,7 +209,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
     	    	                    params: {
     	    	                        data: JSON.stringify(saveData),
     	    	                        orgId: leftOrg_Id,
-    	    	                        deviceType: 101
+    	    	                        deviceType: 200
     	    	                    }
     	    	                });
     			            }
@@ -253,7 +253,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                         title: '抽油机批量添加'
                     });
                     Ext.getCmp("batchAddDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
-                    Ext.getCmp("batchAddDeviceType_Id").setValue(101);
+                    Ext.getCmp("batchAddDeviceType_Id").setValue(200);
                     Ext.getCmp("batchAddDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
                     return false;
@@ -267,7 +267,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                         title: '设备隶属迁移'
                     });
                     window.show();
-                    Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(101);
+                    Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(200);
                     Ext.create("AP.store.well.DeviceOrgChangeDeviceListStore");
                     Ext.create("AP.store.well.DeviceOrgChangeOrgListStore");
     			}
@@ -384,13 +384,9 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("RPCDeviceSelectRow_Id").setValue('');
             	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue('');
-            	CreateAndLoadRPCAuxiliaryDeviceInfoTable(0,'');
-            	CreateAndLoadRPCAdditionalInfoTable(0,'');
             }else{
             	var selectedRow=Ext.getCmp("RPCDeviceSelectRow_Id").getValue();
             	var rowdata = rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
-            	CreateAndLoadRPCAuxiliaryDeviceInfoTable(rowdata[0],rowdata[1]);
-            	CreateAndLoadRPCAdditionalInfoTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("RPCDeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -401,7 +397,7 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
         },
         params: {
             wellInformationName: wellInformationName_Id,
-            deviceType: 0,
+            deviceType: 200,
             recordCount: 50,
             orgId: leftOrg_Id,
             page: 1,
@@ -464,8 +460,6 @@ var RPCDeviceInfoHandsontableHelper = {
                 	if(row<0 && row2<0){//只选中表头
                 		Ext.getCmp("RPCDeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue('');
-                    	CreateAndLoadRPCAuxiliaryDeviceInfoTable(0,'');
-                    	CreateAndLoadRPCAdditionalInfoTable(0,'');
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -603,7 +597,7 @@ var RPCDeviceInfoHandsontableHelper = {
                 params: {
                     data: JSON.stringify(rpcDeviceInfoHandsontableHelper.AllData),
                     orgId: leftOrg_Id,
-                    deviceType: 0
+                    deviceType: 200
                 }
             });
         }
@@ -631,7 +625,7 @@ var RPCDeviceInfoHandsontableHelper = {
                     },
                     params: {
                         data: JSON.stringify(rpcDeviceInfoHandsontableHelper.editWellNameList),
-                        deviceType:101
+                        deviceType:200
                     }
                 });
             } else {

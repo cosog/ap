@@ -37,8 +37,6 @@ public class WellHandsontableChangedData {
 
 	    private String wellName="";
 	    
-	    private String applicationScenariosName="";
-	    
 	    private String protocolName="";
 	    
 	    private String resName="";
@@ -135,14 +133,6 @@ public class WellHandsontableChangedData {
 
 		public void setAlarmInstanceName(String alarmInstanceName) {
 			this.alarmInstanceName = alarmInstanceName;
-		}
-
-		public String getApplicationScenariosName() {
-			return applicationScenariosName;
-		}
-
-		public void setApplicationScenariosName(String applicationScenariosName) {
-			this.applicationScenariosName = applicationScenariosName;
 		}
 
 		public int getSaveSign() {

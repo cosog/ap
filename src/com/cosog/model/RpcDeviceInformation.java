@@ -7,14 +7,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 /**
- *  <p>描述：抽油机信息 实体类  tbl_pcpdevice</p>
+ *  <p>描述：抽油机信息 实体类  tbl_rpcdevice</p>
  *  
  * @author zhao  2021-12-17
  *
  */
 @Entity
-@Table(name = "tbl_pcpdevice")
-public class RPCDeviceInformation implements java.io.Serializable {
+@Table(name = "tbl_rpcdevice")
+public class RpcDeviceInformation implements java.io.Serializable {
 	/**
 	 * 
 	 */
@@ -34,11 +34,11 @@ public class RPCDeviceInformation implements java.io.Serializable {
 
 	// Constructors
 	/** default constructor */
-	public RPCDeviceInformation() {
+	public RpcDeviceInformation() {
 	}
 
 	/** full constructor */
-	public RPCDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
+	public RpcDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
 			String instanceCode, String alarmInstanceCode, String signInId, String slave,
 			String videoUrl, Integer sortNum) {
 		super();

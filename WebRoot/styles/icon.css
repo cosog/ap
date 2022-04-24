@@ -103,6 +103,10 @@
 	background-image: url(../images/icon/cbmReport.png) !important;
 }
 
+.log {
+	background-image: url(../images/icon/log.png) !important;
+}
+
 .CurveRoot {
 	background-image: url(../images/icon/rawData.png) !important;
 }

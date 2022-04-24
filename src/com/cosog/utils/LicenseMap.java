@@ -9,7 +9,7 @@ public final class LicenseMap {
 	private static Map<Integer, License> map;
 	private static Map<Integer, List<Integer>> moduleMap;
 	public static int SN=3;
-	public static int modulesSN=1;
+	public static int modulesSN=0;
 	public static int dataSourceSN=0;//数据源 0-采控直读和数据库直读 1-采控直读 2-数据库直读
 	public static boolean pcp=false;
 	public static boolean rawWaterCut=true;
@@ -32,6 +32,7 @@ public final class LicenseMap {
 		moduleList0.add(554);//生产报表
 		moduleList0.add(1315);//图形查询
 		moduleList0.add(2001);//WebSocket测试
+		moduleList0.add(2041);//日志查询
 		moduleList0.add(1958);//网关测调
 		moduleList0.add(1938);//命令下行
 		moduleList0.add(1959);//原始数据
@@ -65,6 +66,7 @@ public final class LicenseMap {
 		moduleList1.add(554);//生产报表
 		moduleList1.add(1315);//图形查询
 //		moduleList1.add(2001);//WebSocket测试
+		moduleList0.add(2041);//日志查询
 		moduleList1.add(1958);//网关测调
 		moduleList1.add(1938);//命令下行
 		moduleList1.add(1959);//原始数据
@@ -97,6 +99,7 @@ public final class LicenseMap {
 		moduleList2.add(1678);//全天评价
 		moduleList2.add(554);//生产报表
 		moduleList2.add(1315);//图形查询
+		moduleList0.add(2041);//日志查询
 //		moduleList2.add(2001);//WebSocket测试
 //		moduleList2.add(1958);//网关测调
 //		moduleList2.add(1938);//命令下行

@@ -581,8 +581,7 @@ Ext.define("AP.view.diagnosis.PCPSingleDetailsInfoView", {
                                 });
                             }
                         }
-                },
-                    {
+                },{
                         region: 'east',
                         id: 'ScrewPumpRealtimeAnalysisDataPanel_Id',
                         width: '65%',

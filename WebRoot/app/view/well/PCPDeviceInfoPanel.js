@@ -35,7 +35,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     var wellName = Ext.getCmp('pcpDeviceListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
-                        deviceType: 0,
+                        deviceType: 400,
                         wellName: wellName
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
@@ -107,7 +107,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         heads = heads.substring(0, heads.length - 1);
                     }
 
-                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=101&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机设备")) + "&title=" + URLencode(URLencode("抽油机设备"));
+                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=400&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机设备")) + "&title=" + URLencode(URLencode("抽油机设备"));
                     openExcelWindow(url + '?flag=true' + param);
                 }
             }, '-', {
@@ -146,15 +146,15 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                 		}
                 	}
                 	
-                	var window = Ext.create("AP.view.well.PumpDeviceInfoWindow", {
+                	var window = Ext.create("AP.view.well.PCPDeviceInfoWindow", {
                         title: '添加设备'
                     });
                     window.show();
-                    Ext.getCmp("pumpDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
-                    Ext.getCmp("pumpDeviceType_Id").setValue(101);
-                    Ext.getCmp("pumpDeviceOrg_Id").setValue(selectedOrgId);
-                    Ext.getCmp("addFormPumpDevice_Id").show();
-                    Ext.getCmp("updateFormPumpDevice_Id").hide();
+                    Ext.getCmp("pcpDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认<br/>&nbsp;");
+                    Ext.getCmp("pcpDeviceType_Id").setValue(400);
+                    Ext.getCmp("pcpDeviceOrg_Id").setValue(selectedOrgId);
+                    Ext.getCmp("addFormPCPDevice_Id").show();
+                    Ext.getCmp("updateFormPCPDevice_Id").hide();
                     return false;
     			}
     		}, '-',{
@@ -209,7 +209,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
     	    	                    params: {
     	    	                        data: JSON.stringify(saveData),
     	    	                        orgId: leftOrg_Id,
-    	    	                        deviceType: 101
+    	    	                        deviceType: 400
     	    	                    }
     	    	                });
     			            }
@@ -253,7 +253,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         title: '抽油机批量添加'
                     });
                     Ext.getCmp("batchAddDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
-                    Ext.getCmp("batchAddDeviceType_Id").setValue(101);
+                    Ext.getCmp("batchAddDeviceType_Id").setValue(400);
                     Ext.getCmp("batchAddDeviceOrg_Id").setValue(selectedOrgId);
                     window.show();
                     return false;
@@ -267,7 +267,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         title: '设备隶属迁移'
                     });
                     window.show();
-                    Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(101);
+                    Ext.getCmp('DeviceOrgChangeWinDeviceType_Id').setValue(400);
                     Ext.create("AP.store.well.DeviceOrgChangeDeviceListStore");
                     Ext.create("AP.store.well.DeviceOrgChangeOrgListStore");
     			}
@@ -384,13 +384,9 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
             if(result.totalRoot.length==0){
             	Ext.getCmp("PCPDeviceSelectRow_Id").setValue('');
             	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue('');
-            	CreateAndLoadPCPAuxiliaryDeviceInfoTable(0,'');
-            	CreateAndLoadPCPAdditionalInfoTable(0,'');
             }else{
             	var selectedRow=Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
             	var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
-            	CreateAndLoadPCPAuxiliaryDeviceInfoTable(rowdata[0],rowdata[1]);
-            	CreateAndLoadPCPAdditionalInfoTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("PCPDeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -401,7 +397,7 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
         },
         params: {
             wellInformationName: wellInformationName_Id,
-            deviceType: 0,
+            deviceType: 400,
             recordCount: 50,
             orgId: leftOrg_Id,
             page: 1,
@@ -464,8 +460,6 @@ var PCPDeviceInfoHandsontableHelper = {
                 	if(row<0 && row2<0){//只选中表头
                 		Ext.getCmp("PCPDeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue('');
-                    	CreateAndLoadPCPAuxiliaryDeviceInfoTable(0,'');
-                    	CreateAndLoadPCPAdditionalInfoTable(0,'');
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -603,7 +597,7 @@ var PCPDeviceInfoHandsontableHelper = {
                 params: {
                     data: JSON.stringify(pcpDeviceInfoHandsontableHelper.AllData),
                     orgId: leftOrg_Id,
-                    deviceType: 0
+                    deviceType: 400
                 }
             });
         }
@@ -631,7 +625,7 @@ var PCPDeviceInfoHandsontableHelper = {
                     },
                     params: {
                         data: JSON.stringify(pcpDeviceInfoHandsontableHelper.editWellNameList),
-                        deviceType:101
+                        deviceType:400
                     }
                 });
             } else {

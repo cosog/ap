@@ -219,15 +219,15 @@ public class ModuleManagerService<T> extends BaseService<T> {
 
 	public List<?> queryModules(Class<T> clazz, String moduleName,User user) {
 		StringBuffer sqlBuffer = new StringBuffer();
-		String roleCodeSql="select role_code from tbl_role where role_id="+user.getUserType();
-		List<?> list = this.findCallSql(roleCodeSql);
-		String roleCode="";
+		String roleLevelSql="select role_level from tbl_role where role_id="+user.getUserType();
+		List<?> list = this.findCallSql(roleLevelSql);
+		String roleLevel="";
 		if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
-			roleCode = list.get(0).toString();
+			roleLevel = list.get(0).toString();
 		}
 		sqlBuffer.append("select md_id,md_name,md_parentid,md_showname,md_url,md_code,md_seq ,md_icon,md_type,md_control,c.itemname as mdTypeName   ");
 		sqlBuffer.append("from  tbl_module t,tbl_code c where c.itemcode='MD_TYPE' and c.itemvalue=t.md_type ");
-		if (!"systemRole".equals(roleCode)){
+		if (!"1".equals(roleLevel)){
 			sqlBuffer.append("and  t.md_id in ( select distinct rm.rm_moduleid from tbl_user u ,tbl_role role,tbl_module2role rm where  role.role_Id =rm.rm_RoleId and role.role_Id = u.user_Type   and u.user_No="+user.getUserNo() + ")");
 		}
 		if(!moduleName.isEmpty()&&moduleName!=null&&!"".equals(moduleName)){
@@ -247,13 +247,13 @@ public class ModuleManagerService<T> extends BaseService<T> {
 	 * 
 	 */
 	public List<T> queryRightModules(Class<T> clazz, String moduleName,User user) throws Exception {
-		String roleCodeSql="select role_code from tbl_role where role_id="+user.getUserType();
+		String roleCodeSql="select role_level from tbl_role where role_id="+user.getUserType();
 		List<?> list = this.findCallSql(roleCodeSql);
-		String roleCode="";
+		String roleLevel="";
 		if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
-			roleCode = list.get(0).toString();
+			roleLevel = list.get(0).toString();
 		}
-		if ("systemRole".equals(roleCode))
+		if ("1".equals(roleLevel))
 			return loadRightModules(clazz);
 		String queryString = "SELECT  m FROM Module m where 1=1 and m.mdType in(0,1)  and m.mdId in " 
 				+ "( select distinct rm.rmModuleid from User u ,Role role,RoleModule rm "

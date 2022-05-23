@@ -1,31 +1,29 @@
 <%@ page language="java" import="java.util.*,java.net.*,java.io.*" pageEncoding="UTF-8"%>
 <%!
 boolean isConnectInt(){
-	
 	boolean isConnection=false;
 	HttpURLConnection http=null; 
 	String youURL= "http://www.baidu.com";//输入一个网站，判断能否连接上。 
-	try { 
-			URL url = new URL(youURL); 
-			http = (HttpURLConnection) url.openConnection(); 
+	try {
+		URL url = new URL(youURL);
+		http = (HttpURLConnection) url.openConnection(); 
 	} 
-	catch (IOException ex) { 
-			ex.printStackTrace(); 
-			//System.out.println( "建立网络连接发生错误: " + ex.getMessage()); 
-			return false; 
+	catch (IOException ex) {
+		ex.printStackTrace(); 
+		//System.out.println( "建立网络连接发生错误: " + ex.getMessage()); 
+		return false; 
 	} 
 	try{
-		if (http.getResponseCode() != 200) { 
-			   return false; 
-				//System.out.println( "网络连接失败 "); 
+		if (http.getResponseCode() != 200) {
+			return false;
+			//System.out.println( "网络连接失败 "); 
 		}else{
-			   //System.out.println( "网络连接成功 "); 
-			   return true;
+			//System.out.println( "网络连接成功 ");
+			return true;
 		}
 	}catch(IOException ex){
 		return false; 
 	}
-	
 }
 %>
 <%
@@ -78,10 +76,6 @@ boolean isConnection=false;
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/exporting.js?timestamp=202201271758"></script>
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/offline-exporting.js?timestamp=202201271758"></script>
 <script type="text/javascript" src="<%=path%>/scripts/highcharts/highcharts-zh_CN.js?timestamp=202201271758"></script>
-
-<!-- echarts -->
-<script type="text/javascript" src="<%=path%>/scripts/echarts/echarts.min.js?timestamp=202201271758"></script>
-<script type="text/javascript" src="<%=path%>/scripts/echarts/echarts-gl.min.js?timestamp=202201271758"></script>
 
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/ux.js?timestamp=202201271758"></script>
 <script type="text/javascript" src="<%=path%>/scripts/customMap/js/wellmap.js?timestamp=202201271758"></script>

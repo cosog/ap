@@ -8327,3 +8327,229 @@ function getBaseUrl(){
 	var baseRoot = localhostPaht+projectName;
 	return baseRoot;
 };
+
+function initTimeAndDataCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, ytitle, color,legend,timeFormat) {
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    var mychart = new Highcharts.Chart({
+        chart: {
+            renderTo: divId,
+            type: 'spline',
+            shadow: true,
+            borderWidth: 0,
+            zoomType: 'xy'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: title
+        },
+        subtitle: {
+            text: subtitle
+        },
+        colors: color,
+        xAxis: {
+            type: 'datetime',
+            title: {
+                text: xtitle
+            },
+            tickPixelInterval: tickInterval,
+            labels: {
+                formatter: function () {
+                    return Highcharts.dateFormat(timeFormat, this.value);
+                },
+                rotation: 0, //倾斜度，防止数量过多显示不全  
+                step: 2
+            }
+        },
+        yAxis: [{
+            lineWidth: 1,
+            title: {
+                text: ytitle,
+                style: {
+                    color: '#000000',
+                    fontWeight: 'bold'
+                }
+            },
+            labels: {
+                formatter: function () {
+                    return Highcharts.numberFormat(this.value, 2);
+                }
+            }
+      }],
+        tooltip: {
+            crosshairs: true, //十字准线
+            style: {
+                color: '#333333',
+                fontSize: '12px',
+                padding: '8px'
+            },
+            dateTimeLabelFormats: {
+                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+                second: '%Y-%m-%d %H:%M:%S',
+                minute: '%Y-%m-%d %H:%M',
+                hour: '%Y-%m-%d %H',
+                day: '%Y-%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        exporting: {
+            enabled: true,
+            filename: 'class-booking-chart',
+            url: context + '/exportHighcharsPicController/export'
+        },
+        plotOptions: {
+            spline: {
+                lineWidth: 1,
+                fillOpacity: 0.3,
+                marker: {
+                    enabled: true,
+                    radius: 3, //曲线点半径，默认是4
+                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+                    states: {
+                        hover: {
+                            enabled: true,
+                            radius: 6
+                        }
+                    }
+                },
+                shadow: true
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            enabled: legend,
+            borderWidth: 0
+        },
+        series: series
+    });
+};
+
+function isExist(arr,data){
+	var r=0;
+	if(isNotVal(arr) && arr.length>0){
+		for(var i=0;i<arr.length;i++){
+			if(arr[i]===data){
+				r+=1;
+			}
+		}
+	}
+	return r;
+};
+function foreachAndSearchOrgAbsolutePath(orgStoreData, orgId) {
+	var rtnArr=[];
+	var rtnStr="";
+	const foreachAndSearchOrgAbsolutePathname=function(storeData, id) {
+		if(storeData){
+			for(let record of storeData){
+				if(record.data.orgId===id){
+					if(record.parentNode){
+						foreachAndSearchOrgAbsolutePathname(storeData,record.parentNode.data.orgId);
+					}
+					rtnArr.push(record.data.text);
+				}else{
+//					if(record.childNodes){
+//						foreachAndSearchOrgAbsolutePathname(record.childNodes,orgId);
+//					}
+				}
+			}
+		}
+	};
+	foreachAndSearchOrgAbsolutePathname(orgStoreData, orgId);
+	for(var i=0;i<rtnArr.length;i++){
+		rtnStr+=rtnArr[i];
+		if(i<rtnArr.length-1){
+			rtnStr+="/";
+		}
+	}
+	return rtnStr;
+}
+
+function foreachAndSearchOrgAbsolutePathId(orgStoreData, orgId) {
+	var rtnArr=[];
+	var rtnStr="";
+	const foreachAndSearchOrgAbsolutePathId=function(storeData, id) {
+		if(storeData){
+			for(let record of storeData){
+				if(record.data.orgId===id){
+					if(record.parentNode){
+						foreachAndSearchOrgAbsolutePathId(storeData,record.parentNode.data.orgId);
+					}
+					rtnArr.push(record.data.orgId);
+				}else{
+				}
+			}
+		}
+	};
+	foreachAndSearchOrgAbsolutePathId(orgStoreData, orgId);
+	rtnStr = "" + rtnArr.join(",");
+	return rtnStr;
+}
+
+function foreachAndSearchOrgChildId(rec) {
+	var rtnArr=[];
+	const recursionOrgChildId=function(chlidArray) {
+		var ch_length;
+		var ch_node = chlidArray.childNodes;
+		if (isNotVal(ch_node)) {
+			ch_length = ch_node.length;
+		} else {
+			ch_length = chlidArray.length;
+		}
+		if (ch_length > 0) {
+			if (!Ext.isEmpty(chlidArray)) {
+				Ext.Array.each(chlidArray, function(childArrNode, index, fog) {
+							var x_node_seId = fog[index].data.orgId;
+							rtnArr.push(x_node_seId);
+							// 递归
+							if (childArrNode.childNodes != null) {
+								recursionOrgChildId(childArrNode.childNodes);
+							}
+						});
+			}
+		} else {
+			if (isNotVal(chlidArray)) {
+				var x_node_seId = chlidArray.data.orgId;
+				rtnArr.push(x_node_seId);
+			}
+		}
+	};
+	recursionOrgChildId(rec);
+	return rtnArr.join(",");
+};
+
+function getDateAndTime(dateStr,h,m,s){
+	if(!isNotVal(dateStr)){
+		return '';
+	}
+	if(!isNotVal(h)){
+		h=0
+	}
+	if(!isNotVal(m)){
+		m=0
+	}
+	if(!isNotVal(s)){
+		s=0
+	}
+	var hStr=h+'';
+	var mStr=m+'';
+	var sStr=s+'';
+	if(hStr.length==1){
+		hStr='0'+hStr;
+	}
+	if(mStr.length==1){
+		mStr='0'+mStr;
+	}if(sStr.length==1){
+		sStr='0'+sStr;
+	}
+	return dateStr+' '+hStr+":"+mStr+':'+sStr;
+};

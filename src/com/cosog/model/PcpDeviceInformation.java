@@ -14,7 +14,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "tbl_pcpdevice")
-public class PCPDeviceInformation implements java.io.Serializable {
+public class PcpDeviceInformation implements java.io.Serializable {
 	/**
 	 * 
 	 */
@@ -33,11 +33,11 @@ public class PCPDeviceInformation implements java.io.Serializable {
 
 	// Constructors
 	/** default constructor */
-	public PCPDeviceInformation() {
+	public PcpDeviceInformation() {
 	}
 
 	/** full constructor */
-	public PCPDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
+	public PcpDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
 			String instanceCode, String alarmInstanceCode, String signInId, String slave,
 			String videoUrl, Integer sortNum) {
 		super();

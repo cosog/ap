@@ -26,7 +26,7 @@ public class OracleJdbcUtis {
             return conn;  
         }  
         catch (Exception e){  
-            System.out.println(e.getMessage());  
+            StringManagerUtils.printLog(e.getMessage());  
             return null;  
         }  
     }
@@ -53,7 +53,7 @@ public class OracleJdbcUtis {
             return conn;  
         }  
         catch (Exception e){  
-            System.out.println(e.getMessage());  
+            StringManagerUtils.printLog(e.getMessage());  
             return null;  
         }  
     }
@@ -67,7 +67,7 @@ public class OracleJdbcUtis {
             		rs.close();
                 conn.close();  
             }catch(SQLException e){  
-                System.out.println("closeDBConnectionError!");  
+                StringManagerUtils.printLog("closeDBConnectionError!");  
                 e.printStackTrace();  
             }finally{  
                 try{
@@ -95,7 +95,7 @@ public class OracleJdbcUtis {
             		rs.close();
                 conn.close();  
             }catch(SQLException e){  
-                System.out.println("closeDBConnectionError!");  
+                StringManagerUtils.printLog("closeDBConnectionError!");  
                 e.printStackTrace();  
             }finally{  
                 try{

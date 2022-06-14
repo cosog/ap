@@ -170,40 +170,125 @@ SelectAlarmSet = function () {
 
 //设置报警级别颜色
  function setAlarmLevelColor(){
-	 var alarmLevelBackgroundColor0=Ext.getCmp('alarmLevelBackgroundColor0_id').getValue();
-	 var alarmLevelBackgroundColor1=Ext.getCmp('alarmLevelBackgroundColor1_id').getValue();
-	 var alarmLevelBackgroundColor2=Ext.getCmp('alarmLevelBackgroundColor2_id').getValue();
-	 var alarmLevelBackgroundColor3=Ext.getCmp('alarmLevelBackgroundColor3_id').getValue();
+	 var overviewNormalBackgroundColor=Ext.getCmp('overviewNormalBackgroundColor_id').getValue();
+	 var overviewFirstLevelBackgroundColor=Ext.getCmp('overviewFirstLevelBackgroundColor_id').getValue();
+	 var overviewSecondLevelBackgroundColor=Ext.getCmp('overviewSecondLevelBackgroundColor_id').getValue();
+	 var overviewThirdLevelBackgroundColor=Ext.getCmp('overviewThirdLevelBackgroundColor_id').getValue();
 	 
-	 var alarmLevelColor0=Ext.getCmp('alarmLevelColor0_id').getValue();
-	 var alarmLevelColor1=Ext.getCmp('alarmLevelColor1_id').getValue();
-	 var alarmLevelColor2=Ext.getCmp('alarmLevelColor2_id').getValue();
-	 var alarmLevelColor3=Ext.getCmp('alarmLevelColor3_id').getValue();
+	 var overviewNormalColor=Ext.getCmp('overviewNormalColor_id').getValue();
+	 var overviewFirstLevelColor=Ext.getCmp('overviewFirstLevelColor_id').getValue();
+	 var overviewSecondLevelColor=Ext.getCmp('overviewSecondLevelColor_id').getValue();
+	 var overviewThirdLevelColor=Ext.getCmp('overviewThirdLevelColor_id').getValue();
 	 
-	 var alarmLevelOpacity0=Ext.getCmp('alarmLevelOpacity0_id').getValue();
-	 var alarmLevelOpacity1=Ext.getCmp('alarmLevelOpacity1_id').getValue();
-	 var alarmLevelOpacity2=Ext.getCmp('alarmLevelOpacity2_id').getValue();
-	 var alarmLevelOpacity3=Ext.getCmp('alarmLevelOpacity3_id').getValue();
+	 var overviewNormalOpacity=Ext.getCmp('overviewNormalOpacity_id').getValue();
+	 var overviewFirstLevelOpacity=Ext.getCmp('overviewFirstLevelOpacity_id').getValue();
+	 var overviewSecondLevelOpacity=Ext.getCmp('overviewSecondLevelOpacity_id').getValue();
+	 var overviewThirdLevelOpacity=Ext.getCmp('overviewThirdLevelOpacity_id').getValue();
+	 
+	 //
+	 var detailsNormalBackgroundColor=Ext.getCmp('detailsNormalBackgroundColor_id').getValue();
+	 var detailsFirstLevelBackgroundColor=Ext.getCmp('detailsFirstLevelBackgroundColor_id').getValue();
+	 var detailsSecondLevelBackgroundColor=Ext.getCmp('detailsSecondLevelBackgroundColor_id').getValue();
+	 var detailsThirdLevelBackgroundColor=Ext.getCmp('detailsThirdLevelBackgroundColor_id').getValue();
+	 
+	 var detailsNormalColor=Ext.getCmp('detailsNormalColor_id').getValue();
+	 var detailsFirstLevelColor=Ext.getCmp('detailsFirstLevelColor_id').getValue();
+	 var detailsSecondLevelColor=Ext.getCmp('detailsSecondLevelColor_id').getValue();
+	 var detailsThirdLevelColor=Ext.getCmp('detailsThirdLevelColor_id').getValue();
+	 
+	 var detailsNormalOpacity=Ext.getCmp('detailsNormalOpacity_id').getValue();
+	 var detailsFirstLevelOpacity=Ext.getCmp('detailsFirstLevelOpacity_id').getValue();
+	 var detailsSecondLevelOpacity=Ext.getCmp('detailsSecondLevelOpacity_id').getValue();
+	 var detailsThirdLevelOpacity=Ext.getCmp('detailsThirdLevelOpacity_id').getValue();
+	 
+	 //
+	 var statisticsNormalBackgroundColor=Ext.getCmp('statisticsNormalBackgroundColor_id').getValue();
+	 var statisticsFirstLevelBackgroundColor=Ext.getCmp('statisticsFirstLevelBackgroundColor_id').getValue();
+	 var statisticsSecondLevelBackgroundColor=Ext.getCmp('statisticsSecondLevelBackgroundColor_id').getValue();
+	 var statisticsThirdLevelBackgroundColor=Ext.getCmp('statisticsThirdLevelBackgroundColor_id').getValue();
+	 
+	 var statisticsNormalColor=Ext.getCmp('statisticsNormalColor_id').getValue();
+	 var statisticsFirstLevelColor=Ext.getCmp('statisticsFirstLevelColor_id').getValue();
+	 var statisticsSecondLevelColor=Ext.getCmp('statisticsSecondLevelColor_id').getValue();
+	 var statisticsThirdLevelColor=Ext.getCmp('statisticsThirdLevelColor_id').getValue();
+	 
+	 var statisticsNormalOpacity=Ext.getCmp('statisticsNormalOpacity_id').getValue();
+	 var statisticsFirstLevelOpacity=Ext.getCmp('statisticsFirstLevelOpacity_id').getValue();
+	 var statisticsSecondLevelOpacity=Ext.getCmp('statisticsSecondLevelOpacity_id').getValue();
+	 var statisticsThirdLevelOpacity=Ext.getCmp('statisticsThirdLevelOpacity_id').getValue();
 
+	 var AlarmShowStyle={};
+	 AlarmShowStyle.Overview={};
+	 AlarmShowStyle.Overview.Normal={};
+	 AlarmShowStyle.Overview.Normal.Value=0;
+	 AlarmShowStyle.Overview.Normal.BackgroundColor=overviewNormalBackgroundColor;
+	 AlarmShowStyle.Overview.Normal.Color=overviewNormalColor;
+	 AlarmShowStyle.Overview.Normal.Opacity=overviewNormalOpacity;
+	 AlarmShowStyle.Overview.FirstLevel={};
+	 AlarmShowStyle.Overview.FirstLevel.Value=100;
+	 AlarmShowStyle.Overview.FirstLevel.BackgroundColor=overviewFirstLevelBackgroundColor;
+	 AlarmShowStyle.Overview.FirstLevel.Color=overviewFirstLevelColor;
+	 AlarmShowStyle.Overview.FirstLevel.Opacity=overviewFirstLevelOpacity;
+	 AlarmShowStyle.Overview.SecondLevel={};
+	 AlarmShowStyle.Overview.SecondLevel.Value=200;
+	 AlarmShowStyle.Overview.SecondLevel.BackgroundColor=overviewSecondLevelBackgroundColor;
+	 AlarmShowStyle.Overview.SecondLevel.Color=overviewSecondLevelColor;
+	 AlarmShowStyle.Overview.SecondLevel.Opacity=overviewSecondLevelOpacity;
+	 AlarmShowStyle.Overview.ThirdLevel={};
+	 AlarmShowStyle.Overview.ThirdLevel.Value=300;
+	 AlarmShowStyle.Overview.ThirdLevel.BackgroundColor=overviewThirdLevelBackgroundColor;
+	 AlarmShowStyle.Overview.ThirdLevel.Color=overviewThirdLevelColor;
+	 AlarmShowStyle.Overview.ThirdLevel.Opacity=overviewThirdLevelOpacity;
 	 
+	 AlarmShowStyle.Details={};
+	 AlarmShowStyle.Details.Normal={};
+	 AlarmShowStyle.Details.Normal.Value=0;
+	 AlarmShowStyle.Details.Normal.BackgroundColor=detailsNormalBackgroundColor;
+	 AlarmShowStyle.Details.Normal.Color=detailsNormalColor;
+	 AlarmShowStyle.Details.Normal.Opacity=detailsNormalOpacity;
+	 AlarmShowStyle.Details.FirstLevel={};
+	 AlarmShowStyle.Details.FirstLevel.Value=100;
+	 AlarmShowStyle.Details.FirstLevel.BackgroundColor=detailsFirstLevelBackgroundColor;
+	 AlarmShowStyle.Details.FirstLevel.Color=detailsFirstLevelColor;
+	 AlarmShowStyle.Details.FirstLevel.Opacity=detailsFirstLevelOpacity;
+	 AlarmShowStyle.Details.SecondLevel={};
+	 AlarmShowStyle.Details.SecondLevel.Value=200;
+	 AlarmShowStyle.Details.SecondLevel.BackgroundColor=detailsSecondLevelBackgroundColor;
+	 AlarmShowStyle.Details.SecondLevel.Color=detailsSecondLevelColor;
+	 AlarmShowStyle.Details.SecondLevel.Opacity=detailsSecondLevelOpacity;
+	 AlarmShowStyle.Details.ThirdLevel={};
+	 AlarmShowStyle.Details.ThirdLevel.Value=300;
+	 AlarmShowStyle.Details.ThirdLevel.BackgroundColor=detailsThirdLevelBackgroundColor;
+	 AlarmShowStyle.Details.ThirdLevel.Color=detailsThirdLevelColor;
+	 AlarmShowStyle.Details.ThirdLevel.Opacity=detailsThirdLevelOpacity;
 	 
-//	 var alarmLevelBackgroundColor4=Ext.getCmp('alarmLevelBackgroundColor4_id').getValue();
+	 AlarmShowStyle.Statistics={};
+	 AlarmShowStyle.Statistics.Normal={};
+	 AlarmShowStyle.Statistics.Normal.Value=0;
+	 AlarmShowStyle.Statistics.Normal.BackgroundColor=statisticsNormalBackgroundColor;
+	 AlarmShowStyle.Statistics.Normal.Color=statisticsNormalColor;
+	 AlarmShowStyle.Statistics.Normal.Opacity=statisticsNormalOpacity;
+	 AlarmShowStyle.Statistics.FirstLevel={};
+	 AlarmShowStyle.Statistics.FirstLevel.Value=100;
+	 AlarmShowStyle.Statistics.FirstLevel.BackgroundColor=statisticsFirstLevelBackgroundColor;
+	 AlarmShowStyle.Statistics.FirstLevel.Color=statisticsFirstLevelColor;
+	 AlarmShowStyle.Statistics.FirstLevel.Opacity=statisticsFirstLevelOpacity;
+	 AlarmShowStyle.Statistics.SecondLevel={};
+	 AlarmShowStyle.Statistics.SecondLevel.Value=200;
+	 AlarmShowStyle.Statistics.SecondLevel.BackgroundColor=statisticsSecondLevelBackgroundColor;
+	 AlarmShowStyle.Statistics.SecondLevel.Color=statisticsSecondLevelColor;
+	 AlarmShowStyle.Statistics.SecondLevel.Opacity=statisticsSecondLevelOpacity;
+	 AlarmShowStyle.Statistics.ThirdLevel={};
+	 AlarmShowStyle.Statistics.ThirdLevel.Value=300;
+	 AlarmShowStyle.Statistics.ThirdLevel.BackgroundColor=statisticsThirdLevelBackgroundColor;
+	 AlarmShowStyle.Statistics.ThirdLevel.Color=statisticsThirdLevelColor;
+	 AlarmShowStyle.Statistics.ThirdLevel.Opacity=statisticsThirdLevelOpacity;
+	 
 	 Ext.Ajax.request({
 	        url: context + '/alarmSetManagerController/setAlarmLevelColor',
 	        method: "POST",
 	        params: {
-	        	alarmLevelBackgroundColor0: alarmLevelBackgroundColor0,
-	        	alarmLevelBackgroundColor1: alarmLevelBackgroundColor1,
-	        	alarmLevelBackgroundColor2: alarmLevelBackgroundColor2,
-	        	alarmLevelBackgroundColor3: alarmLevelBackgroundColor3,
-	        	alarmLevelColor0:alarmLevelColor0,
-	        	alarmLevelColor1:alarmLevelColor1,
-	        	alarmLevelColor2:alarmLevelColor2,
-	        	alarmLevelColor3:alarmLevelColor3,
-	        	alarmLevelOpacity0:alarmLevelOpacity0,
-	        	alarmLevelOpacity1:alarmLevelOpacity1,
-	        	alarmLevelOpacity2:alarmLevelOpacity2,
-	        	alarmLevelOpacity3:alarmLevelOpacity3
+	        	data: JSON.stringify(AlarmShowStyle)
 	        },
 	        success: function (response, action) {
 	        	if (Ext.decode(response.responseText).msg) {
@@ -226,206 +311,224 @@ SelectAlarmSet = function () {
 	        url: context + '/alarmSetManagerController/getAlarmLevelColor',
 	        method: "POST",
 	        success: function (response) {
-	        	var get_rawData = Ext.decode(response.responseText); // 获取返回数据
+	        	var AlarmShowStyle = Ext.decode(response.responseText); // 获取返回数据
 	        	
-	        	Ext.getCmp('alarmLevelBackgroundColor0_id').setValue(get_rawData.BackgroundColor.Level0);
-	        	var BackgroundColor0=Ext.getCmp('alarmLevelBackgroundColor0_id').color;
-	        	BackgroundColor0.a=get_rawData.Opacity.Level0;
-            	Ext.getCmp('alarmLevelBackgroundColor0_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.BackgroundColor.Level0,
-            		opacity:get_rawData.Opacity.Level0
+	        	//初始化概览数据报警颜色
+	        	Ext.getCmp('overviewNormalBackgroundColor_id').setValue(AlarmShowStyle.Overview.Normal.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('overviewNormalBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Overview.Normal.Opacity;
+            	Ext.getCmp('overviewNormalBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.Normal.BackgroundColor,
+            		opacity:AlarmShowStyle.Overview.Normal.Opacity
             	});
-	        	Ext.getCmp('alarmLevelBackgroundColor0_id').setColor(BackgroundColor0);
+	        	Ext.getCmp('overviewNormalBackgroundColor_id').setColor(BackgroundColor0);
 	        	
-	            Ext.getCmp('alarmLevelBackgroundColor1_id').setValue(get_rawData.BackgroundColor.Level1);
-	            var BackgroundColor1=Ext.getCmp('alarmLevelBackgroundColor1_id').color;
-	        	BackgroundColor1.a=get_rawData.Opacity.Level1;
-            	Ext.getCmp('alarmLevelBackgroundColor1_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.BackgroundColor.Level1,
-            		opacity:get_rawData.Opacity.Level1
+	            Ext.getCmp('overviewFirstLevelBackgroundColor_id').setValue(AlarmShowStyle.Overview.FirstLevel.BackgroundColor);
+	            var BackgroundColor1=Ext.getCmp('overviewFirstLevelBackgroundColor_id').color;
+	        	BackgroundColor1.a=AlarmShowStyle.Overview.FirstLevel.Opacity;
+            	Ext.getCmp('overviewFirstLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.FirstLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Overview.FirstLevel.Opacity
             	});
-	        	Ext.getCmp('alarmLevelBackgroundColor1_id').setColor(BackgroundColor1);
+	        	Ext.getCmp('overviewFirstLevelBackgroundColor_id').setColor(BackgroundColor1);
 	            
 	            
-	            Ext.getCmp('alarmLevelBackgroundColor2_id').setValue(get_rawData.BackgroundColor.Level2);
-	            var BackgroundColor2=Ext.getCmp('alarmLevelBackgroundColor2_id').color;
-	        	BackgroundColor2.a=get_rawData.Opacity.Level2;
-            	Ext.getCmp('alarmLevelBackgroundColor2_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.BackgroundColor.Level2,
-            		opacity:get_rawData.Opacity.Level2
+	            Ext.getCmp('overviewSecondLevelBackgroundColor_id').setValue(AlarmShowStyle.Overview.SecondLevel.BackgroundColor);
+	            var BackgroundColor2=Ext.getCmp('overviewSecondLevelBackgroundColor_id').color;
+	        	BackgroundColor2.a=AlarmShowStyle.Overview.SecondLevel.Opacity;
+            	Ext.getCmp('overviewSecondLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.SecondLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Overview.SecondLevel.Opacity
             	});
-	        	Ext.getCmp('alarmLevelBackgroundColor2_id').setColor(BackgroundColor2);
+	        	Ext.getCmp('overviewSecondLevelBackgroundColor_id').setColor(BackgroundColor2);
 	            
 	            
-	            Ext.getCmp('alarmLevelBackgroundColor3_id').setValue(get_rawData.BackgroundColor.Level3);
-	            var BackgroundColor3=Ext.getCmp('alarmLevelBackgroundColor3_id').color;
-	        	BackgroundColor3.a=get_rawData.Opacity.Level3;
-            	Ext.getCmp('alarmLevelBackgroundColor3_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.BackgroundColor.Level3,
-            		opacity:get_rawData.Opacity.Level3
+	            Ext.getCmp('overviewThirdLevelBackgroundColor_id').setValue(AlarmShowStyle.Overview.ThirdLevel.BackgroundColor);
+	            var BackgroundColor3=Ext.getCmp('overviewThirdLevelBackgroundColor_id').color;
+	        	BackgroundColor3.a=AlarmShowStyle.Overview.ThirdLevel.Opacity;
+            	Ext.getCmp('overviewThirdLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.ThirdLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Overview.ThirdLevel.Opacity
             	});
-	        	Ext.getCmp('alarmLevelBackgroundColor3_id').setColor(BackgroundColor3);
+	        	Ext.getCmp('overviewThirdLevelBackgroundColor_id').setColor(BackgroundColor3);
 	            
 
 	            
-	            Ext.getCmp('alarmLevelColor0_id').setValue(get_rawData.Color.Level0);
-	            var Color0=Ext.getCmp('alarmLevelColor0_id').color;
-            	Ext.getCmp('alarmLevelColor0_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.Color.Level0,
+	            Ext.getCmp('overviewNormalColor_id').setValue(AlarmShowStyle.Overview.Normal.Color);
+	            var Color0=Ext.getCmp('overviewNormalColor_id').color;
+            	Ext.getCmp('overviewNormalColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.Normal.Color,
             	});
 	            
-	            Ext.getCmp('alarmLevelColor1_id').setValue(get_rawData.Color.Level1);
-	            var Color1=Ext.getCmp('alarmLevelColor1_id').color;
-            	Ext.getCmp('alarmLevelColor1_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.Color.Level1,
+	            Ext.getCmp('overviewFirstLevelColor_id').setValue(AlarmShowStyle.Overview.FirstLevel.Color);
+	            var Color1=Ext.getCmp('overviewFirstLevelColor_id').color;
+            	Ext.getCmp('overviewFirstLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.FirstLevel.Color,
             	});
 	            
 	            
-	            Ext.getCmp('alarmLevelColor2_id').setValue(get_rawData.Color.Level2);
-	            var Color2=Ext.getCmp('alarmLevelColor2_id').color;
-            	Ext.getCmp('alarmLevelColor2_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.Color.Level2,
+	            Ext.getCmp('overviewSecondLevelColor_id').setValue(AlarmShowStyle.Overview.SecondLevel.Color);
+	            var Color2=Ext.getCmp('overviewSecondLevelColor_id').color;
+            	Ext.getCmp('overviewSecondLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.SecondLevel.Color,
             	});
 	            
-	            Ext.getCmp('alarmLevelColor3_id').setValue(get_rawData.Color.Level3);
-	            var Color3=Ext.getCmp('alarmLevelColor3_id').color;
-            	Ext.getCmp('alarmLevelColor3_id').inputEl.applyStyles({
-            		background: '#'+get_rawData.Color.Level3,
+	            Ext.getCmp('overviewThirdLevelColor_id').setValue(AlarmShowStyle.Overview.ThirdLevel.Color);
+	            var Color3=Ext.getCmp('overviewThirdLevelColor_id').color;
+            	Ext.getCmp('overviewThirdLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Overview.ThirdLevel.Color,
             	});
 	            
-	            Ext.getCmp('alarmLevelOpacity0_id').setValue(get_rawData.Opacity.Level0);
-	            Ext.getCmp('alarmLevelOpacity1_id').setValue(get_rawData.Opacity.Level1);
-	            Ext.getCmp('alarmLevelOpacity2_id').setValue(get_rawData.Opacity.Level2);
-	            Ext.getCmp('alarmLevelOpacity3_id').setValue(get_rawData.Opacity.Level3);
+	            Ext.getCmp('overviewNormalOpacity_id').setValue(AlarmShowStyle.Overview.Normal.Opacity);
+	            Ext.getCmp('overviewFirstLevelOpacity_id').setValue(AlarmShowStyle.Overview.FirstLevel.Opacity);
+	            Ext.getCmp('overviewSecondLevelOpacity_id').setValue(AlarmShowStyle.Overview.SecondLevel.Opacity);
+	            Ext.getCmp('overviewThirdLevelOpacity_id').setValue(AlarmShowStyle.Overview.ThirdLevel.Opacity);
+	            
+	            //初始化实时/历史表报警颜色
+	            Ext.getCmp('detailsNormalBackgroundColor_id').setValue(AlarmShowStyle.Details.Normal.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('detailsNormalBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Details.Normal.Opacity;
+            	Ext.getCmp('detailsNormalBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.Normal.BackgroundColor,
+            		opacity:AlarmShowStyle.Details.Normal.Opacity
+            	});
+	        	Ext.getCmp('detailsNormalBackgroundColor_id').setColor(BackgroundColor0);
+	        	
+	            Ext.getCmp('detailsFirstLevelBackgroundColor_id').setValue(AlarmShowStyle.Details.FirstLevel.BackgroundColor);
+	            var BackgroundColor1=Ext.getCmp('detailsFirstLevelBackgroundColor_id').color;
+	        	BackgroundColor1.a=AlarmShowStyle.Details.FirstLevel.Opacity;
+            	Ext.getCmp('detailsFirstLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.FirstLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Details.FirstLevel.Opacity
+            	});
+	        	Ext.getCmp('detailsFirstLevelBackgroundColor_id').setColor(BackgroundColor1);
+	            
+	            
+	            Ext.getCmp('detailsSecondLevelBackgroundColor_id').setValue(AlarmShowStyle.Details.SecondLevel.BackgroundColor);
+	            var BackgroundColor2=Ext.getCmp('detailsSecondLevelBackgroundColor_id').color;
+	        	BackgroundColor2.a=AlarmShowStyle.Details.SecondLevel.Opacity;
+            	Ext.getCmp('detailsSecondLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.SecondLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Details.SecondLevel.Opacity
+            	});
+	        	Ext.getCmp('detailsSecondLevelBackgroundColor_id').setColor(BackgroundColor2);
+	            
+	            
+	            Ext.getCmp('detailsThirdLevelBackgroundColor_id').setValue(AlarmShowStyle.Details.ThirdLevel.BackgroundColor);
+	            var BackgroundColor3=Ext.getCmp('detailsThirdLevelBackgroundColor_id').color;
+	        	BackgroundColor3.a=AlarmShowStyle.Details.ThirdLevel.Opacity;
+            	Ext.getCmp('detailsThirdLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.ThirdLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Details.ThirdLevel.Opacity
+            	});
+	        	Ext.getCmp('detailsThirdLevelBackgroundColor_id').setColor(BackgroundColor3);
+	            
+
+	            
+	            Ext.getCmp('detailsNormalColor_id').setValue(AlarmShowStyle.Details.Normal.Color);
+	            var Color0=Ext.getCmp('detailsNormalColor_id').color;
+            	Ext.getCmp('detailsNormalColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.Normal.Color,
+            	});
+	            
+	            Ext.getCmp('detailsFirstLevelColor_id').setValue(AlarmShowStyle.Details.FirstLevel.Color);
+	            var Color1=Ext.getCmp('detailsFirstLevelColor_id').color;
+            	Ext.getCmp('detailsFirstLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.FirstLevel.Color,
+            	});
+	            
+	            
+	            Ext.getCmp('detailsSecondLevelColor_id').setValue(AlarmShowStyle.Details.SecondLevel.Color);
+	            var Color2=Ext.getCmp('detailsSecondLevelColor_id').color;
+            	Ext.getCmp('detailsSecondLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.SecondLevel.Color,
+            	});
+	            
+	            Ext.getCmp('detailsThirdLevelColor_id').setValue(AlarmShowStyle.Details.ThirdLevel.Color);
+	            var Color3=Ext.getCmp('detailsThirdLevelColor_id').color;
+            	Ext.getCmp('detailsThirdLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Details.ThirdLevel.Color,
+            	});
+	            
+	            Ext.getCmp('detailsNormalOpacity_id').setValue(AlarmShowStyle.Details.Normal.Opacity);
+	            Ext.getCmp('detailsFirstLevelOpacity_id').setValue(AlarmShowStyle.Details.FirstLevel.Opacity);
+	            Ext.getCmp('detailsSecondLevelOpacity_id').setValue(AlarmShowStyle.Details.SecondLevel.Opacity);
+	            Ext.getCmp('detailsThirdLevelOpacity_id').setValue(AlarmShowStyle.Details.ThirdLevel.Opacity);
+	            
+	            
+	          //初始化概览数据报警颜色
+	        	Ext.getCmp('statisticsNormalBackgroundColor_id').setValue(AlarmShowStyle.Statistics.Normal.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('statisticsNormalBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Statistics.Normal.Opacity;
+            	Ext.getCmp('statisticsNormalBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.Normal.BackgroundColor,
+            		opacity:AlarmShowStyle.Statistics.Normal.Opacity
+            	});
+	        	Ext.getCmp('statisticsNormalBackgroundColor_id').setColor(BackgroundColor0);
+	        	
+	            Ext.getCmp('statisticsFirstLevelBackgroundColor_id').setValue(AlarmShowStyle.Statistics.FirstLevel.BackgroundColor);
+	            var BackgroundColor1=Ext.getCmp('statisticsFirstLevelBackgroundColor_id').color;
+	        	BackgroundColor1.a=AlarmShowStyle.Statistics.FirstLevel.Opacity;
+            	Ext.getCmp('statisticsFirstLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.FirstLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Statistics.FirstLevel.Opacity
+            	});
+	        	Ext.getCmp('statisticsFirstLevelBackgroundColor_id').setColor(BackgroundColor1);
+	            
+	            
+	            Ext.getCmp('statisticsSecondLevelBackgroundColor_id').setValue(AlarmShowStyle.Statistics.SecondLevel.BackgroundColor);
+	            var BackgroundColor2=Ext.getCmp('statisticsSecondLevelBackgroundColor_id').color;
+	        	BackgroundColor2.a=AlarmShowStyle.Statistics.SecondLevel.Opacity;
+            	Ext.getCmp('statisticsSecondLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.SecondLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Statistics.SecondLevel.Opacity
+            	});
+	        	Ext.getCmp('statisticsSecondLevelBackgroundColor_id').setColor(BackgroundColor2);
+	            
+	            
+	            Ext.getCmp('statisticsThirdLevelBackgroundColor_id').setValue(AlarmShowStyle.Statistics.ThirdLevel.BackgroundColor);
+	            var BackgroundColor3=Ext.getCmp('statisticsThirdLevelBackgroundColor_id').color;
+	        	BackgroundColor3.a=AlarmShowStyle.Statistics.ThirdLevel.Opacity;
+            	Ext.getCmp('statisticsThirdLevelBackgroundColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.ThirdLevel.BackgroundColor,
+            		opacity:AlarmShowStyle.Statistics.ThirdLevel.Opacity
+            	});
+	        	Ext.getCmp('statisticsThirdLevelBackgroundColor_id').setColor(BackgroundColor3);
+	            
+
+	            
+	            Ext.getCmp('statisticsNormalColor_id').setValue(AlarmShowStyle.Statistics.Normal.Color);
+	            var Color0=Ext.getCmp('statisticsNormalColor_id').color;
+            	Ext.getCmp('statisticsNormalColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.Normal.Color,
+            	});
+	            
+	            Ext.getCmp('statisticsFirstLevelColor_id').setValue(AlarmShowStyle.Statistics.FirstLevel.Color);
+	            var Color1=Ext.getCmp('statisticsFirstLevelColor_id').color;
+            	Ext.getCmp('statisticsFirstLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.FirstLevel.Color,
+            	});
+	            
+	            
+	            Ext.getCmp('statisticsSecondLevelColor_id').setValue(AlarmShowStyle.Statistics.SecondLevel.Color);
+	            var Color2=Ext.getCmp('statisticsSecondLevelColor_id').color;
+            	Ext.getCmp('statisticsSecondLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.SecondLevel.Color,
+            	});
+	            
+	            Ext.getCmp('statisticsThirdLevelColor_id').setValue(AlarmShowStyle.Statistics.ThirdLevel.Color);
+	            var Color3=Ext.getCmp('statisticsThirdLevelColor_id').color;
+            	Ext.getCmp('statisticsThirdLevelColor_id').inputEl.applyStyles({
+            		background: '#'+AlarmShowStyle.Statistics.ThirdLevel.Color,
+            	});
+	            
+	            Ext.getCmp('statisticsNormalOpacity_id').setValue(AlarmShowStyle.Statistics.Normal.Opacity);
+	            Ext.getCmp('statisticsFirstLevelOpacity_id').setValue(AlarmShowStyle.Statistics.FirstLevel.Opacity);
+	            Ext.getCmp('statisticsSecondLevelOpacity_id').setValue(AlarmShowStyle.Statistics.SecondLevel.Opacity);
+	            Ext.getCmp('statisticsThirdLevelOpacity_id').setValue(AlarmShowStyle.Statistics.ThirdLevel.Opacity);
 	        },
 	        failure: function () {
 	            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
 	        }
 	    });
  }
- 
-//保存离散报警数据
-// function UpdateDiscreteAlarmSetFormSubmit() {
-//     var DistreteAlarmSetFormPanel = Ext.getCmp("DistreteAlarmSetFormPanel").down('form').getForm();
-//     if (DistreteAlarmSetFormPanel.isValid()) {
-//    	 
-//     }
-//     return false;
-// };
-//更新离散数据报警限值界面显示值
- function updateDiatreteAlarmLimitValue(data) {
-     Ext.getCmp("distreteJbh_Id").setValue(data.id);
-     Ext.getCmp("distreteAlarm_Id").setValue(data.alarmid);
-     Ext.getCmp("currentAMax_Id").setValue(data.currentamax);
-     Ext.getCmp("currentAMin_Id").setValue(data.currentamin);
-     Ext.getCmp("voltageAMax_Id").setValue(data.voltageamax);
-     Ext.getCmp("voltageAMin_Id").setValue(data.voltageamin);
-     Ext.getCmp("activePowerAMax_Id").setValue(data.activepoweramax);
-     Ext.getCmp("activePowerAMin_Id").setValue(data.activepoweramin);
-     
-     Ext.getCmp("currentBMax_Id").setValue(data.currentbmax);
-     Ext.getCmp("currentBMin_Id").setValue(data.currentbmin);
-     Ext.getCmp("voltageBMax_Id").setValue(data.voltagebmax);
-     Ext.getCmp("voltageBMin_Id").setValue(data.voltagebmin);
-     Ext.getCmp("activePowerBMax_Id").setValue(data.activepowerbmax);
-     Ext.getCmp("activePowerBMin_Id").setValue(data.activepowerbmin);
-     
-     Ext.getCmp("currentCMax_Id").setValue(data.currentcmax);
-     Ext.getCmp("currentCMin_Id").setValue(data.currentcmin);
-     Ext.getCmp("voltageCMax_Id").setValue(data.voltagecmax);
-     Ext.getCmp("voltageCMin_Id").setValue(data.voltagecmin);
-     Ext.getCmp("activePowerCMax_Id").setValue(data.activepowercmax);
-     Ext.getCmp("activePowerCMin_Id").setValue(data.activepowercmin);
-     
-     Ext.getCmp("currentAvgMax_Id").setValue(data.currentavgmax);
-     Ext.getCmp("currentAvgMin_Id").setValue(data.currentavgmin);
-     Ext.getCmp("voltageAvgMax_Id").setValue(data.voltageavgmax);
-     Ext.getCmp("voltageAvgMin_Id").setValue(data.voltageavgmin);
-     Ext.getCmp("activePowerSumMax_Id").setValue(data.activepowersummax);
-     Ext.getCmp("activePowerSumMin_Id").setValue(data.activepowersummin);
-     return false;
- };
- 
-//设置报警级别颜色
- function UpdateDiscreteAlarmSet(){
-	 var jbh=Ext.getCmp("distreteJbh_Id").getValue();
-     var jlbh=Ext.getCmp("distreteAlarm_Id").getValue();
-     
-     var currentamax=Ext.getCmp("currentAMax_Id").getValue();
-     var currentamin=Ext.getCmp("currentAMin_Id").getValue();
-     var voltageamax=Ext.getCmp("voltageAMax_Id").getValue();
-     var voltageamin=Ext.getCmp("voltageAMin_Id").getValue();
-     var activepoweramax=Ext.getCmp("activePowerAMax_Id").getValue();
-     var activepoweramin=Ext.getCmp("activePowerAMin_Id").getValue();
-     
-     var currentbmax=Ext.getCmp("currentBMax_Id").getValue();
-     var currentbmin=Ext.getCmp("currentBMin_Id").getValue();
-     var voltagebmax=Ext.getCmp("voltageBMax_Id").getValue();
-     var voltagebmin=Ext.getCmp("voltageBMin_Id").getValue();
-     var activepowerbmax=Ext.getCmp("activePowerBMax_Id").getValue();
-     var activepowerbmin=Ext.getCmp("activePowerBMin_Id").getValue();
-     
-     var currentcmax=Ext.getCmp("currentCMax_Id").getValue();
-     var currentcmin=Ext.getCmp("currentCMin_Id").getValue();
-     var voltagecmax=Ext.getCmp("voltageCMax_Id").getValue();
-     var voltagecmin=Ext.getCmp("voltageCMin_Id").getValue();
-     var activepowercmax=Ext.getCmp("activePowerCMax_Id").getValue();
-     var activepowercmin=Ext.getCmp("activePowerCMin_Id").getValue();
-     
-     var currentavgmax=Ext.getCmp("currentAvgMax_Id").getValue();
-     var currentavgmin=Ext.getCmp("currentAvgMin_Id").getValue();
-     var voltageavgmax=Ext.getCmp("voltageAvgMax_Id").getValue();
-     var voltageavgmin=Ext.getCmp("voltageAvgMin_Id").getValue();
-     var activepowersummax=Ext.getCmp("activePowerSumMax_Id").getValue();
-     var activepowersummin=Ext.getCmp("activePowerSumMin_Id").getValue();
-	 Ext.Ajax.request({
-	        url: context + '/alarmSetManagerController/updateDiscreteAlarmSet',
-	        method: "POST",
-	        params: {
-	        	jlbh: jlbh,
-	        	jbh: jbh,
-	        	currentamax: currentamax,
-	        	currentamin: currentamin,
-	        	voltageamax: voltageamax,
-	        	voltageamin: voltageamin,
-	        	activepoweramax: activepoweramax,
-	        	activepoweramin: activepoweramin,
-	        	currentbmax: currentbmax,
-	        	currentbmin: currentbmin,
-	        	voltagebmax: voltagebmax,
-	        	voltagebmin: voltagebmin,
-	        	activepowerbmax: activepowerbmax,
-	        	activepowerbmin: activepowerbmin,
-	        	currentcmax: currentcmax,
-	        	currentcmin: currentcmin,
-	        	voltagecmax: voltagecmax,
-	        	voltagecmin: voltagecmin,
-	        	activepowercmax: activepowercmax,
-	        	activepowercmin: activepowercmin,
-	        	currentavgmax: currentavgmax,
-	        	currentavgmin: currentavgmin,
-	        	voltageavgmax: voltageavgmax,
-	        	voltageavgmin: voltageavgmin,
-	        	activepowersummax: activepowersummax,
-	        	activepowersummin: activepowersummin,
-	        },
-	        success: function (response, action) {
-	        	if (Ext.decode(response.responseText).msg) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
-                    var AlarmSetSingleWellListGrid = Ext.getCmp("AlarmSetSingleWellListGrid_Id");
-            		if(isNotVal(AlarmSetSingleWellListGrid)){
-            			AlarmSetSingleWellListGrid.getStore().load();
-            		}else{
-            			Ext.create('AP.store.alarmSet.AlarmSetSingleWellListStore');
-            		}
-                }
-	        	else {
-                    Ext.Msg.alert(cosog.string.ts,
-                        "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
-                }
-	        },
-	        failure: function () {
-	            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
-	        }
-	    });
- };

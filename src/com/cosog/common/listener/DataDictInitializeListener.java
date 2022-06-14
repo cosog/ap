@@ -10,6 +10,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.cosog.controller.base.BaseController;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
+import com.cosog.utils.StringManagerUtils;
 
 /**
  * <p>描述：程序一开始启动，就会启动该监听，执行数据字典缓存操作</p>
@@ -27,13 +28,13 @@ public class DataDictInitializeListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		cache=Config.getInstance().configFile.getOthers().getCache();
 		if(cache){
-			System.out.println("数据字典缓存启动中...");
+			StringManagerUtils.printLog("数据字典缓存启动中...");
 			ServletContext context = event.getServletContext();
 			ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(context);
 			BaseController base = (BaseController) ctx.getBean("baseAction");
 			base.initDataDictionaryPutInCache();
 		}else{
-			System.out.println("数据字典缓存已经被禁用！");
+			StringManagerUtils.printLog("数据字典缓存已经被禁用！");
 		}
 	}
 }

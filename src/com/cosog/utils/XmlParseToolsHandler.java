@@ -266,10 +266,10 @@ public class XmlParseToolsHandler {
 			List<String> myhiddens = new ArrayList<String>();
 			InputStream is = XmlParseToolsHandler.class.getResourceAsStream(filePath);
 			Document document;
-			// System.out.println("hello");
+			// StringManagerUtils.printLog("hello");
 			try {
 				document = saxReader.read(is);
-				// System.out.println("now date==" + new Date());
+				// StringManagerUtils.printLog("now date==" + new Date());
 				log.debug("now date==" + new Date());
 				// Document document = saxReader.read(new File("./code/user.xml"));
 				Element root = document.getRootElement();
@@ -277,7 +277,7 @@ public class XmlParseToolsHandler {
 				List headList = headers.elements("header");
 				Attribute attr = root.attribute("loading");
 				dataModel.setLoading(Boolean.valueOf(attr.getText()));
-				// System.out.println(attr.getTextTrim());
+				// StringManagerUtils.printLog(attr.getTextTrim());
 
 				for (int i = 0; i < headList.size(); i++) {
 					Element header = (Element) headList.get(i);

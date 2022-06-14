@@ -31,7 +31,6 @@ import com.cosog.utils.DataModelMap;
  * 
  */
 public class SessionTimeOutFilter extends HttpServlet implements Filter {
-
 	/**
 	 * 
 	 */
@@ -122,7 +121,6 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 					chain.doFilter(request, response);
 				}
 			}
-
 		} else {
 			response.sendError(888);
 			response.setContentType("application/json;charset=utf-8");

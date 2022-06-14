@@ -1,8 +1,23 @@
 package com.cosog.model.calculate;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-public class RPCCalculateResponseData {
+import com.cosog.model.calculate.RPCCalculateRequestData.CasingString;
+import com.cosog.model.calculate.RPCCalculateRequestData.EveryCasing;
+import com.cosog.model.calculate.RPCCalculateRequestData.EveryRod;
+import com.cosog.model.calculate.RPCCalculateRequestData.EveryTubing;
+import com.cosog.model.calculate.RPCCalculateRequestData.RodString;
+import com.cosog.model.calculate.RPCCalculateRequestData.TubingString;
+import com.cosog.model.drive.ModbusProtocolConfig.ItemsMeaning;
+import com.cosog.utils.StringManagerUtils;
+
+public class RPCCalculateResponseData implements Serializable, Comparable<RPCCalculateResponseData>{
+	
+	private static final long serialVersionUID = 1L;
 	
 	 private String WellName;
 
@@ -23,6 +38,24 @@ public class RPCCalculateResponseData {
 	 private WellboreSlice WellboreSlice;
 
 	 private SystemEfficiency SystemEfficiency;
+	 
+	 public void init(){
+		 this.setCalculationStatus(new CalculationStatus());
+		 this.setVerification(new Verification());
+	    	
+		 this.setRodString(new RodString());
+		 this.getRodString().setEveryRod(new ArrayList<EveryRod>());
+		 
+		 this.setProduction(new Production());
+		 
+		 this.setFESDiagram(new FESDiagram());
+		 this.getFESDiagram().setFMax(new ArrayList<Float>());
+		 this.getFESDiagram().setFMin(new ArrayList<Float>());
+		 
+		 this.setPumpEfficiency(new PumpEfficiency());
+		 
+		 this.setSystemEfficiency(new SystemEfficiency());
+	 }
 
 	 public void setWellName(String WellName){
 	     this.WellName = WellName;
@@ -109,8 +142,10 @@ public class RPCCalculateResponseData {
 			return result.toString();
 		}
 
-	public static class CalculationStatus
-	{
+	public static class CalculationStatus implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private int ResultStatus;
 
 	    private int ResultCode;
@@ -129,8 +164,10 @@ public class RPCCalculateResponseData {
 	    }
 	}
 	
-	public static class Verification
-	{
+	public static class Verification implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private int ErrorCounter;
 
 	    private String ErrorString;
@@ -165,8 +202,10 @@ public class RPCCalculateResponseData {
 	    }
 	}
 	
-	public static class WellboreTrajectory
-	{
+	public static class WellboreTrajectory implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private int CNT;
 
 	    private List<Float> MeasuringDepth;
@@ -233,8 +272,10 @@ public class RPCCalculateResponseData {
 	    }
 	}
 
-	public static class EveryRod
-	{
+	public static class EveryRod implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private int Type;
 
 	    private String Grade;
@@ -373,8 +414,10 @@ public class RPCCalculateResponseData {
 	    }
 	}
 	
-	public static class RodString
-	{
+	public static class RodString implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private int CNT;
 
 	    private float LengthAll;
@@ -449,8 +492,10 @@ public class RPCCalculateResponseData {
 	    }
 	}
 	
-	public static class Production
-	{
+	public static class Production implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private float WaterCut;
 
 	    private float ProductionGasOilRatio;
@@ -749,8 +794,10 @@ public class RPCCalculateResponseData {
 		}
 	}
 
-	public static class FESDiagram
-	{
+	public static class FESDiagram implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private String AcqTime;
 
 	    private float Stroke;
@@ -1113,8 +1160,10 @@ public class RPCCalculateResponseData {
 		}
 	}
 
-	public static class PumpEfficiency
-	{
+	public static class PumpEfficiency implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private float PumpEff1;
 
 	    private float RodFlexLength;
@@ -1182,8 +1231,10 @@ public class RPCCalculateResponseData {
 	}
 	
 
-	public static class WellboreSlice
-	{
+	public static class WellboreSlice implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private int CNT;
 
 	    private List<Float> MeasuringDepth;
@@ -1250,8 +1301,10 @@ public class RPCCalculateResponseData {
 		}
 	}
 	
-	public static class SystemEfficiency
-	{
+	public static class SystemEfficiency implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private float MotorEfficiency;
 
 	    private float BeltEfficiency;
@@ -1341,6 +1394,22 @@ public class RPCCalculateResponseData {
 	        return this.WaterPower;
 	    }
 	}
-
 	
+	@Override
+	public int compareTo(RPCCalculateResponseData responseData) {     //重写Comparable接口的compareTo方法
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		long from = 0;
+		long to = 0;
+		try {
+			if(this.getFESDiagram()!=null&&StringManagerUtils.isNotNull(this.getFESDiagram().getAcqTime())){
+				to=simpleDateFormat.parse(this.getFESDiagram().getAcqTime()).getTime();
+			}
+			if(responseData.getFESDiagram()!=null&&StringManagerUtils.isNotNull(responseData.getFESDiagram().getAcqTime())){
+				from=simpleDateFormat.parse(responseData.getFESDiagram().getAcqTime()).getTime();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return (int)(to-from);   // 根据值或者位升序排列，降序修改相减顺序即可
+	}
 }

@@ -230,6 +230,5 @@ public class BackModuleRecursion {
 	public static void main(String[] args) {
 	//	BackModuleRecursion r = new BackModuleRecursion();
 		// r.recursionFn(r.moduleList, new module(1, 0));
-		// System.out.println(r.modifyStr(r.returnStr.toString()));
 	}
 }

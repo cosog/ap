@@ -89,12 +89,11 @@ Ext.define("AP.view.well.BatchAddDeviceCollisionDataWindow", {
                         method: 'POST',
                         url: context + '/wellInformationManagerController/batchAddDevice',
                         success: function (response) {
-                        	var activeId = Ext.getCmp("DeviceManagerTabPanel").getActiveTab().id;
-                    		if(activeId=="RPCDeviceInfoTabPanel_Id"){
-                    			CreateAndLoadRPCDeviceInfoTable();
-                    		}else if(activeId=="PCPDeviceInfoTabPanel_Id"){
-                    			CreateAndLoadPCPDeviceInfoTable();
-                    		}
+                        	if(parseInt(deviceType)==101){
+                        		CreateAndLoadRPCDeviceInfoTable();
+                        	}else if(parseInt(deviceType)==201){
+                        		CreateAndLoadPCPDeviceInfoTable();
+                        	}
                         	rdata = Ext.JSON.decode(response.responseText);
                             if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
                             	Ext.getCmp("BatchAddDeviceCollisionDataWindow_Id").close();
@@ -228,6 +227,16 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
                 }
                 source += "]";
                 columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "displayInstanceName".toUpperCase()) {
+                var source = "[";
+                for (var j = 0; j < result.displayInstanceDropdownData.length; j++) {
+                    source += "\'" + result.displayInstanceDropdownData[j] + "\'";
+                    if (j < result.displayInstanceDropdownData.length - 1) {
+                        source += ",";
+                    }
+                }
+                source += "]";
+                columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
             } else if (result.columns[i].dataIndex.toUpperCase() === "alarmInstanceName".toUpperCase()) {
                 var source = "[";
                 for (var j = 0; j < result.alarmInstanceDropdownData.length; j++) {
@@ -252,6 +261,17 @@ function CreateAndLoadBatchAddDeviceCollisionDataTable(result) {
                 columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceCollisionDataHandsontableHelper);}}";
             } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
             	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "pumpType".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "barrelType".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['组合泵', '整筒泵']}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "pumpGrade".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['1', '2', '3', '4', '5']}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "rodGrade2".toUpperCase()
+            		|| result.columns[i].dataIndex.toUpperCase() === "rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase() === "rodGrade4".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['A', 'B', 'C', 'D', 'K', 'KD', 'HL', 'HY']}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "crankRotationDirection".toUpperCase()) {
+            	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['顺时针', '逆时针']}";
             } else {
                 columns += "{data:'" + result.columns[i].dataIndex + "'}";
             }
@@ -411,6 +431,16 @@ function CreateAndLoadBatchAddDeviceOverlayDataTable(result) {
                 for (var j = 0; j < result.instanceDropdownData.length; j++) {
                     source += "\'" + result.instanceDropdownData[j] + "\'";
                     if (j < result.instanceDropdownData.length - 1) {
+                        source += ",";
+                    }
+                }
+                source += "]";
+                columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+            } else if (result.columns[i].dataIndex.toUpperCase() === "displayInstanceName".toUpperCase()) {
+                var source = "[";
+                for (var j = 0; j < result.displayInstanceDropdownData.length; j++) {
+                    source += "\'" + result.displayInstanceDropdownData[j] + "\'";
+                    if (j < result.displayInstanceDropdownData.length - 1) {
                         source += ",";
                     }
                 }

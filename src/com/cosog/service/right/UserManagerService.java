@@ -16,12 +16,19 @@ import org.springframework.stereotype.Service;
 import com.cosog.model.Code;
 import com.cosog.model.Org;
 import com.cosog.model.User;
+import com.cosog.model.calculate.PCPDeviceInfo;
+import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.UserInfo;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
+import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
+
+import redis.clients.jedis.Jedis;
 
 /**
  * <p>描述：用户管理模块服务类</p>
@@ -405,8 +412,37 @@ public class UserManagerService<T> extends BaseService<T> {
 	
 	public void changeUserOrg(String selectedUserId,String selectedOrgId) throws Exception {
 		StringBuffer result_json = new StringBuffer();
+		if(StringManagerUtils.stringToInteger(selectedOrgId)>0 && StringManagerUtils.isNotNull(selectedUserId)){
+			String sql = "update tbl_user t set t.user_orgid="+selectedOrgId+" where t.user_no in ("+selectedUserId+")";
+			this.getBaseDao().updateOrDeleteBySql(sql);
+			
+			Jedis jedis=null;
+			try{
+				jedis = new Jedis();
+
+				if(!jedis.exists("UserInfo".getBytes())){
+					MemoryDataManagerTask.loadUserInfo(null);
+				}
+				List<byte[]> userInfoByteList =jedis.hvals("UserInfo".getBytes());
+				for(int i=0;i<userInfoByteList.size();i++){
+					Object obj = SerializeObjectUnils.unserizlize(userInfoByteList.get(i));
+					if (obj instanceof UserInfo) {
+						UserInfo userInfo=(UserInfo)obj;
+						if(StringManagerUtils.existOrNot(selectedUserId.split(","), userInfo.getUserNo()+"", false)){
+							userInfo.setUserOrgid(StringManagerUtils.stringToInteger(selectedOrgId));
+							jedis.hset("UserInfo".getBytes(), userInfo.getUserId().getBytes(), SerializeObjectUnils.serialize(userInfo));
+						}
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				jedis=null;
+			}
+			if(jedis!=null){
+				jedis.disconnect();
+				jedis.close();
+			}
+		}
 		
-		String sql = "update tbl_user t set t.user_orgid="+selectedOrgId+" where t.user_no in ("+selectedUserId+")";
-		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 }

@@ -8,6 +8,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
     	var me = this;
     	var ModbusProtocolAcqUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView');
     	var ModbusProtocolAlarmUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView');
+    	var ModbusProtocolDisplayUnitConfigInfoView = Ext.create('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView');
     	Ext.apply(me, {
     		items: [{
     			xtype: 'tabpanel',
@@ -27,25 +28,28 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolUnitConfigInfoView', {
                 	items: [ModbusProtocolAlarmUnitConfigInfoView],
     				layout: "fit",
     				border: false
+                },{
+                	title:'<div style="color:#000000;font-size:11px;font-family:SimSun">显示单元</div>',
+                	id:'ModbusProtocolDisplayUnitConfigTabPanel_Id',
+                	items: [ModbusProtocolDisplayUnitConfigInfoView],
+    				layout: "fit",
+    				border: false
                 }],
                 listeners: {
                     tabchange: function (tabPanel, newCard, oldCard, obj) {
-//                    	if(newCard.id=="ModbusProtocolAddrMappingConfigTabPanel_Id"){
-////                    		loadFSDiagramAnalysisSingleStatData();
-//                    	}else if(newCard.id=="ModbusProtocolAcqUnitConfigTabPanel_Id"){
-//                    		var treePanel=Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
-//                    		if(isNotVal(treePanel)){
-//                    			treePanel.getStore().load();
-//                    		}else{
-//                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
-//                    		}
-//                    	}else 
                     	if(newCard.id=="ModbusProtocolAlarmUnitConfigTabPanel_Id"){
                     		var treePanel=Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
                     		if(isNotVal(treePanel)){
                     			treePanel.getStore().load();
                     		}else{
                     			Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
+                    		}
+                    	}else if(newCard.id=="ModbusProtocolDisplayUnitConfigTabPanel_Id"){
+                    		var treePanel=Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
+                    		if(isNotVal(treePanel)){
+                    			treePanel.getStore().load();
+                    		}else{
+                    			Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
                     		}
                     	}
                     },afterrender: function (comp,eOpts) {

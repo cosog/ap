@@ -45,17 +45,6 @@ Ext.define('AP.store.module.ModuleInfoStore', {
                     columns: newColumns,
                     listeners: {
                         selectionchange: function (sm, selections) {
-//                            var n = selections.length || 0;
-//                            var edit = Ext.getCmp("editmoduleLableClassBtn_Id");
-//                            edit.setDisabled(n != 1);
-//                            if (n > 0) {
-//                                var add = Ext.getCmp("addmoduleLableClassBtn_Id")
-//                                add.setDisabled(true);
-//                                Ext.getCmp("delmoduleLableClassBtn_Id").setDisabled(false);
-//                            } else {
-//                                Ext.getCmp("addmoduleLableClassBtn_Id").setDisabled(false);
-//                                Ext.getCmp("delmoduleLableClassBtn_Id").setDisabled(true);
-//                            }
                         },
                         itemdblclick: function () {
                             modifymoduleInfo();

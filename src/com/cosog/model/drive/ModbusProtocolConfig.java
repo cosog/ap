@@ -1,10 +1,13 @@
 package com.cosog.model.drive;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.cosog.utils.StringManagerUtils;
 
-public class ModbusProtocolConfig {
+public class ModbusProtocolConfig implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private List<Protocol> Protocol;
 
@@ -15,8 +18,10 @@ public class ModbusProtocolConfig {
         return this.Protocol;
     }
     
-    public static class ItemsMeaning implements Comparable<ItemsMeaning>
+    public static class ItemsMeaning implements Serializable, Comparable<ItemsMeaning>
     {
+    	private static final long serialVersionUID = 1L;
+    	
     	private int Value;
     	
     	private String Meaning;
@@ -43,8 +48,9 @@ public class ModbusProtocolConfig {
 		}
     }
     
-	public static class Items implements Comparable<Items>
-	{
+	public static class Items implements Comparable<Items>, Serializable{
+		
+		private static final long serialVersionUID = 1L;
 	    private String Name;
 
 	    private String Title;
@@ -160,8 +166,10 @@ public class ModbusProtocolConfig {
 		}
 	}
 	
-	public static class Protocol  implements Comparable<Protocol>
-	{
+	public static class Protocol  implements Comparable<Protocol>,Serializable{
+		
+		private static final long serialVersionUID = 1L;
+		
 	    private String Name;
 
 	    private String Code;

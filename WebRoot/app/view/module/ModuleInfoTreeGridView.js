@@ -48,8 +48,6 @@ Ext.define('AP.view.module.ModuleInfoTreeGridView', {
          }, {
                 xtype: 'button',
                 text: cosog.string.search,
-//                hidden: true,
-                pressed: true,
                 iconCls: 'search',
                 handler: function () {
                     moduleStore.load();

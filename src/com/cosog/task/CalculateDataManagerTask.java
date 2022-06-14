@@ -46,7 +46,7 @@ public class CalculateDataManagerTask {
 		//判断SDK是否启动
 		String probeUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
 		if(StringManagerUtils.checkHttpConnection(probeUrl)){
-			String sql="select count(1) from tbl_rpc_diagram_hist t where resultstatus in (0,2) and t.productiondataid >0";
+			String sql="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
 			String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
 			String result="无未计算数据";
 			int count=getCount(sql);

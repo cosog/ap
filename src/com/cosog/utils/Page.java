@@ -50,7 +50,7 @@ public class Page {
 
 		} catch (Exception e) {
 			// 100007 设置分页信息错误
-			System.out.println(e);
+			StringManagerUtils.printLog(e);
 		}
 	}
 	

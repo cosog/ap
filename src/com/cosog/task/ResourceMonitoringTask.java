@@ -18,13 +18,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 
+import com.cosog.model.CommStatus;
 import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CPUProbeResponseData;
 import com.cosog.model.calculate.CommResponseData;
@@ -38,9 +41,10 @@ import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
-import com.cosog.websocket.handler.SpringWebSocketHandler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import redis.clients.jedis.Jedis;
 
 @Component("ResourceMonitoringTask")  
 public class ResourceMonitoringTask {
@@ -55,23 +59,23 @@ public class ResourceMonitoringTask {
     private static CallableStatement cs= null;
     
 	@SuppressWarnings("static-access")
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, ParseException, IOException{
-		String probeAppUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
-		String probeMemUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getMem()[0];
-		String probeCPUUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getCpu()[0];
+		String probeMemUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getMem();
+		String probeCPUUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getCpu();
 		
 		String adAllOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
 		String adStatusUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getApp();
 		
+		String acStatusUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
+		
 		int deviceAmount=getDeviceAmount();
 		
-		String appRunStatus="停止";
-		int appRunStatusValue=0;
-		String appVersion="";
+		int acRunStatus=0;
+		String acVersion="";
+		int acLicense=0;
 		
-		String adRunStatus="停止";
-		int adRunStatusValue=0;
+		int adRunStatus=0;
 		String adVersion="";
 		int adLicense=0;
 		boolean adLicenseSign=false;
@@ -85,17 +89,47 @@ public class ResourceMonitoringTask {
 		int memUsedPercentAlarmLevel=0;
 		
 		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
+		
+		int jedisStatus=0;
+		Jedis jedis=null;
+		try{
+			jedis = new Jedis();
+			jedisStatus=1;
+		}catch(Exception e){
+			jedisStatus=0;
+		}
+		if(jedis!=null && jedis.isConnected() ){
+			jedis.disconnect();
+			jedis.close();
+		}
+		
+		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		
 		//ac状态检测
-		String appProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeAppUrl, "","utf-8");
+		String acStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(acStatusUrl, "","utf-8");
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
-		AppRunStatusProbeResonanceData appRunStatusProbeResonanceData=gson.fromJson(appProbeResponseDataStr, type);
-		if(appRunStatusProbeResonanceData!=null){
-			appRunStatus="运行";
-			appRunStatusValue=1;
-			appVersion=appRunStatusProbeResonanceData.getVer();
+		AppRunStatusProbeResonanceData acStatusProbeResonanceData=gson.fromJson(acStatusProbeResponseDataStr, type);
+		if(acStatusProbeResonanceData!=null){
+			acRunStatus=1;
+			acVersion=acStatusProbeResonanceData.getVer();
+			acLicense=acStatusProbeResonanceData.getLicenseNumber();
+		}
+		
+		//ad状态检测
+		String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8");
+		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
+		AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
+		if(adStatusProbeResonanceData!=null){
+			adRunStatus=1;
+			adVersion=adStatusProbeResonanceData.getVer();
+			adLicense=adStatusProbeResonanceData.getLicenseNumber();
+			if(adLicense>0&&deviceAmount>adLicense){
+				adLicenseSign=true;
+			}
+			
+			
 			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8");
 			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8");
 			type = new TypeToken<CPUProbeResponseData>() {}.getType();
@@ -128,30 +162,19 @@ public class ResourceMonitoringTask {
 				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
 			}
 		}
-		//ad状态检测
-		String responseData=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8");
-		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
-		AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(responseData, type);
-		if(adStatusProbeResonanceData!=null){
-			adRunStatus="运行";
-			adRunStatusValue=1;
-			adVersion=adStatusProbeResonanceData.getVer();
-			adLicense=adStatusProbeResonanceData.getLicenseNumber();
-			if(adLicense>0&&deviceAmount>adLicense){
-				adLicenseSign=true;
-			}
-		}
+		
 		conn=OracleJdbcUtis.getConnection();
 		if(conn!=null){
-			cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
-			cs.setInt(2, appRunStatusValue);
-			cs.setString(3, appVersion);
-			cs.setInt(4, adRunStatusValue);
+			cs.setInt(2, acRunStatus);
+			cs.setString(3, acVersion);
+			cs.setInt(4, adRunStatus);
 			cs.setString(5, adVersion);
 			cs.setString(6, cpuUsedPercentValue);
 			cs.setString(7, memUsedPercentValue);
 			cs.setFloat(8, tableSpaceInfo.getUsedPercent());
+			cs.setInt(9, jedisStatus);
 			cs.executeUpdate();
 			if(cs!=null){
 				cs.close();
@@ -160,9 +183,13 @@ public class ResourceMonitoringTask {
 				conn.close();
 			}
 		}
+		
+//		adLicenseSign=new Random().nextBoolean();
+		
 		String sendData="{"
-				+ "\"appRunStatus\":\""+appRunStatus+"\","
-				+ "\"appVersion\":\""+appVersion+"\","
+				+ "\"functionCode\":\"ResourceMonitoringData\","
+				+ "\"acRunStatus\":\""+acRunStatus+"\","
+				+ "\"acVersion\":\""+acVersion+"\","
 				+ "\"cpuUsedPercent\":\""+cpuUsedPercent+"\","
 				+ "\"cpuUsedPercentAlarmLevel\":"+cpuUsedPercentAlarmLevel+","
 				+ "\"memUsedPercent\":\""+memUsedPercent+"\","
@@ -171,41 +198,29 @@ public class ResourceMonitoringTask {
 				+ "\"adVersion\":\""+adVersion+"\","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
-				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+""
+				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+","
+				+ "\"adLicenseSign\":"+adLicenseSign+","
+				+ "\"deviceAmount\":"+deviceAmount+","
+				+ "\"adLicense\":"+adLicense+","
+				+ "\"jedisStatus\":\""+jedisStatus+"\""
 				+ "}";
 		try {
-			infoHandler().sendMessageToUserByModule("RealtimeEvaluation", new TextMessage(sendData));
-			infoHandler2().sendMessageToBy("RealtimeEvaluation", sendData);
-		} catch (IOException e) {
+			infoHandler().sendMessageToBy("ApWebSocketClient", sendData);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Bean
-    public static SpringWebSocketHandler infoHandler() {
-        return new SpringWebSocketHandler();
-    }
-	
-	@Bean
-    public static WebSocketByJavax infoHandler2() {
+    public static WebSocketByJavax infoHandler() {
         return new WebSocketByJavax();
     }
-	
-	public static  int getDeviceAmount() throws IOException, SQLException{
-		int deviceAmount=0;
-		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-		Map<Integer,InitializedDeviceInfo> initializedDeviceList=(Map<Integer,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-		if(initializedDeviceList!=null){
-			deviceAmount=initializedDeviceList.size();
-		}
-		return deviceAmount;
-	}
 	
 	public static  float getTableSpaceSize() throws SQLException{  
         float result=0;
         String sql="SELECT tablespace_name,file_id,file_name,round(bytes / (1024 * 1024), 2) total_space "
         		+ " FROM dba_data_files t"
-        		+ " where tablespace_name='AGILE_DATA'";
+        		+ " where tablespace_name='AP_JF_DATA'";
         conn=OracleJdbcUtis.getConnection();
         if(conn==null){
         	return -1;
@@ -230,11 +245,11 @@ public class ResourceMonitoringTask {
 //        		+ " (SELECT tablespace_name, SUM(bytes) free FROM dba_free_space GROUP BY tablespace_name) a,  "
 //        		+ " (SELECT file_id,tablespace_name, SUM(bytes) total FROM dba_data_files GROUP BY file_id,tablespace_name) b   "
 //        		+ " WHERE a.tablespace_name = b.tablespace_name "
-//        		+ " and Upper(a.tablespace_name) like 'AGILE_DATA%' "
+//        		+ " and Upper(a.tablespace_name) like 'AP_JF_DATA%' "
 //        		+ " order by b.file_id ";
 		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
 				+ "FROM dba_data_files t "
-				+ "where  Upper(t.tablespace_name) like 'AGILE_DATA%' "
+				+ "where  Upper(t.tablespace_name) like 'AP_JF_DATA%' "
 				+ "and t.BYTES<34359721984";
         TableSpaceInfo tableSpaceInfo=new TableSpaceInfo();
         conn=OracleJdbcUtis.getConnection();
@@ -244,7 +259,7 @@ public class ResourceMonitoringTask {
 		pstmt = conn.prepareStatement(sql); 
 		rs=pstmt.executeQuery();
 		while(rs.next()){
-			tableSpaceInfo.setTableSpaceName("AGILE_DATA");
+			tableSpaceInfo.setTableSpaceName("AP_JF_DATA");
 			tableSpaceInfo.setUsed(rs.getFloat(1));
 			tableSpaceInfo.setTotal(rs.getFloat(2));
 			tableSpaceInfo.setFree(rs.getFloat(2)-rs.getFloat(1));
@@ -257,12 +272,20 @@ public class ResourceMonitoringTask {
 			}else{
 				tableSpaceInfo.setAlarmLevel(0);
 			}
-			
-			
 		}
 		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return tableSpaceInfo;
     }
+	
+	public static  int getDeviceAmount() throws IOException, SQLException{
+		int deviceAmount=0;
+		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+		Map<Integer,InitializedDeviceInfo> initializedDeviceList=(Map<Integer,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+		if(initializedDeviceList!=null){
+			deviceAmount=initializedDeviceList.size();
+		}
+		return deviceAmount;
+	}
 	
 	public static class TableSpaceInfo{
 		public String tableSpaceName;

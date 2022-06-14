@@ -108,7 +108,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAcqUnitConfigItemsHandsontableHelper==null || protocolAcqUnitConfigItemsHandsontableHelper.hot==undefined){
 				protocolAcqUnitConfigItemsHandsontableHelper = ProtocolAcqUnitConfigItemsHandsontableHelper.createNew("ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','地址','读写类型','单位','解析模式','显示级别','显示顺序','实时曲线','实时曲线颜色','历史曲线','历史曲线曲线']";
+				var colHeaders="['','序号','名称','地址','读写类型','单位','解析模式']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -117,12 +117,12 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '读写']}," 
 						+"{data:'unit'},"
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
-						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
-						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
-						+"{data:'isRealtimeCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
-						+"{data:'realtimeCurveColor'},"
-						+"{data:'isHistoryCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}},"
-						+"{data:'historyCurveColor'},"
+//						+"{data:'showLevel',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
+//						+"{data:'sort',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
+//						+"{data:'isRealtimeCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}}," 
+//						+"{data:'realtimeCurveColor'},"
+//						+"{data:'isHistoryCurve',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolAcqUnitConfigItemsHandsontableHelper);}},"
+//						+"{data:'historyCurveColor'},"
 						+"{data:'bitIndex'}"
 						+"]";
 				
@@ -187,10 +187,11 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [13],
+	                    columns: [7],
 	                    indicators: false
 	                },
-	        		colWidths: [25,50,140,60,80,80,80,60,60,60,70,60,70],
+//	        		colWidths: [25,50,140,60,80,80,80,60,60,60,70,60,70],
+	        		colWidths: [25,50,140,60,80,80,80],
 	                columns:protocolAcqUnitConfigItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -375,7 +376,7 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 	        
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.createTable = function (data) {

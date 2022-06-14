@@ -33,6 +33,16 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                 value: 1,
                 hidden: true
             },{
+                id: 'runOpacity_id',//报警背景色透明度
+                xtype: 'textfield',
+                value: 1,
+                hidden: true
+            },{
+                id: 'stopOpacity_id',//报警背景色透明度
+                xtype: 'textfield',
+                value: 1,
+                hidden: true
+            },{
                 id: 'normalOpacity_id',//报警背景色透明度
                 xtype: 'textfield',
                 value: 1,
@@ -117,6 +127,48 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                         	collapse: function (field,eOpts) {
                             	if(Ext.getCmp('offlineBackgroundColor_id')!=undefined){
                             		Ext.getCmp('offlineOpacity_id').setValue(field.color.a);
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
+                        id: 'runBackgroundColor_id',
+                        fieldLabel: '运行',
+                        labelWidth: 60,
+                        anchor:'90%',
+                        listeners : {
+                        	collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('runBackgroundColor_id')!=undefined){
+                            		Ext.getCmp('runOpacity_id').setValue(field.color.a);
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
+                        id: 'stopBackgroundColor_id',
+                        fieldLabel: '停抽',
+                        labelWidth: 60,
+                        anchor:'90%',
+                        listeners : {
+                        	collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('stopBackgroundColor_id')!=undefined){
+                            		Ext.getCmp('stopOpacity_id').setValue(field.color.a);
                             		var opacity=field.color.a;
                             		field.setValue(field.value);
                     	        	var BackgroundColor0=field.color;
@@ -261,6 +313,48 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                             }
                         }
                 	},{
+                        id: 'runColor_id',
+                        fieldLabel: '运行',
+                        labelWidth: 60,
+                        anchor:'90%',
+                        value:'#FFFFFF',
+                        listeners : {
+                            collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('runColor_id')!=undefined){
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
+                        id: 'stopColor_id',
+                        fieldLabel: '停抽',
+                        labelWidth: 60,
+                        anchor:'90%',
+                        value:'#FFFFFF',
+                        listeners : {
+                            collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('stopColor_id')!=undefined){
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
                         id: 'firstLevelColor_id',
                         fieldLabel: '一级报警',
                         labelWidth: 60,
@@ -380,6 +474,25 @@ function getAlarmLevelSetColor(){
 	        	Ext.getCmp('offlineBackgroundColor_id').setColor(BackgroundColor0);
 	        	
 	        	
+	        	Ext.getCmp('runBackgroundColor_id').setValue(AlarmShowStyle.Run.run.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('runBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Run.run.Opacity;
+	        	Ext.getCmp('runBackgroundColor_id').inputEl.applyStyles({
+	        		background: '#'+AlarmShowStyle.Run.run.BackgroundColor,
+	        		opacity:AlarmShowStyle.Run.run.Opacity
+	        	});
+	        	Ext.getCmp('runBackgroundColor_id').setColor(BackgroundColor0);
+	        	
+	        	Ext.getCmp('stopBackgroundColor_id').setValue(AlarmShowStyle.Run.stop.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('stopBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Run.stop.Opacity;
+	        	Ext.getCmp('stopBackgroundColor_id').inputEl.applyStyles({
+	        		background: '#'+AlarmShowStyle.Run.stop.BackgroundColor,
+	        		opacity:AlarmShowStyle.Run.stop.Opacity
+	        	});
+	        	Ext.getCmp('stopBackgroundColor_id').setColor(BackgroundColor0);
+	        	
+	        	
 	        	Ext.getCmp('normalBackgroundColor_id').setValue(AlarmShowStyle.Data.Normal.BackgroundColor);
 	        	var BackgroundColor0=Ext.getCmp('normalBackgroundColor_id').color;
 	        	BackgroundColor0.a=AlarmShowStyle.Data.Normal.Opacity;
@@ -431,6 +544,18 @@ function getAlarmLevelSetColor(){
 	            	background: '#'+AlarmShowStyle.Comm.offline.Color,
 	            });
 	            
+	            Ext.getCmp('runColor_id').setValue(AlarmShowStyle.Run.run.Color);
+	            var Color0=Ext.getCmp('runColor_id').color;
+	            Ext.getCmp('runColor_id').inputEl.applyStyles({
+	            	background: '#'+AlarmShowStyle.Run.run.Color,
+	            });
+	            
+	            Ext.getCmp('stopColor_id').setValue(AlarmShowStyle.Run.stop.Color);
+	            var Color0=Ext.getCmp('stopColor_id').color;
+	            Ext.getCmp('stopColor_id').inputEl.applyStyles({
+	            	background: '#'+AlarmShowStyle.Run.stop.Color,
+	            });
+	            
 	            
 	            Ext.getCmp('normalColor_id').setValue(AlarmShowStyle.Data.Normal.Color);
 	            var Color0=Ext.getCmp('normalColor_id').color;
@@ -459,6 +584,8 @@ function getAlarmLevelSetColor(){
 	            
 	            Ext.getCmp('onlineOpacity_id').setValue(AlarmShowStyle.Comm.online.Opacity);
 	            Ext.getCmp('offlineOpacity_id').setValue(AlarmShowStyle.Comm.offline.Opacity);
+	            Ext.getCmp('runOpacity_id').setValue(AlarmShowStyle.Run.run.Opacity);
+	            Ext.getCmp('stopOpacity_id').setValue(AlarmShowStyle.Run.stop.Opacity);
 	            Ext.getCmp('normalOpacity_id').setValue(AlarmShowStyle.Data.Normal.Opacity);
 	            Ext.getCmp('firstLevelOpacity_id').setValue(AlarmShowStyle.Data.FirstLevel.Opacity);
 	            Ext.getCmp('secondLevelOpacity_id').setValue(AlarmShowStyle.Data.SecondLevel.Opacity);
@@ -473,6 +600,8 @@ function getAlarmLevelSetColor(){
 function saveAlarmColor(){
 	var onlineBackgroundColor=Ext.getCmp('onlineBackgroundColor_id').getValue();
 	var offlineBackgroundColor=Ext.getCmp('offlineBackgroundColor_id').getValue();
+	var runBackgroundColor=Ext.getCmp('runBackgroundColor_id').getValue();
+	var stopBackgroundColor=Ext.getCmp('stopBackgroundColor_id').getValue();
 	var normalBackgroundColor=Ext.getCmp('normalBackgroundColor_id').getValue();
 	var firstLevelBackgroundColor=Ext.getCmp('firstLevelBackgroundColor_id').getValue();
 	var secondLevelBackgroundColor=Ext.getCmp('secondLevelBackgroundColor_id').getValue();
@@ -480,6 +609,8 @@ function saveAlarmColor(){
 	 
 	var onlineColor=Ext.getCmp('onlineColor_id').getValue();
 	var offlineColor=Ext.getCmp('offlineColor_id').getValue();
+	var runColor=Ext.getCmp('runColor_id').getValue();
+	var stopColor=Ext.getCmp('stopColor_id').getValue();
 	var normalColor=Ext.getCmp('normalColor_id').getValue();
 	var firstLevelColor=Ext.getCmp('firstLevelColor_id').getValue();
 	var secondLevelColor=Ext.getCmp('secondLevelColor_id').getValue();
@@ -487,6 +618,8 @@ function saveAlarmColor(){
 	
 	var onlineOpacity=Ext.getCmp('onlineOpacity_id').getValue();
 	var offlineOpacity=Ext.getCmp('offlineOpacity_id').getValue();
+	var runOpacity=Ext.getCmp('runOpacity_id').getValue();
+	var stopOpacity=Ext.getCmp('stopOpacity_id').getValue();
 	var normalOpacity=Ext.getCmp('normalOpacity_id').getValue();
 	var firstLevelOpacity=Ext.getCmp('firstLevelOpacity_id').getValue();
 	var secondLevelOpacity=Ext.getCmp('secondLevelOpacity_id').getValue();
@@ -528,6 +661,18 @@ function saveAlarmColor(){
 	 AlarmShowStyle.Comm.offline.BackgroundColor=offlineBackgroundColor;
 	 AlarmShowStyle.Comm.offline.Color=offlineColor;
 	 AlarmShowStyle.Comm.offline.Opacity=offlineOpacity;
+	 
+	 AlarmShowStyle.Run={};
+	 AlarmShowStyle.Run.run={};
+	 AlarmShowStyle.Run.run.Value=1;
+	 AlarmShowStyle.Run.run.BackgroundColor=runBackgroundColor;
+	 AlarmShowStyle.Run.run.Color=runColor;
+	 AlarmShowStyle.Run.run.Opacity=runOpacity;
+	 AlarmShowStyle.Run.stop={};
+	 AlarmShowStyle.Run.stop.Value=1;
+	 AlarmShowStyle.Run.stop.BackgroundColor=stopBackgroundColor;
+	 AlarmShowStyle.Run.stop.Color=stopColor;
+	 AlarmShowStyle.Run.stop.Opacity=stopOpacity;
 	 Ext.Ajax.request({
 	        url: context + '/alarmSetManagerController/setAlarmColor',
 	        method: "POST",

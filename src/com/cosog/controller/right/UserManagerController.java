@@ -33,6 +33,7 @@ import com.cosog.service.data.SystemdataInfoService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
 import com.cosog.service.right.UserManagerService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Message;
 import com.cosog.utils.Page;
@@ -123,6 +124,10 @@ public class UserManagerController extends BaseController {
 //			user.setUserPwd(UnixPwdCrypt.crypt("dogVSgod", user.getUserPwd()));
 			user.setUserPwd(StringManagerUtils.stringToMD5(user.getUserPwd()));
 			this.userService.addUser(user);
+			
+			List<String> userList=new ArrayList<String>();
+			userList.add(user.getUserId());
+			MemoryDataManagerTask.loadUserInfo(userList);
 			result = "{success:true,msg:true}";
 			if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
 				receivingEMailAccount.add(user.getUserInEmail());
@@ -224,6 +229,11 @@ public class UserManagerController extends BaseController {
 				user.setUserEnable(prttentuser.getUserEnable());
 			}
 			this.userService.modifyUser(user);
+			
+			List<String> userList=new ArrayList<String>();
+			userList.add(user.getUserId());
+			MemoryDataManagerTask.loadUserInfo(userList);
+			
 			String result = "{success:true,msg:true}";
 			if(user.getUserNo()==prttentuser.getUserNo()){
 				prttentuser.setUserOrgid(user.getUserOrgid());

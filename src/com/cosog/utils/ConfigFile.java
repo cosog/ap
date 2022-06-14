@@ -2,28 +2,31 @@ package com.cosog.utils;
 
 import java.util.List;
 
-import com.cosog.utils.ConfigFile.DriverProbe;
-import com.cosog.utils.ConfigFile.Email;
-import com.cosog.utils.ConfigFile.mailAccount;
+import com.cosog.utils.ConfigFile.AgileCalculate;
+import com.cosog.utils.ConfigFile.ESDiagram;
+import com.cosog.utils.ConfigFile.Inversion;
+import com.cosog.utils.ConfigFile.InversionUrl;
+import com.cosog.utils.ConfigFile.Mqtt;
+import com.cosog.utils.ConfigFile.Plugin;
+import com.cosog.utils.ConfigFile.Probe;
+import com.cosog.utils.ConfigFile.TotalCalculation;
 
 public class ConfigFile {
 	
 	private Server server;
 
     private Spring spring;
-
-    private AgileCalculate agileCalculate;
-
-    private Mqtt mqtt;
     
-    private TcpServer tcpServer;
+    private AgileCalculate agileCalculate;
 
     private ViewInformation viewInformation;
     
     private DriverConfig driverConfig;
-
-    private Email email;
     
+    private Mqtt mqtt;
+    
+    private Email email;
+
     private Others others;
 
     public void setServer(Server server){
@@ -38,18 +41,6 @@ public class ConfigFile {
     public Spring getSpring(){
         return this.spring;
     }
-    public void setAgileCalculate(AgileCalculate agileCalculate){
-        this.agileCalculate = agileCalculate;
-    }
-    public AgileCalculate getAgileCalculate(){
-        return this.agileCalculate;
-    }
-    public void setMqtt(Mqtt mqtt){
-        this.mqtt = mqtt;
-    }
-    public Mqtt getMqtt(){
-        return this.mqtt;
-    }
     public void setViewInformation(ViewInformation viewInformation){
         this.viewInformation = viewInformation;
     }
@@ -62,6 +53,18 @@ public class ConfigFile {
     public Others getOthers(){
         return this.others;
     }
+	public DriverConfig getDriverConfig() {
+		return driverConfig;
+	}
+	public void setDriverConfig(DriverConfig driverConfig) {
+		this.driverConfig = driverConfig;
+	}
+	public Email getEmail() {
+		return email;
+	}
+	public void setEmail(Email email) {
+		this.email = email;
+	}
 	
 	public static class Server
 	{
@@ -128,6 +131,50 @@ public class ConfigFile {
 	    }
 	    public Datasource getDatasource(){
 	        return this.datasource;
+	    }
+	}
+	
+	public static class ViewInformation
+	{
+	    private String title;
+
+	    private String profile;
+
+	    private String copy;
+
+	    private String linkaddress;
+
+	    private String linkshow;
+
+	    public void setTitle(String title){
+	        this.title = title;
+	    }
+	    public String getTitle(){
+	        return this.title;
+	    }
+	    public void setProfile(String profile){
+	        this.profile = profile;
+	    }
+	    public String getProfile(){
+	        return this.profile;
+	    }
+	    public void setCopy(String copy){
+	        this.copy = copy;
+	    }
+	    public String getCopy(){
+	        return this.copy;
+	    }
+	    public void setLinkaddress(String linkaddress){
+	        this.linkaddress = linkaddress;
+	    }
+	    public String getLinkaddress(){
+	        return this.linkaddress;
+	    }
+	    public void setLinkshow(String linkshow){
+	        this.linkshow = linkshow;
+	    }
+	    public String getLinkshow(){
+	        return this.linkshow;
 	    }
 	}
 	
@@ -381,90 +428,6 @@ public class ConfigFile {
 		}
 	}
 	
-	public static class TcpServer{
-		private int port;
-
-		public int getPort() {
-			return port;
-		}
-
-		public void setPort(int port) {
-			this.port = port;
-		}
-	}
-
-	public static class Mqtt
-	{
-	    private String server;
-	    
-	    private String userName;
-	    
-	    private String passWord;
-
-	    public void setServer(String server){
-	        this.server = server;
-	    }
-	    public String getServer(){
-	        return this.server;
-	    }
-		public String getUserName() {
-			return userName;
-		}
-		public void setUserName(String userName) {
-			this.userName = userName;
-		}
-		public String getPassWord() {
-			return passWord;
-		}
-		public void setPassWord(String passWord) {
-			this.passWord = passWord;
-		}
-	}
-	
-	public static class ViewInformation
-	{
-	    private String title;
-
-	    private String profile;
-
-	    private String copy;
-
-	    private String linkaddress;
-
-	    private String linkshow;
-
-	    public void setTitle(String title){
-	        this.title = title;
-	    }
-	    public String getTitle(){
-	        return this.title;
-	    }
-	    public void setProfile(String profile){
-	        this.profile = profile;
-	    }
-	    public String getProfile(){
-	        return this.profile;
-	    }
-	    public void setCopy(String copy){
-	        this.copy = copy;
-	    }
-	    public String getCopy(){
-	        return this.copy;
-	    }
-	    public void setLinkaddress(String linkaddress){
-	        this.linkaddress = linkaddress;
-	    }
-	    public String getLinkaddress(){
-	        return this.linkaddress;
-	    }
-	    public void setLinkshow(String linkshow){
-	        this.linkshow = linkshow;
-	    }
-	    public String getLinkshow(){
-	        return this.linkshow;
-	    }
-	}
-	
 	public static class DriverProbe{
 		private String init;
 		private String app;
@@ -576,6 +539,34 @@ public class ConfigFile {
 		}
 	}
 	
+	public static class Mqtt
+	{
+	    private String server;
+	    
+	    private String userName;
+	    
+	    private String passWord;
+
+	    public void setServer(String server){
+	        this.server = server;
+	    }
+	    public String getServer(){
+	        return this.server;
+	    }
+		public String getUserName() {
+			return userName;
+		}
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}
+		public String getPassWord() {
+			return passWord;
+		}
+		public void setPassWord(String passWord) {
+			this.passWord = passWord;
+		}
+	}
+	
 	public static class mailAccount{
 		private String account;
 		private String password;
@@ -639,9 +630,13 @@ public class ConfigFile {
 	    
 	    private int dataSaveMode;
 	    
+	    private boolean pcpHidden;
+	    
 	    private boolean showLogo;
 	    
 	    private boolean printLog;
+	    
+	    private boolean simulateAcqEnable;
 
 		private String serialnumber;
 
@@ -717,24 +712,30 @@ public class ConfigFile {
 		public void setPrintLog(boolean printLog) {
 			this.printLog = printLog;
 		}
+		public boolean getPcpHidden() {
+			return pcpHidden;
+		}
+		public void setPcpHidden(boolean pcpHidden) {
+			this.pcpHidden = pcpHidden;
+		}
+		public boolean getSimulateAcqEnable() {
+			return simulateAcqEnable;
+		}
+		public void setSimulateAcqEnable(boolean simulateAcqEnable) {
+			this.simulateAcqEnable = simulateAcqEnable;
+		}
 	}
 
-	public TcpServer getTcpServer() {
-		return tcpServer;
+	public AgileCalculate getAgileCalculate() {
+		return agileCalculate;
 	}
-	public void setTcpServer(TcpServer tcpServer) {
-		this.tcpServer = tcpServer;
+	public void setAgileCalculate(AgileCalculate agileCalculate) {
+		this.agileCalculate = agileCalculate;
 	}
-	public DriverConfig getDriverConfig() {
-		return driverConfig;
+	public Mqtt getMqtt() {
+		return mqtt;
 	}
-	public void setDriverConfig(DriverConfig driverConfig) {
-		this.driverConfig = driverConfig;
-	}
-	public Email getEmail() {
-		return email;
-	}
-	public void setEmail(Email email) {
-		this.email = email;
+	public void setMqtt(Mqtt mqtt) {
+		this.mqtt = mqtt;
 	}
 }

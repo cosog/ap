@@ -44,8 +44,6 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 xtype: 'button',
                 id: "findSystemdataInfoId",
                 text: cosog.string.search,
-//                hidden: true,
-                pressed: true,
                 iconCls: 'search',
                 handler: function () {
                     reFreshg("SystemdataInfoGridPanelId");

@@ -32,6 +32,7 @@
  var viewInformation = ${configFile}.viewInformation;
  
  var productionUnit = ${configFile}.others.productionUnit;
+ var pcpHidden = ${configFile}.others.pcpHidden;
  var showLogo = ${configFile}.others.showLogo;
  var userAccount="${userLogin.userId}";
  if (user_ == null || "" == (user_)) {
@@ -65,13 +66,13 @@
 </head>
 
 <body>
-<!-- 加载效果 -->
-<div id="loading_div_id">
-	<div class="loading-indicator">
-		<img src="<%=path%>/images/large-loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">正在加载前台UI ...</span>
+	<!-- 加载效果 -->
+	<div id="loading_div_id">
+		<div class="loading-indicator">
+			<img src="<%=path%>/images/large-loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">正在加载前台UI ...</span>
+		</div>
 	</div>
-</div>
-<script type="text/javascript"> 
+	<script type="text/javascript"> 
 	var m_DefaultPosition = '39.9,116.4';   //初始化地图，中心点
     var m_DefaultZoomLevel = 10;        //初始化地图，缩放级别
     var mapHelper=null;                      //地图工具库返回来的操作对象
@@ -92,30 +93,29 @@
     var treeInfo;
     var nav_html="";
     var user_Type="";
-    var electricalHidden=false;
-    var dynamicCurveHidden=false;
-    var pcpHidden=false;
- 	//启动Extjs
-	Ext.onReady(function(){
-		  Ext.BLANK_IMAGE_URL="<%=path%>/scripts/extjs/resources/themesimages/default/s.gif";
-		  Ext.BLANK_IMAGE_URL = "<%=path%>/scripts/extjs/resources/themes/images/default/tree/s.gif";
-		  var user = "${userLogin.userNo}";
-		  var user_Name = "${userLogin.userName}";
-		  user_Type = "${userLogin.userType}";
-		  userOrg_Id = "${userLogin.userOrgid}";
-		  userOrg_Ids ="${userLogin.userorgids}";
-		  userOrg_Names ="${userLogin.userOrgNames}";
-		  userParentOrg_Ids ="${userLogin.userParentOrgids}";
-		  userSyncOrAsync = "${userLogin.syncOrAsync}";
-		  pic_url = "${userLogin.picUrl}";//动态监测功图查询时，需要的图形URL地址
-		  //默认前台分页数据量
-		  defaultPageSize = "${userLogin.pageSize}";
-		  defaultComboxSize="${userLogin.defaultComboxSize}";
-		  defaultGraghSize="${userLogin.defaultGraghSize}";
-		  _clientWidth = document.body.clientWidth;
-		  // MsgTip.msg('消息', '设置10秒后自动隐藏',true,2000);
-	});
+ 	  //启动Extjs
+	  Ext.onReady(function(){
+			    Ext.BLANK_IMAGE_URL="<%=path%>/scripts/extjs/resources/themesimages/default/s.gif";
+		        Ext.BLANK_IMAGE_URL = "<%=path%>/scripts/extjs/resources/themes/images/default/tree/s.gif";
+		        //alert(isConnectionInternet);
+					var user = "${userLogin.userNo}";
+					var user_Name = "${userLogin.userName}";
+					user_Type = "${userLogin.userType}";
+					userOrg_Id = "${userLogin.userOrgid}";
+					userOrg_Ids ="${userLogin.userorgids}";
+					userOrg_Names ="${userLogin.userOrgNames}";
+					userParentOrg_Ids ="${userLogin.userParentOrgids}";
+					userSyncOrAsync = "${userLogin.syncOrAsync}";
+					pic_url = "${userLogin.picUrl}";//动态监测功图查询时，需要的图形URL地址
+					//默认前台分页数据量
+					defaultPageSize = "${userLogin.pageSize}";
+					defaultComboxSize="${userLogin.defaultComboxSize}";
+					defaultGraghSize="${userLogin.defaultGraghSize}";
+					_clientWidth = document.body.clientWidth;
+					
+					// MsgTip.msg('消息', '设置10秒后自动隐藏',true,2000);
+				});
  	  
-</script>
+	</script>
 </body>
 </html>

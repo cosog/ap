@@ -299,7 +299,13 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 			e.printStackTrace();
 		}
 		strBuf.append("]");
-		String xWhere = sqlColumn.toString()  + sqlTable + " " + sqlWhere;//sql语句拼到where 1=1
+		String xWhere = sqlColumn.toString();
+		if(StringManagerUtils.isNotNull(sqlTable)){
+			xWhere+=" "+sqlTable;
+		}
+		if(StringManagerUtils.isNotNull(sqlWhere)){
+			xWhere+=" "+sqlWhere;
+		}
 		ddic.setTableHeader(strBuf.toString());
 		ddic.setHeaders(headers);
 		ddic.setFields(fields);

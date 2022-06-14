@@ -6,7 +6,7 @@ public class jiec {
 	 public static void main(String[] args) {
 	  jiec jc = new jiec();
 
-	   System.out.println("!=" + jc.jc(10));
+	   StringManagerUtils.printLog("!=" + jc.jc(10));
 	
 	 }
 

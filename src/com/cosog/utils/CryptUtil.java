@@ -128,10 +128,10 @@ public class CryptUtil {
     public static void main(String[] args) {
 		//String drive = "C:\\";
 		//CryptUtil checkobj = new CryptUtil();
-        //System.out.println("driver number:" + checkobj.GetMachineID(drive));
+        //StringManagerUtils.printLog("driver number:" + checkobj.GetMachineID(drive));
         //String encodestr = checkobj.encode(checkobj.GetMachineID(drive));
-		//System.out.println("License number:" + encodestr);
-		//System.out.println("machine id:" + checkobj.decode(encodestr));
+		//StringManagerUtils.printLog("License number:" + encodestr);
+		//StringManagerUtils.printLog("machine id:" + checkobj.decode(encodestr));
     }
 }
 

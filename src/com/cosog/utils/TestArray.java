@@ -31,19 +31,19 @@ public class TestArray {
 		boolean  flag1= "1".equals(a)&&(cljg==1||cljg==2);
 		boolean  flag2= "1".equals(a)&&(cljg==2||cljg==1);
 		boolean  flag3= "1".equals(a)&&cljg==1|| "1".equals(a)&&cljg==2;
-		System.out.println("flag===="+flag+"         flag1 == "+flag1+" flag2 === "+flag2+" flag3=="+flag3);
+		StringManagerUtils.printLog("flag===="+flag+"         flag1 == "+flag1+" flag2 === "+flag2+" flag3=="+flag3);
 //		Map<String, List<Params>> map	=getMapData();
 //	Set<String> set=	map.keySet();
 //	for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
 //		String string =iterator.next();
 //		List<Params> resusltList=map.get(string);
-//		System.out.println("字符："+string+"对应的有以下"+resusltList.size()+"个\n【");
+//		StringManagerUtils.printLog("字符："+string+"对应的有以下"+resusltList.size()+"个\n【");
 //		for (Params params : resusltList) {
-//			System.out.println("当前字符："+params.getFields()+"");
+//			StringManagerUtils.printLog("当前字符："+params.getFields()+"");
 //		}
-//		System.out.println("】\n");
+//		StringManagerUtils.printLog("】\n");
 //	}
-		//System.out.println(map);// 打印结果
+		//StringManagerUtils.printLog(map);// 打印结果
 	}
 
 	public static Map<String, List<Params>> getMapData() {

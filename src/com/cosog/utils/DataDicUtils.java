@@ -31,7 +31,7 @@ public class DataDicUtils {
 
 		while (st.hasMoreElements()) {
 			String o = (String) st.nextElement();
-//			System.out.println(o + "$$" + st.countTokens());
+//			StringManagerUtils.printLog(o + "$$" + st.countTokens());
 
 		}
 
@@ -173,7 +173,7 @@ public class DataDicUtils {
 					index = i;
 				}
 			}
-//			System.out.println("数组中最大值是" + len);
+//			StringManagerUtils.printLog("数组中最大值是" + len);
 		}
 		return len;
 	}

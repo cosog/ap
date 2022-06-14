@@ -18,7 +18,7 @@ Ext.define('AP.store.frame.IframeStore', {
         	var selectReeTextRsult = [];
         	for(var i=0;i<store.data.items.length;i++){
         		selectresult.push(store.data.items[i].data.orgId);
-        		selectReeTextRsult.push("'"+store.data.items[i].data.text+"'");
+        		selectReeTextRsult.push(""+store.data.items[i].data.text+"");
         	}
         	var org_Id = selectresult.join(",");
         	var org_Name=selectReeTextRsult.join(",");

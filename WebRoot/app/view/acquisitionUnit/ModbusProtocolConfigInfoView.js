@@ -214,7 +214,7 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	        
 	        protocolConfigAddrMappingItemsHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolConfigAddrMappingItemsHandsontableHelper.createTable = function (data) {
@@ -382,7 +382,7 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	        
 	        protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolConfigAddrMaooingPropertiesHandsontableHelper.createTable = function (data) {
@@ -595,7 +595,7 @@ var ProtocolAddrMappingItemsMeaningConfigHandsontableHelper = {
 	        
 	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        protocolAddrMappingItemsMeaningConfigHandsontableHelper.createTable = function (data) {

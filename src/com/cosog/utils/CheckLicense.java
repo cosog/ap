@@ -23,7 +23,6 @@ public class CheckLicense
         CheckLicense check = new CheckLicense();
         check.initialize();
         String licensenumber = check.encode(serialnumber);
-//        System.out.println((new StringBuilder("license number:")).append(licensenumber).toString());
     }
 
     public String encode(String value)

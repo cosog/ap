@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ public class JDBCUtil {
 	private static Connection conn=null;  
     private static PreparedStatement pstmt=null;  
     private static ResultSet rs=null;  
+    private static Statement stmt=null;
     private static  String driverClassName="";  
     private static  String url="";  
     private static  String userName="";  
@@ -59,6 +61,16 @@ public class JDBCUtil {
         return pstmt;  
     }
     
+    public static Statement getStatement() throws SQLException{  
+        try{  
+        	stmt = conn.createStatement();
+        }catch(RuntimeException re){  
+            logger.error("获取数据库处理命令异常："+re.getMessage(),re);  
+            throw re;  
+        }  
+        return stmt;  
+    }
+    
     public static void setParams(List<Object>params) throws SQLException{  
         try{  
             //if(params!=null&&params.size()>0){ 数据库最底层，不进行任何逻辑判断，也只捕获RuntimeExcepiton  并重新抛出  
@@ -84,7 +96,8 @@ public class JDBCUtil {
     
     public static void closeAll() throws SQLException{  
         try{  
-            if(rs!=null)rs.close();  
+            if(rs!=null)rs.close();
+            if(stmt!=null)stmt.close();
             if(pstmt!=null)pstmt.close();  
             if(conn!=null)conn.close();  
         }catch(RuntimeException re){  
@@ -384,6 +397,21 @@ public class JDBCUtil {
             iNum=pstmt.executeUpdate();//更新成功，返回更新的记录数，没有更新返回0  
         }catch(RuntimeException re){  
             logger.error("更新数据库记录异常:"+re.getMessage());  
+            throw re;  
+        }finally{  
+            closeAll();  
+        }  
+        return iNum;  
+    }
+    
+    public synchronized static int executeCommand(String sql) throws SQLException{  
+        int iNum=0;  
+        try{  
+        	getConn();  
+        	getStatement();  
+            iNum=stmt.executeUpdate(sql);//更新成功，返回更新的记录数，没有更新返回0  
+        }catch(RuntimeException re){  
+            logger.error("数据库命令执行异常:"+re.getMessage());  
             throw re;  
         }finally{  
             closeAll();  

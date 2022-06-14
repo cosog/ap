@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 
+import com.cosog.task.EquipmentDriverServerTask.DriverProbeResponse;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.CryptUtil;
@@ -14,6 +15,8 @@ import com.cosog.utils.LicenseMap;
 import com.cosog.utils.MACAddress;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.LicenseMap.License;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**<p>描述：AppInitServlet 应用程序初始化.</p>
  * 
@@ -58,20 +61,36 @@ public class AppInitServlet extends HttpServlet {
 		Map<String, Object> license = DataModelMap.getMapObject();
 
 		if (license != null) {
-			MACAddress address = new MACAddress();
-//			String macAddress = address.getMACAddress();
-			String macAddress=StringManagerUtils.getMacAddress();
-			String serialnumber = Config.getInstance().configFile.getOthers().getSerialnumber();
-			String decodestr = (new CryptUtil()).decode(serialnumber);
-			License licenses=LicenseMap.getMapObject().get(LicenseMap.SN);
-			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||licenses.getMac().replaceAll("-", ":").equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
-				license.put("license", "");
-				license.put("license", "God bless you!");
-				log.warn("恭喜软件已经授权！");
-			} else {
-				license.put("license", "No money no girl!");
-				log.warn("抱歉，没有授权哦！");
-			}
+			license.put("license", "");
+			license.put("license", "God bless you!");
+//			MACAddress address = new MACAddress();
+//			String macAddress=StringManagerUtils.getMacAddress();
+//			String serialnumber = Config.getInstance().configFile.getOthers().getSerialnumber();
+//			String decodestr = (new CryptUtil()).decode(serialnumber);
+//			License licenses=LicenseMap.getMapObject().get(LicenseMap.SN);
+//			if (decodestr.equalsIgnoreCase(macAddress) || "God bless you!".equalsIgnoreCase(serialnumber) ||licenses.getMac().replaceAll("-", ":").equalsIgnoreCase(macAddress.replaceAll("-", ":"))) {
+//				license.put("license", "");
+//				license.put("license", "God bless you!");
+//				log.warn("恭喜软件已经授权！");
+//			} else {
+//				license.put("license", "No money no girl!");
+//				log.warn("抱歉，没有授权哦！");
+//			}
+			
+//			Gson gson = new Gson();
+//			java.lang.reflect.Type type=null;
+//			String licenseUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getInit();
+//			String responseData=StringManagerUtils.sendPostMethod(licenseUrl, "","utf-8");
+//			type = new TypeToken<DriverProbeResponse>() {}.getType();
+//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+//			if(driverProbeResponse!=null){
+//				license.put("license", "");
+//				license.put("license", "God bless you!");
+//				log.warn("恭喜软件已经授权！");
+//			}else{
+//				license.put("license", "No money no girl!");
+//				log.warn("抱歉，没有授权哦！");
+//			}
 		}
 	}
 }

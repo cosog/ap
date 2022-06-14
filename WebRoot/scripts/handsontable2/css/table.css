@@ -1,0 +1,23 @@
+@charset "UTF-8";
+.handsontable .htDimmed {
+    color: black;
+}
+
+.handsontable tr:nth-child(1) {
+    /* 第一行的高度*/
+}
+
+.handsontable tr:nth-child(1) td {
+    /*height: 22px !important;*/
+}
+
+.handsontable tr td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.handsontable tr td:nth-child(1) {
+    /* 第一列的高度*/
+    /* width: 50px;*/
+}
+/*# sourceMappingURL=table.css.map */

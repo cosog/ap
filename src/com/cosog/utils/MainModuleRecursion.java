@@ -215,6 +215,6 @@ public class MainModuleRecursion {
 	public static void main(String[] args) {
 		//MainModuleRecursion r = new MainModuleRecursion();
 		// r.recursionFn(r.moduleList, new module(1, 0));
-		// System.out.println(r.modifyStr(r.returnStr.toString()));
+		// StringManagerUtils.printLog(r.modifyStr(r.returnStr.toString()));
 	}
 }

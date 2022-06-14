@@ -1,6 +1,6 @@
 Ext.define("AP.view.well.RPCDeviceInfoWindow", {
     extend: 'Ext.window.Window',
-    alias: 'widget.RPCDeviceInfoWindow',
+    alias: 'widget.rpcDeviceInfoWindow',
     id: 'RPCDeviceInfoWindow_Id',
     layout: 'fit',
     iframe: true,
@@ -42,7 +42,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 			listeners : {
 				beforeload : function(store, options) {
 					var new_params = {
-							deviceType: 200
+							deviceType: 101
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -76,6 +76,65 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 					}
 				});
         
+        /**显示实例*/
+        var displayInstanceStore = new Ext.data.SimpleStore({
+        	fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+			proxy : {
+				url : context+ '/wellInformationManagerController/getDisplayInstanceCombList',
+				type : "ajax",
+				actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                	type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+			},
+			autoLoad : true,
+			listeners : {
+				beforeload : function(store, options) {
+					var new_params = {
+							deviceType: 101
+					};
+					Ext.apply(store.proxy.extraParams,new_params);
+				}
+			}
+		});
+        
+        var rpcDeviceDisplayInstanceComb = Ext.create(
+        		'Ext.form.field.ComboBox', {
+					fieldLabel :  '显示实例',
+					emptyText : '请选择显示实例',
+					blankText : '请选择显示实例',
+					id : 'rpcDeviceDisplayInstanceComb_Id',
+					anchor : '95%',
+					store: displayInstanceStore,
+					queryMode : 'remote',
+					typeAhead : true,
+					autoSelect : false,
+					allowBlank : true,
+					triggerAction : 'all',
+					editable : false,
+					displayField : "boxval",
+					valueField : "boxkey",
+					listeners : {
+						select: function (v,o) {
+							if(o.data.boxkey==''){
+								v.setValue('');
+								v.setRawValue(' ');
+							}
+							Ext.getCmp("rpcDeviceDisplayInstanceCode_Id").setValue(this.value);
+	                    }
+					}
+				});
+        
         /**报警实例*/
         var alarmInstanceStore = new Ext.data.SimpleStore({
         	fields: [{
@@ -101,7 +160,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
 			listeners : {
 				beforeload : function(store, options) {
 					var new_params = {
-							deviceType: 200
+							deviceType: 101
 					};
 					Ext.apply(store.proxy.extraParams,new_params);
 				}
@@ -200,12 +259,49 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                         }
                     }
                 }
+            }, {
+            	xtype : "combobox",
+				fieldLabel : '应用场景<font color=red>*</font>',
+				id : 'rpcDeviceApplicationScenariosComb_Id',
+				anchor : '95%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:'',
+			    allowBlank: false,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [[0, '煤层气井'],[1, '油井']]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : '请选择应用场景',
+				blankText : '请选择应用场景',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("rpcDeviceApplicationScenarios_Id").setValue(this.value);
+					}
+				}
+            },{
+                xtype: "hidden",
+                fieldLabel: '应用场景值',
+                id: 'rpcDeviceApplicationScenarios_Id',
+                value: '',
+                name: "rpcDeviceInformation.applicationScenarios"
             },rpcDeviceAcqInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '采控实例编码',
                 id: 'rpcDeviceAcqInstanceCode_Id',
                 value: '',
                 name: "rpcDeviceInformation.instanceCode"
+            },rpcDeviceDisplayInstanceComb,{
+            	xtype: "hidden",
+                fieldLabel: '显示实例编码',
+                id: 'rpcDeviceDisplayInstanceCode_Id',
+                value: '',
+                name: "rpcDeviceInformation.displayInstanceCode"
             },rpcDeviceAlarmInstanceComb,{
             	xtype: "hidden",
                 fieldLabel: '报警实例编码',
@@ -342,12 +438,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                             waitTitle: 'Please Wait...',
                             success: function (response, action) {
                                 Ext.getCmp('RPCDeviceInfoWindow_Id').close();
-                        		var activeId = Ext.getCmp("DeviceManagerTabPanel").getActiveTab().id;
-                        		if(activeId=="RPCDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadRPCDeviceInfoTable();
-                        		}else if(activeId=="PCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadPCPDeviceInfoTable();
-                        		}
+                                CreateAndLoadRPCDeviceInfoTable();
                                 
                                 if (action.result.msg == true && action.result.resultCode==1) {
                                     Ext.Msg.alert(cosog.string.ts, "<font color=blue>" + cosog.string.success + "</font>");
@@ -384,11 +475,17 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                             waitTitle: 'Please Wait...',
                             success: function (response, action) {
                                 Ext.getCmp('RPCDeviceInfoWindow_Id').close();
-                                var activeId = Ext.getCmp("DeviceManagerTabPanel").getActiveTab().id;
+                        		var activeId = Ext.getCmp("RPCDeviceManagerTabPanel").getActiveTab().id;
                         		if(activeId=="RPCDeviceInfoTabPanel_Id"){
                         			CreateAndLoadRPCDeviceInfoTable();
-                        		}else if(activeId=="PCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadPCPDeviceInfoTable();
+                        		}else if(activeId=="ScrewRPCDeviceInfoTabPanel_Id"){
+                        			CreateAndLoadScrewRPCDeviceInfoTable();
+                        		}else if(activeId=="LinearMotorRPCDeviceInfoTabPanel_Id"){
+                        			CreateAndLoadLinearMotorRPCDeviceInfoTable();
+                        		}else if(activeId=="ElectricSubmersibleRPCDeviceInfoTabPanel_Id"){
+                        			CreateAndLoadElectricSubmersibleRPCDeviceInfoTable();
+                        		}else if(activeId=="JetRPCDeviceInfoTabPanel_Id"){
+                        			CreateAndLoadJetRPCDeviceInfoTable();
                         		}
                                 
                                 if (action.result.msg == true) {

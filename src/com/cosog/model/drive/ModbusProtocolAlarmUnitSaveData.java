@@ -22,6 +22,8 @@ public class ModbusProtocolAlarmUnitSaveData {
 	public static class AlarmItems
 	{
 	    private String itemName;
+	    
+	    private String itemCode;
 
 	    private int itemAddr;
 
@@ -124,6 +126,12 @@ public class ModbusProtocolAlarmUnitSaveData {
 		}
 		public void setIsSendMail(String isSendMail) {
 			this.isSendMail = isSendMail;
+		}
+		public String getItemCode() {
+			return itemCode;
+		}
+		public void setItemCode(String itemCode) {
+			this.itemCode = itemCode;
 		}
 	}
 

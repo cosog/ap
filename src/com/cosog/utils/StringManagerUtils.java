@@ -85,6 +85,8 @@ import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 
+import com.cosog.model.calculate.AcqInstanceOwnItem;
+import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -191,8 +193,10 @@ public class StringManagerUtils {
                 }
             } else // 非汉字字符,如图形符号或ASCII码  
             {
-                chinese = conversionStr(chinese, "ISO8859-1", "GB2312");
-                chinese = chinese.substring(0, 1);
+//              chinese = conversionStr(chinese, "ISO8859-1", "GB2312");
+//              chinese = chinese.substring(0, 1);
+            	//过滤掉汉字图形符号或ASCII码  
+            	chinese="";
             }
         }else{
         	int asciiValue=Integer.valueOf(chinese.charAt(0));
@@ -263,7 +267,7 @@ public class StringManagerUtils {
     
     public static void printLog(String x){
     	if(Config.getInstance().configFile.getOthers().getPrintLog()){
-    		System.out.println(x);
+    		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+x);
     	}
     }
     
@@ -1206,7 +1210,6 @@ public class StringManagerUtils {
             }
         }
         return flag;
-
     }
 
     public static boolean clobDataFiter(String value) {
@@ -1224,6 +1227,125 @@ public class StringManagerUtils {
         }
         return flag;
 
+    }
+    
+    public static boolean databaseColumnFiter(String value) {
+        boolean flag = false;
+        String arrays[] = {
+        		"ID",
+        		"WELLID",
+        		"ACQTIME",
+        		"COMMSTATUS",
+        		"COMMTIME",
+        		"COMMTIMEEFFICIENCY",
+        		"COMMRANGE",
+        		"RUNSTATUS",
+        		"RUNTIMEEFFICIENCY",
+        		"RUNTIME",
+        		"RUNRANGE",
+        		"PRODUCTIONDATA",
+        		"PUMPINGMODELID",
+        		"BALANCEINFO",
+        		"FESDIAGRAMACQTIME",
+        		"STROKE",
+        		"SPM",
+        		"FMAX",
+        		"FMIN",
+        		"POSITION_CURVE",
+        		"ANGLE_CURVE",
+        		"LOAD_CURVE",
+        		"POWER_CURVE",
+        		"CURRENT_CURVE",
+        		"RESULTCODE",
+        		"FULLNESSCOEFFICIENT",
+        		"UPPERLOADLINE",
+        		"UPPERLOADLINEOFEXACT",
+        		"LOWERLOADLINE",
+        		"PUMPFSDIAGRAM",
+        		"SUBMERGENCE",
+        		"THEORETICALPRODUCTION",
+        		"LIQUIDVOLUMETRICPRODUCTION",
+        		"OILVOLUMETRICPRODUCTION",
+        		"WATERVOLUMETRICPRODUCTION",
+        		"AVAILABLEPLUNGERSTROKEPROD_V",
+        		"PUMPCLEARANCELEAKPROD_V",
+        		"TVLEAKVOLUMETRICPRODUCTION",
+        		"SVLEAKVOLUMETRICPRODUCTION",
+        		"GASINFLUENCEPROD_V",
+        		"LIQUIDWEIGHTPRODUCTION",
+        		"OILWEIGHTPRODUCTION",
+        		"WATERWEIGHTPRODUCTION",
+        		"AVAILABLEPLUNGERSTROKEPROD_W",
+        		"PUMPCLEARANCELEAKPROD_W",
+        		"TVLEAKWEIGHTPRODUCTION",
+        		"SVLEAKWEIGHTPRODUCTION",
+        		"GASINFLUENCEPROD_W",
+        		"AVERAGEWATT",
+        		"POLISHRODPOWER",
+        		"WATERPOWER",
+        		"SURFACESYSTEMEFFICIENCY",
+        		"WELLDOWNSYSTEMEFFICIENCY",
+        		"SYSTEMEFFICIENCY",
+        		"ENERGYPER100MLIFT",
+        		"AREA",
+        		"RODFLEXLENGTH",
+        		"TUBINGFLEXLENGTH",
+        		"INERTIALENGTH",
+        		"PUMPEFF1",
+        		"PUMPEFF2",
+        		"PUMPEFF3",
+        		"PUMPEFF4",
+        		"PUMPEFF",
+        		"PUMPINTAKEP",
+        		"PUMPINTAKET",
+        		"PUMPINTAKEGOL",
+        		"PUMPINTAKEVISL",
+        		"PUMPINTAKEBO",
+        		"PUMPOUTLETP",
+        		"PUMPOUTLETT",
+        		"PUMPOUTLETGOL",
+        		"PUMPOUTLETVISL",
+        		"PUMPOUTLETBO",
+        		"RODSTRING",
+        		"PLUNGERSTROKE",
+        		"AVAILABLEPLUNGERSTROKE",
+        		"LEVELCORRECTVALUE",
+        		"INVERPRODUCINGFLUIDLEVEL",
+        		"NOLIQUIDFULLNESSCOEFFICIENT",
+        		"NOLIQUIDAVAILABLEPLUNGERSTROKE",
+        		"SMAXINDEX",
+        		"SMININDEX",
+        		"UPSTROKEIMAX",
+        		"DOWNSTROKEIMAX",
+        		"UPSTROKEWATTMAX",
+        		"DOWNSTROKEWATTMAX",
+        		"IDEGREEBALANCE",
+        		"WATTDEGREEBALANCE",
+        		"DELTARADIUS",
+        		"CRANKANGLE",
+        		"POLISHRODV",
+        		"POLISHRODA",
+        		"PR",
+        		"TF",
+        		"LOADTORQUE",
+        		"CRANKTORQUE",
+        		"CURRENTBALANCETORQUE",
+        		"CURRENTNETTORQUE",
+        		"EXPECTEDBALANCETORQUE",
+        		"EXPECTEDNETTORQUE",
+        		"WELLBORESLICE",
+        		"RESULTSTATUS",
+        		"SAVETIME",
+        		"RPM",
+        		"TORQUE",
+        		"REMARK"
+        };
+        for (String str: arrays) {
+            if (str.equalsIgnoreCase(value)) {
+                flag = true;
+            }
+        }
+        return flag;
     }
 
     public static boolean stringIsNull(String s) {
@@ -1459,7 +1581,10 @@ public class StringManagerUtils {
 
     //Clob转字符串
     public static String CLOBtoString2(Clob clob) throws SQLException, IOException {
-        BufferedReader reader = null;
+    	if (clob == null) {
+            return "";
+        }
+    	BufferedReader reader = null;
         InputStreamReader is = new InputStreamReader(clob.getAsciiStream());
         reader = new BufferedReader(is);
         String result = "";
@@ -3336,4 +3461,71 @@ public class StringManagerUtils {
         }
         return rt.toString();
     }
+    
+    public static boolean existAcqItem(List<AcqInstanceOwnItem.AcqItem> acqInstanceOwnItemList, String key, boolean caseSensitive ){
+		boolean flag = false;
+		for (int i = 0; i < acqInstanceOwnItemList.size(); i++) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = key.equals(acqInstanceOwnItemList.get(i).getItemName());
+            } else {
+                match = key.equalsIgnoreCase(acqInstanceOwnItemList.get(i).getItemName());
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+		return flag;
+	}
+	
+	public static boolean existDisplayItem(List<DisplayInstanceOwnItem.DisplayItem> displayItemList, String key, boolean caseSensitive ){
+		boolean flag = false;
+		for (int i = 0; i < displayItemList.size(); i++) {
+            boolean match = false;
+            if (caseSensitive) {
+                match = key.equals(displayItemList.get(i).getItemName());
+            } else {
+                match = key.equalsIgnoreCase(displayItemList.get(i).getItemName());
+            }
+            if (match) {
+                flag = true;
+                break;
+            }
+        }
+		return flag;
+	}
+	
+	public static boolean existDisplayItemCode(List<DisplayInstanceOwnItem.DisplayItem> displayItemList, String key, boolean caseSensitive,int type ){
+		boolean flag = false;
+		for (int i = 0; i < displayItemList.size(); i++) {
+            if((type==0&&displayItemList.get(i).getType()!=2)||(type==1&&displayItemList.get(i).getType()==2)){
+            	boolean match = false;
+                if (caseSensitive) {
+                    match = key.equals(displayItemList.get(i).getItemCode());
+                } else {
+                    match = key.equalsIgnoreCase(displayItemList.get(i).getItemCode());
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+		return flag;
+	}
+	
+	public static boolean stringToArrExistNum(String str,int num){
+		boolean flag = false;
+		if(StringManagerUtils.isNotNull(str)){
+			String[] strArr=str.split(",");
+			for(String s:strArr){
+				if(StringManagerUtils.stringToInteger(s)==num){
+					flag = true;
+	                break;
+				}
+			}
+		}
+		return flag;
+	}
 }

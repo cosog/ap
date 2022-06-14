@@ -37,9 +37,7 @@ public class DatabaseMappingProHandsontableChangedData {
 
 	    private String itemColumn;
 	    
-	    private String saveTable;
-	    
-	    private String saveColumn;
+	    private String calColumn;
 
 		public String getId() {
 			return id;
@@ -65,20 +63,12 @@ public class DatabaseMappingProHandsontableChangedData {
 			this.itemColumn = itemColumn;
 		}
 
-		public String getSaveTable() {
-			return saveTable;
+		public String getCalColumn() {
+			return calColumn;
 		}
 
-		public void setSaveTable(String saveTable) {
-			this.saveTable = saveTable;
-		}
-
-		public String getSaveColumn() {
-			return saveColumn;
-		}
-
-		public void setSaveColumn(String saveColumn) {
-			this.saveColumn = saveColumn;
+		public void setCalColumn(String calColumn) {
+			this.calColumn = calColumn;
 		}
 	}
 }

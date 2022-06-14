@@ -62,11 +62,14 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                         		if(record.data.classes==0){
                             		if(isNotVal(record.data.children) && record.data.children.length>0){
                             			CreateProtocolAlarmInstanceNumItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
+                            			CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes,record.data.children[0].deviceType);
                             		}else{
                             			CreateProtocolAlarmInstanceNumItemsConfigInfoTable(-1,'',1);
+                            			CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(-1,'',1,record.data.deviceType);
                             		}
                             	}else{
                             		CreateProtocolAlarmInstanceNumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
+                            		CreateProtocolAlarmInstanceCalNumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes,record.data.deviceType);
                             	}
                         	}else if(activeId=="ModbusProtocolAlarmInstanceSwitchItemsTableInfoPanel_Id"){
                         		if(record.data.classes==0){
@@ -87,6 +90,36 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmInstanceTreeInfoStore', 
                             		}
                             	}else{
                             		CreateProtocolAlarmInstanceEnumItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
+                            	}
+                        	}else if(activeId=="ModbusProtocolAlarmInstanceFESDiagramResultItemsTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
+                            		}else{
+                            			CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(-1,'',1);
+                            		}
+                            	}else{
+                            		CreateProtocolAlarmInstanceFESDiagramResultItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
+                            	}
+                        	}else if(activeId=="ModbusProtocolAlarmInstanceRunStatusItemsTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
+                            		}else{
+                            			CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(-1,'',1);
+                            		}
+                            	}else{
+                            		CreateProtocolAlarmInstanceRunStatusItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
+                            	}
+                        	}else if(activeId=="ModbusProtocolAlarmInstanceCommStatusItemsTableInfoPanel_Id"){
+                        		if(record.data.classes==0){
+                            		if(isNotVal(record.data.children) && record.data.children.length>0){
+                            			CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(record.data.children[0].id,record.data.children[0].text,record.data.children[0].classes);
+                            		}else{
+                            			CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(-1,'',1);
+                            		}
+                            	}else{
+                            		CreateProtocolAlarmInstanceCommStatusItemsConfigInfoTable(record.data.id,record.data.text,record.data.classes);
                             	}
                         	}
                         	CreateProtocolAlarmInstancePropertiesInfoTable(record.data);

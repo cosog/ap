@@ -10,23 +10,23 @@ public class enumDemo {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		/*
-		 * outter: for (int i = 0; i < 3; i++) { System.out.println("iiii===>" +
+		 * outter: for (int i = 0; i < 3; i++) { StringManagerUtils.printLog("iiii===>" +
 		 * i); inner: for (int j = 0; j < 5; j++) { if (j == 1) continue inner;
-		 * System.out.println("j===>" + j); } }
+		 * StringManagerUtils.printLog("j===>" + j); } }
 		 */
 		Scanner s = new Scanner(System.in);
-		System.out.println("请输入当前的星期 英文?\r \n");
+		StringManagerUtils.printLog("请输入当前的星期 英文?\r \n");
 		String day = s.next();// 输入的字符串
 		Day index=Day.toDay(day.toUpperCase());
 		switch (index) {
 		case SUNDAY:
-			System.out.println("星期天");
+			StringManagerUtils.printLog("星期天");
 			break;
 		case MONDAY:
-			System.out.println("星期一");
+			StringManagerUtils.printLog("星期一");
 			break;
 		case TUESDAY:
-			System.out.println("星期二");
+			StringManagerUtils.printLog("星期二");
 			break;
 
 		}

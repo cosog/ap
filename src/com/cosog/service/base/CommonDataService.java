@@ -1852,82 +1852,6 @@ public class CommonDataService extends BaseService {
 		}
 	}
 
-	public String loadReportRiverWellInfoByJh(String orgId, String jh, String type) throws Exception {
-		// String orgIds = this.getUserOrgIds(orgId);
-		StringBuffer result_json = new StringBuffer();
-
-		String sql = "";
-
-		sql = " select distinct w.jh as jh, w.jh as dm from tbl_wellinformation w,tbl_rpc_total_day t ,tbl_org o where 1=1 and w.dwbh=o.org_code and o.org_id in(" + orgId + ")";
-		if (StringManagerUtils.isNotNull(jh)) {
-			sql += " and w.jh like '%" + jh + "%'";
-		}
-		if (type.equalsIgnoreCase("jh")) {
-			sql += " order by w.jh";
-		}
-		try {
-			List<?> list = this.findCallSql(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-
-	public String queryReportGaoqinByJh(String orgId, String jh, String type) throws Exception {
-		// String orgIds = this.getUserOrgIds(orgId);
-		StringBuffer result_json = new StringBuffer();
-
-		String sql = "";
-
-		sql = " select distinct w.jh as jh, w.jh as dm from tbl_wellinformation w,tbl_rpc_total_day t ,tbl_org o where 1=1 and w.dwbh=o.org_code and o.org_id in(" + orgId + ")";
-		if (StringManagerUtils.isNotNull(jh)) {
-			sql += " and w.jh like '%" + jh + "%'";
-		}
-		if (type.equalsIgnoreCase("jh")) {
-			sql += " order by w.jh";
-		}
-		try {
-			List<?> list = this.findCallSql(sql);
-			result_json.append("[");
-			String get_key = "";
-			String get_val = "";
-			if (null != list && list.size() > 0) {
-				for (Object o : list) {
-					Object[] obj = (Object[]) o;
-					get_key = obj[0] + "";
-					get_val = (String) obj[1];
-					result_json.append("{boxkey:\"" + get_key + "\",");
-					result_json.append("boxval:\"" + get_val + "\"},");
-				}
-				if (result_json.toString().endsWith(",")) {
-					result_json.deleteCharAt(result_json.length() - 1);
-				}
-			}
-			result_json.append("]");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result_json.toString();
-	}
-
 	public String findAlarmSetDataById(Page pager) {
 		String sql = "";
 		StringBuffer sqlwhere = new StringBuffer();
@@ -1942,101 +1866,6 @@ public class CommonDataService extends BaseService {
 		sql = sqlwhere.toString();
 		String columns = this.showTableHeadersColumns("alarmSet");
 		getResult = this.findPageBySqlEntity(sql, columns, pager);
-		
-		return getResult;
-
-	}
-
-	/**
-	 * <p>
-	 * 描述：前台报警信息查询模块
-	 * </p>
-	 * 
-	 * @author lvlei 2014-05-26
-	 * @param pager
-	 * @param JH
-	 *            井名
-	 * @param BJJB
-	 *            报警级别
-	 * @param BJLX
-	 *            报警类型
-	 * @param orgId
-	 *            组织ID
-	 * @return
-	 */
-	public String alarmSelectinfo(Page pager, String JH, String BJJB, String BJLX, String orgId) {
-		String Sql = "";
-		Sql = "Select jh,bjsj,bjsm,bjz,bjlx,bjjb from (select jh,to_char(bjsj,'YYYY-MM-DD hh24:mi:ss') as bjsj ,bjsm,bjz,t2.itemname as bjlx,t3.itemname as bjjb " + "from T_040_ALARMINFORMATION t,tbl_wellinformation t1," + "tbl_code t2 ,tbl_code t3,tbl_org o " + "where  o.ORG_CODE=t1.dwbh  and o.ORG_ID  in (" + orgId + ") and  t1.jlbh=t.jbh and t2.itemcode='BJLX' and t3.itemcode='BJJB' and t.bjjb=t3.itemvalue and t.bjlx=t2.itemvalue ";
-		if (StringManagerUtils.isNotNull(JH)) {
-			Sql += " and t1.jlbh =" + JH + "";
-		}
-		if (StringManagerUtils.isNotNull(BJJB)) {
-			Sql += " and t.BJJB like '%" + BJJB + "%'";
-		}
-		if (StringManagerUtils.isNotNull(BJLX)) {
-			Sql += " and t.BJLX like '%" + BJLX + "%'";
-		}
-		Sql += " order by bjsj desc)";
-		Sql += " order  by bjsj desc";
-		String getResult = "";
-		getResult = this.findPageBySqlEntity(Sql, pager);
-		
-		return getResult;
-
-	}
-
-	/**
-	 * <p>
-	 * 描述：前台RFID按条件查询调用的方法
-	 * </p>
-	 * 
-	 * @author 吕磊 2014-06-11
-	 * @param pager
-	 * @param JC
-	 *            井场
-	 * @param XM
-	 *            姓名
-	 * @param HFBZ
-	 *            合法标志
-	 * @param orgId
-	 *            组织ID
-	 * @return
-	 */
-	public String rfidFrontObtaininfo(Page pager, String jc, String xm, String hfbz, String orgId) {
-		String Sql = "";
-		Sql = "Select jlbh,rfidkh,ygbh,ygxm,xb,dwbh,dwmc,ddjc,rcsj,lcsj,hfbz " + "from (select distinct to_char(r.rcsj,'YYYY-MM-DD hh24:mi:ss') as rcsj,t.jlbh,t.rfidkh,t.ygbh,t.ygxm,t.xb,t.bmbh as dwbh,t.bmmc as dwmc,t1.jc as ddjc," + "to_char(r.lcsj,'YYYY-MM-DD hh24:mi:ss') as lcsj," + "r.hfbz from t_042_rfidinformation t,t_043_rfidrecord r,tbl_org o ,tbl_wellinformation t1 " + "where  o.ORG_CODE=t1.dwbh  and o.ORG_ID  in (" + orgId + ")  and t.rfidkh=r.rfidkh and r.ddjc=t1.jc ";
-		if (StringManagerUtils.isNotNull(jc)) {
-			Sql += " and r.ddjc = '" + jc + "'";
-		}
-		if (StringManagerUtils.isNotNull(hfbz)) {
-			Sql += " and r.hfbz = " + hfbz;
-		}
-		if (StringManagerUtils.isNotNull(xm)) {
-			Sql += " and t.ygxm ='" + xm + "'";
-		}
-		Sql += " order by rcsj desc)";
-		String getResult = "";
-		getResult = this.findPageBySqlEntity(Sql, pager);
-		return getResult;
-	}
-
-	/**
-	 * <p>
-	 * 描述：后台RFID编辑模块初始话调用方法
-	 * </p>
-	 * 
-	 * @author 吕磊 2014-06-09
-	 * @param pager
-	 * @return
-	 * @throws SQLException 
-	 * @throws IOException 
-	 */
-	public String rfidSelectinfo(Page pager) throws IOException, SQLException {
-		String Sql = "select jlbh as id,rfidkh,ygxm,ygbh,xb,bmbh,bmmc from t_042_rfidinformation";
-		String getResult = "";
-		String columns = this.showTableHeadersColumns("rfidInfo");
-		String limit = "";
-		getResult = this.findPageBySqlEntity(Sql, columns, limit, pager);
 		
 		return getResult;
 
@@ -2118,382 +1947,18 @@ public class CommonDataService extends BaseService {
 		return result_json.toString();
 	}
 	
-	public <T> String exportLeakageAnalysisExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicName, Vector<String> v) throws Exception {
-
-		OutputStream os = response.getOutputStream();//
-		response.reset();
-		response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
-		imageUrl = null;
-		response.setHeader("Content-disposition", "attachment; filename=" + fileName + "-" + new Date().toLocaleString() + ".xls");// 设置浏览器的header
-																																	// 信息
-
-		Vector<File> files = new Vector<File>();
-		WritableWorkbook wbook = Workbook.createWorkbook(os); // 创建一个WritableWorkbook对象，
-		String tmptitle = title; //
-		WritableSheet wsheet = wbook.createSheet(tmptitle, 0); // 通过wbook对象创建一个WritableSheet
-																// 对象
-		String sql = "";
-		Map<String, Object> map = DataModelMap.getMapObject();
-		DataDictionary ddic = null;
-		String tabNameString = ddicName.trim();
-		ddic = (DataDictionary) map.get(tabNameString);// 从数据字典缓存中获取字典数据信息
-		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(tabNameString);
-			map.put(tabNameString, ddic);
-		}
-		head = this.fieldToHeaders(field, ddic);
-		String heads[] = StringManagerUtils.splitString(head, ",");
-		String columns[] = StringManagerUtils.splitString(field, ",");
-		StringBuffer sqlwhere = new StringBuffer();
-		/***
-		 * 
-		 * 动态拼接sql 信息
-		 * 
-		 * ***/
-		String tables=ddic.getSql().substring(ddic.getSql().indexOf(" from ")+1);
-		sqlwhere.append("select ");
-		if(field.indexOf("gtcjsj")>0){
-			field=field.replaceAll("gtcjsj","to_char(gtcjsj,'YYYY-MM-DD  hh24:mi:ss') as gtcjsj");
-		}else if(field.indexOf("cjsj")>0){
-			field=field.replaceAll("cjsj","to_char(cjsj,'YYYY-MM-DD  hh24:mi:ss') as cjsj");
-		}
-		sqlwhere.append(field);
-		sqlwhere.append("  "+tables);
-		sqlwhere.append(" and org_id in (" + orgId + ")");
-		List<String> dyns = ddic.getParams();
-		StringBuffer valueWhere = new StringBuffer();
-		if (dyns.size() != 0) {
-			for (int i = 0; i < dyns.size(); i++) {
-				if (!v.get(i).equalsIgnoreCase("null") && !"".equals(v.get(i)) && null != v.get(i) && v.get(i).length() > 0) {
-					if (!v.get(i).equals("new")) {
-						sqlwhere.append("  " + dyns.get(i) + " ");
-						valueWhere.append(v.get(i) + ",");
-					}
-				}
-			}
-		}
-		if (StringManagerUtils.isNotNull(ddic.getGroup())) {
-			sqlwhere.append(" group by " + ddic.getGroup());//加上分组信息
-		}
-		if(StringManagerUtils.isNotNull( ddic.getOrder())){
-			sqlwhere.append("   order by " + ddic.getOrder());
-		}
-		String getResult = "";
-		sql = sqlwhere.toString();
-		String params = valueWhere.toString();
-		Object[] o = params.split(",");
-		List<T> datas = null;
-		List<T> avgs = null;
-		int index = sql.indexOf("@");// 判断sql是否存在“@”符号
-		String oldsqlString = sql;
-		if (index > -1) {
-			sql = getSqlReplace(sql.toString());
-		}
-		
-		String sqlAvg = "select ";
-		for(int i = 0; i < columns.length;i++){
-//			String[] attr = columns[i].split(" as ");
-//			if (null != attr && attr.length > 1) {
-//				col[i] = attr[attr.length-1];
-//			}
-			if( columns[i].equals("id") ){
-				sqlAvg += "(max(" + columns[i] + ")+1) as id,";
-			}else if( columns[i].equals("jssj") ){
-				sqlAvg += "'平均值' as jssj,";
-			}else if( columns[i].contains("pf") || columns[i].contains("jljh")){
-				sqlAvg += "avg(" + columns[i] + "),";
-			}else if( columns[i].contains("js" ) && !columns[i].equals("jssj") ){
-				sqlAvg += "avg(" + columns[i] + "),";
-			}else if( columns[i].contains("lsxs") ){
-				sqlAvg += "decode(avg(" + columns[i-1] + "),0,null,null,null," + "avg(" + columns[i-2] + ")/avg(" + columns[i-1] + ")) as lsxs,";
-			}else{
-				sqlAvg += "null as " + columns[i] +",";
-			}
-		}
-		sqlAvg = sqlAvg.substring(0, sqlAvg.length()-1);
-		sqlAvg += " from (" + sql + ")";
-		if (StringManagerUtils.isNotNull(params)) {
-			datas = this.findCallSql(sql, o);
-			avgs = this.findCallSql(sqlAvg, o);
-		} else {
-			datas = this.findCallSql(sql);
-			avgs = this.findCallSql(sqlAvg, o);
-		}
-		if (null != avgs && avgs.size() > 0) {
-			datas.add(avgs.get(0));
-		}
-
-		WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
-		WritableCellFormat wcfFC = new WritableCellFormat(wfont);
-		wcfFC.setBackground(Colour.WHITE);
-		wsheet.addCell(new Label(heads.length / 2, 0, tmptitle, wcfFC));
-		wfont = new jxl.write.WritableFont(WritableFont.ARIAL, 6, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
-		wcfFC = new WritableCellFormat(wfont);// 设置Excel 列的属性 字体、颜色等
-
-		File imgFile = null;
-		while (imageUrl != null) {
-			for (int i = 0; i < imageUrl.size(); i++) {
-				imgFile = new File(imageUrl.get(i));
-				files.add(imgFile);
-			}
-		}
-		WritableFont font1 = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, jxl.format.UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);// 定义字体
-		WritableCellFormat titleWritableFormat = new WritableCellFormat(font1);// 定义格式化对象
-		titleWritableFormat.setAlignment(Alignment.CENTRE);// 水平居中显示
-
-		// wsheet.setRowView(1,30);// 设置行高
-		titleWritableFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // 设置边框线
-		for (int i = 0; i < heads.length; i++) {
-			// wsheet.setColumnView(i, cellView);
-			wsheet.setColumnView(i, 15);// 设置列宽
-			Label excelTitle = new Label(i, 1, heads[i], titleWritableFormat);// 动态创建表头列
-			wsheet.addCell(excelTitle);
-			// wsheet.addCell(new Label(i, 2, heads[i], format));
-		}
-		int count = 0;
-		/***
-		 * 循环插入数据项信息
-		 * ***/
-		for (Object obj : datas) {
-			count++;
-			Object[] oo = (Object[]) obj;
-			for (int i = 0; i < columns.length; i++) {
-				String temp = columns[i];
-				if (columns[i].equalsIgnoreCase("gtsj") || columns[i].equalsIgnoreCase("bgt") || columns[i].equalsIgnoreCase("dlqx") || columns[i].equalsIgnoreCase("bjbz")) {
-					wsheet.setColumnView(i, 20);
-					Label excelTitle = new Label(i, count + 1, "", titleWritableFormat);
-					wsheet.addCell(excelTitle);
-				} else if (columns[i].equalsIgnoreCase("cjsj") || columns[i].equalsIgnoreCase("gtcjsj")) {
-					wsheet.setColumnView(i, 30);
-					Label excelTitle = new Label(i, count + 1, oo[i] + "", titleWritableFormat);
-					wsheet.addCell(excelTitle);
-				} else if (columns[i].equalsIgnoreCase("jssj")) {
-					wsheet.setColumnView(i, 20);
-					Label excelTitle = new Label(i, count + 1, oo[i] + "", titleWritableFormat);
-					wsheet.addCell(excelTitle);
-				} else {
-					if (columns[i].equalsIgnoreCase("id") || columns[i].contains("as id")) {
-						wsheet.setColumnView(i, 10);
-						Label excelTitle = new Label(i, count + 1, count + "", titleWritableFormat);
-						wsheet.addCell(excelTitle);
-
-					} else {
-						wsheet.setColumnView(i, 16);
-						String value = oo[i] + "";
-						if (null == value || value.equals("null") || !StringManagerUtils.isNotNull(value)) {
-							value = "";
-						} else if (sql.contains("v_012_") && temp.contains("lsxs")) {
-							float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
-							value = value2 + "";
-						} else if (!StringManagerUtils.stringDataFiter(temp)) {
-							value = StringManagerUtils.formatReportPrecisionValue(value);
-						}
-						Label excelTitle = new Label(i, count + 1, value, titleWritableFormat);
-						wsheet.addCell(excelTitle);
-					}
-				}
-			}
-		}
-		wbook.write();
-		wbook.close();
-		os.close();
-		return null;
-	}
-	
-	// 多井漏失导出excel
-	public <T> String exportMultiWellLeakageExcel(HttpServletResponse response, String fileName, String title, Vector<String> imageUrl, String head, String field, String orgId, String ddicName, Vector<String> v, String jh) throws Exception {
-
-		OutputStream os = response.getOutputStream();//
-		response.reset();
-		response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
-		imageUrl = null;
-		response.setHeader("Content-disposition", "attachment; filename=" + fileName + "-" + new Date().toLocaleString() + ".xls");// 设置浏览器的header
-																																	// 信息
-
-		Vector<File> files = new Vector<File>();
-		WritableWorkbook wbook = Workbook.createWorkbook(os); // 创建一个WritableWorkbook对象，
-		String tmptitle = title; //
-		WritableSheet wsheet = wbook.createSheet(tmptitle, 0); // 通过wbook对象创建一个WritableSheet
-																// 对象
-		String sql = "";
-		Map<String, Object> map = DataModelMap.getMapObject();
-		DataDictionary ddic = null;
-		String tabNameString = ddicName.trim();
-		ddic = (DataDictionary) map.get(tabNameString);// 从数据字典缓存中获取字典数据信息
-		if (ddic == null || "".equals(ddic)) {
-			ddic = dataitemsInfoService.findTableSqlWhereByListFaceId(tabNameString);
-			map.put(tabNameString, ddic);
-		}
-		head = this.fieldToHeaders(field, ddic);
-		String heads[] = StringManagerUtils.splitString(head, ",");
-		String columns[] = StringManagerUtils.splitString(field, ",");
-		StringBuffer sqlwhere = new StringBuffer();
-		/***
-		 * 
-		 * 动态拼接sql 信息
-		 * 
-		 * ***/
-		String tables=ddic.getSql().substring(ddic.getSql().indexOf(" from ")+1);
-		sqlwhere.append("select ");
-		if(field.indexOf("gtcjsj")>0){
-			field=field.replaceAll("gtcjsj","to_char(gtcjsj,'YYYY-MM-DD  hh24:mi:ss') as gtcjsj");
-		}else if(field.indexOf("cjsj")>0){
-			field=field.replaceAll("cjsj","to_char(cjsj,'YYYY-MM-DD  hh24:mi:ss') as cjsj");
-		}
-		sqlwhere.append(field);
-		sqlwhere.append("  "+tables);
-		sqlwhere.append(" and org_id in (" + orgId + ")");
-		sqlwhere.append(" and jh in (" + jh + ")");
-		List<String> dyns = ddic.getParams();
-		StringBuffer valueWhere = new StringBuffer();
-		if (dyns.size() != 0) {
-			for (int i = 0; i < dyns.size(); i++) {
-				if (!v.get(i).equalsIgnoreCase("null") && !"".equals(v.get(i)) && null != v.get(i) && v.get(i).length() > 0) {
-					if (!v.get(i).equals("new")) {
-						sqlwhere.append("  " + dyns.get(i) + " ");
-						valueWhere.append(v.get(i) + ",");
-					}
-				}
-			}
-		}
-		if (StringManagerUtils.isNotNull(ddic.getGroup())) {
-			sqlwhere.append(" group by " + ddic.getGroup());//加上分组信息
-		}
-		if(StringManagerUtils.isNotNull( ddic.getOrder())){
-			sqlwhere.append("   order by " + ddic.getOrder());
-		}
-		String getResult = "";
-		sql = sqlwhere.toString();
-		String params = valueWhere.toString();
-		Object[] o = params.split(",");
-		List<T> datas = null;
-		List<T> avgs = null;
-		int index = sql.indexOf("@");// 判断sql是否存在“@”符号
-		String oldsqlString = sql;
-		if (index > -1) {
-			sql = getSqlReplace(sql.toString());
-		}
-		String sqlAvg = "select ";
-		for(int i = 0; i < columns.length;i++){
-			String[] attr = columns[i].split(" as ");
-			if (null != attr && attr.length > 1) {
-				columns[i] = attr[attr.length-1];
-			}
-			if( columns[i].equals("id") ){
-				sqlAvg += "(max(" + columns[i] + ")+1) as id,";
-			}else if( columns[i].equals("jssj") ){
-				sqlAvg += "'平均值' as jssj,";
-			}else if( columns[i].contains("pf") || columns[i].contains("jljh")){
-				sqlAvg += "avg(" + columns[i] + "),";
-			}else if( columns[i].contains("js" ) && !columns[i].equals("jssj") ){
-				sqlAvg += "avg(" + columns[i] + "),";
-			}else if( columns[i].contains("lsxs") ){
-				sqlAvg += "decode(avg(" + columns[i-1] + "),0,null,null,null," + "avg(" + columns[i-2] + ")/avg(" + columns[i-1] + ")) as lsxs,";
-			}else{
-				sqlAvg += "null as " + columns[i] +",";
-			}
-		}
-		sqlAvg = sqlAvg.substring(0, sqlAvg.length()-1);
-		sqlAvg += " from (" + sql + ")";
-		if (StringManagerUtils.isNotNull(params)) {
-			datas = this.findCallSql(sql, o);
-			avgs = this.findCallSql(sqlAvg, o);
-		} else {
-			datas = this.findCallSql(sql);
-			avgs = this.findCallSql(sqlAvg, o);
-		}
-		if (null != avgs && avgs.size() > 0) {
-			datas.add(avgs.get(0));
-		}
-		
-		WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
-		WritableCellFormat wcfFC = new WritableCellFormat(wfont);
-		wcfFC.setBackground(Colour.WHITE);
-		wsheet.addCell(new Label(heads.length / 2, 0, tmptitle, wcfFC));
-		wfont = new jxl.write.WritableFont(WritableFont.ARIAL, 6, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
-		wcfFC = new WritableCellFormat(wfont);// 设置Excel 列的属性 字体、颜色等
-
-		File imgFile = null;
-		while (imageUrl != null) {
-			for (int i = 0; i < imageUrl.size(); i++) {
-				imgFile = new File(imageUrl.get(i));
-				files.add(imgFile);
-			}
-		}
-		WritableFont font1 = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, jxl.format.UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);// 定义字体
-		WritableCellFormat titleWritableFormat = new WritableCellFormat(font1);// 定义格式化对象
-		titleWritableFormat.setAlignment(Alignment.CENTRE);// 水平居中显示
-
-		// wsheet.setRowView(1,30);// 设置行高
-		titleWritableFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // 设置边框线
-		for (int i = 0; i < heads.length; i++) {
-			// wsheet.setColumnView(i, cellView);
-			wsheet.setColumnView(i, 15);// 设置列宽
-			Label excelTitle = new Label(i, 1, heads[i], titleWritableFormat);// 动态创建表头列
-			wsheet.addCell(excelTitle);
-			// wsheet.addCell(new Label(i, 2, heads[i], format));
-		}
-		int count = 0;
-		/***
-		 * 循环插入数据项信息
-		 * ***/
-		for (Object obj : datas) {
-			count++;
-			Object[] oo = (Object[]) obj;
-			for (int i = 0; i < columns.length; i++) {
-				String temp = columns[i];
-				if (columns[i].equalsIgnoreCase("gtsj") || columns[i].equalsIgnoreCase("bgt") || columns[i].equalsIgnoreCase("dlqx") || columns[i].equalsIgnoreCase("bjbz")) {
-					wsheet.setColumnView(i, 20);
-					Label excelTitle = new Label(i, count + 1, "", titleWritableFormat);
-					wsheet.addCell(excelTitle);
-				} else if (columns[i].equalsIgnoreCase("cjsj") || columns[i].equalsIgnoreCase("gtcjsj")) {
-					wsheet.setColumnView(i, 30);
-					Label excelTitle = new Label(i, count + 1, oo[i] + "", titleWritableFormat);
-					wsheet.addCell(excelTitle);
-				} else if (columns[i].equalsIgnoreCase("jssj")) {
-					wsheet.setColumnView(i, 20);
-					Label excelTitle = new Label(i, count + 1, oo[i] + "", titleWritableFormat);
-					wsheet.addCell(excelTitle);
-				} else {
-					if (columns[i].equalsIgnoreCase("id") || columns[i].contains("as id")) {
-						wsheet.setColumnView(i, 10);
-						Label excelTitle = new Label(i, count + 1, count + "", titleWritableFormat);
-						wsheet.addCell(excelTitle);
-
-					} else {
-						wsheet.setColumnView(i, 16);
-						String value = oo[i] + "";
-						if (null == value || value.equals("null") || !StringManagerUtils.isNotNull(value)) {
-							value = "";
-						} else if (sql.contains("v_012_") && temp.contains("lsxs")) {
-							float value2 = StringManagerUtils.stringToFloat(value,4); // 将漏失分析中的漏失系数保留4位小数
-							value = value2 + "";
-						} else if (!StringManagerUtils.stringDataFiter(temp)) {
-							value = StringManagerUtils.formatReportPrecisionValue(value);
-						}
-						Label excelTitle = new Label(i, count + 1, value, titleWritableFormat);
-						wsheet.addCell(excelTitle);
-					}
-				}
-			}
-		}
-
-		wbook.write();
-		wbook.close();
-		os.close();
-		return null;
-	}
-	
 	public boolean exportGridPanelData(HttpServletResponse response,String fileName,String title,String head,String field,String data) {
+		OutputStream os=null;
+		WritableWorkbook wbook=null;
 		try{
 		//生成excel文件
-			OutputStream os = response.getOutputStream();//
+			os = response.getOutputStream();//
 			response.reset();
 			response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ".xls";
 			response.setHeader("Content-disposition", "attachment; filename=" + new String(fileName.getBytes("gb2312"), "ISO8859-1"));//
 			Vector<File> files = new Vector<File>();
-			WritableWorkbook wbook = Workbook.createWorkbook(os);
+			wbook = Workbook.createWorkbook(os);
 			WritableSheet wsheet = wbook.createSheet(title, 0); //
 			String heads[]=head.split(",");
 			String columns[]=field.split(",");
@@ -2527,7 +1992,8 @@ public class CommonDataService extends BaseService {
 						excelTitle = new Label(j, count+1, count + "", titleWritableFormat);
 					}else {
 						if(columns[j].equalsIgnoreCase("jssj")||columns[j].equalsIgnoreCase("cjsj")||columns[j].equalsIgnoreCase("gtcjsj")
-								||columns[j].indexOf("time")>0||columns[j].indexOf("date")>0||columns[j].indexOf("Date")>0){
+								||columns[j].indexOf("time")>0||columns[j].indexOf("Time")>0
+								||columns[j].indexOf("date")>0||columns[j].indexOf("Date")>0){
 							wsheet.setColumnView(j, 30);
 						}else{
 							wsheet.setColumnView(j, 16);
@@ -2537,7 +2003,6 @@ public class CommonDataService extends BaseService {
 						}else{
 							excelTitle = new Label(j, count+1,"",titleWritableFormat);
 						}
-						
 					}
 					wsheet.addCell(excelTitle);
 				}
@@ -2545,10 +2010,23 @@ public class CommonDataService extends BaseService {
 			wbook.write();
 			wbook.close();
 			os.close();
+			wbook=null;
+			os=null;
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
+		} finally{
+			try {
+				if(os!=null){
+					os.close();
+				}
+				if(wbook!=null){
+					wbook.close();
+				}
+			} catch (IOException | WriteException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

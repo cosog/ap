@@ -23,7 +23,9 @@ public class RpcDeviceInformation implements java.io.Serializable {
 	private Integer orgId;
 	private String wellName;
 	private Integer deviceType;
+	private Integer applicationScenarios;
 	private String instanceCode;
+	private String displayInstanceCode;
 	private String alarmInstanceCode;
 	private String signInId;
 	private String slave;
@@ -39,14 +41,16 @@ public class RpcDeviceInformation implements java.io.Serializable {
 
 	/** full constructor */
 	public RpcDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
-			String instanceCode, String alarmInstanceCode, String signInId, String slave,
+			Integer applicationScenarios, String instanceCode, String alarmInstanceCode,String displayInstanceCode, String signInId, String slave,
 			String videoUrl, Integer sortNum) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
 		this.wellName = wellName;
 		this.deviceType = deviceType;
+		this.applicationScenarios = applicationScenarios;
 		this.instanceCode = instanceCode;
+		this.displayInstanceCode = displayInstanceCode;
 		this.alarmInstanceCode = alarmInstanceCode;
 		this.signInId = signInId;
 		this.slave = slave;
@@ -92,6 +96,15 @@ public class RpcDeviceInformation implements java.io.Serializable {
 		this.deviceType = deviceType;
 	}
 
+	@Column(name = "applicationScenarios", precision = 22, scale = 0)
+	public Integer getApplicationScenarios() {
+		return applicationScenarios;
+	}
+
+	public void setApplicationScenarios(Integer applicationScenarios) {
+		this.applicationScenarios = applicationScenarios;
+	}
+
 	@Column(name = "instanceCode", nullable = true, length = 50)
 	public String getInstanceCode() {
 		return instanceCode;
@@ -99,6 +112,15 @@ public class RpcDeviceInformation implements java.io.Serializable {
 
 	public void setInstanceCode(String instanceCode) {
 		this.instanceCode = instanceCode;
+	}
+	
+	@Column(name = "displayInstanceCode", nullable = true, length = 50)
+	public String getDisplayInstanceCode() {
+		return displayInstanceCode;
+	}
+
+	public void setDisplayInstanceCode(String displayInstanceCode) {
+		this.displayInstanceCode = displayInstanceCode;
 	}
 
 	@Column(name = "alarmInstanceCode", nullable = true, length = 50)

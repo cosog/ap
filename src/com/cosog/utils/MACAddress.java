@@ -68,7 +68,7 @@ public class MACAddress {
             String line = null;   
             int index = -1;   
             while ((line = bufferedReader.readLine()) != null) {  
-            	//System.out.println(line);
+            	//StringManagerUtils.printLog(line);
                 index = line.toLowerCase().indexOf("physical address");// 寻找标示字符串[physical address]
                 if(index < 0){
                 	index = line.toLowerCase().indexOf("物理地址");
@@ -101,7 +101,7 @@ public class MACAddress {
     public String getMACAddress() { 
     	String mac = "";
         String os = getOSName();   
-        System.out.println(os);   
+        StringManagerUtils.printLog(os);   
         if(os.startsWith("windows")){   
             //本地是windows   
             mac = getWindowsMACAddress();   
@@ -119,7 +119,7 @@ public class MACAddress {
      */  
     public static void main(String[] argc) { 
     	MACAddress address = new MACAddress();
-    	System.out.println(address.getMACAddress());
+    	StringManagerUtils.printLog(address.getMACAddress());
     }   
 
 

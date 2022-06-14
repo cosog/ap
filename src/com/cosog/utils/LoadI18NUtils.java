@@ -27,7 +27,7 @@ public class LoadI18NUtils {
 
 	public static void main(String[] args) {
 		ResourceBundle res = getResourceBundle("en_US");
-		System.out.println("cosog.softwareBrand=="
+		StringManagerUtils.printLog("cosog.softwareBrand=="
 				+ res.getString("cosog.softwareBrand"));
 	}
 }

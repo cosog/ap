@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 /**
  *  <p>描述：螺杆泵信息 实体类  tbl_pcpdevice</p>
  *  
- * @author zhao  2022-03-09
+ * @author zhao  2021-12-17
  *
  */
 @Entity
@@ -23,7 +23,9 @@ public class PcpDeviceInformation implements java.io.Serializable {
 	private Integer orgId;
 	private String wellName;
 	private Integer deviceType;
+	private Integer applicationScenarios;
 	private String instanceCode;
+	private String displayInstanceCode;
 	private String alarmInstanceCode;
 	private String signInId;
 	private String slave;
@@ -38,14 +40,16 @@ public class PcpDeviceInformation implements java.io.Serializable {
 
 	/** full constructor */
 	public PcpDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
-			String instanceCode, String alarmInstanceCode, String signInId, String slave,
+			Integer applicationScenarios, String instanceCode, String alarmInstanceCode,String displayInstanceCode, String signInId, String slave,
 			String videoUrl, Integer sortNum) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
 		this.wellName = wellName;
 		this.deviceType = deviceType;
+		this.applicationScenarios = applicationScenarios;
 		this.instanceCode = instanceCode;
+		this.displayInstanceCode = displayInstanceCode;
 		this.alarmInstanceCode = alarmInstanceCode;
 		this.signInId = signInId;
 		this.slave = slave;
@@ -91,6 +95,15 @@ public class PcpDeviceInformation implements java.io.Serializable {
 		this.deviceType = deviceType;
 	}
 
+	@Column(name = "applicationScenarios", precision = 22, scale = 0)
+	public Integer getApplicationScenarios() {
+		return applicationScenarios;
+	}
+
+	public void setApplicationScenarios(Integer applicationScenarios) {
+		this.applicationScenarios = applicationScenarios;
+	}
+
 	@Column(name = "instanceCode", nullable = true, length = 50)
 	public String getInstanceCode() {
 		return instanceCode;
@@ -98,6 +111,15 @@ public class PcpDeviceInformation implements java.io.Serializable {
 
 	public void setInstanceCode(String instanceCode) {
 		this.instanceCode = instanceCode;
+	}
+
+	@Column(name = "displayInstanceCode", nullable = true, length = 50)
+	public String getDisplayInstanceCode() {
+		return displayInstanceCode;
+	}
+
+	public void setDisplayInstanceCode(String displayInstanceCode) {
+		this.displayInstanceCode = displayInstanceCode;
 	}
 
 	@Column(name = "alarmInstanceCode", nullable = true, length = 50)

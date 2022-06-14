@@ -35,7 +35,7 @@ public class SerialPortUtils {
 				systemPorts.add(portName);
 			}
 		}
-		System.out.println("系统可用端口列表："+systemPorts);
+		StringManagerUtils.printLog("系统可用端口列表："+systemPorts);
 		return systemPorts;
 	}
 	
@@ -60,7 +60,7 @@ public class SerialPortUtils {
                 SerialPort serialPort = (SerialPort) commPort;
                 //设置串口参数（波特率，数据位8，停止位1，校验位无）
                 serialPort.setSerialPortParams(baudRate, dataBit, stopBit, parityBit);                              
-                System.out.println("开启串口成功，串口名称："+serialPortName);
+                StringManagerUtils.printLog("开启串口成功，串口名称："+serialPortName);
                 return serialPort;
             }        
             else {
@@ -84,7 +84,7 @@ public class SerialPortUtils {
 	public static void closeSerialPort(SerialPort serialPort) {
 		if(serialPort != null) {
 			serialPort.close();
-			System.out.println("关闭了串口："+serialPort.getName());
+			StringManagerUtils.printLog("关闭了串口："+serialPort.getName());
 			serialPort = null;
 		}
 	}

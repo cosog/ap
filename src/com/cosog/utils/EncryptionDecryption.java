@@ -206,12 +206,11 @@ public class EncryptionDecryption {
 		try {
 			String test = "smart";
 			EncryptionDecryption des = new EncryptionDecryption("Oh my God!");// 自定义密钥
-//			System.out.println("加密前的字符：" + test);
-//			System.out.println("加密后的字符：" + des.encrypt(test));
-			//System.out.println("解密后的字符：" + des.decrypt(des.encrypt(test)));
+//			StringManagerUtils.printLog("加密前的字符：" + test);
+//			StringManagerUtils.printLog("加密后的字符：" + des.encrypt(test));
+			//StringManagerUtils.printLog("解密后的字符：" + des.decrypt(des.encrypt(test)));
 
-			System.out.println("解密后的字符："+ des.decrypt("b091842c846e86a6"));
-
+			StringManagerUtils.printLog("解密后的字符："+ des.decrypt("b091842c846e86a6"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

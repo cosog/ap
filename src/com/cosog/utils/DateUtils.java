@@ -853,12 +853,12 @@ public class DateUtils {
 	}
 	public static void main(String[] args) throws Exception{
 		Date d = new Date();
-//		System.out.println(addTimeByMinutes(d,18).toString());
-		 //System.out.println(addTimeByDay(d,18).toString());
-//		System.out.println(formatDate(d).toString());
-//		 System.out.println(getMonthBegin(formatDate(d).toString()));
-//		 System.out.println(getMonthBegin("2008/07/19"));
-//		 System.out.println(getMonthEnd("2008/07/19"));
-//		System.out.println(addDate(d,15).toString());
+//		StringManagerUtils.printLog(addTimeByMinutes(d,18).toString());
+		 //StringManagerUtils.printLog(addTimeByDay(d,18).toString());
+//		StringManagerUtils.printLog(formatDate(d).toString());
+//		 StringManagerUtils.printLog(getMonthBegin(formatDate(d).toString()));
+//		 StringManagerUtils.printLog(getMonthBegin("2008/07/19"));
+//		 StringManagerUtils.printLog(getMonthEnd("2008/07/19"));
+//		StringManagerUtils.printLog(addDate(d,15).toString());
 	}
 }

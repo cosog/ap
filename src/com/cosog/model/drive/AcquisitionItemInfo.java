@@ -1,9 +1,11 @@
 package com.cosog.model.drive;
 
+import java.io.Serializable;
+
 import com.cosog.utils.StringManagerUtils;
 
-public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>{
-
+public class AcquisitionItemInfo implements Comparable<AcquisitionItemInfo>,Serializable{
+	private static final long serialVersionUID = 1L;
 	public int addr;
 	public String column;
 	public String title;

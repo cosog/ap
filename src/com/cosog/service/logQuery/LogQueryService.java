@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.User;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
@@ -28,7 +29,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getDeviceOperationLogData(String orgId,String deviceType,String deviceName,String operationType,Page pager) throws IOException, SQLException{
+	public String getDeviceOperationLogData(String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicName="deviceOperationLog";
 		DataDictionary ddic = null;
@@ -37,6 +38,10 @@ public class LogQueryService<T> extends BaseService<T>  {
 		String columns = ddic.getTableHeader();
 		String sql=ddic.getSql()+" from viw_deviceoperationlog t where 1=1"
 				+ " and t.orgid in ("+orgId+")"
+				+ " and ("
+				+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ " )"
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(deviceType)){
 			sql+=" and t.devicetype="+deviceType;
@@ -55,13 +60,17 @@ public class LogQueryService<T> extends BaseService<T>  {
 		return getResult.replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getDeviceOperationLogExportData(String orgId,String deviceType,String deviceName,String operationType,Page pager) throws IOException, SQLException{
+	public String getDeviceOperationLogExportData(String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
 		String ddicName="deviceOperationLog";
 		DataDictionary ddic = null;
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
 		String sql=ddic.getSql()+" from viw_deviceoperationlog t where 1=1"
 				+ " and t.orgid in ("+orgId+")"
+				+ " and ("
+				+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ " )"
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(deviceType)){
 			sql+=" and t.devicetype="+deviceType;
@@ -78,14 +87,19 @@ public class LogQueryService<T> extends BaseService<T>  {
 		return getResult.replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getSystemLogData(String orgId,String operationType,Page pager) throws IOException, SQLException{
+	public String getSystemLogData(String orgId,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicName="SystemLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+" from viw_systemlog t where t.orgid in ("+orgId+") "
+		String sql=ddic.getSql()+" from viw_systemlog t where "
+				+ "t.orgid in ("+orgId+") "
+				+ " and ("
+				+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ " )"
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		
 		if(StringManagerUtils.isNotNull(operationType)){
@@ -99,14 +113,19 @@ public class LogQueryService<T> extends BaseService<T>  {
 		return getResult.replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getSystemLogExportData(String orgId,String operationType,Page pager) throws IOException, SQLException{
+	public String getSystemLogExportData(String orgId,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		String ddicName="SystemLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
-		String sql=ddic.getSql()+" from viw_systemlog t where t.orgid in ("+orgId+") "
+		String sql=ddic.getSql()+" from viw_systemlog t where "
+				+ " t.orgid in ("+orgId+") "
+				+ " and ("
+				+ " t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"
+				+ " or t.user_no=(select t2.user_no from tbl_user t2 where  t2.user_no="+user.getUserNo()+")"
+				+ " )"
 				+ " and t.createtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
 		
 		if(StringManagerUtils.isNotNull(operationType)){

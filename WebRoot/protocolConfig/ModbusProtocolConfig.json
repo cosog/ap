@@ -1,8 +1,8 @@
 {
     "Protocol": [
         {
-            "Name": "A11-Modbus",
-            "Code": "A11-Modbus",
+            "Name": "A11-抽油机",
+            "Code": "A11-抽油机",
             "DeviceType": 0,
             "Sort": 1,
             "Items": [
@@ -15,8 +15,15 @@
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "passive"
+                    "ResolutionMode": 1,
+                    "AcqMode": "passive",
+                    "Meaning": [{
+                        "Value": 0,
+                        "Meaning": "停抽"
+                    }, {
+                        "Value": 1,
+                        "Meaning": "运行"
+                    }]
                 },
                 {
                     "Title": "启停控制",
@@ -28,6 +35,37 @@
                     "RWType": "rw",
                     "Unit": "",
                     "ResolutionMode": 1,
+                    "AcqMode": "passive",
+                    "Meaning": [{
+                        "Value": 1,
+                        "Meaning": "启抽"
+                    }, {
+                        "Value": 2,
+                        "Meaning": "停抽"
+                    }]
+                },
+                {
+                    "Title": "光杆温度",
+                    "Addr": 40329,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 2,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "℃",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "盘根盒温度",
+                    "Addr": 40331,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 2,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "℃",
+                    "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
@@ -211,7 +249,7 @@
                     "AcqMode": "passive"
                 },
                 {
-                    "Title": "井口流温",
+                    "Title": "井口温度",
                     "Addr": 40306,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
@@ -350,7 +388,7 @@
                     "Quantity": 250,
                     "Ratio": 0.01,
                     "RWType": "r",
-                    "Unit": "0.01m",
+                    "Unit": "m",
                     "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
@@ -362,7 +400,7 @@
                     "Quantity": 250,
                     "Ratio": 0.01,
                     "RWType": "r",
-                    "Unit": "0.01kN",
+                    "Unit": "kN",
                     "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
@@ -374,7 +412,7 @@
                     "Quantity": 250,
                     "Ratio": 0.01,
                     "RWType": "r",
-                    "Unit": "0.01A",
+                    "Unit": "A",
                     "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
@@ -386,7 +424,7 @@
                     "Quantity": 250,
                     "Ratio": 0.01,
                     "RWType": "r",
-                    "Unit": "0.01kW",
+                    "Unit": "kW",
                     "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
@@ -420,7 +458,14 @@
                     "RWType": "r",
                     "Unit": "",
                     "ResolutionMode": 2,
-                    "AcqMode": "passive"
+                    "AcqMode": "passive",
+                    "Meaning": [{
+                        "Value": 0,
+                        "Meaning": "停抽"
+                    }, {
+                        "Value": 1,
+                        "Meaning": "运行"
+                    }]
                 },
                 {
                     "Title": "启停控制",
@@ -432,7 +477,14 @@
                     "RWType": "rw",
                     "Unit": "",
                     "ResolutionMode": 1,
-                    "AcqMode": "passive"
+                    "AcqMode": "passive",
+                    "Meaning": [{
+                        "Value": 1,
+                        "Meaning": "启抽"
+                    }, {
+                        "Value": 2,
+                        "Meaning": "停抽"
+                    }]
                 },
                 {
                     "Title": "A相电流",
@@ -615,7 +667,7 @@
                     "AcqMode": "passive"
                 },
                 {
-                    "Title": "井口流温",
+                    "Title": "井口温度",
                     "Addr": 40306,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",

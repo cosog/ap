@@ -23,30 +23,17 @@ Ext.define("AP.view.acquisitionUnit.CurveColorSelectWindow", {
             defaultType: 'colorfield',
             items: [{
 				xtype : "hidden",
+				id : 'curveColorSelectedTableType_Id',
+				value:0
+			},{
+				xtype : "hidden",
 				id : 'curveColorSelectedRow_Id',
 				value:-1
 			},{
 				xtype : "hidden",
 				id : 'curveColorSelectedCol_Id',
 				value:-1
-			}
-//			,{
-//                id: 'CurveColorSelectWindowColor_id',
-//                fieldLabel: '曲线颜色',
-//                labelWidth: 60,
-//                anchor:'100%',
-//                listeners : {
-//                	collapse: function (field,eOpts) {
-//                    	if(Ext.getCmp('CurveColorSelectWindowColor_id')!=undefined){
-//                    		field.inputEl.applyStyles({
-//          		              background: '#'+field.value,
-//          		              opacity:field.color.a
-//          		            });
-//                    	}
-//                    }
-//                }
-//        	}
-			,{
+			},{
         		id: 'CurveColorSelectWindowColor_id',
         		xtype: 'colorselector',
         		anchor:'100%'
@@ -59,8 +46,15 @@ Ext.define("AP.view.acquisitionUnit.CurveColorSelectWindow", {
                 	var curveColor=Ext.getCmp('CurveColorSelectWindowColor_id').getValue();
                 	var row=Ext.getCmp('curveColorSelectedRow_Id').getValue();
                 	var col=Ext.getCmp('curveColorSelectedCol_Id').getValue();
+                	var tableType=Ext.getCmp('curveColorSelectedTableType_Id').getValue();
                 	if(parseInt(row)>=0 && parseInt(col)>=0){
-                		protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
+                		if(tableType==0){
+                			protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
+                		}else if(tableType==1){
+                			protocolDisplayUnitCalItemsConfigHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
+                		}
+                		
+//                		protocolAcqUnitConfigItemsHandsontableHelper.hot.setDataAtCell(parseInt(row),parseInt(col),curveColor);
                 	}
                 	Ext.getCmp("CurveColorSelectWindow_Id").close();
                 }

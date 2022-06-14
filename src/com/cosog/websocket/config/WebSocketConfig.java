@@ -9,6 +9,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;  
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.handler.SpringWebSocketHandler;
 import com.cosog.websocket.interceptor.SpringWebSocketHandlerInterceptor;
 
@@ -31,7 +32,7 @@ public class WebSocketConfig implements WebMvcConfigurer, WebSocketConfigurer {
 	@Override  
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {  
 		// 注册多个websocket服务，addHandler第一个参数是websocket的具体业务处理类，第二个参数collectionList相当于endpoint  
-		System.out.println("启动Websocket服务端");
+		StringManagerUtils.printLog("启动Websocket服务端");
 		String[] allowsOrigins = {"*"};
 		registry.addHandler(RealSocketHandler(), "/collectionList").setAllowedOrigins(allowsOrigins).addInterceptors(new SpringWebSocketHandlerInterceptor());  
 		

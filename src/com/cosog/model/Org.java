@@ -21,15 +21,6 @@ public class Org {
 	private String orgMemo;
 	private Integer orgParent;
 	private Integer orgSeq;
-	private String orgFlag;
-	private Integer orgRealid;
-	private Integer orgLevel;
-	private String orgType;
-	private Double orgCoordX;
-	private Double orgCoordY;
-	private Integer showlevel;
-
-
 	public Org() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -92,68 +83,4 @@ public class Org {
 	public void setOrgSeq(Integer orgSeq) {
 		this.orgSeq = orgSeq;
 	}
-
-	@Column(name = "org_flag")
-	public String getOrgFlag() {
-		return orgFlag;
-	}
-
-	public void setOrgFlag(String orgFlag) {
-		this.orgFlag = orgFlag;
-	}
-
-	@Column(name = "org_realid")
-	public Integer getOrgRealid() {
-		return orgRealid;
-	}
-
-	public void setOrgRealid(Integer orgRealid) {
-		this.orgRealid = orgRealid;
-	}
-
-	@Column(name = "org_level")
-	public Integer getOrgLevel() {
-		return orgLevel;
-	}
-
-	public void setOrgLevel(Integer orgLevel) {
-		this.orgLevel = orgLevel;
-	}
-
-	@Column(name = "org_type")
-	public String getOrgType() {
-		return orgType;
-	}
-
-	public void setOrgType(String orgType) {
-		this.orgType = orgType;
-	}
-	
-	@Column(name = "org_coordx")
-	public Double getOrgCoordX() {
-		return orgCoordX;
-	}
-
-	public void setOrgCoordX(Double orgCoordX) {
-		this.orgCoordX = orgCoordX;
-	}
-	
-	@Column(name = "org_coordy")
-	public Double getOrgCoordY() {
-		return orgCoordY;
-	}
-
-	public void setOrgCoordY(Double orgCoordY) {
-		this.orgCoordY = orgCoordY;
-	}
-
-	@Column(name = "show_level")
-	public Integer getShowlevel() {
-		return showlevel;
-	}
-
-	public void setShowlevel(Integer showlevel) {
-		this.showlevel = showlevel;
-	}
-
 }

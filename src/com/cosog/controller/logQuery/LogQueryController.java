@@ -49,6 +49,7 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/getDeviceOperationLogData")
 	public String getDeviceOperationLogData() throws Exception {
 		String json = "";
+		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		deviceName = ParamUtils.getParameter(request, "deviceName");
@@ -56,11 +57,8 @@ public class LogQueryController extends BaseController{
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
 		this.pager = new Page("pagerForm", request);
-		
+		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 				if(user.getUserOrgid()==0){
@@ -83,7 +81,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getDeviceOperationLogData(orgId,deviceType,deviceName,operationType,pager);
+		json = logQueryService.getDeviceOperationLogData(orgId,deviceType,deviceName,operationType,pager,user);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -96,6 +94,7 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/exportDeviceOperationLogExcelData")
 	public String exportDeviceOperationLogExcelData() throws Exception {
 		String json = "";
+		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
@@ -109,10 +108,8 @@ public class LogQueryController extends BaseController{
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		this.pager = new Page("pagerForm", request);
+		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 				if(user.getUserOrgid()==0){
@@ -136,7 +133,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getDeviceOperationLogExportData(orgId,deviceType,deviceName,operationType,pager);
+		json = logQueryService.getDeviceOperationLogExportData(orgId,deviceType,deviceName,operationType,pager,user);
 		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -150,16 +147,14 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/getSystemLogData")
 	public String getSystemLogData() throws Exception {
 		String json = "";
+		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
 		endDate = ParamUtils.getParameter(request, "endDate");
 		this.pager = new Page("pagerForm", request);
-		
+		User user = (User) session.getAttribute("userLogin");
 		if(!StringManagerUtils.isNotNull(orgId)){
-			User user=null;
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
 			if (user != null) {
 				orgId = "" + user.getUserorgids();
 				if(user.getUserOrgid()==0){
@@ -182,7 +177,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getSystemLogData(orgId,operationType,pager);
+		json = logQueryService.getSystemLogData(orgId,operationType,pager,user);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -195,6 +190,7 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/exportSystemLogExcelData")
 	public String exportSystemLogExcelData() throws Exception {
 		String json = "";
+		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		operationType = ParamUtils.getParameter(request, "operationType");
 		startDate = ParamUtils.getParameter(request, "startDate");
@@ -206,13 +202,13 @@ public class LogQueryController extends BaseController{
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		this.pager = new Page("pagerForm", request);
-		User user=null;
-		HttpSession session=request.getSession();
-		user = (User) session.getAttribute("userLogin");
-		if (user != null) {
-			orgId = "" + user.getUserorgids();
-			if(user.getUserOrgid()==0){
-				orgId+=",0";
+		User user = (User) session.getAttribute("userLogin");
+		if(!StringManagerUtils.isNotNull(orgId)){
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+				if(user.getUserOrgid()==0){
+					orgId+=",0";
+				}
 			}
 		}
 		if(!StringManagerUtils.isNotNull(endDate)){
@@ -229,7 +225,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getSystemLogExportData(orgId,operationType,pager);
+		json = logQueryService.getSystemLogExportData(orgId,operationType,pager,user);
 		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

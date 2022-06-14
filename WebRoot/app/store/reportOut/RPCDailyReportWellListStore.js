@@ -6,7 +6,7 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
     pageSize: 10000,
     proxy: {
         type: 'ajax',
-        url: context + '/reportPumpingUnitDataController/getWellList',
+        url: context + '/reportDataMamagerController/getWellList',
         actionMethods: {
             read: 'POST'
         },
@@ -22,11 +22,11 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
             //获得列表数
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
-            var RPCDailyReportGridPanel = Ext.getCmp("RPCDailyReportGridPanel_Id");
-            if (!isNotVal(RPCDailyReportGridPanel)) {
+            var gridPanel = Ext.getCmp("RPCDailyReportGridPanel_Id");
+            if (!isNotVal(gridPanel)) {
                 var column = createRPCDailyReportWellListDataColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(column);
-                RPCDailyReportGridPanel = Ext.create('Ext.grid.Panel', {
+                gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "RPCDailyReportGridPanel_Id",
                     border: false,
                     autoLoad: true,
@@ -51,39 +51,37 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
                     listeners: {
                     	selectionchange: function (view, selected, o) {
                     		if(selected.length>0){
-                    			Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').setValue(selected[0].data.wellName);
-                            	Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').setRawValue(selected[0].data.wellName);
+                    			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue(selected[0].data.wellName);
+                            	Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue(selected[0].data.wellName);
                     		}else{
-                    			Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').setValue('');
-                            	Ext.getCmp('ReportPumpingUnitPanelWellListCombo_Id').setRawValue('');
-//                            	var calculateEndDate = Ext.getCmp('ReportPumpingUnitPanelCalculateEndDate_Id').rawValue;
-//                            	Ext.getCmp('ReportPumpingUnitPanelCalculateDate_Id').setValue(calculateEndDate);
-//                            	Ext.getCmp('ReportPumpingUnitPanelCalculateDate_Id').setRawValue(calculateEndDate);
+                    			Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setValue('');
+                            	Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').setRawValue('');
                     		}
-                    		CreateDiagnosisDailyReportTable();
+                    		CreateRPCDailyReportTable();
                     	},
                     	select: function(grid, record, index, eOpts) {
-//                        	Ext.getCmp('KafkaConfigWellListSelectRow_Id').setValue(index);
                         }
                     }
                 });
                 var RPCDailyReportWellListPanel = Ext.getCmp("RPCDailyReportWellListPanel_Id");
-                RPCDailyReportWellListPanel.add(RPCDailyReportGridPanel);
+                RPCDailyReportWellListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
-            	RPCDailyReportGridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().deselectAll(true);
             }
+            Ext.getCmp("RPCDailyReportDeviceListSelectRow_Id").setValue(-1);
+            CreateRPCDailyReportTable();
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+        	var wellName = Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').getValue();
             var new_params = {
                     orgId: orgId,
-                    wellType:200
+                    deviceType:0
                 };
             Ext.apply(store.proxy.extraParams, new_params);
         },
         datachanged: function (v, o) {
-            //onLabelSizeChange(v, o, "statictisTotalsId");
         }
     }
 });

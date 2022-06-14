@@ -32,6 +32,21 @@ public class ProtocolItemResolutionData  implements Comparable<ProtocolItemResol
 		this.sort=sort;
 	}
 	
+	public ProtocolItemResolutionData(String rawColumnName,String columnName, String value,String rawValue, String addr, String column,
+			String columnDataType, String resolutionMode,String bitIndex,String unit) {
+		super();
+		this.rawColumnName = rawColumnName;
+		this.columnName = columnName;
+		this.value = value;
+		this.rawValue = rawValue;
+		this.addr = addr;
+		this.column = column;
+		this.columnDataType = columnDataType;
+		this.resolutionMode = resolutionMode;
+		this.bitIndex = bitIndex;
+		this.unit=unit;
+	}
+	
 	@Override
 	public int compareTo(ProtocolItemResolutionData protocolItemResolutionData) {//重写Comparable接口的compareTo方法   按照sort升序 addr升序 bitIndex升序
 		if(this.sort>protocolItemResolutionData.getSort()){

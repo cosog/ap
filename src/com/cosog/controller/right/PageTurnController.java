@@ -32,6 +32,13 @@ import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
 
+/**
+ * 工况诊断 （单张功图诊断分析）- action类
+ * 
+ * @author gao 2014-05-09
+ * @version 1.0
+ * 
+ */
 @Controller
 @RequestMapping("/login")
 @Scope("prototype")

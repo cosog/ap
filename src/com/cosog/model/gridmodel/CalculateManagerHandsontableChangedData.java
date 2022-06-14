@@ -79,7 +79,7 @@ public class CalculateManagerHandsontableChangedData {
 
 	    private String rotorDiameter="0";
 
-	    private String QPR="0";
+	    private String qpr="0";
 
 	    private String tubingStringInsideDiameter="62";
 
@@ -300,11 +300,11 @@ public class CalculateManagerHandsontableChangedData {
 		}
 
 		public String getQPR() {
-			return QPR;
+			return qpr;
 		}
 
-		public void setQPR(String qPR) {
-			QPR = qPR;
+		public void setQPR(String qpr) {
+			this.qpr = qpr;
 		}
 
 		public String getTubingStringInsideDiameter() {

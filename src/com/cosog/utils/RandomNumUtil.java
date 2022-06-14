@@ -88,7 +88,7 @@ public class RandomNumUtil {
 			imageOut.close();
 			input = new ByteArrayInputStream(output.toByteArray());
 		} catch (Exception e) {
-			System.out.println("验证码图片产生出现错误：" + e.toString());
+			StringManagerUtils.printLog("验证码图片产生出现错误：" + e.toString());
 		}
 
 		this.image = input;/* 赋值图像 */

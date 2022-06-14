@@ -27,7 +27,7 @@ public class DataSource extends org.logicalcobwebs.proxool.ProxoolDataSource {
 		try {
 			des = new EncryptionDecryption("Oh my God!");
 			//password=des.decrypt(password);
-//			System.out.println("解密后的字符：************************************" + password);
+//			StringManagerUtils.printLog("解密后的字符：************************************" + password);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

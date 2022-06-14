@@ -5,65 +5,59 @@ spring:
       driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
       driver: oracle.jdbc.driver.OracleDriver
       dialect: org.hibernate.dialect.Oracle10gDialect
-      user: agile
-      password: agile
+      user: ap
+      password: ap123#
 viewInformation:
-   title: AgileProduction 敏捷生产 V7.6
-   profile: AgileProduction 油气生产敏捷计算分析系统 V7.6主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时评价、全天评价、生产报表、图形查询等。系统应用大数据分析方法，对工况、产量、时率、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
+   title: 油气生产智能监控系统 V8.0
+   profile: 《油气生产智能监控系统 V8.0》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、组织用户管理、角色管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
    copy: ""
    linkaddress: http://www.cosogoil.com
    linkshow: ""
 agileCalculate:
    probe:
       app: 
-       - http://8.130.30.138:18100/api/probe/app
+       - http://39.99.42.182:18100/api/probe/app
       mem: 
-       - http://8.130.30.138:18100/api/probe/mem
+       - http://39.99.42.182:18100/api/probe/mem
       disk: 
-       - http://8.130.30.138:18100/api/probe/disk
+       - http://39.99.42.182:18100/api/probe/disk
       host: 
-       - http://8.130.30.138:18100/api/probe/host
+       - http://39.99.42.182:18100/api/probe/host
       cpu: 
-       - http://8.130.30.138:18100/api/probe/cpu
+       - http://39.99.42.182:18100/api/probe/cpu
    FESDiagram: 
-    - http://8.130.30.138:18100/api/calc/rpc/fesdiagram/pro
+    - http://39.99.42.182:18100/api/calc/rpc/fesdiagram/pro
    FSDiagram: 
-    - http://8.130.30.138:18100/api/calc/rpc/fsdiagram/balance/back
+    - http://39.99.42.182:18100/api/calc/rpc/fsdiagram/balance/back
    ESDiagram:
       balance: 
-       - http://8.130.30.138:18100/api/calc/rpc/esdiagram/balance/back
+       - http://39.99.42.182:18100/api/calc/rpc/esdiagram/balance/back
       inversion:
          inversionSwitch: false
          url:
             motorauto: 
-             - http://8.130.30.138:18100/api/calc/rpc/esdiagram/inversion/motorauto
+             - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/motorauto
             motorsemiauto: 
-             - http://8.130.30.138:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
+             - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
             beam: 
-             - http://8.130.30.138:18100/api/calc/rpc/esdiagram/inversion/beam
+             - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/beam
          timerCorrectionStart: 06:00:00
          imerCorrectionEnd: 21:00:00
          timerCorrectionLimit: 1800
    pcpProduction: 
-    - http://8.130.30.138:18100/api/calc/pcp/rpm
+    - http://39.99.42.182:18100/api/calc/pcp/rpm
    communication: 
-    - http://8.130.30.138:18100/api/calc/plugin/timeeff/comm
+    - http://39.99.42.182:18100/api/calc/plugin/timeeff/comm
    run: 
-    - http://8.130.30.138:18100/api/calc/plugin/timeeff/run
+    - http://39.99.42.182:18100/api/calc/plugin/timeeff/run
    energy: 
-    - http://8.130.30.138:18100/api/calc/plugin/energy
+    - http://39.99.42.182:18100/api/calc/plugin/energy
    totalCalculation:
       well: 
-       - http://8.130.30.138:18100/api/analy/total/well
+       - http://39.99.42.182:18100/api/analy/total/well
    plugin: 
-      wellboreTrajectory: http://8.130.30.138:18100/api/calc/plugin/2xyz
-      fa2fs: http://8.130.30.138:18100/api/plugin/fa2fs
-tcpServer:
-   port: 19100
-mqtt:
-   server: tcp://dq1c6knb.hinnotek.cn:1883
-   userName: hinnotekClient1
-   passWord: ZJ6m*#D4pd%b
+      wellboreTrajectory: http://39.99.42.182:18100/api/calc/plugin/2xyz
+      fa2fs: http://39.99.42.182:18100/api/plugin/fa2fs
 driverConfig:
    server: http://39.99.42.182:19200/api/init/server
    protocol: http://39.99.42.182:19200/api/init/protocol
@@ -80,6 +74,10 @@ driverConfig:
       mem: http://39.99.42.182:19200/api/probe/mem
       disk: http://39.99.42.182:19200/api/probe/disk
       host: http://39.99.42.182:19200/api/probe/host
+mqtt:
+   server: tcp://dq1c6knb.hinnotek.cn:1883
+   userName: hinnotekClient1
+   passWord: ZJ6m*#D4pd%b
 email:
    snedAccount:
       account: shfzby@126.com
@@ -95,8 +93,10 @@ others:
    defaultComboxSize: 10000
    defaultGraghSize: 60
    productionUnit: 1
-   dataSaveMode: 0
+   dataSaveMode: 1
+   pcpHidden: false
    showLogo: true
    printLog: true
-   serialnumber: God bless you!
+   simulateAcqEnable: true
+   serialnumber: ""
       

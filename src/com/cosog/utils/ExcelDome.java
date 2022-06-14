@@ -529,7 +529,7 @@ public class ExcelDome {
 
 			new ExcelDome().genarateExcel(file);
 
-			System.out.println(file);
+			StringManagerUtils.printLog(file);
 
 		}
 	}

@@ -37,89 +37,101 @@
   background: url(../images/chongxie1.png) left top repeat-x !important;  
 }*/
 /* 妯″潡灏忓浘鏍嘽ss  */
-.Index {
+.index {
 	background-image: url(../images/icon/index.png) !important;
 }
 
-.Video {
+.video {
 	background-image: url(../images/icon/video.png) !important;
 }
 
-.Monitor {
+.monitor {
 	background-image: url(../images/icon/monitor.png) !important;
 }
 
-.Calculate {
+.calculate {
 	background-image: url(../images/icon/calculate.png) !important;
 }
 
-.Optimize {
+.curve {
+	background-image: url(../images/icon/curve.png) !important;
+}
+
+.history {
+	background-image: url(../images/icon/curve.png) !important;
+}
+
+.optimize {
 	background-image: url(../images/icon/optimize.png) !important;
 }
 
-.DeviceDebugging {
+.smsDevice {
+	background-image: url(../images/icon/optimize.png) !important;
+}
+
+.deviceDebugging {
 	background-image: url(../images/icon/deviceDebugging.png) !important;
 }
 
-.Dictionary {
+.dictionary {
 	background-image: url(../images/icon/dictionary.png) !important;
 }
 
-.MonitorIn {
+.monitorIn {
 	background-image: url(../images/icon/monitor.png) !important;
 }
-.MonitorHis {
+.monitorHis {
 	background-image: url(../images/icon/monitorHis.png) !important;
 }
-.Pumping {
+.pumping {
 	background-image: url(../images/icon/pumping.png) !important;
 }
-.MonitorRoot {
+.monitorRoot {
 	background-image: url(../images/icon/monitor.png) !important;
 }
 
-.Realtime {
+.realtime {
 	background-image: url(../images/icon/realtime.png) !important;
 }
 
-.Total {
+.total {
 	background-image: url(../images/icon/total.png) !important;
 }
 
-.ReportRoot {
+.reportRoot {
 	background-image: url(../images/icon/report.png) !important;
 }
 
-.Report {
-	background-image: url(../images/icon/cbmReport.png) !important;
+.report {
+	background-image: url(../images/icon/report.png) !important;
 }
 .audit {
 	background-image: url(../images/icon/audit.png) !important;
 }
-.ReportIn {
-	background-image: url(../images/icon/cbmReport.png) !important;
+.reportIn {
+	background-image: url(../images/icon/report.png) !important;
 }
-.CbmReportRoot {
-	background-image: url(../images/icon/cbmReport.png) !important;
+.cbmReportRoot {
+	background-image: url(../images/icon/report.png) !important;
 }
 
 .log {
 	background-image: url(../images/icon/log.png) !important;
 }
 
-.CurveRoot {
+.curveRoot {
 	background-image: url(../images/icon/rawData.png) !important;
 }
 
-.RawData {
+.rawData {
 	background-image: url(../images/icon/rawData.png) !important;
 }
 
-.CurveIn {
+.curveIn {
 	background-image: url(../images/icon/rawData.png) !important;
 }
 
-.Function {
+.function {
 	background-image: url(../images/icon/function.png) !important;
 }
 
@@ -127,34 +139,34 @@
 	background-image: url(../images/icon/zuzhi.png) !important;
 }
 
-.Downstream {
+.downstream {
 	background-image: url(../images/icon/downstream.png) !important;
 }
 
-.MeasureIn {
+.measureIn {
 	background-image: url(../images/icon/downstream.png) !important;
 }
 
-.MeasureRoot {
+.measureRoot {
 	background-image: url(../images/icon/measure.png) !important;
 }
-.ProductionData {
+.productionData {
 	background-image: url(../images/icon/productionData.png) !important;
 }
 
-.Alarm {
+.alarm {
 	background-image: url(../images/icon/alarm.png) !important;
 }
 
-.Image {
+.image {
 	background-image: url(../images/icon/image.png) !important;
 }
 
-.Backstage {
+.backstage {
 	background-image: url(../images/icon/backstage.png) !important;
 }
 
-.Help {
+.help {
 	background-image: url(../images/icon/help.png) !important;
 }
 
@@ -203,75 +215,81 @@
 	background-image: url(../images/icon/move.png) !important;
 }
 
-.Stat {
+.stat {
 	background-image: url(../images/icon/stat.png) !important;
 }
 
-.Role {
+.role {
 	background-image: url(../images/icon/role.png) !important;
 }
 
-.Module {
+.module {
 	background-image: url(../images/icon/module.png) !important;
 }
 
-.Right {
+.right {
 	background-image: url(../images/icon/right.png) !important;
 }
 
-.User {
+.user {
 	background-image: url(../images/icon/user.png) !important;
 }
 
-.Org {
+.org {
 	background-image: url(../images/icon/org.png) !important;
 }
-.System{
+.system{
 	background-image: url(../images/icon/system.png) !important;
 }
-.AlarmSet{
+.alarmSet{
 	background-image: url(../images/icon/alarmset.png) !important;
 }
-.DataConfig{
+.dataConfig{
 	background-image: url(../images/icon/dataconfig.png) !important;
 }
-.DataSource{
+.driverConfig{
 	background-image: url(../images/icon/dataSource.png) !important;
 }
-.Device{
+.device{
 	background-image: url(../images/icon/device.png) !important;
 }
-.Order{
+.pipelineDevice{
+	background-image: url(../images/icon/pipelineDevice.png) !important;
+}
+.auxiliaryDevice{
+	background-image: url(../images/icon/auxiliaryDevice.png) !important;
+}
+.order{
 	background-image: url(../images/icon/order.png) !important;
 }
-.DataMaintaining{
+.dataMaintaining{
 	background-image: url(../images/icon/dataMaintaining.png) !important;
 }
-.WellInformation{
+.wellInformation{
 	background-image: url(../images/icon/wellInformation.png) !important;
 }
-.BalanceData{
+.balanceData{
 	background-image: url(../images/icon/balancedata.png) !important;
 }
-.Balance{
+.balance{
 	background-image: url(../images/icon/balance.png) !important;
 }
-.Cycle{
+.cycle{
 	background-image: url(../images/icon/cycle.png) !important;
 }
-.Upload{
+.upload{
 	background-image: url(../images/icon/upload.png) !important;
 }
-.Resdata{
+.resdata{
 	background-image: url(../images/icon/resdata.png) !important;
 }
-.Protocol{
+.protocol{
 	background-image: url(../images/icon/protocol.png) !important;
 }
-.AcqUnit{
+.acqUnit{
 	background-image: url(../images/icon/acqUnit.png) !important;
 }
-.AcqGroup{
+.acqGroup{
 	background-image: url(../images/icon/acqGroup.png) !important;
 }
  /* shared styles for the ActionColumn icons */
@@ -318,7 +336,7 @@
 .warn {
 	background-image: url(../images/icon/warn.png) !important;
 }
-.WellboreTrajectory{
+.wellboreTrajectory{
 	background-image: url(../images/icon/wellboreTrajectory.png) !important;
 }
 .dtred{
@@ -339,21 +357,9 @@
 .FESDiagram{
 	background-image: url(../images/icon/FESDiagram.png) !important;
 }
-.InjectionWell{
+.injectionWell{
 	background-image: url(../images/icon/injectionWell.png) !important;
 }
-.MeteringPlant{
+.meteringPlant{
 	background-image: url(../images/icon/meteringPlant.png) !important;
-}
-.device{
-	background-image: url(../images/icon/device.png) !important;
-}
-.protocol{
-	background-image: url(../images/icon/protocol.png) !important;
-}
-.acqUnit{
-	background-image: url(../images/icon/acqUnit.png) !important;
-}
-.acqGroup{
-	background-image: url(../images/icon/acqGroup.png) !important;
 }

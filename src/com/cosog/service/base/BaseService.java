@@ -31,8 +31,8 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
-import com.cosog.model.scada.CallbackDataItems;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.GenericsUtils;
 import com.cosog.utils.Page;
@@ -803,7 +803,7 @@ public class BaseService<T> {
 		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
 		AlarmShowStyle alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
 		if(alarmShowStyle==null){
-			EquipmentDriverServerTask.initAlarmStyle();
+			MemoryDataManagerTask.initAlarmStyle();
 			alarmShowStyle=(AlarmShowStyle) dataModelMap.get("AlarmShowStyle");
 		}
 		String[] str = splitPageSql(sql);
@@ -1031,7 +1031,7 @@ public class BaseService<T> {
 			if(newsql.indexOf("exists")>=0){
 				newsql=newsql.split("exists")[0];
 			}
-			String[] sqlplit = newsql.split("from");
+			String[] sqlplit = newsql.split(" where ")[0].split("from");
 			// 获得第一个select -from 之间信息
 			String getPt="";
 			String getsql="";

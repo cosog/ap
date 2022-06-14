@@ -1,0 +1,27 @@
+{
+    "Protocol": [
+        {
+            "Name": "private-lq1000",
+            "Code": "private-lq1000",
+            "AcqUnit":"",
+            "AcqProtocolType": "private-lq1000",
+            "CtrlProtocolType ": "modbus-rtu",
+            "SignInPrefix": "",
+            "SignInSuffix": "",
+            "HeartbeatPrefix": "",
+            "HeartbeatSuffix": "",
+            "Sort": 0
+        },
+        {
+            "Name": "private-kd93",
+            "Code": "private-kd93",
+            "AcqProtocolType": "private-kd93",
+            "CtrlProtocolType ": "modbus-rtu",
+            "SignInPrefix": "",
+            "SignInSuffix": "",
+            "HeartbeatPrefix": "",
+            "HeartbeatSuffix": "",
+            "Sort": 0
+        }
+    ]
+}

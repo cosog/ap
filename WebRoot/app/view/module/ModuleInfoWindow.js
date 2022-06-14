@@ -47,10 +47,11 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         var xltree=Ext.create('AP.view.well.TreePicker',{
         	id:'mdName_Parent_Id1',
         	anchor: '95%',
-        	fieldLabel: cosog.string.superModule,
+        	fieldLabel: cosog.string.superModule+'<font color=red>*</font>',
             emptyText: cosog.string.checkModule,
             blankText: cosog.string.checkModule,
             displayField: 'text',
+            allowBlank: false,
             autoScroll:true,
             forceSelection : true,// 只能选择下拉框里面的内容
             rootVisible: false,
@@ -94,7 +95,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
         // Simple ComboBox using the data store
         var moduleTypeCombox = Ext.create(
             'Ext.form.field.ComboBox', {
-                fieldLabel: cosog.string.moduleType,
+                fieldLabel: cosog.string.moduleType+'<font color=red>*</font>',
                 id: 'mdType_Id',
                 name: 'module.mdType',
                 anchor: '95%',
@@ -103,7 +104,7 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 emptyText: cosog.string.all,
                 blankText: cosog.string.all,
                 typeAhead: true,
-                allowBlank: true,
+                allowBlank: false,
                 triggerAction: 'all',
                 displayField: "boxval",
                 valueField: "boxkey",
@@ -131,8 +132,9 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 anchor: '95%',
                 name: 'module.mdParentid'
      }, xltree, {
-                fieldLabel: cosog.string.moduleName,
+                fieldLabel: cosog.string.moduleName+'<font color=red>*</font>',
                 id: 'mdName_Id',
+                allowBlank: false,
                 anchor: '95%',
                 name: "module.mdName"
      }, {
@@ -143,20 +145,23 @@ Ext.define("AP.view.module.ModuleInfoWindow", {
                 name: "module.mdShowname"
      }, {
                 id: 'mdCode_Id',
-                fieldLabel: cosog.string.moduleCode,
+                fieldLabel: cosog.string.moduleCode+'<font color=red>*</font>',
+                allowBlank: false,
                 value: '',
                 anchor: '95%',
                 name: "module.mdCode"
      }, {
                 xtype: "textfield",
-                fieldLabel: cosog.string.moduleView,
+                fieldLabel: cosog.string.moduleView+'<font color=red>*</font>',
+                allowBlank: false,
                 id: 'mdUrl_Id',
                 anchor: '95%',
                 name: "module.mdUrl"
 
      }, {
                 xtype: "textfield",
-                fieldLabel: cosog.string.moduleControlller,
+                fieldLabel: cosog.string.moduleControlller+'<font color=red>*</font>',
+                allowBlank: false,
                 anchor: '95%',
                 id: 'mdControl_Id',
                 name: "module.mdControl"

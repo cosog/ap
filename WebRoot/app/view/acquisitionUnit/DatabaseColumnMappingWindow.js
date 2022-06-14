@@ -90,13 +90,12 @@ function CreateDatabaseColumnMappingTable(){
 			
 			if(databaseColumnMappingHandsontableHelper==null || databaseColumnMappingHandsontableHelper.hot==undefined){
 				databaseColumnMappingHandsontableHelper = DatabaseColumnMappingHandsontableHelper.createNew("HistoryQueryDataDetailsDiv_Id");
-				var colHeaders="['序号','名称','字段','保存数据表','保存字段']";
+				var colHeaders="['序号','名称','字段','计算字段']";
 				var columns="[" 
 						+"{data:'id'}," 
 						+"{data:'itemName'}," 
 						+"{data:'itemColumn'},"
-						+"{data:'saveTable'},"
-						+"{data:'saveColumn'}"
+						+"{data:'calColumn'}"
 						+"]";
 				databaseColumnMappingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				databaseColumnMappingHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -139,7 +138,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	        
 	        databaseColumnMappingHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
-	            td.style.backgroundColor = 'rgb(184, 184, 184)';
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
 	        
 	        databaseColumnMappingHandsontableHelper.addSizeBg = function (instance, td, row, col, prop, value, cellProperties) {
@@ -170,6 +169,7 @@ var DatabaseColumnMappingHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if(visualColIndex<=2){
 	                    	cellProperties.readOnly = true;
+	                    	cellProperties.renderer = databaseColumnMappingHandsontableHelper.addBoldBg;
 	                    }
 	                    return cellProperties;
 	                },

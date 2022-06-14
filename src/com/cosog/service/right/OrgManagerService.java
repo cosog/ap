@@ -372,12 +372,12 @@ public class OrgManagerService<T> extends BaseService<T> {
 	public int  bulkDelete(final String ids) throws Exception {
 		Log.debug("bulkDelete" + ids);
 		String deleteUserSql="delete from tbl_user t where t.user_orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
-		String deletePumpDeviceSql="delete from tbl_pumpdevice t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
-		String deletePipelineDeviceSql="delete from tbl_pipelinedevice t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
+		String deleteRPCDeviceSql="delete from tbl_rpcdevice t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
+		String deletePCPDeviceSql="delete from tbl_pcpdevice t where t.orgid in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
 		String deleteOrgSql="delete from tbl_org t where t.org_id in(select t2.org_id from tbl_org t2 start with t2.org_id = "+ids+" connect by t2.org_parent = prior t2.org_id)";
 		getBaseDao().updateOrDeleteBySql(deleteUserSql);
-		getBaseDao().updateOrDeleteBySql(deletePumpDeviceSql);
-		getBaseDao().updateOrDeleteBySql(deletePipelineDeviceSql);
+		getBaseDao().updateOrDeleteBySql(deleteRPCDeviceSql);
+		getBaseDao().updateOrDeleteBySql(deletePCPDeviceSql);
 		return getBaseDao().updateOrDeleteBySql(deleteOrgSql);
 		
 //		final String hql = "DELETE Org u where u.orgId in (" + ids + ") or u.orgParent in(" + ids + ")";

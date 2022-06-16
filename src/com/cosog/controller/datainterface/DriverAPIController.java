@@ -611,7 +611,8 @@ public class DriverAPIController extends BaseController{
         }
 		
 		StringBuffer webSocketSendData = new StringBuffer();
-		StringBuffer info_json = new StringBuffer();
+		StringBuffer displayItemInfo_json = new StringBuffer();
+		StringBuffer allItemInfo_json = new StringBuffer();
 
 		StringBuffer wellBoreChartsData = new StringBuffer();
 		StringBuffer surfaceChartsData = new StringBuffer();
@@ -1455,12 +1456,14 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 							webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
 							webSocketSendData.append("\"totalRoot\":[");
-							info_json.append("[");
+							displayItemInfo_json.append("[");
+							allItemInfo_json.append("[");
 							webSocketSendData.append("{\"name1\":\""+rpcDeviceInfo.getWellName()+":"+acqTime+" 在线\"},");
 							
 							//筛选
 							List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 							for(int j=0;j<acquisitionItemInfoList.size();j++){
+								allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\",\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\",\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\",\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\",\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\",\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\",\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
 								if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0)){
 									for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 										if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
@@ -1473,6 +1476,10 @@ public class DriverAPIController extends BaseController{
 									}
 								}
 							}
+							if(allItemInfo_json.toString().endsWith(",")){
+								allItemInfo_json.deleteCharAt(allItemInfo_json.length() - 1);
+							}
+							allItemInfo_json.append("]");
 							
 							//排序
 							Collections.sort(userAcquisitionItemInfoList);
@@ -1530,7 +1537,7 @@ public class DriverAPIController extends BaseController{
 										webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");
 									}
 									webSocketSendData.append("\"value"+(k+1)+"\":\""+value+"\",");
-									info_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
+									displayItemInfo_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
 								}
 								if(webSocketSendData.toString().endsWith(",")){
 									webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
@@ -1541,13 +1548,14 @@ public class DriverAPIController extends BaseController{
 								webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
 							}
 							
-							if(info_json.toString().endsWith(",")){
-								info_json.deleteCharAt(info_json.length() - 1);
+							if(displayItemInfo_json.toString().endsWith(",")){
+								displayItemInfo_json.deleteCharAt(displayItemInfo_json.length() - 1);
 							}
-							info_json.append("]");
+							displayItemInfo_json.append("]");
 							
 							webSocketSendData.append("]");
-							webSocketSendData.append(",\"CellInfo\":"+info_json);
+							webSocketSendData.append(",\"CellInfo\":"+displayItemInfo_json);
+							webSocketSendData.append(",\"allItemInfo\":"+allItemInfo_json);
 							webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
 							webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 							webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
@@ -1578,7 +1586,8 @@ public class DriverAPIController extends BaseController{
         }
 		
 		StringBuffer webSocketSendData = new StringBuffer();
-		StringBuffer info_json = new StringBuffer();
+		StringBuffer displayItemInfo_json = new StringBuffer();
+		StringBuffer allItemInfo_json = new StringBuffer();
 
 		boolean save=false;
 		boolean alarm=false;
@@ -2240,12 +2249,14 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 							webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 							webSocketSendData.append("\"totalRoot\":[");
-							info_json.append("[");
+							displayItemInfo_json.append("[");
+							allItemInfo_json.append("[");
 							webSocketSendData.append("{\"name1\":\""+pcpDeviceInfo.getWellName()+":"+acqTime+" 在线\"},");
 							
 							//筛选
 							List<AcquisitionItemInfo> userAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 							for(int j=0;j<acquisitionItemInfoList.size();j++){
+								allItemInfo_json.append("{\"columnName\":\""+acquisitionItemInfoList.get(j).getTitle()+"\",\"column\":\""+acquisitionItemInfoList.get(j).getColumn()+"\",\"value\":\""+acquisitionItemInfoList.get(j).getValue()+"\",\"rawValue\":\""+acquisitionItemInfoList.get(j).getRawValue()+"\",\"columnDataType\":\""+acquisitionItemInfoList.get(j).getDataType()+"\",\"resolutionMode\":\""+acquisitionItemInfoList.get(j).getResolutionMode()+"\",\"alarmLevel\":"+acquisitionItemInfoList.get(j).getAlarmLevel()+"},");
 								if(StringManagerUtils.existDisplayItemCode(displayInstanceOwnItem.getItemList(), acquisitionItemInfoList.get(j).getColumn(), false,0)){
 									for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 										if(acquisitionItemInfoList.get(j).getColumn().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemCode()) && displayInstanceOwnItem.getItemList().get(k).getType()!=2){
@@ -2258,6 +2269,10 @@ public class DriverAPIController extends BaseController{
 									}
 								}
 							}
+							if(allItemInfo_json.toString().endsWith(",")){
+								allItemInfo_json.deleteCharAt(allItemInfo_json.length() - 1);
+							}
+							allItemInfo_json.append("]");
 							
 							//排序
 							Collections.sort(userAcquisitionItemInfoList);
@@ -2315,7 +2330,7 @@ public class DriverAPIController extends BaseController{
 										webSocketSendData.append("\"name"+(k+1)+"\":\""+columnName+"\",");
 									}
 									webSocketSendData.append("\"value"+(k+1)+"\":\""+value+"\",");
-									info_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
+									displayItemInfo_json.append("{\"row\":"+j+",\"col\":"+k+",\"columnName\":\""+columnName+"\",\"column\":\""+column+"\",\"value\":\""+value+"\",\"rawValue\":\""+rawValue+"\",\"columnDataType\":\""+columnDataType+"\",\"resolutionMode\":\""+resolutionMode+"\",\"alarmLevel\":"+alarmLevel+"},");
 								}
 								if(webSocketSendData.toString().endsWith(",")){
 									webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
@@ -2326,13 +2341,14 @@ public class DriverAPIController extends BaseController{
 								webSocketSendData.deleteCharAt(webSocketSendData.length() - 1);
 							}
 							
-							if(info_json.toString().endsWith(",")){
-								info_json.deleteCharAt(info_json.length() - 1);
+							if(displayItemInfo_json.toString().endsWith(",")){
+								displayItemInfo_json.deleteCharAt(displayItemInfo_json.length() - 1);
 							}
-							info_json.append("]");
+							displayItemInfo_json.append("]");
 							
 							webSocketSendData.append("]");
-							webSocketSendData.append(",\"CellInfo\":"+info_json);
+							webSocketSendData.append(",\"CellInfo\":"+displayItemInfo_json);
+							webSocketSendData.append(",\"allItemInfo\":"+allItemInfo_json);
 							webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
 							infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
 						}

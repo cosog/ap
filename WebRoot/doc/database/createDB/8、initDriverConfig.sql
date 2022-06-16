@@ -2,7 +2,7 @@
 /* 初始化TBL_ACQ_UNIT_CONF数据                                          */
 /*==============================================================*/
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (1, 'unit1', '抽油机A11采集单元', 'A11-Modbus', null);
+values (1, 'unit1', '抽油机A11采集单元', 'A11-抽油机', null);
 
 insert into TBL_ACQ_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
 values (2, 'unit2', '螺杆泵A11采集单元', 'A11-螺杆泵', null);
@@ -11,10 +11,10 @@ values (2, 'unit2', '螺杆泵A11采集单元', 'A11-螺杆泵', null);
 /* 初始化TBL_ACQ_GROUP_CONF数据                                          */
 /*==============================================================*/
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
-values (1, 'group1', '采集组', 60, 60, 'A11-Modbus', 0, null);
+values (1, 'group1', '采集组', 60, 60, 'A11-抽油机', 0, null);
 
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
-values (2, 'group2', '控制组', 0, 0, 'A11-Modbus', 1, null);
+values (2, 'group2', '控制组', 0, 0, 'A11-抽油机', 1, null);
 
 insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
 values (3, 'group3', '采集组', 60, 60, 'A11-螺杆泵', 0, null);
@@ -230,7 +230,7 @@ values (57, null, '变频设置频率', null, 4, null, '0,0,0');
 /* 初始化TBL_ALARM_UNIT_CONF数据                                          */
 /*==============================================================*/
 insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
-values (1, 'alarmunit1', 'A11-Modbus报警单元', 'A11-Modbus', null);
+values (1, 'alarmunit1', 'A11-抽油机报警单元', 'A11-抽油机', null);
 
 insert into TBL_ALARM_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, REMARK)
 values (2, 'alarmunit2', '螺杆泵A11报警单元', 'A11-螺杆泵', null);
@@ -356,7 +356,7 @@ values (38, 2, null, '停抽', 'stop', 0, 0.000, null, null, null, 60, 100, 1, 6, 
 /* 初始化TBL_DISPLAY_UNIT_CONF数据                                          */
 /*==============================================================*/
 insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK)
-values (1, 'unit1', '抽油机A11显示单元', 'A11-Modbus', 1, null);
+values (1, 'unit1', '抽油机A11显示单元', 'A11-抽油机', 1, null);
 
 insert into TBL_DISPLAY_UNIT_CONF (ID, UNIT_CODE, UNIT_NAME, PROTOCOL, ACQUNITID, REMARK)
 values (2, 'unit2', '螺杆泵A11显示单元', 'A11-螺杆泵', 2, null);

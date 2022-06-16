@@ -210,10 +210,10 @@ function websocketOnMessage(evt) {
 							record.set("commStatusName","在线");
 							record.set("commStatus",1);
 							record.set("acqTime",data.acqTime);
-							for(var j=0;j<data.CellInfo.length;j++){
+							for(var j=0;j<data.allItemInfo.length;j++){
 								for(let item in record.data){
-									if(item.toUpperCase()==data.CellInfo[j].column.toUpperCase()){
-										record.set(item,data.CellInfo[j].value);
+									if(item.toUpperCase()==data.allItemInfo[j].column.toUpperCase()){
+										record.set(item,data.allItemInfo[j].value);
 										break;
 									}
 								}
@@ -365,10 +365,10 @@ function websocketOnMessage(evt) {
 							record.set("commStatusName","在线");
 							record.set("commStatus",1);
 							record.set("acqTime",data.acqTime);
-							for(var j=0;j<data.CellInfo.length;j++){
+							for(var j=0;j<data.allItemInfo.length;j++){
 								for(let item in record.data){
-									if(item.toUpperCase()==data.CellInfo[j].column.toUpperCase()){
-										record.set(item,data.CellInfo[j].value);
+									if(item.toUpperCase()==data.allItemInfo[j].column.toUpperCase()){
+										record.set(item,data.allItemInfo[j].value);
 										break;
 									}
 								}

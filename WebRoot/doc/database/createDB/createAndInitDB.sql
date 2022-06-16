@@ -8,4 +8,5 @@
 @9、initOthers.sql
 @10、createSequences.sql
 @11、createTriggers.sql
+@12、createJobs.sql
 exit

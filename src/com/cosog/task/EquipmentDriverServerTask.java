@@ -62,7 +62,7 @@ public class EquipmentDriverServerTask {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String allOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
-		String probeUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getInit();
+		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getInit();
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
@@ -170,10 +170,10 @@ public class EquipmentDriverServerTask {
 				new ExampleDataManageThread("rpc06",10,300).start();
 				new ExampleDataManageThread("rpc07",10,360).start();
 				new ExampleDataManageThread("rpc08",10,420).start();
-//				new ExampleDataManageThread("rpc09",10,16).start();
-//				new ExampleDataManageThread("rpc10",10,18).start();
+//				new ExampleDataManageThread("rpc09",10,480).start();
+//				new ExampleDataManageThread("rpc10",10,540).start();
 				
-				new ExampleDataManageThread("pcp01",10,480).start();
+				new ExampleDataManageThread("pcp01",10,600).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -740,7 +740,7 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getProtocol();
+		String initUrl=Config.getInstance().configFile.getAd().getProtocol();
 		Gson gson = new Gson();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
@@ -920,7 +920,7 @@ public class EquipmentDriverServerTask {
 	
 	
 	public static int initInstanceConfig(List<String> instanceList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getInstance();
+		String initUrl=Config.getInstance().configFile.getAd().getInstance();
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
@@ -1039,7 +1039,7 @@ public class EquipmentDriverServerTask {
 	
 	//初始化短信实例
 	public static int initSMSInstanceConfig(List<String> instanceList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getInstance();
+		String initUrl=Config.getInstance().configFile.getAd().getInstance();
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
@@ -1092,7 +1092,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initRPCDriverAcquisitionInfoConfig(List<String> wellList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		String initUrl=Config.getInstance().configFile.getAd().getId();
 		Gson gson = new Gson();
 		int result=0;
 		
@@ -1203,7 +1203,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initRPCDriverAcquisitionInfoConfigById(List<String> wellIdList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		String initUrl=Config.getInstance().configFile.getAd().getId();
 		Gson gson = new Gson();
 		int result=0;
 		
@@ -1314,7 +1314,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initPCPDriverAcquisitionInfoConfig(List<String> wellList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		String initUrl=Config.getInstance().configFile.getAd().getId();
 		Gson gson = new Gson();
 		int result=0;
 		
@@ -1425,7 +1425,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initPCPDriverAcquisitionInfoConfigById(List<String> wellIdList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getId();
+		String initUrl=Config.getInstance().configFile.getAd().getId();
 		Gson gson = new Gson();
 		int result=0;
 		
@@ -1735,7 +1735,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int initSMSDevice(List<String> wellList,String method){
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getSMS();
+		String initUrl=Config.getInstance().configFile.getAd().getSMS();
 		Gson gson = new Gson();
 		int result=0;
 		String wellName=StringManagerUtils.joinStringArr2(wellList, ",");
@@ -1834,7 +1834,7 @@ public class EquipmentDriverServerTask {
 	
 	public static void initServerConfig() throws MalformedURLException{
 		String accessPath=Config.getInstance().configFile.getServer().getAccessPath();
-		String initUrl=Config.getInstance().configFile.getDriverConfig().getServer();
+		String initUrl=Config.getInstance().configFile.getAd().getServer();
 		StringBuffer json_buff = new StringBuffer();
 		URL url = new URL(accessPath);
 		String host=url.getHost();

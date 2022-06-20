@@ -44,7 +44,7 @@ public class CalculateDataManagerTask {
 //	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断SDK是否启动
-		String probeUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
+		String probeUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];
 		if(StringManagerUtils.checkHttpConnection(probeUrl)){
 			String sql="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
 			String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";

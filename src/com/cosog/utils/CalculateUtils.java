@@ -22,20 +22,20 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class CalculateUtils {
-	private final static String[] commUrl=Config.getInstance().configFile.getAgileCalculate().getCommunication();
-	private final static String[] runUrl=Config.getInstance().configFile.getAgileCalculate().getRun();
-	private final static String[] energyUrl=Config.getInstance().configFile.getAgileCalculate().getEnergy();
+	private final static String[] commUrl=Config.getInstance().configFile.getAc().getCommunication();
+	private final static String[] runUrl=Config.getInstance().configFile.getAc().getRun();
+	private final static String[] energyUrl=Config.getInstance().configFile.getAc().getEnergy();
 	
-	private final static String[] FESDiagramUrl=Config.getInstance().configFile.getAgileCalculate().getFESDiagram();
-	private final static String[] rpmUrl=Config.getInstance().configFile.getAgileCalculate().getPcpProduction();
+	private final static String[] FESDiagramUrl=Config.getInstance().configFile.getAc().getFESDiagram();
+	private final static String[] rpmUrl=Config.getInstance().configFile.getAc().getPcpProduction();
 	
-	private final static String[] totalUrl=Config.getInstance().configFile.getAgileCalculate().getTotalCalculation().getWell();
+	private final static String[] totalUrl=Config.getInstance().configFile.getAc().getTotalCalculation().getWell();
 	
-	private final static String[] appProbe=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp();
-	private final static String[] memProbe=Config.getInstance().configFile.getAgileCalculate().getProbe().getMem();
-	private final static String[] diskProbe=Config.getInstance().configFile.getAgileCalculate().getProbe().getDisk();
-	private final static String[] hostProbe=Config.getInstance().configFile.getAgileCalculate().getProbe().getHost();
-	private final static String[] cpuProbe=Config.getInstance().configFile.getAgileCalculate().getProbe().getCpu();
+	private final static String[] appProbe=Config.getInstance().configFile.getAc().getProbe().getApp();
+	private final static String[] memProbe=Config.getInstance().configFile.getAc().getProbe().getMem();
+	private final static String[] diskProbe=Config.getInstance().configFile.getAc().getProbe().getDisk();
+	private final static String[] hostProbe=Config.getInstance().configFile.getAc().getProbe().getHost();
+	private final static String[] cpuProbe=Config.getInstance().configFile.getAc().getProbe().getCpu();
 	
 	
 	public static CommResponseData commCalculate(String requestDataStr){

@@ -5,7 +5,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
     border: false,
     initComponent: function () {
         var me = this;
-        var RPMDailyReportPanel = Ext.create('AP.view.reportOut.RPMDailyReportPanel');
+        var RPCDailyReportPanel = Ext.create('AP.view.reportOut.RPCDailyReportPanel');
         var PCPDailyReportPanel = Ext.create('AP.view.reportOut.PCPDailyReportPanel');
         Ext.apply(me, {
             items: [{
@@ -19,7 +19,7 @@ Ext.define("AP.view.reportOut.ReportOutDailyReportView", {
                     id: 'RPCDailyReportPanel_Id',
                     layout: "fit",
                     border: false,
-                    items: [RPMDailyReportPanel]
+                    items: [RPCDailyReportPanel]
                 }, {
                     title: cosog.string.screwPump,
                     id:'PCPDailyReportPanel_Id',

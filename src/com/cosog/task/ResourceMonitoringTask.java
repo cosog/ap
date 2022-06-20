@@ -61,13 +61,13 @@ public class ResourceMonitoringTask {
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, ParseException, IOException{
-		String probeMemUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getMem();
-		String probeCPUUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getCpu();
+		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
+		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
 		
 		String adAllOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
-		String adStatusUrl=Config.getInstance().configFile.getDriverConfig().getProbe().getApp();
+		String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
 		
-		String acStatusUrl=Config.getInstance().configFile.getAgileCalculate().getProbe().getApp()[0];
+		String acStatusUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];
 		
 		int deviceAmount=getDeviceAmount();
 		

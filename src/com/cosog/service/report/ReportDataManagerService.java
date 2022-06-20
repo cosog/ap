@@ -158,11 +158,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			
-			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"",2);
- 		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"",2);
- 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"",2);
- 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"",2);
- 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"",2);
+			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"");
+ 		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"");
+ 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"");
+ 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"");
+ 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"");
  		   	
  		   	if(StringManagerUtils.stringToFloat(obj[3]+"")>0){
  		   		commTimeRecords+=1;
@@ -226,17 +226,17 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append("{\"id\":\"合计\",");
 	    result_json.append("\"wellName\":\"\",");
 		result_json.append("\"calculateDate\":\"\",");
-		result_json.append("\"commTime\":\""+sumCommTime+"\",");
+		result_json.append("\"commTime\":\""+StringManagerUtils.stringToFloat(sumCommTime+"",2)+"\",");
 		result_json.append("\"commRange\":\"\",");
 		result_json.append("\"commTimeEfficiency\":\"\",");
-		result_json.append("\"runTime\":\""+sumRunTime+"\",");
+		result_json.append("\"runTime\":\""+StringManagerUtils.stringToFloat(sumRunTime+"",2)+"\",");
 		result_json.append("\"runRange\":\"\",");
 		result_json.append("\"runTimeEfficiency\":\"\",");
 		
 		result_json.append("\"optimizationSuggestion\":\"\",");
-		result_json.append("\"liquidProduction\":\""+sumLiquidProduction+"\",");
-		result_json.append("\"oilProduction\":\""+sumOilProduction+"\",");
-		result_json.append("\"waterProduction\":\""+sumWaterProduction+"\",");
+		result_json.append("\"liquidProduction\":\""+StringManagerUtils.stringToFloat(sumLiquidProduction+"",2)+"\",");
+		result_json.append("\"oilProduction\":\""+StringManagerUtils.stringToFloat(sumOilProduction+"",2)+"\",");
+		result_json.append("\"waterProduction\":\""+StringManagerUtils.stringToFloat(sumWaterProduction+"",2)+"\",");
 		result_json.append("\"waterCut\":\"\",");
 		result_json.append("\"systemEfficiency\":\"\",");
 		result_json.append("\"energyPer100mLift\":\"\",");
@@ -425,11 +425,11 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			
-			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"",2);
- 		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"",2);
- 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"",2);
- 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"",2);
- 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"",2);
+			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"");
+ 		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"");
+ 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"");
+ 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"");
+ 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"");
  		   	
  		   	if(StringManagerUtils.stringToFloat(obj[3]+"")>0){
  		   		commTimeRecords+=1;
@@ -488,16 +488,16 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		result_json.append("{\"id\":\"合计\",");
 		result_json.append("\"wellName\":\"\",");
 		result_json.append("\"calculateDate\":\"\",");
-		result_json.append("\"commTime\":\""+sumCommTime+"\",");
+		result_json.append("\"commTime\":\""+StringManagerUtils.stringToFloat(sumCommTime+"",2)+"\",");
 		result_json.append("\"commRange\":\"\",");
 		result_json.append("\"commTimeEfficiency\":\"\",");
-		result_json.append("\"runTime\":\""+sumRunTime+"\",");
+		result_json.append("\"runTime\":\""+StringManagerUtils.stringToFloat(sumRunTime+"",2)+"\",");
 		result_json.append("\"runRange\":\"\",");
 		result_json.append("\"runTimeEfficiency\":\"\",");
 	
-		result_json.append("\"liquidProduction\":\""+sumLiquidProduction+"\",");
-		result_json.append("\"oilProduction\":\""+sumOilProduction+"\",");
-		result_json.append("\"waterProduction\":\""+sumWaterProduction+"\",");
+		result_json.append("\"liquidProduction\":\""+StringManagerUtils.stringToFloat(sumLiquidProduction+"",2)+"\",");
+		result_json.append("\"oilProduction\":\""+StringManagerUtils.stringToFloat(sumOilProduction+"",2)+"\",");
+		result_json.append("\"waterProduction\":\""+StringManagerUtils.stringToFloat(sumWaterProduction+"",2)+"\",");
 		result_json.append("\"waterCut\":\"\",");
 		result_json.append("\"rpm\":\"\",");
 		

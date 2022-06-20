@@ -13,7 +13,7 @@ viewInformation:
    copy: ""
    linkaddress: http://www.cosogoil.com
    linkshow: ""
-agileCalculate:
+ac:
    probe:
       app: 
        - http://39.99.42.182:18100/api/probe/app
@@ -58,7 +58,7 @@ agileCalculate:
    plugin: 
       wellboreTrajectory: http://39.99.42.182:18100/api/calc/plugin/2xyz
       fa2fs: http://39.99.42.182:18100/api/plugin/fa2fs
-driverConfig:
+ad:
    server: http://39.99.42.182:19200/api/init/server
    protocol: http://39.99.42.182:19200/api/init/protocol
    instance: http://39.99.42.182:19200/api/init/instance

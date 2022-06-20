@@ -2,14 +2,14 @@ package com.cosog.utils;
 
 import java.util.List;
 
-import com.cosog.utils.ConfigFile.AgileCalculate;
-import com.cosog.utils.ConfigFile.ESDiagram;
-import com.cosog.utils.ConfigFile.Inversion;
-import com.cosog.utils.ConfigFile.InversionUrl;
-import com.cosog.utils.ConfigFile.Mqtt;
-import com.cosog.utils.ConfigFile.Plugin;
-import com.cosog.utils.ConfigFile.Probe;
-import com.cosog.utils.ConfigFile.TotalCalculation;
+//import com.cosog.utils.ConfigFile.AgileCalculate;
+//import com.cosog.utils.ConfigFile.ESDiagram;
+//import com.cosog.utils.ConfigFile.Inversion;
+//import com.cosog.utils.ConfigFile.InversionUrl;
+//import com.cosog.utils.ConfigFile.Mqtt;
+//import com.cosog.utils.ConfigFile.Plugin;
+//import com.cosog.utils.ConfigFile.Probe;
+//import com.cosog.utils.ConfigFile.TotalCalculation;
 
 public class ConfigFile {
 	
@@ -17,11 +17,11 @@ public class ConfigFile {
 
     private Spring spring;
     
-    private AgileCalculate agileCalculate;
+    private AC ac;
 
     private ViewInformation viewInformation;
     
-    private DriverConfig driverConfig;
+    private AD ad;
     
     private Mqtt mqtt;
     
@@ -53,12 +53,7 @@ public class ConfigFile {
     public Others getOthers(){
         return this.others;
     }
-	public DriverConfig getDriverConfig() {
-		return driverConfig;
-	}
-	public void setDriverConfig(DriverConfig driverConfig) {
-		this.driverConfig = driverConfig;
-	}
+    
 	public Email getEmail() {
 		return email;
 	}
@@ -344,7 +339,7 @@ public class ConfigFile {
 		}
 	}
 	
-	public static class AgileCalculate
+	public static class AC
 	{
 		private Probe probe;
 		
@@ -473,7 +468,7 @@ public class ConfigFile {
 		}
 	}
 	
-	public static class DriverConfig{
+	public static class AD{
 		private String server;
 		private String protocol;
 		private String instance;
@@ -725,17 +720,23 @@ public class ConfigFile {
 			this.simulateAcqEnable = simulateAcqEnable;
 		}
 	}
-
-	public AgileCalculate getAgileCalculate() {
-		return agileCalculate;
-	}
-	public void setAgileCalculate(AgileCalculate agileCalculate) {
-		this.agileCalculate = agileCalculate;
-	}
+	
 	public Mqtt getMqtt() {
 		return mqtt;
 	}
 	public void setMqtt(Mqtt mqtt) {
 		this.mqtt = mqtt;
+	}
+	public AC getAc() {
+		return ac;
+	}
+	public void setAc(AC ac) {
+		this.ac = ac;
+	}
+	public AD getAd() {
+		return ad;
+	}
+	public void setAd(AD ad) {
+		this.ad = ad;
 	}
 }

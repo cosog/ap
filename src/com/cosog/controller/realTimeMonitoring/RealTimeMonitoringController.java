@@ -446,8 +446,8 @@ public class RealTimeMonitoringController extends BaseController {
 			
 			HttpSession session=request.getSession();
 			User user = (User) session.getAttribute("userLogin");
-			String url=Config.getInstance().configFile.getDriverConfig().getWriteAddr();
-			String readUrl=Config.getInstance().configFile.getDriverConfig().getReadAddr();
+			String url=Config.getInstance().configFile.getAd().getWriteAddr();
+			String readUrl=Config.getInstance().configFile.getAd().getReadAddr();
 			
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			

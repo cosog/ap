@@ -601,7 +601,7 @@ public class DriverAPIController extends BaseController{
 		java.lang.reflect.Type type=null;
 		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
 		int productionUnit=Config.getInstance().configFile.getOthers().getProductionUnit();
-		String url=Config.getInstance().configFile.getAgileCalculate().getFESDiagram()[0];
+		String url=Config.getInstance().configFile.getAc().getFESDiagram()[0];
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
             String[] clientInfo=item.userId.split("_");
@@ -1576,7 +1576,7 @@ public class DriverAPIController extends BaseController{
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
-		String url=Config.getInstance().configFile.getAgileCalculate().getPcpProduction()[0];
+		String url=Config.getInstance().configFile.getAc().getPcpProduction()[0];
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
             String[] clientInfo=item.userId.split("_");

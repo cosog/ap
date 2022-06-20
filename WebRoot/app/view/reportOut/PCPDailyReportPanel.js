@@ -315,12 +315,12 @@ var PCPDailyReportHelper = {
 	            pcpDailyReportHelper.hot = new Handsontable(pcpDailyReportHelper.container, {
 	                data: pcpDailyReportHelper.my_data,
 	                fixedRowsTop:3, //固定顶部多少行不能垂直滚动
-	                fixedRowsBottom: 2,//固定底部多少行不能垂直滚动
+	                fixedRowsBottom: 0,//固定底部多少行不能垂直滚动
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
 	                colHeaders: false,
 					rowHeights: [50],
-					colWidths:[50,90,75,80,100,70,80,100,70,80,80,80,80,80,80,120,80,75],
+					colWidths:[50,90,80,80,100,70,80,100,70,80,80,80,80,80,80,120,80,75],
 					stretchH: 'all',
 	                mergeCells: [
 	                    {

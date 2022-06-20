@@ -1,9 +1,9 @@
 var rpcDailyReportHelper=null
-Ext.define("AP.view.reportOut.RPMDailyReportPanel", {
+Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.RPMDailyReportPanel',
+    alias: 'widget.RPCDailyReportPanel',
     layout: 'fit',
-    id: 'RPMDailyReportPanel_view',
+    id: 'RPCDailyReportPanel_view',
     border: false,
     initComponent: function () {
         var me = this;
@@ -318,7 +318,7 @@ var RPCDailyReportHelper = {
 	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	            	data: rpcDailyReportHelper.my_data,
 	                fixedRowsTop:3, //固定顶部多少行不能垂直滚动
-	                fixedRowsBottom: 2,//固定底部多少行不能垂直滚动
+	                fixedRowsBottom: 0,//固定底部多少行不能垂直滚动
 //	                fixedColumnsLeft:1, //固定左侧多少列不能水平滚动
 	                rowHeaders: false,
 	                colHeaders: false,

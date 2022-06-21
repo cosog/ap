@@ -435,8 +435,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getDeviceHistoryData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
@@ -527,9 +526,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -763,8 +762,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getDeviceHistoryExportData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
 			jedis = new Jedis();
@@ -833,9 +831,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -963,8 +961,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getPCPDeviceHistoryData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
@@ -1045,9 +1042,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -1257,8 +1254,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getPCPDeviceHistoryExportData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
 			jedis = new Jedis();
@@ -1321,9 +1317,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
@@ -1432,7 +1428,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		Jedis jedis = new Jedis();
 		AlarmShowStyle alarmShowStyle=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
@@ -1910,7 +1906,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		UserInfo userInfo=null;
 		Set<byte[]>calItemSet=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String displayInstanceCode="";
 		String graphicSet="{}";
 		String tableName="tbl_rpcacqdata_hist";
@@ -2152,7 +2148,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String deviceTableName="tbl_rpcdevice";
 		String graphicSetTableName="tbl_rpcdevicegraphicset";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
@@ -2337,9 +2333,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
 		
-		String prodCol="liquidWeightProduction,liquidWeightProduction_L";
-		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
+		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
 		Jedis jedis = new Jedis();
 		AlarmShowStyle alarmShowStyle=null;

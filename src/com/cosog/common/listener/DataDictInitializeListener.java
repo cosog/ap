@@ -26,7 +26,7 @@ public class DataDictInitializeListener implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent event) {
-		cache=Config.getInstance().configFile.getOthers().getCache();
+		cache=Config.getInstance().configFile.getAp().getOthers().getCache();
 		if(cache){
 			StringManagerUtils.printLog("数据字典缓存启动中...");
 			ServletContext context = event.getServletContext();

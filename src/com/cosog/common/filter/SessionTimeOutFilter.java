@@ -56,7 +56,7 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 		// 国际区域
 		String browserLang = null;
 		String locale=null;
-		locale = Config.getInstance().configFile.getOthers().getLanguage();
+		locale = Config.getInstance().configFile.getAp().getOthers().getLanguage();
 		Locale l = Locale.getDefault(); 
 		if(locale==null){ 
 		l = new Locale("zh", "CN"); 

@@ -17,10 +17,10 @@ public class OracleJdbcUtis {
 	public static Connection getConnection(){  
         try{  
             
-        	String driver=Config.getInstance().configFile.getSpring().getDatasource().getDriver();
-            String url = Config.getInstance().configFile.getSpring().getDatasource().getDriverUrl(); 
-            String username = Config.getInstance().configFile.getSpring().getDatasource().getUser();
-            String password = Config.getInstance().configFile.getSpring().getDatasource().getPassword();  
+        	String driver=Config.getInstance().configFile.getAp().getDatasource().getDriver();
+            String url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
+            String username = Config.getInstance().configFile.getAp().getDatasource().getUser();
+            String password = Config.getInstance().configFile.getAp().getDatasource().getPassword();  
             Class.forName(driver).newInstance();  
             Connection conn = DriverManager.getConnection(url, username, password);  
             return conn;  

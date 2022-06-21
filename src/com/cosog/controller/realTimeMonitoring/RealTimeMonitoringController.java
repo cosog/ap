@@ -431,7 +431,7 @@ public class RealTimeMonitoringController extends BaseController {
 	public boolean DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String ID,String Slave,String itemCode,String controlValue){
 		boolean result=true;
 		try {
-			int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+			int dataSaveMode=1;
 			String columnsKey="rpcDeviceAcquisitionItemColumns";
 			int DeviceType=0;
 			if((StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300) || StringManagerUtils.stringToInteger(deviceType)==1){

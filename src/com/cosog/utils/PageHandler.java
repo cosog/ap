@@ -11,7 +11,7 @@ public class PageHandler {
 	private int priviousPage; 
 	private int pageCount; 
 	private int recordCount; 
-	private int pageSize = Config.getInstance().configFile.getOthers().getPageSize(); 
+	private int pageSize = Config.getInstance().configFile.getAp().getOthers().getPageSize(); 
 	private ResultSet rs = null;
 
 	public PageHandler() {

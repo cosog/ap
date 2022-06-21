@@ -43,10 +43,10 @@
 	<context:property-placeholder properties-ref="yamlProperties"/>
 	
 	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
-		<property name="driver" value="${spring.datasource.driver}" />
-		<property name="driverUrl" value="${spring.datasource.driverUrl}" />
-		<property name="user" value="${spring.datasource.user}" />
-		<property name="password" value="${spring.datasource.password}" />
+		<property name="driver" value="${ap.datasource.driver}" />
+		<property name="driverUrl" value="${ap.datasource.driverUrl}" />
+		<property name="user" value="${ap.datasource.user}" />
+		<property name="password" value="${ap.datasource.password}" />
 		<property name="maximumConnectionCount">
 			<value>100</value>
 		</property>
@@ -77,7 +77,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<!-- 数据库方言 -->
-				<prop key="hibernate.dialect">${spring.datasource.dialect}</prop>
+				<prop key="hibernate.dialect">${ap.datasource.dialect}</prop>
 				<!-- 控制台是否打印SQL -->
 				<prop key="hibernate.show_sql">false</prop>
 				<!-- 控制台是否格式化SQL语句显示样式 -->

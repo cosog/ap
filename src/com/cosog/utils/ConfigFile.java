@@ -13,66 +13,51 @@ import java.util.List;
 
 public class ConfigFile {
 	
-	private Server server;
+	private Ap ap;
 
-    private Spring spring;
-    
-    private AC ac;
+    private Ac ac;
 
-    private ViewInformation viewInformation;
-    
-    private AD ad;
-    
+    private Ad ad;
+
     private Mqtt mqtt;
-    
-    private Email email;
 
-    private Others others;
-
-    public void setServer(Server server){
-        this.server = server;
+    public void setAp(Ap ap){
+        this.ap = ap;
     }
-    public Server getServer(){
-        return this.server;
+    public Ap getAp(){
+        return this.ap;
     }
-    public void setSpring(Spring spring){
-        this.spring = spring;
+    public void setAc(Ac ac){
+        this.ac = ac;
     }
-    public Spring getSpring(){
-        return this.spring;
+    public Ac getAc(){
+        return this.ac;
     }
-    public void setViewInformation(ViewInformation viewInformation){
-        this.viewInformation = viewInformation;
+    public void setAd(Ad ad){
+        this.ad = ad;
     }
-    public ViewInformation getViewInformation(){
-        return this.viewInformation;
+    public Ad getAd(){
+        return this.ad;
     }
-    public void setOthers(Others others){
-        this.others = others;
+    public void setMqtt(Mqtt mqtt){
+        this.mqtt = mqtt;
     }
-    public Others getOthers(){
-        return this.others;
+    public Mqtt getMqtt(){
+        return this.mqtt;
     }
-    
-	public Email getEmail() {
-		return email;
-	}
-	public void setEmail(Email email) {
-		this.email = email;
-	}
 	
 	public static class Server
 	{
-	    private String accessPath;
-	    
-	    public void setAccessPath(String accessPath){
-	        this.accessPath = accessPath;
+	    private String url;
+
+	    public void setUrl(String url){
+	        this.url = url;
 	    }
-	    public String getAccessPath(){
-	        return this.accessPath;
+	    public String getUrl(){
+	        return this.url;
 	    }
 	}
-	
+
 	public static class Datasource
 	{
 	    private String driverUrl;
@@ -117,19 +102,7 @@ public class ConfigFile {
 	    }
 	}
 	
-	public static class Spring
-	{
-	    private Datasource datasource;
-
-	    public void setDatasource(Datasource datasource){
-	        this.datasource = datasource;
-	    }
-	    public Datasource getDatasource(){
-	        return this.datasource;
-	    }
-	}
-	
-	public static class ViewInformation
+	public static class Oem
 	{
 	    private String title;
 
@@ -173,436 +146,52 @@ public class ConfigFile {
 	    }
 	}
 	
-	public static class InversionUrl
+	public static class SnedAccount
 	{
-	    private String[] motorauto;
+	    private String account;
 
-	    private String[] motorsemiauto;
+	    private String password;
 
-	    private String[] beam;
+	    private String smtpHost;
 
-	    public void setMotorauto(String[] motorauto){
-	        this.motorauto = motorauto;
+	    private int smtpPort;
+
+	    public void setAccount(String account){
+	        this.account = account;
 	    }
-	    public String[] getMotorauto(){
-	        return this.motorauto;
+	    public String getAccount(){
+	        return this.account;
 	    }
-	    public void setMotorsemiauto(String[] motorsemiauto){
-	        this.motorsemiauto = motorsemiauto;
+	    public void setPassword(String password){
+	        this.password = password;
 	    }
-	    public String[] getMotorsemiauto(){
-	        return this.motorsemiauto;
+	    public String getPassword(){
+	        return this.password;
 	    }
-	    public void setBeam(String[] beam){
-	        this.beam = beam;
+	    public void setSmtpHost(String smtpHost){
+	        this.smtpHost = smtpHost;
 	    }
-	    public String[] getBeam(){
-	        return this.beam;
+	    public String getSmtpHost(){
+	        return this.smtpHost;
+	    }
+	    public void setSmtpPort(int smtpPort){
+	        this.smtpPort = smtpPort;
+	    }
+	    public int getSmtpPort(){
+	        return this.smtpPort;
 	    }
 	}
 	
-	public static class Inversion
+	public static class Email
 	{
-	    private boolean inversionSwitch;
+	    private SnedAccount snedAccount;
 
-	    private InversionUrl url;
-
-	    private String timerCorrectionStart;
-
-	    private String imerCorrectionEnd;
-
-	    private int timerCorrectionLimit;
-
-	    public void setInversionSwitch(boolean inversionSwitch){
-	        this.inversionSwitch = inversionSwitch;
+	    public void setSnedAccount(SnedAccount snedAccount){
+	        this.snedAccount = snedAccount;
 	    }
-	    public boolean getInversionSwitch(){
-	        return this.inversionSwitch;
+	    public SnedAccount getSnedAccount(){
+	        return this.snedAccount;
 	    }
-	    public void setUrl(InversionUrl url){
-	        this.url = url;
-	    }
-	    public InversionUrl getUrl(){
-	        return this.url;
-	    }
-	    public void setTimerCorrectionStart(String timerCorrectionStart){
-	        this.timerCorrectionStart = timerCorrectionStart;
-	    }
-	    public String getTimerCorrectionStart(){
-	        return this.timerCorrectionStart;
-	    }
-	    public void setImerCorrectionEnd(String imerCorrectionEnd){
-	        this.imerCorrectionEnd = imerCorrectionEnd;
-	    }
-	    public String getImerCorrectionEnd(){
-	        return this.imerCorrectionEnd;
-	    }
-	    public void setTimerCorrectionLimit(int timerCorrectionLimit){
-	        this.timerCorrectionLimit = timerCorrectionLimit;
-	    }
-	    public int getTimerCorrectionLimit(){
-	        return this.timerCorrectionLimit;
-	    }
-	}
-
-	public static class ESDiagram
-	{
-	    private String[] balance;
-
-	    private Inversion inversion;
-
-	    public void setBalance(String[] balance){
-	        this.balance = balance;
-	    }
-	    public String[] getBalance(){
-	        return this.balance;
-	    }
-	    public void setInversion(Inversion inversion){
-	        this.inversion = inversion;
-	    }
-	    public Inversion getInversion(){
-	        return this.inversion;
-	    }
-	}
-	
-	public static class TotalCalculation
-	{
-	    private String[] well;
-
-	    public void setWell(String[] well){
-	        this.well = well;
-	    }
-	    public String[] getWell(){
-	        return this.well;
-	    }
-	}
-	
-	public static class Probe{
-		private String[] app;
-		private String[] mem;
-		private String[] disk;
-		private String[] host;
-		private String[] cpu;
-		public String[] getApp() {
-			return app;
-		}
-		public void setApp(String[] app) {
-			this.app = app;
-		}
-		public String[] getMem() {
-			return mem;
-		}
-		public void setMem(String[] mem) {
-			this.mem = mem;
-		}
-		public String[] getDisk() {
-			return disk;
-		}
-		public void setDisk(String[] disk) {
-			this.disk = disk;
-		}
-		public String[] getHost() {
-			return host;
-		}
-		public void setHost(String[] host) {
-			this.host = host;
-		}
-		public String[] getCpu() {
-			return cpu;
-		}
-		public void setCpu(String[] cpu) {
-			this.cpu = cpu;
-		}
-		
-	}
-	
-	public static class Plugin
-	{
-		private String wellboreTrajectory;
-		
-		private String fa2fs;
-		
-		public String getWellboreTrajectory() {
-			return wellboreTrajectory;
-		}
-		
-		public void setWellboreTrajectory(String wellboreTrajectory) {
-			this.wellboreTrajectory = wellboreTrajectory;
-		}
-		
-		public String getFa2fs() {
-			return fa2fs;
-		}
-		
-		public void setFa2fs(String fa2fs) {
-			this.fa2fs = fa2fs;
-		}
-	}
-	
-	public static class AC
-	{
-		private Probe probe;
-		
-		private String[] FESDiagram;
-
-	    private String[] FSDiagram;
-
-	    private ESDiagram ESDiagram;
-
-	    private String[] pcpProduction;
-
-	    private String[] communication;
-
-	    private String[] run;
-
-	    private String[] energy;
-
-	    private TotalCalculation totalCalculation;
-	    
-	    private Plugin plugin;
-
-	    public Plugin getPlugin() {
-			return plugin;
-		}
-		public void setPlugin(Plugin plugin) {
-			this.plugin = plugin;
-		}
-		public void setFESDiagram(String[] FESDiagram){
-	        this.FESDiagram = FESDiagram;
-	    }
-	    public String[] getFESDiagram(){
-	        return this.FESDiagram;
-	    }
-	    public void setFSDiagram(String[] FSDiagram){
-	        this.FSDiagram = FSDiagram;
-	    }
-	    public String[] getFSDiagram(){
-	        return this.FSDiagram;
-	    }
-	    public void setESDiagram(ESDiagram ESDiagram){
-	        this.ESDiagram = ESDiagram;
-	    }
-	    public ESDiagram getESDiagram(){
-	        return this.ESDiagram;
-	    }
-	    public void setPcpProduction(String[] pcpProduction){
-	        this.pcpProduction = pcpProduction;
-	    }
-	    public String[] getPcpProduction(){
-	        return this.pcpProduction;
-	    }
-	    public void setCommunication(String[] communication){
-	        this.communication = communication;
-	    }
-	    public String[] getCommunication(){
-	        return this.communication;
-	    }
-	    public void setRun(String[] run){
-	        this.run = run;
-	    }
-	    public String[] getRun(){
-	        return this.run;
-	    }
-	    public void setEnergy(String[] energy){
-	        this.energy = energy;
-	    }
-	    public String[] getEnergy(){
-	        return this.energy;
-	    }
-	    public void setTotalCalculation(TotalCalculation totalCalculation){
-	        this.totalCalculation = totalCalculation;
-	    }
-	    public TotalCalculation getTotalCalculation(){
-	        return this.totalCalculation;
-	    }
-		public Probe getProbe() {
-			return probe;
-		}
-		public void setProbe(Probe probe) {
-			this.probe = probe;
-		}
-	}
-	
-	public static class DriverProbe{
-		private String init;
-		private String app;
-		private String mem;
-		private String disk;
-		private String host;
-		private String cpu;
-		public String getInit() {
-			return init;
-		}
-		public void setInit(String init) {
-			this.init = init;
-		}
-		public String getMem() {
-			return mem;
-		}
-		public void setMem(String mem) {
-			this.mem = mem;
-		}
-		public String getDisk() {
-			return disk;
-		}
-		public void setDisk(String disk) {
-			this.disk = disk;
-		}
-		public String getHost() {
-			return host;
-		}
-		public void setHost(String host) {
-			this.host = host;
-		}
-		public String getCpu() {
-			return cpu;
-		}
-		public void setCpu(String cpu) {
-			this.cpu = cpu;
-		}
-		public String getApp() {
-			return app;
-		}
-		public void setApp(String app) {
-			this.app = app;
-		}
-	}
-	
-	public static class AD{
-		private String server;
-		private String protocol;
-		private String instance;
-		private String id;
-		private String SMS;
-		private String readAddr;
-		private String writeAddr;
-		private String writeSMS;
-		private DriverProbe probe;
-		public String getServer() {
-			return server;
-		}
-		public void setServer(String server) {
-			this.server = server;
-		}
-		public String getProtocol() {
-			return protocol;
-		}
-		public void setProtocol(String protocol) {
-			this.protocol = protocol;
-		}
-		public String getId() {
-			return id;
-		}
-		public void setId(String id) {
-			this.id = id;
-		}
-		public DriverProbe getProbe() {
-			return probe;
-		}
-		public void setProbe(DriverProbe probe) {
-			this.probe = probe;
-		}
-		public String getReadAddr() {
-			return readAddr;
-		}
-		public void setReadAddr(String readAddr) {
-			this.readAddr = readAddr;
-		}
-		public String getWriteAddr() {
-			return writeAddr;
-		}
-		public void setWriteAddr(String writeAddr) {
-			this.writeAddr = writeAddr;
-		}
-		public String getInstance() {
-			return instance;
-		}
-		public void setInstance(String instance) {
-			this.instance = instance;
-		}
-		public String getSMS() {
-			return SMS;
-		}
-		public void setSMS(String sMS) {
-			SMS = sMS;
-		}
-		public String getWriteSMS() {
-			return writeSMS;
-		}
-		public void setWriteSMS(String writeSMS) {
-			this.writeSMS = writeSMS;
-		}
-	}
-	
-	public static class Mqtt
-	{
-	    private String server;
-	    
-	    private String userName;
-	    
-	    private String passWord;
-
-	    public void setServer(String server){
-	        this.server = server;
-	    }
-	    public String getServer(){
-	        return this.server;
-	    }
-		public String getUserName() {
-			return userName;
-		}
-		public void setUserName(String userName) {
-			this.userName = userName;
-		}
-		public String getPassWord() {
-			return passWord;
-		}
-		public void setPassWord(String passWord) {
-			this.passWord = passWord;
-		}
-	}
-	
-	public static class mailAccount{
-		private String account;
-		private String password;
-		private String smtpHost;
-		private String smtpPort;
-		public String getAccount() {
-			return account;
-		}
-		public void setAccount(String account) {
-			this.account = account;
-		}
-		public String getPassword() {
-			return password;
-		}
-		public void setPassword(String password) {
-			this.password = password;
-		}
-		public String getSmtpHost() {
-			return smtpHost;
-		}
-		public void setSmtpHost(String smtpHost) {
-			this.smtpHost = smtpHost;
-		}
-		public String getSmtpPort() {
-			return smtpPort;
-		}
-		public void setSmtpPort(String smtpPort) {
-			this.smtpPort = smtpPort;
-		}
-	}
-	
-	public static class Email{
-		private mailAccount snedAccount;
-
-		public mailAccount getSnedAccount() {
-			return snedAccount;
-		}
-
-		public void setSnedAccount(mailAccount snedAccount) {
-			this.snedAccount = snedAccount;
-		}
 	}
 	
 	public static class Others
@@ -620,20 +209,18 @@ public class ConfigFile {
 	    private int defaultComboxSize;
 
 	    private int defaultGraghSize;
-	    
-	    private int productionUnit;
-	    
-	    private int dataSaveMode;
-	    
+
+	    private String productionUnit;
+
 	    private boolean pcpHidden;
-	    
+
 	    private boolean showLogo;
-	    
+
 	    private boolean printLog;
-	    
+
 	    private boolean simulateAcqEnable;
 
-		private String serialnumber;
+	    private String serialnumber;
 
 	    public void setCache(boolean cache){
 	        this.cache = cache;
@@ -677,66 +264,449 @@ public class ConfigFile {
 	    public int getDefaultGraghSize(){
 	        return this.defaultGraghSize;
 	    }
+	    public void setProductionUnit(String productionUnit){
+	        this.productionUnit = productionUnit;
+	    }
+	    public String getProductionUnit(){
+	        return this.productionUnit;
+	    }
+	    public void setPcpHidden(boolean pcpHidden){
+	        this.pcpHidden = pcpHidden;
+	    }
+	    public boolean getPcpHidden(){
+	        return this.pcpHidden;
+	    }
+	    public void setShowLogo(boolean showLogo){
+	        this.showLogo = showLogo;
+	    }
+	    public boolean getShowLogo(){
+	        return this.showLogo;
+	    }
+	    public void setPrintLog(boolean printLog){
+	        this.printLog = printLog;
+	    }
+	    public boolean getPrintLog(){
+	        return this.printLog;
+	    }
+	    public void setSimulateAcqEnable(boolean simulateAcqEnable){
+	        this.simulateAcqEnable = simulateAcqEnable;
+	    }
+	    public boolean getSimulateAcqEnable(){
+	        return this.simulateAcqEnable;
+	    }
 	    public void setSerialnumber(String serialnumber){
 	        this.serialnumber = serialnumber;
 	    }
 	    public String getSerialnumber(){
 	        return this.serialnumber;
 	    }
-		public int getProductionUnit() {
-			return productionUnit;
-		}
-		public void setProductionUnit(int productionUnit) {
-			this.productionUnit = productionUnit;
-		}
-		public int getDataSaveMode() {
-			return dataSaveMode;
-		}
-		public void setDataSaveMode(int dataSaveMode) {
-			this.dataSaveMode = dataSaveMode;
-		}
-		public boolean getShowLogo() {
-			return showLogo;
-		}
-		public void setShowLogo(boolean showLogo) {
-			this.showLogo = showLogo;
-		}
-		public boolean getPrintLog() {
-			return printLog;
-		}
-		public void setPrintLog(boolean printLog) {
-			this.printLog = printLog;
-		}
-		public boolean getPcpHidden() {
-			return pcpHidden;
-		}
-		public void setPcpHidden(boolean pcpHidden) {
-			this.pcpHidden = pcpHidden;
-		}
-		public boolean getSimulateAcqEnable() {
-			return simulateAcqEnable;
-		}
-		public void setSimulateAcqEnable(boolean simulateAcqEnable) {
-			this.simulateAcqEnable = simulateAcqEnable;
-		}
 	}
 	
-	public Mqtt getMqtt() {
-		return mqtt;
+	public static class Ap
+	{
+	    private Server server;
+
+	    private Datasource datasource;
+
+	    private Oem oem;
+
+	    private Email email;
+
+	    private Others others;
+
+	    public void setServer(Server server){
+	        this.server = server;
+	    }
+	    public Server getServer(){
+	        return this.server;
+	    }
+	    public void setDatasource(Datasource datasource){
+	        this.datasource = datasource;
+	    }
+	    public Datasource getDatasource(){
+	        return this.datasource;
+	    }
+	    public void setOem(Oem oem){
+	        this.oem = oem;
+	    }
+	    public Oem getOem(){
+	        return this.oem;
+	    }
+	    public void setEmail(Email email){
+	        this.email = email;
+	    }
+	    public Email getEmail(){
+	        return this.email;
+	    }
+	    public void setOthers(Others others){
+	        this.others = others;
+	    }
+	    public Others getOthers(){
+	        return this.others;
+	    }
 	}
-	public void setMqtt(Mqtt mqtt) {
-		this.mqtt = mqtt;
+	
+	public static class AcProbe
+	{
+	    private String[] app;
+
+	    private String[] mem;
+
+	    private String[] disk;
+
+	    private String[] host;
+
+	    private String[] cpu;
+
+	    public void setApp(String[] app){
+	        this.app = app;
+	    }
+	    public String[] getApp(){
+	        return this.app;
+	    }
+	    public void setMem(String[] mem){
+	        this.mem = mem;
+	    }
+	    public String[] getMem(){
+	        return this.mem;
+	    }
+	    public void setDisk(String[] disk){
+	        this.disk = disk;
+	    }
+	    public String[] getDisk(){
+	        return this.disk;
+	    }
+	    public void setHost(String[] host){
+	        this.host = host;
+	    }
+	    public String[] getHost(){
+	        return this.host;
+	    }
+	    public void setCpu(String[] cpu){
+	        this.cpu = cpu;
+	    }
+	    public String[] getCpu(){
+	        return this.cpu;
+	    }
 	}
-	public AC getAc() {
-		return ac;
+	
+	public static class Inversion
+	{
+	    private boolean enable;
+
+	    private String[] url;
+
+	    public void setEnable(boolean enable){
+	        this.enable = enable;
+	    }
+	    public boolean getEnable(){
+	        return this.enable;
+	    }
+	    public void setUrl(String[] url){
+	        this.url = url;
+	    }
+	    public String[] getUrl(){
+	        return this.url;
+	    }
 	}
-	public void setAc(AC ac) {
-		this.ac = ac;
+	
+	public static class ESDiagram
+	{
+	    private Inversion inversion;
+
+	    public void setInversion(Inversion inversion){
+	        this.inversion = inversion;
+	    }
+	    public Inversion getInversion(){
+	        return this.inversion;
+	    }
 	}
-	public AD getAd() {
-		return ad;
+	
+	public static class TotalCalculation
+	{
+	    private String[] well;
+
+	    public void setWell(String[] well){
+	        this.well = well;
+	    }
+	    public String[] getWell(){
+	        return this.well;
+	    }
 	}
-	public void setAd(AD ad) {
-		this.ad = ad;
+	
+	public static class Plugin
+	{
+	    private String[] wellboreTrajectory;
+
+	    private String[] fa2fs;
+
+	    public void setWellboreTrajectory(String[] wellboreTrajectory){
+	        this.wellboreTrajectory = wellboreTrajectory;
+	    }
+	    public String[] getWellboreTrajectory(){
+	        return this.wellboreTrajectory;
+	    }
+	    public void setFa2fs(String[] fa2fs){
+	        this.fa2fs = fa2fs;
+	    }
+	    public String[] getFa2fs(){
+	        return this.fa2fs;
+	    }
+	}
+	
+	public static class Ac
+	{
+	    private AcProbe probe;
+
+	    private String[] FESDiagram;
+
+	    private ESDiagram ESDiagram;
+
+	    private String[] pcpProduction;
+
+	    private String[] communication;
+
+	    private String[] run;
+
+	    private String[] energy;
+
+	    private TotalCalculation totalCalculation;
+
+	    private Plugin plugin;
+
+	    public void setProbe(AcProbe probe){
+	        this.probe = probe;
+	    }
+	    public AcProbe getProbe(){
+	        return this.probe;
+	    }
+	    public void setFESDiagram(String[] FESDiagram){
+	        this.FESDiagram = FESDiagram;
+	    }
+	    public String[] getFESDiagram(){
+	        return this.FESDiagram;
+	    }
+	    public void setESDiagram(ESDiagram ESDiagram){
+	        this.ESDiagram = ESDiagram;
+	    }
+	    public ESDiagram getESDiagram(){
+	        return this.ESDiagram;
+	    }
+	    public void setPcpProduction(String[] pcpProduction){
+	        this.pcpProduction = pcpProduction;
+	    }
+	    public String[] getPcpProduction(){
+	        return this.pcpProduction;
+	    }
+	    public void setCommunication(String[] communication){
+	        this.communication = communication;
+	    }
+	    public String[] getCommunication(){
+	        return this.communication;
+	    }
+	    public void setRun(String[] run){
+	        this.run = run;
+	    }
+	    public String[] getRun(){
+	        return this.run;
+	    }
+	    public void setEnergy(String[] energy){
+	        this.energy = energy;
+	    }
+	    public String[] getEnergy(){
+	        return this.energy;
+	    }
+	    public void setTotalCalculation(TotalCalculation totalCalculation){
+	        this.totalCalculation = totalCalculation;
+	    }
+	    public TotalCalculation getTotalCalculation(){
+	        return this.totalCalculation;
+	    }
+	    public void setPlugin(Plugin plugin){
+	        this.plugin = plugin;
+	    }
+	    public Plugin getPlugin(){
+	        return this.plugin;
+	    }
+	}
+	
+	public static class AdProbe
+	{
+	    private String init;
+
+	    private String app;
+
+	    private String cpu;
+
+	    private String mem;
+
+	    private String disk;
+
+	    private String host;
+
+	    public void setInit(String init){
+	        this.init = init;
+	    }
+	    public String getInit(){
+	        return this.init;
+	    }
+	    public void setApp(String app){
+	        this.app = app;
+	    }
+	    public String getApp(){
+	        return this.app;
+	    }
+	    public void setCpu(String cpu){
+	        this.cpu = cpu;
+	    }
+	    public String getCpu(){
+	        return this.cpu;
+	    }
+	    public void setMem(String mem){
+	        this.mem = mem;
+	    }
+	    public String getMem(){
+	        return this.mem;
+	    }
+	    public void setDisk(String disk){
+	        this.disk = disk;
+	    }
+	    public String getDisk(){
+	        return this.disk;
+	    }
+	    public void setHost(String host){
+	        this.host = host;
+	    }
+	    public String getHost(){
+	        return this.host;
+	    }
+	}
+	
+	public static class Ad
+	{
+	    private String server;
+
+	    private String protocol;
+
+	    private String instance;
+
+	    private String id;
+
+	    private String SMS;
+
+	    private String readAddr;
+
+	    private String writeAddr;
+
+	    private String writeSMS;
+
+	    private AdProbe probe;
+
+	    public void setServer(String server){
+	        this.server = server;
+	    }
+	    public String getServer(){
+	        return this.server;
+	    }
+	    public void setProtocol(String protocol){
+	        this.protocol = protocol;
+	    }
+	    public String getProtocol(){
+	        return this.protocol;
+	    }
+	    public void setInstance(String instance){
+	        this.instance = instance;
+	    }
+	    public String getInstance(){
+	        return this.instance;
+	    }
+	    public void setId(String id){
+	        this.id = id;
+	    }
+	    public String getId(){
+	        return this.id;
+	    }
+	    public void setSMS(String SMS){
+	        this.SMS = SMS;
+	    }
+	    public String getSMS(){
+	        return this.SMS;
+	    }
+	    public void setReadAddr(String readAddr){
+	        this.readAddr = readAddr;
+	    }
+	    public String getReadAddr(){
+	        return this.readAddr;
+	    }
+	    public void setWriteAddr(String writeAddr){
+	        this.writeAddr = writeAddr;
+	    }
+	    public String getWriteAddr(){
+	        return this.writeAddr;
+	    }
+	    public void setWriteSMS(String writeSMS){
+	        this.writeSMS = writeSMS;
+	    }
+	    public String getWriteSMS(){
+	        return this.writeSMS;
+	    }
+	    public void setProbe(AdProbe probe){
+	        this.probe = probe;
+	    }
+	    public AdProbe getProbe(){
+	        return this.probe;
+	    }
+	}
+	
+	public static class Mqtt
+	{
+	    private String server;
+
+	    private String userName;
+
+	    private String passWord;
+
+	    private String timerCorrectionStart;
+
+	    private String imerCorrectionEnd;
+
+	    private int timerCorrectionLimit;
+
+	    public void setServer(String server){
+	        this.server = server;
+	    }
+	    public String getServer(){
+	        return this.server;
+	    }
+	    public void setUserName(String userName){
+	        this.userName = userName;
+	    }
+	    public String getUserName(){
+	        return this.userName;
+	    }
+	    public void setPassWord(String passWord){
+	        this.passWord = passWord;
+	    }
+	    public String getPassWord(){
+	        return this.passWord;
+	    }
+	    public void setTimerCorrectionStart(String timerCorrectionStart){
+	        this.timerCorrectionStart = timerCorrectionStart;
+	    }
+	    public String getTimerCorrectionStart(){
+	        return this.timerCorrectionStart;
+	    }
+	    public void setImerCorrectionEnd(String imerCorrectionEnd){
+	        this.imerCorrectionEnd = imerCorrectionEnd;
+	    }
+	    public String getImerCorrectionEnd(){
+	        return this.imerCorrectionEnd;
+	    }
+	    public void setTimerCorrectionLimit(int timerCorrectionLimit){
+	        this.timerCorrectionLimit = timerCorrectionLimit;
+	    }
+	    public int getTimerCorrectionLimit(){
+	        return this.timerCorrectionLimit;
+	    }
 	}
 }

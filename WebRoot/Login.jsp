@@ -76,7 +76,7 @@
 	<script>
 	//document.getElementById("text111111").innerHTML=cosog.string.title;
 	//$("#text111111").html("<span>aaaa</span>");
-	var viewInformation = ${configFile}.viewInformation;
+	var oem = ${configFile}.ap.oem;
 	$(function () {
 		initDisplayInformation();
 		var getUserListURL="<%=path%>/userLoginManagerController/getUserList";
@@ -100,8 +100,8 @@
 	function initDisplayInformation(){
 		
 		$("#login_userlogin").html(cosog.string.userlogin);
-		$("#login_loginInfo").html(viewInformation.profile);
-		$("#login_title").html(viewInformation.title);
+		$("#login_loginInfo").html(oem.profile);
+		$("#login_title").html(oem.title);
 		$("#login_myself").html(cosog.string.myself);
 		$("#userId").attr("placeholder", cosog.string.entername);
 		$("#userPwd").attr("placeholder", cosog.string.enterpwd);
@@ -109,9 +109,9 @@
 		$("#login_forgerpassword").html(cosog.string.forgerpassword);
 		$("#login_contact").html(cosog.string.contact);
 		$("#login_loginButton").html(cosog.string.login);
-		$("#login_copy").html(viewInformation.copy);
-		$("#login_link").text(viewInformation.linkshow);
-		$('#login_link').attr('href',viewInformation.linkaddress);
+		$("#login_copy").html(oem.copy);
+		$("#login_link").text(oem.linkshow);
+		$('#login_link').attr('href',oem.linkaddress);
 	}
 	
 	function userSelectpickerChange(obj){
@@ -232,7 +232,7 @@
         <div class="page-content height-full">
             <div class="page-brand-info vertical-align animation-slide-left hidden-xs">
                 <div class="page-brand vertical-align-middle">
-                    <ul class="list-icons hidden-sm" style="width:52%;float:right;line-height: 45px;">
+                    <ul class="list-icons hidden-sm">
                         <li style="text-indent:35px" >
                         	  <span  id= "login_loginInfo"></span>
                         </li>
@@ -253,8 +253,8 @@
                         <div class="visible-xs text-center">
                             Agile
                         </div>
-                        <h3 class="hidden-xs" style="text-align:left;margin-bottom:20px;font-size:22px;color:#009900"><span  id= "login_userlogin"></span> </h3>
-                        <h4 class="hidden-xs" style="text-align:left;margin-bottom:0px;font-size:17px;"><span  id= "login_title"></span></h4>
+                        <h3 class="hidden-xs"><span  id= "login_userlogin"></span> </h3>
+                        <h4 class="hidden-xs"><span  id= "login_title"></span></h4>
                         <!-- <p class="hidden-xs"></p> -->
                         <form id="frmlogin" class="login-form fv-form fv-form-bootstrap" method="post">
 							<div class="form-group " >

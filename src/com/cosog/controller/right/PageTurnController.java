@@ -59,9 +59,9 @@ public class PageTurnController extends BaseController {
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
 		session.setAttribute("configFile", gson.toJson(configFile));
-		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
-		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
-		session.setAttribute("showLogo", configFile.getOthers().getShowLogo());
+		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
+		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());
+		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		return "Login";
 	}
 	@RequestMapping("/toTouchLogin")
@@ -75,9 +75,9 @@ public class PageTurnController extends BaseController {
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
 		session.setAttribute("configFile", gson.toJson(configFile));
-		session.setAttribute("viewInformation", gson.toJson(configFile.getViewInformation()));
-		session.setAttribute("viewProjectName", configFile.getViewInformation().getTitle());
-		session.setAttribute("showLogo", configFile.getOthers().getShowLogo());
+		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
+		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());
+		session.setAttribute("showLogo", configFile.getAp().getOthers().getShowLogo());
 		return "app/main";
 	}
 	@RequestMapping("/toTouchMain")

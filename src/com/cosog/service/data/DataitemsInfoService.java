@@ -327,7 +327,6 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		StringBuffer weightItemIds= new StringBuffer();
 		StringBuffer volumetricItemIds= new StringBuffer();
 		int r=0;
-		int productionUnit=Config.getInstance().configFile.getOthers().getProductionUnit();//0-t/d 1-m^3/d
 		String weightItemSql="select t.dataitemid,t.sysdataid,t.cname,t.ename,t.status from TBL_DIST_ITEM t"
 				+ " where t.cname like '%t/d%'";
 		String showWeightItemSql=weightItemSql+" and t.status=1";
@@ -338,7 +337,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		int showWeightItemCount=this.getTotalCountRows(showWeightItemSql);
 		int showVolumetricItemCount=this.getTotalCountRows(showVolumetricItemSql);
 		
-		if(productionUnit==0&&showVolumetricItemCount>showWeightItemCount){//如果配置的时重量
+		if(Config.getInstance().configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")&&showVolumetricItemCount>showWeightItemCount){//如果配置的时重量
 			List<?> weightItemList = this.findCallSql(weightItemSql);
 			List<?> volumetricItemList = this.findCallSql(volumetricItemSql);
 			for(int i=0;i<volumetricItemList.size();i++){
@@ -354,7 +353,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 					}
 				}
 			}
-		}else if(productionUnit!=0&&showWeightItemCount>showVolumetricItemCount){//如果配置体积
+		}else if(showWeightItemCount>showVolumetricItemCount){//如果配置体积
 			List<?> weightItemList = this.findCallSql(weightItemSql);
 			List<?> volumetricItemList = this.findCallSql(volumetricItemSql);
 			for(int i=0;i<weightItemList.size();i++){
@@ -382,7 +381,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 		String updateVolumetricItemsSql="";
 		String updateWeightCutSql="";
 		String updateVolumetricCutSql="";
-		if(productionUnit==0&&showVolumetricItemCount>showWeightItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置的时重量
+		if(Config.getInstance().configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")&&showVolumetricItemCount>showWeightItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置的时重量
 			updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+weightItemIds+")";
 			updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+volumetricItemIds+")";
 			
@@ -390,7 +389,7 @@ public class DataitemsInfoService extends BaseService<DataitemsInfo> {
 			updateVolumetricCutSql="update TBL_DIST_ITEM t set t.status=0 where lower(t.ename)='volumewatercut'";
 			
 			
-		}else if(productionUnit!=0&&showWeightItemCount>showVolumetricItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置体积
+		}else if(showWeightItemCount>showVolumetricItemCount&&StringManagerUtils.isNotNull(weightItemIds.toString())&&StringManagerUtils.isNotNull(volumetricItemIds.toString())){//如果配置体积
 			updateWeightItemsSql="update TBL_DIST_ITEM t set t.status=0 where t.dataitemid in("+weightItemIds+")";
 			updateVolumetricItemsSql="update TBL_DIST_ITEM t set t.status=1 where t.dataitemid in("+volumetricItemIds+")";
 			

@@ -708,8 +708,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getDeviceRealTimeOverview(String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
@@ -765,9 +764,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
 		
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		
 		String sql="select t.id,t.wellname,"
@@ -1042,8 +1041,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getDeviceRealTimeOverviewExportData(String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
 			jedis = new Jedis();
@@ -1070,9 +1068,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
 		
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		
 		String sql="select t.id,t.wellname,"
@@ -1233,8 +1231,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getPCPDeviceRealTimeOverview(String orgId,String deviceName,String deviceType,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
@@ -1285,9 +1282,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
 		
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		
 		String sql="select t.id,t.wellname,"
@@ -1534,8 +1531,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	public String getPCPDeviceRealTimeOverviewExportData(String orgId,String deviceName,String deviceType,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
-		int dataSaveMode=configFile.getOthers().getDataSaveMode();
-		int productionUnit=configFile.getOthers().getProductionUnit();
+		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
 			jedis = new Jedis();
@@ -1561,9 +1557,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		
-		String prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
-		if(productionUnit!=0){
-			prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
 		}
 		
 		String sql="select t.id,t.wellname,"
@@ -1703,7 +1699,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		Jedis jedis = new Jedis();
 		AlarmShowStyle alarmShowStyle=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
@@ -2174,7 +2170,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getRPCDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String deviceTableName="tbl_rpcdevice";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		String deviceInfoKey="RPCDeviceInfo";
@@ -2472,7 +2468,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	
 	public String getPCPDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String deviceTableName="tbl_pcpdevice";
 		String columnsKey="pcpDeviceAcquisitionItemColumns";
 		String deviceInfoKey="PCPDeviceInfo";
@@ -2833,7 +2829,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		UserInfo userInfo=null;
 		Set<byte[]>calItemSet=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String displayInstanceCode="";
 		String tableName="tbl_rpcacqdata_hist";
 		String deviceTableName="tbl_rpcdevice";
@@ -3120,9 +3116,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
         StringBuffer dataSbf = new StringBuffer();
         StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
         String tableName="tbl_rpcacqdata_latest";
-        String prodCol=" liquidweightproduction";
-		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" liquidVolumetricProduction";
+        String prodCol=" liquidVolumetricProduction";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol=" liquidweightproduction";
 		}
         String sql="select well.wellName as wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
         		+ " t.pumpfsdiagram,"

@@ -615,7 +615,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		try {
 			String params = ParamUtils.getParameter(request, "params");
@@ -716,7 +716,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		PrintWriter out = response.getWriter();
 		DisplayUnitItem displayUnitItem = null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		try {
 			String params = ParamUtils.getParameter(request, "params");

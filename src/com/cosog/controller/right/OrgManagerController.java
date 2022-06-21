@@ -165,7 +165,7 @@ public class OrgManagerController extends BaseController {
 		PrintWriter pw = response.getWriter();
 		if (user != null) {
 			StringBuffer orgIdString = new StringBuffer();
-			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				Map<String, Object> map = DataModelMap.getMapObject();
 				log.warn("用户拥有的组织启用缓存...");
@@ -247,7 +247,7 @@ public class OrgManagerController extends BaseController {
 			user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 			user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
 			session.setAttribute("userLogin", user);
-			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				Map<String, Object> map = DataModelMap.getMapObject();
 				log.warn("用户拥有的组织启用缓存...");
@@ -274,7 +274,7 @@ public class OrgManagerController extends BaseController {
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
 		if (user != null) {
-			boolean expandedAll=Config.getInstance().configFile.getOthers().getExpandedAll();
+			boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
 			strBuf.append("{list:[");
 			for (Org org : list) {
 				//if (r.isParentNode(user.getUserParentOrgids().split(","), org.getOrgId())||r.hasChild(listAll, org)) {
@@ -375,7 +375,7 @@ public class OrgManagerController extends BaseController {
 		String json = "";
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
-		boolean expandedAll=Config.getInstance().configFile.getOthers().getExpandedAll();
+		boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
 		String columns=	service.showTableHeadersColumns("orgManage");
 		strBuf.append("{success:true,");
 		strBuf.append("columns:"+columns+",");

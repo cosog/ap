@@ -86,7 +86,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
 				+ " t.resultName,t.optimizationSuggestion,";
-		if(configFile.getOthers().getProductionUnit()==0){
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 		}else{
 			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
@@ -294,7 +294,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,"
 				+ " t.resultName,t.optimizationSuggestion,";
-		if(configFile.getOthers().getProductionUnit()==0){
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 		}else{
 			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
@@ -356,7 +356,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String sql="select t.id, t.wellName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
-		if(configFile.getOthers().getProductionUnit()==0){
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 		}else{
 			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
@@ -541,7 +541,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		String sql="select t.id, t.wellName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
 				+ " t.commTime,t.commRange, t.commTimeEfficiency,"
 				+ " t.runTime,t.runRange, t.runTimeEfficiency,";
-		if(configFile.getOthers().getProductionUnit()==0){
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
 		}else{
 			sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";

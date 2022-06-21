@@ -262,7 +262,7 @@ public class ReportDataMamagerController extends BaseController {
 	        //以及单元格内容为test
 	        ConfigFile configFile=Config.getInstance().configFile;
 	        String productionUnit="t/d"; 
-	        if(configFile.getOthers().getProductionUnit()==0){
+	        if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 	        	productionUnit="t/d"; 
 			}else{
 				productionUnit="m^3/d"; 
@@ -704,7 +704,7 @@ public class ReportDataMamagerController extends BaseController {
 	        //以及单元格内容为test
 	        ConfigFile configFile=Config.getInstance().configFile;
 	        String productionUnit="t/d"; 
-	        if(configFile.getOthers().getProductionUnit()==0){
+	        if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 	        	productionUnit="t/d"; 
 			}else{
 				productionUnit="m^3/d"; 

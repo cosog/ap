@@ -64,7 +64,7 @@ public class ResourceMonitoringTask {
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
 		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
 		
-		String adAllOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
+		String adAllOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
 		String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
 		
 		String acStatusUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];

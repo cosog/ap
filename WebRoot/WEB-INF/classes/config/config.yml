@@ -1,18 +1,38 @@
-server:
-   accessPath: http://127.0.0.1:16100/ap
-spring:
+ap:
+   server:
+      url: http://127.0.0.1:16100/ap
    datasource:
-      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
-      driver: oracle.jdbc.driver.OracleDriver
-      dialect: org.hibernate.dialect.Oracle10gDialect
-      user: ap
-      password: ap123#
-viewInformation:
-   title: 油气生产智能监控系统 V8.0
-   profile: 《油气生产智能监控系统 V8.0》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、组织用户管理、角色管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
-   copy: ""
-   linkaddress: http://www.cosogoil.com
-   linkshow: ""
+         driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
+         driver: oracle.jdbc.driver.OracleDriver
+         dialect: org.hibernate.dialect.Oracle10gDialect
+         user: ap
+         password: ap123#
+   oem:
+      title: 油气生产智能监控系统 V8.0
+      profile: 《油气生产智能监控系统 V8.0》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、组织用户管理、角色管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。
+      copy: ""
+      linkaddress: http://www.cosogoil.com
+      linkshow: ""
+   email:
+      snedAccount:
+         account: shfzby@126.com
+         password: CANDRMRCDLKHUKQX
+         smtpHost: smtp.126.com
+         smtpPort: 465
+   others:
+      cache: false
+      language: zh_CN
+      pageSize: 100
+      syncOrAsync: false
+      expandedAll: true
+      defaultComboxSize: 10000
+      defaultGraghSize: 60
+      productionUnit: stere #产量单位 stere-立方米 ton-吨
+      pcpHidden: false
+      showLogo: true
+      printLog: true
+      simulateAcqEnable: true
+      serialnumber: ""
 ac:
    probe:
       app: 
@@ -27,23 +47,11 @@ ac:
        - http://39.99.42.182:18100/api/probe/cpu
    FESDiagram: 
     - http://39.99.42.182:18100/api/calc/rpc/fesdiagram/pro
-   FSDiagram: 
-    - http://39.99.42.182:18100/api/calc/rpc/fsdiagram/balance/back
    ESDiagram:
-      balance: 
-       - http://39.99.42.182:18100/api/calc/rpc/esdiagram/balance/back
       inversion:
-         inversionSwitch: false
+         enable: false
          url:
-            motorauto: 
-             - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/motorauto
-            motorsemiauto: 
-             - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/motorsemiauto
-            beam: 
-             - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/beam
-         timerCorrectionStart: 06:00:00
-         imerCorrectionEnd: 21:00:00
-         timerCorrectionLimit: 1800
+          - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/motorauto
    pcpProduction: 
     - http://39.99.42.182:18100/api/calc/pcp/rpm
    communication: 
@@ -56,8 +64,10 @@ ac:
       well: 
        - http://39.99.42.182:18100/api/analy/total/well
    plugin: 
-      wellboreTrajectory: http://39.99.42.182:18100/api/calc/plugin/2xyz
-      fa2fs: http://39.99.42.182:18100/api/plugin/fa2fs
+      wellboreTrajectory: 
+       - http://39.99.42.182:18100/api/calc/plugin/2xyz
+      fa2fs: 
+       - http://39.99.42.182:18100/api/plugin/fa2fs
 ad:
    server: http://39.99.42.182:19200/api/init/server
    protocol: http://39.99.42.182:19200/api/init/protocol
@@ -78,25 +88,6 @@ mqtt:
    server: tcp://dq1c6knb.hinnotek.cn:1883
    userName: hinnotekClient1
    passWord: ZJ6m*#D4pd%b
-email:
-   snedAccount:
-      account: shfzby@126.com
-      password: CANDRMRCDLKHUKQX
-      smtpHost: smtp.126.com
-      smtpPort: 465
-others:
-   cache: false
-   language: zh_CN
-   pageSize: 100
-   syncOrAsync: false
-   expandedAll: true
-   defaultComboxSize: 10000
-   defaultGraghSize: 60
-   productionUnit: 1
-   dataSaveMode: 1
-   pcpHidden: false
-   showLogo: true
-   printLog: true
-   simulateAcqEnable: true
-   serialnumber: ""
-      
+   timerCorrectionStart: 06:00:00
+   imerCorrectionEnd: 21:00:00
+   timerCorrectionLimit: 1800

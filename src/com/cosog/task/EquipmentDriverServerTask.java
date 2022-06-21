@@ -57,11 +57,11 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
-		String allOfflineUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/allDeviceOffline";
+		String allOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
 		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getInit();
 		
 		initWellCommStatus();
@@ -133,7 +133,7 @@ public class EquipmentDriverServerTask {
 		public void run(){
 			try {
 				Thread.sleep(1000*wait);
-				String url=Config.getInstance().configFile.getServer().getAccessPath()+"/api/acq/group";
+				String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
 				
 				String path="";
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -160,7 +160,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static void exampleDataManage(){
-		if(Config.getInstance().configFile.getOthers().getSimulateAcqEnable()){
+		if(Config.getInstance().configFile.getAp().getOthers().getSimulateAcqEnable()){
 			try {
 				new ExampleDataManageThread("rpc01",10,0).start();
 				new ExampleDataManageThread("rpc02",10,60).start();
@@ -233,7 +233,7 @@ public class EquipmentDriverServerTask {
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
 		int result=0;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		Map<String,String> rpcDeviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("rpcDeviceAcquisitionItemColumns");
 		Map<String,String> pcpDeviceAcquisitionItemColumns=acquisitionItemColumnsMap.get("pcpDeviceAcquisitionItemColumns");
@@ -357,7 +357,7 @@ public class EquipmentDriverServerTask {
 	
 
 	public static int loadAcquisitionItemColumns(){
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		if(dataSaveMode==0){
 			loadAcquisitionItemAddrColumns();
 		}else{
@@ -450,7 +450,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static int loadAcquisitionItemColumns(int deviceType){
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		if(dataSaveMode==0){
 			loadAcquisitionItemAddrColumns(deviceType);
 		}else{
@@ -542,7 +542,7 @@ public class EquipmentDriverServerTask {
 				"ID"
 		};
 		int result=0;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		if(deviceType==1){
 			columnsKey="pcpDeviceAcquisitionItemColumns";
@@ -611,7 +611,7 @@ public class EquipmentDriverServerTask {
 	
 	public static int initDataDictionary(String dataDictionaryId,int deviceType){
 		int result=0;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
+		int dataSaveMode=1;
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		if(deviceType==1){
 			columnsKey="pcpDeviceAcquisitionItemColumns";
@@ -1833,7 +1833,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static void initServerConfig() throws MalformedURLException{
-		String accessPath=Config.getInstance().configFile.getServer().getAccessPath();
+		String accessPath=Config.getInstance().configFile.getAp().getServer().getUrl();
 		String initUrl=Config.getInstance().configFile.getAd().getServer();
 		StringBuffer json_buff = new StringBuffer();
 		URL url = new URL(accessPath);

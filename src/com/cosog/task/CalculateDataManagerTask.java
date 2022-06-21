@@ -47,7 +47,7 @@ public class CalculateDataManagerTask {
 		String probeUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];
 		if(StringManagerUtils.checkHttpConnection(probeUrl)){
 			String sql="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
-			String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/getBatchCalculateTime";
+			String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/getBatchCalculateTime";
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
@@ -62,7 +62,7 @@ public class CalculateDataManagerTask {
 	 * */
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/dailyCalculation";
+		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/dailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
 	
@@ -71,9 +71,9 @@ public class CalculateDataManagerTask {
 	public void discreteTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String currentDate=StringManagerUtils.getCurrentTime();
 		@SuppressWarnings("static-access")
-		String discreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
+		String discreteDailyCalculationUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/DiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("static-access")
-		String PCPDiscreteDailyCalculationUrl=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/PCPDiscreteDailyCalculation?date="+currentDate;
+		String PCPDiscreteDailyCalculationUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/PCPDiscreteDailyCalculation?date="+currentDate;
 		@SuppressWarnings("unused")
 		String result="";
 		result=StringManagerUtils.sendPostMethod(discreteDailyCalculationUrl, "","utf-8");
@@ -84,7 +84,7 @@ public class CalculateDataManagerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 //	@Scheduled(cron = "0 0/1 * * * ?")
 	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getInstance().configFile.getServer().getAccessPath()+"/calculateDataController/pubSubModelCommCalculation";
+		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/pubSubModelCommCalculation";
 		String result="";
 		result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}

@@ -266,13 +266,13 @@ public class StringManagerUtils {
     }
     
     public static void printLog(String x){
-    	if(Config.getInstance().configFile.getOthers().getPrintLog()){
+    	if(Config.getInstance().configFile.getAp().getOthers().getPrintLog()){
     		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+x);
     	}
     }
     
     public static void printLog(Object x){
-    	if(Config.getInstance().configFile.getOthers().getPrintLog()){
+    	if(Config.getInstance().configFile.getAp().getOthers().getPrintLog()){
     		System.out.println(x);
     	}
     }
@@ -3363,10 +3363,10 @@ public class StringManagerUtils {
         if (receivingAccount == null || receivingAccount.size() == 0) {
             return result;
         }
-        String myEMailAccount = Config.getInstance().configFile.getEmail().getSnedAccount().getAccount();
-        String myEMailPassword = Config.getInstance().configFile.getEmail().getSnedAccount().getPassword(); //YAOLBHNROJWHYCVX  NLEILMQVNBXGRNBT
-        String myEMailSMTPHost = Config.getInstance().configFile.getEmail().getSnedAccount().getSmtpHost();
-        String smtpPort = Config.getInstance().configFile.getEmail().getSnedAccount().getSmtpPort();
+        String myEMailAccount = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getAccount();
+        String myEMailPassword = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getPassword(); //YAOLBHNROJWHYCVX  NLEILMQVNBXGRNBT
+        String myEMailSMTPHost = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getSmtpHost();
+        String smtpPort = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getSmtpPort()+"";
         try {
             Properties properties = System.getProperties();// new Properties();
             //设置邮件服务器

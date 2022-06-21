@@ -108,9 +108,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
-		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -151,7 +151,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"resultStatus\":\""+obj[4]+"\",");
 			result_json.append("\"resultName\":\""+obj[5]+"\",");
 			
-			if(configFile.getOthers().getProductionUnit()==0){
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
 			}else{
@@ -258,9 +258,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
-		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
@@ -299,7 +299,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"acqTime\":\""+obj[3]+"\",");
 			result_json.append("\"resultStatus\":\""+obj[4]+"\",");
 			
-			if(configFile.getOthers().getProductionUnit()==0){
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[5]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[6]+"\",");
 			}else{
@@ -1211,9 +1211,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
-		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.caldate,'yyyy-mm-dd'),"
@@ -1243,7 +1243,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"resultName\":\""+obj[4]+"\",");
 			result_json.append("\"resultString\":\""+obj[5]+"\",");
 			
-			if(configFile.getOthers().getProductionUnit()==0){
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
 			}else{
@@ -1281,9 +1281,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
 		
-		String prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
-		if(configFile.getOthers().getProductionUnit()!=0){
-			prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.caldate,'yyyy-mm-dd'),"
@@ -1310,7 +1310,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[2]+"\",");
 			result_json.append("\"calDate\":\""+obj[3]+"\",");
 			
-			if(configFile.getOthers().getProductionUnit()==0){
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 				result_json.append("\"liquidWeightProduction\":\""+obj[4]+"\",");
 				result_json.append("\"oilWeightProduction\":\""+obj[5]+"\",");
 			}else{

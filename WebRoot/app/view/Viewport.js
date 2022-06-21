@@ -11,7 +11,7 @@ Ext.define('AP.view.Viewport', {
         bodyStyle:{
         	'z-index':10
         },
-        html: '<div id="imgTitle"><img id="logoImg" '+(showLogo?'':'style="display:none;"')+' src="../images/logo/logo.png" /><span id="bannertitle">' +viewInformation.title+ '</span>' +
+        html: '<div id="imgTitle"><img id="logoImg" '+(showLogo?'':'style="display:none;"')+' src="../images/logo/logo.png" /><span id="bannertitle">' +oem.title+ '</span>' +
         		"<div id='passAndExitButton'><a href='#' id='logon_a1' onclick='resetPwdFn()'><span id='logon_a1_text'>修改密码</span></a></div> " +
         		"<div id='passAndExitButton'><a href='#' id='logon_a2' onclick='userLoginOut()'><span id='logon_a2_text'>退出</span></a></div>" +
         		"<div id='passAndExitButton'><a href='#' id='logon_a3' onclick='showHelpDocumentWinFn()'><span id='logon_a3_text'>帮助</span></a></div>" +
@@ -107,7 +107,7 @@ Ext.define('AP.view.Viewport', {
         border: false,
         hidden:true,
         bodyStyle: 'background-color:#FBFBFB;',
-        html: "<div id=\"footer\">" + viewInformation.copy+"&nbsp;<a href='"+viewInformation.linkaddress+"' target='_blank'>"+viewInformation.linkshow+"</a> "+"</div>",
+        html: "<div id=\"footer\">" + oem.copy+"&nbsp;<a href='"+oem.linkaddress+"' target='_blank'>"+oem.linkshow+"</a> "+"</div>",
         height: 30
    }],
    listeners: {

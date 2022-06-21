@@ -599,8 +599,7 @@ public class DriverAPIController extends BaseController{
 	public String RPCDataProcessing(RPCDeviceInfo rpcDeviceInfo,AcqGroup acqGroup) throws Exception{
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
-		int productionUnit=Config.getInstance().configFile.getOthers().getProductionUnit();
+		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
 		String url=Config.getInstance().configFile.getAc().getFESDiagram()[0];
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
@@ -776,7 +775,7 @@ public class DriverAPIController extends BaseController{
 					for(int j=0;j<protocol.getItems().size();j++){
 						if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 							String value="";
-							String columnName=dataSaveMode==0?("addr"+protocol.getItems().get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle()));
+							String columnName=loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle());
 							
 							DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
 							
@@ -1384,7 +1383,7 @@ public class DriverAPIController extends BaseController{
 					wellBoreChartsData.append("\"stroke\":\""+rpcCalculateRequestData.getFESDiagram().getStroke()+"\",");
 					wellBoreChartsData.append("\"spm\":\""+rpcCalculateRequestData.getFESDiagram().getSPM()+"\",");
 					
-					wellBoreChartsData.append("\"liquidProduction\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit==0?rpcCalculateResponseData.getProduction().getLiquidWeightProduction():rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
+					wellBoreChartsData.append("\"liquidProduction\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?(productionUnit.equalsIgnoreCase("ton")?rpcCalculateResponseData.getProduction().getLiquidWeightProduction():rpcCalculateResponseData.getProduction().getLiquidVolumetricProduction()):"")+"\",");
 					wellBoreChartsData.append("\"resultName\":\""+(workType!=null?workType.getResultName():"")+"\",");
 					wellBoreChartsData.append("\"resultCode\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getCalculationStatus().getResultCode():"")+"\",");
 					
@@ -1575,7 +1574,6 @@ public class DriverAPIController extends BaseController{
 	public String PCPDataProcessing(PCPDeviceInfo pcpDeviceInfo,AcqGroup acqGroup) throws Exception{
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		int dataSaveMode=Config.getInstance().configFile.getOthers().getDataSaveMode();
 		String url=Config.getInstance().configFile.getAc().getPcpProduction()[0];
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
@@ -1744,7 +1742,7 @@ public class DriverAPIController extends BaseController{
 					for(int j=0;j<protocol.getItems().size();j++){
 						if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
 							String value="";
-							String columnName=dataSaveMode==0?("addr"+protocol.getItems().get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle()));
+							String columnName=loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle());
 							
 							DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
 							

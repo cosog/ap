@@ -157,7 +157,7 @@ public class UserLoginManagerController extends BaseController {
 		String clientIp=StringManagerUtils.getIpAddr(request);
 		
 		HttpSession session=request.getSession();
-		String locale=Config.getInstance().configFile.getOthers().getLanguage();
+		String locale=Config.getInstance().configFile.getAp().getOthers().getLanguage();
 		Locale l = Locale.getDefault(); 
 		
 		if(flag!=null && flag.equals("1")){
@@ -195,10 +195,10 @@ public class UserLoginManagerController extends BaseController {
 			}
 			if (user != null&&user.getUserEnable()==1) {
 				user.setPicUrl(picUrl);// 通过session传到前台
-				int pageSize = Config.getInstance().configFile.getOthers().getPageSize();
-				boolean SyncOrAsync=Config.getInstance().configFile.getOthers().getSyncOrAsync();
-				int defaultComboxSize=Config.getInstance().configFile.getOthers().getDefaultComboxSize();
-				int defaultGraghSize=Config.getInstance().configFile.getOthers().getDefaultGraghSize();
+				int pageSize = Config.getInstance().configFile.getAp().getOthers().getPageSize();
+				boolean SyncOrAsync=Config.getInstance().configFile.getAp().getOthers().getSyncOrAsync();
+				int defaultComboxSize=Config.getInstance().configFile.getAp().getOthers().getDefaultComboxSize();
+				int defaultGraghSize=Config.getInstance().configFile.getAp().getOthers().getDefaultGraghSize();
 				user.setPageSize(pageSize + "");
 				user.setSyncOrAsync(SyncOrAsync+"");
 				user.setDefaultComboxSize(defaultComboxSize+"");

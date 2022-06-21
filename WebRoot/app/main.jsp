@@ -29,11 +29,11 @@
 <meta name="renderer" content="webkit">
 <script> 
  var user_ = "${userLogin.userNo}";
- var viewInformation = ${configFile}.viewInformation;
+ var oem = ${configFile}.ap.oem;
  
- var productionUnit = ${configFile}.others.productionUnit;
- var pcpHidden = ${configFile}.others.pcpHidden;
- var showLogo = ${configFile}.others.showLogo;
+ var productionUnit = ${configFile}.ap.others.productionUnit;
+ var pcpHidden = ${configFile}.ap.others.pcpHidden;
+ var showLogo = ${configFile}.ap.others.showLogo;
  var userAccount="${userLogin.userId}";
  if (user_ == null || "" == (user_)) {
 	 window.location.href = "../login/toLogin";

@@ -31,10 +31,10 @@ public class JDBCUtil {
     
     static{  
         try {
-        	driverClassName=Config.getInstance().configFile.getSpring().getDatasource().getDriver();
-        	url = Config.getInstance().configFile.getSpring().getDatasource().getDriverUrl(); 
-        	userName = Config.getInstance().configFile.getSpring().getDatasource().getUser();
-        	password = Config.getInstance().configFile.getSpring().getDatasource().getPassword();  
+        	driverClassName=Config.getInstance().configFile.getAp().getDatasource().getDriver();
+        	url = Config.getInstance().configFile.getAp().getDatasource().getDriverUrl(); 
+        	userName = Config.getInstance().configFile.getAp().getDatasource().getUser();
+        	password = Config.getInstance().configFile.getAp().getDatasource().getPassword();  
             Class.forName(driverClassName);  
         } catch (ClassNotFoundException e) {  
             logger.error("数据库驱动类加载异常："+e.getMessage(),e);  

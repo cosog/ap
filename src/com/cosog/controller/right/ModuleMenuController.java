@@ -122,7 +122,7 @@ public class ModuleMenuController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		if (user != null) {
-			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				log.warn("后台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
@@ -187,7 +187,7 @@ public class ModuleMenuController extends BaseController {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
 		if (user != null) {
-			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				log.warn("前台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
@@ -242,7 +242,7 @@ public class ModuleMenuController extends BaseController {
 		User user = (User) session.getAttribute("userLogin");
 		String parentNodeId=ParamUtils.getParameter(request, "tid");
 		if (user != null) {
-			boolean cache = Config.getInstance().configFile.getOthers().getCache();
+			boolean cache = Config.getInstance().configFile.getAp().getOthers().getCache();
 			if (cache) {
 				log.warn("前台左侧的功能模块树启用缓存...");
 				Map<String, Object> map = DataModelMap.getMapObject();
@@ -273,7 +273,7 @@ public class ModuleMenuController extends BaseController {
 		StringBuffer strBuf = new StringBuffer();
 		MainModuleRecursion r = new MainModuleRecursion();
 		if (user != null) {
-			boolean expandedAll=Config.getInstance().configFile.getOthers().getExpandedAll();
+			boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
 			strBuf.append("{list:[");
 			for (Module org : list) {
 				//if (r.hasChild(listAll, org)) {

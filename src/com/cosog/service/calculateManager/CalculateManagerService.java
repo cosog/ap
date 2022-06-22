@@ -119,7 +119,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ prodCol
 			+ "t.productiondata"
 			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
-			+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+			+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
@@ -137,7 +137,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"start_date\":\""+startDate+"\",");
+		result_json.append("\"end_date\":\""+endDate+"\",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String productionData=obj[8].toString();
@@ -268,7 +272,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ prodCol
 			+ "t.productiondata"
 			+ " from viw_pcp_calculatemain t where t.orgid in("+orgId+") "
-			+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+			+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
@@ -286,7 +290,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"start_date\":\""+startDate+"\",");
+		result_json.append("\"end_date\":\""+endDate+"\",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			String productionData=obj[7].toString();
@@ -996,7 +1004,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String updateSql="update "+tableName+" t "
 				+ " set (productiondata,resultstatus)"
 				+ "=(select t2.productiondata,2 from "+deviceTableName+" t2 where t2.id=t.wellid) "
-				+ " where t."+acqTimeColumn+" between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+				+ " where t."+acqTimeColumn+" between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(calculateSign)){
 			updateSql+=" and t.resultstatus in ("+calculateSign+")";
 		}

@@ -19,9 +19,14 @@ html {
 
 #login_userlogin {
     text-align: left;
-    margin-bottom: 20px;
     font-size: 22px;
     color: #009900;
+}
+
+#login_title {
+    text-align: left;
+    font-size: 17px;
+    color: #76838f;
 }
 
 #login_loginButton {
@@ -29,12 +34,6 @@ html {
     color: #fff;
     background-color: #337ab7;
     border-color: #2e6da4;
-}
-
-#login_title {
-    text-align: left;
-    margin-bottom: 0px;
-    font-size: 17px;
 }
 
 .page-login:before {

@@ -211,7 +211,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 width: 90,
                 format: 'Y-m-d ',
                 id: 'PCPCalculateMaintainingStartDate_Id',
-                value: new Date(),
+                value: '',
                 listeners: {
                 	select: function (combo, record, index) {
                 		calculateSignComb.clearValue();
@@ -239,6 +239,69 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                     }
                 }
             },{
+            	xtype: 'numberfield',
+            	id: 'PCPCalculateMaintainingStartTime_Hour_Id',
+                fieldLabel: '时',
+                labelWidth: 15,
+                width: 60,
+                minValue: 0,
+                maxValue: 23,
+                value:'',
+                msgTarget: 'none',
+                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+                listeners: {
+                	blur: function (field, event, eOpts) {
+                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                		var flag=r.test(field.value);
+                		if(!flag){
+                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                			field.focus(true, 100);
+                		}
+                    }
+                }
+            },{
+            	xtype: 'numberfield',
+            	id: 'PCPCalculateMaintainingStartTime_Minute_Id',
+                fieldLabel: '分',
+                labelWidth: 15,
+                width: 60,
+                minValue: 0,
+                maxValue: 59,
+                value:'',
+                msgTarget: 'none',
+                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                listeners: {
+                	blur: function (field, event, eOpts) {
+                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                		var flag=r.test(field.value);
+                		if(!flag){
+                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                			field.focus(true, 100);
+                		}
+                    }
+                }
+            },{
+            	xtype: 'numberfield',
+            	id: 'PCPCalculateMaintainingStartTime_Second_Id',
+                fieldLabel: '秒',
+                labelWidth: 15,
+                width: 60,
+                minValue: 0,
+                maxValue: 59,
+                value:'',
+                msgTarget: 'none',
+                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                listeners: {
+                	blur: function (field, event, eOpts) {
+                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                		var flag=r.test(field.value);
+                		if(!flag){
+                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                			field.focus(true, 100);
+                		}
+                    }
+                }
+            },{
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '至',
@@ -246,7 +309,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 width: 105,
                 format: 'Y-m-d ',
                 id: 'PCPCalculateMaintainingEndDate_Id',
-                value: new Date(),
+                value: '',
                 listeners: {
                 	select: function (combo, record, index) {
                 		calculateSignComb.clearValue();
@@ -273,6 +336,69 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             			}
                     }
                 }
+            },{
+            	xtype: 'numberfield',
+            	id: 'PCPCalculateMaintainingEndTime_Hour_Id',
+                fieldLabel: '时',
+                labelWidth: 15,
+                width: 60,
+                minValue: 0,
+                maxValue: 23,
+                value:'',
+                msgTarget: 'none',
+                regex:/^(2[0-3]|[0-1]?\d|\*|-|\/)$/,
+                listeners: {
+                	blur: function (field, event, eOpts) {
+                		var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                		var flag=r.test(field.value);
+                		if(!flag){
+                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                			field.focus(true, 100);
+                		}
+                    }
+                }
+            },{
+            	xtype: 'numberfield',
+            	id: 'PCPCalculateMaintainingEndTime_Minute_Id',
+                fieldLabel: '分',
+                labelWidth: 15,
+                width: 60,
+                minValue: 0,
+                maxValue: 59,
+                value:'',
+                msgTarget: 'none',
+                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                listeners: {
+                	blur: function (field, event, eOpts) {
+                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                		var flag=r.test(field.value);
+                		if(!flag){
+                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                			field.focus(true, 100);
+                		}
+                    }
+                }
+            },{
+            	xtype: 'numberfield',
+            	id: 'PCPCalculateMaintainingEndTime_Second_Id',
+                fieldLabel: '秒',
+                labelWidth: 15,
+                width: 60,
+                minValue: 0,
+                maxValue: 59,
+                value:'',
+                msgTarget: 'none',
+                regex:/^[1-5]?\d([\/-][1-5]?\d)?$/,
+                listeners: {
+                	blur: function (field, event, eOpts) {
+                		var r = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                		var flag=r.test(field.value);
+                		if(!flag){
+                			Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                			field.focus(true, 100);
+                		}
+                    }
+                }
             },"-",calculateSignComb,'-',{
                 xtype: 'button',
                 iconCls: 'note-refresh',
@@ -282,6 +408,45 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 handler: function (v, o) {
                 	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
         			if(activeId=="PCPCalculateMaintainingPanel"){
+        				var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                    	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                    	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
+                    	if(!r.test(startTime_Hour)){
+                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                    		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
+                    		return;
+                    	}
+                    	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
+                    	if(!r2.test(startTime_Minute)){
+                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                    		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
+                    		return;
+                    	}
+                    	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
+                    	if(!r2.test(startTime_Second)){
+                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                    		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
+                    		return;
+                    	}
+                    	
+                    	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
+                    	if(!r.test(endTime_Hour)){
+                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                    		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
+                    		return;
+                    	}
+                    	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
+                    	if(!r2.test(endTime_Minute)){
+                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                    		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
+                    		return;
+                    	}
+                    	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
+                    	if(!r2.test(endTime_Second)){
+                    		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                    		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
+                    		return;
+                    	}
         				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
         				if (isNotVal(bbar)) {
         					if(bbar.getStore().isEmptyStore){
@@ -319,10 +484,56 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 iconCls: 'save',
                 id:'PCPCalculateMaintainingLinkedDataBtn',
                 handler: function (v, o) {
+                	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                	var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
+                	if(!r.test(startTime_Hour)){
+                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                		Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').focus(true, 100);
+                		return;
+                	}
+                	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
+                	if(!r2.test(startTime_Minute)){
+                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                		Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').focus(true, 100);
+                		return;
+                	}
+                	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
+                	if(!r2.test(startTime_Second)){
+                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                		Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').focus(true, 100);
+                		return;
+                	}
+                	
+                	var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
+                	if(!r.test(endTime_Hour)){
+                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                		Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').focus(true, 100);
+                		return;
+                	}
+                	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
+                	if(!r2.test(endTime_Minute)){
+                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                		Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').focus(true, 100);
+                		return;
+                	}
+                	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
+                	if(!r2.test(endTime_Second)){
+                		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                		Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').focus(true, 100);
+                		return;
+                	}
+                	
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                     var wellName=Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').getValue();
                     var startDate=Ext.getCmp('PCPCalculateMaintainingStartDate_Id').rawValue;
+                    var startTime_Hour=Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').getValue();
+                	var startTime_Minute=Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').getValue();
+                	var startTime_Second=Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').getValue();
                     var endDate=Ext.getCmp('PCPCalculateMaintainingEndDate_Id').rawValue;
+                    var endTime_Hour=Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').getValue();
+                	var endTime_Minute=Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').getValue();
+                	var endTime_Second=Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').getValue();
                     var calculateSign=Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').getValue();
                     var deviceType=1;
                     var showWellName=wellName;
@@ -335,7 +546,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 	}else{
 //                		showWellName+='井';
                 	}
-                	var operaName="生效范围："+showWellName+" "+startDate+"~"+endDate+" </br><font color=red>该操作将导致所选历史数据被当前生产数据覆盖，是否执行！</font>"
+                	var operaName="生效范围："+showWellName+" "+getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second)+"~"+getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second)+" </br><font color=red>该操作将导致所选历史数据被当前生产数据覆盖，是否执行！</font>"
                 	Ext.Msg.confirm("操作确认", operaName, function (btn) {
                         if (btn == "yes") {
                         	Ext.Ajax.request({
@@ -360,8 +571,8 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
         	            		params: {
         	            			orgId: orgId,
         	            			wellName: wellName,
-        	                        startDate:startDate,
-        	                        endDate:endDate,
+        	                        startDate:getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),
+        	                        endDate:getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),
         	                        calculateSign:calculateSign,
         	                        deviceType:deviceType
         	                    }
@@ -797,7 +1008,7 @@ function ReTotalRPMData(){
     		success:function(response) {
     			Ext.getCmp("PCPTotalCalculateMaintainingPanel").getEl().unmask();
     			Ext.MessageBox.alert("信息","重新计算完成。");
-                Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
+                Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id").getStore().loadPage(1);
     		},
     		failure:function(){
     			Ext.MessageBox.alert("信息","请求失败");

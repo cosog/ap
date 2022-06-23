@@ -18,10 +18,22 @@ public class SerializeObjectUnils {
             bai = new ByteArrayOutputStream();
             obi = new ObjectOutputStream(bai);
             obi.writeObject(obj);
+            obi.flush();
             byte[] byt = bai.toByteArray();
             return byt;
         } catch (IOException e) {
             e.printStackTrace();
+        } finally{
+        	try {
+        		bai.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+            try {
+            	obi.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
         return null;
     }
@@ -37,6 +49,17 @@ public class SerializeObjectUnils {
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally{
+        	try {
+        		bis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+            try {
+            	oii.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
 
         return null;

@@ -15,6 +15,8 @@ public class InitInstance {
     
     private String CtrlProtocolType;
     
+    private boolean PrefixSuffixHex;
+    
     private String SignInPrefix;
     
     private String SignInSuffix;
@@ -137,6 +139,14 @@ public class InitInstance {
 
 	public void setCtrlGroup(List<Group> ctrlGroup) {
 		CtrlGroup = ctrlGroup;
+	}
+
+	public boolean getPrefixSuffixHex() {
+		return PrefixSuffixHex;
+	}
+
+	public void setPrefixSuffixHex(boolean prefixSuffixHex) {
+		PrefixSuffixHex = prefixSuffixHex;
 	}
 	
 }

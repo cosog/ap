@@ -462,12 +462,6 @@ var grantAcquisitionItemsPermission = function () {
             	var itemName = driverConfigItemsData[index][2];
             	var itemAddr = driverConfigItemsData[index][3];
             	var resolutionMode = driverConfigItemsData[index][6];
-//            	var itemShowLevel = driverConfigItemsData[index][7];
-//            	var itemSort = driverConfigItemsData[index][8];
-//            	var isRealtimeCurve=driverConfigItemsData[index][9];
-//            	var realtimeCurveColor=driverConfigItemsData[index][10];
-//            	var isHistoryCurve=driverConfigItemsData[index][11];
-//            	var historyCurveColor=driverConfigItemsData[index][12];
             	var bitIndex=driverConfigItemsData[index][7];
                 
                 addjson.push(itemName);

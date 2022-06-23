@@ -41,7 +41,7 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_COD
 values (34, 31, '井名信息', '井名信息', 'AP.view.well.DeviceManagerInfoView', 'WellInformation', 2040100, null, null, 'wellInformation', 0, 'AP.controller.well.WellInfoController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
-values (2118, 31, '抽油机信息', '抽油机信息', 'AP.view.well.PumpingModelInfoPanel', 'PumpingModelManager', 2040300, null, null, 'pumping', 0, 'AP.controller.well.WellInfoController');
+values (2118, 31, '抽油机设备', '抽油机设备', 'AP.view.well.PumpingModelInfoPanel', 'PumpingModelManager', 2040300, null, null, 'pumping', 0, 'AP.controller.well.WellInfoController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (2078, 31, '短信设备', '短信设备管理', 'AP.view.well.SMSDeviceInfoView', 'SMSDeviceManager', 2040400, null, null, 'smsDevice', 0, 'AP.controller.well.WellInfoController');

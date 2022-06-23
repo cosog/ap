@@ -1650,7 +1650,7 @@ public class BaseDao extends HibernateDaoSupport {
 						productionData.getPump().setBarrelLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()));
 						productionData.getPump().setBarrelSeries(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries()));
 						productionData.getPump().setRotorDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRotorDiameter())*0.001));
-						productionData.getPump().setQPR((float) (StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getQPR())));
+						productionData.getPump().setQPR((float) (StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getQPR())*0.001*0.001));
 						
 						productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
 						productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));

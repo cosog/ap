@@ -2,11 +2,11 @@ ap:
    server:
       url: http://127.0.0.1:16100/ap
    datasource:
-         driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
-         driver: oracle.jdbc.driver.OracleDriver
-         dialect: org.hibernate.dialect.Oracle10gDialect
-         user: ap
-         password: ap123#
+      driverUrl: jdbc:oracle:thin:@127.0.0.1:1521:orcl
+      driver: oracle.jdbc.driver.OracleDriver
+      dialect: org.hibernate.dialect.Oracle10gDialect
+      user: ap
+      password: ap123#
    oem:
       title: 油气生产智能监控系统 V8.0
       profile: 《油气生产智能监控系统 V8.0》主要在采集、控制的基础上，侧重油井智能分析。模块主要包括实时监控、历史查询、生产报表、故障查询、日志查询、计算维护、驱动配置、组织用户管理、角色管理、设备管理、系统配置等。系统应用大数据分析方法，对工况、产量、液面、平衡、能耗等生产关键指标进行统计分析，及时发现生产不正常井，挖掘生产潜力井，提升对目标区块和单井的管控能力。

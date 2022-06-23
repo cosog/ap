@@ -7,6 +7,7 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -182,8 +183,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
+		long time1 = new Date().getTime();
 		try{
 			jedis = new Jedis();
+			long time2 = new Date().getTime();
+			System.out.println("连接redis耗时："+(time2-time1));
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -196,8 +200,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(!jedis.exists("RPCWorkType".getBytes())){
 				MemoryDataManagerTask.loadRPCWorkType();
 			}
-			
+			long time3 = new Date().getTime();
 			deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+			long time4 = new Date().getTime();
+			System.out.println("取出设备列表耗时："+(time4-time3));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -247,9 +253,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("]");
 		}else{
 			if(deviceInfoByteList!=null){
+				long time5 = new Date().getTime();
 				Map<Integer,Integer> totalMap=new TreeMap<Integer,Integer>();
 				for(int i=0;i<deviceInfoByteList.size();i++){
+					long time8 = new Date().getTime();
 					Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+					long time9 = new Date().getTime();
+					System.out.println("反序列化耗时："+(time9-time8));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
 						if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
@@ -262,6 +272,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 				}
+				long time6 = new Date().getTime();
+				System.out.println("遍历统计耗时："+(time6-time5));
 				
 				int index=1;
 				result_json.append("\"totalCount\":"+totalMap.size()+",");
@@ -283,6 +295,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
 				result_json.append("]");
+				long time7 = new Date().getTime();
+				System.out.println("遍历统计后的map耗时："+(time7-time6));
 			}
 		}
 		

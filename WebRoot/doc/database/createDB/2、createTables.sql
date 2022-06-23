@@ -551,23 +551,24 @@ alter table TBL_PROTOCOLSMSINSTANCE add constraint PK_PROTOCOLSMSINSTANCE primar
 /*==============================================================*/
 create table TBL_RPCDEVICE
 (
-  id                   NUMBER(10) not null,
-  orgid                NUMBER(10) not null,
-  wellname             VARCHAR2(200) not null,
-  devicetype           NUMBER(3) default 101,
-  applicationscenarios NUMBER(2) default 0,
-  signinid             VARCHAR2(200),
-  slave                VARCHAR2(200),
-  instancecode         VARCHAR2(50),
-  alarminstancecode    VARCHAR2(50),
-  displayinstancecode  VARCHAR2(50)
-  videourl             VARCHAR2(400),
-  productiondata       VARCHAR2(4000) default '{}',
-  pumpingmodelid       NUMBER(10),
-  stroke               NUMBER(8,2),
-  balanceinfo          VARCHAR2(400),
-  status               NUMBER(1) default 1,
-  sortnum              NUMBER(10) default 9999
+  id                       NUMBER(10) not null,
+  orgid                    NUMBER(10) not null,
+  wellname                 VARCHAR2(200) not null,
+  devicetype               NUMBER(3) default 101,
+  applicationscenarios     NUMBER(2) default 0,
+  signinid                 VARCHAR2(200),
+  slave                    VARCHAR2(200),
+  instancecode             VARCHAR2(50),
+  alarminstancecode        VARCHAR2(50),
+  displayinstancecode      VARCHAR2(50)
+  videourl                 VARCHAR2(400),
+  productiondata           VARCHAR2(4000) default '{}',
+  productiondataupdatetime DATE,
+  pumpingmodelid           NUMBER(10),
+  stroke                   NUMBER(8,2),
+  balanceinfo              VARCHAR2(400),
+  status                   NUMBER(1) default 1,
+  sortnum                  NUMBER(10) default 9999
 )
 tablespace AP_JF_DATA
   storage
@@ -585,20 +586,21 @@ alter table TBL_RPCDEVICE add constraint PK_RPCDEVICE primary key (ID)
 /*==============================================================*/
 create table TBL_PCPDEVICE
 (
-  id                   NUMBER(10) not null,
-  orgid                NUMBER(10) not null,
-  wellname             VARCHAR2(200) not null,
-  devicetype           NUMBER(3) default 201,
-  applicationscenarios NUMBER(2),
-  signinid             VARCHAR2(200),
-  slave                VARCHAR2(200),
-  instancecode         VARCHAR2(50),
-  alarminstancecode    VARCHAR2(50),
-  displayinstancecode  VARCHAR2(50)
-  videourl             VARCHAR2(400),
-  productiondata       VARCHAR2(4000) default '{}',
-  status               NUMBER(1) default 1,
-  sortnum              NUMBER(10) default 9999
+  id                       NUMBER(10) not null,
+  orgid                    NUMBER(10) not null,
+  wellname                 VARCHAR2(200) not null,
+  devicetype               NUMBER(3) default 201,
+  applicationscenarios     NUMBER(2),
+  signinid                 VARCHAR2(200),
+  slave                    VARCHAR2(200),
+  instancecode             VARCHAR2(50),
+  alarminstancecode        VARCHAR2(50),
+  displayinstancecode      VARCHAR2(50)
+  videourl                 VARCHAR2(400),
+  productiondata           VARCHAR2(4000) default '{}',
+  productiondataupdatetime DATE,
+  status                   NUMBER(1) default 1,
+  sortnum                  NUMBER(10) default 9999
 )
 tablespace AP_JF_DATA
   storage

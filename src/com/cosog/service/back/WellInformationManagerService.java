@@ -802,7 +802,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(deviceType>=200&&deviceType<300){
 			tableName="tbl_pcpdevice";
 		}
-		String sql = "update "+tableName+" t set t.productiondata='"+deviceProductionData+"' where t.id="+deviceId;
+		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String sql = "update "+tableName+" t set t.productiondata='"+deviceProductionData+"',t.productiondataupdatetime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss') where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -1946,14 +1947,16 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 			deviceTableName="tbl_pcpdevice";
 		}
-		String sql = "select t.productiondata "
+		String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from "+deviceTableName+" t "
 				+ " where t.id="+deviceId;
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
 		if(list.size()>0){
-			String productionData=list.get(0).toString();
+			Object[] obj = (Object[]) list.get(0);
+			String productionData=obj[0]+"";
+			String updateTime=obj[1]+"";
 			if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){
 				type = new TypeToken<RPCProductionData>() {}.getType();
 				RPCProductionData rpcProductionData=gson.fromJson(productionData, type);
@@ -1993,11 +1996,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":14,\"itemName\":\"泵类型\",\"itemValue\":\""+pumpType+"\"},");
 					result_json.append("{\"id\":15,\"itemName\":\"泵筒类型\",\"itemValue\":\""+barrelType+"\"},");
 					result_json.append("{\"id\":16,\"itemName\":\"泵级别\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPumpGrade():"")+"\"},");
-					result_json.append("{\"id\":17,\"itemName\":\"泵径(mm)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPumpBoreDiameter():"")+"\"},");
+					result_json.append("{\"id\":17,\"itemName\":\"泵径(mm)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?(rpcProductionData.getPump().getPumpBoreDiameter()*1000):"")+"\"},");
 					result_json.append("{\"id\":18,\"itemName\":\"柱塞长(m)\",\"itemValue\":\""+(rpcProductionData.getPump()!=null?rpcProductionData.getPump().getPlungerLength():"")+"\"},");
 					
-					result_json.append("{\"id\":19,\"itemName\":\"油管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0?rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter():"")+"\"},");
-					result_json.append("{\"id\":20,\"itemName\":\"套管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0?rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter():"")+"\"},");
+					result_json.append("{\"id\":19,\"itemName\":\"油管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0?(rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
+					result_json.append("{\"id\":20,\"itemName\":\"套管内径(mm)\",\"itemValue\":\""+(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0?(rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
 					
 					String rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 					String rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -2006,26 +2009,26 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					if(rpcProductionData.getRodString()!=null&&rpcProductionData.getRodString().getEveryRod()!=null&&rpcProductionData.getRodString().getEveryRod().size()>0){
 						if(rpcProductionData.getRodString().getEveryRod().size()>0){
 							rodGrade1=rpcProductionData.getRodString().getEveryRod().get(0).getGrade();
-							rodOutsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()+"";
-							rodInsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()+"";
+							rodOutsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
+							rodInsideDiameter1=rpcProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
 							rodLength1=rpcProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 						}
 						if(rpcProductionData.getRodString().getEveryRod().size()>1){
 							rodGrade2=rpcProductionData.getRodString().getEveryRod().get(1).getGrade();
-							rodOutsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()+"";
-							rodInsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()+"";
+							rodOutsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
+							rodInsideDiameter2=rpcProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
 							rodLength2=rpcProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 						}
 						if(rpcProductionData.getRodString().getEveryRod().size()>2){
 							rodGrade3=rpcProductionData.getRodString().getEveryRod().get(2).getGrade();
-							rodOutsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()+"";
-							rodInsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()+"";
+							rodOutsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
+							rodInsideDiameter3=rpcProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
 							rodLength3=rpcProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 						}
 						if(rpcProductionData.getRodString().getEveryRod().size()>3){
 							rodGrade4=rpcProductionData.getRodString().getEveryRod().get(3).getGrade();
-							rodOutsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()+"";
-							rodInsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()+"";
+							rodOutsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
+							rodInsideDiameter4=rpcProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
 							rodLength4=rpcProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 						}
 					}
@@ -2049,7 +2052,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
 					result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
 					
-					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"}");
+					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
 				}else{
 					result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2097,8 +2100,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
 					
-					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"}");
+					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
 				}
+				result_json.append("{\"id\":38,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 			}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 				type = new TypeToken<PCPProductionData>() {}.getType();
 				PCPProductionData pcpProductionData=gson.fromJson(productionData, type);
@@ -2121,11 +2125,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					
 					result_json.append("{\"id\":14,\"itemName\":\"泵筒长(m)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelLength():"")+"\"},");
 					result_json.append("{\"id\":15,\"itemName\":\"泵级数\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getBarrelSeries():"")+"\"},");
-					result_json.append("{\"id\":16,\"itemName\":\"转子直径(mm)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getRotorDiameter():"")+"\"},");
-					result_json.append("{\"id\":17,\"itemName\":\"公称排量(ml/转)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?pcpProductionData.getPump().getQPR():"")+"\"},");
+					result_json.append("{\"id\":16,\"itemName\":\"转子直径(mm)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getRotorDiameter()*1000):"")+"\"},");
+					result_json.append("{\"id\":17,\"itemName\":\"公称排量(ml/转)\",\"itemValue\":\""+(pcpProductionData.getPump()!=null?(pcpProductionData.getPump().getQPR()*1000*1000):"")+"\"},");
 					
-					result_json.append("{\"id\":18,\"itemName\":\"油管内径(mm)\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter():"")+"\"},");
-					result_json.append("{\"id\":19,\"itemName\":\"套管内径(mm)\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter():"")+"\"},");
+					result_json.append("{\"id\":18,\"itemName\":\"油管内径(mm)\",\"itemValue\":\""+(pcpProductionData.getTubingString()!=null&&pcpProductionData.getTubingString().getEveryTubing()!=null&&pcpProductionData.getTubingString().getEveryTubing().size()>0?(pcpProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000):"")+"\"},");
+					result_json.append("{\"id\":19,\"itemName\":\"套管内径(mm)\",\"itemValue\":\""+(pcpProductionData.getCasingString()!=null&&pcpProductionData.getCasingString().getEveryCasing()!=null&&pcpProductionData.getCasingString().getEveryCasing().size()>0?(pcpProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000):"")+"\"},");
 					
 					String rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
 					String rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
@@ -2134,26 +2138,26 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					if(pcpProductionData.getRodString()!=null&&pcpProductionData.getRodString().getEveryRod()!=null&&pcpProductionData.getRodString().getEveryRod().size()>0){
 						if(pcpProductionData.getRodString().getEveryRod().size()>0){
 							rodGrade1=pcpProductionData.getRodString().getEveryRod().get(0).getGrade();
-							rodOutsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()+"";
-							rodInsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()+"";
+							rodOutsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
+							rodInsideDiameter1=pcpProductionData.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
 							rodLength1=pcpProductionData.getRodString().getEveryRod().get(0).getLength()+"";
 						}
 						if(pcpProductionData.getRodString().getEveryRod().size()>1){
 							rodGrade2=pcpProductionData.getRodString().getEveryRod().get(1).getGrade();
-							rodOutsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()+"";
-							rodInsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()+"";
+							rodOutsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
+							rodInsideDiameter2=pcpProductionData.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
 							rodLength2=pcpProductionData.getRodString().getEveryRod().get(1).getLength()+"";
 						}
 						if(pcpProductionData.getRodString().getEveryRod().size()>2){
 							rodGrade3=pcpProductionData.getRodString().getEveryRod().get(2).getGrade();
-							rodOutsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()+"";
-							rodInsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()+"";
+							rodOutsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
+							rodInsideDiameter3=pcpProductionData.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
 							rodLength3=pcpProductionData.getRodString().getEveryRod().get(2).getLength()+"";
 						}
 						if(pcpProductionData.getRodString().getEveryRod().size()>3){
 							rodGrade4=pcpProductionData.getRodString().getEveryRod().get(3).getGrade();
-							rodOutsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()+"";
-							rodInsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()+"";
+							rodOutsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
+							rodInsideDiameter4=pcpProductionData.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
 							rodLength4=pcpProductionData.getRodString().getEveryRod().get(3).getLength()+"";
 						}
 					}
@@ -2177,7 +2181,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":34,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
 					
-					result_json.append("{\"id\":36,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"}");
+					result_json.append("{\"id\":36,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
 				}else{
 					result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2223,8 +2227,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":34,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
 					
-					result_json.append("{\"id\":36,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"}");
+					result_json.append("{\"id\":36,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
 				}
+				result_json.append("{\"id\":37,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 			}
 		}
 		result_json.append("]}");

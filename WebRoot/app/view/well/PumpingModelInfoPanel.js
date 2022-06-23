@@ -14,7 +14,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                 items: [{
                 	region: 'center',
                     layout: 'fit',
-                    title: '抽油机数据',
+                    title: '抽油机设备',
                     border: false,
                     tbar: [{
                         id: 'PumpingModelSelectRow_Id',
@@ -74,8 +74,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                                 heads = heads.substring(0, heads.length - 1);
                             }
                             
-                            var fileName='抽油机信息';
-                            var title='抽油机信息';
+                            var fileName='抽油机设备';
+                            var title='抽油机设备';
                             var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
                             + "&orgId=" + leftOrg_Id + "&deviceType=" + deviceType + "&recordCount=10000" 
                             + "&fileName=" + URLencode(URLencode(fileName)) 

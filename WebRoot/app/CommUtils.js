@@ -1502,12 +1502,15 @@ color16ToRgba = function(sColor,Opacity){
 		 	if (runStatus == 0) {
 		 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
 		 		color='#'+alarmShowStyle.Run.stop.Color;
-		 		opacity=alarmShowStyle.Run.stop.Opacity
+		 		opacity=alarmShowStyle.Run.stop.Opacity;
+		 		val='停抽';
 			}else if (runStatus == 1) {
 				backgroundColor='#'+alarmShowStyle.Run.run.BackgroundColor;
 		 		color='#'+alarmShowStyle.Run.run.Color;
-		 		opacity=alarmShowStyle.Run.run.Opacity
+		 		opacity=alarmShowStyle.Run.run.Opacity;
+		 		val='运行';
 			}
+		 	tipval=val;
 		 	var rgba=color16ToRgba(backgroundColor,opacity);
 		 	o.style='background-color:'+rgba+';color:'+color+';';
 //			if(runStatus==1){

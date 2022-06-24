@@ -333,7 +333,16 @@ public class MemoryDataManagerTask {
 				rpcDeviceInfo.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
 				String key=rpcDeviceInfo.getId()+"";
 				jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));//哈希(Hash)
+				
+//				jedis.hincrBy("RPCDeviceResultCodeInfo", rpcDeviceInfo.getResultCode()+"", 1);
+//				System.out.println(rpcDeviceInfo.getWellName()+","+rpcDeviceInfo.getResultCode());
+//				System.out.println(jedis.hvals("RPCDeviceResultCodeInfo"));
+				//哈希(Hash)
+//				jedis.hset("RPCDeviceCommStatusInfo", rpcDeviceInfo.getCommStatus()+"", key);//哈希(Hash)
+//				jedis.hset("RPCDeviceRunStatusInfo", rpcDeviceInfo.getRunStatus()+"", key);//哈希(Hash)
 			}
+			
+
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
@@ -500,6 +509,8 @@ public class MemoryDataManagerTask {
 				pcpDeviceInfo.setTodayKWattH(rs.getFloat(32));
 				String key=pcpDeviceInfo.getId()+"";
 				jedis.hset("PCPDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));//哈希(Hash)
+//				jedis.hset("PCPDeviceCommStatusInfo", pcpDeviceInfo.getCommStatus()+"", key);//哈希(Hash)
+//				jedis.hset("PCPDeviceRunStatusInfo", pcpDeviceInfo.getRunStatus()+"", key);//哈希(Hash)
 			}
 			
 		}catch (Exception e) {

@@ -66,7 +66,36 @@ public class EquipmentDriverServerTask {
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
-		exampleDataManage();
+		
+		
+		
+//		String path="";
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		
+//		path=stringManagerUtils.getFilePath("test3.json","example/");
+//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		path=stringManagerUtils.getFilePath("test4.json","example/");
+//		String offLineData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
+//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/online";
+//		
+//		int i=0;
+//		while(true){
+//			if(i%2==0){
+//				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8");
+//			}else{
+//				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8");
+//			}
+//			i++;
+//			
+////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8");
+//			
+//			Thread.sleep(1000*5);
+//		}
+		
+
 		
 		initServerConfig();
 		initProtocolConfig("","");
@@ -76,6 +105,7 @@ public class EquipmentDriverServerTask {
 		initRPCDriverAcquisitionInfoConfig(null,"");
 		initPCPDriverAcquisitionInfoConfig(null,"");
 		boolean sendMsg=false;
+		exampleDataManage();
 		do{
 			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
 			type = new TypeToken<DriverProbeResponse>() {}.getType();

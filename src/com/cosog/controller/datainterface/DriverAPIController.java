@@ -351,15 +351,15 @@ public class DriverAPIController extends BaseController{
 						}
 						commRequest="{"
 								+ "\"AKString\":\"\","
-								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getCommRange())){
+								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
+						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getCommRange())){
 							commRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+pcpDeviceInfo.getAcqTime()+"\","
-									+ "\"CommStatus\": "+(pcpDeviceInfo.getCommStatus()==1?true:false)+","
+									+ "\"AcqTime\": \""+rpcDeviceInfo.getAcqTime()+"\","
+									+ "\"CommStatus\": "+(rpcDeviceInfo.getCommStatus()==1?true:false)+","
 									+ "\"CommEfficiency\": {"
-									+ "\"Efficiency\": "+pcpDeviceInfo.getCommEff()+","
-									+ "\"Time\": "+pcpDeviceInfo.getCommTime()+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getCommRange())+""
+									+ "\"Efficiency\": "+rpcDeviceInfo.getCommEff()+","
+									+ "\"Time\": "+rpcDeviceInfo.getCommTime()+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getCommRange())+""
 									+ "}"
 									+ "},";
 						}	
@@ -771,6 +771,7 @@ public class DriverAPIController extends BaseController{
 				
 				List<AcquisitionItemInfo> acquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 				List<ProtocolItemResolutionData> protocolItemResolutionDataList=new ArrayList<ProtocolItemResolutionData>();
+				int FESDiagramAcqCount=0;
 				for(int i=0;acqGroup.getAddr()!=null &&i<acqGroup.getAddr().size();i++){
 					for(int j=0;j<protocol.getItems().size();j++){
 						if(acqGroup.getAddr().get(i)==protocol.getItems().get(j).getAddr()){
@@ -889,6 +890,8 @@ public class DriverAPIController extends BaseController{
 								}else if("volumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "waterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 									rpcDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
+								}else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
+									FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
 								}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getFESDiagram().setAcqTime(rawValue);
 									rpcCalculateRequestData.getFESDiagram().setAcqTime(acqTime);
@@ -981,10 +984,43 @@ public class DriverAPIController extends BaseController{
 				
 				//进行功图计算
 				WorkType workType=null;
-//				int rpcWorkTypeAlarmLevel=0;
 				if(StringManagerUtils.isNotNull(rpcCalculateRequestData.getFESDiagram().getAcqTime())
 						&& rpcCalculateRequestData.getFESDiagram().getS().size()>0
 						&& rpcCalculateRequestData.getFESDiagram().getF().size()>0){
+					if(FESDiagramAcqCount>0){
+						if(rpcCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
+							List<Float> curveArr=new ArrayList<Float>();
+							for(int i=0;i<FESDiagramAcqCount;i++){
+								curveArr.add(rpcCalculateRequestData.getFESDiagram().getS().get(i));
+						    }
+						    rpcCalculateRequestData.getFESDiagram().setS(curveArr);
+						}
+
+						if(rpcCalculateRequestData.getFESDiagram().getF().size()>FESDiagramAcqCount){
+							List<Float> curveArr=new ArrayList<Float>();
+							for(int i=0;i<FESDiagramAcqCount;i++){
+								curveArr.add(rpcCalculateRequestData.getFESDiagram().getF().get(i));
+						    }
+						    rpcCalculateRequestData.getFESDiagram().setF(curveArr);
+						}
+						
+						if(rpcCalculateRequestData.getFESDiagram().getWatt().size()>FESDiagramAcqCount){
+							List<Float> curveArr=new ArrayList<Float>();
+							for(int i=0;i<FESDiagramAcqCount;i++){
+								curveArr.add(rpcCalculateRequestData.getFESDiagram().getWatt().get(i));
+						    }
+						    rpcCalculateRequestData.getFESDiagram().setWatt(curveArr);
+						}
+						
+						if(rpcCalculateRequestData.getFESDiagram().getI().size()>FESDiagramAcqCount){
+							List<Float> curveArr=new ArrayList<Float>();
+							for(int i=0;i<FESDiagramAcqCount;i++){
+								curveArr.add(rpcCalculateRequestData.getFESDiagram().getI().get(i));
+						    }
+						    rpcCalculateRequestData.getFESDiagram().setI(curveArr);
+						}
+					}
+					
 					String responseDataStr=StringManagerUtils.sendPostMethod(url, gson.toJson(rpcCalculateRequestData),"utf-8");
 					type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 					rpcCalculateResponseData=gson.fromJson(responseDataStr, type);

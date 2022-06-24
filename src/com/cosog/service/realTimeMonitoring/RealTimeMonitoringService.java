@@ -207,10 +207,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.disconnect();
-			jedis.close();
-		}
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
@@ -302,6 +298,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
+		if(jedis!=null){
+			jedis.disconnect();
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -452,10 +452,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.disconnect();
-			jedis.close();
-		}
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
@@ -562,6 +558,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
+		if(jedis!=null){
+			jedis.disconnect();
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	

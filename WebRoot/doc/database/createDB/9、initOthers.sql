@@ -435,7 +435,7 @@ insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTI
 values (24, '功图设置点数', 'c_gtszds', 0, null, 1, null);
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTIMES, MAPPINGMODE, CALCOLUMN)
-values (25, '功图实测点数', 'c_gtscds', 0, null, 1, null);
+values (25, '功图实测点数', 'c_gtscds', 0, null, 1, 'FESDiagramAcqCount');
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTIMES, MAPPINGMODE, CALCOLUMN)
 values (26, '功图采集时间', 'c_gtcjsj', 0, null, 1, 'FESDiagramAcqtime');

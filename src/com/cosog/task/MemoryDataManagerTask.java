@@ -33,10 +33,12 @@ import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.calculate.PCPDeviceInfo;
+import com.cosog.model.calculate.PCPDeviceTodayData;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.calculate.UserInfo;
 import com.cosog.utils.DataModelMap;
@@ -199,6 +201,7 @@ public class MemoryDataManagerTask {
 				if(condition==0){
 					for(int i=0;i<wellList.size();i++){
 						jedis.hdel("RPCDeviceInfo".getBytes(), wellList.get(i).getBytes());
+						jedis.hdel("RPCDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 					}
 				}else if(condition==1){
 					for(int i=0;i<wellList.size();i++){
@@ -208,6 +211,7 @@ public class MemoryDataManagerTask {
 								RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 								if(wellList.get(i).equalsIgnoreCase(rpcDeviceInfo.getWellName())){
 									jedis.hdel("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
+									jedis.hdel("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes());
 									break;
 								}
 							}
@@ -330,7 +334,6 @@ public class MemoryDataManagerTask {
 				rpcDeviceInfo.setResultStatus(rs.getInt(44));
 				rpcDeviceInfo.setResultCode(rs.getInt(45));
 				
-				rpcDeviceInfo.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
 				String key=rpcDeviceInfo.getId()+"";
 				jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));//哈希(Hash)
 				
@@ -407,6 +410,7 @@ public class MemoryDataManagerTask {
 					for(int i=0;i<wellList.size();i++){
 						if(jedis.hexists("PCPDeviceInfo".getBytes(), wellList.get(i).getBytes())){
 							jedis.hdel("PCPDeviceInfo".getBytes(), wellList.get(i).getBytes());
+							jedis.hdel("PCPDeviceTodayData".getBytes(), wellList.get(i).getBytes());
 						}
 					}
 				}else if(condition==1&&jedis.exists("PCPDeviceInfo".getBytes())){
@@ -416,6 +420,7 @@ public class MemoryDataManagerTask {
 							PCPDeviceInfo deviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
 							if(wellList.get(i).equalsIgnoreCase(deviceInfo.getWellName()) && jedis.hexists("PCPDeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes())){
 								jedis.hdel("PCPDeviceInfo".getBytes(), (deviceInfo.getId()+"").getBytes());
+								jedis.hdel("PCPDeviceTodayData".getBytes(), (deviceInfo.getId()+"").getBytes());
 								break;
 							}
 						}
@@ -1463,8 +1468,8 @@ public class MemoryDataManagerTask {
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				String key=rs.getInt(1)+"";
-				
+				int deviceId=rs.getInt(1);
+				String key=deviceId+"";
 				RPCCalculateResponseData responseData =new RPCCalculateResponseData(); 
 				responseData.init();
 				
@@ -1508,15 +1513,17 @@ public class MemoryDataManagerTask {
 						responseData.getProduction().setWaterCut(rpcProductionData.getProduction().getWaterCut());
 					}
 				}
-				
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
-				}
-				if(jedis.hexists("RPCDeviceInfo".getBytes(), key.getBytes())){
-					RPCDeviceInfo memRPCDeviceInfo =(RPCDeviceInfo) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), key.getBytes()));
-					memRPCDeviceInfo.getRPCCalculateList().add(responseData);
-					
-					jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(memRPCDeviceInfo));
+				if(jedis.hexists("RPCDeviceTodayData".getBytes(), key.getBytes())){
+					RPCDeviceTodayData deviceTodayData =(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), key.getBytes()));
+					deviceTodayData.getRPCCalculateList().add(responseData);
+					jedis.hset("RPCDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+				}else{
+					RPCDeviceTodayData deviceTodayData=new RPCDeviceTodayData();
+					deviceTodayData.setId(deviceId);
+					deviceTodayData.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
+					deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
+					deviceTodayData.getRPCCalculateList().add(responseData);
+					jedis.hset("RPCDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 				}
 			}
 		}catch (Exception e) {
@@ -1573,7 +1580,8 @@ public class MemoryDataManagerTask {
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				String key=rs.getInt(1)+"";
+				int deviceId=rs.getInt(1);
+				String key=deviceId+"";
 				
 				PCPCalculateResponseData responseData =new PCPCalculateResponseData(); 
 				responseData.init();
@@ -1608,14 +1616,19 @@ public class MemoryDataManagerTask {
 					}
 				}
 				
-				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+				if(jedis.hexists("PCPDeviceTodayData".getBytes(), key.getBytes())){
+					PCPDeviceTodayData deviceTodayData =(PCPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceTodayData".getBytes(), key.getBytes()));
+					deviceTodayData.getPCPCalculateList().add(responseData);
+					jedis.hset("PCPDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+				}else{
+					PCPDeviceTodayData deviceTodayData=new PCPDeviceTodayData();
+					deviceTodayData.setId(deviceId);
+					deviceTodayData.setPCPCalculateList(new ArrayList<PCPCalculateResponseData>());
+					deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
+					deviceTodayData.getPCPCalculateList().add(responseData);
+					jedis.hset("PCPDeviceTodayData".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 				}
-				if(jedis.hexists("PCPDeviceInfo".getBytes(), key.getBytes())){
-					PCPDeviceInfo memPCPDeviceInfo =(PCPDeviceInfo) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), key.getBytes()));
-					memPCPDeviceInfo.getPCPCalculateList().add(responseData);
-					jedis.hset("PCPDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(memPCPDeviceInfo));
-				}
+				
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

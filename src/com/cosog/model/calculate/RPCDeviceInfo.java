@@ -54,7 +54,7 @@ public class RPCDeviceInfo implements Serializable {
 	
 	private String saveTime;
 	
-	private List<AcquisitionItemInfo> acquisitionItemInfoList;
+//	private List<AcquisitionItemInfo> acquisitionItemInfoList;
 	
 	private Integer commStatus;
 	
@@ -80,7 +80,7 @@ public class RPCDeviceInfo implements Serializable {
 	
 	private Integer resultStatus;
 	
-	private List<RPCCalculateResponseData> RPCCalculateList;
+//	private List<RPCCalculateResponseData> RPCCalculateList;
 
 	public Integer getId() {
 		return id;
@@ -322,13 +322,13 @@ public class RPCDeviceInfo implements Serializable {
 		this.acqTime = acqTime;
 	}
 
-	public List<AcquisitionItemInfo> getAcquisitionItemInfoList() {
-		return acquisitionItemInfoList;
-	}
-
-	public void setAcquisitionItemInfoList(List<AcquisitionItemInfo> acquisitionItemInfoList) {
-		this.acquisitionItemInfoList = acquisitionItemInfoList;
-	}
+//	public List<AcquisitionItemInfo> getAcquisitionItemInfoList() {
+//		return acquisitionItemInfoList;
+//	}
+//
+//	public void setAcquisitionItemInfoList(List<AcquisitionItemInfo> acquisitionItemInfoList) {
+//		this.acquisitionItemInfoList = acquisitionItemInfoList;
+//	}
 
 	public Integer getCommStatus() {
 		return commStatus;
@@ -426,16 +426,16 @@ public class RPCDeviceInfo implements Serializable {
 		this.saveTime = saveTime;
 	}
 
-	public List<RPCCalculateResponseData> getRPCCalculateList() {
-		if(RPCCalculateList==null){
-			this.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
-		}
-		return this.RPCCalculateList;
-	}
-
-	public void setRPCCalculateList(List<RPCCalculateResponseData> rPCCalculateList) {
-		RPCCalculateList = rPCCalculateList;
-	}
+//	public List<RPCCalculateResponseData> getRPCCalculateList() {
+//		if(RPCCalculateList==null){
+//			this.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
+//		}
+//		return this.RPCCalculateList;
+//	}
+//
+//	public void setRPCCalculateList(List<RPCCalculateResponseData> rPCCalculateList) {
+//		RPCCalculateList = rPCCalculateList;
+//	}
 
 	public Integer getResultCode() {
 		return resultCode;

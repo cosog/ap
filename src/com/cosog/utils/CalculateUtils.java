@@ -12,8 +12,10 @@ import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
+import com.cosog.model.calculate.PCPDeviceTodayData;
 import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TimeEffTotalResponseData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
@@ -121,7 +123,7 @@ public class CalculateUtils {
 		return responseData;
 	}
 	
-	public static String getFESDiagramTotalRequestData(String date,RPCDeviceInfo deviceInfo){
+	public static String getFESDiagramTotalRequestData(String date,RPCDeviceInfo deviceInfo,RPCDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
 		
 		List<String> acqTimeList=new ArrayList<String>();
@@ -164,7 +166,7 @@ public class CalculateUtils {
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
 		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		
-		for(RPCCalculateResponseData responseData:deviceInfo.getRPCCalculateList()){
+		for(RPCCalculateResponseData responseData:deviceTodayData.getRPCCalculateList()){
 			if(responseData.getFESDiagram().getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getFESDiagram().getAcqTime(), false)){
 				acqTimeList.add(responseData.getFESDiagram().getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());
@@ -250,7 +252,7 @@ public class CalculateUtils {
 		return dataSbf.toString();
 	}
 	
-	public static String getRPMTotalRequestData(String date,PCPDeviceInfo deviceInfo){
+	public static String getRPMTotalRequestData(String date,PCPDeviceInfo deviceInfo,PCPDeviceTodayData deviceTodayData){
 		StringBuffer dataSbf= new StringBuffer();
 		
 		List<String> acqTimeList=new ArrayList<String>();
@@ -277,7 +279,7 @@ public class CalculateUtils {
 		List<Float> systemEfficiencyList=new ArrayList<Float>();
 		List<Float> energyPer100mLiftList=new ArrayList<Float>();
 		
-		for(PCPCalculateResponseData responseData:deviceInfo.getPCPCalculateList()){
+		for(PCPCalculateResponseData responseData:deviceTodayData.getPCPCalculateList()){
 			if(responseData.getAcqTime().indexOf(date)>=0 && !StringManagerUtils.existOrNot(acqTimeList, responseData.getAcqTime(), false)){
 				acqTimeList.add(responseData.getAcqTime());
 				commStatusList.add(deviceInfo.getCommStatus());

@@ -41,7 +41,7 @@ public class PCPDeviceInfo implements Serializable {
 	private ManualIntervention ManualIntervention;                        //人工干预
 	private String acqTime;
 	private String saveTime;
-	private List<AcquisitionItemInfo> acquisitionItemInfoList;
+//	private List<AcquisitionItemInfo> acquisitionItemInfoList;
 	private Integer commStatus;
 	private float commTime;
 	
@@ -61,7 +61,7 @@ public class PCPDeviceInfo implements Serializable {
 	
 	private float todayKWattH;
 	
-	private List<PCPCalculateResponseData> PCPCalculateList;
+//	private List<PCPCalculateResponseData> PCPCalculateList;
 	
 	public Integer getId() {
 		return id;
@@ -373,14 +373,14 @@ public class PCPDeviceInfo implements Serializable {
 	}
 
 
-	public List<AcquisitionItemInfo> getAcquisitionItemInfoList() {
-		return acquisitionItemInfoList;
-	}
-
-
-	public void setAcquisitionItemInfoList(List<AcquisitionItemInfo> acquisitionItemInfoList) {
-		this.acquisitionItemInfoList = acquisitionItemInfoList;
-	}
+//	public List<AcquisitionItemInfo> getAcquisitionItemInfoList() {
+//		return acquisitionItemInfoList;
+//	}
+//
+//
+//	public void setAcquisitionItemInfoList(List<AcquisitionItemInfo> acquisitionItemInfoList) {
+//		this.acquisitionItemInfoList = acquisitionItemInfoList;
+//	}
 
 
 	public Integer getCommStatus() {
@@ -493,15 +493,15 @@ public class PCPDeviceInfo implements Serializable {
 	}
 
 
-	public List<PCPCalculateResponseData> getPCPCalculateList() {
-		if(PCPCalculateList==null){
-			this.setPCPCalculateList(new ArrayList<PCPCalculateResponseData>());
-		}
-		return this.PCPCalculateList;
-	}
-
-
-	public void setPCPCalculateList(List<PCPCalculateResponseData> pCPCalculateList) {
-		PCPCalculateList = pCPCalculateList;
-	}
+//	public List<PCPCalculateResponseData> getPCPCalculateList() {
+//		if(PCPCalculateList==null){
+//			this.setPCPCalculateList(new ArrayList<PCPCalculateResponseData>());
+//		}
+//		return this.PCPCalculateList;
+//	}
+//
+//
+//	public void setPCPCalculateList(List<PCPCalculateResponseData> pCPCalculateList) {
+//		PCPCalculateList = pCPCalculateList;
+//	}
 }

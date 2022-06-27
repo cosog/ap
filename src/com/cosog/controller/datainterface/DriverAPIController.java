@@ -29,9 +29,11 @@ import com.cosog.model.calculate.EnergyCalculateResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.calculate.PCPDeviceInfo;
+import com.cosog.model.calculate.PCPDeviceTodayData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateResponseData;
 import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.calculate.UserInfo;
@@ -620,12 +622,20 @@ public class DriverAPIController extends BaseController{
 		boolean sendMessage=false;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
+		RPCDeviceTodayData deviceTodayData=null;
 		try{
 			jedis = new Jedis();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
 			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
+			
+			if(!jedis.exists("RPCDeviceTodayData".getBytes())){
+				MemoryDataManagerTask.loadTodayFESDiagram(null,0);
+			}
+			if(jedis.hexists("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes())){
+				deviceTodayData=(RPCDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes()));
+			}
 			
 			if(!jedis.exists("RPCWorkType".getBytes())){
 				MemoryDataManagerTask.loadRPCWorkType();
@@ -1030,16 +1040,19 @@ public class DriverAPIController extends BaseController{
 						}
 
 						//删除非当天采集的功图数据
-						Iterator<RPCCalculateResponseData> it = rpcDeviceInfo.getRPCCalculateList().iterator();
-						while(it.hasNext()){
-							RPCCalculateResponseData responseData=(RPCCalculateResponseData)it.next();
-							if(responseData.getFESDiagram()==null 
-									|| !StringManagerUtils.isNotNull(responseData.getFESDiagram().getAcqTime())
-									|| responseData.getFESDiagram().getAcqTime().indexOf(date)<0  ){
-								it.remove();
+						if(deviceTodayData!=null){
+							Iterator<RPCCalculateResponseData> it = deviceTodayData.getRPCCalculateList().iterator();
+							while(it.hasNext()){
+								RPCCalculateResponseData responseData=(RPCCalculateResponseData)it.next();
+								if(responseData.getFESDiagram()==null 
+										|| !StringManagerUtils.isNotNull(responseData.getFESDiagram().getAcqTime())
+										|| responseData.getFESDiagram().getAcqTime().indexOf(date)<0  ){
+									it.remove();
+								}
 							}
+							deviceTodayData.getRPCCalculateList().add(rpcCalculateResponseData);
 						}
-						rpcDeviceInfo.getRPCCalculateList().add(rpcCalculateResponseData);
+						
 					}
 				}
 				
@@ -1125,10 +1138,10 @@ public class DriverAPIController extends BaseController{
 				}
 				
 				//同时进行了时率计算和功图计算，则进行功图汇总计算
-				if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
+				if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){
 					//排序
-					Collections.sort(rpcDeviceInfo.getRPCCalculateList());
-					String totalRequestData=CalculateUtils.getFESDiagramTotalRequestData(date, rpcDeviceInfo);
+					Collections.sort(deviceTodayData.getRPCCalculateList());
+					String totalRequestData=CalculateUtils.getFESDiagramTotalRequestData(date, rpcDeviceInfo,deviceTodayData);
 					totalAnalysisResponseData=CalculateUtils.totalCalculate(totalRequestData);
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量",totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+"",totalAnalysisResponseData.getLiquidVolumetricProduction().getValue()+"","","liquidVolumetricProduction_l","","","","m^3/d",1));
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("累计产液量","累计产液量",totalAnalysisResponseData.getLiquidWeightProduction().getValue()+"",totalAnalysisResponseData.getLiquidWeightProduction().getValue()+"","","liquidWeightProduction_l","","","","t/d",1));
@@ -1318,7 +1331,10 @@ public class DriverAPIController extends BaseController{
 				}
 				
 				//将采集数据放入内存
-				rpcDeviceInfo.setAcquisitionItemInfoList(acquisitionItemInfoList);
+				if(deviceTodayData!=null){
+					deviceTodayData.setAcquisitionItemInfoList(acquisitionItemInfoList);
+				}
+				
 				//如果满足保存周期或者有报警，保存数据
 				if(save || alarm){
 					String saveRawDataSql="insert into "+rawDataTable+"(wellid,acqtime,rawdata)values("+rpcDeviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
@@ -1362,6 +1378,10 @@ public class DriverAPIController extends BaseController{
 				if(jedis!=null && jedis.hexists("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes())){
 					jedis.hset("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
 				}
+				if(jedis!=null && deviceTodayData!=null){
+					jedis.hset("RPCDeviceTodayData".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
+				}
+				
 				
 				//处理websocket推送
 				if(displayInstanceOwnItem!=null){
@@ -1628,12 +1648,20 @@ public class DriverAPIController extends BaseController{
 		boolean sendMessage=false;
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
+		PCPDeviceTodayData deviceTodayData=null;
 		try{
 			jedis = new Jedis();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
 			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
+			
+			if(!jedis.exists("PCPDeviceTodayData".getBytes())){
+				MemoryDataManagerTask.loadTodayRPMData(null,0);
+			}
+			if(jedis.hexists("PCPDeviceTodayData".getBytes(), (pcpDeviceInfo.getId()+"").getBytes())){
+				deviceTodayData=(PCPDeviceTodayData) SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceTodayData".getBytes(), (pcpDeviceInfo.getId()+"").getBytes()));
+			}
 			
 			if(!jedis.exists("pcpCalItemList".getBytes())){
 				MemoryDataManagerTask.loadPCPCalculateItem();
@@ -1961,15 +1989,17 @@ public class DriverAPIController extends BaseController{
 					pcpCalculateResponseData=gson.fromJson(responseDataStr, type);
 					if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 						//删除非当天采集的转速数据
-						Iterator<PCPCalculateResponseData> it = pcpDeviceInfo.getPCPCalculateList().iterator();
-						while(it.hasNext()){
-							PCPCalculateResponseData responseData=(PCPCalculateResponseData)it.next();
-							if(!StringManagerUtils.isNotNull(responseData.getAcqTime())
-									|| responseData.getAcqTime().indexOf(date)<0  ){
-								it.remove();
+						if(deviceTodayData!=null){
+							Iterator<PCPCalculateResponseData> it = deviceTodayData.getPCPCalculateList().iterator();
+							while(it.hasNext()){
+								PCPCalculateResponseData responseData=(PCPCalculateResponseData)it.next();
+								if(!StringManagerUtils.isNotNull(responseData.getAcqTime())
+										|| responseData.getAcqTime().indexOf(date)<0  ){
+									it.remove();
+								}
 							}
+							deviceTodayData.getPCPCalculateList().add(pcpCalculateResponseData);
 						}
-						pcpDeviceInfo.getPCPCalculateList().add(pcpCalculateResponseData);
 					}
 				}
 				
@@ -2045,10 +2075,10 @@ public class DriverAPIController extends BaseController{
 				}
 				
 				//同时进行了时率计算和功图计算，则进行功图汇总计算
-				if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1){
+				if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){
 					//排序
-					Collections.sort(pcpDeviceInfo.getPCPCalculateList());
-					String totalRequestData=CalculateUtils.getRPMTotalRequestData(date, pcpDeviceInfo);
+					Collections.sort(deviceTodayData.getPCPCalculateList());
+					String totalRequestData=CalculateUtils.getRPMTotalRequestData(date, pcpDeviceInfo,deviceTodayData);
 					totalAnalysisResponseData=CalculateUtils.totalCalculate(totalRequestData);
 				}
 				
@@ -2217,7 +2247,10 @@ public class DriverAPIController extends BaseController{
 				}
 				
 				//将采集数据放入内存
-				pcpDeviceInfo.setAcquisitionItemInfoList(acquisitionItemInfoList);
+				if(deviceTodayData!=null){
+					deviceTodayData.setAcquisitionItemInfoList(acquisitionItemInfoList);
+				}
+				
 				//如果满足保存周期或者有报警，保存数据
 				if(save || alarm){
 					String saveRawDataSql="insert into "+rawDataTable+"(wellid,acqtime,rawdata)values("+pcpDeviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
@@ -2260,6 +2293,9 @@ public class DriverAPIController extends BaseController{
 				//放入内存数据库中
 				if(jedis!=null && jedis.hexists("PCPDeviceInfo".getBytes(), (pcpDeviceInfo.getId()+"").getBytes())){
 					jedis.hset("PCPDeviceInfo".getBytes(), (pcpDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));
+				}
+				if(jedis!=null && deviceTodayData!=null){
+					jedis.hset("PCPDeviceTodayData".getBytes(), (pcpDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(deviceTodayData));
 				}
 				
 				//处理websocket推送

@@ -24,7 +24,7 @@ public class WebSocketByJavax {
 	public static int onlineCount = 0; 
 	public String userId;
 	public Session session; 
-    public static Map<String, WebSocketByJavax> clients;
+    public static final ConcurrentHashMap<String, WebSocketByJavax> clients;
     
     static {
     	clients =  new ConcurrentHashMap<String, WebSocketByJavax>();
@@ -77,70 +77,79 @@ public class WebSocketByJavax {
     }
     
     public void sendMessageTo(String To,String message) {
-        for (WebSocketByJavax item : clients.values()) { 
-            if(item.session!=null&&item.session.isOpen()){
-            	if (item.userId.equals(To) ) {
-            		synchronized(item.session){
+    	synchronized(clients){
+    		for (WebSocketByJavax item : clients.values()) { 
+                if(item.session!=null&&item.session.isOpen()){
+                	if (item.userId.equals(To) ) {
                 		try{
-                			new SendMessageThread(item.session,message).start();
-//                			item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-                		}catch(Exception e){
-                			e.printStackTrace();
-                		}
-                	}
-            	}
-            }
-        }
-    }
-    
-    public void sendMessageToBy(String To,String message){
-        for (WebSocketByJavax item : clients.values()) { 
-            if(item.session!=null&&item.session.isOpen()){
-            	if (item.userId.contains(To) ) {
-            		synchronized(item.session){
-                		try{
-                			new SendMessageThread(item.session,message).start();
-//                			item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-                		}catch(Exception e){
-                			e.printStackTrace();
-                		}
-                	}
-            	}
-            }
-        }
-    }
-    
-    public void sendMessageToUser(String userAccount,String message){
-        for (WebSocketByJavax item : clients.values()) { 
-            String[] clientInfo=item.userId.split("_");
-            if(item.session!=null&&item.session.isOpen()){
-            	if(clientInfo!=null && clientInfo.length==3&&userAccount.equals(clientInfo[1])){
-                	synchronized(item.session){
-                		try{
-                			new SendMessageThread(item.session,message).start();
-//                			item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+//                			new SendMessageThread(item.session,message).start();
+                			if(item.session.isOpen()){
+                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+                			}
                 		}catch(Exception e){
                 			e.printStackTrace();
                 		}
                 	}
                 }
             }
-        }
+    	}
+    	
+    }
+    
+    public void sendMessageToBy(String To,String message){
+    	synchronized(clients){
+    		for (WebSocketByJavax item : clients.values()) { 
+                if(item.session!=null&&item.session.isOpen()){
+                	if (item.userId.contains(To) ) {
+                		try{
+//                			new SendMessageThread(item.session,message).start();
+                			if(item.session.isOpen()){
+                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+                			}
+                		}catch(Exception e){
+                			e.printStackTrace();
+                		}
+                	}
+                }
+            }
+    	}
+    }
+    
+    public void sendMessageToUser(String userAccount,String message){
+    	synchronized(clients){
+    		for (WebSocketByJavax item : clients.values()) { 
+                String[] clientInfo=item.userId.split("_");
+                if(item.session!=null&&item.session.isOpen()){
+                	if(clientInfo!=null && clientInfo.length==3&&userAccount.equals(clientInfo[1])){
+                		try{
+//                			new SendMessageThread(item.session,message).start();
+                			if(item.session.isOpen()){
+                				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+                			}
+                		}catch(Exception e){
+                			e.printStackTrace();
+                		}
+                    }
+                }
+            }
+    	}
     }
     
     public void sendMessageAll(String message) throws IOException {
-        for (WebSocketByJavax item : clients.values()) {
-        	 if(item.session!=null&&item.session.isOpen()){
-        		 synchronized(item.session){
-        			 try{
-        				 new SendMessageThread(item.session,message).start();
-//        				 item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
-             		}catch(Exception e){
-             			e.printStackTrace();
-             		}
-             	}
-        	 }
-        }
+    	synchronized(clients){
+    		for (WebSocketByJavax item : clients.values()) {
+           	 if(item.session!=null&&item.session.isOpen()){
+           		try{
+//       				 new SendMessageThread(item.session,message).start();
+           			if(item.session.isOpen()){
+           				item.session.getBasicRemote().sendText(message);//getBasicRemote同步发送 getAsyncRemote异步发送
+        			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+           	 	}
+           }
+    	}
     }
     
     public static synchronized int getOnlineCount() { 

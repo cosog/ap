@@ -47,6 +47,7 @@ import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.ProtocolItemResolutionData;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -67,7 +68,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -88,7 +89,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		String columns = "["
@@ -183,10 +183,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
-		long time1 = new Date().getTime();
+		long time1 =System.nanoTime()/1000;
 		try{
-			jedis = new Jedis();
-			long time2 = new Date().getTime();
+			jedis = RedisUtil.jedisPool.getResource();
+			long time2 =  System.nanoTime()/1000;
 			System.out.println("连接redis耗时："+(time2-time1));
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
@@ -200,9 +200,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(!jedis.exists("RPCWorkType".getBytes())){
 				MemoryDataManagerTask.loadRPCWorkType();
 			}
-			long time3 = new Date().getTime();
+			long time3 = System.nanoTime()/1000;
 			deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
-			long time4 = new Date().getTime();
+			long time4 = System.nanoTime()/1000;
 			System.out.println("取出设备列表耗时："+(time4-time3));
 		}catch(Exception e){
 			e.printStackTrace();
@@ -249,12 +249,12 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("]");
 		}else{
 			if(deviceInfoByteList!=null){
-				long time5 = new Date().getTime();
+				long time5 = System.nanoTime()/1000;
 				Map<Integer,Integer> totalMap=new TreeMap<Integer,Integer>();
 				for(int i=0;i<deviceInfoByteList.size();i++){
-					long time8 = new Date().getTime();
+					long time8 = System.nanoTime()/1000;
 					Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-					long time9 = new Date().getTime();
+					long time9 = System.nanoTime()/1000;
 					System.out.println("反序列化耗时："+(time9-time8));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
@@ -268,7 +268,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 				}
-				long time6 = new Date().getTime();
+				long time6 = System.nanoTime()/1000;
 				System.out.println("遍历统计耗时："+(time6-time5));
 				
 				int index=1;
@@ -291,7 +291,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
 				result_json.append("]");
-				long time7 = new Date().getTime();
+				long time7 = System.nanoTime()/1000;
 				System.out.println("遍历统计后的map耗时："+(time7-time6));
 			}
 		}
@@ -299,7 +299,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -311,7 +310,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -420,7 +419,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -432,7 +430,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -559,7 +557,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -570,7 +567,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -579,7 +576,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		String tableName="tbl_rpcacqdata_latest";
@@ -632,7 +628,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis=null;
 		List<byte[]> deviceInfoByteList=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(StringManagerUtils.stringToInteger(deviceType) ==0){
 				if(!jedis.exists("RPCDeviceInfo".getBytes())){
 					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
@@ -713,7 +709,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("\"offline\":"+offline);
 		result_json.append("}");
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -726,7 +721,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -1045,8 +1040,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -1058,7 +1052,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -1235,8 +1229,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -1249,7 +1242,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("PCPDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
 			}
@@ -1535,8 +1528,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -1548,7 +1540,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -1702,8 +1694,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -1714,7 +1705,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
 		int dataSaveMode=1;
-		Jedis jedis = new Jedis();
+		Jedis jedis = RedisUtil.jedisPool.getResource();
 		AlarmShowStyle alarmShowStyle=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -1801,7 +1792,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		
@@ -2205,7 +2195,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String protocolCode="";
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(deviceInfoKey.getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -2473,7 +2463,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("\"deviceControlList\":"+deviceControlList);
 		result_json.append("}");
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("null", "");
@@ -2502,7 +2491,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		String protocolCode="";
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(deviceInfoKey.getBytes())){
 				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
 				
@@ -2726,7 +2715,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("\"deviceControlList\":"+deviceControlList);
 		result_json.append("}");
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("null", "");
@@ -2858,7 +2846,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			deviceInfoKey="PCPDeviceInfo";
 		}
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("UserInfo".getBytes())){
 				MemoryDataManagerTask.loadUserInfo(null);
 			}
@@ -2900,10 +2888,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			if(jedis!=null){
-				jedis.disconnect();
-			}
-			
 			jedis.close();
 		}
 		

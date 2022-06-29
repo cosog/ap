@@ -16,28 +16,28 @@ public class RedisUtil implements Serializable{
     private static final long serialVersionUID = -1149678082569464779L;
 
     //Redis服务器IP
-    private static String addr;
+    private static String addr="127.0.0.1";
     
     //Redis的端口号
-    private static int port;
+    private static int port=6379;
     
     //访问密码
-    private static String auth;
+    private static String auth="master";
     
     //可用连接实例的最大数目，默认值为8；
     //如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
-    private static int maxActive;
+    private static int maxActive=1024;
     
     //控制一个pool最多有多少个状态为idle(空闲的)的jedis实例，默认值也是8。
-    private static int maxIdle;
+    private static int maxIdle=200;
     
     //等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException；
-    private static int maxWait;
+    private static int maxWait=10000;
     
-    private static int timeOut;
+    private static int timeOut=10000;
     
     //在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
-    private static boolean testOnBorrow;
+    private static boolean testOnBorrow=true;
     
     public static Jedis jedis;//非切片额客户端连接
     
@@ -46,6 +46,15 @@ public class RedisUtil implements Serializable{
     public static ShardedJedis shardedJedis;//切片额客户端连接
     
     public static ShardedJedisPool shardedJedisPool;//切片连接池
+    
+    static{
+    	try {
+			afterPropertiesSet();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     
     private static void initialPool() 
     { 

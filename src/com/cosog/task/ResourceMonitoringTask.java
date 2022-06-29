@@ -39,6 +39,7 @@ import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OracleJdbcUtis;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
@@ -57,6 +58,8 @@ public class ResourceMonitoringTask {
     private static ResultSet rs_outer = null;
 	
     private static CallableStatement cs= null;
+    
+    private static int jedisStatus=1; 
     
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
@@ -90,19 +93,20 @@ public class ResourceMonitoringTask {
 		
 		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
 		
-		int jedisStatus=0;
 		Jedis jedis=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
+			if(jedisStatus==0){
+				MemoryDataManagerTask.loadMemoryData();
+			}
 			jedisStatus=1;
 		}catch(Exception e){
 			jedisStatus=0;
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
-		if(jedis!=null && jedis.isConnected() ){
-			jedis.disconnect();
-			jedis.close();
-		}
-		
 		
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;

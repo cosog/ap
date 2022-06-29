@@ -1,16 +1,5 @@
 package com.cosog.utils;
 
-import java.util.List;
-
-//import com.cosog.utils.ConfigFile.AgileCalculate;
-//import com.cosog.utils.ConfigFile.ESDiagram;
-//import com.cosog.utils.ConfigFile.Inversion;
-//import com.cosog.utils.ConfigFile.InversionUrl;
-//import com.cosog.utils.ConfigFile.Mqtt;
-//import com.cosog.utils.ConfigFile.Plugin;
-//import com.cosog.utils.ConfigFile.Probe;
-//import com.cosog.utils.ConfigFile.TotalCalculation;
-
 public class ConfigFile {
 	
 	private Ap ap;
@@ -18,8 +7,6 @@ public class ConfigFile {
     private Ac ac;
 
     private Ad ad;
-
-    private Mqtt mqtt;
 
     public void setAp(Ap ap){
         this.ap = ap;
@@ -38,12 +25,6 @@ public class ConfigFile {
     }
     public Ad getAd(){
         return this.ad;
-    }
-    public void setMqtt(Mqtt mqtt){
-        this.mqtt = mqtt;
-    }
-    public Mqtt getMqtt(){
-        return this.mqtt;
     }
 	
 	public static class Server
@@ -220,8 +201,6 @@ public class ConfigFile {
 
 	    private boolean simulateAcqEnable;
 
-	    private String serialnumber;
-
 	    public void setCache(boolean cache){
 	        this.cache = cache;
 	    }
@@ -293,12 +272,6 @@ public class ConfigFile {
 	    }
 	    public boolean getSimulateAcqEnable(){
 	        return this.simulateAcqEnable;
-	    }
-	    public void setSerialnumber(String serialnumber){
-	        this.serialnumber = serialnumber;
-	    }
-	    public String getSerialnumber(){
-	        return this.serialnumber;
 	    }
 	}
 	
@@ -655,58 +628,6 @@ public class ConfigFile {
 	    }
 	    public AdProbe getProbe(){
 	        return this.probe;
-	    }
-	}
-	
-	public static class Mqtt
-	{
-	    private String server;
-
-	    private String userName;
-
-	    private String passWord;
-
-	    private String timerCorrectionStart;
-
-	    private String imerCorrectionEnd;
-
-	    private int timerCorrectionLimit;
-
-	    public void setServer(String server){
-	        this.server = server;
-	    }
-	    public String getServer(){
-	        return this.server;
-	    }
-	    public void setUserName(String userName){
-	        this.userName = userName;
-	    }
-	    public String getUserName(){
-	        return this.userName;
-	    }
-	    public void setPassWord(String passWord){
-	        this.passWord = passWord;
-	    }
-	    public String getPassWord(){
-	        return this.passWord;
-	    }
-	    public void setTimerCorrectionStart(String timerCorrectionStart){
-	        this.timerCorrectionStart = timerCorrectionStart;
-	    }
-	    public String getTimerCorrectionStart(){
-	        return this.timerCorrectionStart;
-	    }
-	    public void setImerCorrectionEnd(String imerCorrectionEnd){
-	        this.imerCorrectionEnd = imerCorrectionEnd;
-	    }
-	    public String getImerCorrectionEnd(){
-	        return this.imerCorrectionEnd;
-	    }
-	    public void setTimerCorrectionLimit(int timerCorrectionLimit){
-	        this.timerCorrectionLimit = timerCorrectionLimit;
-	    }
-	    public int getTimerCorrectionLimit(){
-	        return this.timerCorrectionLimit;
 	    }
 	}
 }

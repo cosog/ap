@@ -50,6 +50,7 @@ import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.ProtocolItemResolutionData;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.websocket.config.WebSocketByJavax;
@@ -84,7 +85,7 @@ public class DriverAPIController extends BaseController{
 		String functionCode="adExitAndDeviceOffline";
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -248,7 +249,6 @@ public class DriverAPIController extends BaseController{
 			infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		String json = "{success:true,flag:true}";
@@ -275,7 +275,7 @@ public class DriverAPIController extends BaseController{
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		if(acqOnline!=null){
 			try{
-				jedis = new Jedis();
+				jedis = RedisUtil.jedisPool.getResource();
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;
 				int deviceType=101;
@@ -508,7 +508,6 @@ public class DriverAPIController extends BaseController{
 			}
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		String json = "{success:true,flag:true}";
@@ -533,7 +532,7 @@ public class DriverAPIController extends BaseController{
 		Jedis jedis=null;
 		if(acqGroup!=null){
 			try{
-				jedis = new Jedis();
+				jedis = RedisUtil.jedisPool.getResource();
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;
 				
@@ -585,7 +584,6 @@ public class DriverAPIController extends BaseController{
 			json = "{success:true,flag:false}";
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		response.setContentType("application/json;charset=utf-8");
@@ -624,7 +622,7 @@ public class DriverAPIController extends BaseController{
 		AlarmShowStyle alarmShowStyle=null;
 		RPCDeviceTodayData deviceTodayData=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -659,6 +657,10 @@ public class DriverAPIController extends BaseController{
 			
 			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
+			}
+			
+			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
+				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1621,7 +1623,6 @@ public class DriverAPIController extends BaseController{
 			}
 		}
 		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return null;
@@ -1650,7 +1651,7 @@ public class DriverAPIController extends BaseController{
 		AlarmShowStyle alarmShowStyle=null;
 		PCPDeviceTodayData deviceTodayData=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -1681,6 +1682,9 @@ public class DriverAPIController extends BaseController{
 			
 			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
+			}
+			if(!jedis.exists("ProtocolMappingColumn".getBytes())){
+				MemoryDataManagerTask.loadProtocolMappingColumn();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -2427,7 +2431,6 @@ public class DriverAPIController extends BaseController{
 			}
 		}
 		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return null;

@@ -17,6 +17,7 @@ import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -112,7 +113,7 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -125,7 +126,6 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 			json=new Gson().toJson(alarmShowStyle);
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		return json;

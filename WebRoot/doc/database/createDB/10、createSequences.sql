@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 135215
+start with 135235
 increment by 1
 cache 20;
 /
@@ -233,7 +233,7 @@ cache 20;
 create sequence SEQ_PUMPINGMODEL
 minvalue 1
 maxvalue 999999999999999999999999
-start with 41
+start with 3
 increment by 1
 cache 20;
 /

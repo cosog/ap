@@ -24,6 +24,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -418,7 +419,7 @@ public class UserManagerService<T> extends BaseService<T> {
 			
 			Jedis jedis=null;
 			try{
-				jedis = new Jedis();
+				jedis = RedisUtil.jedisPool.getResource();
 
 				if(!jedis.exists("UserInfo".getBytes())){
 					MemoryDataManagerTask.loadUserInfo(null);
@@ -436,13 +437,11 @@ public class UserManagerService<T> extends BaseService<T> {
 				}
 			}catch(Exception e){
 				e.printStackTrace();
-				jedis=null;
-			}
-			if(jedis!=null){
-				jedis.disconnect();
-				jedis.close();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
 			}
 		}
-		
 	}
 }

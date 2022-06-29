@@ -14,7 +14,7 @@ connect by   t.org_parent= prior t.org_id;
 /* View: viw_rpcdevice                                         */
 /*==============================================================*/
 create or replace view viw_rpcdevice as
-select t.id,org.org_name as orgName,org.org_id as orgid,
+select t.id,org.org_name as orgName,org.org_id as orgid,org.allpath,
 t.wellname,
 t.devicetype,c2.itemname as devicetypename,
 t.applicationscenarios,c1.itemname as applicationScenariosName,
@@ -24,12 +24,12 @@ t.instancecode,
 decode(t.devicetype,2,t4.name,t2.name) as instancename,
 t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
-t.status,decode(t.status,1,'??','??') as statusName,
+t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,t.balanceinfo,t.stroke,
 t.pumpingmodelid,t6.manufacturer,t6.model,t6.crankrotationdirection,t6.offsetangleofcrank,t6.crankgravityradius,t6.singlecrankweight,t6.singlecrankpinweight,t6.structuralunbalance,
 t.sortnum
 from tbl_rpcdevice t
-left outer join  tbl_org org  on t.orgid=org.org_id
+left outer join  viw_org org  on t.orgid=org.org_id
 left outer join tbl_protocolinstance t2 on t.instancecode=t2.code
 left outer join tbl_protocolalarminstance t3 on t.alarminstancecode=t3.code
 left outer join tbl_protocolsmsinstance t4 on t.instancecode =t4.code
@@ -43,7 +43,7 @@ left outer join tbl_code c2 on c2.itemcode='DEVICETYPE' and t.devicetype=c2.item
 /* View: viw_pcpdevice                                         */
 /*==============================================================*/
 create or replace view viw_pcpdevice as
-select t.id,org.org_name as orgName,org.org_id as orgid,
+select t.id,org.org_name as orgName,org.org_id as orgid,org.allpath,
 t.wellname,
 t.devicetype,c2.itemname as devicetypename,
 t.applicationscenarios,c1.itemname as applicationScenariosName,
@@ -53,11 +53,11 @@ t.instancecode,
 decode(t.devicetype,2,t4.name,t2.name) as instancename,
 t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
-t.status,decode(t.status,1,'??','??') as statusName,
+t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,
 t.sortnum
 from tbl_pcpdevice t
-left outer join  tbl_org org  on t.orgid=org.org_id
+left outer join  viw_org org  on t.orgid=org.org_id
 left outer join tbl_protocolinstance t2 on t.instancecode=t2.code
 left outer join tbl_protocolalarminstance t3 on t.alarminstancecode=t3.code
 left outer join tbl_protocolsmsinstance t4 on t.instancecode =t4.code

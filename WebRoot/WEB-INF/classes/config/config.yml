@@ -32,7 +32,6 @@ ap:
       showLogo: true
       printLog: true
       simulateAcqEnable: true
-      serialnumber: ""
 ac:
    probe:
       app: 
@@ -84,10 +83,3 @@ ad:
       mem: http://39.99.42.182:19200/api/probe/mem
       disk: http://39.99.42.182:19200/api/probe/disk
       host: http://39.99.42.182:19200/api/probe/host
-mqtt:
-   server: tcp://dq1c6knb.hinnotek.cn:1883
-   userName: hinnotekClient1
-   passWord: ZJ6m*#D4pd%b
-   timerCorrectionStart: 06:00:00
-   imerCorrectionEnd: 21:00:00
-   timerCorrectionLimit: 1800

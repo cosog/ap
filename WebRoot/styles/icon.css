@@ -36,7 +36,7 @@
 /*.hello-treepanel {  
   background: url(../images/chongxie1.png) left top repeat-x !important;  
 }*/
-/* 妯″潡灏忓浘鏍嘽ss  */
+/* 濡�虫健鐏忓繐娴橀弽鍢絪s  */
 .index {
 	background-image: url(../images/icon/index.png) !important;
 }
@@ -174,7 +174,7 @@
 	background-image: url(../images/icon/search.png) !important;
 }
 
-/**鍚庡彴妯″潡灏忓浘鏍�*/
+/**閸氬骸褰村Ο鈥虫健鐏忓繐娴橀弽锟�*/
 .loginOut {
 	background-image: url(../images/icon/tuichu.png) !important;
 }
@@ -266,7 +266,7 @@
 	background-image: url(../images/icon/dataMaintaining.png) !important;
 }
 .wellInformation{
-	background-image: url(../images/icon/wellInformation.png) !important;
+	background-image: url(../images/icon/dataMaintaining.png) !important;
 }
 .balanceData{
 	background-image: url(../images/icon/balancedata.png) !important;
@@ -299,7 +299,7 @@
 	cursor: pointer;
 }
 /*******************************************************************************/
-/*缁勭粐鏍戝浘鏍�*/
+/*缂佸嫮绮愰弽鎴濇禈閺嶏拷*/
 .tree_root_icon {
 	background-image: url(../images/icon/root.png) !important;
 }
@@ -312,7 +312,7 @@
 	background-image: url(../images/icon/leaf.png) !important;
 }
 /*******************************************************************************/
-/*************鍔ㄦ�佺洃娴嬫姤璀︾被鍨嬪浘鏍�*/
+/*************閸斻劍锟戒胶娲冨ù瀣Г鐠�锔捐閸ㄥ娴橀弽锟�*/
 .normal {
 	background-image: url(../images/icon/normal.png) !important;
 }
@@ -320,7 +320,7 @@
 	background-image: url(../images/icon/exception.png) !important;
 }
 /********************************************************************************/
-/*************鎶ヨ*/
+/*************閹躲儴顒�*/
 .realaralm {
 	background-image: url(../images/icon/real-alarm.png) !important;
 }

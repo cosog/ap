@@ -44,6 +44,7 @@ import com.cosog.model.calculate.UserInfo;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.OracleJdbcUtis;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -64,7 +65,7 @@ public class MemoryDataManagerTask {
 	public static void loadMemoryData(){
 		Jedis jedis=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			jedis.flushDB();
 			
 			loadProtocolConfig();
@@ -82,7 +83,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		}
 		if(jedis!=null && jedis.isConnected() ){
-			jedis.disconnect();
 			jedis.close();
 		}
 	}
@@ -111,13 +111,12 @@ public class MemoryDataManagerTask {
 		
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
 				jedis.close();
 			}
 		}
@@ -134,7 +133,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String sql="select t.id,t.name,t.mappingcolumn,t.calcolumn,t.protocoltype,t.mappingmode,t.repetitiontimes from TBL_DATAMAPPING t order by t.protocoltype,t.id";
 			pstmt = conn.prepareStatement(sql);
 			rs=pstmt.executeQuery();
@@ -170,7 +169,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -189,7 +188,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String wells="";
 			if(condition==0){
 				wells=StringUtils.join(wellList, ",");
@@ -351,7 +350,7 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -397,7 +396,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String wells="";
 			if(condition==0){
 				wells=StringUtils.join(wellList, ",");
@@ -523,7 +522,7 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -539,7 +538,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocolinstance t where 1=1 ";
 			String sql="select t5.code as instanceCode,t5.deviceType,t4.protocol,t3.unitid ,"
 					+ "t2.acq_cycle,t2.save_cycle,"
@@ -617,7 +616,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -709,7 +708,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocoldisplayinstance t where 1=1 ";
 			String sql="select t3.code as instanceCode,t3.deviceType,t2.protocol,t.unitid,t.id as itemid,t.itemname,t.itemcode,t.bitindex,"
 					+ "decode(t.showlevel,null,9999,t.showlevel) as showlevel,decode(t.sort,null,9999,t.sort) as sort,t.realtimecurve,t.realtimecurvecolor,t.historycurve,t.historycurvecolor,t.type "
@@ -791,7 +790,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -884,7 +883,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocolalarminstance t where 1=1 ";
 			String sql="select t3.code as instanceCode,t3.deviceType,t.unitid,t2.protocol,"
 					+ " t.id as itemId,t.itemname,t.itemcode,t.itemaddr,t.bitindex,"
@@ -978,7 +977,7 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -1041,7 +1040,7 @@ public class MemoryDataManagerTask {
 	public static void loadRPCCalculateItem(){
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
 			jedis.zadd("rpcCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2)));
 			jedis.zadd("rpcCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2)));
@@ -1137,7 +1136,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -1146,7 +1145,7 @@ public class MemoryDataManagerTask {
 	public static void loadPCPCalculateItem(){
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			//有序集合
 			jedis.zadd("pcpCalItemList".getBytes(),1, SerializeObjectUnils.serialize(new CalItem("在线时间","CommTime","h",2)));
 			jedis.zadd("pcpCalItemList".getBytes(),2, SerializeObjectUnils.serialize(new CalItem("在线时率","CommTimeEfficiency","",2)));
@@ -1193,7 +1192,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -1210,7 +1209,7 @@ public class MemoryDataManagerTask {
 		String users=StringManagerUtils.joinStringArr2(userList, ",");
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String sql="select t.user_no,t.user_id,t.user_name,t.user_pwd,t.user_orgid,"
 					+ " t.user_in_email,t.user_phone,"
 					+ " t.user_quicklogin,t.user_enable,t.user_receivesms,t.user_receivemail,"
@@ -1252,7 +1251,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1269,7 +1268,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String sql="select t.id,t.resultcode,t.resultname,t.resultdescription,t.optimizationsuggestion,t.remark "
 					+ " from TBL_RPC_WORKTYPE t order by t.resultcode";
 			pstmt = conn.prepareStatement(sql);
@@ -1289,7 +1288,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1384,7 +1383,7 @@ public class MemoryDataManagerTask {
 				}
 			}
 			
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			jedis.set("AlarmShowStyle".getBytes(), SerializeObjectUnils.serialize(alarmShowStyle));
 			
 		} catch (Exception e) {
@@ -1392,7 +1391,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1404,7 +1403,7 @@ public class MemoryDataManagerTask {
 		Jedis jedis=null;
 		ModbusProtocolConfig modbusProtocolConfig=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("modbusProtocolConfig".getBytes())){
 				MemoryDataManagerTask.loadProtocolConfig();
 			}
@@ -1414,7 +1413,7 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -1433,7 +1432,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 			String wells="";
 			if(condition==0){
@@ -1531,7 +1530,7 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}
@@ -1549,7 +1548,7 @@ public class MemoryDataManagerTask {
         }
 		Jedis jedis=null;
 		try {
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			String currentDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 			String wells="";
 			if(condition==0){
@@ -1635,7 +1634,7 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				jedis.disconnect();
+				
 				jedis.close();
 			}
 		}

@@ -40,6 +40,7 @@ import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.PageHandler;
 import com.cosog.utils.ProtocolItemResolutionData;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
@@ -61,7 +62,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -82,7 +83,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		
@@ -236,7 +236,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -257,7 +257,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		String deviceTableName="tbl_rpcdevice";
@@ -363,7 +362,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -372,7 +371,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
 		String deviceTableName="tbl_rpcdevice";
@@ -439,7 +437,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -752,8 +750,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -765,7 +762,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -951,8 +948,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -965,7 +961,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Jedis jedis=null;
 		AlarmShowStyle alarmShowStyle=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("PCPDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
 			}
@@ -1244,8 +1240,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -1257,7 +1252,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int dataSaveMode=1;
 		Jedis jedis=null;
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -1417,8 +1412,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.disconnect();
+		if(jedis!=null){
 			jedis.close();
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
@@ -1429,7 +1423,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
 		int dataSaveMode=1;
-		Jedis jedis = new Jedis();
+		Jedis jedis = RedisUtil.jedisPool.getResource();
 		AlarmShowStyle alarmShowStyle=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -1514,11 +1508,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
-		
-		
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
@@ -1924,7 +1915,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			deviceInfoKey="PCPDeviceInfo";
 		}
 		try{
-			jedis = new Jedis();
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("UserInfo".getBytes())){
 				MemoryDataManagerTask.loadUserInfo(null);
 			}
@@ -1967,10 +1958,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}finally{
 			if(jedis!=null){
-				jedis.disconnect();
+				jedis.close();
 			}
-			
-			jedis.close();
 		}
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
@@ -2337,7 +2326,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
-		Jedis jedis = new Jedis();
+		Jedis jedis = RedisUtil.jedisPool.getResource();
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		RPCDeviceInfo rpcDeviceInfo=null;
@@ -2372,11 +2361,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			e.printStackTrace();
 		}
 		if(jedis!=null){
-			jedis.disconnect();
 			jedis.close();
 		}
-		
-		
 		
 		String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.resultcode,t2.resultname,"

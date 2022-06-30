@@ -181,7 +181,7 @@ public class EquipmentDriverServerTask {
 						StringManagerUtils.sendPostMethod(url, data2,"utf-8");
 					}
 					i++;
-					Thread.sleep(1000*60*cycle);
+					Thread.sleep(1000*cycle);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -192,18 +192,20 @@ public class EquipmentDriverServerTask {
 	public static void exampleDataManage(){
 		if(Config.getInstance().configFile.getAp().getOthers().getSimulateAcqEnable()){
 			try {
-				new ExampleDataManageThread("rpc01",10,0).start();
-				new ExampleDataManageThread("rpc02",10,60).start();
-				new ExampleDataManageThread("rpc03",10,120).start();
-				new ExampleDataManageThread("rpc04",10,180).start();
-				new ExampleDataManageThread("rpc05",10,240).start();
-				new ExampleDataManageThread("rpc06",10,300).start();
-				new ExampleDataManageThread("rpc07",10,360).start();
-				new ExampleDataManageThread("rpc08",10,420).start();
-//				new ExampleDataManageThread("rpc09",10,480).start();
-//				new ExampleDataManageThread("rpc10",10,540).start();
+				int sendCycle=Config.getInstance().configFile.getAp().getOthers().getSendCycle();
+				int timeDifference=Config.getInstance().configFile.getAp().getOthers().getTimeDifference();
+				new ExampleDataManageThread("rpc01",sendCycle,timeDifference*0).start();
+				new ExampleDataManageThread("rpc02",sendCycle,timeDifference*1).start();
+				new ExampleDataManageThread("rpc03",sendCycle,timeDifference*2).start();
+				new ExampleDataManageThread("rpc04",sendCycle,timeDifference*3).start();
+				new ExampleDataManageThread("rpc05",sendCycle,timeDifference*4).start();
+				new ExampleDataManageThread("rpc06",sendCycle,timeDifference*5).start();
+				new ExampleDataManageThread("rpc07",sendCycle,timeDifference*6).start();
+				new ExampleDataManageThread("rpc08",sendCycle,timeDifference*7).start();
+//				new ExampleDataManageThread("rpc09",sendCycle,timeDifference*8).start();
+//				new ExampleDataManageThread("rpc10",sendCycle,timeDifference*9).start();
 				
-				new ExampleDataManageThread("pcp01",10,600).start();
+				new ExampleDataManageThread("pcp01",sendCycle,timeDifference*10).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

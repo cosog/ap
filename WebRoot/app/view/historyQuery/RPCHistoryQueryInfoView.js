@@ -118,6 +118,11 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                             xtype: 'textfield',
                             value: '',
                             hidden: true
+                        },{
+                            id: 'RPCHistoryQueryDiagramOverlayColumnStr_Id',
+                            xtype: 'textfield',
+                            value: '',
+                            hidden: true
                         },rpcDeviceCombo,'-', {
                             xtype: 'button',
                             text: cosog.string.exportExcel,
@@ -472,7 +477,8 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         	var tabPanel = Ext.getCmp("RPCHistoryQueryTabPanel");
             				var activeId = tabPanel.getActiveTab().id;
             				if(activeId=="RPCHistoryDataTabPanel"){
-        						Ext.getCmp("RPCHistoryDataExportBtn_Id").show();
+            					Ext.getCmp("RPCHistoryDiagramOverlayExportBtn_Id").hide();
+            					Ext.getCmp("RPCHistoryDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
         						var gridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
                                 if (isNotVal(gridPanel)) {
@@ -481,10 +487,12 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                 	Ext.create("AP.store.historyQuery.RPCHistoryDataStore");
                                 }
         					}else if(activeId=="RPCHistoryDiagramTabPanel"){
+        						Ext.getCmp("RPCHistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").hide();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						loadSurfaceCardList(1);
         					}else if(activeId=="RPCHistoryDiagramOverlayTabPanel"){
+        						Ext.getCmp("RPCHistoryDiagramOverlayExportBtn_Id").show();
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").hide();
         						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
         						
@@ -501,8 +509,73 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         text: cosog.string.exportExcel,
                         iconCls: 'export',
 //                        pressed: true,
-                        id:'RPCHistoryDataExportBtn_Id',
+                        id:'RPCHistoryDiagramOverlayExportBtn_Id',
                         hidden:false,
+                        handler: function (v, o) {
+                        	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
+                        	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
+                        	var startTime_Hour=Ext.getCmp('RPCHistoryQueryStartTime_Hour_Id').getValue();
+                        	if(!r.test(startTime_Hour)){
+                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.getCmp('RPCHistoryQueryStartTime_Hour_Id').focus(true, 100);
+                        		return;
+                        	}
+                        	var startTime_Minute=Ext.getCmp('RPCHistoryQueryStartTime_Minute_Id').getValue();
+                        	if(!r2.test(startTime_Minute)){
+                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.getCmp('RPCHistoryQueryStartTime_Minute_Id').focus(true, 100);
+                        		return;
+                        	}
+                        	var startTime_Second=Ext.getCmp('RPCHistoryQueryStartTime_Second_Id').getValue();
+                        	if(!r2.test(startTime_Second)){
+                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.getCmp('RPCHistoryQueryStartTime_Second_Id').focus(true, 100);
+                        		return;
+                        	}
+                        	
+                        	var endTime_Hour=Ext.getCmp('RPCHistoryQueryEndTime_Hour_Id').getValue();
+                        	if(!r.test(endTime_Hour)){
+                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>小时为0~23之间的整数。");
+                        		Ext.getCmp('RPCHistoryQueryEndTime_Hour_Id').focus(true, 100);
+                        		return;
+                        	}
+                        	var endTime_Minute=Ext.getCmp('RPCHistoryQueryEndTime_Minute_Id').getValue();
+                        	if(!r2.test(endTime_Minute)){
+                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>分钟为0~59之间的整数。");
+                        		Ext.getCmp('RPCHistoryQueryEndTime_Minute_Id').focus(true, 100);
+                        		return;
+                        	}
+                        	var endTime_Second=Ext.getCmp('RPCHistoryQueryEndTime_Second_Id').getValue();
+                        	if(!r2.test(endTime_Second)){
+                        		Ext.Msg.alert('消息', "<font color=red>数值无效！</font>秒为0~59之间的整数。");
+                        		Ext.getCmp('RPCHistoryQueryEndTime_Second_Id').focus(true, 100);
+                        		return;
+                        	}
+                        	
+                        	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                        	var deviceName='';
+                        	var deviceId=0;
+                        	var selectRow= Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").getValue();
+                        	if(selectRow>=0){
+                        		deviceName = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                        		deviceId = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                        	}
+                        	var startDate=Ext.getCmp('RPCHistoryQueryStartDate_Id').rawValue;
+                            var endDate=Ext.getCmp('RPCHistoryQueryEndDate_Id').rawValue;
+                            
+                       	 	var deviceType=0;
+                       	 	var fileName='抽油机'+deviceName+'功图叠加数据';
+                       	 	var title='抽油机'+deviceName+'功图叠加数据';
+                       	 	var columnStr=Ext.getCmp("RPCHistoryQueryDiagramOverlayColumnStr_Id").getValue();
+                       	 	exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
+                        }
+                    }, {
+                        xtype: 'button',
+                        text: cosog.string.exportExcel,
+                        iconCls: 'export',
+//                        pressed: true,
+                        id:'RPCHistoryDataExportBtn_Id',
+                        hidden:true,
                         handler: function (v, o) {
                         	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
@@ -736,6 +809,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
             		listeners: {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					if(newCard.id=="RPCHistoryDataTabPanel"){
+        						Ext.getCmp("RPCHistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").show();
         						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
         						var gridPanel = Ext.getCmp("RPCHistoryQueryDataGridPanel_Id");
@@ -745,10 +819,12 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                 	Ext.create("AP.store.historyQuery.RPCHistoryDataStore");
                                 }
         					}else if(newCard.id=="RPCHistoryDiagramTabPanel"){
+        						Ext.getCmp("RPCHistoryDiagramOverlayExportBtn_Id").hide();
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").hide();
         						Ext.getCmp("SurfaceCardTotalCount_Id").show();
         						loadSurfaceCardList(1);
         					}else if(newCard.id=="RPCHistoryDiagramOverlayTabPanel"){
+        						Ext.getCmp("RPCHistoryDiagramOverlayExportBtn_Id").show();
         						Ext.getCmp("RPCHistoryDataExportBtn_Id").hide();
         						Ext.getCmp("SurfaceCardTotalCount_Id").hide();
         						

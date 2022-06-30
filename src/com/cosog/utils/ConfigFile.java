@@ -200,6 +200,10 @@ public class ConfigFile {
 	    private boolean printLog;
 
 	    private boolean simulateAcqEnable;
+	    
+	    private int sendCycle;
+	    
+	    private int timeDifference;
 
 	    public void setCache(boolean cache){
 	        this.cache = cache;
@@ -273,6 +277,18 @@ public class ConfigFile {
 	    public boolean getSimulateAcqEnable(){
 	        return this.simulateAcqEnable;
 	    }
+		public int getTimeDifference() {
+			return timeDifference;
+		}
+		public void setTimeDifference(int timeDifference) {
+			this.timeDifference = timeDifference;
+		}
+		public int getSendCycle() {
+			return sendCycle;
+		}
+		public void setSendCycle(int sendCycle) {
+			this.sendCycle = sendCycle;
+		}
 	}
 	
 	public static class Ap

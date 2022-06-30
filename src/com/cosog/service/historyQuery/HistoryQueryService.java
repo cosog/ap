@@ -2485,4 +2485,54 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		dynSbf.append("}");
 		return dynSbf.toString().replaceAll("null", "");
 	}
+	
+	@SuppressWarnings("deprecation")
+	public String getFESDiagramOverlayExportData(String orgId,String deviceId,String deviceName,Page pager) throws SQLException, IOException {
+		StringBuffer dynSbf = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		
+		String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
+		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+			prodCol="liquidWeightProduction,liquidWeightProduction_L";
+		}
+		
+		String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+				+ " t.resultcode,t2.resultname,"
+				+ " t.stroke,t.spm,"
+				+ " t.fmax,t.fmin,"
+				+ prodCol+", "
+				+ " t.iDegreeBalance,t.wattDegreeBalance"
+				+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
+				+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
+				+ " and t.wellid="+deviceId+" "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " order by t.fesdiagramacqtime desc";
+		
+		List<?> list=this.findCallSql(sql);
+		
+		dynSbf.append("[");
+		if (list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Object[] obj = (Object[]) list.get(i);
+				dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
+				dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
+				dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
+				dynSbf.append("\"resultCode\":\""+obj[3]+"\",");
+				dynSbf.append("\"resultName\":\""+obj[4]+"\",");
+				dynSbf.append("\"stroke\":\""+obj[5]+"\",");
+				dynSbf.append("\"spm\":\""+obj[6]+"\",");
+				dynSbf.append("\"fmax\":\""+obj[7]+"\",");
+				dynSbf.append("\"fmin\":\""+obj[8]+"\",");
+				dynSbf.append("\""+prodCol.split(",")[0]+"\":\""+obj[9]+"\",");
+				dynSbf.append("\""+prodCol.split(",")[1]+"\":\""+obj[10]+"\",");
+				dynSbf.append("\"iDegreeBalance\":\"" + obj[11] + "\",");
+				dynSbf.append("\"wattDegreeBalance\":\"" + obj[12] + "\"},");
+			}
+			if(dynSbf.toString().endsWith(",")){
+				dynSbf.deleteCharAt(dynSbf.length() - 1);
+			}
+		}
+		dynSbf.append("]");
+		return dynSbf.toString().replaceAll("null", "");
+	}
 }

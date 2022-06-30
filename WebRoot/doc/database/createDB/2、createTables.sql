@@ -648,9 +648,9 @@ create table TBL_PUMPINGMODEL
   crankrotationdirection VARCHAR2(200),
   offsetangleofcrank     NUMBER(8,2),
   crankgravityradius     NUMBER(10,4),
-  singlecrankweight      NUMBER(8,2),
+  singlecrankweight      NUMBER(10,4),
   singlecrankpinweight   NUMBER(10,4),
-  structuralunbalance    NUMBER(8,2),
+  structuralunbalance    NUMBER(10,4),
   balanceweight          VARCHAR2(200),
   prtf                   CLOB
 )

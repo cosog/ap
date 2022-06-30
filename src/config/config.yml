@@ -32,6 +32,8 @@ ap:
       showLogo: true
       printLog: true
       simulateAcqEnable: true
+      sendCycle: 600
+      timeDifference: 60
 ac:
    probe:
       app: 

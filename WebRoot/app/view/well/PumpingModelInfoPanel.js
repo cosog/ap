@@ -664,7 +664,12 @@ function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
         		var columns="[{data:'CrankAngle'},{data:'PR'},{data:'TF'}]";
         		pumpingUnitPTFHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
         		pumpingUnitPTFHandsontableHelper.columns = Ext.JSON.decode(columns);
-        		pumpingUnitPTFHandsontableHelper.createTable(result.totalRoot);
+        		if(result.totalRoot==0){
+        			pumpingUnitPTFHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+        		}else{
+        			pumpingUnitPTFHandsontableHelper.createTable(result.totalRoot);
+        		}
+        		
             }else {
                 if(result.totalRoot==0){
                 	pumpingUnitPTFHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);

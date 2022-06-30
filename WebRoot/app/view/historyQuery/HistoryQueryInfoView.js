@@ -273,6 +273,53 @@ function exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,startD
     openExcelWindow(url + '?flag=true' + param);
 };
 
+function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title,columnStr) {
+    var url = context + '/historyQueryController/exportHistoryQueryFESDiagramOverlayDataExcel';
+    var fields = "";
+    var heads = "";
+    var lockedheads = "";
+    var unlockedheads = "";
+    var lockedfields = "";
+    var unlockedfields = "";
+    var columns_ = Ext.JSON.decode(columnStr);
+    
+    Ext.Array.each(columns_, function (name, index, countriesItSelf) {
+        var column = columns_[index];
+        if (index > 0 && !column.hidden) {
+        	if(column.locked){
+        		lockedfields += column.dataIndex + ",";
+        		lockedheads += column.text + ",";
+        	}else{
+        		unlockedfields += column.dataIndex + ",";
+        		unlockedheads += column.text + ",";
+        	}
+            
+        }
+    });
+    if (isNotVal(lockedfields)) {
+    	lockedfields = lockedfields.substring(0, lockedfields.length - 1);
+    	lockedheads = lockedheads.substring(0, lockedheads.length - 1);
+    }
+    if (isNotVal(unlockedfields)) {
+    	unlockedfields = unlockedfields.substring(0, unlockedfields.length - 1);
+    	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
+    }
+    fields="id"+(isNotVal(lockedfields)?(","+lockedfields):"")+(isNotVal(unlockedfields)?(","+unlockedfields):"");
+    heads="序号"+(isNotVal(lockedheads)?(","+lockedheads):"")+(isNotVal(unlockedheads)?(","+unlockedheads):"");
+    fields="";
+    heads="";
+    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
+    + "&orgId=" + orgId 
+    + "&deviceType=" + deviceType 
+    + "&deviceId=" + deviceId 
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&startDate=" + startDate
+    + "&endDate=" + endDate
+    + "&fileName=" + URLencode(URLencode(fileName)) 
+    + "&title=" + URLencode(URLencode(title));
+    openExcelWindow(url + '?flag=true' + param);
+};
+
 
 function deviceHistoryQueryCurve(deviceType){
 	var selectRowId="RPCHistoryQueryInfoDeviceListSelectRow_Id";

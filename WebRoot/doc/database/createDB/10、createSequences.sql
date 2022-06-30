@@ -233,7 +233,7 @@ cache 20;
 create sequence SEQ_PUMPINGMODEL
 minvalue 1
 maxvalue 999999999999999999999999
-start with 3
+start with 20
 increment by 1
 cache 20;
 /

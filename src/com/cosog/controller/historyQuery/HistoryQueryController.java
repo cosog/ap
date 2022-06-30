@@ -488,6 +488,65 @@ public class HistoryQueryController extends BaseController  {
 		return null;
 	}
 	
+	@RequestMapping("/exportHistoryQueryFESDiagramOverlayDataExcel")
+	public String exportHistoryQueryFESDiagramOverlayDataExcel() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		startDate = ParamUtils.getParameter(request, "startDate");
+		endDate = ParamUtils.getParameter(request, "endDate");
+		
+		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
+		String fields = ParamUtils.getParameter(request, "fields");
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		
+		DataDictionary ddic = null;
+		String ddicName="FESDiagramOverlay";
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		heads=StringUtils.join(ddic.getHeaders(), ",");
+		fields=StringUtils.join(ddic.getFields(), ",");
+		
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		
+		String tableName="tbl_rpcacqdata_hist";
+		if(StringManagerUtils.isNotNull(deviceId)&&!StringManagerUtils.isNotNull(endDate)){
+			String sql = " select to_char(max(t.acqTime),'yyyy-mm-dd hh24:mi:ss') from "+tableName+" t where t.wellId= "+deviceId;
+			List list = this.service.reportDateJssj(sql);
+			if (list.size() > 0 &&list.get(0)!=null&&!list.get(0).toString().equals("null")) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			}
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=endDate.split(" ")[0]+" 00:00:00";
+			}
+		}
+		pager.setStart_date(startDate);
+		pager.setEnd_date(endDate);
+		
+		json = historyQueryService.getFESDiagramOverlayExportData(orgId,deviceId,deviceName,pager);
+		
+		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	public String getLimit() {
 		return limit;
 	}

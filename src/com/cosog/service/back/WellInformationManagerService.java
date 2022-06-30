@@ -1535,7 +1535,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		strokeListBuff.append("[");
 		if(list.size()>0){
 			Object[] obj = (Object[]) list.get(0);
-			String prtf="{}";
+			String prtf="";
 			String strokeListData=obj[0].toString();
 			if(StringManagerUtils.isNotNull(strokeListData)){
 				String[] strokeArr=strokeListData.split(",");
@@ -1553,11 +1553,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				prtf=StringManagerUtils.CLOBtoString(realClob);
 			}
 			if(!StringManagerUtils.isNotNull(prtf)){
-				prtf="{}";
+				prtf="";
 			}
 			type = new TypeToken<PumpingPRTFData>() {}.getType();
 			PumpingPRTFData pumpingPRTFData=gson.fromJson(prtf, type);
-			if(pumpingPRTFData!=null){
+			if(pumpingPRTFData!=null&&pumpingPRTFData.getList()!=null&&pumpingPRTFData.getList().size()>0){
 				for(int i=0;i<pumpingPRTFData.getList().size();i++){
 					if(StringManagerUtils.isNotNull(stroke)){
 						if(pumpingPRTFData.getList().get(i).getStroke()==StringManagerUtils.stringToFloat(stroke)){
@@ -1605,7 +1605,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.structuralunbalance,t.balanceweight"
 //				+ " t.prtf "
 				+ " from tbl_pumpingmodel t"
-				+ " order by t.manufacturer,t.model";
+				+ " order by t.id,t.manufacturer,t.model";
 		
 		String json = "";
 		
@@ -1667,7 +1667,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,t.balanceweight "
 				+ " from tbl_pumpingmodel t"
-				+ " order by t.manufacturer,t.model";
+				+ " order by t.id,t.manufacturer,t.model";
 		
 		String json = "";
 		
@@ -1703,7 +1703,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
 				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
-		String sql = "select t.id,t.manufacturer,t.model from tbl_pumpingmodel t order by t.manufacturer,t.model";
+		String sql = "select t.id,t.manufacturer,t.model from tbl_pumpingmodel t order by t.id, t.manufacturer,t.model";
 		String devicePumpingModelSql="select t.pumpingmodelid from tbl_rpcdevice t where t.id="+deviceId;
 		String json = "";
 		List<?> list = this.findCallSql(sql);

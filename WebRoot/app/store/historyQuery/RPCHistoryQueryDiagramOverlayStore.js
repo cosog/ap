@@ -28,6 +28,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore', {
             if (!isNotVal(RPCHistoryQueryFSdiagramOverlayGrid)) {
             	var arrColumns = get_rawData.columns;
                 var column = createRPCHistoryQueryDiagramOverlayTableColumn(arrColumns)
+                Ext.getCmp("RPCHistoryQueryDiagramOverlayColumnStr_Id").setValue(column);
                 var newColumns = Ext.JSON.decode(column);
                 RPCHistoryQueryFSdiagramOverlayGrid = Ext.create('Ext.grid.Panel', {
                     id: "RPCHistoryQueryFSdiagramOverlayGrid_Id",

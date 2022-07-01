@@ -58,6 +58,7 @@ public class PageTurnController extends BaseController {
 		ConfigFile configFile=Config.getInstance().configFile;
 		response.setContentType("text/html;charset=utf-8");
 		HttpSession session=request.getSession();
+//		session.setMaxInactiveInterval(60*60*12);
 		session.setAttribute("configFile", gson.toJson(configFile));
 		session.setAttribute("oem", gson.toJson(configFile.getAp().getOem()));
 		session.setAttribute("viewProjectName", configFile.getAp().getOem().getTitle());

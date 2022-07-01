@@ -108,6 +108,26 @@ public class UserManagerController extends BaseController {
 		pw.close();
 		return null;
 	}
+	
+	@RequestMapping("/invalidateSession")
+	public String invalidateSession() throws IOException {
+		String json = "";
+		try{
+			HttpSession session=request.getSession();
+			session.invalidate();
+			json = "{success:true,msg:true}";
+		}catch(Exception e){
+			json = "{success:true,false}";
+		}
+		
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	/** <P>描述：用户管理——新增用户</p>
 	 * @author gao 2014-05-08

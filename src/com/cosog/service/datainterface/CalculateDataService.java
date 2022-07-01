@@ -61,6 +61,14 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<AcquisitionItemInfo> saveAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 		for(int i=0;i<acquisitionItemInfoList.size();i++){
 			if(acquisitionItemInfoList.get(i).getAlarmLevel()>0){
+				String alarmLevelName="";
+				if(acquisitionItemInfoList.get(i).getAlarmLevel()==100){
+					alarmLevelName="一级报警";
+				}else if(acquisitionItemInfoList.get(i).getAlarmLevel()==200){
+					alarmLevelName="二级报警";
+				}else if(acquisitionItemInfoList.get(i).getAlarmLevel()==300){
+					alarmLevelName="三级报警";
+				}
 				String key=wellName+","+deviceType+","+acquisitionItemInfoList.get(i).getColumn()+","+acquisitionItemInfoList.get(i).getAlarmInfo();
 				String lastAlarmTime=alarmInfoMap.get(key);
 				
@@ -71,29 +79,35 @@ public class CalculateDataService<T> extends BaseService<T> {
 					if(acquisitionItemInfoList.get(i).getIsSendMessage()==1){//如果该报警项发送短信
 						isSendSMS=true;
 						if(acquisitionItemInfoList.get(i).getAlarmType()==3){//开关量报警
-							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo());
+							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){//枚举量报警
-							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo());
+							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){//数值量报警
 							SMSContent.append(acquisitionItemInfoList.get(i).getTitle()+acquisitionItemInfoList.get(i).getAlarmInfo()
-									+",报警值"+acquisitionItemInfoList.get(i).getValue()+",限值"+acquisitionItemInfoList.get(i).getAlarmLimit()
-									+",回差"+acquisitionItemInfoList.get(i).getHystersis()+";");
+									+",报警值"+acquisitionItemInfoList.get(i).getValue()
+									+",限值"+acquisitionItemInfoList.get(i).getAlarmLimit()
+									+",回差"+acquisitionItemInfoList.get(i).getHystersis()
+									+",报警级别:"+alarmLevelName
+									+";");
 						}else{
-							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo());
+							SMSContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}
 					}
 					if(acquisitionItemInfoList.get(i).getIsSendMail()==1){//如果该报警项发送邮件
 						isSendMail=true;
 						if(acquisitionItemInfoList.get(i).getAlarmType()==3){//开关量报警
-							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo());
+							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}else if(acquisitionItemInfoList.get(i).getAlarmType()==2){//枚举量报警
-							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo());
-						}else if(acquisitionItemInfoList.get(i).getAlarmType()==3){//数值量报警
+							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
+						}else if(acquisitionItemInfoList.get(i).getAlarmType()==1){//数值量报警
 							EMailContent.append(acquisitionItemInfoList.get(i).getTitle()+acquisitionItemInfoList.get(i).getAlarmInfo()
-									+",报警值"+acquisitionItemInfoList.get(i).getValue()+",限值"+acquisitionItemInfoList.get(i).getAlarmLimit()
-									+",回差"+acquisitionItemInfoList.get(i).getHystersis()+";");
+									+",报警值"+acquisitionItemInfoList.get(i).getValue()
+									+",限值"+acquisitionItemInfoList.get(i).getAlarmLimit()
+									+",回差"+acquisitionItemInfoList.get(i).getHystersis()
+									+",报警级别:"+alarmLevelName
+									+";");
 						}else{
-							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo());
+							EMailContent.append(acquisitionItemInfoList.get(i).getAlarmInfo()+",报警级别:"+alarmLevelName);
 						}
 					}
 				}

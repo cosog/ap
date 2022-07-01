@@ -806,6 +806,23 @@ function showHelpDocumentWinFn() {
     return false;
 }
 
+//注销session
+function invalidateSession() {
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/userManagerController/invalidateSession',
+		success:function(response) {
+			
+		},
+		failure:function(){
+			Ext.MessageBox.alert("信息","请求失败");
+		},
+		params: {
+        }
+	});
+    return false;
+}
+
 function mOver(obj) {
     var obj_ = obj;
     obj_.style.color = 'blue';

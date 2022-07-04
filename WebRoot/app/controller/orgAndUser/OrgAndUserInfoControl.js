@@ -403,20 +403,25 @@ function delUserInfo() {
 //                grid_id, row, data_id, action_name
                 var deletejson = [];
                 var noDelete=[];
+                var deleteUserId=[];
             	Ext.Array.each(_record, function(name, index, countriesItSelf) {
             		if(_record[index].get("userNo")>0 && parseInt(_record[index].get("userNo"))!=parseInt(user_)){
             			deletejson.push(_record[index].get("userNo"));
+            			deleteUserId.push(_record[index].get("userId"));
             		}else if(_record[index].get("userNo")>0 && parseInt(_record[index].get("userNo"))==parseInt(user_)){
             			noDelete.push(_record[index].get("userNo"));
+            			deleteUserId.push(_record[index].get("userId"));
             		}		
             	});
             	if(deletejson.length>0){
             		var delparamsId = "" + deletejson.join(",");
+            		var delUserId = "" + deleteUserId.join(",");
             		Ext.Ajax.request({
             			url : context + '/userManagerController/doUserBulkDelete',
             			method : "POST",
             			params : {
-            				paramsId : delparamsId
+            				paramsId : delparamsId,
+            				delUserId : delUserId
             			},
             			success : function(response) {
             				var result = Ext.JSON.decode(response.responseText);

@@ -39,6 +39,7 @@ import com.cosog.utils.Message;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
+import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
 import com.google.gson.Gson;
@@ -187,7 +188,17 @@ public class UserManagerController extends BaseController {
 		try {
 			// log.debug("userNos==" + userNos.length);
 			String userNos = ParamUtils.getParameter(request, "paramsId");
+			String userIds = ParamUtils.getParameter(request, "delUserId");
 			this.userService.bulkDelete(userNos);
+			if(StringManagerUtils.isNotNull(userIds)){
+				String[] userIdArr=userIds.split(",");
+				for(int i=0;i<userIdArr.length;i++){
+					if(StringManagerUtils.isNotNull(userIdArr[i])){
+						SessionLockHelper.destroySessionByUserId(userIdArr[i]);
+					}
+				}
+			}
+			//销毁已
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			String result = "{success:true,flag:true}";
 			response.getWriter().print(result);
@@ -262,6 +273,10 @@ public class UserManagerController extends BaseController {
 			if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
 				receivingEMailAccount.add(user.getUserInEmail());
 				StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
+			}
+			
+			if(user.getUserEnable()==0){
+				SessionLockHelper.destroySessionByUserId(user.getUserId());
 			}
 			
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);

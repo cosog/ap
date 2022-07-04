@@ -36,6 +36,7 @@ import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
+import com.cosog.utils.SessionLockHelper;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.UnixPwdCrypt;
 import com.opensymphony.xwork2.ActionContext;
@@ -210,8 +211,10 @@ public class UserLoginManagerController extends BaseController {
 				user.setAllOrgPatentNodeIds(orgService.fingAllOrgParentNodeIds());
 				user.setAllModParentNodeIds(modService.fingAllModParentNodeIds());
 				user.setLoginIp(clientIp);
+				user.setLoginTime(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
 				session.setAttribute("userLogin", user);
 				session.setAttribute("SESSION_USERNAME", username);
+				SessionLockHelper.putSession(session);
 				out.print("{success:true,flag:'normal'}");
 				this.service.saveSystemLog(user);
 			}else if(user != null && user.getUserEnable()!=1){

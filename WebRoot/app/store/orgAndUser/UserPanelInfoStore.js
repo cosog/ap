@@ -44,11 +44,20 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     beforePageText: "当前页",
                     afterPageText: "共{0}页"
                 });
+//                var rowEditing = Ext.create('Ext.grid.RowEditor', {
+//                	    clicksToMoveEditor: 1,
+//                	    autoCancel: false
+//                	});
                 var gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "UserInfoGridPanel_Id",
+                    selModel: 'rowmodel',
+                    plugins: [{
+                        ptype: 'rowediting',
+                        clicksToEdit: 2
+                    }],
                     border: false,
                     stateful: true,
-                    autoScroll: true,
+//                    autoScroll: true,
                     columnLines: true,
                     layout: "fit",
                     stripeRows: true,
@@ -61,13 +70,155 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     },
 //                    bbar: bbar,
                     store: store,
-                    columns: newColumns,
-                    listeners: {
-                        selectionchange: function (sm, selections) {
+                    columns: [{
+                        header: '序号',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        width: 50,
+                        xtype: 'rownumberer'
+                    }, {
+                        header: '用户名称',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        sortable: false,
+                        dataIndex: 'userName',
+                        editor: {
+                            allowBlank: false
                         },
-                        itemdblclick: function () {
-                            modifyUserInfo();
+                        renderer: function (value, o, p, e) {
+                            return adviceCurrentUserName(value, o, p, e);
                         }
+                    }, {
+                        header: '用户账号',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userId',
+                        editor: {
+                            allowBlank: false
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '角色',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userTypeName',
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '电话',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userPhone',
+                        editor: {
+                        	regex: /^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\d{8}$/,
+                        	allowBlank: true
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '邮箱',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userInEmail',
+                        editor: {
+                        	vtype: 'email',
+                            regex: /^([a-z0-9A-Z]+[-|\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/,
+                            allowBlank: true
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '快捷登录',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userQuickLoginName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '接收报警短信',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'receiveSMSName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '接收报警邮件',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'receiveMailName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '状态',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        dataIndex: 'userEnableName',
+                        editor: {
+                        	xtype: 'checkbox',
+                            cls: 'x-grid-checkheader-editor',
+                        	allowBlank: false
+                        },
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '隶属单位',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        width: 300,
+                        dataIndex: 'allPath',
+                        renderer: function (value) {
+                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        }
+                    }, {
+                        header: '创建时间',
+                        lockable: true,
+                        align: 'center',
+                        sortable: true,
+                        width: 150,
+                        dataIndex: 'userRegtime',
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                    }],
+                    listeners: {
+//                        selectionchange: function (sm, selections) {
+//                        },
+//                        itemdblclick: function () {
+////                            modifyUserInfo();
+//                        }
                     }
                 });
                 var panel = Ext.getCmp("OrgAndUserUserInfoPanel_Id");

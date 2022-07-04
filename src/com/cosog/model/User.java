@@ -51,6 +51,8 @@ public class User implements java.io.Serializable {
 	private String defaultGraghSize;
 	
 	private String loginIp;
+	
+	private String loginTime;
 
 	/**
 	 * 组织节点orgCode集合
@@ -315,5 +317,14 @@ public class User implements java.io.Serializable {
 
 	public void setLoginIp(String loginIp) {
 		this.loginIp = loginIp;
+	}
+
+	@Transient
+	public String getLoginTime() {
+		return loginTime;
+	}
+
+	public void setLoginTime(String loginTime) {
+		this.loginTime = loginTime;
 	}
 }

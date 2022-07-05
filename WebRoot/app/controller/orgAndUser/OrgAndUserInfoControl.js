@@ -377,14 +377,8 @@ SelectedUserDataAttrInfoGridPanel = function () {
     userRegTimeInput.format = 'Y-m-d H:i:s';
     userRegTimeInput.setValue(traininguserRegtime);
     if(parseInt(user_)==parseInt(userNo)){//如果是当前用户，不能修改自己的角色和使能状态
-//    	Ext.getCmp('userType_Id1').setReadOnly(true);
-//    	Ext.getCmp('userEnableRadio1_Id').setReadOnly(true);
-//    	Ext.getCmp('userEnableRadio0_Id').setReadOnly(true);
-    	
     	Ext.getCmp('userType_Id1').disable();
     	Ext.getCmp('userEnableRadioGroup_Id').disable();
-//    	Ext.getCmp('userEnableRadio1_Id').disable();
-//    	Ext.getCmp('userEnableRadio0_Id').disable();
     }
 };
 
@@ -410,7 +404,6 @@ function delUserInfo() {
             			deleteUserId.push(_record[index].get("userId"));
             		}else if(_record[index].get("userNo")>0 && parseInt(_record[index].get("userNo"))==parseInt(user_)){
             			noDelete.push(_record[index].get("userNo"));
-            			deleteUserId.push(_record[index].get("userId"));
             		}		
             	});
             	if(deletejson.length>0){
@@ -451,6 +444,105 @@ function delUserInfo() {
     }
     return false;
 };
+
+function delUserInfoByGridBtn(record) {
+//	alert(record.data.userNo);
+//  record.drop();
+	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+  Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+  Ext.Msg.confirm(cosog.string.yesdel, '是否删除用户'+record.get("userId"), function (btn) {
+      if (btn == "yes") {
+          var deletejson = [];
+          var noDelete=[];
+          var deleteUserId=[];
+      	
+          if(record.get("userNo")>0 && parseInt(record.get("userNo"))!=parseInt(user_)){
+  			deletejson.push(record.get("userNo"));
+  			deleteUserId.push(record.get("userId"));
+  		}else if(record.get("userNo")>0 && parseInt(record.get("userNo"))==parseInt(user_)){
+  			noDelete.push(record.get("userNo"));
+  		}
+          
+      	if(deletejson.length>0){
+      		var delparamsId = "" + deletejson.join(",");
+      		var delUserId = "" + deleteUserId.join(",");
+      		Ext.Ajax.request({
+      			url : context + '/userManagerController/doUserBulkDelete',
+      			method : "POST",
+      			params : {
+      				paramsId : delparamsId,
+      				delUserId : delUserId
+      			},
+      			success : function(response) {
+      				var result = Ext.JSON.decode(response.responseText);
+      				if (result.flag == true) {
+      					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deletejson.length + "条数据信息。");
+      				}
+      				if (result.flag == false) {
+      					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+      				}
+      				Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
+      			},
+      			failure : function() {
+      				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+      			}
+      		});
+      	}else if(noDelete.length>0){
+      		Ext.Msg.alert('提示', "<font color=red>不能删除当前登录用户。</font>");
+      	}else{
+      		Ext.Msg.alert('提示', "<font color=red>所选属性无效，删除失败。</font>");
+      	}
+          
+          
+      }
+  });
+}
+
+function updateUserInfoByGridBtn(record) {
+
+    var userNo=record.get("userNo");
+    var userName=record.get("userName");
+    var userId=record.get("userId");
+    var userTypeName=record.get("userTypeName");
+    var userPhone=record.get("userPhone");
+    var userInEmail=record.get("userInEmail");
+    var userQuickLoginName=record.get("userQuickLoginName");
+    var receiveSMSName=record.get("receiveSMSName");
+    var receiveMailName=record.get("receiveMailName");
+    var userEnableName=record.get("userEnableName");
+	
+    Ext.Ajax.request({
+		url : context + '/userManagerController/updateUserInfo',
+		method : "POST",
+		params : {
+			userNo : userNo,
+			userName : userName,
+			userId : userId,
+			userTypeName : userTypeName,
+			userPhone : userPhone,
+			userInEmail : userInEmail,
+			userQuickLoginName : userQuickLoginName,
+			receiveSMSName : receiveSMSName,
+			receiveMailName : receiveMailName,
+			userEnableName : userEnableName
+		},
+		success : function(response) {
+			var result = Ext.JSON.decode(response.responseText);
+			if (result.success==true && result.flag == true) {
+				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+			}else if (result.success==true && result.flag == false) {
+				Ext.Msg.alert('提示', "<font color=red>用户账号已存在,保存失败。</font>");
+			}else {
+				Ext.Msg.alert('提示', "<font color=red>SORRY！保存失败。</font>");
+			}
+			Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
+		},
+		failure : function() {
+			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+		}
+	});
+	
+}
 
 //窗体创建按钮事件
 var SaveUserDataInfoSubmitBtnForm = function () {

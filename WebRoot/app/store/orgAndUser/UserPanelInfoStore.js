@@ -50,9 +50,9 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
 //                	});
                 var gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "UserInfoGridPanel_Id",
-                    selModel: 'rowmodel',
+                    selModel: 'cellmodel',//cellmodel rowmodel
                     plugins: [{
-                        ptype: 'rowediting',
+                        ptype: 'cellediting',//cellediting rowediting
                         clicksToEdit: 2
                     }],
                     border: false,
@@ -108,6 +108,14 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         align: 'center',
                         sortable: true,
                         dataIndex: 'userTypeName',
+                        editor: {
+                            xtype: 'combo',
+                            typeAhead: true,
+                            triggerAction: 'all',
+                            allowBlank: false,
+                            editable: false,
+                            store: get_rawData.roleList
+                        },
                         renderer: function (value) {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
@@ -140,6 +148,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         }
                     }, {
                         header: '快捷登录',
+                        xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -148,12 +157,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        },
-                        renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
                         header: '接收报警短信',
+                        xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -162,12 +169,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        },
-                        renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
                         header: '接收报警邮件',
+                        xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -176,12 +181,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        },
-                        renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
                         header: '状态',
+                        xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
@@ -190,9 +193,6 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        },
-                        renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
                     }, {
                         header: '隶属单位',
@@ -211,7 +211,35 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         width: 150,
                         dataIndex: 'userRegtime',
-                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                        renderer:function(value,o,p,e){
+                        	return adviceTimeFormat(value,o,p,e);
+                        }
+                    },{
+                        xtype: 'actioncolumn',
+                        width: 30,
+                        align: 'center',
+                        sortable: false,
+                        menuDisabled: true,
+                        items: [{
+                            iconCls: 'submit',
+                            tooltip: '保存',
+                            handler: function (view, recIndex, cellIndex, item, e, record) {
+                            	updateUserInfoByGridBtn(record);
+                            }
+                        }]
+                    },{
+                        xtype: 'actioncolumn',
+                        width: 30,
+                        align: 'center',
+                        sortable: false,
+                        menuDisabled: true,
+                        items: [{
+                            iconCls: 'delete',
+                            tooltip: '删除用户',
+                            handler: function (view, recIndex, cellIndex, item, e, record) {
+                            	delUserInfoByGridBtn(record);
+                            }
+                        }]
                     }],
                     listeners: {
 //                        selectionchange: function (sm, selections) {

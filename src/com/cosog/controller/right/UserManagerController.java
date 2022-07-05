@@ -293,6 +293,80 @@ public class UserManagerController extends BaseController {
 		}
 		return null;
 	}
+	
+	@SuppressWarnings("unused")
+	@RequestMapping("/updateUserInfo")
+	public String updateUserInfo() throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			String userNo = ParamUtils.getParameter(request, "userNo");
+			String userName = ParamUtils.getParameter(request, "userName");
+			String userId = ParamUtils.getParameter(request, "userId");
+			String userTypeName = ParamUtils.getParameter(request, "userTypeName");
+			String userPhone = ParamUtils.getParameter(request, "userPhone");
+			String userInEmail = ParamUtils.getParameter(request, "userInEmail");
+			String userQuickLoginName = ParamUtils.getParameter(request, "userQuickLoginName");
+			String receiveSMSName = ParamUtils.getParameter(request, "receiveSMSName");
+			String receiveMailName = ParamUtils.getParameter(request, "receiveMailName");
+			String userEnableName = ParamUtils.getParameter(request, "userEnableName");
+			
+			User user=new User();
+			user.setUserNo(StringManagerUtils.stringToInteger(userNo));
+			user.setUserName(userName);
+			user.setUserId(userId);
+			user.setUserTypeName(userTypeName);
+			user.setUserPhone(userPhone);
+			user.setUserInEmail(userInEmail);
+			user.setUserQuickLogin("true".equalsIgnoreCase(userQuickLoginName)?1:0);
+			user.setReceiveSMS("true".equalsIgnoreCase(receiveSMSName)?1:0);
+			user.setReceiveMail("true".equalsIgnoreCase(receiveMailName)?1:0);
+			user.setUserEnable("true".equalsIgnoreCase(userEnableName)?1:0);
+			
+			log.debug("edit user ==" + user.getUserNo());
+			String emailContent="账号:"+user.getUserId()+"信息改变。<br/>";
+			String emailTopic="用户修改";
+			List<String> receivingEMailAccount=new ArrayList<String>();
+			
+			
+//			this.userService.modifyUser(user);
+			HttpSession session=request.getSession();
+			User prttentuser = (User) session.getAttribute("userLogin");
+			//如果是当前登录用户
+			if(user.getUserNo()==prttentuser.getUserNo()){
+				user.setUserType(prttentuser.getUserType());
+				user.setUserEnable(prttentuser.getUserEnable());
+			}
+			int r=this.userService.updateUserInfo(user);
+			if(r==1){
+				List<String> userList=new ArrayList<String>();
+				userList.add(user.getUserId());
+				MemoryDataManagerTask.loadUserInfo(userList);
+				
+				if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
+					receivingEMailAccount.add(user.getUserInEmail());
+					StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
+				}
+				if(user.getUserEnable()==0){
+					SessionLockHelper.destroySessionByUserId(user.getUserId());
+				}
+			}else if(r==2){
+				result = "{success:true,flag:false}";
+			}else{
+				result = "{success:false,flag:false}";
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 
 	/** <P>用户模块管理——创建Ext需要的json数据信息</p>	 
 	 * @author  gao 2014-05-08

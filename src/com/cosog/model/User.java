@@ -37,6 +37,7 @@ public class User implements java.io.Serializable {
 	private String picUrl;
 	private String pageSize;
 	private Integer userType;
+	private String userTypeName;
 	private Integer userQuickLogin;
 	private Integer userEnable;
 	private Integer receiveSMS;
@@ -326,5 +327,14 @@ public class User implements java.io.Serializable {
 
 	public void setLoginTime(String loginTime) {
 		this.loginTime = loginTime;
+	}
+
+	@Transient
+	public String getUserTypeName() {
+		return userTypeName;
+	}
+
+	public void setUserTypeName(String userTypeName) {
+		this.userTypeName = userTypeName;
 	}
 }

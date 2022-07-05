@@ -219,7 +219,8 @@ createUserGridColumn = function(columnInfo) {
 		}else if (attr.dataIndex.toUpperCase()=='userName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCurrentUserName(value,o,p,e);}";
         }else if(attr.dataIndex=='userRegtime'){
-			myColumns +=",dataIndex:'"+attr.dataIndex+"',renderer:Ext.util.Format.dateRenderer('Y-m-d H:i:s')";
+//			myColumns +=",dataIndex:'" + attr.dataIndex + "',renderer:Ext.util.Format.dateRenderer('Y-m-d H:i:s')";
+			myColumns +=",dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceTimeFormat(value,o,p,e);}";
 		}else {
 			myColumns +=  ",dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
 		}

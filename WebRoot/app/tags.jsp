@@ -62,6 +62,7 @@ boolean isConnection=false;
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimePicker.js?timestamp=202206300908"></script>
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/date/DateTimeField.js?timestamp=202206300908"></script>
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/RowEditing.js?timestamp=202206300908"></script>
+<script type="text/javascript" src="<%=path%>/scripts/extjs/ux/rowEditor/CellEditing.js?timestamp=202206300908"></script>
 <script type="text/javascript" src="<%=path%>/scripts/extjs/ux/message.js?timestamp=202206300908"></script>
 <!-- Extjs 中文脚本 -->
 <script type="text/javascript" src="<%=path%>/scripts/extjs/locale/locale-${browserLang}.js?timestamp=202206300908"></script> 

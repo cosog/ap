@@ -84,6 +84,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         sortable: false,
                         dataIndex: 'userName',
+                        flex:2,
                         editor: {
                             allowBlank: false
                         },
@@ -96,9 +97,10 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         align: 'center',
                         sortable: true,
                         dataIndex: 'userId',
-                        editor: {
-                            allowBlank: false
-                        },
+                        flex:2,
+//                        editor: {
+//                            allowBlank: false
+//                        },
                         renderer: function (value) {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
                         }
@@ -108,6 +110,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         align: 'center',
                         sortable: true,
                         dataIndex: 'userTypeName',
+                        flex:2,
                         editor: {
                             xtype: 'combo',
                             typeAhead: true,
@@ -125,6 +128,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         align: 'center',
                         sortable: true,
                         dataIndex: 'userPhone',
+                        flex:2,
                         editor: {
                         	regex: /^((13[0-9])|(14[0,1,4-9])|(15[0-3,5-9])|(16[2,5,6,7])|(17[0-8])|(18[0-9])|(19[0-3,5-9]))\d{8}$/,
                         	allowBlank: true
@@ -138,6 +142,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         align: 'center',
                         sortable: true,
                         dataIndex: 'userInEmail',
+                        flex:3,
                         editor: {
                         	vtype: 'email',
                             regex: /^([a-z0-9A-Z]+[-|\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/,
@@ -152,6 +157,7 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
+                        width: 65,
                         dataIndex: 'userQuickLoginName',
                         editor: {
                         	xtype: 'checkbox',
@@ -159,11 +165,12 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	allowBlank: false
                         }
                     }, {
-                        header: '接收报警短信',
+                        header: '接收短信',
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
+                        width: 65,
                         dataIndex: 'receiveSMSName',
                         editor: {
                         	xtype: 'checkbox',
@@ -171,11 +178,12 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	allowBlank: false
                         }
                     }, {
-                        header: '接收报警邮件',
+                        header: '接收邮件',
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
+                        width: 65,
                         dataIndex: 'receiveMailName',
                         editor: {
                         	xtype: 'checkbox',
@@ -183,23 +191,34 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	allowBlank: false
                         }
                     }, {
-                        header: '状态',
+                        header: '使能',
                         xtype: 'checkcolumn',
                         lockable: true,
                         align: 'center',
                         sortable: true,
                         dataIndex: 'userEnableName',
+                        headerCheckbox: false,
+                        width: 40,
                         editor: {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        }
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	if(rowIndex==0){
+                    	    		return false;
+                    	    	}else{
+                                    return true;
+                                }
+                    	    }
+                    	}
                     }, {
                         header: '隶属单位',
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 300,
+                        flex:2,
                         dataIndex: 'allPath',
                         renderer: function (value) {
                             return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
@@ -209,14 +228,15 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         lockable: true,
                         align: 'center',
                         sortable: true,
-                        width: 150,
+                        flex:2,
                         dataIndex: 'userRegtime',
                         renderer:function(value,o,p,e){
                         	return adviceTimeFormat(value,o,p,e);
                         }
                     },{
-                        xtype: 'actioncolumn',
-                        width: 30,
+                    	header: '保存',
+                    	xtype: 'actioncolumn',
+                    	width: 40,
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -228,8 +248,9 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             }
                         }]
                     },{
-                        xtype: 'actioncolumn',
-                        width: 30,
+                    	header: '删除',
+                    	xtype: 'actioncolumn',
+                    	width: 40,
                         align: 'center',
                         sortable: false,
                         menuDisabled: true,
@@ -242,11 +263,15 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         }]
                     }],
                     listeners: {
-//                        selectionchange: function (sm, selections) {
-//                        },
-//                        itemdblclick: function () {
-////                            modifyUserInfo();
-//                        }
+                    	celldblclick : function( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+                    		var record = grid.getStore().getAt(rowIndex);
+                            var dataIndex=grid.getHeaderAtIndex(cellIndex).dataIndex;
+                            if (rowIndex==0 && ( dataIndex.toUpperCase()=='userId'.toUpperCase() || dataIndex.toUpperCase()=='userTypeName'.toUpperCase() || dataIndex.toUpperCase()=='userEnableName'.toUpperCase()  )) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
                     }
                 });
                 var panel = Ext.getCmp("OrgAndUserUserInfoPanel_Id");

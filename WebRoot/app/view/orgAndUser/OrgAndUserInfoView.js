@@ -14,45 +14,47 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		title:'组织列表',
         		header:false,
         		id:'OrgAndUserOrgInfoPanel_Id',
-        		tbar: [{
-                    iconCls: 'icon-collapse-all', // 收缩按钮
-                    text: cosog.string.collapse,
-                    tooltip: {
-                        text: cosog.string.collapseAll
-                    },
-                    handler: function () {
-                        Ext.getCmp("OrgInfoTreeGridView_Id").collapseAll();
-                    }
-                }, '-', {
-                    iconCls: 'icon-expand-all', // 展开按钮
-                    text: cosog.string.expand,
-                    tooltip: {
-                        text: cosog.string.expandAll
-                    },
-                    handler: function () {
-                        Ext.getCmp("OrgInfoTreeGridView_Id").expandAll();
-                    }
-                }, '-', {
-                    fieldLabel: cosog.string.orgName,
-                    id: 'org_name_Id',
-                    name: 'org_name',
-                    emptyText: cosog.string.queryOrg,
-                    labelWidth: 60,
-                    labelAlign: 'right',
-                    width: 165,
-                    xtype: 'textfield'
-                },'-', {
-                    xtype: 'button',
-                    text: cosog.string.search,
-                    iconCls: 'search',
-                    handler: function () {
-                    	var gridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
-                    	if (isNotVal(gridPanel)) {
-                    		gridPanel.getStore().proxy.extraParams.tid = 0;
-                    		gridPanel.getStore().load();
-                    	}
-                    }
-                }, '->', {
+        		tbar: [
+//        			{
+//                    iconCls: 'icon-collapse-all', // 收缩按钮
+//                    text: cosog.string.collapse,
+//                    tooltip: {
+//                        text: cosog.string.collapseAll
+//                    },
+//                    handler: function () {
+//                        Ext.getCmp("OrgInfoTreeGridView_Id").collapseAll();
+//                    }
+//                }, '-', {
+//                    iconCls: 'icon-expand-all', // 展开按钮
+//                    text: cosog.string.expand,
+//                    tooltip: {
+//                        text: cosog.string.expandAll
+//                    },
+//                    handler: function () {
+//                        Ext.getCmp("OrgInfoTreeGridView_Id").expandAll();
+//                    }
+//                }, '-', {
+//                    fieldLabel: cosog.string.orgName,
+//                    id: 'org_name_Id',
+//                    name: 'org_name',
+//                    emptyText: cosog.string.queryOrg,
+//                    labelWidth: 60,
+//                    labelAlign: 'right',
+//                    width: 165,
+//                    xtype: 'textfield'
+//                },'-', {
+//                    xtype: 'button',
+//                    text: cosog.string.search,
+//                    iconCls: 'search',
+//                    handler: function () {
+//                    	var gridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
+//                    	if (isNotVal(gridPanel)) {
+//                    		gridPanel.getStore().proxy.extraParams.tid = 0;
+//                    		gridPanel.getStore().load();
+//                    	}
+//                    }
+//                }, 
+                '->', {
                     xtype: 'button',
                     itemId: 'addOrgLableClassBtnId',
                     id: 'addOrgLableClassBtn_Id',
@@ -85,7 +87,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                 }]
         	},{
         		region:'east',
-        		width:'60%',
+        		width:'80%',
         		id:'OrgAndUserUserInfoPanel_Id',
         		title:'用户列表',
         		header:false,
@@ -121,22 +123,24 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		}, "-", {
                     xtype: 'button',
                     id: 'editUserLableClassBtn_Id',
-                    text: cosog.string.update,
+                    text: '修改密码',
                     disabled: false,
                     iconCls: 'edit',
                     handler: function () {
                     	modifyUserInfo();
                     }
-        		}, "-", {
-                    xtype: 'button',
-                    id: 'delUserLableClassBtn_Id',
-                    disabled: false,
-                    text: cosog.string.del,
-                    iconCls: 'delete',
-                    handler: function () {
-                    	delUserInfo();
-                    }
-        		},"-", {
+        		}
+//        		, "-", {
+//                    xtype: 'button',
+//                    id: 'delUserLableClassBtn_Id',
+//                    disabled: false,
+//                    text: cosog.string.del,
+//                    iconCls: 'delete',
+//                    handler: function () {
+//                    	delUserInfo();
+//                    }
+//        		}
+        		,"-", {
         			xtype: 'button',
         			text:'用户隶属迁移',
         			iconCls: 'move',

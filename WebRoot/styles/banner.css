@@ -49,23 +49,8 @@ body {
 	text-align: center;
 	color: #ff3333;
 }
-#logon_a1 {
-	background:url(../images/password.svg) no-repeat;
- 	padding-left:16px;
- 	height:16px; 
- 	display:inline-block;
- 	position:absolute;
- 	right:130px;
- 	color:white;
-}
 
-#logon_a1_text{
-	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
-	padding-left:1px;
-	letter-spacing: 0px;
-}
-
-#logon_a2 {
+#banner_a1 {
 	background:url(../images/exit.svg) no-repeat;
  	padding-left:16px;
  	height:16px; 
@@ -75,13 +60,13 @@ body {
  	color:white;
 }
 
-#logon_a2_text{
+#banner_a1_text{
 	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:1px;
 	letter-spacing: 0px;
 }
 
-#logon_a3 {
+#banner_a2 {
 	background:url(../images/help.svg) no-repeat;
  	padding-left:16px;
  	height:16px; 
@@ -91,22 +76,22 @@ body {
  	color:white;
 }
 
-#logon_a3_text{
+#banner_a2_text{
 	font: bold 13px/50% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
 	padding-left:1px;
 	letter-spacing: 0px;
 }
 
-#logon_a1,#logon_a2,#logon_a3:link {
+#banner_a1,#banner_a2:link {
  color: white;
  text-decoration: none;
 }
 
-#logon_a1,#logon_a2,#logon_a3:visited {
+#banner_a1,#banner_a2:visited {
  color: white;
  text-decoration: none;
 }
-#logon_a1,#logon_a2,#logon_a3:hover {
+#banner_a1,#banner_a2:hover {
  color: white;
  text-decoration: none;
 }

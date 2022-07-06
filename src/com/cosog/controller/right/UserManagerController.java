@@ -252,7 +252,6 @@ public class UserManagerController extends BaseController {
 				String newPass = StringManagerUtils.stringToMD5(user.getUserPwd());
 				user.setUserPwd(newPass);
 			}
-//			this.userService.modifyUser(user);
 			HttpSession session=request.getSession();
 			User prttentuser = (User) session.getAttribute("userLogin");
 			if(user.getUserNo()==prttentuser.getUserNo()){
@@ -294,11 +293,49 @@ public class UserManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/doUserEditPassword")
+	public String doUserEditPassword(@ModelAttribute User user) throws IOException {
+		String result = "{success:true,flag:true}";
+		try {
+			log.debug("edit user password success==" + user.getUserNo());
+			String emailContent="账号:"+user.getUserId()+"<br/>新密码:"+user.getUserPwd();
+			String emailTopic="用户密码修改";
+			List<String> receivingEMailAccount=new ArrayList<String>();
+			
+			String newPass = StringManagerUtils.stringToMD5(user.getUserPwd());
+			user.setUserPwd(newPass);
+			
+			
+			int r=this.userService.updateUserPassword(user);
+			if(r<1){
+				result = "{success:true,flag:false}";
+			}else{
+				String email=this.userService.getUserEmail(user);
+				if(StringManagerUtils.isMailLegal(email)){
+					receivingEMailAccount.add(email);
+					StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
+				}
+			}
+		} catch (Exception e) {
+			result = "{success:false,flag:false}";
+			e.printStackTrace();
+		}
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		response.setCharacterEncoding(Constants.ENCODING_UTF8);
+		response.getWriter().print(result);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@SuppressWarnings("unused")
 	@RequestMapping("/updateUserInfo")
 	public String updateUserInfo() throws IOException {
 		String result = "{success:true,flag:true}";
 		try {
+			boolean isLoginedUser=false;
 			String userNo = ParamUtils.getParameter(request, "userNo");
 			String userName = ParamUtils.getParameter(request, "userName");
 			String userId = ParamUtils.getParameter(request, "userId");
@@ -333,10 +370,11 @@ public class UserManagerController extends BaseController {
 			User prttentuser = (User) session.getAttribute("userLogin");
 			//如果是当前登录用户
 			if(user.getUserNo()==prttentuser.getUserNo()){
+				isLoginedUser=true;
 				user.setUserType(prttentuser.getUserType());
 				user.setUserEnable(prttentuser.getUserEnable());
 			}
-			int r=this.userService.updateUserInfo(user);
+			int r=this.userService.updateUserInfo(user,isLoginedUser);
 			if(r==1){
 				List<String> userList=new ArrayList<String>();
 				userList.add(user.getUserId());

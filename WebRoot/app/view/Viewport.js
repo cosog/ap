@@ -12,11 +12,9 @@ Ext.define('AP.view.Viewport', {
         	'z-index':10
         },
         html: '<div id="imgTitle"><img id="logoImg" '+(showLogo?'':'style="display:none;"')+' src="../images/logo/logo.png" /><span id="bannertitle">' +oem.title+ '</span>' +
-        		"<div id='passAndExitButton'><a href='#' id='logon_a1' onclick='resetPwdFn()'><span id='logon_a1_text'>修改密码</span></a></div> " +
-        		"<div id='passAndExitButton'><a href='#' id='logon_a2' onclick='userLoginOut()'><span id='logon_a2_text'>退出</span></a></div>" +
-        		"<div id='passAndExitButton'><a href='#' id='logon_a3' onclick='showHelpDocumentWinFn()'><span id='logon_a3_text'>帮助</span></a></div>" +
-        		//"<div id='passAndExitButton2' ><a href='#' title='全屏显示' id='logon_a3' onclick='fullscreen()'></a></div> " +
-        		//"<div id='passAndExitButton3' style='display:none;'><a href='#' title='退出全屏' id='logon_a4'  onclick='exitFullscreen()'></a></div> " +
+//        		"<div id='passAndExitButton'><a href='#' id='banner_a1' onclick='resetPwdFn()'><span id='banner_a1_text'>修改密码</span></a></div> " +
+        		"<div id='passAndExitButton'><a href='#' id='banner_a1' onclick='userLoginOut()'><span id='banner_a1_text'>退出</span></a></div>" +
+        		"<div id='passAndExitButton'><a href='#' id='banner_a2' onclick='showHelpDocumentWinFn()'><span id='banner_a2_text'>帮助</span></a></div>" +
         		"</div>"
    }, {
         id: 'center_ids',
@@ -765,7 +763,7 @@ function exitFullscreen(){
 
 //重置密码
 function resetPwdFn() {
-    var showResetPwdWin = Ext.create("AP.view.user.SysUserEditPwdWin");
+    var showResetPwdWin = Ext.create("AP.view.orgAndUser.SysUserEditPwdWin");
     showResetPwdWin.show();
     return false;
 }

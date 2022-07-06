@@ -88,6 +88,7 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             }, {
                 fieldLabel: cosog.string.orgMemo,
                 id: 'orgMemo_Id',
+                hidden: true,
                 anchor: '95%',
                 xtype: 'textareafield',
                 value: '',

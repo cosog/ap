@@ -458,28 +458,47 @@ public class UserManagerService<T> extends BaseService<T> {
 		}
 	}
 	
-	public int updateUserInfo(User user) throws Exception {
+	public int updateUserInfo(User user,boolean isLoginedUser) throws Exception {
 		int r=0;
 		boolean flag = this.judgeUserExistsOrNot(user.getUserId(),user.getUserNo()+"");
 		if(flag){
 			r=2;
 		}else{
-			String sql = "update tbl_user t set "
-					+ "t.user_id='"+user.getUserId()+"', "
-					+ "t.user_name='"+user.getUserName()+"', "
-					+ "t.user_type=(select r.role_id from tbl_role r where r.role_name='"+user.getUserTypeName()+"'), "
-					+ "t.user_phone='"+user.getUserPhone()+"', "
-					+ "t.user_in_email='"+user.getUserInEmail()+"', "
-					+ "t.user_quicklogin="+user.getUserQuickLogin()+", "
-					+ "t.user_receivesms="+user.getReceiveSMS()+", "
-					+ "t.user_receivemail="+user.getReceiveMail()+", "
-					+ "t.user_enable="+user.getUserEnable()+" "
-					+ "where t.user_no = "+user.getUserNo();
+			String sql = "update tbl_user t set ";
+			if(!isLoginedUser){//当前登录用户不可修改账号、角色、使能状态
+				sql+= "t.user_id='"+user.getUserId()+"', "
+						+ "t.user_type=(select r.role_id from tbl_role r where r.role_name='"+user.getUserTypeName()+"'), "
+						+ "t.user_enable="+user.getUserEnable()+", ";
+			}	
+			sql+= "t.user_name='"+user.getUserName()+"', "
+				+ "t.user_phone='"+user.getUserPhone()+"', "
+				+ "t.user_in_email='"+user.getUserInEmail()+"', "
+				+ "t.user_quicklogin="+user.getUserQuickLogin()+", "
+				+ "t.user_receivesms="+user.getReceiveSMS()+", "
+				+ "t.user_receivemail="+user.getReceiveMail()+" "
+				+ "where t.user_no = "+user.getUserNo();
 			int result=this.getBaseDao().updateOrDeleteBySql(sql);
 			if(result>0){
 				r=1;
 			}
 		}
 		return r;
+	}
+	
+	public int updateUserPassword(User user) throws Exception {
+		int r=0;
+		String sql = "update tbl_user t set t.user_pwd='"+user.getUserPwd()+"' where t.user_no = "+user.getUserNo();
+		r=this.getBaseDao().updateOrDeleteBySql(sql);
+		return r;
+	}
+	
+	public String getUserEmail(User user) throws Exception {
+		String email="";
+		String sql="select t.user_in_email from tbl_user t where t.user_no = "+user.getUserNo();
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0 && list.get(0)!=null){
+			email=list.get(0).toString();
+		}
+		return email;
 	}
 }

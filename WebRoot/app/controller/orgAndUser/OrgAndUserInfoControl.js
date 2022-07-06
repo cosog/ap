@@ -306,13 +306,16 @@ function modifyUserInfo() {
     var user_model = user_panel.getSelectionModel();
     var _record = user_model.getSelection();
     if (_record.length>0) {
-    	var UserUpdateInfoWindow = Ext.create("AP.view.orgAndUser.UserPanelInfoWindow", {
-            title: cosog.string.editUser
-        });
-        UserUpdateInfoWindow.show();
-        Ext.getCmp("addFormUser_Id").hide();
-        Ext.getCmp("updateFormUser_Id").show();
-        SelectedUserDataAttrInfoGridPanel();
+//    	var UserUpdateInfoWindow = Ext.create("AP.view.orgAndUser.UserPanelInfoWindow", {
+//            title: cosog.string.editUser
+//        });
+//        UserUpdateInfoWindow.show();
+//        Ext.getCmp("addFormUser_Id").hide();
+//        Ext.getCmp("updateFormUser_Id").show();
+//        SelectedUserDataAttrInfoGridPanel();
+    	var UserEditPasswordWindow = Ext.create("AP.view.orgAndUser.UserEditPasswordWindow");
+    	UserEditPasswordWindow.show();
+    	SelectedUserDataAttrInfoGridPanel();
     }else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
@@ -320,6 +323,17 @@ function modifyUserInfo() {
 };
 
 SelectedUserDataAttrInfoGridPanel = function () {
+    var dataattr_row = Ext.getCmp("UserInfoGridPanel_Id").getSelectionModel().getLastSelected();
+    var userNo = dataattr_row.data.userNo;
+    var userName = dataattr_row.data.userName;
+    var userId = dataattr_row.data.userId;
+    
+    Ext.getCmp('userEditPassword_UserNo_Id').setValue(userNo);
+    Ext.getCmp('userEditPassword_UserName_Id').setValue(userName);
+    Ext.getCmp('userEditPassword_UserId_Id').setValue(userId);
+};
+
+SelectedUserDataAttrInfoGridPanel2 = function () {
     var dataattr_row = Ext.getCmp("UserInfoGridPanel_Id").getSelectionModel().getLastSelected();
     var userNo = dataattr_row.data.userNo;
     var userOrgid = dataattr_row.data.userOrgid;
@@ -597,6 +611,36 @@ function UpdateUserDataInfoSubmitBtnForm() {
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts,
                         "<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
+                }
+            },
+            failure: function () {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            }
+        });
+    } else {
+    	Ext.Msg.alert(cosog.string.ts, "<font color=red>*为必填项，请检查数据有效性.</font>");
+    }
+    return false;
+};
+
+//修改密码窗体上的修改按钮事件
+function EditUserPasswordSubmitBtnForm() {
+    var getUpdateDataInfoSubmitBtnFormId = Ext.getCmp("userEditPasswordWindow_Id").down('form');
+    Ext.MessageBox.msgButtons['ok'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+    if (getUpdateDataInfoSubmitBtnFormId.getForm().isValid()) {
+        getUpdateDataInfoSubmitBtnFormId.getForm().submit({
+            url: context + '/userManagerController/doUserEditPassword',
+            clientValidation: false, // 进行客户端验证
+            method: "POST",
+            waitMsg: cosog.string.updatewait,
+            waitTitle: 'Please Wait...',
+            success: function (response, action) {
+                Ext.getCmp('userEditPasswordWindow_Id').close();
+                if (action.result.flag == true) {
+                	Ext.getCmp("UserInfoGridPanel_Id").getStore().load();
+                	Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");
+                }else if (action.result.flag == false) {
+                    Ext.Msg.alert(cosog.string.ts,"<font color=red>SORRY！</font>" + cosog.string.updatefail + "。");
                 }
             },
             failure: function () {

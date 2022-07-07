@@ -326,7 +326,7 @@ public class RealTimeMonitoringController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = realTimeMonitoringService.getDeviceRealTimeMonitoringData(deviceId,deviceName,deviceType,user.getUserId());
+			json = realTimeMonitoringService.getDeviceRealTimeMonitoringData(deviceId,deviceName,deviceType,user.getUserNo());
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
@@ -415,7 +415,7 @@ public class RealTimeMonitoringController extends BaseController {
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		this.pager = new Page("pagerForm", request);
 		if(user!=null){
-			json = realTimeMonitoringService.getRealTimeMonitoringCurveData(deviceId,deviceName,deviceType,user.getUserId());
+			json = realTimeMonitoringService.getRealTimeMonitoringCurveData(deviceId,deviceName,deviceType,user.getUserNo());
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="

@@ -32,12 +32,24 @@ public class SessionLockHelper {
 		}
 	}
 	
-	public static void destroySessionByUserId(String userId){
+//	public static void destroySessionByUserId(String userId){
+//		Iterator<Entry<String, HttpSession>> entries = map.entrySet().iterator();
+//		while (entries.hasNext()) {
+//			Entry<String, HttpSession> entry = entries.next();
+//			User user=(User) entry.getValue().getAttribute("userLogin");
+//			if(user!=null&&userId.equals(user.getUserId())){
+//				entry.getValue().invalidate();
+//				System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
+//			}
+//		}
+//	}
+	
+	public static void destroySessionByUserNo(int userNo){
 		Iterator<Entry<String, HttpSession>> entries = map.entrySet().iterator();
 		while (entries.hasNext()) {
 			Entry<String, HttpSession> entry = entries.next();
 			User user=(User) entry.getValue().getAttribute("userLogin");
-			if(user!=null&&userId.equals(user.getUserId())){
+			if(user!=null&&userNo==user.getUserNo()){
 				entry.getValue().invalidate();
 				System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
 			}

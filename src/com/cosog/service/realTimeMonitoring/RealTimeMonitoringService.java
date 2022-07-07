@@ -739,7 +739,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -1256,7 +1256,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -1700,7 +1700,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 
-	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,String userAccount) throws IOException, SQLException{
+	public String getDeviceRealTimeMonitoringData(String deviceId,String deviceName,String deviceType,int userNo) throws IOException, SQLException{
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
@@ -1778,11 +1778,11 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
-			if(jedis.hexists("UserInfo".getBytes(), userAccount.getBytes())){
-				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), userAccount.getBytes()));
+			if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
+				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
 			}
 			
 			if(!jedis.exists("RPCWorkType".getBytes())){
@@ -2206,9 +2206,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
-			userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), user.getUserId().getBytes()));
+			userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (user.getUserNo()+"").getBytes()));
 			
 			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
@@ -2503,9 +2503,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
-			userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), user.getUserId().getBytes()));
+			userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (user.getUserNo()+"").getBytes()));
 			
 			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
@@ -2823,7 +2823,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
-	public String getRealTimeMonitoringCurveData(String deviceId,String deviceName,String deviceType,String userAccount)throws Exception {
+	public String getRealTimeMonitoringCurveData(String deviceId,String deviceName,String deviceType,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveColorBuff = new StringBuffer();
@@ -2848,13 +2848,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 			}
-			if(jedis.hexists("UserInfo".getBytes(), userAccount.getBytes())){
-				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), userAccount.getBytes()));
+			if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
+				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
 			}
 			
 			
@@ -2961,7 +2961,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
 					+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
 					+ " and t.id="+deviceId+" and t4.realtimecurve>=0 "
-					+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userAccount+"' )"
+					+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no='"+userNo+"' )"
 					+ " order by t4.realtimecurve,t4.sort,t4.id";
 			List<?> protocolList = this.findCallSql(protocolSql);
 			List<?> curveItemList = this.findCallSql(curveItemsSql);

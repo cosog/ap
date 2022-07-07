@@ -148,7 +148,7 @@ public class UserManagerController extends BaseController {
 			
 			List<String> userList=new ArrayList<String>();
 			userList.add(user.getUserId());
-			MemoryDataManagerTask.loadUserInfo(userList);
+			MemoryDataManagerTask.loadUserInfo(userList,1,"update");
 			result = "{success:true,msg:true}";
 			if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
 				receivingEMailAccount.add(user.getUserInEmail());
@@ -190,11 +190,11 @@ public class UserManagerController extends BaseController {
 			String userNos = ParamUtils.getParameter(request, "paramsId");
 			String userIds = ParamUtils.getParameter(request, "delUserId");
 			this.userService.bulkDelete(userNos);
-			if(StringManagerUtils.isNotNull(userIds)){
-				String[] userIdArr=userIds.split(",");
-				for(int i=0;i<userIdArr.length;i++){
-					if(StringManagerUtils.isNotNull(userIdArr[i])){
-						SessionLockHelper.destroySessionByUserId(userIdArr[i]);
+			if(StringManagerUtils.isNotNull(userNos)){
+				String[] userNoArr=userNos.split(",");
+				for(int i=0;i<userNoArr.length;i++){
+					if(StringManagerUtils.isNotNull(userNoArr[i])){
+						SessionLockHelper.destroySessionByUserNo(StringManagerUtils.stringToInteger(userNoArr[i]));
 					}
 				}
 			}
@@ -261,8 +261,8 @@ public class UserManagerController extends BaseController {
 			this.userService.modifyUser(user);
 			
 			List<String> userList=new ArrayList<String>();
-			userList.add(user.getUserId());
-			MemoryDataManagerTask.loadUserInfo(userList);
+			userList.add(user.getUserNo()+"");
+			MemoryDataManagerTask.loadUserInfo(userList,0,"update");
 			
 			String result = "{success:true,msg:true}";
 			if(user.getUserNo()==prttentuser.getUserNo()){
@@ -275,7 +275,7 @@ public class UserManagerController extends BaseController {
 			}
 			
 			if(user.getUserEnable()==0){
-				SessionLockHelper.destroySessionByUserId(user.getUserId());
+				SessionLockHelper.destroySessionByUserNo(user.getUserNo());
 			}
 			
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -305,7 +305,6 @@ public class UserManagerController extends BaseController {
 			String newPass = StringManagerUtils.stringToMD5(user.getUserPwd());
 			user.setUserPwd(newPass);
 			
-			
 			int r=this.userService.updateUserPassword(user);
 			if(r<1){
 				result = "{success:true,flag:false}";
@@ -330,7 +329,6 @@ public class UserManagerController extends BaseController {
 		return null;
 	}
 	
-	@SuppressWarnings("unused")
 	@RequestMapping("/updateUserInfo")
 	public String updateUserInfo() throws IOException {
 		String result = "{success:true,flag:true}";
@@ -374,18 +372,28 @@ public class UserManagerController extends BaseController {
 				user.setUserType(prttentuser.getUserType());
 				user.setUserEnable(prttentuser.getUserEnable());
 			}
+			boolean userIdChange=false;
+			if(!isLoginedUser){
+				users=userService.queryUsersByNo(user.getUserNo(), User.class);
+				for(User u : users){
+					if(!u.getUserId().equalsIgnoreCase(user.getUserId())){
+						userIdChange=true;
+						break;
+					}
+				}
+			}
 			int r=this.userService.updateUserInfo(user,isLoginedUser);
 			if(r==1){
 				List<String> userList=new ArrayList<String>();
-				userList.add(user.getUserId());
-				MemoryDataManagerTask.loadUserInfo(userList);
+				userList.add(user.getUserNo()+"");
+				MemoryDataManagerTask.loadUserInfo(userList,0,"update");
 				
 				if(StringManagerUtils.isMailLegal(user.getUserInEmail())){
 					receivingEMailAccount.add(user.getUserInEmail());
 					StringManagerUtils.sendEMail(emailTopic, emailContent, receivingEMailAccount);
 				}
-				if(user.getUserEnable()==0){
-					SessionLockHelper.destroySessionByUserId(user.getUserId());
+				if(user.getUserEnable()==0||userIdChange){
+					SessionLockHelper.destroySessionByUserNo(user.getUserNo());
 				}
 			}else if(r==2){
 				result = "{success:true,flag:false}";

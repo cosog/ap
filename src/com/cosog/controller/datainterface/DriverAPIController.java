@@ -644,7 +644,7 @@ public class DriverAPIController extends BaseController{
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -1669,7 +1669,7 @@ public class DriverAPIController extends BaseController{
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){

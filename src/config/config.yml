@@ -37,38 +37,38 @@ ap:
 ac:
    probe:
       app: 
-       - http://39.99.42.182:18100/api/probe/app
+       - http://8.142.92.84:18100/api/probe/app
       mem: 
-       - http://39.99.42.182:18100/api/probe/mem
+       - http://8.142.92.84:18100/api/probe/mem
       disk: 
-       - http://39.99.42.182:18100/api/probe/disk
+       - http://8.142.92.84:18100/api/probe/disk
       host: 
-       - http://39.99.42.182:18100/api/probe/host
+       - http://8.142.92.84:18100/api/probe/host
       cpu: 
-       - http://39.99.42.182:18100/api/probe/cpu
+       - http://8.142.92.84:18100/api/probe/cpu
    FESDiagram: 
-    - http://39.99.42.182:18100/api/calc/rpc/fesdiagram/pro
+    - http://8.142.92.84:18100/api/calc/rpc/fesdiagram/pro
    ESDiagram:
       inversion:
          enable: false
          url:
-          - http://39.99.42.182:18100/api/calc/rpc/esdiagram/inversion/motorauto
+          - http://8.142.92.84:18100/api/calc/rpc/esdiagram/inversion/motorauto
    pcpProduction: 
-    - http://39.99.42.182:18100/api/calc/pcp/rpm
+    - http://8.142.92.84:18100/api/calc/pcp/rpm
    communication: 
-    - http://39.99.42.182:18100/api/calc/plugin/timeeff/comm
+    - http://8.142.92.84:18100/api/calc/plugin/timeeff/comm
    run: 
-    - http://39.99.42.182:18100/api/calc/plugin/timeeff/run
+    - http://8.142.92.84:18100/api/calc/plugin/timeeff/run
    energy: 
-    - http://39.99.42.182:18100/api/calc/plugin/energy
+    - http://8.142.92.84:18100/api/calc/plugin/energy
    totalCalculation:
       well: 
-       - http://39.99.42.182:18100/api/analy/total/well
+       - http://8.142.92.84:18100/api/analy/total/well
    plugin: 
       wellboreTrajectory: 
-       - http://39.99.42.182:18100/api/calc/plugin/2xyz
+       - http://8.142.92.84:18100/api/calc/plugin/2xyz
       fa2fs: 
-       - http://39.99.42.182:18100/api/plugin/fa2fs
+       - http://8.142.92.84:18100/api/plugin/fa2fs
 ad:
    server: http://39.99.42.182:19200/api/init/server
    protocol: http://39.99.42.182:19200/api/init/protocol

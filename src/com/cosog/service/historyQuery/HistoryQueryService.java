@@ -455,7 +455,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -779,7 +779,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -975,7 +975,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -1269,7 +1269,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
 			if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
@@ -1418,7 +1418,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,String userAccount) throws IOException, SQLException{
+	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,int userNo) throws IOException, SQLException{
 		int items=3;
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer info_json = new StringBuffer();
@@ -1494,11 +1494,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
 			
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			
-			if(jedis.hexists("UserInfo".getBytes(), userAccount.getBytes())){
-				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), userAccount.getBytes()));
+			if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
+				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
 			}
 			
 			if(!jedis.exists("RPCWorkType".getBytes())){
@@ -1889,7 +1889,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String startDate,String endDate,String userAccount)throws Exception {
+	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveColorBuff = new StringBuffer();
@@ -1917,13 +1917,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("UserInfo".getBytes())){
-				MemoryDataManagerTask.loadUserInfo(null);
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
 			}
 			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
 				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
 			}
-			if(jedis.hexists("UserInfo".getBytes(), userAccount.getBytes())){
-				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), userAccount.getBytes()));
+			if(jedis.hexists("UserInfo".getBytes(), (userNo+"").getBytes())){
+				userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (userNo+"").getBytes()));
 			}
 			
 			

@@ -63,6 +63,11 @@ public class UserManagerService<T> extends BaseService<T> {
 				+ uname + "%'";
 		return this.getBaseDao().find(queryString);
 	}
+	
+	public List<T> queryUsersByNo(int userNo, Class<T> clazz) {
+		String queryString = "SELECT u FROM User u WHERE u.userNo = "+ userNo ;
+		return this.getBaseDao().find(queryString);
+	}
 
 	public List<T> queryUsersByOrgId(String orgId, Class<T> clazz) {
 		if (orgId == null || "".equals(orgId))
@@ -73,9 +78,6 @@ public class UserManagerService<T> extends BaseService<T> {
 
 	public List<T> loadUsers(Class<T> clazz) {
 		return this.getBaseDao().getAllObjects(clazz);
-		// String queryString = "SELECT u FROM User u WHERE u.uname like '"+
-		// uname + "%'";
-		// return this.getBaseDao().find(queryString);
 	}
 
 	/** 
@@ -425,7 +427,6 @@ public class UserManagerService<T> extends BaseService<T> {
 	}
 	
 	public void changeUserOrg(String selectedUserId,String selectedOrgId) throws Exception {
-		StringBuffer result_json = new StringBuffer();
 		if(StringManagerUtils.stringToInteger(selectedOrgId)>0 && StringManagerUtils.isNotNull(selectedUserId)){
 			String sql = "update tbl_user t set t.user_orgid="+selectedOrgId+" where t.user_no in ("+selectedUserId+")";
 			this.getBaseDao().updateOrDeleteBySql(sql);
@@ -433,21 +434,17 @@ public class UserManagerService<T> extends BaseService<T> {
 			Jedis jedis=null;
 			try{
 				jedis = RedisUtil.jedisPool.getResource();
-
+				String [] userNoArr=selectedUserId.split(",");
+				List<String> userNoList=new ArrayList<String>();
+				for(int i=0;i<userNoArr.length;i++){
+					userNoList.add(userNoArr[i]);
+				}
 				if(!jedis.exists("UserInfo".getBytes())){
-					MemoryDataManagerTask.loadUserInfo(null);
+					MemoryDataManagerTask.loadUserInfo(null,0,"update");
+				}else{
+					MemoryDataManagerTask.loadUserInfo(userNoList,0,"update");
 				}
-				List<byte[]> userInfoByteList =jedis.hvals("UserInfo".getBytes());
-				for(int i=0;i<userInfoByteList.size();i++){
-					Object obj = SerializeObjectUnils.unserizlize(userInfoByteList.get(i));
-					if (obj instanceof UserInfo) {
-						UserInfo userInfo=(UserInfo)obj;
-						if(StringManagerUtils.existOrNot(selectedUserId.split(","), userInfo.getUserNo()+"", false)){
-							userInfo.setUserOrgid(StringManagerUtils.stringToInteger(selectedOrgId));
-							jedis.hset("UserInfo".getBytes(), userInfo.getUserId().getBytes(), SerializeObjectUnils.serialize(userInfo));
-						}
-					}
-				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{

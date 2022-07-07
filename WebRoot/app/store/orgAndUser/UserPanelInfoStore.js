@@ -98,11 +98,13 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         sortable: true,
                         dataIndex: 'userId',
                         flex:2,
-//                        editor: {
-//                            allowBlank: false
-//                        },
+                        editor: {
+                            allowBlank: false
+                        },
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
                         }
                     }, {
                         header: '角色',
@@ -134,7 +136,9 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         	allowBlank: true
                         },
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                            if(isNotVal(value)){
+                            	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? " " : value) + "</span>";
+                            }
                         }
                     }, {
                         header: '邮箱',
@@ -149,7 +153,9 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                             allowBlank: true
                         },
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
                         }
                     }, {
                         header: '快捷登录',
@@ -221,7 +227,9 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         flex:2,
                         dataIndex: 'allPath',
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
                         }
                     }, {
                         header: '创建时间',

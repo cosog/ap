@@ -194,8 +194,7 @@ public class MemoryDataManagerTask {
 				wells=StringUtils.join(wellList, ",");
 			}else{
 				wells=StringManagerUtils.joinStringArr2(wellList, ",");
-			}	
-			
+			}
 			if("delete".equalsIgnoreCase(method)){
 				if(condition==0){
 					for(int i=0;i<wellList.size();i++){
@@ -1198,7 +1197,7 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadUserInfo(List<String> userList){
+	public static void loadUserInfo(List<String> userList,int condition,String method){//condition 0 -用户id 1-用户账号
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1206,10 +1205,40 @@ public class MemoryDataManagerTask {
 		if(conn==null){
         	return;
         }
-		String users=StringManagerUtils.joinStringArr2(userList, ",");
 		Jedis jedis=null;
 		try {
 			jedis = RedisUtil.jedisPool.getResource();
+			if("delete".equalsIgnoreCase(method)){
+				if(userList!=null){
+					if(condition==0){
+						for(int i=0;i<userList.size();i++){
+							jedis.hdel("UserInfo".getBytes(), userList.get(i).getBytes());
+						}
+					}else if(condition==1){
+						for(int i=0;i<userList.size();i++){
+							if(jedis.exists("UserInfo".getBytes())){
+								List<byte[]> userByteList =jedis.hvals("UserInfo".getBytes());
+								for(int j=0;j<userByteList.size();j++){
+									UserInfo userInfo=(UserInfo)SerializeObjectUnils.unserizlize(userByteList.get(i));
+									if(userList.get(i).equalsIgnoreCase(userInfo.getUserId())){
+										jedis.hdel("UserInfo".getBytes(), (userInfo.getUserNo()+"").getBytes());
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+				return;
+			}
+			
+			String users="";
+			if(condition==0){
+				users=StringUtils.join(userList, ",");
+			}else{
+				users=StringManagerUtils.joinStringArr2(userList, ",");
+			}
+			
 			String sql="select t.user_no,t.user_id,t.user_name,t.user_pwd,t.user_orgid,"
 					+ " t.user_in_email,t.user_phone,"
 					+ " t.user_quicklogin,t.user_enable,t.user_receivesms,t.user_receivemail,"
@@ -1217,7 +1246,11 @@ public class MemoryDataManagerTask {
 					+ " from tbl_user t,tbl_role t2 "
 					+ " where t.user_type=t2.role_id";
 			if(StringManagerUtils.isNotNull(users)){
-				sql+=" and t.user_id in ("+users+")";
+				if(condition==0){
+					sql+=" and t.user_no in("+users+")";
+				}else{
+					sql+=" and t.user_id in("+users+")";
+				}
 			}
 			sql+= " order by t.user_no";
 			pstmt = conn.prepareStatement(sql);
@@ -1244,7 +1277,7 @@ public class MemoryDataManagerTask {
 				userInfo.setRoleFlag(rs.getInt(15));
 				userInfo.setRoleShowLevel(rs.getInt(16));
 				
-				String key=userInfo.getUserId();
+				String key=userInfo.getUserNo()+"";
 				jedis.hset("UserInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(userInfo));//哈希(Hash)
 			}
 		}catch (Exception e) {

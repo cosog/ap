@@ -110,9 +110,9 @@ Ext.define('AP.view.Viewport', {
    }],
    listeners: {
 	   afterrender: function ( panel, eOpts) {
-//			alert(userAccount);
+//			alert(user_);
 			var baseUrl=getBaseUrl().replace("https","ws").replace("http","ws");
-			var moduleCode = "ApWebSocketClient_"+userAccount;
+			var moduleCode = "ApWebSocketClient_"+user_;
 			if ('WebSocket' in window) {
 //				websocketClient = new ReconnectingWebSocket(baseUrl+"/websocket/socketServer?module_Code="+moduleCode);
 				websocketClient = new ReconnectingWebSocket(baseUrl+"/websocketServer/"+moduleCode);

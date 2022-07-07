@@ -603,7 +603,7 @@ insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPT
 values (19, 1219, '碰泵', '"图形左下角拖尾。"', '上提（增大）防冲距', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
-values (20, 1220, '柱塞未下入工作筒', '"图形呈条带状；图形在下理论载荷线附近；产量为零。"', '下放（缩小）防冲距', null);
+values (20, 1220, '活塞/底部断脱/未入工作筒', '"图形呈条带状；图形在下理论载荷线附近；产量为零。"', '下放（缩小）防冲距', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
 values (21, 1221, '柱塞脱出工作筒', '"图形右边缺损；右下角拖尾；增载过程中突然卸载。"', '下放（缩小）防冲距', null);

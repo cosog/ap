@@ -309,7 +309,7 @@ public class HistoryQueryController extends BaseController  {
 		this.pager = new Page("pagerForm", request);
 		User user = (User) session.getAttribute("userLogin");
 		if(user!=null){
-			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,user.getUserId());
+			json = historyQueryService.getDeviceHistoryDetailsData(deviceId,deviceName,deviceType,recordId,user.getUserNo());
 		}
 		
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -355,7 +355,7 @@ public class HistoryQueryController extends BaseController  {
 			
 			
 			this.pager = new Page("pagerForm", request);
-			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,startDate,endDate,user.getUserId());
+			json = historyQueryService.getHistoryQueryCurveData(deviceId,deviceName,deviceType,startDate,endDate,user.getUserNo());
 		}
 		
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

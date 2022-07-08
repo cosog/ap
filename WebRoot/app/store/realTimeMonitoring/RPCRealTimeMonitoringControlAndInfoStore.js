@@ -63,7 +63,9 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        	align:'left',
     			        	flex:1,
     			        	renderer:function(value){
-    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		if(isNotVal(value)){
+        			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		}
     			        	}
     			        },
     			        { 
@@ -72,7 +74,9 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        	align:'center',
     			        	flex:1,
     			        	renderer:function(value){
-    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		if(isNotVal(value)){
+        			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		}
     			        	}
     			        }
     			    ]
@@ -124,7 +128,9 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        	flex:6,
     			        	renderer:function(value,e,o){
     			        		e.tdStyle ="vertical-align:middle;";
-    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		if(isNotVal(value)){
+        			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+    			        		}
     			        	}
     			        },{ 	
     			        	header: '操作', 

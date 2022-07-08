@@ -51,7 +51,9 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringStatStore', {
                         sortable: false,
                         dataIndex: 'item',
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+			        		}
                         }
                     }, {
                         text: '变量',

@@ -154,14 +154,14 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	
 	
 	var panel_Id = "";
-	if (module_Code != "video" && module_Code != "map_MapDraw" && module_Code != "realtime_RealtimeMonitor"
+	if (module_Code != "OrganizationAndUserManagement"
 		&& module_Code != "ProductionReport"
 		&& module_Code != "ProductionData"
 		&& module_Code != "WellInformation"
 		&& module_Code != "RPCDeviceManager"
 		&& module_Code != "PCPDeviceManager"
-		&& module_Code != "SMSDeviceManager"
-		&& module_Code != "PumpingModelManager"
+		&& module_Code != "SMSDeviceManagement"
+		&& module_Code != "PumpingModelManagement"
 		&& module_Code != "DeviceRealTimeMonitoring"
 		&& module_Code != "DeviceHistoryQuery"
 		&& module_Code != "DailyReport"
@@ -278,6 +278,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		} else {
 			// Ext.Msg.alert("info", '抱歉，该模块正在开发中... ');
 		}
+	}else if(module_Code == "OrganizationAndUserManagement"){
+		var gridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.orgAndUser.OrgInfoStore');
+		}
 	}else if(module_Code == "WellInformation"){
 		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
@@ -298,9 +305,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		Ext.getCmp("PCPDeviceSelectRow_Id").setValue(0);
     	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue(0);
 		CreateAndLoadPCPDeviceInfoTable(true);
-	}else if(module_Code == "SMSDeviceManager"){
+	}else if(module_Code == "SMSDeviceManagement"){
 		CreateAndLoadSMSDeviceInfoTable(true);
-	}else if(module_Code == "PumpingModelManager"){
+	}else if(module_Code == "PumpingModelManagement"){
 		CreateAndLoadPumpingModelInfoTable(true);
 	}else if(module_Code == "DeviceRealTimeMonitoring"){
 		var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");

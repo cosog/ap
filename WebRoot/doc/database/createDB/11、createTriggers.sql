@@ -130,10 +130,6 @@ BEGIN
   case
        when inserting then
             SELECT SEQ_ORG.nextval INTO :new.ORG_ID FROM dual;
-       when updating then
-            update tbl_rpcdevice t set t.orgid=:new.org_id where t.orgid=:old.org_id;
-            update tbl_pcpdevice t set t.orgid=:new.org_id where t.orgid=:old.org_id;
-            update tbl_smsdevice t set t.orgid=:new.org_id where t.orgid=:old.org_id;
   end case;
 END;
 /

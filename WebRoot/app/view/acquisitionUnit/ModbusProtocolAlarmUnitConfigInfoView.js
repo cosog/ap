@@ -1467,7 +1467,7 @@ function createModbusProtocolAddrMappingEnumOrSwitchItemsColumn(columnInfo) {
         if (attr.dataIndex.toUpperCase() == 'id'.toUpperCase()) {
             myColumns += ",xtype: 'rownumberer',sortable : false,locked:false";
         }else {
-            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+            myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
             //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
         }
         myColumns += "}";

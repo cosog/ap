@@ -55,7 +55,9 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                          	if(p.data.id==user_){
                          		showVal="*"+value;
                          	}
-                        	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (showVal == undefined ? "" : showVal) + "</span>";
+                         	if(isNotVal(showVal)){
+                         		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (showVal == undefined ? "" : showVal) + "</span>";
+                         	}
                         }
                     }, {
                         text: '用户账号',
@@ -66,7 +68,9 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                         locked: false,
                         dataIndex: 'userID',
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+                            	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                         	}
                         }
                     }]
                 });

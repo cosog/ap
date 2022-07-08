@@ -51,7 +51,9 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                         locked: false,
                         dataIndex: 'wellName',
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+    			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
+			        		}
                         }
                     }]
                 });

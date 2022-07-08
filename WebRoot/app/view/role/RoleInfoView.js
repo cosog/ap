@@ -72,7 +72,7 @@ createRoleGridColumn = function(columnInfo) {
 		}else if (attr.dataIndex.toUpperCase()=='roleName'.toUpperCase()) {
             myColumns += ",dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCurrentRoleName(value,o,p,e);}";
         }else {
-			myColumns +=  ",dataIndex:'" + attr.dataIndex + "',renderer:function(value){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}";
+			myColumns +=  ",dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
 		}
 		myColumns += "}";
 		if (i < myArr.length - 1) {
@@ -89,5 +89,7 @@ adviceCurrentRoleName = function(val,o,p,e) {
  	if(p.data.roleId==parseInt(currentRoleId)){
  		showVal="*"+val;
  	}
- 	return '<span data-qtip="'+val+'" data-dismissDelay=10000>'+showVal+'</span>';
+ 	if(isNotVal(showVal)){
+ 	 	return '<span data-qtip="'+val+'" data-dismissDelay=10000>'+showVal+'</span>';
+ 	}
 };

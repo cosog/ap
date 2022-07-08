@@ -1420,14 +1420,19 @@ color16ToRgba = function(sColor,Opacity){
 	}
  	var rgba=color16ToRgba(BackgroundColor,Opacity);
  	o.style='background-color:'+rgba+';color:'+Colorr+';';
-	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+ 	if(isNotVal(tipval)){
+ 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+ 	}
 }
  
  adviceTimeFormat = function(val,o,p,e) {
 	 	var reslut="";
 	 	val=val.split(".")[0];
 	 	var reslut=val;
-	    return '<span data-qtip="'+reslut+'">'+reslut+'</span>';
+	 	if(isNotVal(reslut)){
+	 		return '<span data-qtip="'+reslut+'">'+reslut+'</span>';
+	 	}
+	    
 	}
  
  adviceStatTableCommStatusColor = function(val,o,p,e) {
@@ -1456,7 +1461,9 @@ color16ToRgba = function(sColor,Opacity){
 		}
 	 	var rgba=color16ToRgba(backgroundColor,opacity);
 	 	o.style='background-color:'+rgba+';color:'+color+';';
-	 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	if(isNotVal(tipval)){
+		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	}
 	}
  
  adviceCommStatusColor = function(val,o,p,e) {
@@ -1478,12 +1485,9 @@ color16ToRgba = function(sColor,Opacity){
 		}
 	 	var rgba=color16ToRgba(backgroundColor,opacity);
 	 	o.style='background-color:'+rgba+';color:'+color+';';
-//		if (commStatus == 1) {
-//			return '<span data-qtip="在线">在线</span>';
-//		} else {
-//			return '<span data-qtip="离线">离线</span>';
-//		}
-	 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	if(isNotVal(tipval)){
+	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	}
 	}
  
  adviceRunStatusColor = function(val,o,p,e) {
@@ -1513,12 +1517,9 @@ color16ToRgba = function(sColor,Opacity){
 		 	tipval=val;
 		 	var rgba=color16ToRgba(backgroundColor,opacity);
 		 	o.style='background-color:'+rgba+';color:'+color+';';
-//			if(runStatus==1){
-//				return '<span data-qtip="运行">运行</span>';
-//			}else{
-//				return '<span data-qtip="停止">停止</span>';
-//			}
-		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+		 	if(isNotVal(tipval)){
+			 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+		 	}
 		}
 	}
  adviceResultStatusColor = function(val,o,p,e) {
@@ -1549,7 +1550,9 @@ color16ToRgba = function(sColor,Opacity){
 	 		var rgba=color16ToRgba(backgroundColor,opacity);
 		 	o.style='background-color:'+rgba+';color:'+color+';';
 	 	}
-	 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	if(isNotVal(tipval)){
+		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	}
 	}
  
  adviceDataColor = function(val,o,p,e) {
@@ -1600,7 +1603,9 @@ color16ToRgba = function(sColor,Opacity){
 	    	var rgba = color16ToRgba(backgroundColor, opacity);
             o.style = 'background-color:' + rgba + ';color:' + color + ';';
 	    }
-	 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	if(isNotVal(tipval)){
+	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	}
 	}
  
  adviceRealtimeMonitoringDataColor = function (val, o, p, e) {
@@ -1691,7 +1696,9 @@ color16ToRgba = function(sColor,Opacity){
 	        val = '';
 	    }
 	    var tipval = val;
-	    return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
+	    if(isNotVal(tipval)){
+		    return '<span data-qtip="' + tipval + '" data-dismissDelay=10000>' + val + '</span>';
+	    }
 	}
 
  adviceHistoryWellDataColor = function(val,o,p,e) {

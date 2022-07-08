@@ -50,7 +50,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                         locked: false,
                         dataIndex: 'itemName',
                         renderer: function (value,o,p,e) {
-                        	return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
                         }
                     }, {
                         text: '字段',
@@ -61,7 +63,9 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                         locked: false,
                         dataIndex: 'itemColumn',
                         renderer: function (value) {
-                            return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	if(isNotVal(value)){
+                        		return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                        	}
                         }
                     }]
                 });

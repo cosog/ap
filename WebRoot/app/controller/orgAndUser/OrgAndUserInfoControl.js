@@ -506,8 +506,6 @@ function delUserInfoByGridBtn(record) {
       	}else{
       		Ext.Msg.alert('提示', "<font color=red>所选属性无效，删除失败。</font>");
       	}
-          
-          
       }
   });
 }

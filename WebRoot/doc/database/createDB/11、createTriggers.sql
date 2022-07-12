@@ -67,20 +67,6 @@ BEGIN
 end;
 /
 
-CREATE OR REPLACE TRIGGER 
-trg_b_auxiliary2master_i   before  insert on TBL_AUXILIARY2MASTER FOR EACH ROW
-BEGIN
-  SELECT seq_auxiliary2master.nextval INTO :new.id FROM dual;
-end;
-/
-
-CREATE OR REPLACE TRIGGER 
-trg_b_auxiliarydevice_i   before  insert on tbl_auxiliarydevice FOR EACH ROW
-BEGIN
-  SELECT seq_auxiliarydevice.nextval INTO :new.id FROM dual;
-end;
-/
-
 create or replace trigger trg_b_code_i   before  insert on TBL_CODE FOR EACH ROW
 BEGIN
   SELECT SEQ_code.nextval INTO :new.id FROM dual;
@@ -187,12 +173,6 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_PCPDAILY_i   before  insert on TBL_PCPDAILYCALCULATIONDATA FOR EACH ROW
 BEGIN
   SELECT SEQ_PCPDAILYCALCULATIONDATA.nextval INTO :new.id FROM dual;
-end;
-/
-
-create or replace trigger trg_b_pcpdeviceaddinfo_i   before  insert on tbl_pcpdeviceaddinfo FOR EACH ROW
-BEGIN
-  SELECT seq_pcpdeviceaddinfo.nextval INTO :new.id FROM dual;
 end;
 /
 
@@ -304,12 +284,6 @@ end;
 CREATE OR REPLACE TRIGGER trg_b_RPCDAILY_i   before  insert on TBL_RPCDAILYCALCULATIONDATA FOR EACH ROW
 BEGIN
   SELECT SEQ_RPCDAILYCALCULATIONDATA.nextval INTO :new.id FROM dual;
-end;
-/
-
-create or replace trigger trg_b_rpcdeviceaddinfo_i   before  insert on tbl_rpcdeviceaddinfo FOR EACH ROW
-BEGIN
-  SELECT seq_rpcdeviceaddinfo.nextval INTO :new.id FROM dual;
 end;
 /
 

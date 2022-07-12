@@ -24,7 +24,7 @@ t.instancecode,
 decode(t.devicetype,2,t4.name,t2.name) as instancename,
 t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
-t.status,decode(t.status,1,'浣胯兘','澶辨晥') as statusName,
+t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,t.balanceinfo,t.stroke,
 t.pumpingmodelid,t6.manufacturer,t6.model,t6.crankrotationdirection,t6.offsetangleofcrank,t6.crankgravityradius,t6.singlecrankweight,t6.singlecrankpinweight,t6.structuralunbalance,
 t.sortnum
@@ -53,7 +53,7 @@ t.instancecode,
 decode(t.devicetype,2,t4.name,t2.name) as instancename,
 t.alarminstancecode,t3.name as alarminstancename,
 t.displayinstancecode,t5.name as displayinstancename,
-t.status,decode(t.status,1,'浣胯兘','澶辨晥') as statusName,
+t.status,decode(t.status,1,'使能','失效') as statusName,
 t.productiondata,
 t.sortnum
 from tbl_pcpdevice t
@@ -134,11 +134,11 @@ create or replace view viw_rpcdailycalculationdata as
 select
  t.id,well.wellname,well.id as wellid,
  t.calDate,t.extendeddays,t.calDate-t.extendeddays as acquisitionDate,
- t.commstatus,decode(t.commstatus,1,'??','??') as commStatusName,t.commtime,t.commtimeefficiency,t.commrange,
+ t.commstatus,decode(t.commstatus,1,'在线','离线') as commStatusName,t.commtime,t.commtimeefficiency,t.commrange,
  t.runStatus,
  case when t.commstatus=1 then
-           decode(t.runstatus,1,'??','??')
-      else '??' end as runStatusName,
+           decode(t.runstatus,1,'运行','停抽')
+      else '离线' end as runStatusName,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,
  decode(t.resultcode,null,1100,0,1100,t.resultcode) as resultcode,
  status.resultname as resultname,t.resultString,status.optimizationsuggestion,
@@ -231,11 +231,11 @@ create or replace view viw_pcpdailycalculationdata as
 select
  t.id,well.wellname,well.id as wellid,
  t.calDate,t.extendeddays,t.calDate-t.extendeddays as acquisitionDate,
- t.commstatus,decode(t.commstatus,1,'??','??') as commStatusName,t.commtime,t.commtimeefficiency,t.commrange,
+ t.commstatus,decode(t.commstatus,1,'在线','离线') as commStatusName,t.commtime,t.commtimeefficiency,t.commrange,
  t.runStatus,
  case when t.commstatus=1 then
-           decode(t.runstatus,1,'??','??')
-      else '??' end as runStatusName,
+           decode(t.runstatus,1,'运行','停抽')
+      else '离线' end as runStatusName,
  t.runtime,t.runrange,t.runtimeefficiency as runtimeefficiency,
  t.rpm,
  t.theoreticalproduction,

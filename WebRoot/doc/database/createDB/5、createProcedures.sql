@@ -76,6 +76,7 @@ BEGIN
     INTO curr_val;
   EXECUTE IMMEDIATE 'alter sequence ' || sequencename || ' increment by 1';
 END prd_reset_sequence;
+/
 
 
 CREATE OR REPLACE PROCEDURE prd_clear_data is
@@ -1444,4 +1445,19 @@ Exception
     p_msg := Sqlerrm || ',' || '²Ù×÷Ê§°Ü';
     dbms_output.put_line('p_msg:' || p_msg);
 end prd_save_resourcemonitoring;
+/
+
+CREATE OR REPLACE PROCEDURE prd_init_device_daily is
+begin
+    insert into tbl_rpcdailycalculationdata (wellid,caldate)
+    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_rpcdevice well
+    where well.id not in ( select t2.wellid from tbl_rpcdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    commit;
+
+    insert into tbl_pcpdailycalculationdata (wellid,caldate)
+    select id, to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd') from tbl_pcpdevice well
+    where well.id not in ( select t2.wellid from tbl_pcpdailycalculationdata t2 where t2.caldate=to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'));
+    commit;
+
+end prd_init_device_daily;
 /

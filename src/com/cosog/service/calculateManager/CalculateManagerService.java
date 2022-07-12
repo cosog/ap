@@ -130,11 +130,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				sql+=" and  t.resultstatus = " + calculateSign + " ";
 			}
 		}
-		sql+=" order by t.fesdiagramacqtime desc, t.wellName";
+		int totals=this.getTotalCountRows(sql);
+		
+		sql+=" order by t.fesdiagramacqtime desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		
-		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
@@ -283,7 +283,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				sql+=" and  t.resultstatus = " + calculateSign + " ";
 			}
 		}
-		sql+=" order by t.acqtime desc, t.wellName";
+		sql+=" order by t.acqtime desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
@@ -1233,7 +1233,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
-		sql+=" order by t.caldate desc, t.wellName";
+		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
@@ -1302,7 +1302,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
-		sql+=" order by t.caldate desc, t.wellName";
+		sql+=" order by t.caldate desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		

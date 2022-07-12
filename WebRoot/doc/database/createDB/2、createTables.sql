@@ -10,7 +10,7 @@ create table TBL_ORG
   org_parent NUMBER(10) default 0 not null,
   org_seq    NUMBER(10)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -38,7 +38,7 @@ create table TBL_USER
   user_receivesms  NUMBER(10) default 0,
   user_receivemail NUMBER(10) default 0
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -61,7 +61,7 @@ create table TBL_ROLE
   showlevel   NUMBER(10) default 0,
   remark      VARCHAR2(2000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -91,7 +91,7 @@ create table TBL_MODULE
   md_type     NUMBER(1) default 0,
   md_control  VARCHAR2(100)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -112,7 +112,7 @@ create table TBL_MODULE2ROLE
   rm_roleid   NUMBER(10) not null,
   rm_matrix   VARCHAR2(8) not null
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -147,7 +147,7 @@ create table TBL_DIST_NAME
   updatetime DATE default sysdate not null,
   createdate DATE default sysdate
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -176,7 +176,7 @@ create table TBL_DIST_ITEM
   updatetime DATE default sysdate,
   createdate DATE default sysdate
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -205,7 +205,7 @@ create table TBL_CODE
   state     NUMBER(10),
   remark    VARCHAR2(200)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -230,7 +230,7 @@ create table TBL_DATAMAPPING
   repetitiontimes NUMBER(2),
   mappingmode     NUMBER(1)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -253,7 +253,7 @@ create table TBL_ACQ_UNIT_CONF
   protocol  VARCHAR2(50),
   remark    VARCHAR2(2000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -279,7 +279,7 @@ create table TBL_ACQ_GROUP_CONF
   type       NUMBER(1) default 0,
   remark     VARCHAR2(2000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -304,7 +304,7 @@ create table TBL_ACQ_ITEM2GROUP_CONF
   bitindex NUMBER(3),
   matrix   VARCHAR2(8)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -326,7 +326,7 @@ create table TBL_ACQ_GROUP2UNIT_CONF
   unitid  NUMBER(10) not null,
   matrix  VARCHAR2(8) not null
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -348,7 +348,7 @@ create table TBL_ALARM_UNIT_CONF
   protocol  VARCHAR2(50),
   remark    VARCHAR2(2000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -383,7 +383,7 @@ create table TBL_ALARM_ITEM2UNIT_CONF
   issendmessage NUMBER(1) default 0,
   issendmail    NUMBER(1) default 0
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -406,7 +406,7 @@ create table TBL_DISPLAY_UNIT_CONF
   acqunitid NUMBER(10),
   remark    VARCHAR2(2000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -437,7 +437,7 @@ create table TBL_DISPLAY_ITEMS2UNIT_CONF
   type               NUMBER(1) default 0,
   matrix             VARCHAR2(8)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -466,7 +466,7 @@ create table TBL_PROTOCOLINSTANCE
   devicetype       NUMBER(1) default 0,
   sort             NUMBER(10)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -489,7 +489,7 @@ create table TBL_PROTOCOLALARMINSTANCE
   devicetype  NUMBER(1) default 0,
   sort        NUMBER(10)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -512,7 +512,7 @@ create table TBL_PROTOCOLDISPLAYINSTANCE
   devicetype    NUMBER(1) default 0,
   sort          NUMBER(10)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -535,7 +535,7 @@ create table TBL_PROTOCOLSMSINSTANCE
   ctrlprotocoltype VARCHAR2(50),
   sort             NUMBER(10)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -560,7 +560,7 @@ create table TBL_RPCDEVICE
   slave                    VARCHAR2(200),
   instancecode             VARCHAR2(50),
   alarminstancecode        VARCHAR2(50),
-  displayinstancecode      VARCHAR2(50)
+  displayinstancecode      VARCHAR2(50),
   videourl                 VARCHAR2(400),
   productiondata           VARCHAR2(4000) default '{}',
   productiondataupdatetime DATE,
@@ -570,7 +570,7 @@ create table TBL_RPCDEVICE
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -595,14 +595,14 @@ create table TBL_PCPDEVICE
   slave                    VARCHAR2(200),
   instancecode             VARCHAR2(50),
   alarminstancecode        VARCHAR2(50),
-  displayinstancecode      VARCHAR2(50)
+  displayinstancecode      VARCHAR2(50),
   videourl                 VARCHAR2(400),
   productiondata           VARCHAR2(4000) default '{}',
   productiondataupdatetime DATE,
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -625,7 +625,7 @@ create table TBL_SMSDEVICE
   instancecode VARCHAR2(50),
   sortnum      NUMBER(10) default 9999
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -654,7 +654,7 @@ create table TBL_PUMPINGMODEL
   balanceweight          VARCHAR2(200),
   prtf                   CLOB
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -679,7 +679,7 @@ create table TBL_RPC_WORKTYPE
   optimizationsuggestion VARCHAR2(200),
   remark                 VARCHAR2(200)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -809,7 +809,7 @@ create table TBL_RPCACQDATA_LATEST
   submergence                    NUMBER(8,2),
   savetime                       DATE default sysdate
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -939,7 +939,7 @@ create table TBL_RPCACQDATA_HIST
   submergence                    NUMBER(8,2),
   savetime                       DATE default sysdate
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -961,7 +961,7 @@ create table TBL_RPCACQRAWDATA
   acqtime DATE not null,
   rawdata VARCHAR2(4000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -992,7 +992,7 @@ create table TBL_RPCALARMINFO_LATEST
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1023,7 +1023,7 @@ create table TBL_RPCALARMINFO_HIST
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1084,7 +1084,7 @@ create table TBL_RPCDAILYCALCULATIONDATA
   resultstring               CLOB,
   extendeddays               NUMBER(5)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1105,7 +1105,7 @@ create table TBL_RPCDEVICEGRAPHICSET
   wellid       NUMBER(10) not null,
   graphicstyle VARCHAR2(4000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1174,7 +1174,7 @@ create table TBL_PCPACQDATA_LATEST
   oilweightproduction_l        NUMBER(8,2),
   waterweightproduction_l      NUMBER(8,2)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1243,7 +1243,7 @@ create table TBL_PCPACQDATA_HIST
   oilweightproduction_l        NUMBER(8,2),
   waterweightproduction_l      NUMBER(8,2)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1265,7 +1265,7 @@ create table TBL_PCPACQRAWDATA
   acqtime DATE not null,
   rawdata VARCHAR2(4000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1297,7 +1297,7 @@ create table TBL_PCPALARMINFO_LATEST
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1328,7 +1328,7 @@ create table TBL_PCPALARMINFO_HIST
   issendmail    NUMBER(1) default 0,
   recoverytime  DATE
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1377,7 +1377,7 @@ create table TBL_PCPDAILYCALCULATIONDATA
   weightwatercut             NUMBER(8,2),
   extendeddays               NUMBER(5)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1398,7 +1398,7 @@ create table TBL_PCPDEVICEGRAPHICSET
   wellid       NUMBER(10) not null,
   graphicstyle VARCHAR2(4000)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1424,7 +1424,7 @@ create table TBL_DEVICEOPERATIONLOG
   devicetype NUMBER(3),
   remark     VARCHAR2(200)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1448,7 +1448,7 @@ create table TBL_SYSTEMLOG
   action     NUMBER(2),
   remark     VARCHAR2(200)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1466,16 +1466,16 @@ create table TBL_RESOURCEMONITORING
 (
   id             NUMBER(10) not null,
   acqtime        DATE,
-  apprunstatus   NUMBER(2),
-  appversion     VARCHAR2(50),
+  acrunstatus    NUMBER(2),
+  acversion      VARCHAR2(50),
   adrunstatus    NUMBER(2),
   adversion      VARCHAR2(50),
-  jedisstatus    NUMBER(2),
   cpuusedpercent VARCHAR2(50),
   memusedpercent NUMBER(8,2),
-  tablespacesize NUMBER(10,2)
+  tablespacesize NUMBER(10,2),
+  jedisstatus    NUMBER(2)
 )
-tablespace AP_JF_DATA
+tablespace AP_DATA
   storage
   (
     initial 64K
@@ -1487,7 +1487,7 @@ alter table TBL_RESOURCEMONITORING add constraint PK_TBL_RESOURCEMONITORING prim
 /
 
 
-create or replace package body MYPACKAGE as
-   
+create or replace package MYPACKAGE as
+   type MY_CURSOR is REF CURSOR;
 end MYPACKAGE;
 /

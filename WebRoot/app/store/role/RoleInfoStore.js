@@ -57,9 +57,7 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     columnLines: true,
                     layout: "fit",
                     stripeRows: true,
-                    forceFit: true,
-//                    selType: 'checkboxmodel',
-//                    multiSelect: true,
+                    forceFit: false,
                     selModel:{
                     	selType:'checkboxmodel',
                     	showHeaderCheckbox:false,

@@ -212,6 +212,9 @@ function websocketOnMessage(evt) {
 								for(let item in record.data){
 									if(item.toUpperCase()==data.allItemInfo[j].column.toUpperCase()){
 										record.set(item,data.allItemInfo[j].value);
+										if(item.toUpperCase()=="runStatusName".toUpperCase()){
+											record.set("runStatus",parseInt(data.allItemInfo[j].rawValue));
+										}
 										break;
 									}
 								}
@@ -367,6 +370,9 @@ function websocketOnMessage(evt) {
 								for(let item in record.data){
 									if(item.toUpperCase()==data.allItemInfo[j].column.toUpperCase()){
 										record.set(item,data.allItemInfo[j].value);
+										if(item.toUpperCase()=="runStatusName".toUpperCase()){
+											record.set("runStatus",parseInt(data.allItemInfo[j].rawValue));
+										}
 										break;
 									}
 								}

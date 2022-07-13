@@ -624,7 +624,7 @@ public class EquipmentDriverServerTask {
 			//如数据库中不存在，添加字段
 			for(String key : acquisitionItemColumns.keySet()) {
 				if(!StringManagerUtils.existOrNot(acquisitionItemDataBaseColumns,dataSaveMode==0?key:acquisitionItemColumns.get(key),false)){
-					String addColumsSql="alter table "+tableName+" add "+(dataSaveMode==0?key:acquisitionItemColumns.get(key))+" VARCHAR2(50)";
+					String addColumsSql="alter table "+tableName+" add "+(dataSaveMode==0?key:acquisitionItemColumns.get(key))+" VARCHAR2(4000)";
 					pstmt = conn.prepareStatement(addColumsSql);
 					pstmt.executeUpdate();
 					StringManagerUtils.printLog(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":表"+tableName+"添加字段:"+(dataSaveMode==0?key:acquisitionItemColumns.get(key)));
@@ -1891,7 +1891,6 @@ public class EquipmentDriverServerTask {
 	public static int initWellCommStatus(){
 		String intRPCCommSql="update tbl_rpcacqdata_latest t set t.commstatus=0 ";
 		String intPCPCommSql="update tbl_pcpacqdata_latest t set t.commstatus=0 ";
-//		sql="alter table TBL_RPCACQDATA_HIST add addr201 VARCHAR2(50)";
 		int result=0;
 		try {
 			result = JDBCUtil.updateRecord(intRPCCommSql, null);

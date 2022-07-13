@@ -164,7 +164,7 @@ begin
       select t.id into wellId from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
       --判断signinid和slave是否已存在
       select count(1) into othercount from tbl_rpcdevice t
-      where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null
+      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
       and t.id<>wellId;
       if othercount=0 then
         Update tbl_rpcdevice t
@@ -189,7 +189,7 @@ begin
         connect by   org.org_parent= prior org.org_id) v
         where t.orgid=v.org_id
         and t.id=(select t2.id from tbl_rpcdevice t2
-            where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null
+            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
             and t2.id<>wellId);
         v_result:=-22;
         v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -198,7 +198,7 @@ begin
 
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_rpcdevice t where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null;
+        select count(1) into othercount from tbl_rpcdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
         if othercount=0 then
           insert into tbl_rpcdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
@@ -220,7 +220,7 @@ begin
           start with org.org_parent=0
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null);
+          and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -234,7 +234,7 @@ begin
       p_msg := '所选组织下存在同名设备';
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_rpcdevice t where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null;
+        select count(1) into othercount from tbl_rpcdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
         if othercount=0 then
           insert into tbl_rpcdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
@@ -256,7 +256,7 @@ begin
           start with org.org_parent=0
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null);
+          and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -300,7 +300,7 @@ begin
       select t.id into wellId from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
       --判断signinid和slave是否已存在
       select count(1) into othercount from tbl_pcpdevice t
-      where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null
+      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
       and t.id<>wellId;
       if othercount=0 then
         Update tbl_pcpdevice t
@@ -323,16 +323,15 @@ begin
         connect by   org.org_parent= prior org.org_id) v
         where t.orgid=v.org_id
         and t.id=(select t2.id from tbl_pcpdevice t2
-            where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null
+            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
             and t2.id<>wellId);
         v_result:=-22;
         v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
         p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
       end if;
-
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_pcpdevice t where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null;
+        select count(1) into othercount from tbl_pcpdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
         if othercount=0 then
           insert into tbl_pcpdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData);
@@ -353,7 +352,7 @@ begin
           start with org.org_parent=0
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null);
+          and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -367,7 +366,7 @@ begin
       p_msg := '所选组织下存在同名设备';
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_pcpdevice t where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null;
+        select count(1) into othercount from tbl_pcpdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
         if othercount=0 then
           insert into tbl_pcpdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData);
@@ -388,7 +387,7 @@ begin
           start with org.org_parent=0
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null);
+          and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -533,7 +532,7 @@ begin
   and t.orgid=( select t2.orgid from tbl_rpcdevice t2 where t2.id=v_recordId);
     if wellcount=0 then
         select count(1) into othercount from tbl_rpcdevice t
-        where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
         and t.id<>v_recordId;
 
         if v_recordId >0 and othercount=0 then
@@ -560,7 +559,7 @@ begin
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
           and t.id=(select t2.id from tbl_rpcdevice t2
-            where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null
+            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
             and t2.id<>v_recordId);
           v_result:=-22;
           v_resultstr :='设备'||v_wellName||'注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
@@ -604,7 +603,7 @@ begin
   and t.orgid=( select t2.orgid from tbl_pcpdevice t2 where t2.id=v_recordId);
     if wellcount=0 then
         select count(1) into othercount from tbl_pcpdevice t
-        where t.signinid=v_signInId and t.slave=v_slave and t.signinid is not null and t.slave is not null
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
         and t.id<>v_recordId;
 
         if v_recordId >0 and othercount=0 then
@@ -631,7 +630,7 @@ begin
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
           and t.id=(select t2.id from tbl_pcpdevice t2
-            where t2.signinid=v_signInId and t2.slave=v_slave and t2.signinid is not null and t2.slave is not null
+            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
             and t2.id<>v_recordId);
           v_result:=-22;
           v_resultstr :='设备'||v_wellName||'注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';

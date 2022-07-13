@@ -46,7 +46,7 @@ Ext.define('AP.store.frame.IframeStore', {
     			var tabPanel = Ext.getCmp("frame_center_ids");
     			if(tabPanel.activeTab!=undefined){
     				var activeId = tabPanel.getActiveTab().id;
-        			if(activeId=="org_OrgInfoTreeGridView"){
+        			if(activeId=="OrganizationAndUserManagement"){
         				Ext.getCmp("OrgInfoTreeGridView_Id").getStore().load();
         			}
     			}

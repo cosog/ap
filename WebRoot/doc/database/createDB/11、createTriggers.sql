@@ -111,7 +111,7 @@ BEGIN
 END;
 /
 
-create or replace trigger trg_b_org_i_u   before  insert or update  on TBL_ORG FOR EACH ROW
+create or replace trigger trg_b_org_i_u   before  insert  on TBL_ORG FOR EACH ROW
 BEGIN
   case
        when inserting then

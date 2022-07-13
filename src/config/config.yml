@@ -30,7 +30,7 @@ ap:
       productionUnit: stere #产量单位 stere-立方米 ton-吨
       pcpHidden: false
       showLogo: true
-      printLog: false
+      printLog: true
       simulateAcqEnable: true
       sendCycle: 600
       timeDifference: 60

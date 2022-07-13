@@ -1053,6 +1053,12 @@ public class DriverAPIController extends BaseController{
 								}
 							}
 							deviceTodayData.getRPCCalculateList().add(rpcCalculateResponseData);
+						}else{
+							deviceTodayData=new RPCDeviceTodayData();
+							deviceTodayData.setId(rpcDeviceInfo.getId());
+							deviceTodayData.setRPCCalculateList(new ArrayList<RPCCalculateResponseData>());
+							deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
+							deviceTodayData.getRPCCalculateList().add(rpcCalculateResponseData);
 						}
 						
 					}
@@ -1616,6 +1622,7 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
 							webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 							webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
+							System.out.println("推送数据:"+webSocketSendData.toString());
 							infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
 						}
 					}
@@ -2002,6 +2009,12 @@ public class DriverAPIController extends BaseController{
 									it.remove();
 								}
 							}
+							deviceTodayData.getPCPCalculateList().add(pcpCalculateResponseData);
+						}else{
+							deviceTodayData=new PCPDeviceTodayData();
+							deviceTodayData.setId(pcpDeviceInfo.getId());
+							deviceTodayData.setPCPCalculateList(new ArrayList<PCPCalculateResponseData>());
+							deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
 							deviceTodayData.getPCPCalculateList().add(pcpCalculateResponseData);
 						}
 					}

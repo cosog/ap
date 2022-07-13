@@ -38,13 +38,13 @@ var SaveOrgDataInfoSubmitBtnForm = function () {
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('org_addwin_Id').close();
-                Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
                 if (action.result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】," + cosog.string.dataInfo + "");
+                	Ext.getCmp("IframeView_Id").getStore().load();//右侧组织数刷新
+//                	Ext.getCmp("OrgInfoTreeGridView_Id").getStore().load();
+                	Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】," + cosog.string.dataInfo + "");
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
-
                 }
             },
             failure: function () {

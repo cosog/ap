@@ -798,7 +798,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				this.getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}
-		getBaseDao().saveRecalculateData(calculateManagerHandsontableChangedData);
 	}
 	
 	public void saveRPMReCalculateData(CalculateManagerHandsontableChangedData calculateManagerHandsontableChangedData) throws Exception {
@@ -906,7 +905,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				this.getBaseDao().updateOrDeleteBySql(updateSql);
 			}
 		}
-		getBaseDao().saveRecalculateData(calculateManagerHandsontableChangedData);
 	}
 //	
 //	public void saveElecInverPumpingUnitData(ElecInverCalculateManagerHandsontableChangedData elecInverCalculateManagerHandsontableChangedData) throws Exception {
@@ -1030,12 +1028,18 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	
 	public String getFSDiagramCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
-		String sql="select t2.wellname,to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss'),"
+		String sql=""
+				+ " select t2.wellname,to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
-				+ " t.levelcorrectvalue,t.productiondata"
-				+ " from tbl_rpcacqdata_hist t,tbl_rpcdevice t2"
-				+ " where t.wellid=t2.id  "
+				+ " t.levelcorrectvalue,"
+				+ " t.productiondata,"
+				+ " t3.id as pumpingmodelid,t3.manufacturer,t3.model,t3.crankrotationdirection,t3.offsetangleofcrank,t3.crankgravityradius,t3.singlecrankweight,t3.singlecrankpinweight,t3.structuralunbalance,"
+				+ " t.balanceinfo"
+				+ " from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice t2 on t.wellid=t2.id"
+				+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
+				+ " where 1=1  "
 				+ " and t.id="+recordId;
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
@@ -1047,7 +1051,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	
 	public String getRPMCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
-		String sql="select t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
+		String sql=""
+				+ " select t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
 				+ " t.rpm,t.productiondata"
 				+ " from tbl_pcpacqdata_hist t,tbl_pcpdevice t2"
 				+ " where t.wellid=t2.id  "

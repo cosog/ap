@@ -59,6 +59,25 @@ public class ResourceMonitoringTask {
 	
     private static CallableStatement cs= null;
     
+    private static int deviceAmount=0;
+	
+    private static int acRunStatus=0;
+    private static String acVersion="";
+    private static int acLicense=0;
+	
+    private static int adRunStatus=0;
+    private static String adVersion="";
+    private static int adLicense=0;
+    private static boolean adLicenseSign=false;
+	
+    private static String cpuUsedPercent="";
+    private static String cpuUsedPercentValue="";
+    private static int cpuUsedPercentAlarmLevel=0;
+	
+    private static String memUsedPercent="";
+    private static String memUsedPercentValue="";
+    private static int memUsedPercentAlarmLevel=0;
+    
     private static int jedisStatus=1; 
     
 	@SuppressWarnings("static-access")
@@ -72,24 +91,24 @@ public class ResourceMonitoringTask {
 		
 		String acStatusUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];
 		
-		int deviceAmount=getDeviceAmount();
+		deviceAmount=getDeviceAmount();
 		
-		int acRunStatus=0;
-		String acVersion="";
-		int acLicense=0;
-		
-		int adRunStatus=0;
-		String adVersion="";
-		int adLicense=0;
-		boolean adLicenseSign=false;
-		
-		String cpuUsedPercent="";
-		String cpuUsedPercentValue="";
-		int cpuUsedPercentAlarmLevel=0;
-		
-		String memUsedPercent="";
-		String memUsedPercentValue="";
-		int memUsedPercentAlarmLevel=0;
+//		acRunStatus=0;
+//		acVersion="";
+//		acLicense=0;
+//		
+//		adRunStatus=0;
+//		adVersion="";
+//		adLicense=0;
+//		adLicenseSign=false;
+//		
+//		cpuUsedPercent="";
+//		cpuUsedPercentValue="";
+//		cpuUsedPercentAlarmLevel=0;
+//		
+//		memUsedPercent="";
+//		memUsedPercentValue="";
+//		memUsedPercentAlarmLevel=0;
 		
 		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
 		
@@ -119,6 +138,10 @@ public class ResourceMonitoringTask {
 			acRunStatus=1;
 			acVersion=acStatusProbeResonanceData.getVer();
 			acLicense=acStatusProbeResonanceData.getLicenseNumber();
+		}else{
+			acRunStatus=0;
+			acVersion="";
+			acLicense=0;
 		}
 		
 		//ad状态检测
@@ -141,6 +164,10 @@ public class ResourceMonitoringTask {
 			type = new TypeToken<MemoryProbeResponseData>() {}.getType();
 			MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
 			if(cpuProbeResponseData!=null){
+				cpuUsedPercent="";
+				cpuUsedPercentValue="";
+				cpuUsedPercentAlarmLevel=0;
+				
 				for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
 					if(cpuProbeResponseData.getPercent().get(i)>=60 && cpuProbeResponseData.getPercent().get(i)<80 && cpuUsedPercentAlarmLevel<1){
 						cpuUsedPercentAlarmLevel=1;
@@ -155,8 +182,15 @@ public class ResourceMonitoringTask {
 						cpuUsedPercentValue+=";";
 					}
 				}
+			}else{
+				cpuUsedPercent="";
+				cpuUsedPercentValue="";
+				cpuUsedPercentAlarmLevel=0;
 			}
 			if(memoryProbeResponseData!=null){
+				memUsedPercent="";
+				memUsedPercentValue="";
+				memUsedPercentAlarmLevel=0;
 				if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
 					memUsedPercentAlarmLevel=1;
 				}else if(memoryProbeResponseData.getUsedPercent()>=80){
@@ -164,7 +198,16 @@ public class ResourceMonitoringTask {
 				}
 				memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
 				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
+			}else{
+				memUsedPercent="";
+				memUsedPercentValue="";
+				memUsedPercentAlarmLevel=0;
 			}
+		}else{
+			adRunStatus=0;
+			adVersion="";
+			adLicense=0;
+			adLicenseSign=false;
 		}
 		
 		conn=OracleJdbcUtis.getConnection();
@@ -346,5 +389,121 @@ public class ResourceMonitoringTask {
 		public void setAlarmLevel(int alarmLevel) {
 			this.alarmLevel = alarmLevel;
 		}
+	}
+
+	public static int getAcRunStatus() {
+		return acRunStatus;
+	}
+
+	public static void setAcRunStatus(int acRunStatus) {
+		ResourceMonitoringTask.acRunStatus = acRunStatus;
+	}
+
+	public static String getAcVersion() {
+		return acVersion;
+	}
+
+	public static void setAcVersion(String acVersion) {
+		ResourceMonitoringTask.acVersion = acVersion;
+	}
+
+	public static int getAcLicense() {
+		return acLicense;
+	}
+
+	public static void setAcLicense(int acLicense) {
+		ResourceMonitoringTask.acLicense = acLicense;
+	}
+
+	public static int getAdRunStatus() {
+		return adRunStatus;
+	}
+
+	public static void setAdRunStatus(int adRunStatus) {
+		ResourceMonitoringTask.adRunStatus = adRunStatus;
+	}
+
+	public static String getAdVersion() {
+		return adVersion;
+	}
+
+	public static void setAdVersion(String adVersion) {
+		ResourceMonitoringTask.adVersion = adVersion;
+	}
+
+	public static int getAdLicense() {
+		return adLicense;
+	}
+
+	public static void setAdLicense(int adLicense) {
+		ResourceMonitoringTask.adLicense = adLicense;
+	}
+
+	public static boolean isAdLicenseSign() {
+		return adLicenseSign;
+	}
+
+	public static void setAdLicenseSign(boolean adLicenseSign) {
+		ResourceMonitoringTask.adLicenseSign = adLicenseSign;
+	}
+
+	public static String getCpuUsedPercent() {
+		return cpuUsedPercent;
+	}
+
+	public static void setCpuUsedPercent(String cpuUsedPercent) {
+		ResourceMonitoringTask.cpuUsedPercent = cpuUsedPercent;
+	}
+
+	public static String getCpuUsedPercentValue() {
+		return cpuUsedPercentValue;
+	}
+
+	public static void setCpuUsedPercentValue(String cpuUsedPercentValue) {
+		ResourceMonitoringTask.cpuUsedPercentValue = cpuUsedPercentValue;
+	}
+
+	public static int getCpuUsedPercentAlarmLevel() {
+		return cpuUsedPercentAlarmLevel;
+	}
+
+	public static void setCpuUsedPercentAlarmLevel(int cpuUsedPercentAlarmLevel) {
+		ResourceMonitoringTask.cpuUsedPercentAlarmLevel = cpuUsedPercentAlarmLevel;
+	}
+
+	public static String getMemUsedPercent() {
+		return memUsedPercent;
+	}
+
+	public static void setMemUsedPercent(String memUsedPercent) {
+		ResourceMonitoringTask.memUsedPercent = memUsedPercent;
+	}
+
+	public static String getMemUsedPercentValue() {
+		return memUsedPercentValue;
+	}
+
+	public static void setMemUsedPercentValue(String memUsedPercentValue) {
+		ResourceMonitoringTask.memUsedPercentValue = memUsedPercentValue;
+	}
+
+	public static int getMemUsedPercentAlarmLevel() {
+		return memUsedPercentAlarmLevel;
+	}
+
+	public static void setMemUsedPercentAlarmLevel(int memUsedPercentAlarmLevel) {
+		ResourceMonitoringTask.memUsedPercentAlarmLevel = memUsedPercentAlarmLevel;
+	}
+
+	public static int getJedisStatus() {
+		return jedisStatus;
+	}
+
+	public static void setJedisStatus(int jedisStatus) {
+		ResourceMonitoringTask.jedisStatus = jedisStatus;
+	}
+
+	public static void setDeviceAmount(int deviceAmount) {
+		ResourceMonitoringTask.deviceAmount = deviceAmount;
 	}
 }

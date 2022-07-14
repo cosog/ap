@@ -33,10 +33,13 @@ import com.cosog.controller.base.BaseController;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.TimeEffResponseData;
 import com.cosog.model.calculate.TimeEffTotalResponseData;
+import com.cosog.model.calculate.TotalAnalysisRequestData;
+import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.drive.KafkaConfig;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.thread.calculate.CalculateThread;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
@@ -70,6 +73,187 @@ public class CalculateDataController extends BaseController{
     public static WebSocketByJavax infoHandler2() {
         return new WebSocketByJavax();
     }
+	
+	@RequestMapping("/getBatchCalculateTime")
+	public String getBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
+		String url[]=Config.getInstance().configFile.getAc().getFESDiagram();
+		String json="";
+		long startTime=0;
+		long endTime=0;
+		long allTime=0;
+		String totalDate = StringManagerUtils.getCurrentTime();
+		CalculateThread calculateThreadList[]=new CalculateThread[20];
+		for(int i=0;i<20;i++){
+			calculateThreadList[i]=null;
+		}
+		
+		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+		String sqlAll="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+		List<?> wellList = calculateDataService.findCallSql(wellListSql);
+		int calCount=0;
+		startTime=new Date().getTime();
+		for(int j=0;j<wellList.size();j++){
+			boolean isCal=false;
+			while(!isCal){
+				for(int i=0;i<calculateThreadList.length;i++){
+					if(calculateThreadList[i]==null || !(calculateThreadList[i].isAlive())){
+						calculateThreadList[i]=new CalculateThread(i,StringManagerUtils.stringToInteger(wellList.get(j)+""),0,calculateDataService);
+						calculateThreadList[i].start();
+						isCal=true;
+						break;
+					}
+				}
+			}
+		}
+		
+		boolean finish=false;
+		while(!finish){
+			for(int i=0;i<calculateThreadList.length;i++){
+				if(calculateThreadList[i]!=null&&calculateThreadList[i].isAlive()){
+					finish=false;
+					break;
+				}
+				finish=true;
+			}
+			
+		}
+		
+		endTime=new Date().getTime();
+		allTime=endTime-startTime;
+		json=calCount+"条记录计算完成，共用时:"+allTime+"毫秒";
+		System.out.println(json);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/getPCPBatchCalculateTime")
+	public String getPCPBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
+		String url[]=Config.getInstance().configFile.getAc().getFESDiagram();
+		String json="";
+		long startTime=0;
+		long endTime=0;
+		long allTime=0;
+		String totalDate = StringManagerUtils.getCurrentTime();
+		CalculateThread calculateThreadList[]=new CalculateThread[20];
+		for(int i=0;i<20;i++){
+			calculateThreadList[i]=null;
+		}
+		
+		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+		String sqlAll="select count(1) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+		List<?> wellList = calculateDataService.findCallSql(wellListSql);
+		int calCount=0;
+		startTime=new Date().getTime();
+		for(int j=0;j<wellList.size();j++){
+			boolean isCal=false;
+			while(!isCal){
+				for(int i=0;i<calculateThreadList.length;i++){
+					if(calculateThreadList[i]==null || !(calculateThreadList[i].isAlive())){
+						calculateThreadList[i]=new CalculateThread(i,StringManagerUtils.stringToInteger(wellList.get(j)+""),1,calculateDataService);
+						calculateThreadList[i].start();
+						isCal=true;
+						break;
+					}
+				}
+			}
+		}
+		
+		boolean finish=false;
+		while(!finish){
+			for(int i=0;i<calculateThreadList.length;i++){
+				if(calculateThreadList[i]!=null&&calculateThreadList[i].isAlive()){
+					finish=false;
+					break;
+				}
+				finish=true;
+			}
+			
+		}
+		
+		endTime=new Date().getTime();
+		allTime=endTime-startTime;
+		json=calCount+"条记录计算完成，共用时:"+allTime+"毫秒";
+		System.out.println(json);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/FESDiagramDailyCalculation")
+	public String FESDiagramDailyCalculation() throws ParseException, SQLException, IOException{
+		String tatalDate=ParamUtils.getParameter(request, "date");
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		List<String> requestDataList=null;
+		String endAcqTime=java.net.URLDecoder.decode(ParamUtils.getParameter(request, "endAcqTime"),"utf-8");
+		if(StringManagerUtils.isNotNull(tatalDate)){
+			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		}else{
+			tatalDate=StringManagerUtils.getCurrentTime();
+		}
+		if(StringManagerUtils.isNotNull(endAcqTime) && StringManagerUtils.isNotNull(wellId)){
+//			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
+		}else{
+			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
+		}
+		String url=Config.getInstance().configFile.getAc().getTotalCalculation().getWell()[0];
+		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
+			try {
+				Gson gson = new Gson();
+				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
+				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
+				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
+				
+				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
+				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
+				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+				}else{
+					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		System.out.println("抽油机曲线数据汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	//设置字符串utf-8编码
     public static String StringToUTF8(String xml,String type){

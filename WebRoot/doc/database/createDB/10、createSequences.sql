@@ -129,7 +129,7 @@ cache 20;
 create sequence SEQ_PCPACQDATA_HIST
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 241
+start with 1
 increment by 1
 cache 20;
 /
@@ -137,7 +137,7 @@ cache 20;
 create sequence SEQ_PCPACQDATA_LATEST
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 61
+start with 1
 increment by 1
 cache 20;
 /
@@ -145,7 +145,7 @@ cache 20;
 create sequence SEQ_PCPACQRAWDATA
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 241
+start with 1
 increment by 1
 cache 20;
 /
@@ -153,7 +153,7 @@ cache 20;
 create sequence SEQ_PCPALARMINFO_HIST
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 201
+start with 1
 increment by 1
 cache 20;
 /
@@ -161,7 +161,7 @@ cache 20;
 create sequence SEQ_PCPALARMINFO_LATEST
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 21
+start with 1
 increment by 1
 cache 20;
 /
@@ -169,7 +169,7 @@ cache 20;
 create sequence SEQ_PCPDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
-start with 141
+start with 1
 increment by 1
 cache 20;
 /
@@ -177,7 +177,7 @@ cache 20;
 create sequence SEQ_PCPDEVICE
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 61
+start with 1
 increment by 1
 cache 20;
 /
@@ -265,7 +265,7 @@ cache 20;
 create sequence SEQ_RPCACQDATA_HIST
 minvalue 0
 maxvalue 999999999999999999999999
-start with 941
+start with 1
 increment by 1
 cache 20;
 /
@@ -273,7 +273,7 @@ cache 20;
 create sequence SEQ_RPCACQDATA_LATEST
 minvalue 0
 maxvalue 999999999999999999999999
-start with 81
+start with 1
 increment by 1
 cache 20;
 /
@@ -281,7 +281,7 @@ cache 20;
 create sequence SEQ_RPCACQRAWDATA
 minvalue 0
 maxvalue 999999999999999999999999
-start with 941
+start with 1
 increment by 1
 cache 20;
 /
@@ -289,7 +289,7 @@ cache 20;
 create sequence SEQ_RPCALARMINFO_HIST
 minvalue 0
 maxvalue 999999999999999999999999
-start with 1241
+start with 1
 increment by 1
 cache 20;
 /
@@ -297,7 +297,7 @@ cache 20;
 create sequence SEQ_RPCALARMINFO_LATEST
 minvalue 0
 maxvalue 999999999999999999999999
-start with 81
+start with 1
 increment by 1
 cache 20;
 /
@@ -305,7 +305,7 @@ cache 20;
 create sequence SEQ_RPCDAILYCALCULATIONDATA
 minvalue 1
 maxvalue 9999999999999999999999999999
-start with 341
+start with 1
 increment by 1
 cache 20;
 /
@@ -313,7 +313,7 @@ cache 20;
 create sequence SEQ_RPCDEVICE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 81
+start with 1
 increment by 1
 cache 20;
 /

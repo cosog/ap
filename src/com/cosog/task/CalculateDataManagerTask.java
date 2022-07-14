@@ -41,13 +41,27 @@ public class CalculateDataManagerTask {
     private static ResultSet rs_outer = null; 
 	
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
-		//判断SDK是否启动
-		String probeUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];
-		if(StringManagerUtils.checkHttpConnection(probeUrl)){
+		//判断AC程序是否启动
+		if(ResourceMonitoringTask.getAcRunStatus()==1){
 			String sql="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
 			String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/getBatchCalculateTime";
+			String result="无未计算数据";
+			int count=getCount(sql);
+			if(count>0){
+				System.out.println("发现未计算数据");
+				result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+			}
+		}
+	}
+	
+	@Scheduled(cron = "0/1 * * * * ?")
+	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
+		//判断AC程序是否启动
+		if(ResourceMonitoringTask.getAcRunStatus()==1){
+			String sql="select count(1) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+			String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/getPCPBatchCalculateTime";
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){

@@ -29,6 +29,7 @@ import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.AlarmInstanceOwnItem.AlarmItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem.DisplayItem;
+import com.cosog.model.calculate.RPCCalculateRequestData.Balance;
 import com.cosog.model.calculate.PCPCalculateResponseData;
 import com.cosog.model.drive.AcquisitionItemInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;

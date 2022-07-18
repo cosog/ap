@@ -35,6 +35,7 @@ import com.cosog.model.calculate.MemoryProbeResponseData;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.model.drive.KafkaConfig;
 import com.cosog.task.EquipmentDriverServerTask.DriverProbeResponse;
+import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.DataModelMap;
@@ -89,7 +90,6 @@ public class ResourceMonitoringTask {
 		String adAllOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
 		String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
 		
-		String acStatusUrl=Config.getInstance().configFile.getAc().getProbe().getApp()[0];
 		
 		deviceAmount=getDeviceAmount();
 		
@@ -131,9 +131,7 @@ public class ResourceMonitoringTask {
 		java.lang.reflect.Type type=null;
 		
 		//ac状态检测
-		String acStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(acStatusUrl, "","utf-8");
-		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
-		AppRunStatusProbeResonanceData acStatusProbeResonanceData=gson.fromJson(acStatusProbeResponseDataStr, type);
+		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
 		if(acStatusProbeResonanceData!=null){
 			acRunStatus=1;
 			acVersion=acStatusProbeResonanceData.getVer();

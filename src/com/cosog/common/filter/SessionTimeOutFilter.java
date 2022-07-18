@@ -86,11 +86,12 @@ public class SessionTimeOutFilter extends HttpServlet implements Filter {
 				if(urlString.equals("toLogin")||urlString.equals("toMain")||urlString.equals("toBackMain")
 						||urlString.equals("getUserList")||urlString.equals("userLogin")
 						||urlString.equals("getBatchCalculateTime")
+						||urlString.equals("getPCPBatchCalculateTime")
 						||urlString.equals("totalCalculation")
 						||urlString.equals("dailyCalculation")
-						||urlString.indexOf("FSDiagramDailyCalculation")>=0
+						||urlString.indexOf("FESDiagramDailyCalculation")>=0
 						||urlString.indexOf("DiscreteDailyCalculation")>=0
-						||urlString.indexOf("PCPRPMDailyCalculation")>=0
+						||urlString.indexOf("RPMDailyCalculation")>=0
 						||urlString.indexOf("PCPDiscreteDailyCalculation")>=0
 						||urlString.equals("getBalanceTorqueCalulate")||urlString.equals("balanceTotalCalculation")
 						||urlString.equals("saveRTUAcquisitionData")

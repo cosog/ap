@@ -40,6 +40,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.thread.calculate.CalculateThread;
+import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
@@ -76,7 +77,6 @@ public class CalculateDataController extends BaseController{
 	
 	@RequestMapping("/getBatchCalculateTime")
 	public String getBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
-		String url[]=Config.getInstance().configFile.getAc().getFESDiagram();
 		String json="";
 		long startTime=0;
 		long endTime=0;
@@ -87,8 +87,8 @@ public class CalculateDataController extends BaseController{
 			calculateThreadList[i]=null;
 		}
 		
-		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
-		String sqlAll="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null and t.fesdiagramacqtime is not null";
+		String sqlAll="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null and t.fesdiagramacqtime is not null";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		int calCount=0;
 		startTime=new Date().getTime();
@@ -106,21 +106,9 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		boolean finish=false;
-		while(!finish){
-			for(int i=0;i<calculateThreadList.length;i++){
-				if(calculateThreadList[i]!=null&&calculateThreadList[i].isAlive()){
-					finish=false;
-					break;
-				}
-				finish=true;
-			}
-			
-		}
-		
 		endTime=new Date().getTime();
 		allTime=endTime-startTime;
-		json=calCount+"条记录计算完成，共用时:"+allTime+"毫秒";
+		json="计算完成，共用时:"+allTime+"毫秒";
 		System.out.println(json);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -139,7 +127,6 @@ public class CalculateDataController extends BaseController{
 	
 	@RequestMapping("/getPCPBatchCalculateTime")
 	public String getPCPBatchCalculateTime() throws SQLException, IOException, ParseException, InterruptedException,Exception{
-		String url[]=Config.getInstance().configFile.getAc().getFESDiagram();
 		String json="";
 		long startTime=0;
 		long endTime=0;
@@ -150,8 +137,8 @@ public class CalculateDataController extends BaseController{
 			calculateThreadList[i]=null;
 		}
 		
-		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
-		String sqlAll="select count(1) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null";
+		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null not null and t.rpm is not null";
+		String sqlAll="select count(1) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null not null and t.rpm is not null";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		int calCount=0;
 		startTime=new Date().getTime();
@@ -183,7 +170,7 @@ public class CalculateDataController extends BaseController{
 		
 		endTime=new Date().getTime();
 		allTime=endTime-startTime;
-		json=calCount+"条记录计算完成，共用时:"+allTime+"毫秒";
+		json="计算完成，共用时:"+allTime+"毫秒";
 		System.out.println(json);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -200,34 +187,33 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
+	@SuppressWarnings("static-access")
 	@RequestMapping("/FESDiagramDailyCalculation")
 	public String FESDiagramDailyCalculation() throws ParseException, SQLException, IOException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
 		String wellId=ParamUtils.getParameter(request, "wellId");
 		List<String> requestDataList=null;
 		String endAcqTime=java.net.URLDecoder.decode(ParamUtils.getParameter(request, "endAcqTime"),"utf-8");
-		if(StringManagerUtils.isNotNull(tatalDate)){
-			tatalDate=StringManagerUtils.addDay(StringManagerUtils.stringToDate(tatalDate));
+		
+		String date="";
+		if(!StringManagerUtils.isNotNull(tatalDate)){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);
 		}else{
-			tatalDate=StringManagerUtils.getCurrentTime();
+			date=tatalDate;
 		}
-		if(StringManagerUtils.isNotNull(endAcqTime) && StringManagerUtils.isNotNull(wellId)){
-//			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
-		}else{
-			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
-		}
-		String url=Config.getInstance().configFile.getAc().getTotalCalculation().getWell()[0];
+		
+		requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
+		
 		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
 				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
-				String responseData=StringManagerUtils.sendPostMethod(url, requestDataList.get(i),"utf-8");
 				
-				java.lang.reflect.Type type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
-				TotalAnalysisResponseData totalAnalysisResponseData = gson.fromJson(responseData, type);
+				TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(requestDataList.get(i).toString());
+				
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
-					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
 					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
 				}
@@ -238,6 +224,64 @@ public class CalculateDataController extends BaseController{
 		}
 		
 		System.out.println("抽油机曲线数据汇总完成");
+		
+		String json ="";
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.write(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("static-access")
+	@RequestMapping("/RPMDailyCalculation")
+	public String RPMDailyCalculation() throws ParseException, SQLException, IOException{
+		String tatalDate=ParamUtils.getParameter(request, "date");
+		String wellId=ParamUtils.getParameter(request, "wellId");
+		List<String> requestDataList=null;
+		String endAcqTime=java.net.URLDecoder.decode(ParamUtils.getParameter(request, "endAcqTime"),"utf-8");
+		
+		String date="";
+		if(!StringManagerUtils.isNotNull(tatalDate)){
+			date=StringManagerUtils.addDay(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime("yyyy-MM-dd")),-1);
+		}else{
+			date=tatalDate;
+		}
+		
+		if(StringManagerUtils.isNotNull(endAcqTime) && StringManagerUtils.isNotNull(wellId)){
+//			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
+		}else{
+			requestDataList=calculateDataService.getRPMDailyCalculationRequestData(tatalDate,wellId);
+		}
+		
+		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
+			try {
+				Gson gson = new Gson();
+				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
+				TotalAnalysisRequestData totalAnalysisRequestData = gson.fromJson(requestDataList.get(i), typeRequest);
+				TotalAnalysisResponseData totalAnalysisResponseData=CalculateUtils.totalCalculate(requestDataList.get(i));
+				
+				
+				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
+					calculateDataService.saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,date);
+				}else{
+					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		System.out.println("螺杆泵转速数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

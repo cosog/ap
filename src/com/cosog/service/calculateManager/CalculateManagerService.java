@@ -459,8 +459,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		
-		
 		sql="select t.id,t.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
 			+ "t.manufacturer,t.model,t.stroke,"
 			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
@@ -471,8 +469,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
 			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") "
 			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		
-		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
@@ -489,7 +485,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
-		
 		
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
@@ -518,9 +513,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"功图滤波次数\",\"dataIndex\":\"filterTime_FSDiagram\" ,children:[] },"
 				+ "{ \"header\":\"功图左侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_L\" ,children:[] },"
 				+ "{ \"header\":\"功图右侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_R\" ,children:[] }"
-				
 				+ "]";
-		
 		
 		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
@@ -573,20 +566,15 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
-		
-		
 		sql="select t.id,t.wellName,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),t.resultStatus,"
 			+ "t.manufacturer,t.model,t.stroke,"
 			+ "t.crankRotationDirection,t.offsetAngleOfCrank,t.crankGravityRadius,"
 			+ "t.singleCrankWeight,t.structuralUnbalance,t.balancePosition,t.balanceWeight,"
-			
 			+ "t.offsetAngleOfCrankPS,t.surfaceSystemEfficiency,t.FS_LeftPercent,t.FS_RightPercent,wattAngle,"
 			+ "t.filterTime_Watt,t.filterTime_I,filterTime_RPM,"
 			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
 			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") "
 			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
-		
-		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
@@ -603,8 +591,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
-		
-		
 		String columns = "[{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\" ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\" ,children:[] },"
@@ -632,10 +618,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"功图滤波次数\",\"dataIndex\":\"filterTime_FSDiagram\" ,children:[] },"
 				+ "{ \"header\":\"功图左侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_L\" ,children:[] },"
 				+ "{ \"header\":\"功图右侧滤波次数\",\"dataIndex\":\"filterTime_FSDiagram_R\" ,children:[] }"
-				
 				+ "]";
-		
-		
 		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -671,8 +654,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json = result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		
-//		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
 		String json=result_json.toString().replaceAll("null", "");
 		return json;
 	}
@@ -1544,7 +1525,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ " from tbl_pcpdailycalculationdata t,pcp_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
 						+ " and t.id="+recordId;
-				String fesDiagramSql="select to_char(t.cqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+				String rpmSql="select "
+						+ "to_char(t.cqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
 						+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 						+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 						+ "t.productiondata,"
@@ -1559,7 +1541,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				if(list.size()>0){
 					StringBuffer dataSbf= new StringBuffer();
 					Object[] totalObj=(Object[])list.get(0);
-					List<?> fesDiagramList = this.findCallSql(fesDiagramSql);
+					List<?> rpmResultList = this.findCallSql(rpmSql);
 					List<String> acqTimeList=new ArrayList<String>();
 					List<Integer> commStatusList=new ArrayList<Integer>();
 					List<Integer> runStatusList=new ArrayList<Integer>();
@@ -1584,8 +1566,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					List<Float> systemEfficiencyList=new ArrayList<Float>();
 					List<Float> energyPer100mLiftList=new ArrayList<Float>();
 					
-					for(int j=0;j<fesDiagramList.size();j++){
-						Object[] obj=(Object[])fesDiagramList.get(j);
+					for(int j=0;j<rpmResultList.size();j++){
+						Object[] obj=(Object[])rpmResultList.get(j);
 						
 						String productionData=obj[9].toString();
 						type = new TypeToken<PCPCalculateRequestData>() {}.getType();

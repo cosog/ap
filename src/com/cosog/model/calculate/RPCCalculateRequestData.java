@@ -1093,8 +1093,10 @@ public class RPCCalculateRequestData implements Serializable {
 	public static class ManualIntervention implements Serializable {
 		private static final long serialVersionUID = 1L;
 	    private int Code;
-
+	    
 	    private float NetGrossRatio;
+	    
+	    private float NetGrossValue;
 
 	    public void setCode(int Code){
 	        this.Code = Code;
@@ -1108,6 +1110,12 @@ public class RPCCalculateRequestData implements Serializable {
 	    public float getNetGrossRatio(){
 	        return this.NetGrossRatio;
 	    }
+		public float getNetGrossValue() {
+			return NetGrossValue;
+		}
+		public void setNetGrossValue(float netGrossValue) {
+			NetGrossValue = netGrossValue;
+		}
 	}
 
 }

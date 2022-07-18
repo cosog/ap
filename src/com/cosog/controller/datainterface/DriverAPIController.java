@@ -600,7 +600,6 @@ public class DriverAPIController extends BaseController{
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
 		String productionUnit=Config.getInstance().configFile.getAp().getOthers().getProductionUnit();
-		String url=Config.getInstance().configFile.getAc().getFESDiagram()[0];
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
             String[] clientInfo=item.userId.split("_");
@@ -1032,10 +1031,7 @@ public class DriverAPIController extends BaseController{
 						    rpcCalculateRequestData.getFESDiagram().setI(curveArr);
 						}
 					}
-					
-					String responseDataStr=StringManagerUtils.sendPostMethod(url, gson.toJson(rpcCalculateRequestData),"utf-8");
-					type = new TypeToken<RPCCalculateResponseData>() {}.getType();
-					rpcCalculateResponseData=gson.fromJson(responseDataStr, type);
+					rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 						if(jedis.hexists("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes())){
 							workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes()));
@@ -1622,7 +1618,6 @@ public class DriverAPIController extends BaseController{
 							webSocketSendData.append(",\"wellBoreChartsData\":"+wellBoreChartsData);
 							webSocketSendData.append(",\"surfaceChartsData\":"+surfaceChartsData);
 							webSocketSendData.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
-							System.out.println("推送数据:"+webSocketSendData.toString());
 							infoHandler().sendMessageToUser(websocketClientUser, webSocketSendData.toString());
 						}
 					}
@@ -1638,7 +1633,6 @@ public class DriverAPIController extends BaseController{
 	public String PCPDataProcessing(PCPDeviceInfo pcpDeviceInfo,AcqGroup acqGroup) throws Exception{
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String url=Config.getInstance().configFile.getAc().getPcpProduction()[0];
 		List<String> websocketClientUserList=new ArrayList<>();
 		for (WebSocketByJavax item : WebSocketByJavax.clients.values()) { 
             String[] clientInfo=item.userId.split("_");
@@ -1995,9 +1989,7 @@ public class DriverAPIController extends BaseController{
 				
 				//进行转速计算
 				if(isAcqRPM){
-					String responseDataStr=StringManagerUtils.sendPostMethod(url, gson.toJson(pcpCalculateRequestData),"utf-8");
-					type = new TypeToken<PCPCalculateResponseData>() {}.getType();
-					pcpCalculateResponseData=gson.fromJson(responseDataStr, type);
+					pcpCalculateResponseData=CalculateUtils.rpmCalculate(gson.toJson(pcpCalculateRequestData));
 					if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 						//删除非当天采集的转速数据
 						if(deviceTodayData!=null){

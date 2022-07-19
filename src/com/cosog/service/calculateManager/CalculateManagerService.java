@@ -224,6 +224,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(rpcProductionData.getManualIntervention()!=null){
 					result_json.append("\"netGrossRatio\":\""+rpcProductionData.getManualIntervention().getNetGrossRatio()+"\",");
+					result_json.append("\"netGrossValue\":\""+rpcProductionData.getManualIntervention().getNetGrossValue()+"\",");
 				}
 			}else{
 				
@@ -360,6 +361,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				
 				if(calculateRequestData.getManualIntervention()!=null){
 					result_json.append("\"netGrossRatio\":\""+calculateRequestData.getManualIntervention().getNetGrossRatio()+"\",");
+					result_json.append("\"netGrossValue\":\""+calculateRequestData.getManualIntervention().getNetGrossValue()+"\",");
 				}
 			}else{
 				
@@ -762,6 +764,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				}
 				
 				manualIntervention.setNetGrossRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
+				manualIntervention.setNetGrossValue(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
 				
 				productionDataBuff.append("{");
 				productionDataBuff.append("\"FluidPVT\":"+(fluidPVT!=null?gson.toJson(fluidPVT):"{}")+",");

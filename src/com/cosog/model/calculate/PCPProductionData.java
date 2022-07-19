@@ -565,6 +565,8 @@ public class PCPProductionData {
 	    private int Code;
 
 	    private float NetGrossRatio;
+	    
+	    private float NetGrossValue;
 
 		public int getDCode() {
 			return Code;
@@ -580,6 +582,14 @@ public class PCPProductionData {
 
 		public void setNetGrossRatio(float netGrossRatio) {
 			NetGrossRatio = netGrossRatio;
+		}
+
+		public float getNetGrossValue() {
+			return NetGrossValue;
+		}
+
+		public void setNetGrossValue(float netGrossValue) {
+			NetGrossValue = netGrossValue;
 		}
 
 	   

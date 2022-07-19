@@ -129,6 +129,8 @@ public class WellHandsontableChangedData {
 	    
 	    private String netGrossRatio="";
 	    
+	    private String netGrossValue="";
+	    
 	    private String manufacturer="";
 	    
 	    private String model="";
@@ -689,6 +691,14 @@ public class WellHandsontableChangedData {
 
 		public void setBalancePosition(String balancePosition) {
 			this.balancePosition = balancePosition;
+		}
+
+		public String getNetGrossValue() {
+			return netGrossValue;
+		}
+
+		public void setNetGrossValue(String netGrossValue) {
+			this.netGrossValue = netGrossValue;
 		}
 	    
 	}

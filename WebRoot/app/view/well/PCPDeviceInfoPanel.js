@@ -777,6 +777,9 @@ var PCPDeviceInfoHandsontableHelper = {
         		if(isNumber(parseFloat(productionHandsontableData[35][2]))){
         			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[35][2]);
         		}
+        		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[36][2]))))){
+        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[36][2]);
+        		}
         	}
         	Ext.Ajax.request({
                 method: 'POST',
@@ -1039,7 +1042,7 @@ var PCPProductionHandsontableHelper = {
 	                    if (visualColIndex !=2) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = pcpProductionHandsontableHelper.addBoldBg;
-		                }else if(visualRowIndex==36 && visualColIndex==2){
+		                }else if(visualRowIndex==37 && visualColIndex==2){
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    if (visualColIndex === 2 && (visualRowIndex===19 || visualRowIndex===23||visualRowIndex===27||visualRowIndex===31)) {

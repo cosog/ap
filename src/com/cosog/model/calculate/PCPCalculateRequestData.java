@@ -703,11 +703,14 @@ public class PCPCalculateRequestData  implements Serializable {
 	
 	public static class ManualIntervention implements Serializable {
 		private static final long serialVersionUID = 1L;
+		
 	    private int Code;
 
 	    private float NetGrossRatio;
+	    
+	    private float NetGrossValue;
 
-		public int getDCode() {
+		public int getCode() {
 			return Code;
 		}
 
@@ -721,6 +724,14 @@ public class PCPCalculateRequestData  implements Serializable {
 
 		public void setNetGrossRatio(float netGrossRatio) {
 			NetGrossRatio = netGrossRatio;
+		}
+
+		public float getNetGrossValue() {
+			return NetGrossValue;
+		}
+
+		public void setNetGrossValue(float netGrossValue) {
+			NetGrossValue = netGrossValue;
 		}
 	}
 	

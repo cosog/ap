@@ -1923,6 +1923,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
 					
 					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+					result_json.append("{\"id\":38,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
 				}else{
 					result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -1971,8 +1972,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
 					
 					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":38,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
 				}
-				result_json.append("{\"id\":38,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
+				result_json.append("{\"id\":39,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 			}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 				type = new TypeToken<PCPProductionData>() {}.getType();
 				PCPProductionData pcpProductionData=gson.fromJson(productionData, type);
@@ -2052,6 +2054,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
 					
 					result_json.append("{\"id\":36,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+					result_json.append("{\"id\":37,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(pcpProductionData.getManualIntervention()!=null?pcpProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
 				}else{
 					result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2098,8 +2101,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
 					
 					result_json.append("{\"id\":36,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":37,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
 				}
-				result_json.append("{\"id\":37,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
+				result_json.append("{\"id\":38,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 			}
 		}
 		result_json.append("]}");

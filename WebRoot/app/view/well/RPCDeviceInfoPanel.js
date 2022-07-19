@@ -885,6 +885,9 @@ var RPCDeviceInfoHandsontableHelper = {
         		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
         			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[36][2]);
         		}
+        		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
+        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[37][2]);
+        		}
         	}
             
             //获取抽油机型号配置数据
@@ -1286,7 +1289,7 @@ var RPCProductionHandsontableHelper = {
 	                    if (visualColIndex !=2) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcProductionHandsontableHelper.addBoldBg;
-		                }else if(visualRowIndex==37 && visualColIndex==2){
+		                }else if(visualRowIndex==38 && visualColIndex==2){
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    

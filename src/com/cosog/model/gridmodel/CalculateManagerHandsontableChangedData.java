@@ -120,6 +120,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String anchoringStateName="未锚定";
 
 	    private String netGrossRatio="1";
+	    
+	    private String netGrossValue="0";
 
 	    private String resultStatus;
 
@@ -489,6 +491,14 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setBarrelTypeName(String barrelTypeName) {
 			this.barrelTypeName = barrelTypeName;
+		}
+
+		public String getNetGrossValue() {
+			return netGrossValue;
+		}
+
+		public void setNetGrossValue(String netGrossValue) {
+			this.netGrossValue = netGrossValue;
 		}
 	}
 }

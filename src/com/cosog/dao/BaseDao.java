@@ -1191,6 +1191,7 @@ public class BaseDao extends HibernateDaoSupport {
 						}
 						
 						productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
+						productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
 						
 						String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
 						String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
@@ -1690,6 +1691,7 @@ public class BaseDao extends HibernateDaoSupport {
 						}
 						
 						productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
+						productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
 						
 						cs.setString(1, orgId);
 						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName());

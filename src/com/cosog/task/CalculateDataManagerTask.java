@@ -47,21 +47,21 @@ public class CalculateDataManagerTask {
 	}
 	
 	/**
-	 * 汇总计算
+	 * 抽油机井汇总计算
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(cron = "0 0 1/24 * * ?")
-	public void totalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
+	public void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/FESDiagramDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}
 	
 	/**
-	 * 转速汇总计算
+	 * 螺杆泵井汇总计算
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
 	@Scheduled(cron = "0 0 1/24 * * ?")
-	public void rpmTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
+	public void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/RPMDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
 	}

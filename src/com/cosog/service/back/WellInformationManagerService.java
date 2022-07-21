@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.AcquisitionGroup;
 import com.cosog.model.AcquisitionUnitGroup;
+import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.PumpingModelInformation;
 import com.cosog.model.MasterAndAuxiliaryDevice;
 import com.cosog.model.PCPDeviceAddInfo;
@@ -25,6 +26,7 @@ import com.cosog.model.RPCDeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
+import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
@@ -2369,5 +2371,57 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			}
 		}
 		return flag;
+	}
+	
+	public String getUpstreamAndDownstreamInteractionDeviceList(String orgId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		String deviceTableName="tbl_rpcdevice";
+		String tableName="tbl_rpcacqdata_latest";
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			tableName="tbl_pcpacqdata_latest";
+			deviceTableName="tbl_pcpdevice";
+		}
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
+				+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",width:80,children:[] },"
+				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
+				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\",flex:1,children:[] }"
+				+ "]";
+		
+		String sql="select t.id,t.wellname,t2.commstatus,"
+				+ "decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.signinid,t.slave "
+				+ " from "+deviceTableName+" t "
+				+ " left outer join "+tableName+" t2 on t2.wellid=t.id";
+		sql+= " where  t.orgid in ("+orgId+") ";
+		if(StringManagerUtils.isNotNull(deviceName)){
+			sql+=" and t.wellName='"+deviceName+"'";
+		}
+		sql+=" order by t.sortnum,t.wellname";
+		
+		int maxvalue=pager.getLimit()+pager.getStart();
+		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(finalSql);
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[1]+"\",");
+			result_json.append("\"commStatus\":"+obj[2]+",");
+			result_json.append("\"commStatusName\":\""+obj[3]+"\",");
+			result_json.append("\"acqTime\":\""+obj[4]+"\",");
+			result_json.append("\"signinId\":\""+obj[5]+"\",");
+			result_json.append("\"slave\":\""+obj[6]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 }

@@ -571,6 +571,39 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class RPC
+	{
+		private String ctrlModel;
+
+	    private String ctrlConf;
+
+	    private String ctrlReq;
+
+		public String getCtrlModel() {
+			return ctrlModel;
+		}
+
+		public void setCtrlModel(String ctrlModel) {
+			this.ctrlModel = ctrlModel;
+		}
+
+		public String getCtrlConf() {
+			return ctrlConf;
+		}
+
+		public void setCtrlConf(String ctrlConf) {
+			this.ctrlConf = ctrlConf;
+		}
+
+		public String getCtrlReq() {
+			return ctrlReq;
+		}
+
+		public void setCtrlReq(String ctrlReq) {
+			this.ctrlReq = ctrlReq;
+		}
+	}
+	
 	public static class Ad
 	{
 	    private String server;
@@ -590,6 +623,8 @@ public class ConfigFile {
 	    private String writeSMS;
 
 	    private AdProbe probe;
+	    
+	    private RPC rpc;
 
 	    public void setServer(String server){
 	        this.server = server;
@@ -645,5 +680,11 @@ public class ConfigFile {
 	    public AdProbe getProbe(){
 	        return this.probe;
 	    }
+		public RPC getRpc() {
+			return rpc;
+		}
+		public void setRpc(RPC rpc) {
+			this.rpc = rpc;
+		}
 	}
 }

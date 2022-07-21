@@ -168,6 +168,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "LogQuery"
 		&& module_Code != "AlarmQuery"
 		&& module_Code != "AlarmSet"
+		&& module_Code != "UpstreamAndDownstreamInteraction"
 		&& module_Code != "CalculateMaintaining") {
 		if (modules.length > 2) {
 			if(secondTab_Code!= modules[2]){
@@ -520,6 +521,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}else if(module_Code == "AlarmSet"){
 		getAlarmLevelColor();
+	}else if(module_Code == "UpstreamAndDownstreamInteraction"){
+		var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
+		if (isNotVal(gridPanel)) {
+			gridPanel.getStore().load();
+		}else{
+			Ext.create('AP.store.well.UpstreamAndDownstreamInteractionWellListStore');
+		}
 	}else if(module_Code == "CalculateMaintaining"){
 		var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
 		var activeId = tabPanel.getActiveTab().id;

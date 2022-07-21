@@ -85,3 +85,7 @@ ad:
       mem: http://39.99.42.182:19200/api/probe/mem
       disk: http://39.99.42.182:19200/api/probe/disk
       host: http://39.99.42.182:19200/api/probe/host
+   rpc:
+      ctrlModel: http://39.99.42.182:19200/api/ctrl/model
+      ctrlConf: http://39.99.42.182:19200/api/ctrl/conf
+      ctrlReq: http://39.99.42.182:19200/api/ctrl/req

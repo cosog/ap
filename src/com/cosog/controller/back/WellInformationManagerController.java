@@ -46,8 +46,11 @@ import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
+import com.cosog.utils.MarkDown2HtmlWrapper;
+import com.cosog.utils.MarkdownEntity;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
@@ -1435,6 +1438,132 @@ public class WellInformationManagerController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getUpstreamAndDownstreamInteractionDeviceList")
+	public String getUpstreamAndDownstreamInteractionDeviceList() throws Exception {
+		String json = "";
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceName = ParamUtils.getParameter(request, "deviceName");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		json = wellInformationManagerService.getUpstreamAndDownstreamInteractionDeviceList(orgId,deviceName,deviceType,pager);
+		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/downstreamRPCData")
+	public String downstreamRPCData() throws Exception {
+		StringBuffer downstreamBuff = new StringBuffer();
+		String type = ParamUtils.getParameter(request, "type");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String signinId = ParamUtils.getParameter(request, "signinId");
+		String slave = ParamUtils.getParameter(request, "slave");
+		String data = ParamUtils.getParameter(request, "data");
+		String url="";
+		if(StringManagerUtils.stringToInteger(type)==1){
+			url=Config.getInstance().configFile.getAd().getRpc().getCtrlModel();
+		}else if(StringManagerUtils.stringToInteger(type)==2){
+			url=Config.getInstance().configFile.getAd().getRpc().getCtrlConf();
+		}
+		if(!StringManagerUtils.isNotNull(data)){
+			data="{}";
+		}
+		downstreamBuff.append("{\"ID\":\""+signinId+"\",");
+		downstreamBuff.append("\"Model\":"+data+"}");
+		String result="";
+		String json="";
+		if(StringManagerUtils.isNotNull(url)){
+			result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8");
+		}
+		if(StringManagerUtils.isNotNull(result)){
+			json = "{success:true,msg:'1'}";
+		}else{
+			json = "{success:true,msg:'0'}";
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/requestConfigData")
+	public String requestConfigData() throws Exception {
+		StringBuffer requestBuff = new StringBuffer();
+		String type = ParamUtils.getParameter(request, "type");
+		String wellId = ParamUtils.getParameter(request, "wellId");
+		String signinId = ParamUtils.getParameter(request, "signinId");
+		String slave = ParamUtils.getParameter(request, "slave");
+		String url=Config.getInstance().configFile.getAd().getRpc().getCtrlReq();
+		String topic="";
+		if(StringManagerUtils.stringToInteger(type)==1){
+			topic="model";
+		}else if(StringManagerUtils.stringToInteger(type)==2){
+			topic="conf";
+		}
+		requestBuff.append("{\"ID\":\""+signinId+"\",");
+		requestBuff.append("\"Topic\":\""+topic+"\"}");
+		String result=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+		if(StringManagerUtils.isNotNull(result)){
+			result=StringManagerUtils.toPrettyFormat(result);
+		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(result);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@RequestMapping("/getHelpDocHtml")
+	public String getHelpDocHtml() throws Exception {
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String path=stringManagerUtils.getFilePath("KafkaConfigHelp.md","doc/");
+		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
+		String fileContent=html.toString();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(fileContent);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

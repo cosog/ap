@@ -28,10 +28,10 @@ public final class LicenseMap {
 		moduleList0.add(28);//用户管理
 		moduleList0.add(29);//角色管理
 		moduleList0.add(31);//设备管理
-		moduleList0.add(34);//抽油机管理
-		moduleList0.add(2098);//螺杆泵管理
+		moduleList0.add(34);//井名信息
+		moduleList0.add(2118);//抽油机设备
 		moduleList0.add(2078);//短信设备管理
-		moduleList0.add(2118);//辅件设备管理
+		moduleList0.add(2198);//上下行交互
 		moduleList0.add(2178);//数据维护
 		moduleList0.add(2179);//计算维护
 		moduleList0.add(23);//系统配置

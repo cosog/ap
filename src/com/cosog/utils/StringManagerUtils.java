@@ -2058,7 +2058,10 @@ public class StringManagerUtils {
      * @return 格式化后的JSON字符串
      */
     public static String toPrettyFormat(String json) {
-        if (json.indexOf("'") != -1) {
+        if(!StringManagerUtils.isNotNull(json)){
+        	return json;
+        }
+    	if (json.indexOf("'") != -1) {
             //将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
             json = json.replaceAll("'", "\\'");
         }

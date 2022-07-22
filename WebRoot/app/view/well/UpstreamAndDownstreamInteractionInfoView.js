@@ -91,13 +91,20 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                      ],
                      listeners: {
                     	 change: function (radiogroup, newValue, oldValue, eOpts) {
+                    		 if(newValue.operation==1){
+                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").show();
+                    		 }else{
+                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").hide();
+                    		 }
+                    		 
                     		 var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
                     		 if(_record.length>0){
-                    			 var commStatus = _record[0].data.commStatus;
-                    			 if(parseInt(commStatus)==0){
+                    			 var upCommStatus = _record[0].data.upCommStatus;
+                    			 var downCommStatus = _record[0].data.downCommStatus;
+                    			 if(parseInt(upCommStatus)==0 || parseInt(downCommStatus)==0){
                     				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                     				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-                    			 }else if(parseInt(commStatus)==1){
+                    			 }else if(parseInt(upCommStatus)==1 && parseInt(downCommStatus)==1){
                     				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
                     				 requestConfigData();
                     			 }
@@ -106,9 +113,20 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                      }
                  },'->',{
                      xtype: 'button',
+                     text: '模型同步',
+                     iconCls: 'sync',
+                     id:'UpstreamAndDownstreamInteractionSyncBtn_Id',
+                     pressed: false,
+                     hidden: false,
+                     handler: function (v, o) {
+                     	syncModelData();
+                     }
+                 },{
+                     xtype: 'button',
                      text: '发送',
+                     iconCls: 'send',
                      id:'UpstreamAndDownstreamInteractionSendBtn_Id',
-                     pressed: true,
+                     pressed: false,
                      hidden:false,
                      handler: function (v, o) {
                      	producerMsg();
@@ -122,7 +140,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     layout: 'fit'
                 }, {
                 	region: 'east',
-                    width: '68%',
+                    width: '65%',
                     layout: 'border',
                     items: [{
                     	region: 'center',
@@ -216,6 +234,12 @@ function createUpstreamAndDownstreamInteractionDeviceListColumn(columnInfo) {
         else if (attr.dataIndex.toUpperCase()=='commStatusName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceCommStatusColor(value,o,p,e);}";
         }
+        else if (attr.dataIndex.toUpperCase()=='upCommStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceUpCommStatusColor(value,o,p,e);}";
+        }
+        else if (attr.dataIndex.toUpperCase()=='downCommStatusName'.toUpperCase()) {
+            myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceDownCommStatusColor(value,o,p,e);}";
+        }
         else if (attr.dataIndex.toUpperCase()=='runStatusName'.toUpperCase()) {
             myColumns += ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value,o,p,e){return adviceRunStatusColor(value,o,p,e);}";
         }
@@ -231,6 +255,33 @@ function createUpstreamAndDownstreamInteractionDeviceListColumn(columnInfo) {
     myColumns += "]";
     return myColumns;
 };
+
+function syncModelData(){
+    var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+	if(_record.length>0){
+		
+		var wellName = _record[0].data.wellName;
+		var wellId = _record[0].data.id;
+		var signinId = _record[0].data.signinId;
+		var slave = _record[0].data.slave;
+
+    	Ext.Ajax.request({
+    		method:'POST',
+    		url:context + '/wellInformationManagerController/getDeviceModelData',
+    		success:function(response) {
+    			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue(response.responseText);
+    		},
+    		failure:function(){
+    			Ext.MessageBox.alert("信息","请求失败");
+    		},
+    		params: {
+    			wellId:wellId,
+    			signinId:signinId,
+    			slave:slave
+            }
+    	}); 
+	}
+}
 
 function producerMsg(){
     var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
@@ -259,7 +310,6 @@ function producerMsg(){
                         	Ext.MessageBox.alert("信息","发送成功");
                         } else {
                         	Ext.MessageBox.alert("信息","发送失败");
-
                         }
             		},
             		failure:function(){

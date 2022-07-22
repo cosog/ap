@@ -7,6 +7,8 @@ public class ConfigFile {
     private Ac ac;
 
     private Ad ad;
+    
+    private Ad_rpc ad_rpc;
 
     public void setAp(Ap ap){
         this.ap = ap;
@@ -571,39 +573,6 @@ public class ConfigFile {
 	    }
 	}
 	
-	public static class RPC
-	{
-		private String ctrlModel;
-
-	    private String ctrlConf;
-
-	    private String ctrlReq;
-
-		public String getCtrlModel() {
-			return ctrlModel;
-		}
-
-		public void setCtrlModel(String ctrlModel) {
-			this.ctrlModel = ctrlModel;
-		}
-
-		public String getCtrlConf() {
-			return ctrlConf;
-		}
-
-		public void setCtrlConf(String ctrlConf) {
-			this.ctrlConf = ctrlConf;
-		}
-
-		public String getCtrlReq() {
-			return ctrlReq;
-		}
-
-		public void setCtrlReq(String ctrlReq) {
-			this.ctrlReq = ctrlReq;
-		}
-	}
-	
 	public static class Ad
 	{
 	    private String server;
@@ -623,8 +592,6 @@ public class ConfigFile {
 	    private String writeSMS;
 
 	    private AdProbe probe;
-	    
-	    private RPC rpc;
 
 	    public void setServer(String server){
 	        this.server = server;
@@ -680,11 +647,65 @@ public class ConfigFile {
 	    public AdProbe getProbe(){
 	        return this.probe;
 	    }
-		public RPC getRpc() {
-			return rpc;
+	}
+	
+	public static class Ad_rpc
+	{
+	    private String server;
+
+	    private String readTopicReq;
+
+	    private String writeTopicModel;
+
+	    private String writeTopicConf;
+
+	    private AdProbe probe;
+
+		public String getServer() {
+			return server;
 		}
-		public void setRpc(RPC rpc) {
-			this.rpc = rpc;
+
+		public void setServer(String server) {
+			this.server = server;
 		}
+
+		public String getReadTopicReq() {
+			return readTopicReq;
+		}
+
+		public void setReadTopicReq(String readTopicReq) {
+			this.readTopicReq = readTopicReq;
+		}
+
+		public String getWriteTopicModel() {
+			return writeTopicModel;
+		}
+
+		public void setWriteTopicModel(String writeTopicModel) {
+			this.writeTopicModel = writeTopicModel;
+		}
+
+		public String getWriteTopicConf() {
+			return writeTopicConf;
+		}
+
+		public void setWriteTopicConf(String writeTopicConf) {
+			this.writeTopicConf = writeTopicConf;
+		}
+
+		public AdProbe getProbe() {
+			return probe;
+		}
+
+		public void setProbe(AdProbe probe) {
+			this.probe = probe;
+		}
+	}
+
+	public Ad_rpc getAd_rpc() {
+		return ad_rpc;
+	}
+	public void setAd_rpc(Ad_rpc ad_rpc) {
+		this.ad_rpc = ad_rpc;
 	}
 }

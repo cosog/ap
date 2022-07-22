@@ -1457,9 +1457,24 @@ public class WellInformationManagerController extends BaseController {
 			}
 		}
 		json = wellInformationManagerService.getUpstreamAndDownstreamInteractionDeviceList(orgId,deviceName,deviceType,pager);
-		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceModelData")
+	public String getDeviceModelData() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String wellId= ParamUtils.getParameter(request, "wellId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getDeviceModelData(wellId);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -1477,16 +1492,21 @@ public class WellInformationManagerController extends BaseController {
 		String slave = ParamUtils.getParameter(request, "slave");
 		String data = ParamUtils.getParameter(request, "data");
 		String url="";
+		String key="Model";
 		if(StringManagerUtils.stringToInteger(type)==1){
-			url=Config.getInstance().configFile.getAd().getRpc().getCtrlModel();
+			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicModel();
+			key="Model";
 		}else if(StringManagerUtils.stringToInteger(type)==2){
-			url=Config.getInstance().configFile.getAd().getRpc().getCtrlConf();
+			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicConf();
+			key="Conf";
 		}
 		if(!StringManagerUtils.isNotNull(data)){
 			data="{}";
+		}else{
+			data=data.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
 		}
 		downstreamBuff.append("{\"ID\":\""+signinId+"\",");
-		downstreamBuff.append("\"Model\":"+data+"}");
+		downstreamBuff.append("\""+key+"\":"+data+"}");
 		String result="";
 		String json="";
 		if(StringManagerUtils.isNotNull(url)){
@@ -1519,7 +1539,7 @@ public class WellInformationManagerController extends BaseController {
 		String wellId = ParamUtils.getParameter(request, "wellId");
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
-		String url=Config.getInstance().configFile.getAd().getRpc().getCtrlReq();
+		String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
 		String topic="";
 		if(StringManagerUtils.stringToInteger(type)==1){
 			topic="model";

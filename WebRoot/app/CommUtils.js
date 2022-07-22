@@ -1490,6 +1490,54 @@ color16ToRgba = function(sColor,Opacity){
 	 	}
 	}
  
+ adviceUpCommStatusColor = function(val,o,p,e) {
+	 	var commStatus=p.data.upCommStatus;
+	 	var tipval=val;
+	 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+	 	var alarmLevel=p.data.commAlarmLevel==undefined?0:p.data.commAlarmLevel;
+	 	var backgroundColor='#FFFFFF';
+	 	var color='#000000';
+	 	var opacity=1;
+	 	if (commStatus == 0) {
+	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
+	 		color='#'+alarmShowStyle.Comm.offline.Color;
+	 		opacity=alarmShowStyle.Comm.offline.Opacity
+		}else if (commStatus == 1) {
+			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
+	 		color='#'+alarmShowStyle.Comm.online.Color;
+	 		opacity=alarmShowStyle.Comm.online.Opacity
+		}
+	 	var rgba=color16ToRgba(backgroundColor,opacity);
+	 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	if(isNotVal(tipval)){
+	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	}
+	}
+ 
+ adviceDownCommStatusColor = function(val,o,p,e) {
+	 	var commStatus=p.data.downCommStatus;
+	 	var tipval=val;
+	 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+	 	var alarmLevel=p.data.commAlarmLevel==undefined?0:p.data.commAlarmLevel;
+	 	var backgroundColor='#FFFFFF';
+	 	var color='#000000';
+	 	var opacity=1;
+	 	if (commStatus == 0) {
+	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
+	 		color='#'+alarmShowStyle.Comm.offline.Color;
+	 		opacity=alarmShowStyle.Comm.offline.Opacity
+		}else if (commStatus == 1) {
+			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
+	 		color='#'+alarmShowStyle.Comm.online.Color;
+	 		opacity=alarmShowStyle.Comm.online.Opacity
+		}
+	 	var rgba=color16ToRgba(backgroundColor,opacity);
+	 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	if(isNotVal(tipval)){
+	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
+	 	}
+	}
+ 
  adviceRunStatusColor = function(val,o,p,e) {
 	 	var commStatus=p.data.commStatus;
 	 	var runStatus=p.data.runStatus;

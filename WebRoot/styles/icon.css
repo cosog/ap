@@ -366,3 +366,9 @@
 .down {
 	background-image: url(../images/icon/down.png) !important;
 }
+.send {
+	background-image: url(../images/icon/send.png) !important;
+}
+.sync {
+	background-image: url(../images/icon/sync.png) !important;
+}

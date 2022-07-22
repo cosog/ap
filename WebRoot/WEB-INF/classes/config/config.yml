@@ -70,22 +70,30 @@ ac:
       fa2fs: 
        - http://8.142.92.84:18100/api/plugin/fa2fs
 ad:
-   server: http://39.99.42.182:19200/api/init/server
-   protocol: http://39.99.42.182:19200/api/init/protocol
-   instance: http://39.99.42.182:19200/api/init/instance
-   id: http://39.99.42.182:19200/api/init/id
-   SMS: http://39.99.42.182:19200/api/init/sms
-   readAddr: http://39.99.42.182:19200/api/read/addr
-   writeAddr: http://39.99.42.182:19200/api/write/addr
-   writeSMS: http://39.99.42.182:19200/api/write/sms
+   server: http://8.142.92.84:19200/api/init/server
+   protocol: http://8.142.92.84:19200/api/init/protocol
+   instance: http://8.142.92.84:19200/api/init/instance
+   id: http://8.142.92.84:19200/api/init/id
+   SMS: http://8.142.92.84:19200/api/init/sms
+   readAddr: http://8.142.92.84:19200/api/read/addr
+   writeAddr: http://8.142.92.84:19200/api/write/addr
+   writeSMS: http://8.142.92.84:19200/api/write/sms
    probe:
-      init: http://39.99.42.182:19200/api/probe/init
-      app: http://39.99.42.182:19200/api/probe/app
-      cpu: http://39.99.42.182:19200/api/probe/cpu
-      mem: http://39.99.42.182:19200/api/probe/mem
-      disk: http://39.99.42.182:19200/api/probe/disk
-      host: http://39.99.42.182:19200/api/probe/host
-   rpc:
-      ctrlModel: http://39.99.42.182:19200/api/ctrl/model
-      ctrlConf: http://39.99.42.182:19200/api/ctrl/conf
-      ctrlReq: http://39.99.42.182:19200/api/ctrl/req
+      init: http://8.142.92.84:19200/api/probe/init
+      app: http://8.142.92.84:19200/api/probe/app
+      cpu: http://8.142.92.84:19200/api/probe/cpu
+      mem: http://8.142.92.84:19200/api/probe/mem
+      disk: http://8.142.92.84:19200/api/probe/disk
+      host: http://8.142.92.84:19200/api/probe/host
+ad_rpc:
+   server: http://8.142.92.84:19300/api/init/server
+   readTopicReq: http://8.142.92.84:19300/api/ctrl/req
+   writeTopicModel: http://8.142.92.84:19300/api/ctrl/model
+   writeTopicConf: http://8.142.92.84:19300/api/ctrl/conf
+   probe:
+      init: http://8.142.92.84:19300/api/probe/init
+      app: http://8.142.92.84:19300/api/probe/app
+      cpu: http://8.142.92.84:19300/api/probe/cpu
+      mem: http://8.142.92.84:19300/api/probe/mem
+      disk: http://8.142.92.84:19300/api/probe/disk
+      host: http://8.142.92.84:19300/api/probe/host

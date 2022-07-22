@@ -2384,13 +2384,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
-				+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",width:80,children:[] },"
+				+ "{ \"header\":\"上行通信状态\",\"dataIndex\":\"upCommStatusName\",width:90,children:[] },"
+				+ "{ \"header\":\"下行通信状态\",\"dataIndex\":\"downCommStatusName\",width:90,children:[] },"
 				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
 				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\",flex:1,children:[] }"
 				+ "]";
 		
-		String sql="select t.id,t.wellname,t2.commstatus,"
-				+ "decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+		String sql="select t.id,t.wellname,"
+				+ "t2.upcommstatus,decode(t2.upcommstatus,1,'在线','离线') as upCommStatusName,"
+				+ "t2.downcommstatus,decode(t2.downcommstatus,1,'在线','离线') as downCommStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.signinid,t.slave "
 				+ " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.wellid=t.id";
@@ -2412,16 +2414,38 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
-			result_json.append("\"commStatus\":"+obj[2]+",");
-			result_json.append("\"commStatusName\":\""+obj[3]+"\",");
-			result_json.append("\"acqTime\":\""+obj[4]+"\",");
-			result_json.append("\"signinId\":\""+obj[5]+"\",");
-			result_json.append("\"slave\":\""+obj[6]+"\"},");
+			result_json.append("\"upCommStatus\":"+obj[2]+",");
+			result_json.append("\"upCommStatusName\":\""+obj[3]+"\",");
+			result_json.append("\"downCommStatus\":"+obj[4]+",");
+			result_json.append("\"downCommStatusName\":\""+obj[5]+"\",");
+			result_json.append("\"acqTime\":\""+obj[6]+"\",");
+			result_json.append("\"signinId\":\""+obj[7]+"\",");
+			result_json.append("\"slave\":\""+obj[8]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getDeviceModelData(String deviceId) {
+		String productionData="";
+		String deviceTableName="tbl_rpcdevice";
+		String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') "
+				+ " from "+deviceTableName+" t "
+				+ " where t.id="+deviceId;
+		
+		List<?> list = this.findCallSql(sql);
+		
+		if(list.size()>0){
+			Object[] obj = (Object[]) list.get(0);
+			if(obj[0]!=null){
+				productionData=obj[0]+"";
+			}
+		}
+		productionData=productionData.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+		productionData=StringManagerUtils.toPrettyFormat(productionData);
+		return productionData;
 	}
 }

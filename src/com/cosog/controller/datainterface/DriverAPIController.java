@@ -2752,4 +2752,66 @@ public class DriverAPIController extends BaseController{
 		}
 		return calItemList;
 	}
+	
+	@RequestMapping("/acq/uponline")
+	public String AcqUpOnlineData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		Gson gson=new Gson();
+		StringBuffer webSocketSendData = new StringBuffer();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		StringManagerUtils.printLog("接收到ad推送uponline数据："+data);
+		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
+		AcqOnline acqOnline=gson.fromJson(data, type);
+		if(acqOnline!=null){
+			String sql="update tbl_rpcacqdata_latest t set t.upcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid=( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
+			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/acq/downonline")
+	public String AcqDownOnlineData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		Gson gson=new Gson();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+		StringManagerUtils.printLog("接收到ad推送uponline数据："+data);
+		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
+		AcqOnline acqOnline=gson.fromJson(data, type);
+		if(acqOnline!=null){
+			String sql="update tbl_rpcacqdata_latest t set t.downcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid=( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
+			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
+		}
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/acq/allDeviceRPCStatusOffline")
+	public String AllDeviceRPCStatusOffline() throws Exception {
+		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		StringManagerUtils.printLog("ad_rpc退出："+time);
+		
+		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus,t.downcommstatus=0";
+		int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
+		String json = "{success:true,flag:true}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
 }

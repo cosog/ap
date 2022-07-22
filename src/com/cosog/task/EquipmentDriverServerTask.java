@@ -57,12 +57,14 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String allOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
+		String allRPCOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceRPCStatusOffline";
 		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getInit();
+		String probeUrl_rpc=Config.getInstance().configFile.getAd_rpc().getProbe().getInit();
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
@@ -104,12 +106,21 @@ public class EquipmentDriverServerTask {
 		initSMSDevice(null,"");
 		initRPCDriverAcquisitionInfoConfig(null,"");
 		initPCPDriverAcquisitionInfoConfig(null,"");
+		
+		initRPCServerConfig();
+		
 		boolean sendMsg=false;
+		boolean sendMsg_rpc=false;
 		exampleDataManage();
 		do{
 			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
 			type = new TypeToken<DriverProbeResponse>() {}.getType();
 			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+			
+			responseData=StringManagerUtils.sendPostMethod(probeUrl_rpc, "","utf-8");
+			type = new TypeToken<DriverProbeResponse>() {}.getType();
+			DriverProbeResponse driverProbeResponse_rpc=gson.fromJson(responseData, type);
+			
 			String Ver="";
 			if(driverProbeResponse!=null){
 				sendMsg=false;
@@ -146,6 +157,19 @@ public class EquipmentDriverServerTask {
 					sendMsg=true;
 				}
 			}
+			
+			if(driverProbeResponse_rpc!=null){
+				sendMsg_rpc=false;
+				if(!driverProbeResponse.getHttpServerInitStatus()){
+					initRPCServerConfig();
+				}
+			}else{
+				if(!sendMsg_rpc){
+					StringManagerUtils.sendPostMethod(allRPCOfflineUrl, "","utf-8");
+					sendMsg_rpc=true;
+				}
+			}
+			
 			Thread.sleep(1000*1);
 		}while(true);
 	}
@@ -1885,6 +1909,28 @@ public class EquipmentDriverServerTask {
 		json_buff.append("\"ProjectName\":\""+projectName+"\"");
 		json_buff.append("}");
 		StringManagerUtils.printLog("服务始化："+json_buff.toString());
+		StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8");
+	}
+	
+	public static void initRPCServerConfig() throws MalformedURLException{
+		String accessPath=Config.getInstance().configFile.getAp().getServer().getUrl();
+		String initUrl=Config.getInstance().configFile.getAd_rpc().getServer();
+		StringBuffer json_buff = new StringBuffer();
+		URL url = new URL(accessPath);
+		String host=url.getHost();
+		int port=url.getPort();
+		String projectName="";
+		String path = url.getPath();
+		String[] pathArr=path.split("/");
+		if(pathArr.length>=2){
+			projectName=pathArr[1];
+		}
+		json_buff.append("{");
+		json_buff.append("\"IP\":\""+host+"\",");
+		json_buff.append("\"Port\":\""+port+"\",");
+		json_buff.append("\"ProjectName\":\""+projectName+"\"");
+		json_buff.append("}");
+		StringManagerUtils.printLog("ad_rpc服务始化："+json_buff.toString());
 		StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8");
 	}
 	

@@ -30,6 +30,7 @@ import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.PumpingPRTFData;
+import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.data.DataDictionary;
@@ -2430,22 +2431,51 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getDeviceModelData(String deviceId) {
-		String productionData="";
-		String deviceTableName="tbl_rpcdevice";
-		String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') "
-				+ " from "+deviceTableName+" t "
-				+ " where t.id="+deviceId;
+		RPCCalculateRequestData calculateRequestData=null;
+		String result_json="";
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String sql="select t.productiondata,t.balanceinfo,t.stroke,"
+				+ "t.pumpingmodelid,"
+				+ "t.manufacturer,t.model,t.crankrotationdirection,t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance"
+				+ " from viw_rpcdevice t"
+				+ " where t.id= "+deviceId;
 		
 		List<?> list = this.findCallSql(sql);
 		
 		if(list.size()>0){
-			Object[] obj = (Object[]) list.get(0);
-			if(obj[0]!=null){
-				productionData=obj[0]+"";
+			Object[] object = (Object[]) list.get(0);
+			String productionData=object[0].toString(); 
+			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+			calculateRequestData=gson.fromJson(productionData, type);
+			if(calculateRequestData!=null){
+				int pumpingModelId=StringManagerUtils.stringToInteger(object[3]+"");
+	        	if(pumpingModelId>0){
+	        		calculateRequestData.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
+	        		String balanceInfo=object[1]+"";
+					type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
+					RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
+					if(balance!=null){
+						calculateRequestData.getPumpingUnit().setBalance(balance);
+					}
+	        		float stroke=StringManagerUtils.stringToFloat(object[2]+"");
+					calculateRequestData.getPumpingUnit().setStroke(stroke);
+	        		calculateRequestData.getPumpingUnit().setManufacturer(object[4]+"");
+	        		calculateRequestData.getPumpingUnit().setModel(object[5]+"");
+	        		calculateRequestData.getPumpingUnit().setCrankRotationDirection(object[6]+"");
+	        		calculateRequestData.getPumpingUnit().setOffsetAngleOfCrank(StringManagerUtils.stringToFloat(object[7]+""));
+					calculateRequestData.getPumpingUnit().setCrankGravityRadius(StringManagerUtils.stringToFloat(object[8]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[9]+""));
+					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[10]+""));
+					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[11]+""));
+	        	}else{
+	        		calculateRequestData.setPumpingUnit(null);
+	        	}
+	        	result_json=gson.toJson(calculateRequestData);
+	        	result_json = StringManagerUtils.toPrettyFormat(result_json);
 			}
 		}
-		productionData=productionData.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
-		productionData=StringManagerUtils.toPrettyFormat(productionData);
-		return productionData;
+
+		return result_json;
 	}
 }

@@ -77,7 +77,7 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-        	var deviceName=Ext.getCmp('PpstreamAndDownstreamInteractionRPCDeviceListComb_Id').getValue();
+        	var deviceName=Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').getValue();
             var new_params = {
                     orgId: orgId,
                     deviceType:0,

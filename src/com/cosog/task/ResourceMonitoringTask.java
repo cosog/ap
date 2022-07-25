@@ -206,6 +206,14 @@ public class ResourceMonitoringTask {
 			adVersion="";
 			adLicense=0;
 			adLicenseSign=false;
+			
+			cpuUsedPercent="";
+			cpuUsedPercentValue="";
+			cpuUsedPercentAlarmLevel=0;
+			
+			memUsedPercent="";
+			memUsedPercentValue="";
+			memUsedPercentAlarmLevel=0;
 		}
 		
 		conn=OracleJdbcUtis.getConnection();

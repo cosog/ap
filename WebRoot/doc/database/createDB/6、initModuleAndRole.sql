@@ -47,6 +47,9 @@ insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_COD
 values (2078, 31, '短信设备', '短信设备管理', 'AP.view.well.SMSDeviceInfoView', 'SMSDeviceManagement', 2040400, null, null, 'smsDevice', 0, 'AP.controller.well.WellInfoController');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
+values (2198, 31, '上下行交互', '上下行交互', 'AP.view.well.UpstreamAndDownstreamInteractionInfoView', 'UpstreamAndDownstreamInteraction', 2040500, null, null, 'down', 0, 'AP.controller.well.WellInfoController');
+
+insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
 values (23, 9999, '系统配置', '系统配置', '#', 'SystemManagement', 2090000, null, null, 'system', 0, 'AP.controller.frame.MainIframeControl');
 
 insert into tbl_module (MD_ID, MD_PARENTID, MD_NAME, MD_SHOWNAME, MD_URL, MD_CODE, MD_SEQ, MD_LEVEL, MD_FLAG, MD_ICON, MD_TYPE, MD_CONTROL)
@@ -123,6 +126,9 @@ values (17, 2158, 1, '0,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
 values (18, 2179, 1, '0,0,0');
+
+insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
+values (42, 2198, 1, '0,0,0');
 
 insert into TBL_MODULE2ROLE (RM_ID, RM_MODULEID, RM_ROLEID, RM_MATRIX)
 values (19, 9999, 2, '0,0,0');

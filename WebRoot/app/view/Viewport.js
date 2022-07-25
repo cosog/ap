@@ -158,35 +158,37 @@ function websocketOnMessage(evt) {
 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
 	var orgIdArr=leftOrg_Id.split(",");
 	if(data.functionCode.toUpperCase()=="adExitAndDeviceOffline".toUpperCase()){//ad退出，所有设备离线
-		var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
-		var activeId = tabPanel.getActiveTab().id;
-		if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
-			var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
-			if(statTabActiveId=="RPCRealTimeMonitoringStatGraphPanel_Id"){
-				loadAndInitCommStatusStat(true);
-			}else if(statTabActiveId=="RPCRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-				loadAndInitDeviceTypeStat(true);
-			}
-			Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setValue('');
-			Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setRawValue('');
-			var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getSelectionModel().deselectAll(true);
-				gridPanel.getStore().load();
-			}
-		}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
-			var statTabActiveId = Ext.getCmp("PCPRealTimeMonitoringStatTabPanel").getActiveTab().id;
-			if(statTabActiveId=="PCPRealTimeMonitoringStatGraphPanel_Id"){
-				loadAndInitCommStatusStat(true);
-			}else if(statTabActiveId=="PCPRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
-				loadAndInitDeviceTypeStat(true);
-			}
-			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setValue('');
-			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setRawValue('');
-			var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getSelectionModel().deselectAll(true);
-				gridPanel.getStore().load();
+		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
+			var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
+			var activeId = tabPanel.getActiveTab().id;
+			if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
+				var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
+				if(statTabActiveId=="RPCRealTimeMonitoringStatGraphPanel_Id"){
+					loadAndInitCommStatusStat(true);
+				}else if(statTabActiveId=="RPCRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+					loadAndInitDeviceTypeStat(true);
+				}
+				Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setValue('');
+				Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setRawValue('');
+				var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
+				if (isNotVal(gridPanel)) {
+					gridPanel.getSelectionModel().deselectAll(true);
+					gridPanel.getStore().load();
+				}
+			}else if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"){
+				var statTabActiveId = Ext.getCmp("PCPRealTimeMonitoringStatTabPanel").getActiveTab().id;
+				if(statTabActiveId=="PCPRealTimeMonitoringStatGraphPanel_Id"){
+					loadAndInitCommStatusStat(true);
+				}else if(statTabActiveId=="PCPRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+					loadAndInitDeviceTypeStat(true);
+				}
+				Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setValue('');
+				Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setRawValue('');
+				var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
+				if (isNotVal(gridPanel)) {
+					gridPanel.getSelectionModel().deselectAll(true);
+					gridPanel.getStore().load();
+				}
 			}
 		}
 	}else if(data.functionCode.toUpperCase()=="rpcDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的抽油机实时监控数据
@@ -348,7 +350,7 @@ function websocketOnMessage(evt) {
 				}
 			}
 		}
-	}if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的螺杆泵实时监控数据
+	}else if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的螺杆泵实时监控数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
 			var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 			var activeId = tabPanel.getActiveTab().id;
@@ -535,6 +537,50 @@ function websocketOnMessage(evt) {
 			}else{
 				Ext.getCmp("acRunStatusProbeLabel_id").setIconCls("dtyellow");
 				Ext.getCmp("acRunStatusProbeLabel_id").setText("ac");
+			}
+		}
+	}else if(data.functionCode.toUpperCase()=="rpcUpOnlineData".toUpperCase()){//接收到推送RPC uponline 数据
+		if(activeId.toUpperCase()=="UpstreamAndDownstreamInteraction".toUpperCase()){
+			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
+			if(isNotVal(gridPanel)){
+				var store = gridPanel.getStore();
+				//更新概览表
+				for(var i=0;i<store.getCount();i++){
+					var record=store.getAt(i);
+					if(record.data.signinId==data.signinId){
+						record.set("upCommStatusName",(data.commStatus==1?"上线":"离线"));
+						record.set("upCommStatus",data.commStatus);
+						record.commit();
+						break;
+					}
+				}
+			}
+		}
+	}else if(data.functionCode.toUpperCase()=="rpcDownOnlineData".toUpperCase()){//接收到推送RPC uponline 数据
+		if(activeId.toUpperCase()=="UpstreamAndDownstreamInteraction".toUpperCase()){
+			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
+			if(isNotVal(gridPanel)){
+				var store = gridPanel.getStore();
+				//更新概览表
+				for(var i=0;i<store.getCount();i++){
+					var record=store.getAt(i);
+					if(record.data.signinId==data.signinId){
+						record.set("downCommStatusName",(data.commStatus==1?"上线":"离线"));
+						record.set("downCommStatus",data.commStatus);
+						record.commit();
+						break;
+					}
+				}
+			}
+		}
+	}else if(data.functionCode.toUpperCase()=="adExitAndDeviceOffline_rpc".toUpperCase()){//ad退出，所有设备离线
+		if(activeId.toUpperCase()=="UpstreamAndDownstreamInteraction".toUpperCase()){
+			Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').setValue('');
+			Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').setRawValue('');
+			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
+			if (isNotVal(gridPanel)) {
+				gridPanel.getSelectionModel().deselectAll(true);
+				gridPanel.getStore().load();
 			}
 		}
 	}

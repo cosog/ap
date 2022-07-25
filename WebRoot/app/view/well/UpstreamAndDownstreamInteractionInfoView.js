@@ -30,7 +30,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             listeners: {
                 beforeload: function (store, options) {
                 	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-                    var wellName = Ext.getCmp('PpstreamAndDownstreamInteractionRPCDeviceListComb_Id').getValue();
+                    var wellName = Ext.getCmp('UpstreamAndDownstreamInteractionRPCDeviceListComb_Id').getValue();
                     var new_params = {
                         orgId: leftOrg_Id,
                         deviceType: 0,
@@ -44,7 +44,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         var rpcDeviceCombo = Ext.create(
                 'Ext.form.field.ComboBox', {
                     fieldLabel: '井名',
-                    id: "PpstreamAndDownstreamInteractionRPCDeviceListComb_Id",
+                    id: "UpstreamAndDownstreamInteractionRPCDeviceListComb_Id",
                     labelWidth: 35,
                     width: 145,
                     labelAlign: 'left',
@@ -86,8 +86,8 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                      cls: 'x-check-group-alt',
                      name: 'operation',
                      items: [
-                         {boxLabel: '模型下行', inputValue: 1, checked: true},
-                         {boxLabel: '配置下行', inputValue: 2}
+                         {boxLabel: '模型下行',labelWidth: 30, inputValue: 1, checked: true},
+                         {boxLabel: '配置下行',labelWidth: 30, inputValue: 2}
                      ],
                      listeners: {
                     	 change: function (radiogroup, newValue, oldValue, eOpts) {

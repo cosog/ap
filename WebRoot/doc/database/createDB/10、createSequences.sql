@@ -113,7 +113,7 @@ cache 20;
 create sequence SEQ_MODULE
 minvalue 1
 maxvalue 999999999999999999999999
-start with 2198
+start with 2218
 increment by 1
 cache 20;
 /
@@ -257,7 +257,7 @@ cache 20;
 create sequence SEQ_ROLE_MODULE
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 42
+start with 43
 increment by 1
 cache 20;
 /

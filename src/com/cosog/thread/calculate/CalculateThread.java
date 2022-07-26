@@ -50,7 +50,7 @@ public class CalculateThread extends Thread{
 			String acqDateSql="select distinct(to_char(t.fesdiagramacqtime,'yyyy-mm-dd')) as acqdate"
 					+ " from tbl_rpcacqdata_hist t "
 					+ " where 1=1  "
-					+ " and t.resultstatus in (0,2) "
+					+ " and t.resultstatus =2 "
 					+ " and t.productiondata is not null"
 					+ " and t.fesdiagramacqtime is not null "
 					+ " and t.wellid="+wellNo+""
@@ -73,7 +73,7 @@ public class CalculateThread extends Thread{
 							+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 							+ " where 1=1  "
 							+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
-							+ " and t.resultstatus in (0,2)  "
+							+ " and t.resultstatus ==2  "
 							+ " and t.productiondata is not null"
 							+ " and t.fesdiagramacqtime is not null "
 							+ " and t.wellid="+wellNo+""
@@ -323,7 +323,7 @@ public class CalculateThread extends Thread{
 			String acqDateSql="select distinct(to_char(t.acqtime,'yyyy-mm-dd')) as acqdate"
 					+ " from tbl_pcpacqdata_hist t "
 					+ " where 1=1  "
-					+ " and t.resultstatus in (0,2) and t.productiondata is not null and t.rpm is not null "
+					+ " and t.resultstatus =2 and t.productiondata is not null and t.rpm is not null "
 					+ " and t.wellid="+wellNo+""
 					+ " order by acqdate";
 			List<?> acqDateList = calculateDataService.findCallSql(acqDateSql);
@@ -338,7 +338,7 @@ public class CalculateThread extends Thread{
 							+ " left outer join tbl_pcpdevice t2 on t.wellid=t2.id"
 							+ " where 1=1  "
 							+ " and t.acqTime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
-							+ " and t.resultstatus in (0,2) and t.productiondata is not null and t.rpm is not null "
+							+ " and t.resultstatus =2 and t.productiondata is not null and t.rpm is not null "
 							+ " and t.wellid="+wellNo+""
 							+ " order by t.acqTime ";
 					String singleRecordSql="select t2.id as wellId, "

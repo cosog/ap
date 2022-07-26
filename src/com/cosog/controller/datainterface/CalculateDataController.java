@@ -87,8 +87,8 @@ public class CalculateDataController extends BaseController{
 			calculateThreadList[i]=null;
 		}
 		
-		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null and t.fesdiagramacqtime is not null";
-		String sqlAll="select count(1) from tbl_rpcacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null and t.fesdiagramacqtime is not null";
+		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.fesdiagramacqtime is not null";
+		String sqlAll="select count(1) from tbl_rpcacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.fesdiagramacqtime is not null";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		int calCount=0;
 		startTime=new Date().getTime();
@@ -137,8 +137,8 @@ public class CalculateDataController extends BaseController{
 			calculateThreadList[i]=null;
 		}
 		
-		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null not null and t.rpm is not null";
-		String sqlAll="select count(1) from tbl_pcpacqdata_hist t where resultstatus in (0,2) and t.productiondata is not null not null and t.rpm is not null";
+		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null not null and t.rpm is not null";
+		String sqlAll="select count(1) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null not null and t.rpm is not null";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		int calCount=0;
 		startTime=new Date().getTime();

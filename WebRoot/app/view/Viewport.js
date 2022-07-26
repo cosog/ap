@@ -551,6 +551,14 @@ function websocketOnMessage(evt) {
 						record.set("upCommStatusName",(data.commStatus==1?"上线":"离线"));
 						record.set("upCommStatus",data.commStatus);
 						record.commit();
+						var selectedWellId=parseInt( Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue() );
+						if(selectedWellId==record.data.id){//如果选中的是更新的井
+							if(parseInt(record.data.upCommStatus)==0 || parseInt(record.data.downCommStatus)==0){
+								Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+							}else if(parseInt(record.data.upCommStatus)==1 || parseInt(record.data.downCommStatus)==1){
+                    			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+                    		}
+						}
 						break;
 					}
 				}
@@ -568,6 +576,14 @@ function websocketOnMessage(evt) {
 						record.set("downCommStatusName",(data.commStatus==1?"上线":"离线"));
 						record.set("downCommStatus",data.commStatus);
 						record.commit();
+						var selectedWellId=parseInt( Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue() );
+						if(selectedWellId==record.data.id){//如果选中的是更新的井
+							if(parseInt(record.data.upCommStatus)==0 || parseInt(record.data.downCommStatus)==0){
+								Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+							}else if(parseInt(record.data.upCommStatus)==1 || parseInt(record.data.downCommStatus)==1){
+                    			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+                    		}
+						}
 						break;
 					}
 				}

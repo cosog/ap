@@ -49,7 +49,7 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     	},
                     	select: function(grid, record, index, eOpts) {
-                    		Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").setValue(index);
+                    		Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").setValue(record.data.id);
                     		var upCommStatus = record.data.upCommStatus;
                			 	var downCommStatus = record.data.downCommStatus;
                     		if(parseInt(upCommStatus)==0 || parseInt(downCommStatus)==0){

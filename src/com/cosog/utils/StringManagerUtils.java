@@ -1709,7 +1709,7 @@ public class StringManagerUtils {
             }
         } catch (Exception e) {
             StringManagerUtils.printLog("发送 POST 请求出现异常！" + e);
-            StringManagerUtils.printLog(param);
+            StringManagerUtils.printLog("url:"+url+",param:"+param);
             e.printStackTrace();
         } finally {
             try {

@@ -57,14 +57,12 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String allOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
-		String allRPCOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceRPCStatusOffline";
 		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getInit();
-		String probeUrl_rpc=Config.getInstance().configFile.getAd_rpc().getProbe().getInit();
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
@@ -81,14 +79,16 @@ public class EquipmentDriverServerTask {
 //		String offLineData=stringManagerUtils.readFile(path,"utf-8");
 //		
 //		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
-//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/online";
-//		
+//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/uponline";
+//		String onlineUrl2=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/downonline";
 //		int i=0;
 //		while(true){
 //			if(i%2==0){
 //				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8");
+//				StringManagerUtils.sendPostMethod(onlineUrl2, onLineData,"utf-8");
 //			}else{
 //				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8");
+//				StringManagerUtils.sendPostMethod(onlineUrl2, offLineData,"utf-8");
 //			}
 //			i++;
 //			
@@ -96,8 +96,6 @@ public class EquipmentDriverServerTask {
 //			
 //			Thread.sleep(1000*5);
 //		}
-		
-
 		
 		initServerConfig();
 		initProtocolConfig("","");
@@ -107,19 +105,12 @@ public class EquipmentDriverServerTask {
 		initRPCDriverAcquisitionInfoConfig(null,"");
 		initPCPDriverAcquisitionInfoConfig(null,"");
 		
-		initRPCServerConfig();
-		
 		boolean sendMsg=false;
-		boolean sendMsg_rpc=false;
 		exampleDataManage();
 		do{
 			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8");
 			type = new TypeToken<DriverProbeResponse>() {}.getType();
 			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-			
-			responseData=StringManagerUtils.sendPostMethod(probeUrl_rpc, "","utf-8");
-			type = new TypeToken<DriverProbeResponse>() {}.getType();
-			DriverProbeResponse driverProbeResponse_rpc=gson.fromJson(responseData, type);
 			
 			String Ver="";
 			if(driverProbeResponse!=null){
@@ -157,10 +148,57 @@ public class EquipmentDriverServerTask {
 					sendMsg=true;
 				}
 			}
+			Thread.sleep(1000*1);
+		}while(true);
+	}
+	
+	@SuppressWarnings({ "static-access", "unused" })
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String allRPCOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceRPCStatusOffline";
+		String probeUrl_rpc=Config.getInstance().configFile.getAd_rpc().getProbe().getInit();
+		initWellRPCCommStatus();
+		
+//		String path="";
+//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//		
+//		path=stringManagerUtils.getFilePath("test3.json","example/");
+//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		path=stringManagerUtils.getFilePath("test4.json","example/");
+//		String offLineData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
+//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/uponline";
+//		String onlineUrl2=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/downonline";
+//		int i=0;
+//		while(true){
+//			if(i%2==0){
+//				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8");
+//				StringManagerUtils.sendPostMethod(onlineUrl2, onLineData,"utf-8");
+//			}else{
+//				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8");
+//				StringManagerUtils.sendPostMethod(onlineUrl2, offLineData,"utf-8");
+//			}
+//			i++;
+//			
+////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8");
+//			
+//			Thread.sleep(1000*5);
+//		}
+		
+		initRPCServerConfig();
+		boolean sendMsg_rpc=false;
+		do{
+			String responseData=StringManagerUtils.sendPostMethod(probeUrl_rpc, "","utf-8");
+			type = new TypeToken<DriverProbeResponse>() {}.getType();
+			DriverProbeResponse driverProbeResponse_rpc=gson.fromJson(responseData, type);
 			
 			if(driverProbeResponse_rpc!=null){
 				sendMsg_rpc=false;
-				if(!driverProbeResponse.getHttpServerInitStatus()){
+				if(!driverProbeResponse_rpc.getHttpServerInitStatus()){
 					initRPCServerConfig();
 				}
 			}else{
@@ -169,7 +207,6 @@ public class EquipmentDriverServerTask {
 					sendMsg_rpc=true;
 				}
 			}
-			
 			Thread.sleep(1000*1);
 		}while(true);
 	}
@@ -1943,6 +1980,17 @@ public class EquipmentDriverServerTask {
 			result = JDBCUtil.updateRecord(intPCPCommSql, null);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public static int initWellRPCCommStatus(){
+		String intCommSql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
+		int result=0;
+		try {
+			result = JDBCUtil.updateRecord(intCommSql, null);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;

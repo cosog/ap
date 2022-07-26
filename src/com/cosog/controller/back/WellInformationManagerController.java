@@ -39,6 +39,7 @@ import com.cosog.model.RPCDeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
+import com.cosog.model.drive.RPCInteractionResponseData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
@@ -1513,9 +1514,18 @@ public class WellInformationManagerController extends BaseController {
 			result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8");
 		}
 		if(StringManagerUtils.isNotNull(result)){
-			json = "{success:true,msg:'1'}";
+			Gson gson = new Gson();
+			java.lang.reflect.Type reflectType = new TypeToken<RPCInteractionResponseData>() {}.getType();
+			RPCInteractionResponseData rpcInteractionResponseData=gson.fromJson(result, reflectType);
+			if(rpcInteractionResponseData!=null){
+				if(rpcInteractionResponseData.getResultStatus()==1){
+					json = "{success:true,msg:1}";
+				}else if(rpcInteractionResponseData.getResultStatus()==0){
+					json = "{success:true,msg:0}";
+				}
+			}
 		}else{
-			json = "{success:true,msg:'0'}";
+			json = "{success:false,msg:0}";
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -1570,7 +1580,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getHelpDocHtml")
 	public String getHelpDocHtml() throws Exception {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String path=stringManagerUtils.getFilePath("KafkaConfigHelp.md","doc/");
+		String path=stringManagerUtils.getFilePath("ad_rpcConfigHelp.md","doc/");
 		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
 		String fileContent=html.toString();
 		response.setContentType("application/json;charset=utf-8");

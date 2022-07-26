@@ -2825,7 +2825,7 @@ public class DriverAPIController extends BaseController{
 		StringManagerUtils.printLog("ad_rpc退出："+time);
 		StringBuffer webSocketSendData = new StringBuffer();
 		String functionCode="adExitAndDeviceOffline_rpc";
-		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus,t.downcommstatus=0";
+		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
 		int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
 		webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 		webSocketSendData.append("\"time\":\""+time+"\"");

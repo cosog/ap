@@ -306,10 +306,12 @@ function producerMsg(){
             		url:context + '/wellInformationManagerController/downstreamRPCData',
             		success:function(response) {
             			rdata=Ext.JSON.decode(response.responseText);
-            			if (rdata.success && parseInt(rdata.msg)==1 ) {
-                        	Ext.MessageBox.alert("信息","发送成功");
-                        } else {
-                        	Ext.MessageBox.alert("信息","发送失败");
+            			if (rdata.success && rdata.msg==1 ) {
+                        	Ext.MessageBox.alert("信息","下行成功。");
+                        } else if (rdata.success && rdata.msg==0 ) {
+                        	Ext.MessageBox.alert("信息","<font color=red>下行失败<font color=red>!");
+                        }else if (!rdata.success){
+                        	Ext.MessageBox.alert("信息","<font color=red>发送失败<font color=red>!");
                         }
             		},
             		failure:function(){
@@ -341,7 +343,12 @@ function requestConfigData(){
     		method:'POST',
     		url:context + '/wellInformationManagerController/requestConfigData',
     		success:function(response) {
-    			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue(response.responseText);
+    			if (isNotVal(response.responseText)) {
+    				rdata=Ext.JSON.decode(response.responseText);
+    				if(rdata.ResultStatus==1){
+    					Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue(jsonFormat(JSON.stringify(rdata.Message)));
+    				}
+    			}
     		},
     		failure:function(){
     			Ext.MessageBox.alert("信息","请求失败");

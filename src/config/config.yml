@@ -90,6 +90,9 @@ ad_rpc:
    readTopicReq: http://8.142.92.84:19300/api/ctrl/req
    writeTopicModel: http://8.142.92.84:19300/api/ctrl/model
    writeTopicConf: http://8.142.92.84:19300/api/ctrl/conf
+   writeTopicRtc: http://8.142.92.84:19300/api/ctrl/rtc
+   writeTopicDog: http://8.142.92.84:19300/api/ctrl/dog
+   writeTopicStopRpc: http://8.142.92.84:19300/api/ctrl/stoprpc
    probe:
       init: http://8.142.92.84:19300/api/probe/init
       app: http://8.142.92.84:19300/api/probe/app

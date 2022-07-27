@@ -1500,16 +1500,53 @@ public class WellInformationManagerController extends BaseController {
 		}else if(StringManagerUtils.stringToInteger(type)==2){
 			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicConf();
 			key="Conf";
+		}else if(StringManagerUtils.stringToInteger(type)==3){
+			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicRtc();
+			key="Time";
+		}else if(StringManagerUtils.stringToInteger(type)==4){
+			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicDog();
+			key="Timeout";
+		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6){
+			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicStopRpc();
+			key="Position";
 		}
-		if(!StringManagerUtils.isNotNull(data)){
-			data="{}";
-		}else{
-			data=data.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+		
+		if(StringManagerUtils.stringToInteger(type)<=2){
+			if(StringManagerUtils.isNotNull(data)){
+				data="{}";
+			}else{
+				data=data.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
+			}
+		}else if(StringManagerUtils.stringToInteger(type)==3){
+			data=data.replaceAll("\"", "").replaceAll("\r\n", "").replaceAll("\n", "");
+		}else if(StringManagerUtils.stringToInteger(type)==5){
+			data="top";
+		}else if(StringManagerUtils.stringToInteger(type)==6){
+			data="bottom";
+		}else {
+			
 		}
-		downstreamBuff.append("{\"ID\":\""+signinId+"\",");
-		downstreamBuff.append("\""+key+"\":"+data+"}");
+		
+		
+		if(StringManagerUtils.stringToInteger(type)<=2){
+			downstreamBuff.append("{\"ID\":\""+signinId+"\",");
+			downstreamBuff.append("\""+key+"\":"+data+"}");
+		}else if(StringManagerUtils.stringToInteger(type)==3){
+			downstreamBuff.append("{\"ID\":\""+signinId+"\",");
+			downstreamBuff.append("\""+key+"\":\""+data+"\"}");
+		}else if(StringManagerUtils.stringToInteger(type)==4){
+			downstreamBuff.append("{\"ID\":\""+signinId+"\"}");
+//			downstreamBuff.append("\""+key+"\":\""+data+"\"}");
+		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6){
+			downstreamBuff.append("{\"ID\":\""+signinId+"\",");
+			downstreamBuff.append("\""+key+"\":\""+data+"\"}");
+		}
+		
+		
+		System.out.println(downstreamBuff);
+		
 		String result="";
-		String json="";
+		String json="{success:false,msg:0}";
 		if(StringManagerUtils.isNotNull(url)){
 			result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8");
 		}
@@ -1545,6 +1582,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/requestConfigData")
 	public String requestConfigData() throws Exception {
 		StringBuffer requestBuff = new StringBuffer();
+		String result="";
 		String type = ParamUtils.getParameter(request, "type");
 		String wellId = ParamUtils.getParameter(request, "wellId");
 		String signinId = ParamUtils.getParameter(request, "signinId");
@@ -1555,12 +1593,16 @@ public class WellInformationManagerController extends BaseController {
 			topic="model";
 		}else if(StringManagerUtils.stringToInteger(type)==2){
 			topic="conf";
+		}else if(StringManagerUtils.stringToInteger(type)==3){
+			topic="rtc";
 		}
 		requestBuff.append("{\"ID\":\""+signinId+"\",");
 		requestBuff.append("\"Topic\":\""+topic+"\"}");
-		String result=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
-		if(StringManagerUtils.isNotNull(result)){
-			result=StringManagerUtils.toPrettyFormat(result);
+		if(StringManagerUtils.stringToInteger(type)<=3){
+			result=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			if(StringManagerUtils.isNotNull(result)){
+				result=StringManagerUtils.toPrettyFormat(result);
+			}
 		}
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

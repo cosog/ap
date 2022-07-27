@@ -65,7 +65,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             rpcDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
-                        	Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getStore().loadPage(1);
+                        	Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getStore().loadPage(1);
                         }
                     }
                 });
@@ -86,8 +86,12 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                      cls: 'x-check-group-alt',
                      name: 'operation',
                      items: [
-                         {boxLabel: '模型下行',labelWidth: 30, inputValue: 1, checked: true},
-                         {boxLabel: '配置下行',labelWidth: 30, inputValue: 2}
+                         {boxLabel: '模型下行',width: 70, inputValue: 1, checked: true},
+                         {boxLabel: '配置下行',width: 70, inputValue: 2},
+                         {boxLabel: '时钟下行',width: 70, inputValue: 3},
+                         {boxLabel: '看门狗重启',width: 90, inputValue: 4},
+                         {boxLabel: '上死点停抽',width: 90, inputValue: 5},
+                         {boxLabel: '下死点停抽',width: 90, inputValue: 6}
                      ],
                      listeners: {
                     	 change: function (radiogroup, newValue, oldValue, eOpts) {
@@ -101,6 +105,8 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     		 if(_record.length>0){
                     			 var upCommStatus = _record[0].data.upCommStatus;
                     			 var downCommStatus = _record[0].data.downCommStatus;
+//                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+//                    			 requestConfigData();
                     			 if(parseInt(upCommStatus)==0 || parseInt(downCommStatus)==0){
                     				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                     				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
@@ -292,6 +298,14 @@ function producerMsg(){
 			operationName='模型下行';
 		}else if(parseInt(type)==2){
 			operationName='配置下行';
+		}else if(parseInt(type)==3){
+			operationName='时钟下行';
+		}else if(parseInt(type)==4){
+			operationName='看门狗重启下行';
+		}else if(parseInt(type)==5){
+			operationName='上死点停抽下行';
+		}else if(parseInt(type)==6){
+			operationName='下死点停抽下行';
 		}
 		var wellName = _record[0].data.wellName;
 		var wellId = _record[0].data.id;

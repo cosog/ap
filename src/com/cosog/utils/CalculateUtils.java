@@ -175,8 +175,19 @@ public class CalculateUtils {
 				ResultCodeList.add(responseData.getCalculationStatus().getResultCode());
 				strokeList.add(responseData.getFESDiagram().getStroke());
 				spmList.add(responseData.getFESDiagram().getSPM());
-				FMaxList.add(responseData.getFESDiagram().getFMax().get(0));
-				FMinList.add(responseData.getFESDiagram().getFMin().get(0));
+				
+				if(responseData.getFESDiagram().getFMax()!=null&&responseData.getFESDiagram().getFMax().size()>0){
+					FMaxList.add(responseData.getFESDiagram().getFMax().get(0));
+				}else{
+					FMaxList.add(0.0f);
+				}
+				
+				if(responseData.getFESDiagram().getFMin()!=null&&responseData.getFESDiagram().getFMin().size()>0){
+					FMinList.add(responseData.getFESDiagram().getFMin().get(0));
+				}else{
+					FMinList.add(0.0f);
+				}
+				
 				fullnessCoefficientList.add(responseData.getFESDiagram().getFullnessCoefficient());
 				
 				theoreticalProductionList.add(responseData.getProduction().getTheoreticalProduction());

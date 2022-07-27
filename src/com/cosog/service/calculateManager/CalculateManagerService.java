@@ -114,11 +114,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		}
 		
 		sql="select t.id,t.wellId,t.wellName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
-			+ "decode(t.resultStatus,1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
+			+ "decode(t.resultStatus,-1,'无效功图',1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
 			+ "t.resultName,"
 			+ prodCol
 			+ "t.productiondata"
-			+ " from viw_rpc_calculatemain t where t.orgid in("+orgId+") "
+			+ " from viw_rpc_calculatemain t "
+			+ " where t.orgid in("+orgId+") "
+			+ " and t.resultStatus<>-1"
 			+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";

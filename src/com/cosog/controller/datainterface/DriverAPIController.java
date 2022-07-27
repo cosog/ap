@@ -995,9 +995,11 @@ public class DriverAPIController extends BaseController{
 				
 				//进行功图计算
 				WorkType workType=null;
+				boolean fesDiagramEnabled=false;
 				if(StringManagerUtils.isNotNull(rpcCalculateRequestData.getFESDiagram().getAcqTime())
 						&& rpcCalculateRequestData.getFESDiagram().getS().size()>0
 						&& rpcCalculateRequestData.getFESDiagram().getF().size()>0){
+					fesDiagramEnabled=true;
 					if(FESDiagramAcqCount>0){
 						if(rpcCalculateRequestData.getFESDiagram().getS().size()>FESDiagramAcqCount){
 							List<Float> curveArr=new ArrayList<Float>();
@@ -1367,7 +1369,10 @@ public class DriverAPIController extends BaseController{
 						commonDataService.getBaseDao().executeSqlUpdateClob(updateHisRangeClobSql,clobCont);
 						commonDataService.getBaseDao().executeSqlUpdateClob(updateTotalRangeClobSql,clobCont);
 					}
-					commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(rpcDeviceInfo,rpcCalculateRequestData,rpcCalculateResponseData);
+					if(rpcCalculateResponseData!=null){
+						
+					}
+					commonDataService.getBaseDao().saveAcqFESDiagramAndCalculateData(rpcDeviceInfo,rpcCalculateRequestData,rpcCalculateResponseData,fesDiagramEnabled);
 					if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){//保存汇总数据
 						commonDataService.getBaseDao().saveFESDiagramTotalCalculateData(rpcDeviceInfo,totalAnalysisResponseData,date);
 					}else{

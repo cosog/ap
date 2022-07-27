@@ -658,6 +658,12 @@ public class ConfigFile {
 	    private String writeTopicModel;
 
 	    private String writeTopicConf;
+	    
+	    private String writeTopicRtc;
+	    
+	    private String writeTopicDog;
+	    
+	    private String writeTopicStopRpc;
 
 	    private AdProbe probe;
 
@@ -699,6 +705,30 @@ public class ConfigFile {
 
 		public void setProbe(AdProbe probe) {
 			this.probe = probe;
+		}
+
+		public String getWriteTopicRtc() {
+			return writeTopicRtc;
+		}
+
+		public void setWriteTopicRtc(String writeTopicRtc) {
+			this.writeTopicRtc = writeTopicRtc;
+		}
+
+		public String getWriteTopicDog() {
+			return writeTopicDog;
+		}
+
+		public void setWriteTopicDog(String writeTopicDog) {
+			this.writeTopicDog = writeTopicDog;
+		}
+
+		public String getWriteTopicStopRpc() {
+			return writeTopicStopRpc;
+		}
+
+		public void setWriteTopicStopRpc(String writeTopicStopRpc) {
+			this.writeTopicStopRpc = writeTopicStopRpc;
 		}
 	}
 

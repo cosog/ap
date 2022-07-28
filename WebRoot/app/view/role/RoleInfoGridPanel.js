@@ -49,23 +49,25 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 action: 'addroleAction',
                 text: cosog.string.add,
                 iconCls: 'add'
-    		}, "-", {
-                xtype: 'button',
-                itemId: 'editroleLabelClassBtnId',
-                id: 'editroleLabelClassBtn_Id',
-                text: cosog.string.update,
-                action: 'editroleInfoAction',
-                disabled: false,
-                iconCls: 'edit'
-    		}, "-", {
-                xtype: 'button',
-                itemId: 'delroleLabelClassBtnId',
-                id: 'delroleLabelClassBtn_Id',
-                disabled: false,
-                action: 'delroleAction',
-                text: cosog.string.del,
-                iconCls: 'delete'
-    		}]
+    		}
+//    		, "-", {
+//                xtype: 'button',
+//                itemId: 'editroleLabelClassBtnId',
+//                id: 'editroleLabelClassBtn_Id',
+//                text: cosog.string.update,
+//                action: 'editroleInfoAction',
+//                disabled: false,
+//                iconCls: 'edit'
+//    		}, "-", {
+//                xtype: 'button',
+//                itemId: 'delroleLabelClassBtnId',
+//                id: 'delroleLabelClassBtn_Id',
+//                disabled: false,
+//                action: 'delroleAction',
+//                text: cosog.string.del,
+//                iconCls: 'delete'
+//    		}
+    		]
         });
         this.callParent(arguments);
     }

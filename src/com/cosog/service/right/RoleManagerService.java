@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.Role;
 import com.cosog.model.User;
 import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
@@ -129,7 +130,7 @@ private CommonDataService service;
 			result_json.append("\"roleName\":\""+obj[1]+"\",");
 			result_json.append("\"roleLevel\":\""+obj[2]+"\",");
 			result_json.append("\"roleFlag\":\""+obj[3]+"\",");
-			result_json.append("\"roleFlagName\":\""+obj[4]+"\",");
+			result_json.append("\"roleFlagName\":"+(StringManagerUtils.stringToInteger(obj[3]+"")==1)+",");
 			result_json.append("\"showLevel\":\""+obj[5]+"\",");
 			result_json.append("\"remark\":\""+obj[6]+"\"},");
 		}
@@ -178,5 +179,44 @@ private CommonDataService service;
 
 	public T getRole(Class<T> clazz, int id) {
 		return getBaseDao().getObject(clazz, id);
+	}
+	
+	public int updateRoleInfo(Role role,boolean isLoginedUserRole) throws Exception {
+		int r=0;
+		boolean flag = this.judgeRoleExistsOrNot(role.getRoleName(),role.getRoleId()+"");
+		if(flag){
+			r=2;
+		}else{
+			String sql = "update tbl_role t set ";
+			if(!isLoginedUserRole){//当前登录用户不可修改账号、角色、使能状态
+				sql+= " t.role_level="+role.getRoleLevel()+", "
+						+ " t.role_flag="+role.getRoleFlag()+", "
+						+ " t.showlevel="+role.getShowLevel()+", ";
+			}	
+			sql+= " t.role_name='"+role.getRoleName()+"', "
+				+ " t.remark='"+role.getRemark()+"' "
+				+ " where t.role_id = "+role.getRoleId();
+			int result=this.getBaseDao().updateOrDeleteBySql(sql);
+			if(result>0){
+				r=1;
+			}
+		}
+		return r;
+	}
+	
+	public boolean judgeRoleExistsOrNot(String roleName,String roleId) {
+		boolean flag = false;
+		if (StringManagerUtils.isNotNull(roleName)) {
+			String queryString = "SELECT r.roleName FROM Role r where r.roleName='"+ roleName + "' ";
+			if(StringManagerUtils.isNotNull(roleId)){//当前是更新用户
+				queryString+=" and r.roleId<>"+roleId;
+			}
+			queryString+= "order by r.roleId ";
+			List<User> list = getBaseDao().find(queryString);
+			if (list.size() > 0) {
+				flag = true;
+			}
+		}
+		return flag;
 	}
 }

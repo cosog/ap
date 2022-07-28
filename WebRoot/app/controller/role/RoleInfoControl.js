@@ -298,3 +298,78 @@ var grantRolePermission = function () {//授予角色模块权限
     }
     return false;
 }
+
+function delRoleInfoByGridBtn(record) {
+	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+    if (parseInt(record.data.roleId)!=parseInt(currentId)){
+    	var deleteRoleId=[];
+    	deleteRoleId.push(record.data.roleId);
+    	Ext.MessageBox.msgButtons['yes'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/accept.png'/>&nbsp;&nbsp;&nbsp;确定";
+        Ext.MessageBox.msgButtons['no'].text = "<img   style=\"border:0;position:absolute;right:50px;top:1px;\"  src=\'" + context + "/images/zh_CN/cancel.png'/>&nbsp;&nbsp;&nbsp;取消";
+        Ext.Msg.confirm(cosog.string.yesdel, cosog.string.yesdeldata, function (btn) {
+            if (btn == "yes") {
+            	Ext.Ajax.request({
+          			url : context + '/roleManagerController/doRoleBulkDelete',
+          			method : "POST",
+          			params : {
+          				paramsId : deleteRoleId.join(",")
+          			},
+          			success : function(response) {
+          				var result = Ext.JSON.decode(response.responseText);
+          				if (result.flag == true) {
+          					Ext.Msg.alert('提示', "【<font color=blue>成功删除</font>】"+ deleteRoleId.length + "条数据信息。");
+          				}
+          				if (result.flag == false) {
+          					Ext.Msg.alert('提示', "<font color=red>SORRY！删除失败。</font>");
+          				}
+          				Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+          			},
+          			failure : function() {
+          				Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+          			}
+          		});
+            }
+        });
+
+    } else {
+    	Ext.Msg.alert(cosog.string.deleteCommand, '该角色不可删除!');
+    }
+}
+
+function updateRoleInfoByGridBtn(record) {
+
+    var roleId=record.get("roleId");
+    var roleName=record.get("roleName");
+    var roleLevel=record.get("roleLevel");
+    var roleFlagName=record.get("roleFlagName");
+    var showLevel=record.get("showLevel");
+    var remark=record.get("remark");
+    
+	
+    Ext.Ajax.request({
+		url : context + '/roleManagerController/updateRoleInfo',
+		method : "POST",
+		params : {
+			roleId : roleId,
+			roleName : roleName,
+			roleLevel : roleLevel,
+			roleFlagName : roleFlagName,
+			showLevel : showLevel,
+			remark : remark
+		},
+		success : function(response) {
+			var result = Ext.JSON.decode(response.responseText);
+			if (result.success==true && result.flag == true) {
+				Ext.Msg.alert('提示', "<font color=blue>保存成功。</font>");
+			}else if (result.success==true && result.flag == false) {
+				Ext.Msg.alert('提示', "<font color=red>角色已存在,保存失败。</font>");
+			}else {
+				Ext.Msg.alert('提示', "<font color=red>SORRY！保存失败。</font>");
+			}
+			Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+		},
+		failure : function() {
+			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
+		}
+	});
+}

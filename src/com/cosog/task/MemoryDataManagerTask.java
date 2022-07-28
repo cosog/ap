@@ -1292,6 +1292,32 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadUserInfoByRoleId(String roleId,String method){//condition 0 -用户id 1-用户账号
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		List<String> roleList=new ArrayList<String>();
+        String sql="select t.user_no from TBL_USER t where t.user_type="+roleId;
+        try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				roleList.add(rs.getInt(1)+"");
+			}
+			if(roleList.size()>0){
+				loadUserInfo(roleList,0,method);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
 	public static void loadRPCWorkType(){
 		Connection conn = null;
 		PreparedStatement pstmt = null;

@@ -553,7 +553,6 @@ function updateUserInfoByGridBtn(record) {
 			Ext.Msg.alert("提示", "【<font color=red>异常抛出 </font>】：请与管理员联系！");
 		}
 	});
-	
 }
 
 //窗体创建按钮事件

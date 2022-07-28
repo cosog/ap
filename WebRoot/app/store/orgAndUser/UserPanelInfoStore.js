@@ -28,26 +28,6 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                 var arrColumns = get_rawData.columns;
                 var cloums = createUserGridColumn(arrColumns);
                 var newColumns = Ext.JSON.decode(cloums);
-                //分页工具栏
-                var bbar = new Ext.PageNumberToolbar({
-                    store: store,
-                    pageSize: defaultPageSize,
-                    displayInfo: true,
-//                    displayMsg: '当前记录 {0} -- {1} 条 共 {2} 条记录',
-                    displayMsg: '当前 {0}~{1}条  共 {2} 条',
-                    emptyMsg: "没有记录可显示",
-                    prevText: "上一页",
-                    nextText: "下一页",
-                    refreshText: "刷新",
-                    lastText: "最后页",
-                    firstText: "第一页",
-                    beforePageText: "当前页",
-                    afterPageText: "共{0}页"
-                });
-//                var rowEditing = Ext.create('Ext.grid.RowEditor', {
-//                	    clicksToMoveEditor: 1,
-//                	    autoCancel: false
-//                	});
                 var gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "UserInfoGridPanel_Id",
                     selModel: 'cellmodel',//cellmodel rowmodel
@@ -57,7 +37,6 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                     }],
                     border: false,
                     stateful: true,
-//                    autoScroll: true,
                     columnLines: true,
                     layout: "fit",
                     stripeRows: true,
@@ -68,7 +47,6 @@ Ext.define('AP.store.orgAndUser.UserPanelInfoStore', {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>",
                         forceFit: true
                     },
-//                    bbar: bbar,
                     store: store,
                     columns: [{
                         header: '序号',

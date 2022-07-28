@@ -89,9 +89,10 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                          {boxLabel: '模型下行',width: 70, inputValue: 1, checked: true},
                          {boxLabel: '配置下行',width: 70, inputValue: 2},
                          {boxLabel: '时钟下行',width: 70, inputValue: 3},
-                         {boxLabel: '看门狗重启',width: 90, inputValue: 4},
-                         {boxLabel: '上死点停抽',width: 90, inputValue: 5},
-                         {boxLabel: '下死点停抽',width: 90, inputValue: 6}
+                         {boxLabel: '看门狗重启',width: 85, inputValue: 4},
+                         {boxLabel: '上死点停抽',width: 85, inputValue: 5},
+                         {boxLabel: '下死点停抽',width: 85, inputValue: 6},
+                         {boxLabel: '即时停抽',width: 70, inputValue: 7}
                      ],
                      listeners: {
                     	 change: function (radiogroup, newValue, oldValue, eOpts) {
@@ -100,13 +101,18 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     		 }else{
                     			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").hide();
                     		 }
-                    		 
+                    		 if(newValue.operation==3){
+                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").setText("时钟同步");
+                    		 }else{
+                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").setText("发送");
+                    		 }
                     		 var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
                     		 if(_record.length>0){
                     			 var upCommStatus = _record[0].data.upCommStatus;
                     			 var downCommStatus = _record[0].data.downCommStatus;
 //                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
 //                    			 requestConfigData();
+                    			 
                     			 if(parseInt(upCommStatus)==0 || parseInt(downCommStatus)==0){
                     				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                     				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');

@@ -1506,23 +1506,22 @@ public class WellInformationManagerController extends BaseController {
 		}else if(StringManagerUtils.stringToInteger(type)==4){
 			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicDog();
 			key="Timeout";
-		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6){
+		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6 || StringManagerUtils.stringToInteger(type)==7){
 			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicStopRpc();
 			key="Position";
 		}
 		
 		if(StringManagerUtils.stringToInteger(type)<=2){
-			if(StringManagerUtils.isNotNull(data)){
-				data="{}";
-			}else{
-				data=data.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
-			}
+			data=data.replaceAll("\r\n", "\n").replaceAll("\n", "").replaceAll(" ", "");
 		}else if(StringManagerUtils.stringToInteger(type)==3){
-			data=data.replaceAll("\"", "").replaceAll("\r\n", "").replaceAll("\n", "");
+//			data=data.replaceAll("\"", "").replaceAll("\r\n", "").replaceAll("\n", "");
+			data=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		}else if(StringManagerUtils.stringToInteger(type)==5){
 			data="top";
 		}else if(StringManagerUtils.stringToInteger(type)==6){
 			data="bottom";
+		}else if(StringManagerUtils.stringToInteger(type)==7){
+			data="";
 		}else {
 			
 		}
@@ -1537,7 +1536,7 @@ public class WellInformationManagerController extends BaseController {
 		}else if(StringManagerUtils.stringToInteger(type)==4){
 			downstreamBuff.append("{\"ID\":\""+signinId+"\"}");
 //			downstreamBuff.append("\""+key+"\":\""+data+"\"}");
-		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6){
+		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6 || StringManagerUtils.stringToInteger(type)==7){
 			downstreamBuff.append("{\"ID\":\""+signinId+"\",");
 			downstreamBuff.append("\""+key+"\":\""+data+"\"}");
 		}
@@ -1548,7 +1547,9 @@ public class WellInformationManagerController extends BaseController {
 		String result="";
 		String json="{success:false,msg:0}";
 		if(StringManagerUtils.isNotNull(url)){
-			result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8");
+			if((StringManagerUtils.stringToInteger(type)<=2&&StringManagerUtils.isNotNull(data)) || StringManagerUtils.stringToInteger(type)>=3){
+				result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8");
+			}
 		}
 		if(StringManagerUtils.isNotNull(result)){
 			Gson gson = new Gson();

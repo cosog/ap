@@ -169,7 +169,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		&& module_Code != "AlarmQuery"
 		&& module_Code != "AlarmSet"
 		&& module_Code != "UpstreamAndDownstreamInteraction"
-		&& module_Code != "CalculateMaintaining") {
+		&& module_Code != "CalculateMaintaining"
+//		&& module_Code != "RoleManagement"
+			) {
 		if (modules.length > 2) {
 			if(secondTab_Code!= modules[2]){
 				modules[2]=secondTab_Code;
@@ -286,7 +288,16 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}else{
 			Ext.create('AP.store.orgAndUser.OrgInfoStore');
 		}
-	}else if(module_Code == "WellInformation"){
+	}
+//	else if(module_Code == "RoleManagement"){
+//		var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
+//		if (isNotVal(gridPanel)) {
+//			gridPanel.getStore().load();
+//		}else{
+//			Ext.create('AP.store.role.RoleInfoStore');
+//		}
+//	}
+	else if(module_Code == "WellInformation"){
 		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="RPCDeviceManagerPanel"){

@@ -116,7 +116,17 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         	xtype: 'checkbox',
                             cls: 'x-grid-checkheader-editor',
                         	allowBlank: false
-                        }
+                        },
+                    	listeners: {
+                    	    beforecheckchange: function( cell, rowIndex, checked, record, e, eOpts){
+                    	    	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                    	    	if(parseInt(record.data.roleId)==parseInt(currentId)){
+                    	    		return false;
+                    	    	}else{
+                                    return true;
+                                }
+                    	    }
+                    	}
                     },{
                         header: '角色描述',
                         lockable: true,
@@ -162,16 +172,16 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         }]
                     }],
                     listeners: {
-//                        selectionchange: function (sm, selected) {
-//                        	var roleId='';
-//                        	var roleCode='';
-//                        	if(selected.length>0){
-//                        		roleId = selected[0].data.roleId;
-//                        		roleCode = selected[0].data.roleCode;
-//                        	}
-//                            Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
-//                            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
-//                        },
+                        selectionchange: function (sm, selected) {
+                        	var roleId='';
+                        	var roleCode='';
+                        	if(selected.length>0){
+                        		roleId = selected[0].data.roleId;
+                        		roleCode = selected[0].data.roleCode;
+                        	}
+                            Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
+                            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
+                        },
                         celldblclick: function ( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
                             var currentLevel=Ext.getCmp("currentUserRoleLevel_Id").getValue();

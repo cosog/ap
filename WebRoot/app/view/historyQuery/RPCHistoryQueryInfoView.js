@@ -649,19 +649,26 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
             		items: [{
             			title: '图形叠加',
             			id:"RPCHistoryDiagramOverlayTabPanel",
-                        layout: {
-                            type: 'hbox',
-                            pack: 'start',
-                            align: 'stretch'
-                        },
+            			layout: 'border',
+//                        layout: {
+//                            type: 'hbox',
+//                            pack: 'start',
+//                            align: 'stretch'
+//                        },
                         items: [
                             {
-                                border: false,
+                            	region: 'west',
+                            	width:'50%',
+                            	border: false,
+                                header: false,
                                 margin: '0 0 0 0',
                                 flex: 1,
                                 height: 900,
                                 autoScroll: true,
                                 scrollable: true,
+                                split: true,
+                                collapsible: true,
+                                collapseDirection:'left',
                                 layout: {
                                     type: 'vbox',
                                     pack: 'start',
@@ -714,10 +721,13 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                     }
                              }]
                          },{
-                       	  border: false,
+                        	 region: 'center',
+                        	 border: false,
+                        	 header: false,
                              flex: 1,
                              autoScroll: true,
                              scrollable: true,
+                             split: true,
                              layout: 'fit',
                              id: 'RPCHistoryQueryFSdiagramOverlayTable_Id'
                          }]

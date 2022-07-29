@@ -7,7 +7,7 @@ Ext.define("AP.view.role.RoleInfoView", {
     initComponent: function () {
         var me = this;
         var RoleInfoGridPanel = Ext.create('AP.view.role.RoleInfoGridPanel');
-//        var RightModuleInfoGridPanel = Ext.create('AP.view.role.RightModuleInfoTreeGridView');
+        var RightModuleInfoGridPanel = Ext.create('AP.view.role.RightModuleInfoTreeGridView');
         Ext.apply(me, {
         	items: [{
         		region:'center',
@@ -23,7 +23,7 @@ Ext.define("AP.view.role.RoleInfoView", {
         		split: true,
                 collapsible: true,
         		layout: "fit",
-//        		items:RightModuleInfoGridPanel,
+        		items:RightModuleInfoGridPanel,
         		tbar: [{
                     xtype: 'label',
                     html: '模块授权',

@@ -113,10 +113,10 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
 //                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
 //                    			 requestConfigData();
                     			 
-                    			 if(parseInt(upCommStatus)==0 || parseInt(downCommStatus)==0){
+                    			 if(parseInt(downCommStatus)==0){
                     				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                     				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-                    			 }else if(parseInt(upCommStatus)==1 && parseInt(downCommStatus)==1){
+                    			 }else if(parseInt(downCommStatus)==1){
                     				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
                     				 requestConfigData();
                     			 }

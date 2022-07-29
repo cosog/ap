@@ -52,15 +52,13 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                     		Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").setValue(record.data.id);
                     		var upCommStatus = record.data.upCommStatus;
                			 	var downCommStatus = record.data.downCommStatus;
-                    		if(parseInt(upCommStatus)==0 || parseInt(downCommStatus)==0){
+                    		if(parseInt(downCommStatus)==0){
                     			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                         		Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-                    		}else if(parseInt(upCommStatus)==1 && parseInt(downCommStatus)==1){
+                    		}else if(parseInt(downCommStatus)==1){
                     			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
                     			requestConfigData();
                     		}
-//                    		var aa=Ext.getCmp("UpstreamAndDownstreamInteractionOperation_Id").getValue().operation;
-//                    		alert(aa);
                     	}
                     }
                 });
@@ -70,9 +68,6 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
             if(get_rawData.totalCount>0){
             	gridPanel.getSelectionModel().deselectAll(true);
             	gridPanel.getSelectionModel().select(0, true);
-            }else{
-//            	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
-            	
             }
         },
         beforeload: function (store, options) {

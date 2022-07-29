@@ -130,6 +130,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore', {
             }
             
             var slectModel=RPCHistoryQueryFSdiagramOverlayGrid.getSelectionModel();
+            slectModel.deselectAll(true);
             slectModel.selectAll(true);
             
             showFSDiagramOverlayChart(get_rawData,"RPCHistoryQueryOverlayDiv_Id",true,0);

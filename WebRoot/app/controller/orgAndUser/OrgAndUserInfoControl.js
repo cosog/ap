@@ -306,13 +306,6 @@ function modifyUserInfo() {
     var user_model = user_panel.getSelectionModel();
     var _record = user_model.getSelection();
     if (_record.length>0) {
-//    	var UserUpdateInfoWindow = Ext.create("AP.view.orgAndUser.UserPanelInfoWindow", {
-//            title: cosog.string.editUser
-//        });
-//        UserUpdateInfoWindow.show();
-//        Ext.getCmp("addFormUser_Id").hide();
-//        Ext.getCmp("updateFormUser_Id").show();
-//        SelectedUserDataAttrInfoGridPanel();
     	var UserEditPasswordWindow = Ext.create("AP.view.orgAndUser.UserEditPasswordWindow");
     	UserEditPasswordWindow.show();
     	SelectedUserDataAttrInfoGridPanel();

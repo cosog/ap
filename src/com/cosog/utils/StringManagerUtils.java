@@ -87,6 +87,7 @@ import org.w3c.dom.svg.SVGDocument;
 
 import com.cosog.model.calculate.AcqInstanceOwnItem;
 import com.cosog.model.calculate.DisplayInstanceOwnItem;
+import com.cosog.model.drive.ModbusProtocolConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -3297,35 +3298,36 @@ public class StringManagerUtils {
         return result;
     }
 
-    public static String objectListToString(List < Object > list, String dataType) {
+    public static String objectListToString(List < Object > list, ModbusProtocolConfig.Items item) {
         StringBuffer jsonBuffer = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
             if(list.get(i)==null){
             	jsonBuffer.append(",");
-            }else if ("int".equalsIgnoreCase(dataType) || "uint".equalsIgnoreCase(dataType) || dataType.contains("int")) {
+            }else if ("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")) {
                 jsonBuffer.append(StringManagerUtils.stringToInteger(list.get(i) + "") + ",");
-            } else if ("float32".equalsIgnoreCase(dataType)) {
+            } else if ("float32".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(StringManagerUtils.stringToFloat(list.get(i) + "") + ",");
-            } else if ("float64".equalsIgnoreCase(dataType)) {
+            } else if ("float64".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(StringManagerUtils.stringToDouble(list.get(i) + "") + ",");
-            } else if ("string".equalsIgnoreCase(dataType)) {
+            } else if ("string".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(list.get(i) + ",");
-            } else if ("bool".equalsIgnoreCase(dataType) || "boolean".equalsIgnoreCase(dataType)) {
+            } else if ("bool".equalsIgnoreCase(item.getIFDataType()) || "boolean".equalsIgnoreCase(item.getIFDataType())) {
                 if (list.size() == 1) {
                     jsonBuffer.append(StringManagerUtils.stringToBoolean(list.get(i) + "") + ",");
                 } else {
                     jsonBuffer.append((StringManagerUtils.stringToBoolean(list.get(i) + "") ? 1 : 0) + ",");
                 }
 
-            } else if ("asc".equalsIgnoreCase(dataType)) {
+            } else if ("asc".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(list.get(i) + ",");
-            } else if ("bcd".equalsIgnoreCase(dataType)) {
+            } else if ("bcd".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(list.get(i) + ",");
             }
         }
         if (jsonBuffer.toString().endsWith(",")) {
             jsonBuffer.deleteCharAt(jsonBuffer.length() - 1);
         }
+        
         return jsonBuffer.toString();
     }
 
@@ -3531,4 +3533,25 @@ public class StringManagerUtils {
 		}
 		return flag;
 	}
+	
+	 public static String[] stringToStringArray(String src, int length) {
+	     //检查参数是否合法
+	     if (null == src || src.equals("")) {
+	         return null;
+	     }
+
+	     if (length <= 0) {
+	         return null;
+	     }
+	     int n = (src.length() + length - 1) / length; //获取整个字符串可以被切割成字符子串的个数
+	     String[] split = new String[n];
+	     for (int i = 0; i < n; i++) {
+	         if (i < (n - 1)) {
+	             split[i] = src.substring(i * length, (i + 1) * length);
+	         } else {
+	             split[i] = src.substring(i * length);
+	         }
+	     }
+	     return split;
+	 }
 }

@@ -532,6 +532,10 @@ public class DriverAPIController extends BaseController{
 		Jedis jedis=null;
 		if(acqGroup!=null){
 			try{
+				if("d1e3643c140569d4".equalsIgnoreCase(acqGroup.getID())){
+					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data);
+				}
+				
 				jedis = RedisUtil.jedisPool.getResource();
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;
@@ -792,7 +796,7 @@ public class DriverAPIController extends BaseController{
 							DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
 							
 							if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null){
-								value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j).getIFDataType());
+								value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 							}
 							String rawValue=value;
 							String addr=protocol.getItems().get(j).getAddr()+"";
@@ -904,8 +908,14 @@ public class DriverAPIController extends BaseController{
 								}else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
 								}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-									rpcCalculateRequestData.getFESDiagram().setAcqTime(rawValue);
-									rpcCalculateRequestData.getFESDiagram().setAcqTime(acqTime);
+									String FESDiagramAcqtime=acqTime;
+//							        if("bcd".equalsIgnoreCase(protocol.getItems().get(j).getStoreDataType())&& protocol.getItems().get(j).getQuantity()==6&&rawValue.length()==24){
+//							        	String[] acqTimeStrArr=StringManagerUtils.stringToStringArray(rawValue,2);
+//							        	if(acqTimeStrArr!=null && acqTimeStrArr.length==12){
+//							        		FESDiagramAcqtime=acqTimeStrArr[0]+acqTimeStrArr[1]+"-"+acqTimeStrArr[3]+"-"+acqTimeStrArr[5]+" "+acqTimeStrArr[7]+":"+acqTimeStrArr[9]+":"+acqTimeStrArr[11];
+//							        	}
+//							        }
+							        rpcCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
 								}else if("stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
 								}else if("spm".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
@@ -1833,7 +1843,7 @@ public class DriverAPIController extends BaseController{
 							DataMapping dataMappingColumn=(DataMapping)SerializeObjectUnils.unserizlize(jedis.hget("ProtocolMappingColumn".getBytes(), (protocol.getDeviceType()+"_"+columnName).getBytes()));
 							
 							if(acqGroup.getValue()!=null&&acqGroup.getValue().size()>i&&acqGroup.getValue().get(i)!=null){
-								value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j).getIFDataType());
+								value=StringManagerUtils.objectListToString(acqGroup.getValue().get(i), protocol.getItems().get(j));
 							}
 							String rawValue=value;
 							String addr=protocol.getItems().get(j).getAddr()+"";

@@ -10,16 +10,16 @@ values (2, 'unit2', '螺杆泵A11采集单元', 'A11-螺杆泵', null);
 /*==============================================================*/
 /* 初始化TBL_ACQ_GROUP_CONF数据                                          */
 /*==============================================================*/
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, GROUPTIMINGINTERVAL, GROUPSAVINGINTERVAL, PROTOCOL, TYPE, REMARK)
 values (1, 'group1', '采集组', 60, 60, 'A11-抽油机', 0, null);
 
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, GROUPTIMINGINTERVAL, GROUPSAVINGINTERVAL, PROTOCOL, TYPE, REMARK)
 values (2, 'group2', '控制组', 0, 0, 'A11-抽油机', 1, null);
 
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, GROUPTIMINGINTERVAL, GROUPSAVINGINTERVAL, PROTOCOL, TYPE, REMARK)
 values (3, 'group3', '采集组', 60, 60, 'A11-螺杆泵', 0, null);
 
-insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, ACQ_CYCLE, SAVE_CYCLE, PROTOCOL, TYPE, REMARK)
+insert into TBL_ACQ_GROUP_CONF (ID, GROUP_CODE, GROUP_NAME, GROUPTIMINGINTERVAL, GROUPSAVINGINTERVAL, PROTOCOL, TYPE, REMARK)
 values (4, 'group4', '控制组', 0, 0, 'A11-螺杆泵', 1, null);
 
 /*==============================================================*/
@@ -772,11 +772,11 @@ values (135, null, '变频设置频率', 'c_bpszpl', 2, null, null, null, null, null, 
 /*==============================================================*/
 /* 初始化TBL_PROTOCOLINSTANCE数据                                          */
 /*==============================================================*/
-insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, UNITID, DEVICETYPE, SORT)
-values (1, '抽油机A11采控实例', 'instance1', 'modbus-tcp', 'modbus-tcp', 'AA01', '0D', 'AA01', '0D', 1, 0, 1);
+insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, DEVICETYPE, SORT)
+values (1, '抽油机A11采控实例', 'instance1', 'modbus-tcp', 'modbus-tcp', 'AA01', '0D', 'AA01', '0D', 100, 1, 0, 1);
 
-insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, UNITID, DEVICETYPE, SORT)
-values (2, '螺杆泵A11采控实例', 'instance2', 'modbus-tcp', 'modbus-tcp', 'AA01', '0D', 'AA01', '0D', 2, 1, 1);
+insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, DEVICETYPE, SORT)
+values (2, '螺杆泵A11采控实例', 'instance2', 'modbus-tcp', 'modbus-tcp', 'AA01', '0D', 'AA01', '0D', 100, 2, 1, 1);
 
 /*==============================================================*/
 /* 初始化tbl_protocolalarminstance数据                                          */

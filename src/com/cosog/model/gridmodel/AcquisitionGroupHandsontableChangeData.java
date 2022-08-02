@@ -41,9 +41,9 @@ public class AcquisitionGroupHandsontableChangeData {
         
         private String typeName;
 
-        private String acqCycle;
+        private String groupTimingInterval;
 
-        private String saveCycle;
+        private String groupSavingInterval;
 
         private String remark;
 
@@ -71,17 +71,17 @@ public class AcquisitionGroupHandsontableChangeData {
         public String getGroupCode(){
             return this.groupCode;
         }
-        public void setAcqCycle(String acqCycle){
-            this.acqCycle = acqCycle;
+        public void setGroupTimingInterval(String groupTimingInterval){
+            this.groupTimingInterval = groupTimingInterval;
         }
-        public String getAcqCycle(){
-            return this.acqCycle;
+        public String getGroupTimingInterval(){
+            return this.groupTimingInterval;
         }
-        public void setSaveCycle(String saveCycle){
-            this.saveCycle = saveCycle;
+        public void setGroupSavingInterval(String groupSavingInterval){
+            this.groupSavingInterval = groupSavingInterval;
         }
-        public String getSaveCycle(){
-            return this.saveCycle;
+        public String getGroupSavingInterval(){
+            return this.groupSavingInterval;
         }
         public void setRemark(String remark){
             this.remark = remark;

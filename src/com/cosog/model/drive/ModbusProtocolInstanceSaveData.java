@@ -21,6 +21,8 @@ public class ModbusProtocolInstanceSaveData {
 	String heartbeatPrefix;
 	String heartbeatSuffix;
 	
+	String packetSendInterval;
+	
 	String sort;
 	
 	private List<String> delidslist;
@@ -143,5 +145,13 @@ public class ModbusProtocolInstanceSaveData {
 
 	public void setUnitName(String unitName) {
 		this.unitName = unitName;
+	}
+
+	public String getPacketSendInterval() {
+		return packetSendInterval;
+	}
+
+	public void setPacketSendInterval(String packetSendInterval) {
+		this.packetSendInterval = packetSendInterval;
 	}
 }

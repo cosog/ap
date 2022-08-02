@@ -57,7 +57,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -153,7 +153,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1032,7 +1032,8 @@ public class EquipmentDriverServerTask {
 		}else{
 			String sql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
 					+ "t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"
-					+ "t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,t4.type,"
+					+ "t.packetsendinterval,"
+					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"
 					+ "listagg(t5.itemname, ',') within group(order by t5.id ) key "
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
@@ -1043,8 +1044,8 @@ public class EquipmentDriverServerTask {
 			if(StringManagerUtils.isNotNull(instances)){
 				sql+=" and t.name in("+instances+")";
 			}
-			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"
-					+ "t2.protocol,t2.unit_code,t4.group_code,t4.acq_cycle,t4.type";
+			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,t.packetsendinterval,"
+					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type";
 			Map<String,InitInstance> InstanceListMap=new HashMap<String,InitInstance>();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			Connection conn = null;   
@@ -1063,7 +1064,7 @@ public class EquipmentDriverServerTask {
 						initInstance=new InitInstance();
 						initInstance.setMethod(method);
 						initInstance.setInstanceName(rs.getString(1));
-						initInstance.setProtocolName(rs.getString(8));
+						initInstance.setProtocolName(rs.getString(9));
 						initInstance.setAcqProtocolType(rs.getString(2));
 						initInstance.setCtrlProtocolType(rs.getString(3));
 						
@@ -1075,18 +1076,20 @@ public class EquipmentDriverServerTask {
 						initInstance.setHeartbeatPrefix(rs.getString(6)==null?"":rs.getString(6));
 						initInstance.setHeartbeatSuffix(rs.getString(7)==null?"":rs.getString(7));
 						
+						initInstance.setPacketSendInterval(rs.getInt(8));
+						
 						initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
 						initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
 					}
-					if(StringManagerUtils.isNotNull(rs.getString(10))){
+					if(StringManagerUtils.isNotNull(rs.getString(11))){
 						InitInstance.Group group=new InitInstance.Group();
-						group.setInterval(rs.getInt(11));
+						group.setGroupTimingInterval(rs.getInt(12));
 						group.setAddr(new ArrayList<Integer>());
-						int groupType=rs.getInt(12);
-						if(StringManagerUtils.isNotNull(rs.getString(13))){
-							String[] itemsArr=rs.getString(13).split(",");
+						int groupType=rs.getInt(13);
+						if(StringManagerUtils.isNotNull(rs.getString(14))){
+							String[] itemsArr=rs.getString(14).split(",");
 							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(8))){
+								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(9))){
 									for(int j=0;j<itemsArr.length;j++){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){

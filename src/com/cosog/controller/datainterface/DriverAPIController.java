@@ -720,7 +720,7 @@ public class DriverAPIController extends BaseController{
 			
 			if(protocol!=null){
 				String lastSaveTime=rpcDeviceInfo.getSaveTime();
-				int save_cycle=acqInstanceOwnItem.getSaveCycle();
+				int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 				long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");
@@ -1769,7 +1769,7 @@ public class DriverAPIController extends BaseController{
 			
 			if(protocol!=null){
 				String lastSaveTime=pcpDeviceInfo.getSaveTime();
-				int save_cycle=acqInstanceOwnItem.getSaveCycle();
+				int save_cycle=acqInstanceOwnItem.getGroupSavingInterval();
 				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 				String date=StringManagerUtils.getCurrentTime("yyyy-MM-dd");
 				long timeDiff=StringManagerUtils.getTimeDifference(lastSaveTime, acqTime, "yyyy-MM-dd HH:mm:ss");

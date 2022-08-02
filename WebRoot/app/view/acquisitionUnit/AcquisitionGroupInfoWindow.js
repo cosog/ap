@@ -220,16 +220,16 @@ Ext.define("AP.view.acquisitionUnit.AcquisitionGroupInfoWindow", {
                 value: ''
                 
             }, {
-                id: 'formAcquisitionGroupAcqCycle_Id',
-                name: "acquisitionGroup.acqCycle",
+                id: 'formAcquisitionGroupGroupTimingInterval_Id',
+                name: "acquisitionGroup.groupTimingInterval",
                 fieldLabel: '采集周期(s)',
                 anchor: '100%',
                 hidden: false,
                 value: ''
                 
             }, {
-                id: 'formAcquisitionGroupSaveCycle_Id',
-                name: "acquisitionGroup.saveCycle",
+                id: 'formAcquisitionGroupGroupSavingInterval_Id',
+                name: "acquisitionGroup.groupSavingInterval",
                 fieldLabel: '保存周期(s)',
                 anchor: '100%',
                 value: ''

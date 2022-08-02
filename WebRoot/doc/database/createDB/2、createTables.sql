@@ -273,8 +273,8 @@ create table TBL_ACQ_GROUP_CONF
   id         NUMBER(10) not null,
   group_code VARCHAR2(50) not null,
   group_name VARCHAR2(50),
-  acq_cycle  NUMBER(10) default 1,
-  save_cycle NUMBER(10) default 5,
+  grouptiminginterval  NUMBER(10) default 1,
+  groupsavinginterval NUMBER(10) default 5,
   protocol   VARCHAR2(50),
   type       NUMBER(1) default 0,
   remark     VARCHAR2(2000)
@@ -462,6 +462,7 @@ create table TBL_PROTOCOLINSTANCE
   signinsuffix     VARCHAR2(50),
   heartbeatprefix  VARCHAR2(50),
   heartbeatsuffix  VARCHAR2(50),
+  packetsendinterval NUMBER(10) default 100,
   unitid           NUMBER(10),
   devicetype       NUMBER(1) default 0,
   sort             NUMBER(10)

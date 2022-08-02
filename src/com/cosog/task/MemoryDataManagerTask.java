@@ -541,7 +541,7 @@ public class MemoryDataManagerTask {
 			jedis = RedisUtil.jedisPool.getResource();
 			String instanceSql="select t.code from tbl_protocolinstance t where 1=1 ";
 			String sql="select t5.code as instanceCode,t5.deviceType,t4.protocol,t3.unitid ,"
-					+ "t2.acq_cycle,t2.save_cycle,"
+					+ "t2.grouptiminginterval,t2.groupsavinginterval,"
 					+ "t.id as itemid,t.itemname,t.itemcode,t.bitindex,t.groupid"
 					+ " from tbl_acq_item2group_conf t,tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3,tbl_acq_unit_conf t4,tbl_protocolinstance t5 "
 					+ " where t.groupid=t2.id and t2.id=t3.groupid and t3.unitid=t4.id and t4.id=t5.unitid and t2.type=0";
@@ -582,8 +582,8 @@ public class MemoryDataManagerTask {
 					acqInstanceOwnItem.setDeviceType(rs.getInt(2));
 					acqInstanceOwnItem.setProtocol(rs.getString(3)+"");
 					acqInstanceOwnItem.setUnitId(rs.getInt(4));
-					acqInstanceOwnItem.setAcqCycle(rs.getInt(5));
-					acqInstanceOwnItem.setSaveCycle(rs.getInt(6));
+					acqInstanceOwnItem.setGroupTimingInterval(rs.getInt(5));
+					acqInstanceOwnItem.setGroupSavingInterval(rs.getInt(6));
 					
 					if(acqInstanceOwnItem.getItemList()==null){
 						acqInstanceOwnItem.setItemList(new ArrayList<AcqItem>());

@@ -238,6 +238,12 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 anchor: '100%',
                 value: ''
             }, {
+                id: 'modbusProtocolInstancePacketSendInterval_Id',
+                name: "protocolInstance.packetSendInterval",
+                fieldLabel: '单包发送间隔(ms)',
+                anchor: '100%',
+                value: ''
+            }, {
             	xtype: 'numberfield',
             	id: "modbusProtocolInstanceSort_Id",
                 name: 'protocolInstance.sort',

@@ -101,7 +101,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer sqlBuffer = new StringBuffer();
 		StringBuffer jsonBuffer = new StringBuffer();
 		sqlBuffer.append("select t.id as id,t.group_name as groupName,t.group_code as groupCode,"
-				+ " t.acq_cycle as acqCycle,t.save_cycle as saveCycle,t.remark "
+				+ " t.grouptiminginterval as groupTimingInterval,t.groupsavinginterval as groupSavingInterval,t.remark "
 				+ " from tbl_acq_group_conf t"
 				+ " where 1=1");
 		sqlBuffer.append(" and t.protocol='"+protocolName+"'");
@@ -116,8 +116,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
 				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
-				+ "{ \"header\":\"采集周期(s)\",\"dataIndex\":\"acqCycle\" ,children:[] },"
-				+ "{ \"header\":\"保存周期(s)\",\"dataIndex\":\"saveCycle\" ,children:[] },"
+				+ "{ \"header\":\"采集周期(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
+				+ "{ \"header\":\"保存周期(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
 				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sqlBuffer.toString());
@@ -128,8 +128,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			jsonBuffer.append("\"id\":\""+obj[0]+"\",");
 			jsonBuffer.append("\"groupName\":\""+obj[1]+"\",");
 			jsonBuffer.append("\"groupCode\":\""+obj[2]+"\",");
-			jsonBuffer.append("\"acqCycle\":\""+obj[3]+"\",");
-			jsonBuffer.append("\"saveCycle\":\""+obj[4]+"\",");
+			jsonBuffer.append("\"groupTimingInterval\":\""+obj[3]+"\",");
+			jsonBuffer.append("\"groupSavingInterval\":\""+obj[4]+"\",");
 			jsonBuffer.append("\"remark\":\""+obj[5]+"\"},");
 		}
 		if(jsonBuffer.toString().endsWith(",")){
@@ -2462,7 +2462,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		if(modbusProtocolConfig!=null){
 			String unitSql="select t.id as id,t.unit_code as unitCode,t.unit_name as unitName,t.remark,t.protocol from tbl_acq_unit_conf t order by t.protocol,t.id";
-			String groupSql="select t3.id,t3.group_code,t3.group_name,t3.acq_cycle,t3.save_cycle,t3.remark,t3.protocol,t3.type,t2.id as unitId "
+			String groupSql="select t3.id,t3.group_code,t3.group_name,t3.grouptiminginterval,t3.groupsavinginterval,t3.remark,t3.protocol,t3.type,t2.id as unitId "
 					+ " from TBL_ACQ_GROUP2UNIT_CONF t,tbl_acq_unit_conf t2,tbl_acq_group_conf t3 "
 					+ " where t.unitid=t2.id and t.groupid=t3.id "
 					+ " order by t3.protocol,t2.unit_code,t3.type,t3.id";
@@ -2500,8 +2500,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									rpcTree_json.append("\"id\":"+groupObj[0]+",");
 									rpcTree_json.append("\"code\":\""+groupObj[1]+"\",");
 									rpcTree_json.append("\"text\":\""+groupObj[2]+"\",");
-									rpcTree_json.append("\"acq_cycle\":\""+groupObj[3]+"\",");
-									rpcTree_json.append("\"save_cycle\":\""+groupObj[4]+"\",");
+									rpcTree_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
+									rpcTree_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
 									rpcTree_json.append("\"remark\":\""+groupObj[5]+"\",");
 									rpcTree_json.append("\"protocol\":\""+groupObj[6]+"\",");
 									rpcTree_json.append("\"type\":"+groupObj[7]+",");
@@ -2551,8 +2551,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 									pcpTree_json.append("\"id\":"+groupObj[0]+",");
 									pcpTree_json.append("\"code\":\""+groupObj[1]+"\",");
 									pcpTree_json.append("\"text\":\""+groupObj[2]+"\",");
-									pcpTree_json.append("\"acq_cycle\":\""+groupObj[3]+"\",");
-									pcpTree_json.append("\"save_cycle\":\""+groupObj[4]+"\",");
+									pcpTree_json.append("\"groupTimingInterval\":\""+groupObj[3]+"\",");
+									pcpTree_json.append("\"groupSavingInterval\":\""+groupObj[4]+"\",");
 									pcpTree_json.append("\"remark\":\""+groupObj[5]+"\",");
 									pcpTree_json.append("\"protocol\":\""+groupObj[6]+"\",");
 									pcpTree_json.append("\"type\":"+groupObj[7]+",");
@@ -3008,9 +3008,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rpcTree_json = new StringBuffer();
 		StringBuffer pcpTree_json = new StringBuffer();
+		StringBuffer unit_json = new StringBuffer();
 		rpcTree_json.append("[");
 		pcpTree_json.append("[");
-		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"
+		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"
+				+ " t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"
+				+ " t.packetsendinterval,"
 				+ " t.devicetype,t.sort,t.unitid,t2.unit_name "
 				+ " from tbl_protocolinstance t ,tbl_acq_unit_conf t2 where t.unitid=t2.id"
 				+ " order by t.devicetype,t.sort";
@@ -3018,11 +3021,12 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2 "
 				+ " where t.id=t2.groupid "
 				+ " order by t2.unitid,t.type";
+		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol from TBL_ACQ_UNIT_CONF t order by t.id";
 		List<?> list=this.findCallSql(sql);
 		List<?> groupList=this.findCallSql(groupSql);
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			if(StringManagerUtils.stringToInteger(obj[9]+"")==0){
+			if(StringManagerUtils.stringToInteger(obj[10]+"")==0){
 				rpcTree_json.append("{\"classes\":1,");
 				rpcTree_json.append("\"id\":\""+obj[0]+"\",");
 				rpcTree_json.append("\"text\":\""+obj[1]+"\",");
@@ -3033,24 +3037,25 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				rpcTree_json.append("\"signInSuffix\":\""+obj[6]+"\",");
 				rpcTree_json.append("\"heartbeatPrefix\":\""+obj[7]+"\",");
 				rpcTree_json.append("\"heartbeatSuffix\":\""+obj[8]+"\",");
-				rpcTree_json.append("\"deviceType\":"+obj[9]+",");
-				rpcTree_json.append("\"sort\":\""+obj[10]+"\",");
-				rpcTree_json.append("\"unitId\":"+obj[11]+",");
-				rpcTree_json.append("\"unitName\":\""+obj[12]+"\",");
+				rpcTree_json.append("\"packetSendInterval\":\""+obj[9]+"\",");
+				rpcTree_json.append("\"deviceType\":"+obj[10]+",");
+				rpcTree_json.append("\"sort\":\""+obj[11]+"\",");
+				rpcTree_json.append("\"unitId\":"+obj[12]+",");
+				rpcTree_json.append("\"unitName\":\""+obj[13]+"\",");
 				rpcTree_json.append("\"iconCls\": \"protocol\",");
 
 				rpcTree_json.append("\"expanded\": true,");
 				rpcTree_json.append("\"children\": [");
 				rpcTree_json.append("{\"classes\":2,");
-				rpcTree_json.append("\"text\":\""+obj[12]+"\",");
-				rpcTree_json.append("\"id\":"+obj[11]+",");
+				rpcTree_json.append("\"text\":\""+obj[13]+"\",");
+				rpcTree_json.append("\"id\":"+obj[12]+",");
 				rpcTree_json.append("\"iconCls\": \"acqUnit\","); 
 				
 				rpcTree_json.append("\"expanded\": true,");
 				rpcTree_json.append("\"children\": [");
 				for(int j=0;j<groupList.size();j++){
 					Object[] groupObj = (Object[]) groupList.get(j);
-					if((obj[11]+"").equalsIgnoreCase(groupObj[3]+"")){
+					if((obj[12]+"").equalsIgnoreCase(groupObj[3]+"")){
 						rpcTree_json.append("{\"classes\":3,");
 						rpcTree_json.append("\"id\":"+groupObj[0]+",");
 						rpcTree_json.append("\"text\":\""+groupObj[1]+"\",");
@@ -3079,23 +3084,24 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				pcpTree_json.append("\"signInSuffix\":\""+obj[6]+"\",");
 				pcpTree_json.append("\"heartbeatPrefix\":\""+obj[7]+"\",");
 				pcpTree_json.append("\"heartbeatSuffix\":\""+obj[8]+"\",");
-				pcpTree_json.append("\"deviceType\":"+obj[9]+",");
-				pcpTree_json.append("\"sort\":\""+obj[10]+"\",");
-				pcpTree_json.append("\"unitId\":"+obj[11]+",");
-				pcpTree_json.append("\"unitName\":\""+obj[12]+"\",");
+				pcpTree_json.append("\"packetSendInterval\":\""+obj[9]+"\",");
+				pcpTree_json.append("\"deviceType\":"+obj[10]+",");
+				pcpTree_json.append("\"sort\":\""+obj[11]+"\",");
+				pcpTree_json.append("\"unitId\":"+obj[12]+",");
+				pcpTree_json.append("\"unitName\":\""+obj[13]+"\",");
 				pcpTree_json.append("\"iconCls\": \"protocol\",");
 				pcpTree_json.append("\"expanded\": true,");
 				
 				pcpTree_json.append("\"children\": [");
 				pcpTree_json.append("{\"classes\":2,");
-				pcpTree_json.append("\"text\":\""+obj[12]+"\",");
-				pcpTree_json.append("\"id\":"+obj[11]+",");
+				pcpTree_json.append("\"text\":\""+obj[13]+"\",");
+				pcpTree_json.append("\"id\":"+obj[12]+",");
 				pcpTree_json.append("\"iconCls\": \"acqUnit\","); 
 				pcpTree_json.append("\"expanded\": true,");
 				pcpTree_json.append("\"children\": [");
 				for(int j=0;j<groupList.size();j++){
 					Object[] groupObj = (Object[]) groupList.get(j);
-					if((obj[11]+"").equalsIgnoreCase(groupObj[3]+"")){
+					if((obj[12]+"").equalsIgnoreCase(groupObj[3]+"")){
 						pcpTree_json.append("{\"classes\":3,");
 						pcpTree_json.append("\"id\":"+groupObj[0]+",");
 						pcpTree_json.append("\"text\":\""+groupObj[1]+"\",");

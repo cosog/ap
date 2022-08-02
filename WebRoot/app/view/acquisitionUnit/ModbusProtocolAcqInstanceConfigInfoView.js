@@ -143,9 +143,15 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 		
 		var item10={};
 		item10.id=10;
-		item10.title='排序序号';
-		item10.value=data.sort;
+		item10.title='单包发送间隔(ms)';
+		item10.value=data.packetSendInterval;
 		root.push(item10);
+		
+		var item11={};
+		item11.id=11;
+		item11.title='排序序号';
+		item11.value=data.sort;
+		root.push(item11);
 	}
 	
 	if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
@@ -182,6 +188,14 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
 	        }
+	        
+//	        protocolConfigInstancePropertiesHandsontableHelper.test = function (instance, td, row, col, prop, value, cellProperties) {
+//	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+//	            cellProperties.type = 'dropdown';
+//	            cellProperties.source = ['抽油机','螺杆泵'];
+//	            cellProperties.strict = true;
+//	            cellProperties.allowInvalid = false;
+//	        }
 	        
 	        protocolConfigInstancePropertiesHandsontableHelper.createTable = function (data) {
 	        	$('#'+protocolConfigInstancePropertiesHandsontableHelper.divid).empty();
@@ -367,7 +381,9 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.heartbeatPrefix=propertiesData[7][2];
 			saveData.heartbeatSuffix=propertiesData[8][2];
 			
-			saveData.sort=propertiesData[9][2];
+			saveData.packetSendInterval=propertiesData[9][2];
+			
+			saveData.sort=propertiesData[10][2];
 			
 			SaveModbusProtocolAcqInstanceData(saveData);
 		}

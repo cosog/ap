@@ -30,6 +30,7 @@ public class ProtocolInstance implements java.io.Serializable {
 	private String signInSuffix;
 	private String heartbeatPrefix;
 	private String heartbeatSuffix;
+	private Integer packetSendInterval;
 	private Integer sort;
 
 	// Constructors
@@ -165,6 +166,14 @@ public class ProtocolInstance implements java.io.Serializable {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	public Integer getPacketSendInterval() {
+		return packetSendInterval;
+	}
+
+	public void setPacketSendInterval(Integer packetSendInterval) {
+		this.packetSendInterval = packetSendInterval;
 	}
 	
 	

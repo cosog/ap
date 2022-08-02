@@ -272,11 +272,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		PrintWriter out = response.getWriter();
 		try {
 			if(acquisitionGroup.getType()==0){
-				if(acquisitionGroup.getAcqCycle()==null || acquisitionGroup.getAcqCycle()==0){
-					acquisitionGroup.setAcqCycle(60);
+				if(acquisitionGroup.getGroupTimingInterval()==null || acquisitionGroup.getGroupTimingInterval()==0){
+					acquisitionGroup.setGroupTimingInterval(60);
 				}
-				if(acquisitionGroup.getSaveCycle()==null || acquisitionGroup.getSaveCycle()==0){
-					acquisitionGroup.setSaveCycle(300);
+				if(acquisitionGroup.getGroupSavingInterval()==null || acquisitionGroup.getGroupSavingInterval()==0){
+					acquisitionGroup.setGroupSavingInterval(300);
 				}
 			}
 			this.acquisitionGroupManagerService.doAcquisitionGroupAdd(acquisitionGroup);
@@ -1756,8 +1756,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setGroupCode(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupCode());
 					acquisitionGroup.setGroupName(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupName());
 					acquisitionGroup.setType("采集组".equalsIgnoreCase(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getTypeName())?0:1);
-					acquisitionGroup.setAcqCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getAcqCycle()));
-					acquisitionGroup.setSaveCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getSaveCycle()));
+					acquisitionGroup.setGroupTimingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupTimingInterval()));
+					acquisitionGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getGroupSavingInterval()));
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getUpdatelist().get(i).getRemark());
 					acquisitionGroup.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionGroupEdit(acquisitionGroup);
@@ -1772,8 +1772,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 					acquisitionGroup.setGroupCode(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupCode());
 					acquisitionGroup.setGroupName(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupName());
 					acquisitionGroup.setType("采集组".equalsIgnoreCase(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getTypeName())?0:1);
-					acquisitionGroup.setAcqCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getAcqCycle()));
-					acquisitionGroup.setSaveCycle(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getSaveCycle()));
+					acquisitionGroup.setGroupTimingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupTimingInterval()));
+					acquisitionGroup.setGroupSavingInterval(StringManagerUtils.stringToInteger(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getGroupSavingInterval()));
 					acquisitionGroup.setRemark(acquisitionGroupHandsontableChangeData.getInsertlist().get(i).getRemark());
 					acquisitionGroup.setProtocol(protocol);
 					this.acquisitionUnitManagerService.doAcquisitionGroupAdd(acquisitionGroup);
@@ -1850,6 +1850,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 	public String doModbusProtocolInstanceAdd(@ModelAttribute ProtocolInstance protocolInstance) throws IOException {
 		String result = "";
 		try {
+			if(protocolInstance.getPacketSendInterval()==null){
+				protocolInstance.setPacketSendInterval(100);
+			}
 			this.protocolInstanceManagerService.doModbusProtocolInstanceAdd(protocolInstance);
 			List<String> instanceList=new ArrayList<String>();
 			instanceList.add(protocolInstance.getName());
@@ -2049,48 +2052,55 @@ public class AcquisitionUnitManagerController extends BaseController {
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					unitId=list.get(0).toString();
-					ProtocolInstance protocolInstance=new ProtocolInstance();
-					protocolInstance.setId(modbusProtocolInstanceSaveData.getId());
-					protocolInstance.setCode(modbusProtocolInstanceSaveData.getCode());
-					protocolInstance.setName(modbusProtocolInstanceSaveData.getName());
-					protocolInstance.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
-					protocolInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
-					protocolInstance.setAcqProtocolType(modbusProtocolInstanceSaveData.getAcqProtocolType());
-					protocolInstance.setCtrlProtocolType(modbusProtocolInstanceSaveData.getCtrlProtocolType());
-					protocolInstance.setSignInPrefix(modbusProtocolInstanceSaveData.getSignInPrefix());
-					protocolInstance.setSignInSuffix(modbusProtocolInstanceSaveData.getSignInSuffix());
-					protocolInstance.setHeartbeatPrefix(modbusProtocolInstanceSaveData.getHeartbeatPrefix());
-					protocolInstance.setHeartbeatSuffix(modbusProtocolInstanceSaveData.getHeartbeatSuffix());
-					
-					if(StringManagerUtils.isNum(modbusProtocolInstanceSaveData.getSort())){
-						protocolInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolInstanceSaveData.getSort()));
+				}
+				
+				ProtocolInstance protocolInstance=new ProtocolInstance();
+				protocolInstance.setId(modbusProtocolInstanceSaveData.getId());
+				protocolInstance.setCode(modbusProtocolInstanceSaveData.getCode());
+				protocolInstance.setName(modbusProtocolInstanceSaveData.getName());
+				protocolInstance.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
+				protocolInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
+				protocolInstance.setAcqProtocolType(modbusProtocolInstanceSaveData.getAcqProtocolType());
+				protocolInstance.setCtrlProtocolType(modbusProtocolInstanceSaveData.getCtrlProtocolType());
+				protocolInstance.setSignInPrefix(modbusProtocolInstanceSaveData.getSignInPrefix());
+				protocolInstance.setSignInSuffix(modbusProtocolInstanceSaveData.getSignInSuffix());
+				protocolInstance.setHeartbeatPrefix(modbusProtocolInstanceSaveData.getHeartbeatPrefix());
+				protocolInstance.setHeartbeatSuffix(modbusProtocolInstanceSaveData.getHeartbeatSuffix());
+				
+				if(StringManagerUtils.isNum(modbusProtocolInstanceSaveData.getPacketSendInterval())){
+					protocolInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(modbusProtocolInstanceSaveData.getPacketSendInterval()));
+				}else{
+					protocolInstance.setPacketSendInterval(null);
+				}
+				
+				if(StringManagerUtils.isNum(modbusProtocolInstanceSaveData.getSort())){
+					protocolInstance.setSort(StringManagerUtils.stringToInteger(modbusProtocolInstanceSaveData.getSort()));
+				}else{
+					protocolInstance.setSort(null);
+				}
+				
+				try {
+					this.protocolInstanceManagerService.doModbusProtocolInstanceEdit(protocolInstance);
+					//实例名称是否改变
+					if(modbusProtocolInstanceSaveData.getName().equals(modbusProtocolInstanceSaveData.getOldName())){
+						List<String> instanceList=new ArrayList<String>();
+						instanceList.add(protocolInstance.getName());
+						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
 					}else{
-						protocolInstance.setSort(null);
+						List<String> instanceList=new ArrayList<String>();
+						instanceList.add(modbusProtocolInstanceSaveData.getOldName());
+						EquipmentDriverServerTask.initInstanceConfig(instanceList, "delete");
+						
+						instanceList=new ArrayList<String>();
+						instanceList.add(modbusProtocolInstanceSaveData.getName());
+						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
 					}
-					
-					try {
-						this.protocolInstanceManagerService.doModbusProtocolInstanceEdit(protocolInstance);
-						//实例名称是否改变
-						if(modbusProtocolInstanceSaveData.getName().equals(modbusProtocolInstanceSaveData.getOldName())){
-							List<String> instanceList=new ArrayList<String>();
-							instanceList.add(protocolInstance.getName());
-							EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
-						}else{
-							List<String> instanceList=new ArrayList<String>();
-							instanceList.add(modbusProtocolInstanceSaveData.getOldName());
-							EquipmentDriverServerTask.initInstanceConfig(instanceList, "delete");
-							
-							instanceList=new ArrayList<String>();
-							instanceList.add(modbusProtocolInstanceSaveData.getName());
-							EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
-						}
-						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
-						json = "{success:true,msg:true}";
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						json = "{success:false,msg:false}";
-					}
+					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
+					json = "{success:true,msg:true}";
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					json = "{success:false,msg:false}";
 				}
 			}
 		}

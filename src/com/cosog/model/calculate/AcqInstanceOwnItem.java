@@ -9,8 +9,8 @@ public class AcqInstanceOwnItem  implements Serializable {
 	public int deviceType;
 	public String protocol;
 	public int unitId;
-	private int acqCycle;
-	private int saveCycle;
+	private int groupTimingInterval;
+	private int groupSavingInterval;
 	public List<AcqItem> itemList;
 	
 	public static class AcqItem implements Serializable {
@@ -82,16 +82,16 @@ public class AcqInstanceOwnItem  implements Serializable {
 	public void setItemList(List<AcqItem> itemList) {
 		this.itemList = itemList;
 	}
-	public int getAcqCycle() {
-		return acqCycle;
+	public int getGroupTimingInterval() {
+		return groupTimingInterval;
 	}
-	public void setAcqCycle(int acqCycle) {
-		this.acqCycle = acqCycle;
+	public void setGroupTimingInterval(int groupTimingInterval) {
+		this.groupTimingInterval = groupTimingInterval;
 	}
-	public int getSaveCycle() {
-		return saveCycle;
+	public int getGroupSavingInterval() {
+		return groupSavingInterval;
 	}
-	public void setSaveCycle(int saveCycle) {
-		this.saveCycle = saveCycle;
+	public void setGroupSavingInterval(int groupSavingInterval) {
+		this.groupSavingInterval = groupSavingInterval;
 	}
 }

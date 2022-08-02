@@ -25,6 +25,8 @@ public class InitInstance {
     
     private String HeartbeatSuffix;
     
+    private int PacketSendInterval;
+    
     private List<Group> AcqGroup;
     
     private List<Group> CtrlGroup;
@@ -37,7 +39,7 @@ public class InitInstance {
 	{
 	    private List<Integer> Addr;
 
-	    private int Interval;
+	    private int GroupTimingInterval;
 
 	    public void setAddr(List<Integer> Addr){
 	        this.Addr = Addr;
@@ -45,12 +47,12 @@ public class InitInstance {
 	    public List<Integer> getAddr(){
 	        return this.Addr;
 	    }
-	    public void setInterval(int Interval){
-	        this.Interval = Interval;
-	    }
-	    public int getInterval(){
-	        return this.Interval;
-	    }
+		public int getGroupTimingInterval() {
+			return GroupTimingInterval;
+		}
+		public void setGroupTimingInterval(int groupTimingInterval) {
+			GroupTimingInterval = groupTimingInterval;
+		}
 	}
 
 	public String getMethod() {
@@ -147,6 +149,14 @@ public class InitInstance {
 
 	public void setPrefixSuffixHex(boolean prefixSuffixHex) {
 		PrefixSuffixHex = prefixSuffixHex;
+	}
+
+	public int getPacketSendInterval() {
+		return PacketSendInterval;
+	}
+
+	public void setPacketSendInterval(int packetSendInterval) {
+		PacketSendInterval = packetSendInterval;
 	}
 	
 }

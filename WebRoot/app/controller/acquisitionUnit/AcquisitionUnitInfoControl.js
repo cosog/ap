@@ -166,14 +166,14 @@ SelectAcquisitionGroupDataAttrInfoGridPanel = function () {
     var id = dataattr_row[0].data.id;
     var groupName = dataattr_row[0].data.groupName;
     var groupCode = dataattr_row[0].data.groupCode;
-    var acqCycle = dataattr_row[0].data.acqCycle;
-    var saveCycle = dataattr_row[0].data.saveCycle;
+    var groupTimingInterval = dataattr_row[0].data.groupTimingInterval;
+    var groupSavingInterval = dataattr_row[0].data.groupSavingInterval;
     var remark = dataattr_row[0].data.remark;
     Ext.getCmp('formAcquisitionGroupJlbh_Id').setValue(id);
     Ext.getCmp('formAcquisitionGroupName_Id').setValue(groupName);
     Ext.getCmp('formAcquisitionGroupCode_Id').setValue(groupCode);
-    Ext.getCmp('formAcquisitionGroupAcqCycle_Id').setValue(acqCycle);
-    Ext.getCmp('formAcquisitionGroupSaveCycle_Id').setValue(saveCycle);
+    Ext.getCmp('formAcquisitionGroupGroupTimingInterval_Id').setValue(groupTimingInterval);
+    Ext.getCmp('formAcquisitionGroupGroupSavingInterval_Id').setValue(groupSavingInterval);
     Ext.getCmp('acquisitionGroupRemark_Id').setValue(remark);
 };
 

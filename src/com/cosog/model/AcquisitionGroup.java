@@ -24,8 +24,8 @@ public class AcquisitionGroup implements java.io.Serializable {
 	private Integer id;
 	private String groupCode;
 	private String groupName;
-	private Integer acqCycle;
-	private Integer saveCycle;
+	private Integer groupTimingInterval;
+	private Integer groupSavingInterval;
 	private String protocol;
 	private Integer type;
 	private String remark;
@@ -37,14 +37,14 @@ public class AcquisitionGroup implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public AcquisitionGroup(Integer id, String groupCode, String groupName, Integer acqCycle, Integer saveCycle,
+	public AcquisitionGroup(Integer id, String groupCode, String groupName, Integer groupTimingInterval, Integer groupSavingInterval,
 			String protocol, Integer type, String remark) {
 		super();
 		this.id = id;
 		this.groupCode = groupCode;
 		this.groupName = groupName;
-		this.acqCycle = acqCycle;
-		this.saveCycle = saveCycle;
+		this.groupTimingInterval = groupTimingInterval;
+		this.groupSavingInterval = groupSavingInterval;
 		this.protocol = protocol;
 		this.type = type;
 		this.remark = remark;
@@ -79,22 +79,22 @@ public class AcquisitionGroup implements java.io.Serializable {
 		this.groupName = groupName;
 	}
 	
-	@Column(name = "acq_Cycle", precision = 22, scale = 0)
-	public Integer getAcqCycle() {
-		return acqCycle;
+	@Column(name = "groupTimingInterval", precision = 22, scale = 0)
+	public Integer getGroupTimingInterval() {
+		return groupTimingInterval;
 	}
 
-	public void setAcqCycle(Integer acqCycle) {
-		this.acqCycle = acqCycle;
+	public void setGroupTimingInterval(Integer groupTimingInterval) {
+		this.groupTimingInterval = groupTimingInterval;
 	}
 
-	@Column(name = "save_Cycle", precision = 22, scale = 0)
-	public Integer getSaveCycle() {
-		return saveCycle;
+	@Column(name = "groupSavingInterval", precision = 22, scale = 0)
+	public Integer getGroupSavingInterval() {
+		return groupSavingInterval;
 	}
 
-	public void setSaveCycle(Integer saveCycle) {
-		this.saveCycle = saveCycle;
+	public void setGroupSavingInterval(Integer groupSavingInterval) {
+		this.groupSavingInterval = groupSavingInterval;
 	}
 	
 	@Column(name = "REMARK", nullable = true, length = 10)

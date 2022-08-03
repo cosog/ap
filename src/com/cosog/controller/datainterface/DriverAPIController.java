@@ -1351,7 +1351,7 @@ public class DriverAPIController extends BaseController{
 					deviceTodayData.setAcquisitionItemInfoList(acquisitionItemInfoList);
 				}
 				
-				//如果满足保存周期或者有报警，保存数据
+				//如果满足单组入库间隔或者有报警，保存数据
 				if(save || alarm){
 					String saveRawDataSql="insert into "+rawDataTable+"(wellid,acqtime,rawdata)values("+rpcDeviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
 					rpcDeviceInfo.setSaveTime(acqTime);
@@ -2287,7 +2287,7 @@ public class DriverAPIController extends BaseController{
 					deviceTodayData.setAcquisitionItemInfoList(acquisitionItemInfoList);
 				}
 				
-				//如果满足保存周期或者有报警，保存数据
+				//如果满足单组入库间隔或者有报警，保存数据
 				if(save || alarm){
 					String saveRawDataSql="insert into "+rawDataTable+"(wellid,acqtime,rawdata)values("+pcpDeviceInfo.getId()+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),'"+acqGroup.getRawData()+"' )";
 					pcpDeviceInfo.setSaveTime(acqTime);

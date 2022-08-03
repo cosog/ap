@@ -1361,6 +1361,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getAcqUnitList")
+	public String getAcqUnitList() throws IOException {
+		String json = acquisitionUnitItemManagerService.getAcqUnitList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/modbusDisplayInstanceConfigTreeData")
 	public String modbusDisplayInstanceConfigTreeData() throws IOException {
 		String json = acquisitionUnitItemManagerService.getModbusDisplayProtocolInstanceConfigTreeData();

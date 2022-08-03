@@ -36,6 +36,7 @@ import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.WellGridPanelData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
@@ -44,6 +45,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.utils.Config;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.LicenseMap;
 import com.cosog.utils.Page;
@@ -2477,5 +2479,90 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 
 		return result_json;
+	}
+	
+	public String getWaterCutRawData(String signinId,String slave) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		int totals=0;
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\"采样间隔(ms)\",\"dataIndex\":\"interval\",flex:1,children:[] },"
+				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\",flex:1,children:[] },"
+				+ "{ \"header\":\"压力(MPa)\",\"dataIndex\":\"tubingPressure\",flex:1,children:[] },"
+				+ "{ \"header\":\"位置\",\"dataIndex\":\"position\",flex:1,children:[] }"
+				+ "]";
+		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+		
+		result_json.append("\"totalRoot\":[");
+		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
+			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String topic="rawwatercut";
+			StringBuffer requestBuff = new StringBuffer();
+			requestBuff.append("{\"ID\":\""+signinId+"\",");
+			requestBuff.append("\"Topic\":\""+topic+"\"}");
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			
+//			String path="";
+//			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//			path=stringManagerUtils.getFilePath("test7.json","example/");
+//			responseData=stringManagerUtils.readFile(path,"utf-8");
+			
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<WaterCutRawData>() {}.getType();
+			WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
+			if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
+				totals=waterCutRawData.getMessage().getWaterCut().size();
+				for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
+					result_json.append("{\"id\":"+(i+1)+",");
+					result_json.append("\"interval\":\""+waterCutRawData.getMessage().getInterval().get(i)+"\",");
+					result_json.append("\"waterCut\":"+waterCutRawData.getMessage().getWaterCut().get(i)+",");
+					result_json.append("\"tubingPressure\":\""+waterCutRawData.getMessage().getTubingPressure().get(i)+"\",");
+					result_json.append("\"position\":\""+waterCutRawData.getMessage().getPosition().get(i)+"\"},");
+				}
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("],\"totalCount\":"+totals+"}");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getWaterCutRawDataExport(String signinId,String slave) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		result_json.append("[");
+		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
+			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String topic="rawwatercut";
+			StringBuffer requestBuff = new StringBuffer();
+			requestBuff.append("{\"ID\":\""+signinId+"\",");
+			requestBuff.append("\"Topic\":\""+topic+"\"}");
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			
+//			String path="";
+//			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//			path=stringManagerUtils.getFilePath("test7.json","example/");
+//			responseData=stringManagerUtils.readFile(path,"utf-8");
+			
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<WaterCutRawData>() {}.getType();
+			WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
+			if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
+				for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
+					result_json.append("{\"id\":"+(i+1)+",");
+					result_json.append("\"interval\":\""+waterCutRawData.getMessage().getInterval().get(i)+"\",");
+					result_json.append("\"waterCut\":"+waterCutRawData.getMessage().getWaterCut().get(i)+",");
+					result_json.append("\"tubingPressure\":\""+waterCutRawData.getMessage().getTubingPressure().get(i)+"\",");
+					result_json.append("\"position\":\""+waterCutRawData.getMessage().getPosition().get(i)+"\"},");
+				}
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 }

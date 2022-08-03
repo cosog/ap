@@ -52,13 +52,25 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                     		Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").setValue(record.data.id);
                     		var upCommStatus = record.data.upCommStatus;
                			 	var downCommStatus = record.data.downCommStatus;
-                    		if(parseInt(downCommStatus)==0){
-                    			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
-                        		Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-                    		}else if(parseInt(downCommStatus)==1){
-                    			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
-                    			requestConfigData();
-                    		}
+               			 	var tabPanel = Ext.getCmp("UpstreamAndDownstreamInteractionConfigTabpanel_Id");
+               			 	var activeId = tabPanel.getActiveTab().id;
+               			 	if(activeId=="UpstreamAndDownstreamInteractionConfigPanel1_Id"){
+               			 		if(parseInt(downCommStatus)==0){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+               			 			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
+               			 		}else if(parseInt(downCommStatus)==1){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+               			 			requestConfigData();
+               			 		}
+               			 	}else if(activeId=="UpstreamAndDownstreamInteractionConfigPanel2_Id"){
+               			 		Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id").removeAll();
+               			 		Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").disable();
+               			 		if(parseInt(downCommStatus)==0){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").disable();
+               			 		}else if(parseInt(downCommStatus)==1){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").enable();
+               			 		}
+               			 	}
                     	}
                     }
                 });

@@ -73,122 +73,273 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             items: [{
                 border: false,
                 layout: 'border',
-                tbar:[{
-                	id: 'UpstreamAndDownstreamInteractionDeviceListSelectRow_Id',
-                	xtype: 'textfield',
-                    value: -1,
-                    hidden: true
-                 },rpcDeviceCombo,'-',{
-                     xtype: 'radiogroup',
-                     fieldLabel: '操作',
-                     labelWidth: 30,
-                     id: 'UpstreamAndDownstreamInteractionOperation_Id',
-                     cls: 'x-check-group-alt',
-                     name: 'operation',
-                     items: [
-                         {boxLabel: '模型下行',width: 70, inputValue: 1, checked: true},
-                         {boxLabel: '配置下行',width: 70, inputValue: 2},
-                         {boxLabel: '时钟下行',width: 70, inputValue: 3},
-                         {boxLabel: '看门狗重启',width: 85, inputValue: 4},
-                         {boxLabel: '上死点停抽',width: 85, inputValue: 5},
-                         {boxLabel: '下死点停抽',width: 85, inputValue: 6},
-                         {boxLabel: '即时停抽',width: 70, inputValue: 7}
-                     ],
-                     listeners: {
-                    	 change: function (radiogroup, newValue, oldValue, eOpts) {
-                    		 if(newValue.operation==1){
-                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").show();
-                    		 }else{
-                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").hide();
-                    		 }
-                    		 if(newValue.operation==3){
-                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").setText("时钟同步");
-                    		 }else{
-                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").setText("发送");
-                    		 }
-                    		 var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
-                    		 if(_record.length>0){
-                    			 var upCommStatus = _record[0].data.upCommStatus;
-                    			 var downCommStatus = _record[0].data.downCommStatus;
-//                    			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
-//                    			 requestConfigData();
-                    			 
-                    			 if(parseInt(downCommStatus)==0){
-                    				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
-                    				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-                    			 }else if(parseInt(downCommStatus)==1){
-                    				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
-                    				 requestConfigData();
-                    			 }
-                    		 }
-                    	 }
-                     }
-                 },'->',{
-                     xtype: 'button',
-                     text: '模型同步',
-                     iconCls: 'sync',
-                     id:'UpstreamAndDownstreamInteractionSyncBtn_Id',
-                     pressed: false,
-                     hidden: false,
-                     handler: function (v, o) {
-                     	syncModelData();
-                     }
-                 },{
-                     xtype: 'button',
-                     text: '发送',
-                     iconCls: 'send',
-                     id:'UpstreamAndDownstreamInteractionSendBtn_Id',
-                     pressed: false,
-                     hidden:false,
-                     handler: function (v, o) {
-                     	producerMsg();
-                     }
-                 }],
                 items: [{
                 	region: 'center',
-                	title:'设备列表',
-                    id:'UpstreamAndDownstreamInteractionDeviceListPanel_Id',
-                    border: false,
-                    layout: 'fit'
-                }, {
-                	region: 'east',
-                    width: '65%',
+                	border: false,
                     layout: 'border',
                     items: [{
                     	region: 'center',
-                    	title:'下行数据',
-                    	xtype:'form',
-                		layout: 'auto',
-                        border: false,
-                        collapsible: false,
-                        split: true,
-                        autoScroll:true,
-                        scrollable: true,
+                    	title:'设备列表',
+                    	layout: 'fit',
+                    	border: false,
+                        id:'UpstreamAndDownstreamInteractionDeviceListPanel_Id'
+                    }],
+                    tbar:[{
+                    	id: 'UpstreamAndDownstreamInteractionDeviceListSelectRow_Id',
+                    	xtype: 'textfield',
+                        value: -1,
+                        hidden: true
+                     },rpcDeviceCombo]
+                }, {
+                	region: 'east',
+                    width: '65%',
+                    header: false,
+                    collapsible: true,
+                    split: true,
+                    xtype: 'tabpanel',
+                    id:"UpstreamAndDownstreamInteractionConfigTabpanel_Id",
+                    activeTab: 0,
+            		border: false,
+            		tabPosition: 'bottom',
+            		items: [{
+            			title: '下行数据',
+            			id:"UpstreamAndDownstreamInteractionConfigPanel1_Id",
+            			layout: 'border',
+            			tbar:[{
+                             xtype: 'radiogroup',
+                             fieldLabel: '操作',
+                             labelWidth: 30,
+                             id: 'UpstreamAndDownstreamInteractionOperation_Id',
+                             cls: 'x-check-group-alt',
+                             name: 'operation',
+                             items: [
+                                 {boxLabel: '模型下行',width: 70, inputValue: 1, checked: true},
+                                 {boxLabel: '配置下行',width: 70, inputValue: 2},
+                                 {boxLabel: '时钟下行',width: 70, inputValue: 3},
+                                 {boxLabel: '看门狗重启',width: 85, inputValue: 4},
+                                 {boxLabel: '上死点停抽',width: 85, inputValue: 5},
+                                 {boxLabel: '下死点停抽',width: 85, inputValue: 6},
+                                 {boxLabel: '即时停抽',width: 70, inputValue: 7}
+                             ],
+                             listeners: {
+                            	 change: function (radiogroup, newValue, oldValue, eOpts) {
+                            		 if(newValue.operation==1){
+                            			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").show();
+                            		 }else{
+                            			 Ext.getCmp("UpstreamAndDownstreamInteractionSyncBtn_Id").hide();
+                            		 }
+                            		 if(newValue.operation==3){
+                            			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").setText("时钟同步");
+                            		 }else{
+                            			 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").setText("发送");
+                            		 }
+                            		 var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+                            		 if(_record.length>0){
+                            			 var upCommStatus = _record[0].data.upCommStatus;
+                            			 var downCommStatus = _record[0].data.downCommStatus;
+                            			 
+                            			 if(parseInt(downCommStatus)==0){
+                            				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+                            				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
+                            			 }else if(parseInt(downCommStatus)==1){
+                            				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+                            				 requestConfigData();
+                            			 }
+                            		 }
+                            	 }
+                             }
+                         },'->',{
+                             xtype: 'button',
+                             text: '模型同步',
+                             iconCls: 'sync',
+                             id:'UpstreamAndDownstreamInteractionSyncBtn_Id',
+                             pressed: false,
+                             hidden: false,
+                             handler: function (v, o) {
+                             	syncModelData();
+                             }
+                         },{
+                             xtype: 'button',
+                             text: '发送',
+                             iconCls: 'send',
+                             id:'UpstreamAndDownstreamInteractionSendBtn_Id',
+                             pressed: false,
+                             hidden:false,
+                             handler: function (v, o) {
+                             	producerMsg();
+                             }
+                         }],
                         items: [{
-                        	xtype:'textareafield',
-                        	id:'UpstreamAndDownstreamInteractionConfigDataTextArea_Id',
-                        	margin: '0 0 0 0',
-                        	padding:0,
-                        	grow:false,//自动增长
-                        	border: false,
-                        	width:'100%',
-                            height: '100%',
-                            anchor: '100%',
-                            emptyText: '在此输入下行数据...',
+                        	region: 'center',
+                        	title:'下行数据',
+                        	xtype:'form',
+                    		layout: 'auto',
+                            border: false,
                             autoScroll:true,
                             scrollable: true,
-                            readOnly:false
+                            items: [{
+                            	xtype:'textareafield',
+                            	id:'UpstreamAndDownstreamInteractionConfigDataTextArea_Id',
+                            	margin: '0 0 0 0',
+                            	padding:0,
+                            	grow:false,//自动增长
+                            	border: false,
+                            	width:'100%',
+                                height: '100%',
+                                anchor: '100%',
+                                emptyText: '在此输入下行数据...',
+                                autoScroll:true,
+                                scrollable: true,
+                                readOnly:false
+                            }]
+                        },{
+                        	region: 'east',
+                            width: '50%',
+                            header: true,
+                            collapsible: true,
+                            split: true,
+                            border: false,
+                            layout: 'fit',
+                            title:'帮助',
+                            id:'UpstreamAndDownstreamInteractionConfigHelpDocPanel_Id',
+                			autoScroll: true,
+                			html:''
                         }]
-                    },{
-                    	region: 'east',
-                        width: '50%',
-                        border: false,
-                        layout: 'fit',
-                        title:'帮助',
-                        id:'UpstreamAndDownstreamInteractionConfigHelpDocPanel_Id',
-            			autoScroll: true,
-            			html:''
-                    }]
+            		},{
+            			title: '含水仪数据',
+            			id:"UpstreamAndDownstreamInteractionConfigPanel2_Id",
+            			layout: 'border',
+            			tbar:[{
+                            id: 'UpstreamAndDownstreamInteractionWaterCutRawDataColumnStr_Id',
+                            xtype: 'textfield',
+                            value: '',
+                            hidden: true
+                        },'->',{
+                            xtype: 'button',
+                            text: cosog.string.exportExcel,
+                            id:'UpstreamAndDownstreamInteractionExportWaterCutBtn_Id',
+                            iconCls: 'export',
+                            hidden: false,
+                            handler: function (v, o) {
+                                var fields = "";
+                                var heads = "";
+                                var lockedheads = "";
+                                var unlockedheads = "";
+                                var lockedfields = "";
+                                var unlockedfields = "";
+                                var wellName ='';
+                        		var wellId = '';
+                        		var signinId ='';
+                        		var slave = '';
+                            	var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+                            	if(_record.length>0){
+                            		var wellName = _record[0].data.wellName;
+                            		var wellId = _record[0].data.id;
+                            		var signinId = _record[0].data.signinId;
+                            		var slave = _record[0].data.slave;
+                            	}
+                                var url = context + '/wellInformationManagerController/exportWaterCutRawData';
+                                
+                                var columnStr=Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataColumnStr_Id").getValue();
+                                var columns_ = Ext.JSON.decode(columnStr);
+                                
+                                Ext.Array.each(columns_, function (name, index, countriesItSelf) {
+                                    var column = columns_[index];
+                                    if (index > 0 && !column.hidden) {
+                                    	if(column.locked){
+                                    		lockedfields += column.dataIndex + ",";
+                                    		lockedheads += column.text + ",";
+                                    	}else{
+                                    		unlockedfields += column.dataIndex + ",";
+                                    		unlockedheads += column.text + ",";
+                                    	}
+                                        
+                                    }
+                                });
+                                if (isNotVal(lockedfields)) {
+                                	lockedfields = lockedfields.substring(0, lockedfields.length - 1);
+                                	lockedheads = lockedheads.substring(0, lockedheads.length - 1);
+                                }
+                                if (isNotVal(unlockedfields)) {
+                                	unlockedfields = unlockedfields.substring(0, unlockedfields.length - 1);
+                                	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
+                                }
+                                fields = "id";
+                                if(isNotVal(lockedfields)){
+                                	fields+=","+lockedfields;
+                                }
+                                if(isNotVal(unlockedfields)){
+                                	fields+=","+unlockedfields;
+                                }
+                                
+                                heads = "序号";
+                                if(isNotVal(lockedheads)){
+                                	heads+=","+lockedheads;
+                                }
+                                if(isNotVal(unlockedheads)){
+                                	heads+=","+unlockedheads;
+                                }
+
+                                var param = "&fields=" + fields 
+                                + "&heads=" + URLencode(URLencode(heads)) 
+                                + "&signinId=" + signinId 
+                                + "&slave=" + slave
+                                + "&fileName=" + URLencode(URLencode(wellName+"含水数据")) + "&title=" + URLencode(URLencode(wellName+"含水数据"));
+                                openExcelWindow(url + '?flag=true' + param);
+                            }
+                        }, '-',{
+                             xtype: 'button',
+                             text: '读含水',
+                             iconCls: 'send',
+                             id:'UpstreamAndDownstreamInteractionReadWaterCutBtn_Id',
+                             pressed: false,
+                             hidden:false,
+                             handler: function (v, o) {
+                            	var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id");
+                     			if (isNotVal(gridPanel)) {
+                     				gridPanel.getStore().load();
+                     			}else{
+                     				Ext.create('AP.store.well.WaterCutRawDataStore');
+                     			}
+                             }
+                         }],
+                         items: [{
+                         	region: 'center',
+                         	title:'含水仪数据',
+                         	layout: 'fit',
+                         	border: false,
+                            id:'UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id'
+                         }],
+            		}],
+            		listeners: {
+            			tabchange: function (tabPanel, newCard,oldCard, obj) {
+            				var upCommStatus = 0;
+               			 	var downCommStatus = 0;
+            				var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+            				if(_record.length>0){
+            					upCommStatus = _record[0].data.upCommStatus;
+                   			 	downCommStatus = _record[0].data.downCommStatus;
+            				}
+            				
+            				if(newCard.id=="UpstreamAndDownstreamInteractionConfigPanel1_Id"){
+            					if(parseInt(downCommStatus)==0){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+               			 			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
+               			 		}else if(parseInt(downCommStatus)==1){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+               			 			requestConfigData();
+               			 		}
+        					}else if(newCard.id=="UpstreamAndDownstreamInteractionConfigPanel2_Id"){
+        						Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id").removeAll();
+        						Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").disable();
+               			 		if(parseInt(downCommStatus)==0){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").disable();
+               			 		}else if(parseInt(downCommStatus)==1){
+               			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").enable();
+               			 		}
+        					}
+        				}
+            		}
                 }],
                 listeners: {
                 	afterrender: function ( panel, eOpts) {

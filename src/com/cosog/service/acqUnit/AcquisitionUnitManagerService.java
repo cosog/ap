@@ -116,8 +116,8 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"groupName\" ,children:[] },"
 				+ "{ \"header\":\"编码\",\"dataIndex\":\"groupCode\" ,children:[] },"
-				+ "{ \"header\":\"采集周期(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
-				+ "{ \"header\":\"保存周期(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
+				+ "{ \"header\":\"单组定时间隔(s)\",\"dataIndex\":\"groupTimingInterval\" ,children:[] },"
+				+ "{ \"header\":\"单组入库间隔(s)\",\"dataIndex\":\"groupSavingInterval\" ,children:[] },"
 				+ "{ \"header\":\"描述\",\"dataIndex\":\"remark\",width:200 ,children:[] }"
 				+ "]";
 		List<?> list=this.findCallSql(sqlBuffer.toString());
@@ -3004,11 +3004,48 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getAcqUnitList(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer rpcUnit_json = new StringBuffer();
+		StringBuffer pcpUnit_json = new StringBuffer();
+
+		rpcUnit_json.append("[");
+		pcpUnit_json.append("[");
+		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol from TBL_ACQ_UNIT_CONF t order by t.id";
+		List<?> unitList=this.findCallSql(acqUnitSql);
+		for(int i=0;i<unitList.size();i++){
+			Object[] obj = (Object[]) unitList.get(i);
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
+				for(int j=0;i<modbusProtocolConfig.getProtocol().size();j++){
+					if(modbusProtocolConfig.getProtocol().get(j).getName().equalsIgnoreCase(obj[2]+"")){
+						if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==0){
+							rpcUnit_json.append("\""+obj[1]+"\",");
+						}else{
+							pcpUnit_json.append("\""+obj[1]+"\",");
+						}
+						break;
+					}
+				}
+			}
+		}
+		if(rpcUnit_json.toString().endsWith(",")){
+			rpcUnit_json.deleteCharAt(rpcUnit_json.length() - 1);
+		}
+		if(pcpUnit_json.toString().endsWith(",")){
+			pcpUnit_json.deleteCharAt(pcpUnit_json.length() - 1);
+		}
+		rpcUnit_json.append("]");
+		pcpUnit_json.append("]");
+		result_json.append("{\"rpcAcqUnit\":"+rpcUnit_json+",");
+		result_json.append("\"pcpAcqUnit\":"+pcpUnit_json+"}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getModbusProtocolInstanceConfigTreeData(){
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer rpcTree_json = new StringBuffer();
 		StringBuffer pcpTree_json = new StringBuffer();
-		StringBuffer unit_json = new StringBuffer();
 		rpcTree_json.append("[");
 		pcpTree_json.append("[");
 		String sql="select t.id,t.name,t.code,t.acqprotocoltype,t.ctrlprotocoltype,"
@@ -3021,9 +3058,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 				+ " from tbl_acq_group_conf t,tbl_acq_group2unit_conf t2 "
 				+ " where t.id=t2.groupid "
 				+ " order by t2.unitid,t.type";
-		String acqUnitSql="select t.unit_code,t.unit_name,t.protocol from TBL_ACQ_UNIT_CONF t order by t.id";
+		
 		List<?> list=this.findCallSql(sql);
 		List<?> groupList=this.findCallSql(groupSql);
+		
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			if(StringManagerUtils.stringToInteger(obj[10]+"")==0){

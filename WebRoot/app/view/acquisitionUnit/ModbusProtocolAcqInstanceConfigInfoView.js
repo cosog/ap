@@ -34,7 +34,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                 items: [{
                 	border: true,
                 	region: 'west',
-                	width:'25%',
+                	width:'28%',
                     layout: "border",
                     border: true,
                     header: false,
@@ -86,86 +86,109 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
 });
 function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 	var root=[];
-	if(data.classes==1){
-		var item1={};
-		item1.id=1;
-		item1.title='实例名称';
-		item1.value=data.text;
-		root.push(item1);
-		
-		var item2={};
-		item2.id=2;
-		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"抽油机":"螺杆泵");
-		root.push(item2);
-		
-		var item3={};
-		item3.id=3;
-		item3.title='采控单元';
-		item3.value=data.unitName;
-		root.push(item3);
-		
-		var item4={};
-		item4.id=4;
-		item4.title='采集协议类型';
-		item4.value=data.acqProtocolType;
-		root.push(item4);
-		
-		var item5={};
-		item5.id=5;
-		item5.title='控制协议类型';
-		item5.value=data.ctrlProtocolType;
-		root.push(item5);
-		
-		var item6={};
-		item6.id=6;
-		item6.title='注册包前缀(HEX)';
-		item6.value=data.signInPrefix;
-		root.push(item6);
-		
-		var item7={};
-		item7.id=7;
-		item7.title='注册包后缀(HEX)';
-		item7.value=data.signInSuffix;
-		root.push(item7);
-		
-		var item8={};
-		item8.id=8;
-		item8.title='心跳包前缀(HEX)';
-		item8.value=data.heartbeatPrefix;
-		root.push(item8);
-		
-		var item9={};
-		item9.id=9;
-		item9.title='心跳包后缀(HEX)';
-		item9.value=data.heartbeatSuffix;
-		root.push(item9);
-		
-		var item10={};
-		item10.id=10;
-		item10.title='单包发送间隔(ms)';
-		item10.value=data.packetSendInterval;
-		root.push(item10);
-		
-		var item11={};
-		item11.id=11;
-		item11.title='排序序号';
-		item11.value=data.sort;
-		root.push(item11);
-	}
+	var rpcAcqUnit=[];
+	var pcpAcqUnit=[];
 	
-	if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
-		protocolConfigInstancePropertiesHandsontableHelper = ProtocolConfigInstancePropertiesHandsontableHelper.createNew("ProtocolConfigInstancePropertiesTableInfoDiv_id");
-		var colHeaders="['序号','名称','变量']";
-		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
-		protocolConfigInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-		protocolConfigInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
-		protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
-		protocolConfigInstancePropertiesHandsontableHelper.createTable(root);
-	}else{
-		protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
-		protocolConfigInstancePropertiesHandsontableHelper.hot.loadData(root);
-	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/acquisitionUnitManagerController/getAcqUnitList',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			rpcAcqUnit=result.rpcAcqUnit;
+			pcpAcqUnit=result.pcpAcqUnit;
+			
+			if(data.classes==1){
+				var item1={};
+				item1.id=1;
+				item1.title='实例名称';
+				item1.value=data.text;
+				root.push(item1);
+				
+				var item2={};
+				item2.id=2;
+				item2.title='设备类型';
+				item2.value=(data.deviceType==0?"抽油机":"螺杆泵");
+				root.push(item2);
+				
+				var item3={};
+				item3.id=3;
+				item3.title='采控单元';
+				item3.value=data.unitName;
+				root.push(item3);
+				
+				var item4={};
+				item4.id=4;
+				item4.title='采集协议类型';
+				item4.value=data.acqProtocolType;
+				root.push(item4);
+				
+				var item5={};
+				item5.id=5;
+				item5.title='控制协议类型';
+				item5.value=data.ctrlProtocolType;
+				root.push(item5);
+				
+				var item6={};
+				item6.id=6;
+				item6.title='注册包前缀(HEX)';
+				item6.value=data.signInPrefix;
+				root.push(item6);
+				
+				var item7={};
+				item7.id=7;
+				item7.title='注册包后缀(HEX)';
+				item7.value=data.signInSuffix;
+				root.push(item7);
+				
+				var item8={};
+				item8.id=8;
+				item8.title='心跳包前缀(HEX)';
+				item8.value=data.heartbeatPrefix;
+				root.push(item8);
+				
+				var item9={};
+				item9.id=9;
+				item9.title='心跳包后缀(HEX)';
+				item9.value=data.heartbeatSuffix;
+				root.push(item9);
+				
+				var item10={};
+				item10.id=10;
+				item10.title='单包发送间隔(ms)';
+				item10.value=data.packetSendInterval;
+				root.push(item10);
+				
+				var item11={};
+				item11.id=11;
+				item11.title='排序序号';
+				item11.value=data.sort;
+				root.push(item11);
+			}
+			
+			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
+				protocolConfigInstancePropertiesHandsontableHelper = ProtocolConfigInstancePropertiesHandsontableHelper.createNew("ProtocolConfigInstancePropertiesTableInfoDiv_id");
+				var colHeaders="['序号','名称','变量']";
+				var columns="[{data:'id'},{data:'title'},{data:'value'}]";
+				protocolConfigInstancePropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				protocolConfigInstancePropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
+				protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
+				protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit=rpcAcqUnit;
+		        protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit=pcpAcqUnit;
+				protocolConfigInstancePropertiesHandsontableHelper.createTable(root);
+			}else{
+				protocolConfigInstancePropertiesHandsontableHelper.classes=data.classes;
+				protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit=rpcAcqUnit;
+		        protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit=pcpAcqUnit;
+				protocolConfigInstancePropertiesHandsontableHelper.hot.loadData(root);
+			}
+		},
+		failure:function(){
+//			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			
+        }
+	});
 };
 
 var ProtocolConfigInstancePropertiesHandsontableHelper = {
@@ -178,6 +201,8 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	        protocolConfigInstancePropertiesHandsontableHelper.colHeaders=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.columns=[];
 	        protocolConfigInstancePropertiesHandsontableHelper.AllData=[];
+	        protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit=[];
+	        protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit=[];
 	        
 	        protocolConfigInstancePropertiesHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -228,6 +253,18 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	                    	if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['抽油机','螺杆泵'];
+		                    	this.strict = true;
+		                    	this.allowInvalid = false;
+		                    }
+	                    	if (visualColIndex === 2 && visualRowIndex===2) {
+		                    	var deviceType=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
+	                    		this.type = 'dropdown';
+	                    		if(deviceType==='抽油机'){
+	                    			this.source = protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit;
+	                    		}else{
+	                    			this.source = protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit;
+	                    		}
+		                    	
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }

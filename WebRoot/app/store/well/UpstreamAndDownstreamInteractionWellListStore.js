@@ -64,6 +64,7 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                			 		}
                			 	}else if(activeId=="UpstreamAndDownstreamInteractionConfigPanel2_Id"){
                			 		Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id").removeAll();
+               			 		$("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").html('');
                			 		Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").disable();
                			 		if(parseInt(downCommStatus)==0){
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").disable();

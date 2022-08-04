@@ -233,12 +233,12 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                         		var slave = '';
                             	var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
                             	if(_record.length>0){
-                            		var wellName = _record[0].data.wellName;
-                            		var wellId = _record[0].data.id;
-                            		var signinId = _record[0].data.signinId;
-                            		var slave = _record[0].data.slave;
+                            		wellName = _record[0].data.wellName;
+                            		wellId = _record[0].data.id;
+                            		signinId = _record[0].data.signinId;
+                            		slave = _record[0].data.slave;
                             	}
-                                var url = context + '/wellInformationManagerController/exportWaterCutRawData';
+                                var url = context + '/wellInformationManagerController/exportWaterCutRawData2';
                                 
                                 var columnStr=Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataColumnStr_Id").getValue();
                                 var columns_ = Ext.JSON.decode(columnStr);
@@ -305,11 +305,30 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                          }],
                          items: [{
                          	region: 'center',
-                         	title:'含水仪数据',
+                         	title:'含水仪曲线',
                          	layout: 'fit',
                          	border: false,
-                            id:'UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id'
-                         }],
+                            id:'UpstreamAndDownstreamInteractionWaterCutRawDataCurvePanel_Id',
+                            html: '<div id="UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    if ($("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").highcharts() != undefined) {
+                                        $("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").highcharts().setSize($("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").offsetWidth, $("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").offsetHeight, true);
+                                    }
+                                }
+                            }
+                         },{
+                        	region: 'south',
+                        	height: '50%',
+                        	title:'含水仪数据',
+                         	border: false,
+                            id:'UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id',
+                        	layout: 'fit',
+                        	border: true,
+                        	split: true,
+                            collapsible: true
+                            
+                        }],
             		}],
             		listeners: {
             			tabchange: function (tabPanel, newCard,oldCard, obj) {
@@ -331,6 +350,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                			 		}
         					}else if(newCard.id=="UpstreamAndDownstreamInteractionConfigPanel2_Id"){
         						Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id").removeAll();
+        						$("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").html('');
         						Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").disable();
                			 		if(parseInt(downCommStatus)==0){
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").disable();
@@ -533,3 +553,155 @@ function requestConfigData(){
     	});
 	}
 }
+
+function showWaterCutRawDataCurve(result){
+	var divId="UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id";
+	var wellName ='';
+	var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+	if(_record.length>0){
+		wellName = _record[0].data.wellName;
+	}
+	var data = result.totalRoot;
+	var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
+	var tickInterval = 1;
+    tickInterval = Math.floor(data.length / 10) + 1;
+    if(tickInterval<100){
+    	tickInterval=100;
+    }
+    var title = wellName + "趋势曲线";
+    var subtitle=result.acqTime;
+    var legendName=['含水率(%)','压力(MPa)'];
+    var color=['#ae1919','#33a91f'];
+    var series = "[";
+    var yAxis= [];
+    for (var i = 0; i < legendName.length; i++) {
+    	series += "{\"name\":\"" + legendName[i] + "\",marker:{enabled: false},"+"\"yAxis\":"+i+",";
+        series += "\"data\":[";
+        for (var j = 0; j < data.length; j++) {
+        	if(i==0){
+        		series += data[j].waterCut;
+        	}else{
+        		series += data[j].tubingPressure;
+        	}
+            if (j != data.length - 1) {
+                series += ",";
+            }
+        }
+        series += "]}";
+        if (i != legendName.length - 1) {
+            series += ",";
+        }
+        var opposite=false;
+        if(i>0){
+        	opposite=true;
+        }
+        
+        var singleAxis={
+        		title: {
+                    text: legendName[i],
+                    style: {
+                        color: color[i],
+                    }
+                },
+                labels: {
+                	style: {
+                        color: color[i],
+                    }
+                },
+                opposite:opposite
+          };
+        yAxis.push(singleAxis);
+        
+    }
+    series += "]";
+    
+    var ser = Ext.JSON.decode(series);
+    var timeFormat='%m-%d';
+    initWaterCutRawDataCurveChartFn(ser, tickInterval, divId, title, subtitle, '', yAxis, color,true,timeFormat);
+}
+
+function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
+	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
+	Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+
+    var mychart = new Highcharts.Chart({
+        chart: {
+            renderTo: divId,
+            type: 'spline',
+            shadow: true,
+            borderWidth: 0,
+            zoomType: 'xy'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: title
+        },
+        subtitle: {
+            text: subtitle
+        },
+        colors: color,
+        yAxis: yAxis,
+        tooltip: {
+            crosshairs: true, //十字准线
+            shared: true,
+            style: {
+                color: '#333333',
+                fontSize: '12px',
+                padding: '8px'
+            },
+            dateTimeLabelFormats: {
+                millisecond: '%Y-%m-%d %H:%M:%S.%L',
+                second: '%Y-%m-%d %H:%M:%S',
+                minute: '%Y-%m-%d %H:%M',
+                hour: '%Y-%m-%d %H',
+                day: '%Y-%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        exporting: {
+            enabled: true,
+            filename: title,
+            url: context + '/exportHighcharsPicController/export'
+        },
+        plotOptions: {
+            spline: {
+//                lineWidth: 1,
+                fillOpacity: 0.3,
+                marker: {
+                    enabled: true,
+                    radius: 3, //曲线点半径，默认是4
+                    //                            symbol: 'triangle' ,//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+                    states: {
+                        hover: {
+                            enabled: true,
+                            radius: 6
+                        }
+                    }
+                },
+                shadow: true,
+                events: {
+                	legendItemClick: function(e){
+//                		alert("第"+this.index+"个图例被点击，是否可见："+!this.visible);
+//                		return true;
+                	}
+                }
+            }
+        },
+        legend: {
+            layout: 'horizontal',//horizontal水平 vertical 垂直
+            align: 'center',  //left，center 和 right
+            verticalAlign: 'bottom',//top，middle 和 bottom
+            enabled: legend,
+            borderWidth: 0
+        },
+        series: series
+    });
+};

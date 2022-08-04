@@ -257,7 +257,11 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 	                    	if (visualColIndex === 2 && visualRowIndex===2) {
-		                    	var deviceType=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
+		                    	var deviceType='';
+		                    	if(isNotVal(protocolConfigInstancePropertiesHandsontableHelper.hot)){
+		                    		deviceType=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
+		                    	}
+		                    	
 	                    		this.type = 'dropdown';
 	                    		if(deviceType==='抽油机'){
 	                    			this.source = protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit;

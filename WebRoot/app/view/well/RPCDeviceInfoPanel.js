@@ -1308,8 +1308,16 @@ var RPCProductionHandsontableHelper = {
 	                    }
 	                    
 	                    if (visualColIndex === 2 && visualRowIndex===15) {
+	                    	var barrelType='';
+	                    	if(isNotVal(rpcProductionHandsontableHelper.hot)){
+	                    		barrelType=rpcProductionHandsontableHelper.hot.getDataAtCell(14,2);
+	                    	}
+	                    	var pumpGradeList=['1','2','3','4','5'];
+	                    	if(barrelType==='组合泵'){
+	                    		pumpGradeList=['1','2','3'];
+	                    	}
 	                    	this.type = 'dropdown';
-	                    	this.source = ['1','2','3','4','5'];
+	                    	this.source = pumpGradeList;
 	                    	this.strict = true;
 	                    	this.allowInvalid = false;
 	                    }

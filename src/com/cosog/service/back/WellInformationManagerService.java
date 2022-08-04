@@ -2484,6 +2484,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getWaterCutRawData(String signinId,String slave) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		int totals=0;
+		String acqTime="";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\"采样间隔(ms)\",\"dataIndex\":\"interval\",flex:1,children:[] },"
@@ -2492,11 +2493,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"位置\",\"dataIndex\":\"position\",flex:1,children:[] }"
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		
 		result_json.append("\"totalRoot\":[");
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
 			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
 			String topic="rawwatercut";
+			
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
 			requestBuff.append("\"Topic\":\""+topic+"\"}");
@@ -2513,6 +2514,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
 			if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
 				totals=waterCutRawData.getMessage().getWaterCut().size();
+				acqTime=waterCutRawData.getMessage().getAcqTime();
 				for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
 					result_json.append("{\"id\":"+(i+1)+",");
 					result_json.append("\"interval\":\""+waterCutRawData.getMessage().getInterval().get(i)+"\",");
@@ -2525,7 +2527,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
-		result_json.append("],\"totalCount\":"+totals+"}");
+		result_json.append("],\"totalCount\":"+totals+",\"acqTime\":\""+acqTime+"\"}");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	

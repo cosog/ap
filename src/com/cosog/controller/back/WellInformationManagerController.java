@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,7 @@ import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.model.drive.RPCInteractionResponseData;
+import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.WellHandsontableChangedData;
@@ -56,6 +58,7 @@ import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -1671,6 +1674,58 @@ public class WellInformationManagerController extends BaseController {
 		pw.print(json);
 		pw.flush();
 		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/exportWaterCutRawData2")
+	public String exportWaterCutRawData2() throws IOException {
+		String json="";
+		String signinId = ParamUtils.getParameter(request, "signinId");
+		String slave = ParamUtils.getParameter(request, "slave");
+		WaterCutRawData waterCutRawData=null;
+		String acqTime="";
+		String title="含水仪数据";
+		String sheetName="含水仪数据";
+		// 表头数据
+	    List<Object> head = Arrays.asList("序号","采样间隔(ms)","含水率(%)","压力(MPa)","位置");
+	    List<List<Object>> sheetDataList = new ArrayList<>();
+	    sheetDataList.add(head);
+		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
+			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String topic="rawwatercut";
+			StringBuffer requestBuff = new StringBuffer();
+			requestBuff.append("{\"ID\":\""+signinId+"\",");
+			requestBuff.append("\"Topic\":\""+topic+"\"}");
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			
+//			String path="";
+//			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//			path=stringManagerUtils.getFilePath("test7.json","example/");
+//			responseData=stringManagerUtils.readFile(path,"utf-8");
+			
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
+			type = new TypeToken<WaterCutRawData>() {}.getType();
+			waterCutRawData=gson.fromJson(responseData, type);
+		}
+		
+		if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
+			acqTime=waterCutRawData.getMessage().getAcqTime();
+			for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
+				 List<Object> record = new ArrayList<>();
+				 record.add(i+1);
+				 record.add(waterCutRawData.getMessage().getInterval().get(i));
+				 record.add(waterCutRawData.getMessage().getWaterCut().get(i));
+				 record.add(waterCutRawData.getMessage().getTubingPressure().get(i));
+				 record.add(waterCutRawData.getMessage().getPosition().get(i));
+				 sheetDataList.add(record);
+			}
+		}
+		if(StringManagerUtils.isNotNull(acqTime)){
+			title+="-"+acqTime.replaceAll(" ", "_").replaceAll("-", "").replaceAll(":", "");
+		}
+	    // 导出数据
+	    ExcelUtils.export(response,title,sheetName, sheetDataList);
 		return null;
 	}
 	

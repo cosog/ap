@@ -42,14 +42,14 @@ Ext.define('AP.store.well.WaterCutRawDataStore', {
                     columns: newColumns,
                     listeners: {
                     	selectionchange: function (view, selected, o) {},
-                    	itemdblclick: function (view,record,item,index,e,eOpts) {
-                    	},
+                    	itemdblclick: function (view,record,item,index,e,eOpts) {},
                     	select: function(grid, record, index, eOpts) {}
                     }
                 });
                 var panel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id");
                 panel.add(gridPanel);
             }
+            showWaterCutRawDataCurve(get_rawData);
         },
         beforeload: function (store, options) {
         	var wellName ='';
@@ -58,10 +58,10 @@ Ext.define('AP.store.well.WaterCutRawDataStore', {
     		var slave = '';
         	var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
         	if(_record.length>0){
-        		var wellName = _record[0].data.wellName;
-        		var wellId = _record[0].data.id;
-        		var signinId = _record[0].data.signinId;
-        		var slave = _record[0].data.slave;
+        		wellName = _record[0].data.wellName;
+        		wellId = _record[0].data.id;
+        		signinId = _record[0].data.signinId;
+        		slave = _record[0].data.slave;
         	}
             var new_params = {
             		signinId: signinId,

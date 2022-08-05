@@ -1551,7 +1551,7 @@ public class WellInformationManagerController extends BaseController {
 		String json="{success:false,msg:0}";
 		if(StringManagerUtils.isNotNull(url)){
 			if((StringManagerUtils.stringToInteger(type)<=2&&StringManagerUtils.isNotNull(data)) || StringManagerUtils.stringToInteger(type)>=3){
-				result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8");
+				result=StringManagerUtils.sendPostMethod(url, downstreamBuff.toString(),"utf-8",0,0);
 			}
 		}
 		if(StringManagerUtils.isNotNull(result)){
@@ -1603,7 +1603,7 @@ public class WellInformationManagerController extends BaseController {
 		requestBuff.append("{\"ID\":\""+signinId+"\",");
 		requestBuff.append("\"Topic\":\""+topic+"\"}");
 		if(StringManagerUtils.stringToInteger(type)<=3){
-			result=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			result=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",0,0);
 			if(StringManagerUtils.isNotNull(result)){
 				result=StringManagerUtils.toPrettyFormat(result);
 			}
@@ -1631,6 +1631,24 @@ public class WellInformationManagerController extends BaseController {
 		this.pager = new Page("pagerForm", request);
 		
 		json = wellInformationManagerService.getWaterCutRawData(signinId,slave);
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getWaterCutRawData2")
+	public String getWaterCutRawData2() throws Exception {
+		String json = "";
+		String signinId = ParamUtils.getParameter(request, "signinId");
+		String slave = ParamUtils.getParameter(request, "slave");
+		this.pager = new Page("pagerForm", request);
+		
+		json = wellInformationManagerService.getWaterCutRawData2(signinId,slave);
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
@@ -1687,16 +1705,17 @@ public class WellInformationManagerController extends BaseController {
 		String title="含水仪数据";
 		String sheetName="含水仪数据";
 		// 表头数据
-	    List<Object> head = Arrays.asList("序号","采样间隔(ms)","含水率(%)","压力(MPa)","位置");
+	    List<Object> head = Arrays.asList("序号","采样时间","采样间隔(ms)","含水率(%)","压力(MPa)","位置");
 	    List<List<Object>> sheetDataList = new ArrayList<>();
 	    sheetDataList.add(head);
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
 			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
+//			signinId="d1e3643c140569d4";
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
 			requestBuff.append("\"Topic\":\""+topic+"\"}");
-			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
 			
 //			String path="";
 //			StringManagerUtils stringManagerUtils=new StringManagerUtils();
@@ -1711,9 +1730,16 @@ public class WellInformationManagerController extends BaseController {
 		
 		if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
 			acqTime=waterCutRawData.getMessage().getAcqTime();
+			String startTime=acqTime.split("~")[0];
+			long timeStamp=StringManagerUtils.getTimeStamp(startTime, "yyyy-MM-dd HH:mm:ss");
 			for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
-				 List<Object> record = new ArrayList<>();
+				if(i>0){
+					timeStamp+=waterCutRawData.getMessage().getInterval().get(i);
+				} 
+				String pointAcqTime=StringManagerUtils.timeStamp2Date(timeStamp, "yyyy-MM-dd HH:mm:ss.SSS");
+				List<Object> record = new ArrayList<>();
 				 record.add(i+1);
+				 record.add(pointAcqTime);
 				 record.add(waterCutRawData.getMessage().getInterval().get(i));
 				 record.add(waterCutRawData.getMessage().getWaterCut().get(i));
 				 record.add(waterCutRawData.getMessage().getTubingPressure().get(i));

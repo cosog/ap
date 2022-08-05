@@ -4358,3 +4358,48 @@ function jsonFormat(txt, compress /*是否为压缩模式*/ ) {
     notify('', data, isLast, indent, false);
     return draw.join('');
 };
+
+function timeStr2TimeStamp(timeStr,format) {
+	timeStr=timeStr.replace(/-/g, '/');
+	var timeStamp= Date.parse(timeStr);
+	return timeStamp;
+};
+
+function timestamp2Str (timestamp) {
+    let time = new Date(timestamp);
+    let year = time.getFullYear();
+    let month = time.getMonth() + 1;
+    let date = time.getDate();
+    let hours = time.getHours();
+    let minute = time.getMinutes();
+    let second = time.getSeconds();
+    let millisecond=time.getMilliseconds();
+    
+    if (month < 10) {
+     month = '0' + month 
+    }
+
+    if (date < 10) {
+     date = '0' + date 
+    }
+
+    if (hours < 10) {
+    	hours = '0' + hours 
+     }
+
+    if (minute < 10) {
+    	minute = '0' + minute 
+    }
+
+    if (second < 10) {
+    	second = '0' + second 
+    }
+    
+    if (millisecond < 10) {
+    	millisecond = '00' + millisecond 
+    }else if (millisecond >= 10 && millisecond < 100) {
+    	millisecond = '0' + millisecond 
+    }
+
+    return year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second+'.'+millisecond;
+}

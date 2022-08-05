@@ -29,7 +29,7 @@ public class CalculateDataManagerTask {
 			int count=getCount(sql);
 			if(count>0){
 				System.out.println("发现未计算数据");
-				result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
 	}
@@ -44,7 +44,7 @@ public class CalculateDataManagerTask {
 			int count=getCount(sql);
 			if(count>0){
 				System.out.println("发现未计算数据");
-				result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+				result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 			}
 		}
 	}
@@ -56,7 +56,7 @@ public class CalculateDataManagerTask {
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/FESDiagramDailyCalculation";
-		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class CalculateDataManagerTask {
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/RPMDailyCalculation";
-		String result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	//订阅发布模式通信计算
@@ -75,7 +75,7 @@ public class CalculateDataManagerTask {
 	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/pubSubModelCommCalculation";
 		String result="";
-		result=StringManagerUtils.sendPostMethod(url, "","utf-8");
+		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
 	public static  int getCount(String sql) throws SQLException{  

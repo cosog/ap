@@ -43,7 +43,7 @@ public class CalculateUtils {
 	public static CommResponseData commCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(commUrl[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(commUrl[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<CommResponseData>() {}.getType();
 		CommResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -52,7 +52,7 @@ public class CalculateUtils {
 	public static TimeEffResponseData runCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(runUrl[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(runUrl[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TimeEffResponseData>() {}.getType();
 		TimeEffResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -61,7 +61,7 @@ public class CalculateUtils {
 	public static EnergyCalculateResponseData energyCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(energyUrl[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(energyUrl[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
 		EnergyCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -70,7 +70,7 @@ public class CalculateUtils {
 	public static RPCCalculateResponseData fesDiagramCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(FESDiagramUrl[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(FESDiagramUrl[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 		RPCCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -79,7 +79,7 @@ public class CalculateUtils {
 	public static PCPCalculateResponseData rpmCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(rpmUrl[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(rpmUrl[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<PCPCalculateResponseData>() {}.getType();
 		PCPCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -88,7 +88,7 @@ public class CalculateUtils {
 	public static TotalAnalysisResponseData totalCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(totalUrl[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(totalUrl[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 		TotalAnalysisResponseData responseData=gson.fromJson(responseDataStr, type);
 //		System.out.println("汇总请求数据:"+requestDataStr);
@@ -99,7 +99,7 @@ public class CalculateUtils {
 	public static AppRunStatusProbeResonanceData appProbe(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(appProbe[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(appProbe[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 		AppRunStatusProbeResonanceData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -108,7 +108,7 @@ public class CalculateUtils {
 	public static MemoryProbeResponseData memProbe(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(memProbe[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(memProbe[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<MemoryProbeResponseData>() {}.getType();
 		MemoryProbeResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -117,7 +117,7 @@ public class CalculateUtils {
 	public static DiskProbeResponseData diskProbe(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(diskProbe[0], requestDataStr,"utf-8");
+		String responseDataStr=StringManagerUtils.sendPostMethod(diskProbe[0], requestDataStr,"utf-8",0,0);
 		type = new TypeToken<DiskProbeResponseData>() {}.getType();
 		DiskProbeResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;

@@ -485,7 +485,7 @@ public class RealTimeMonitoringController extends BaseController {
 						+ "\"Addr\":"+addr+""
 						+ "}";
 				String responseStr="";
-				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8");
+				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(!StringManagerUtils.isNotNull(responseStr)){
 					result=false;
 				}

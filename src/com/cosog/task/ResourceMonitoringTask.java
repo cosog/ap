@@ -143,7 +143,7 @@ public class ResourceMonitoringTask {
 		}
 		
 		//ad状态检测
-		String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8");
+		String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 		AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
 		if(adStatusProbeResonanceData!=null){
@@ -155,8 +155,8 @@ public class ResourceMonitoringTask {
 			}
 			
 			
-			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8");
-			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8");
+			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",0,0);
+			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",0,0);
 			type = new TypeToken<CPUProbeResponseData>() {}.getType();
 			CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
 			type = new TypeToken<MemoryProbeResponseData>() {}.getType();

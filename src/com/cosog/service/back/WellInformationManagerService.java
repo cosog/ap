@@ -3,8 +3,10 @@ package com.cosog.service.back;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -2482,27 +2484,29 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	public String getWaterCutRawData(String signinId,String slave) throws IOException, SQLException{
-		StringBuffer result_json = new StringBuffer();
+		String result_json = "";
+		List<StringBuffer> groupList=new ArrayList<StringBuffer>();
 		int totals=0;
 		String acqTime="";
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
+				+ "{ \"header\":\"采样时间\",\"dataIndex\":\"pointAcqTime\",flex:2,children:[] },"
 				+ "{ \"header\":\"采样间隔(ms)\",\"dataIndex\":\"interval\",flex:1,children:[] },"
 				+ "{ \"header\":\"含水率(%)\",\"dataIndex\":\"waterCut\",flex:1,children:[] },"
 				+ "{ \"header\":\"压力(MPa)\",\"dataIndex\":\"tubingPressure\",flex:1,children:[] },"
 				+ "{ \"header\":\"位置\",\"dataIndex\":\"position\",flex:1,children:[] }"
 				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalRoot\":[");
+		result_json+="{ \"success\":true,\"columns\":"+columns+",";
+		result_json+="\"totalRoot\":[";
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
 			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
 			String topic="rawwatercut";
 			
 			StringBuffer requestBuff = new StringBuffer();
+//			signinId="d1e3643c140569d4";
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
 			requestBuff.append("\"Topic\":\""+topic+"\"}");
-			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
-			
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
 //			String path="";
 //			StringManagerUtils stringManagerUtils=new StringManagerUtils();
 //			path=stringManagerUtils.getFilePath("test7.json","example/");
@@ -2512,23 +2516,70 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			java.lang.reflect.Type type=null;
 			type = new TypeToken<WaterCutRawData>() {}.getType();
 			WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
+			
 			if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
 				totals=waterCutRawData.getMessage().getWaterCut().size();
+				int groupCount=totals%10000==0?(totals/10000):(totals/10000+1);
+				for(int i=0;i<groupCount;i++){
+					groupList.add(new StringBuffer());
+				}
 				acqTime=waterCutRawData.getMessage().getAcqTime();
+				String startTime=acqTime.split("~")[0];
+				long timeStamp=StringManagerUtils.getTimeStamp(startTime, "yyyy-MM-dd HH:mm:ss");
 				for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
-					result_json.append("{\"id\":"+(i+1)+",");
-					result_json.append("\"interval\":\""+waterCutRawData.getMessage().getInterval().get(i)+"\",");
-					result_json.append("\"waterCut\":"+waterCutRawData.getMessage().getWaterCut().get(i)+",");
-					result_json.append("\"tubingPressure\":\""+waterCutRawData.getMessage().getTubingPressure().get(i)+"\",");
-					result_json.append("\"position\":\""+waterCutRawData.getMessage().getPosition().get(i)+"\"},");
+					int groupIndex=i/10000;
+					if(i>0){
+						timeStamp+=waterCutRawData.getMessage().getInterval().get(i);
+					}
+					String pointAcqTime=StringManagerUtils.timeStamp2Date(timeStamp, "yyyy-MM-dd HH:mm:ss.SSS");
+					groupList.get(groupIndex).append("{\"id\":"+(i+1)+",");
+					groupList.get(groupIndex).append("\"pointAcqTime\":\""+pointAcqTime+"\",");
+					groupList.get(groupIndex).append("\"interval\":\""+waterCutRawData.getMessage().getInterval().get(i)+"\",");
+					groupList.get(groupIndex).append("\"timeStamp\":"+timeStamp+",");
+					groupList.get(groupIndex).append("\"waterCut\":"+waterCutRawData.getMessage().getWaterCut().get(i)+",");
+					groupList.get(groupIndex).append("\"tubingPressure\":\""+waterCutRawData.getMessage().getTubingPressure().get(i)+"\",");
+					groupList.get(groupIndex).append("\"position\":\""+waterCutRawData.getMessage().getPosition().get(i)+"\"},");
 				}
 			}
+			
 		}
-		if(result_json.toString().endsWith(",")){
-			result_json.deleteCharAt(result_json.length() - 1);
+		for(int i=0;i<groupList.size();i++){
+			result_json+=groupList.get(i);
 		}
-		result_json.append("],\"totalCount\":"+totals+",\"acqTime\":\""+acqTime+"\"}");
-		return result_json.toString().replaceAll("\"null\"", "\"\"");
+		if(result_json.endsWith(",")){
+			result_json.substring(0,result_json.length()-1);
+		}
+		result_json+="],\"totalCount\":"+totals+",\"acqTime\":\""+acqTime+"\"}";
+		System.out.println("result_json长度:"+result_json.length());
+		return result_json.replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getWaterCutRawData2(String signinId,String slave) throws IOException, SQLException{
+		String result = "";
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
+			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String topic="rawwatercut";
+			
+			StringBuffer requestBuff = new StringBuffer();
+//			signinId="d1e3643c140569d4";
+			requestBuff.append("{\"ID\":\""+signinId+"\",");
+			requestBuff.append("\"Topic\":\""+topic+"\"}");
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
+//			String path="";
+//			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+//			path=stringManagerUtils.getFilePath("test7.json","example/");
+//			responseData=stringManagerUtils.readFile(path,"utf-8");
+			
+			type = new TypeToken<WaterCutRawData>() {}.getType();
+			WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
+			
+			if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
+				result=gson.toJson(waterCutRawData);
+			}
+		}
+		return result;
 	}
 	
 	public String getWaterCutRawDataExport(String signinId,String slave) throws IOException, SQLException{
@@ -2540,7 +2591,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
 			requestBuff.append("\"Topic\":\""+topic+"\"}");
-			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8");
+			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",0,0);
 			
 //			String path="";
 //			StringManagerUtils stringManagerUtils=new StringManagerUtils();

@@ -20,6 +20,7 @@ Ext.define('AP.store.well.WaterCutRawDataStore', {
     listeners: {
         load: function (store, record, f, op, o) {
             //获得列表数
+        	Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
             var get_rawData = store.proxy.reader.rawData;
             var arrColumns = get_rawData.columns;
             var column = createUpstreamAndDownstreamInteractionDeviceListColumn(arrColumns);
@@ -52,6 +53,7 @@ Ext.define('AP.store.well.WaterCutRawDataStore', {
             showWaterCutRawDataCurve(get_rawData);
         },
         beforeload: function (store, options) {
+        	Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").el.mask("含水数据读取中...").show();
         	var wellName ='';
     		var wellId = '';
     		var signinId ='';

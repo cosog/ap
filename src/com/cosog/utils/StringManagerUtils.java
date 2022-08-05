@@ -1658,7 +1658,7 @@ public class StringManagerUtils {
      *            编码格式
      * @return 服务器响应结果
      */
-    public static String sendPostMethod(String url, String param, String encoding) {
+    public static String sendPostMethod(String url, String param, String encoding,int connectTimeout,int readTimeout) {
         PrintWriter out = null;
         BufferedReader in = null;
         HttpURLConnection conn = null;
@@ -1677,8 +1677,12 @@ public class StringManagerUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             //超时设置
-            //	            conn.setConnectTimeout(1000*5);//连接主机超时设置
-            //	            conn.setReadTimeout(1000*60*60);//从主机读取数据超时设置
+            if(connectTimeout>0){
+            	conn.setConnectTimeout(1000*connectTimeout);//连接主机超时设置
+            }
+            if(readTimeout>0){
+            	conn.setReadTimeout(1000*readTimeout);//从主机读取数据超时设置
+            }
 
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
@@ -1813,7 +1817,7 @@ public class StringManagerUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return fileContent.replaceAll(" ", "");
+        return fileContent;//.replaceAll(" ", "");
     }
 
     /*
@@ -3361,6 +3365,29 @@ public class StringManagerUtils {
             result = 0;
         }
         return result;
+    }
+    
+    public static long getTimeStamp(String timeStr,String format){
+    	long result = 0;
+    	try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+            if (StringManagerUtils.isNotNull(timeStr)) {
+                Date date = simpleDateFormat.parse(timeStr);
+                result = date.getTime();
+            }
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            result = 0;
+        }
+    	return result;
+    }
+    
+    public static String timeStamp2Date(long seconds,String format) {
+    	if(format == null || format.isEmpty()) 
+    		format = "yyyy-MM-dd HH:mm:ss";
+    	SimpleDateFormat sdf = new SimpleDateFormat(format);
+    	return sdf.format(new Date(seconds));
     }
 
     public static boolean sendEMail(String topic, String content, List < String > receivingAccount) {

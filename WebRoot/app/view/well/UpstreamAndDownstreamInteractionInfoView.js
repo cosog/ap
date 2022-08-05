@@ -221,7 +221,8 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             iconCls: 'export',
                             hidden: false,
                             handler: function (v, o) {
-                                var fields = "";
+                            	Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").el.mask("含水数据导出中...").show();
+                            	var fields = "";
                                 var heads = "";
                                 var lockedheads = "";
                                 var unlockedheads = "";
@@ -240,45 +241,45 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             	}
                                 var url = context + '/wellInformationManagerController/exportWaterCutRawData2';
                                 
-                                var columnStr=Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataColumnStr_Id").getValue();
-                                var columns_ = Ext.JSON.decode(columnStr);
-                                
-                                Ext.Array.each(columns_, function (name, index, countriesItSelf) {
-                                    var column = columns_[index];
-                                    if (index > 0 && !column.hidden) {
-                                    	if(column.locked){
-                                    		lockedfields += column.dataIndex + ",";
-                                    		lockedheads += column.text + ",";
-                                    	}else{
-                                    		unlockedfields += column.dataIndex + ",";
-                                    		unlockedheads += column.text + ",";
-                                    	}
-                                        
-                                    }
-                                });
-                                if (isNotVal(lockedfields)) {
-                                	lockedfields = lockedfields.substring(0, lockedfields.length - 1);
-                                	lockedheads = lockedheads.substring(0, lockedheads.length - 1);
-                                }
-                                if (isNotVal(unlockedfields)) {
-                                	unlockedfields = unlockedfields.substring(0, unlockedfields.length - 1);
-                                	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
-                                }
-                                fields = "id";
-                                if(isNotVal(lockedfields)){
-                                	fields+=","+lockedfields;
-                                }
-                                if(isNotVal(unlockedfields)){
-                                	fields+=","+unlockedfields;
-                                }
-                                
-                                heads = "序号";
-                                if(isNotVal(lockedheads)){
-                                	heads+=","+lockedheads;
-                                }
-                                if(isNotVal(unlockedheads)){
-                                	heads+=","+unlockedheads;
-                                }
+//                                var columnStr=Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataColumnStr_Id").getValue();
+//                                var columns_ = Ext.JSON.decode(columnStr);
+//                                
+//                                Ext.Array.each(columns_, function (name, index, countriesItSelf) {
+//                                    var column = columns_[index];
+//                                    if (index > 0 && !column.hidden) {
+//                                    	if(column.locked){
+//                                    		lockedfields += column.dataIndex + ",";
+//                                    		lockedheads += column.text + ",";
+//                                    	}else{
+//                                    		unlockedfields += column.dataIndex + ",";
+//                                    		unlockedheads += column.text + ",";
+//                                    	}
+//                                        
+//                                    }
+//                                });
+//                                if (isNotVal(lockedfields)) {
+//                                	lockedfields = lockedfields.substring(0, lockedfields.length - 1);
+//                                	lockedheads = lockedheads.substring(0, lockedheads.length - 1);
+//                                }
+//                                if (isNotVal(unlockedfields)) {
+//                                	unlockedfields = unlockedfields.substring(0, unlockedfields.length - 1);
+//                                	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
+//                                }
+//                                fields = "id";
+//                                if(isNotVal(lockedfields)){
+//                                	fields+=","+lockedfields;
+//                                }
+//                                if(isNotVal(unlockedfields)){
+//                                	fields+=","+unlockedfields;
+//                                }
+//                                
+//                                heads = "序号";
+//                                if(isNotVal(lockedheads)){
+//                                	heads+=","+lockedheads;
+//                                }
+//                                if(isNotVal(unlockedheads)){
+//                                	heads+=","+unlockedheads;
+//                                }
 
                                 var param = "&fields=" + fields 
                                 + "&heads=" + URLencode(URLencode(heads)) 
@@ -286,6 +287,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                                 + "&slave=" + slave
                                 + "&fileName=" + URLencode(URLencode(wellName+"含水数据")) + "&title=" + URLencode(URLencode(wellName+"含水数据"));
                                 openExcelWindow(url + '?flag=true' + param);
+                                Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
                             }
                         }, '-',{
                              xtype: 'button',
@@ -295,12 +297,13 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                              pressed: false,
                              hidden:false,
                              handler: function (v, o) {
-                            	var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id");
-                     			if (isNotVal(gridPanel)) {
-                     				gridPanel.getStore().load();
-                     			}else{
-                     				Ext.create('AP.store.well.WaterCutRawDataStore');
-                     			}
+                            	 readWaterCutRawData();
+//                            	 var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id");
+//                            	 if (isNotVal(gridPanel)) {
+//                            		 gridPanel.getStore().load();
+//                            	 }else{
+//                            		 Ext.create('AP.store.well.WaterCutRawDataStore');
+//                            	 }
                              }
                          }],
                          items: [{
@@ -579,9 +582,11 @@ function showWaterCutRawDataCurve(result){
         series += "\"data\":[";
         for (var j = 0; j < data.length; j++) {
         	if(i==0){
-        		series += data[j].waterCut;
+//        		series += data[j].waterCut;
+        		series += "[" + data[j].timeStamp + "," + parseFloat(data[j].waterCut) + "]";
         	}else{
-        		series += data[j].tubingPressure;
+//        		series += data[j].tubingPressure;
+        		series += "[" + data[j].timeStamp + "," + parseFloat(data[j].tubingPressure) + "]";
         	}
             if (j != data.length - 1) {
                 series += ",";
@@ -620,6 +625,95 @@ function showWaterCutRawDataCurve(result){
     initWaterCutRawDataCurveChartFn(ser, tickInterval, divId, title, subtitle, '', yAxis, color,true,timeFormat);
 }
 
+function showWaterCutRawDataCurve2(result){
+	var divId="UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id";
+	var wellName ='';
+	var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+	if(_record.length>0){
+		wellName = _record[0].data.wellName;
+	}
+	var totals=0;
+	var acqTime='';
+	var defaultColors=["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"];
+	var tickInterval = 1;
+	
+	var subtitle='';
+    var legendName=['含水率(%)','压力(MPa)'];
+    var color=['#ae1919','#33a91f'];
+    var series = "";
+    var waterCutSeries="{\"name\":\"" + legendName[0] + "\",marker:{enabled: false},"+"\"yAxis\":"+0+",\"data\":[";
+    var tubingPressureSeries="{\"name\":\"" + legendName[1] + "\",marker:{enabled: false},"+"\"yAxis\":"+1+",\"data\":[";
+    var yAxis= [];
+    var waterCutAxis={
+    		title: {
+                text: legendName[0],
+                style: {
+                    color: color[0],
+                }
+            },
+            labels: {
+            	style: {
+                    color: color[0],
+                }
+            },
+            opposite:false
+      };
+    var tubingPressureAxis={
+    		title: {
+                text: legendName[1],
+                style: {
+                    color: color[1],
+                }
+            },
+            labels: {
+            	style: {
+                    color: color[1],
+                }
+            },
+            opposite:true
+      };
+    yAxis.push(waterCutAxis);
+    yAxis.push(tubingPressureAxis);
+    
+	if(isNotVal(result)){
+		if(result.ResultStatus==1){
+
+			totals=result.Message.WaterCut.length;
+			acqTime=result.Message.AcqTime;
+			subtitle=acqTime;
+			var startTime=acqTime.split("~")[0];
+			var timeStamp=timeStr2TimeStamp(startTime,"yyyy-MM-dd HH:mm:ss");
+			for(var i=0;i<totals;i++){
+				if(i>0){
+					timeStamp+=result.Message.Interval[i];
+				}
+				waterCutSeries += "[" + timeStamp + "," + parseFloat(result.Message.WaterCut[i]) + "]";
+				tubingPressureSeries += "[" + timeStamp + "," + parseFloat(result.Message.TubingPressure[i]) + "]";
+				if (i != totals - 1) {
+					waterCutSeries += ",";
+					tubingPressureSeries += ",";
+	            }
+			}
+			
+		}
+	}
+	waterCutSeries += "]}";
+	tubingPressureSeries += "]}";
+	series ="["+waterCutSeries+","+tubingPressureSeries+ "]";
+	
+	
+    tickInterval = Math.floor(totals / 10) + 1;
+    if(tickInterval<100){
+    	tickInterval=100;
+    }
+    var title = wellName + "趋势曲线";
+    
+    
+    var ser = Ext.JSON.decode(series);
+    var timeFormat='%m-%d';
+    initWaterCutRawDataCurveChartFn(ser, tickInterval, divId, title, subtitle, '', yAxis, color,true,timeFormat);
+}
+
 function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, subtitle, xtitle, yAxis, color,legend,timeFormat) {
 	var dafaultMenuItem = Highcharts.getOptions().exporting.buttons.contextButton.menuItems;
 	Highcharts.setOptions({
@@ -628,7 +722,7 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
         }
     });
 
-    var mychart = new Highcharts.Chart({
+    var mychart = new Highcharts.stockChart({
         chart: {
             renderTo: divId,
             type: 'spline',
@@ -639,13 +733,55 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
         credits: {
             enabled: false
         },
+        scrollbar: {
+    		enabled: false
+    	},
         title: {
             text: title
         },
         subtitle: {
             text: subtitle
         },
+        rangeSelector: {
+    		buttons: [{
+    			count: 10,
+    			type: 'minute',//minute hour week month all
+    			text: '10分钟'
+    		},{
+    			count: 1,
+    			type: 'hour',//minute hour week month all
+    			text: '1小时'
+    		}, {
+    			count: 6,
+    			type: 'hour',
+    			text: '6小时'
+    		}, {
+    			count: 12,
+    			type: 'hour',
+    			text: '12小时'
+    		}, {
+    			type: 'all',
+    			text: '全部'
+    		}],
+    		inputEnabled: false,
+    		selected: 0
+    	},
         colors: color,
+        xAxis: {
+            type: 'datetime',
+            title: {
+                text: ''
+            },
+            tickPixelInterval:tickInterval,
+            labels: {
+                formatter: function () {
+                    return Highcharts.dateFormat(timeFormat, this.value);
+                },
+                autoRotation:true,//自动旋转
+                rotation: -45 //倾斜度，防止数量过多显示不全  
+//                step: 2
+            }
+        },
         yAxis: yAxis,
         tooltip: {
             crosshairs: true, //十字准线
@@ -696,12 +832,173 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
             }
         },
         legend: {
-            layout: 'horizontal',//horizontal水平 vertical 垂直
-            align: 'center',  //left，center 和 right
-            verticalAlign: 'bottom',//top，middle 和 bottom
+            layout: 'vertical',//horizontal水平 vertical 垂直
+            align: 'right',  //left，center 和 right
+            verticalAlign: 'middle',//top，middle 和 bottom
             enabled: legend,
             borderWidth: 0
         },
         series: series
     });
 };
+
+function readWaterCutRawData(){
+    var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
+	if(_record.length>0){
+		var wellName = _record[0].data.wellName;
+		var wellId = _record[0].data.id;
+		var signinId = _record[0].data.signinId;
+		var slave = _record[0].data.slave;
+		Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").el.mask("含水数据读取中...").show();
+		Ext.Ajax.timeout=180000;
+    	Ext.Ajax.request({
+    		method:'POST',
+    		url:context + '/wellInformationManagerController/getWaterCutRawData2',
+    		success:function(response) {
+    			Ext.getCmp("UpstreamAndDownstreamInteractionConfigPanel2_Id").getEl().unmask();
+    			var result=null;
+    			if(isNotVal(response.responseText)){
+    				result=Ext.decode(response.responseText);
+    			}
+    			
+    			var data=[];
+    			var totals=0;
+    			var acqTime="";
+    			if(isNotVal(result)){
+    				if(result.ResultStatus==1){
+    					Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").enable();
+    					totals=result.Message.WaterCut.length;
+    					acqTime=result.Message.AcqTime;
+    					var startTime=acqTime.split("~")[0];
+    					var timeStamp=timeStr2TimeStamp(startTime,"yyyy-MM-dd HH:mm:ss");
+    					for(var i=0;i<totals;i++){
+    						if(i>0){
+    							timeStamp+=result.Message.Interval[i];
+    						}
+    						var pointAcqTime=timestamp2Str(timeStamp);
+    						
+    						var waterCutData={};
+    						waterCutData.id=i+1;
+    						waterCutData.pointAcqTime=pointAcqTime;
+    						waterCutData.timeStamp=timeStamp;
+    						waterCutData.interval=result.Message.Interval[i]+'';
+    						waterCutData.waterCut=result.Message.WaterCut[i]+'';
+    						waterCutData.tubingPressure=result.Message.TubingPressure[i]+'';
+    						waterCutData.position=result.Message.Position[i]+'';
+    						data.push(waterCutData);
+    					}
+    				}
+    				
+    			}
+    			
+    			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id");
+    			if (!isNotVal(gridPanel)) {
+    				var store=Ext.create('Ext.data.Store', {
+    				    fields:['id','interval','waterCut','tubingPressure','position'],
+    				    data:data
+    				});
+        			
+        			gridPanel = Ext.create('Ext.grid.Panel', {
+                        id: "UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id",
+                        border: false,
+                        autoLoad: false,
+                        columnLines: true,
+                        forceFit: false,
+                        viewConfig: {
+                        	emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
+                        },
+                        store: store,
+                        columns: [{
+                            text: '序号',
+                            lockable: true,
+                            align: 'center',
+                            width: 50,
+                            xtype: 'rownumberer',
+                            sortable: false,
+                            locked: false
+                        }, {
+                            text: '采样时间',
+                            lockable: true,
+                            align: 'center',
+                            flex: 2,
+                            sortable: false,
+                            dataIndex: 'pointAcqTime',
+                            renderer: function (value) {
+                                if (isNotVal(value)) {
+                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                }
+                            }
+                        }, {
+                            text: '采样间隔(ms)',
+                            lockable: true,
+                            align: 'center',
+                            flex: 1,
+                            sortable: false,
+                            dataIndex: 'interval',
+                            renderer: function (value) {
+                                if (isNotVal(value)) {
+                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                }
+                            }
+                        }, {
+                            text: '含水率(%)',
+                            lockable: true,
+                            align: 'center',
+                            flex: 1,
+                            sortable: false,
+                            dataIndex: 'waterCut',
+                            renderer: function (value) {
+                                if (isNotVal(value)) {
+                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                }
+                            }
+                        }, {
+                            text: '压力(MPa)',
+                            lockable: true,
+                            align: 'center',
+                            flex: 1,
+                            sortable: false,
+                            dataIndex: 'tubingPressure',
+                            renderer: function (value) {
+                                if (isNotVal(value)) {
+                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                }
+                            }
+                        }, {
+                            text: '位置',
+                            lockable: true,
+                            align: 'center',
+                            flex: 1,
+                            sortable: false,
+                            dataIndex: 'position',
+                            renderer: function (value) {
+                                if (isNotVal(value)) {
+                                    return "<span data-qtip=" + (value == undefined ? "" : value) + ">" + (value == undefined ? "" : value) + "</span>";
+                                }
+                            }
+                        }],
+                        listeners: {
+                        	selectionchange: function (view, selected, o) {},
+                        	itemdblclick: function (view,record,item,index,e,eOpts) {},
+                        	select: function(grid, record, index, eOpts) {}
+                        }
+                    });
+                    var panel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id");
+                    panel.add(gridPanel);
+    			}else{
+    				gridPanel.getStore().loadData(data);
+    			}
+    			
+    			showWaterCutRawDataCurve2(result);
+    		},
+    		failure:function(){
+    			Ext.MessageBox.alert("信息","请求失败");
+    		},
+    		params: {
+    			wellId:wellId,
+    			signinId:signinId,
+    			slave:slave
+            }
+    	}); 
+	}
+}

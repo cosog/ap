@@ -167,7 +167,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 			if(isSendSMS&&"1".equalsIgnoreCase(obj[2]+"") && StringManagerUtils.isNotNull(obj[1]+"") && StringManagerUtils.isPhoneLegal(obj[1]+"")){
 				StringBuffer sendContent = new StringBuffer();
 				sendContent.append("{\"Mobile\":\""+obj[1]+"\",\"Value\":\""+SMSContent+"\"}");
-				StringManagerUtils.sendPostMethod(SMSUrl, sendContent.toString(), "utf-8");
+				StringManagerUtils.sendPostMethod(SMSUrl, sendContent.toString(), "utf-8",0,0);
 			}
 			if("1".equalsIgnoreCase(obj[4]+"") && StringManagerUtils.isNotNull(obj[3]+"") && StringManagerUtils.isMailLegal(obj[3]+"")){
 				receivingEMailAccount.add(obj[3]+"");

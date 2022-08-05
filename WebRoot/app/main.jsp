@@ -97,6 +97,7 @@
 	  Ext.onReady(function(){
 			    Ext.BLANK_IMAGE_URL="<%=path%>/scripts/extjs/resources/themesimages/default/s.gif";
 		        Ext.BLANK_IMAGE_URL = "<%=path%>/scripts/extjs/resources/themes/images/default/tree/s.gif";
+		        //Ext.Ajax.setTimeout(180000);
 		        //alert(isConnectionInternet);
 					var user = "${userLogin.userNo}";
 					var user_Name = "${userLogin.userName}";

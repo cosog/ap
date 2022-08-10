@@ -74,8 +74,11 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                 border: false,
                 layout: 'border',
                 items: [{
-                	region: 'center',
+                	region: 'west',
+                    width: '35%',
                 	border: false,
+                	collapsible: true,
+                    split: true,
                     layout: 'border',
                     items: [{
                     	region: 'center',
@@ -91,11 +94,9 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                         hidden: true
                      },rpcDeviceCombo]
                 }, {
-                	region: 'east',
-                    width: '65%',
+                	
+                    region: 'center',
                     header: false,
-                    collapsible: true,
-                    split: true,
                     xtype: 'tabpanel',
                     id:"UpstreamAndDownstreamInteractionConfigTabpanel_Id",
                     activeTab: 0,
@@ -703,14 +704,16 @@ function showWaterCutRawDataCurve2(result){
 	
 	
     tickInterval = Math.floor(totals / 10) + 1;
-    if(tickInterval<100){
+    if(tickInterval>100){
     	tickInterval=100;
+    }else if(tickInterval<10){
+    	tickInterval=10;
     }
     var title = wellName + "趋势曲线";
     
     
     var ser = Ext.JSON.decode(series);
-    var timeFormat='%m-%d';
+    var timeFormat='%H:%M';//%Y-%m-%d %H:%M:%S.%L
     initWaterCutRawDataCurveChartFn(ser, tickInterval, divId, title, subtitle, '', yAxis, color,true,timeFormat);
 }
 
@@ -834,7 +837,10 @@ function initWaterCutRawDataCurveChartFn(series, tickInterval, divId, title, sub
         legend: {
             layout: 'vertical',//horizontal水平 vertical 垂直
             align: 'right',  //left，center 和 right
-            verticalAlign: 'middle',//top，middle 和 bottom
+            verticalAlign: 'top',//top，middle 和 bottom
+            floating:true,
+            x: 0,
+            y: -50,
             enabled: legend,
             borderWidth: 0
         },

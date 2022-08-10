@@ -417,20 +417,20 @@ Ext.define('AP.view.alarmQuery.RPCNumericValueAlarmInfoView', {
                 }
             }],
     		items: [{
-    			region: 'center',
+            	region: 'west',
+            	width: '30%',
     			title: '设备列表',
     			id: 'RPCNumericValueAlarmOverviewPanel_Id',
     			autoScroll: true,
                 scrollable: true,
-    			layout: 'fit'
-    		},{
-    			region: 'east',
-    			title: '报警数据',
-    			id: 'RPCNumericValueAlarmDetailsPanel_Id',
-                width: '70%',
-                autoScroll: true,
                 split: true,
                 collapsible: true,
+    			layout: 'fit'
+    		},{
+    			region: 'center',
+    			title: '报警数据',
+    			id: 'RPCNumericValueAlarmDetailsPanel_Id',
+                autoScroll: true,
                 layout: 'fit'
     		}]
         });

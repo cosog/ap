@@ -417,21 +417,21 @@ Ext.define('AP.view.alarmQuery.PCPEnumValueAlarmInfoView', {
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
             }],
-            items: [{
-    			region: 'center',
+    		items: [{
+            	region: 'west',
+            	width: '30%',
     			title: '设备列表',
     			id: 'PCPEnumValueAlarmOverviewPanel_Id',
     			autoScroll: true,
                 scrollable: true,
-    			layout: 'fit'
-    		},{
-    			region: 'east',
-    			title: '报警数据',
-    			id: 'PCPEnumValueAlarmDetailsPanel_Id',
-                width: '70%',
-                autoScroll: true,
                 split: true,
                 collapsible: true,
+    			layout: 'fit'
+    		},{
+    			region: 'center',
+    			title: '报警数据',
+    			id: 'PCPEnumValueAlarmDetailsPanel_Id',
+                autoScroll: true,
                 layout: 'fit'
     		}]
         });

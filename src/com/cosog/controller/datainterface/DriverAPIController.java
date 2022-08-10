@@ -901,7 +901,7 @@ public class DriverAPIController extends BaseController{
 									rpcDeviceInfo.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 								}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
-									insertHistValue+=","+rawValue+"";
+									rpcDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 								}else if("volumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "waterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 									rpcDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
@@ -1951,7 +1951,7 @@ public class DriverAPIController extends BaseController{
 									pcpDeviceInfo.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(rawValue));
 								}else if("ProducingfluidLevel".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									pcpCalculateRequestData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(rawValue));
-									insertHistValue+=","+rawValue+"";
+									pcpDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 								}else if("volumeWaterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn()) || "waterCut".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									pcpCalculateRequestData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));
 									pcpDeviceInfo.getProduction().setWaterCut(StringManagerUtils.stringToFloat(rawValue));

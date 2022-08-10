@@ -1691,9 +1691,8 @@ public class StringManagerUtils {
             out = new PrintWriter(os);
             out.print(param);
             out.flush();
-            //	            // 定义BufferedReader输入流来读取URL的响应
-
-
+            
+            // 定义BufferedReader输入流来读取URL的响应
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 is = new InputStreamReader(conn.getInputStream(), encoding); in = new BufferedReader(is);
                 String line;

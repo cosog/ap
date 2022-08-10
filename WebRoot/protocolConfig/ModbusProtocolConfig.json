@@ -46,7 +46,7 @@
                 },
                 {
                     "Title": "光杆温度",
-                    "Addr": 40329,
+                    "Addr": 40331,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 2,
@@ -58,7 +58,7 @@
                 },
                 {
                     "Title": "盘根盒温度",
-                    "Addr": 40331,
+                    "Addr": 40333,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 2,
@@ -262,7 +262,7 @@
                 },
                 {
                     "Title": "动液面",
-                    "Addr": 0,
+                    "Addr": 40329,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 2,
@@ -274,7 +274,7 @@
                 },
                 {
                     "Title": "含水率",
-                    "Addr": 40314,
+                    "Addr": 40327,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 2,
@@ -680,7 +680,7 @@
                 },
                 {
                     "Title": "动液面",
-                    "Addr": 0,
+                    "Addr": 40329,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 2,
@@ -692,7 +692,7 @@
                 },
                 {
                     "Title": "含水率",
-                    "Addr": 40314,
+                    "Addr": 40327,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 2,

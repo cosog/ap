@@ -75,8 +75,13 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                 border: false,
                 layout: 'border',
                 items: [{
-                	region: 'center',
-                	layout: 'border',
+                	region: 'west',
+                    width: '32%',
+                    layout: 'border',
+                    split: true,
+                    collapsible: true,
+            		border: false,
+            		header:false,
                     items:[{
                     	region: 'center',
                         title:'设备列表',
@@ -227,8 +232,8 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
             			}
                     }]
                 }, {
-                	region: 'east',
-                    width: '68%',
+                	region: 'center',
+                	layout: 'border',
                     title: '趋势曲线',
                     autoScroll: true,
                     split: true,

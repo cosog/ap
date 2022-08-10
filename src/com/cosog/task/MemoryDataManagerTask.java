@@ -108,7 +108,11 @@ public class MemoryDataManagerTask {
 			modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
 		}else if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null&&modbusProtocolConfig.getProtocol().size()>0){
 			Collections.sort(modbusProtocolConfig.getProtocol());
+			for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+				Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
+			}
 		}
+		
 		
 		Jedis jedis=null;
 		try {

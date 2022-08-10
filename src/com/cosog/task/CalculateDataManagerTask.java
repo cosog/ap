@@ -69,15 +69,6 @@ public class CalculateDataManagerTask {
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
-	//订阅发布模式通信计算
-	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "0 0/1 * * * ?")
-	public void pubSubModelCommCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/pubSubModelCommCalculation";
-		String result="";
-		result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
-	}
-	
 	public static  int getCount(String sql) throws SQLException{  
         int result=0;
         Connection conn=OracleJdbcUtis.getConnection();

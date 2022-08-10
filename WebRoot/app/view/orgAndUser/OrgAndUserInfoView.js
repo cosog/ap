@@ -8,51 +8,15 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         var me = this;
         Ext.apply(me, {
         	items: [{
-        		region:'center',
+        		region:'west',
+        		width:'20%',
         		layout: "fit",
         		title:'组织列表',
         		header:false,
+        		split: true,
+                collapsible: true,
         		id:'OrgAndUserOrgInfoPanel_Id',
         		tbar: [
-//        			{
-//                    iconCls: 'icon-collapse-all', // 收缩按钮
-//                    text: cosog.string.collapse,
-//                    tooltip: {
-//                        text: cosog.string.collapseAll
-//                    },
-//                    handler: function () {
-//                        Ext.getCmp("OrgInfoTreeGridView_Id").collapseAll();
-//                    }
-//                }, '-', {
-//                    iconCls: 'icon-expand-all', // 展开按钮
-//                    text: cosog.string.expand,
-//                    tooltip: {
-//                        text: cosog.string.expandAll
-//                    },
-//                    handler: function () {
-//                        Ext.getCmp("OrgInfoTreeGridView_Id").expandAll();
-//                    }
-//                }, '-', {
-//                    fieldLabel: cosog.string.orgName,
-//                    id: 'org_name_Id',
-//                    name: 'org_name',
-//                    emptyText: cosog.string.queryOrg,
-//                    labelWidth: 60,
-//                    labelAlign: 'right',
-//                    width: 165,
-//                    xtype: 'textfield'
-//                },'-', {
-//                    xtype: 'button',
-//                    text: cosog.string.search,
-//                    iconCls: 'search',
-//                    handler: function () {
-//                    	var gridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
-//                    	if (isNotVal(gridPanel)) {
-//                    		gridPanel.getStore().proxy.extraParams.tid = 0;
-//                    		gridPanel.getStore().load();
-//                    	}
-//                    }
-//                }, 
                 '->', {
                     xtype: 'button',
                     itemId: 'addOrgLableClassBtnId',
@@ -85,13 +49,11 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     }
                 }]
         	},{
-        		region:'east',
-        		width:'80%',
+        		
+        		region:'center',
         		id:'OrgAndUserUserInfoPanel_Id',
         		title:'用户列表',
         		header:false,
-        		split: true,
-                collapsible: true,
         		layout: "fit",
         		tbar: [{
                     id: 'UserName_Id',

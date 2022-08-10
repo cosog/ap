@@ -342,7 +342,7 @@ public class CalculateThread extends Thread{
 							+ " and t.wellid="+wellNo+""
 							+ " order by t.acqTime ";
 					String singleRecordSql="select t2.id as wellId, "
-							+ "to_char(t.cqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
+							+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 							+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 							+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 							+ "t.productiondata,"

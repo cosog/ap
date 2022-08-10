@@ -418,20 +418,20 @@ Ext.define('AP.view.alarmQuery.RPCFESDiagramResultAlarmInfoView', {
                 }
             }],
             items: [{
-    			region: 'center',
+            	region: 'west',
+            	width: '30%',
     			title: '设备列表',
     			id: 'RPCFESDiagramResultAlarmOverviewPanel_Id',
     			autoScroll: true,
                 scrollable: true,
-    			layout: 'fit'
-    		},{
-    			region: 'east',
-    			title: '报警数据',
-    			id: 'RPCFESDiagramResultAlarmDetailsPanel_Id',
-                width: '70%',
-                autoScroll: true,
                 split: true,
                 collapsible: true,
+    			layout: 'fit'
+    		},{
+    			region: 'center',
+    			title: '报警数据',
+    			id: 'RPCFESDiagramResultAlarmDetailsPanel_Id',
+                autoScroll: true,
                 layout: 'fit'
     		}]
         });

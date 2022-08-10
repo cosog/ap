@@ -623,7 +623,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<String> requestDataList=new ArrayList<String>();
 		String sql="select t.id,t.wellname from tbl_pcpdevice t ";
 		String fesDiagramSql="select t2.id, "
-				+ "to_char(t.cqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+				+ "to_char(t.acqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 				+ "t.productiondata,"

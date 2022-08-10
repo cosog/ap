@@ -1531,7 +1531,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ " where t.wellid=t2.id "
 						+ " and t.id="+recordId;
 				String rpmSql="select "
-						+ "to_char(t.cqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+						+ "to_char(t.acqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
 						+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 						+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 						+ "t.productiondata,"
@@ -1539,9 +1539,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ "t.systemefficiency,t.energyper100mlift "
 						+ " from tbl_pcpacqdata_hist t "
 						+ " where t.wellid="+wellId+" "
-						+ " and t.cqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
+						+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
 						+ " and t.resultstatus=1 "
-						+ " order by t.cqtime";
+						+ " order by t.acqtime";
 				List<?> list = this.findCallSql(sql);
 				if(list.size()>0){
 					StringBuffer dataSbf= new StringBuffer();
@@ -1831,7 +1831,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " from tbl_pcpdailycalculationdata t,pcp_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.id="+recordId;
-		String fesDiagramSql="select to_char(t.cqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+		String fesDiagramSql="select to_char(t.acqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 				+ "t.productiondata,"
@@ -1839,9 +1839,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ "t.systemefficiency,t.energyper100mlift "
 				+ " from tbl_pcpacqdata_hist t "
 				+ " where t.wellid="+wellId+" "
-				+ " and t.cqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
+				+ " and t.acqtime between to_date('"+calDate+"','yyyy-mm-dd') and to_date('"+calDate+"','yyyy-mm-dd')+1 "
 				+ " and t.resultstatus=1 "
-				+ " order by t.cqtime";
+				+ " order by t.acqtime";
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
 			

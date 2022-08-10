@@ -2567,6 +2567,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
 			requestBuff.append("\"Topic\":\""+topic+"\"}");
 			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
+			
 //			String path="";
 //			StringManagerUtils stringManagerUtils=new StringManagerUtils();
 //			path=stringManagerUtils.getFilePath("test7.json","example/");

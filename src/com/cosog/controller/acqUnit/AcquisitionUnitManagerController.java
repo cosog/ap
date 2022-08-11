@@ -2058,7 +2058,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			if(StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getName())){
+			if(StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getName()) && StringManagerUtils.isNotNull(modbusProtocolInstanceSaveData.getCode()) && modbusProtocolInstanceSaveData.getId()>0){
 				String sql="select t.id from tbl_acq_unit_conf t where t.unit_name='"+modbusProtocolInstanceSaveData.getUnitName()+"' and rownum=1";
 				String unitId="";
 				List list = this.service.findCallSql(sql);
@@ -2078,6 +2078,8 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolInstance.setSignInSuffix(modbusProtocolInstanceSaveData.getSignInSuffix());
 				protocolInstance.setHeartbeatPrefix(modbusProtocolInstanceSaveData.getHeartbeatPrefix());
 				protocolInstance.setHeartbeatSuffix(modbusProtocolInstanceSaveData.getHeartbeatSuffix());
+				
+				protocolInstance.setPrefixSuffixHex(modbusProtocolInstanceSaveData.getPrefixSuffixHex());
 				
 				if(StringManagerUtils.isNum(modbusProtocolInstanceSaveData.getPacketSendInterval())){
 					protocolInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(modbusProtocolInstanceSaveData.getPacketSendInterval()));

@@ -772,11 +772,11 @@ values (135, null, '变频设置频率', 'c_bpszpl', 2, null, null, null, null, null, 
 /*==============================================================*/
 /* 初始化TBL_PROTOCOLINSTANCE数据                                          */
 /*==============================================================*/
-insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, DEVICETYPE, SORT)
-values (1, '抽油机A11采控实例', 'instance1', 'modbus-tcp', 'modbus-tcp', 'AA01', '0D', 'AA01', '0D', 100, 1, 0, 1);
+insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE,PREFIXSUFFIXHEX, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, DEVICETYPE, SORT)
+values (1, '抽油机A11采控实例', 'instance1', 'modbus-tcp', 'modbus-tcp',1, 'AA01', '0D', 'AA01', '0D', 100, 1, 0, 1);
 
-insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, DEVICETYPE, SORT)
-values (2, '螺杆泵A11采控实例', 'instance2', 'modbus-tcp', 'modbus-tcp', 'AA01', '0D', 'AA01', '0D', 100, 2, 1, 1);
+insert into TBL_PROTOCOLINSTANCE (ID, NAME, CODE, ACQPROTOCOLTYPE, CTRLPROTOCOLTYPE,PREFIXSUFFIXHEX, SIGNINPREFIX, SIGNINSUFFIX, HEARTBEATPREFIX, HEARTBEATSUFFIX, PACKETSENDINTERVAL, UNITID, DEVICETYPE, SORT)
+values (2, '螺杆泵A11采控实例', 'instance2', 'modbus-tcp', 'modbus-tcp',1, 'AA01', '0D', 'AA01', '0D', 100, 2, 1, 1);
 
 /*==============================================================*/
 /* 初始化tbl_protocolalarminstance数据                                          */

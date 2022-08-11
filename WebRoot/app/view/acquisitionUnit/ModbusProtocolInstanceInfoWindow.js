@@ -213,6 +213,29 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 						Ext.getCmp("modbusInstanceCtrlProtocolType_Id").setValue(this.value);
 					}
 				}
+            },{
+            	xtype: 'fieldcontainer',
+                fieldLabel : '前后缀十六进制<font color=red>*</font>',
+                defaultType: 'radiofield',
+                anchor: '100%',
+                defaults: {
+                    flex: 1
+                },
+                layout: 'hbox',
+                items: [
+                    {
+                        boxLabel:'HEX',
+                        name:'protocolInstance.prefixSuffixHex',
+                        checked:true,
+                        inputValue: '1',
+                        id: 'protocolInstancePrefixSuffixHexRadio1_Id'
+                    }, {
+                        boxLabel: 'ASC',
+                        name:'protocolInstance.prefixSuffixHex',
+                        inputValue:'0',
+                        id:'protocolInstancePrefixSuffixHexRadio0_Id'
+                    }
+                ]
             }, {
                 id: 'formModbusProtocolInstanceSignInPrefix_Id',
                 name: "protocolInstance.signInPrefix",

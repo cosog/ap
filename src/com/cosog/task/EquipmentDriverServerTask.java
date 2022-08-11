@@ -57,7 +57,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -153,7 +153,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -1030,11 +1030,11 @@ public class EquipmentDriverServerTask {
 				StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initInstance),"utf-8",0,0);
 			}
 		}else{
-			String sql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
-					+ "t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"
-					+ "t.packetsendinterval,"
-					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"
-					+ "listagg(t5.itemname, ',') within group(order by t5.id ) key "
+			String sql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"//1~3
+					+ "t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"//4~7
+					+ "t.packetsendinterval,t.prefixsuffixhex,"//8~9
+					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//10~14
+					+ "listagg(t5.itemname, ',') within group(order by t5.id ) key "//15
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
 					+ " left outer join tbl_acq_group2unit_conf t3 on t2.id=t3.unitid "
@@ -1044,7 +1044,7 @@ public class EquipmentDriverServerTask {
 			if(StringManagerUtils.isNotNull(instances)){
 				sql+=" and t.name in("+instances+")";
 			}
-			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,t.packetsendinterval,"
+			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,t.packetsendinterval,t.prefixsuffixhex,"
 					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type";
 			Map<String,InitInstance> InstanceListMap=new HashMap<String,InitInstance>();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
@@ -1064,11 +1064,13 @@ public class EquipmentDriverServerTask {
 						initInstance=new InitInstance();
 						initInstance.setMethod(method);
 						initInstance.setInstanceName(rs.getString(1));
-						initInstance.setProtocolName(rs.getString(9));
+						initInstance.setProtocolName(rs.getString(10));
 						initInstance.setAcqProtocolType(rs.getString(2));
 						initInstance.setCtrlProtocolType(rs.getString(3));
 						
-						initInstance.setPrefixSuffixHex(true);
+						
+						boolean prefixSuffixHex=rs.getInt(9)==1;
+						initInstance.setPrefixSuffixHex(prefixSuffixHex);
 						
 						initInstance.setSignInPrefix(rs.getString(4)==null?"":rs.getString(4));
 						initInstance.setSignInSuffix(rs.getString(5)==null?"":rs.getString(5));
@@ -1081,15 +1083,15 @@ public class EquipmentDriverServerTask {
 						initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
 						initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
 					}
-					if(StringManagerUtils.isNotNull(rs.getString(11))){
+					if(StringManagerUtils.isNotNull(rs.getString(12))){
 						InitInstance.Group group=new InitInstance.Group();
-						group.setGroupTimingInterval(rs.getInt(12));
+						group.setGroupTimingInterval(rs.getInt(13));
 						group.setAddr(new ArrayList<Integer>());
-						int groupType=rs.getInt(13);
-						if(StringManagerUtils.isNotNull(rs.getString(14))){
-							String[] itemsArr=rs.getString(14).split(",");
+						int groupType=rs.getInt(14);
+						if(StringManagerUtils.isNotNull(rs.getString(15))){
+							String[] itemsArr=rs.getString(15).split(",");
 							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(9))){
+								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(10))){
 									for(int j=0;j<itemsArr.length;j++){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){

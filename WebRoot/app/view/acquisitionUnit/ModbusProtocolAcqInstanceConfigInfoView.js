@@ -128,41 +128,52 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				item5.value=data.ctrlProtocolType;
 				root.push(item5);
 				
+				
 				var item6={};
 				item6.id=6;
-				item6.title='注册包前缀(HEX)';
-				item6.value=data.signInPrefix;
+				item6.title='前后缀十六进制';
+				if(parseInt(data.prefixSuffixHex)==1){
+					item6.value=true;
+				}else{
+					item6.value=false;
+				}
 				root.push(item6);
 				
 				var item7={};
 				item7.id=7;
-				item7.title='注册包后缀(HEX)';
-				item7.value=data.signInSuffix;
+				item7.title='注册包前缀(HEX/ASC)';
+				item7.value=data.signInPrefix;
 				root.push(item7);
 				
 				var item8={};
 				item8.id=8;
-				item8.title='心跳包前缀(HEX)';
-				item8.value=data.heartbeatPrefix;
+				item8.title='注册包后缀(HEX/ASC)';
+				item8.value=data.signInSuffix;
 				root.push(item8);
 				
 				var item9={};
 				item9.id=9;
-				item9.title='心跳包后缀(HEX)';
-				item9.value=data.heartbeatSuffix;
+				item9.title='心跳包前缀(HEX/ASC)';
+				item9.value=data.heartbeatPrefix;
 				root.push(item9);
 				
 				var item10={};
 				item10.id=10;
-				item10.title='单包发送间隔(ms)';
-				item10.value=data.packetSendInterval;
+				item10.title='心跳包后缀(HEX/ASC)';
+				item10.value=data.heartbeatSuffix;
 				root.push(item10);
 				
 				var item11={};
 				item11.id=11;
-				item11.title='排序序号';
-				item11.value=data.sort;
+				item11.title='单包发送间隔(ms)';
+				item11.value=data.packetSendInterval;
 				root.push(item11);
+				
+				var item12={};
+				item12.id=12;
+				item12.title='排序序号';
+				item12.value=data.sort;
+				root.push(item12);
 			}
 			
 			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
@@ -283,6 +294,14 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	this.source = ['modbus-tcp','modbus-rtu'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
+		                    }
+	                    	
+	                    	if (visualColIndex === 2 && visualRowIndex===5) {
+		                    	this.type = 'checkbox';
+//		                    	this.label={
+//			                            position: 'before',
+//			                            value: '16进制? '
+//			                          };
 		                    }
 	                    }
 	                    return cellProperties;
@@ -416,15 +435,21 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.acqProtocolType=propertiesData[3][2];
 			saveData.ctrlProtocolType=propertiesData[4][2];
 			
-			saveData.signInPrefix=propertiesData[5][2];
-			saveData.signInSuffix=propertiesData[6][2];
+			if(propertiesData[5][2]==true){
+				saveData.prefixSuffixHex=1;
+			}else{
+				saveData.prefixSuffixHex=0;
+			}
 			
-			saveData.heartbeatPrefix=propertiesData[7][2];
-			saveData.heartbeatSuffix=propertiesData[8][2];
+			saveData.signInPrefix=propertiesData[6][2];
+			saveData.signInSuffix=propertiesData[7][2];
 			
-			saveData.packetSendInterval=propertiesData[9][2];
+			saveData.heartbeatPrefix=propertiesData[8][2];
+			saveData.heartbeatSuffix=propertiesData[9][2];
 			
-			saveData.sort=propertiesData[10][2];
+			saveData.packetSendInterval=propertiesData[10][2];
+			
+			saveData.sort=propertiesData[11][2];
 			
 			SaveModbusProtocolAcqInstanceData(saveData);
 		}
@@ -441,7 +466,7 @@ function SaveModbusProtocolAcqInstanceData(saveData){
 				Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id").getStore().load();
             	Ext.MessageBox.alert("信息","保存成功");
             } else {
-            	Ext.MessageBox.alert("信息","采控单元数据保存失败");
+            	Ext.MessageBox.alert("信息","保存失败");
             }
 		},
 		failure:function(){

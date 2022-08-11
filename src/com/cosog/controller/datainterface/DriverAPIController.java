@@ -532,10 +532,6 @@ public class DriverAPIController extends BaseController{
 		Jedis jedis=null;
 		if(acqGroup!=null){
 			try{
-				if("d1e3643c140569d4".equalsIgnoreCase(acqGroup.getID())){
-					System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"接收到ad推送group数据："+data);
-				}
-				
 				jedis = RedisUtil.jedisPool.getResource();
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;

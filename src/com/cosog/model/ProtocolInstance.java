@@ -26,6 +26,7 @@ public class ProtocolInstance implements java.io.Serializable {
 	private Integer unitId;
 	private String acqProtocolType;
 	private String ctrlProtocolType;
+	private Integer prefixSuffixHex;
 	private String signInPrefix;
 	private String signInSuffix;
 	private String heartbeatPrefix;
@@ -168,12 +169,22 @@ public class ProtocolInstance implements java.io.Serializable {
 		this.sort = sort;
 	}
 
+	@Column(name = "packetSendInterval", precision = 22, scale = 0)
 	public Integer getPacketSendInterval() {
 		return packetSendInterval;
 	}
 
 	public void setPacketSendInterval(Integer packetSendInterval) {
 		this.packetSendInterval = packetSendInterval;
+	}
+
+	@Column(name = "prefixSuffixHex", precision = 22, scale = 0)
+	public Integer getPrefixSuffixHex() {
+		return prefixSuffixHex;
+	}
+
+	public void setPrefixSuffixHex(Integer prefixSuffixHex) {
+		this.prefixSuffixHex = prefixSuffixHex;
 	}
 	
 	

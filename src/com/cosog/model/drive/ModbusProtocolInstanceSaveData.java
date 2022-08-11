@@ -12,6 +12,8 @@ public class ModbusProtocolInstanceSaveData {
 	int unitId;
 	String unitName;
 	
+	int prefixSuffixHex;
+	
 	String acqProtocolType;
 	String ctrlProtocolType;
 	
@@ -153,5 +155,13 @@ public class ModbusProtocolInstanceSaveData {
 
 	public void setPacketSendInterval(String packetSendInterval) {
 		this.packetSendInterval = packetSendInterval;
+	}
+
+	public int getPrefixSuffixHex() {
+		return prefixSuffixHex;
+	}
+
+	public void setPrefixSuffixHex(int prefixSuffixHex) {
+		this.prefixSuffixHex = prefixSuffixHex;
 	}
 }

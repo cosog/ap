@@ -458,6 +458,7 @@ create table TBL_PROTOCOLINSTANCE
   code             VARCHAR2(50),
   acqprotocoltype  VARCHAR2(50),
   ctrlprotocoltype VARCHAR2(50),
+  prefixsuffixhex    NUMBER(1) default 1,
   signinprefix     VARCHAR2(50),
   signinsuffix     VARCHAR2(50),
   heartbeatprefix  VARCHAR2(50),

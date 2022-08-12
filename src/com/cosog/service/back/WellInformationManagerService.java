@@ -2357,10 +2357,16 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			tableName="tbl_smsdevice";
 		}
 		if (StringManagerUtils.isNotNull(signinId)&&StringManagerUtils.isNotNull(slaveStr)) {
-			String sql = "select t.id from "+tableName+" t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
-			List<?> list = this.findCallSql(sql);
-			if (list.size() > 0) {
+			String rpcSql = "select t.id from tbl_rpcdevice t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+			List<?> rpcList = this.findCallSql(rpcSql);
+			if (rpcList.size() > 0) {
 				flag = true;
+			}else{
+				String pcpSql = "select t.id from tbl_pcpdevice t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+				List<?> pcpList = this.findCallSql(pcpSql);
+				if (pcpList.size() > 0) {
+					flag = true;
+				}
 			}
 		}
 		return flag;

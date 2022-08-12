@@ -155,6 +155,8 @@ CREATE OR REPLACE PROCEDURE prd_save_rpcdevice (
   wellcount number :=0;
   wellId number :=0;
   othercount number :=0;
+  otherrpccount number :=0;
+  otherpcpcount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
@@ -163,9 +165,14 @@ begin
     if wellcount>0 then
       select t.id into wellId from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
       --判断signinid和slave是否已存在
-      select count(1) into othercount from tbl_rpcdevice t
-      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
+      select count(1) into otherrpccount from tbl_rpcdevice t
+      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) 
+      and t.signinid is not null and t.slave is not null
       and t.id<>wellId;
+      select count(1) into otherpcpcount from tbl_pcpdevice t
+      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) 
+      and t.signinid is not null and t.slave is not null;
+      othercount:=otherrpccount+otherpcpcount;
       if othercount=0 then
         Update tbl_rpcdevice t
         Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
@@ -183,14 +190,25 @@ begin
         v_resultstr := '修改成功';
         p_msg := '修改成功';
       else
-        select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-        from tbl_org org
-        start with org.org_parent=0
-        connect by   org.org_parent= prior org.org_id) v
-        where t.orgid=v.org_id
-        and t.id=(select t2.id from tbl_rpcdevice t2
+        if otherrpccount>0 then
+          select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          from tbl_org org
+          start with org.org_parent=0
+          connect by   org.org_parent= prior org.org_id) v
+          where t.orgid=v.org_id
+          and t.id=(select t2.id from tbl_rpcdevice t2
             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
             and t2.id<>wellId);
+        elsif otherpcpcount>0 then
+          select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          from tbl_org org
+          start with org.org_parent=0
+          connect by   org.org_parent= prior org.org_id) v
+          where t.orgid=v.org_id
+          and t.id=(select t2.id from tbl_pcpdevice t2
+            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+          );
+        end if;
         v_result:=-22;
         v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
         p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -198,7 +216,13 @@ begin
 
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_rpcdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        select count(1) into otherrpccount from tbl_rpcdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) 
+        and t.signinid is not null and t.slave is not null;
+        select count(1) into otherpcpcount from tbl_pcpdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) 
+        and t.signinid is not null and t.slave is not null;
+        othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           insert into tbl_rpcdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
@@ -215,12 +239,21 @@ begin
           v_resultstr := '添加成功';
           p_msg := '添加成功';
         else
-          select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          if otherrpccount>0 then
+             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          elsif otherpcpcount>0 then
+             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+           end if;
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -234,7 +267,13 @@ begin
       p_msg := '所选组织下存在同名设备';
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_rpcdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        select count(1) into otherrpccount from tbl_rpcdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) 
+        and t.signinid is not null and t.slave is not null;
+        select count(1) into otherpcpcount from tbl_pcpdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) 
+        and t.signinid is not null and t.slave is not null;
+        othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           insert into tbl_rpcdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
@@ -251,12 +290,21 @@ begin
           v_resultstr := '添加成功';
           p_msg := '添加成功';
         else
-          select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          if otherrpccount>0 then
+             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          elsif otherpcpcount>0 then
+             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+           end if;
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -291,6 +339,8 @@ CREATE OR REPLACE PROCEDURE prd_save_pcpdevice (
   wellcount number :=0;
   wellId number :=0;
   othercount number :=0;
+  otherrpccount number :=0;
+  otherpcpcount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
@@ -299,9 +349,12 @@ begin
     if wellcount>0 then
       select t.id into wellId from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
       --判断signinid和slave是否已存在
-      select count(1) into othercount from tbl_pcpdevice t
+      select count(1) into otherpcpcount from tbl_pcpdevice t
       where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
       and t.id<>wellId;
+      select count(1) into otherrpccount from tbl_rpcdevice t
+      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+      othercount:=otherrpccount+otherpcpcount;
       if othercount=0 then
         Update tbl_pcpdevice t
         Set t.orgid   = v_orgId,t.devicetype=v_devicetype,
@@ -317,21 +370,36 @@ begin
         v_resultstr := '修改成功';
         p_msg := '修改成功';
       else
-        select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-        from tbl_org org
-        start with org.org_parent=0
-        connect by   org.org_parent= prior org.org_id) v
-        where t.orgid=v.org_id
-        and t.id=(select t2.id from tbl_pcpdevice t2
+        if otherpcpcount>0 then
+          select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          from tbl_org org
+          start with org.org_parent=0
+          connect by   org.org_parent= prior org.org_id) v
+          where t.orgid=v.org_id
+          and t.id=(select t2.id from tbl_pcpdevice t2
             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
             and t2.id<>wellId);
+        elsif otherrpccount>0 then
+          select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+          from tbl_org org
+          start with org.org_parent=0
+          connect by   org.org_parent= prior org.org_id) v
+          where t.orgid=v.org_id
+          and t.id=(select t2.id from tbl_rpcdevice t2
+            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+          );
+        end if;
         v_result:=-22;
         v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
         p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
       end if;
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_pcpdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        select count(1) into otherpcpcount from tbl_pcpdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        select count(1) into otherrpccount from tbl_rpcdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           insert into tbl_pcpdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData);
@@ -347,12 +415,21 @@ begin
           v_resultstr := '添加成功';
           p_msg := '添加成功';
         else
-          select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          if otherpcpcount>0 then
+             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          elsif otherrpccount>0 then
+             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          end if;
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -366,7 +443,11 @@ begin
       p_msg := '所选组织下存在同名设备';
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
-        select count(1) into othercount from tbl_pcpdevice t where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        select count(1) into otherpcpcount from tbl_pcpdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        select count(1) into otherrpccount from tbl_rpcdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           insert into tbl_pcpdevice(orgId,wellName,devicetype,signinid,slave,videourl,status,Sortnum,productiondata)
           values(v_orgId,v_wellName,v_devicetype,v_signInId,v_slave,v_videourl,v_status,v_sortNum,v_productionData);
@@ -382,12 +463,21 @@ begin
           v_resultstr := '添加成功';
           p_msg := '添加成功';
         else
-          select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          if otherpcpcount>0 then
+             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          elsif otherrpccount>0 then
+             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          end if;
           v_result:=-22;
           v_resultstr := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
           p_msg := '注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -523,6 +613,8 @@ CREATE OR REPLACE PROCEDURE prd_update_rpcdevice ( v_recordId in NUMBER,
                                                     v_resultstr out varchar2) as
   wellcount number :=0;
   othercount number :=0;
+  otherrpccount number :=0;
+  otherpcpcount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
@@ -531,10 +623,12 @@ begin
   where t.wellname=v_wellName and t.id<>v_recordId
   and t.orgid=( select t2.orgid from tbl_rpcdevice t2 where t2.id=v_recordId);
     if wellcount=0 then
-        select count(1) into othercount from tbl_rpcdevice t
+        select count(1) into otherrpccount from tbl_rpcdevice t
         where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
         and t.id<>v_recordId;
-
+        select count(1) into otherpcpcount from tbl_pcpdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        othercount:=otherrpccount+otherpcpcount;
         if v_recordId >0 and othercount=0 then
           Update tbl_rpcdevice t
            Set t.wellname=v_wellName,
@@ -553,14 +647,24 @@ begin
            v_resultstr := '修改成功';
            p_msg := '修改成功';
         elsif othercount>0 then
-          select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_rpcdevice t2
-            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
-            and t2.id<>v_recordId);
+          if otherrpccount>0 then
+             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_rpcdevice t2
+             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+                   and t2.id<>v_recordId);
+          elsif otherpcpcount>0 then
+             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_pcpdevice t2
+             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);   
+          end if;
           v_result:=-22;
           v_resultstr :='设备'||v_wellName||'注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
           p_msg := '设备'||v_wellName||'注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
@@ -594,6 +698,8 @@ CREATE OR REPLACE PROCEDURE prd_update_pcpdevice ( v_recordId in NUMBER,
                                                     v_resultstr out varchar2) as
   wellcount number :=0;
   othercount number :=0;
+  otherrpccount number :=0;
+  otherpcpcount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
@@ -602,10 +708,12 @@ begin
   where t.wellname=v_wellName and t.id<>v_recordId
   and t.orgid=( select t2.orgid from tbl_pcpdevice t2 where t2.id=v_recordId);
     if wellcount=0 then
-        select count(1) into othercount from tbl_pcpdevice t
+        select count(1) into otherpcpcount from tbl_pcpdevice t
         where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
         and t.id<>v_recordId;
-
+        select count(1) into otherrpccount from tbl_rpcdevice t
+        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        othercount:=otherrpccount+otherpcpcount;
         if v_recordId >0 and othercount=0 then
           Update tbl_pcpdevice t
            Set t.wellname=v_wellName,
@@ -624,14 +732,24 @@ begin
            v_resultstr := '修改成功';
            p_msg := '修改成功';
         elsif othercount>0 then
-          select substr(v.path||'/'||t.wellname,2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
-          from tbl_org org
-          start with org.org_parent=0
-          connect by   org.org_parent= prior org.org_id) v
-          where t.orgid=v.org_id
-          and t.id=(select t2.id from tbl_pcpdevice t2
-            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
-            and t2.id<>v_recordId);
+          if otherpcpcount>0 then
+             select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_pcpdevice t2
+             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+                   and t2.id<>v_recordId);
+          elsif otherrpccount>0 then
+             select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
+             from tbl_org org
+             start with org.org_parent=0
+             connect by   org.org_parent= prior org.org_id) v
+             where t.orgid=v.org_id
+             and t.id=(select t2.id from tbl_rpcdevice t2
+             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+          end if;
           v_result:=-22;
           v_resultstr :='设备'||v_wellName||'注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
           p_msg := '设备'||v_wellName||'注册包ID和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';

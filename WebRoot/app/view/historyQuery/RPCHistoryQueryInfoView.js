@@ -795,11 +795,14 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         layout: 'border',
                         border: false,
                         items: [{
-                        	region: 'center',
+                        	region: 'north',
+                        	height: '50%',
                         	title: '历史曲线',
                         	layout: 'fit',
                         	header: false,
                         	border: true,
+                        	split: true,
+                            collapsible: true,
                             html: '<div id="rpcHistoryQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -809,16 +812,12 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                 }
                             }
                         },{
-                        	region: 'south',
-                        	height: '50%',
+                        	region: 'center',
                         	title: '历史数据',
                         	header: false,
                         	id: "RPCHistoryQueryDataInfoPanel_Id",
                         	layout: 'fit',
-                        	border: true,
-                        	split: true,
-                            collapsible: true
-                            
+                        	border: true
                         }]
             		}],
             		listeners: {

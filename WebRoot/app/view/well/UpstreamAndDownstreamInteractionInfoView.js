@@ -76,6 +76,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                 items: [{
                 	region: 'west',
                     width: '35%',
+                    header:false,
                 	border: false,
                 	collapsible: true,
                     split: true,
@@ -308,10 +309,13 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                              }
                          }],
                          items: [{
-                         	region: 'center',
+                        	region: 'north',
+                         	height: '50%',
                          	title:'含水仪曲线',
                          	layout: 'fit',
                          	border: false,
+                         	split: true,
+                            collapsible: true,
                             id:'UpstreamAndDownstreamInteractionWaterCutRawDataCurvePanel_Id',
                             html: '<div id="UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id" style="width:100%;height:100%;"></div>',
                             listeners: {
@@ -322,16 +326,11 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                                 }
                             }
                          },{
-                        	region: 'south',
-                        	height: '50%',
+                        	region: 'center',
                         	title:'含水仪数据',
                          	border: false,
                             id:'UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id',
-                        	layout: 'fit',
-                        	border: true,
-                        	split: true,
-                            collapsible: true
-                            
+                        	layout: 'fit'
                         }],
             		}],
             		listeners: {

@@ -508,11 +508,14 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         }
                     }],
                     items: [{
-                    	region: 'center',
+                    	region: 'north',
+                    	height: '50%',
                     	title: '历史曲线',
                     	layout: 'fit',
                     	header: false,
                     	border: true,
+                    	split: true,
+                        collapsible: true,
                         html: '<div id="pcpHistoryQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -522,16 +525,12 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                             }
                         }
                     },{
-                    	region: 'south',
-                    	height: '50%',
+                    	region: 'center',
                     	title: '历史数据',
                     	header: false,
                     	id: "PCPHistoryQueryDataInfoPanel_Id",
                     	layout: 'fit',
-                    	border: true,
-                    	split: true,
-                        collapsible: true
-                        
+                    	border: true
                     }]
                 }]
             }]

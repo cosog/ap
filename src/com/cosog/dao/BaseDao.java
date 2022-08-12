@@ -1196,11 +1196,11 @@ public class BaseDao extends HibernateDaoSupport {
 						String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
 						String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
 						for(int j=0;j<balanceWeight.length;j++){
-							if(StringManagerUtils.isNotNull(balanceWeight[i])){
+							if(StringManagerUtils.isNotNull(balanceWeight[j])){
 								RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
-								everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[i]));
-								if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[i])){
-									everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[i]));
+								everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[j]));
+								if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[j])){
+									everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[j]));
 								}
 								balance.getEveryBalance().add(everyBalance);
 							}

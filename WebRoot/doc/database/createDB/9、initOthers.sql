@@ -441,10 +441,10 @@ insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTI
 values (26, '功图采集时间', 'c_gtcjsj', 0, null, 1, 'FESDiagramAcqtime');
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTIMES, MAPPINGMODE, CALCOLUMN)
-values (27, '冲次', 'c_cc', 0, null, 1, 'stroke');
+values (27, '冲次', 'c_cc', 0, null, 1, 'spm');
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTIMES, MAPPINGMODE, CALCOLUMN)
-values (28, '冲程', 'c_cc1', 0, null, 1, 'spm');
+values (28, '冲程', 'c_cc1', 0, null, 1, 'stroke');
 
 insert into TBL_DATAMAPPING (ID, NAME, MAPPINGCOLUMN, PROTOCOLTYPE, REPETITIONTIMES, MAPPINGMODE, CALCOLUMN)
 values (29, '功图数据-位移', 'c_gtsjwy', 0, null, 1, 'position_curve');

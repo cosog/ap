@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.CommStatus;
+import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
@@ -57,7 +58,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -153,7 +154,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -233,6 +234,16 @@ public class EquipmentDriverServerTask {
 				
 				path=stringManagerUtils.getFilePath(deviceName+"_02.json","example/");
 				String data2=stringManagerUtils.readFile(path,"utf-8");
+				
+//				Gson gson=new Gson();
+//				java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
+//				AcqGroup acqGroup1=gson.fromJson(data, type);
+//				AcqGroup acqGroup2=gson.fromJson(data2, type);
+//				
+//				String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//				if(acqGroup1!=null&&acqGroup1.getAddr()!=null&&acqGroup1.getAddr().size()>0){
+//					
+//				}
 				
 				int i=0;
 				while(true){

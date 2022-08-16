@@ -670,7 +670,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[27+j]+"";
+				String rawValue=obj[36+j]+"";
 				String value=rawValue;
 				ModbusProtocolConfig.Items item=null;
 				if(protocol!=null){
@@ -917,7 +917,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("\"details\":\"\",");
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[27+j]+"";
+				String rawValue=obj[36+j]+"";
 				String value=rawValue;
 				if(protocol!=null){
 					for(int k=0;k<protocol.getItems().size();k++){
@@ -1160,7 +1160,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[16+j]+"";
+				String rawValue=obj[23+j]+"";
 				String value=rawValue;
 				ModbusProtocolConfig.Items item=null;
 				if(protocol!=null){
@@ -1381,7 +1381,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("\"details\":\"\",");
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[16+j]+"";
+				String rawValue=obj[23+j]+"";
 				String value=rawValue;
 				if(protocol!=null){
 					for(int k=0;k<protocol.getItems().size();k++){

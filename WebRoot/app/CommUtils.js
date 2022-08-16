@@ -4047,18 +4047,9 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 		}
 		var xData = list[i].positionCurveData.split(",");
 		var yData;
+		var diagramPoint=xData.length;
 		if(diagramType===0){//如果是功图
 			yData = list[i].loadCurveData.split(",");
-//			var hour=list[i].acqTime.split(' ')[1].split(':')[0]
-//			if(parseInt(hour)<6 ){
-//				color=new Array("#000000","#000000");
-//			}else if(parseInt(hour)>=6 && parseInt(hour)<12){
-//				color=new Array("#000000","#dd1212");
-//			}else if(parseInt(hour)>=12 && parseInt(hour)<18){
-//				color=new Array("#000000","#507fea");
-//			}else{
-//				color=new Array("#000000","#00ff00");
-//			}
 			color=new Array("#000000","#00ff00");
 			minValue=0;
 		}else if(diagramType===1){//电功图
@@ -4068,9 +4059,12 @@ showFSDiagramOverlayChart = function(get_rawData,divid,visible,diagramType) {
 			yData = list[i].currentCurveData.split(",");
 			color=new Array("#000000","#0033FF");
 		}
+		if(diagramPoint>yData.length){
+			diagramPoint=yData.length;
+		}
 		var data = "[";
-		for (var j=0; j <= xData.length; j++) {
-			if(j<(xData.length)){
+		for (var j=0; j <= diagramPoint; j++) {
+			if(j<diagramPoint){
 				data += "[" + changeTwoDecimal(xData[j]) + ","+changeTwoDecimal(yData[j])+"],";
 			}else{
 				data += "[" + changeTwoDecimal(xData[0]) + ","+changeTwoDecimal(yData[0])+"]";//将图形的第一个点拼到最后面，使图形闭合

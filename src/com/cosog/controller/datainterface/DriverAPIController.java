@@ -904,13 +904,18 @@ public class DriverAPIController extends BaseController{
 								}else if("FESDiagramAcqCount".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
 								}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-									String FESDiagramAcqtime=acqTime;
-//							        if("bcd".equalsIgnoreCase(protocol.getItems().get(j).getStoreDataType())&& protocol.getItems().get(j).getQuantity()==6&&rawValue.length()==24){
-//							        	String[] acqTimeStrArr=StringManagerUtils.stringToStringArray(rawValue,2);
-//							        	if(acqTimeStrArr!=null && acqTimeStrArr.length==12){
-//							        		FESDiagramAcqtime=acqTimeStrArr[0]+acqTimeStrArr[1]+"-"+acqTimeStrArr[3]+"-"+acqTimeStrArr[5]+" "+acqTimeStrArr[7]+":"+acqTimeStrArr[9]+":"+acqTimeStrArr[11];
-//							        	}
-//							        }
+									String FESDiagramAcqtime="";
+									
+									if(rawValue.endsWith("simulate")){
+										FESDiagramAcqtime=acqTime;
+									}else{
+										if("bcd".equalsIgnoreCase(protocol.getItems().get(j).getStoreDataType())&& protocol.getItems().get(j).getQuantity()==6&&rawValue.length()==24){
+								        	String[] acqTimeStrArr=StringManagerUtils.stringToStringArray(rawValue,2);
+								        	if(acqTimeStrArr!=null && acqTimeStrArr.length==12){
+								        		FESDiagramAcqtime=acqTimeStrArr[0]+acqTimeStrArr[1]+"-"+acqTimeStrArr[3]+"-"+acqTimeStrArr[5]+" "+acqTimeStrArr[7]+":"+acqTimeStrArr[9]+":"+acqTimeStrArr[11];
+								        	}
+								        }
+									}
 							        rpcCalculateRequestData.getFESDiagram().setAcqTime(FESDiagramAcqtime);
 								}else if("stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));

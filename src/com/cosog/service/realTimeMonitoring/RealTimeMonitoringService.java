@@ -963,7 +963,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[28+j]+"";
+				String rawValue=obj[37+j]+"";
 				String value=rawValue;
 				ModbusProtocolConfig.Items item=null;
 				if(protocol!=null){
@@ -1201,7 +1201,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
 			result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String value=obj[28+j]+"";
+				String value=obj[37+j]+"";
 				if(protocol!=null){
 					for(int k=0;k<protocol.getItems().size();k++){
 						String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
@@ -1305,7 +1305,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ "averageWatt,waterPower,"
 				+ "systemEfficiency*100 as systemEfficiency,energyper100mlift,pumpEff*100 as pumpEff,"
 				+ "todayKWattH";
-		
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
 			if(dataSaveMode==0){
@@ -1451,7 +1450,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 			}
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[17+j]+"";
+				String rawValue=obj[24+j]+"";
 				String value=rawValue;
 				ModbusProtocolConfig.Items item=null;
 				if(protocol!=null){
@@ -1579,7 +1578,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ "averageWatt,waterPower,"
 				+ "systemEfficiency*100 as systemEfficiency,energyper100mlift,pumpEff*100 as pumpEff,"
 				+ "todayKWattH";
-		
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
 			if(dataSaveMode==0){
@@ -1666,7 +1664,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\"pumpEff\":\""+obj[22]+"\",");
 			result_json.append("\"todayKWattH\":\""+obj[23]+"\",");
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String value=obj[17+j]+"";
+				String value=obj[24+j]+"";
 				if(protocol!=null){
 					for(int k=0;k<protocol.getItems().size();k++){
 						String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));

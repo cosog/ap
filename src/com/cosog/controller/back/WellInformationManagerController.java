@@ -651,14 +651,21 @@ public class WellInformationManagerController extends BaseController {
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}
 		
+		List<String> initWellList=new ArrayList<String>();
+		initWellList.add(deviceId+"");
 		//处理生产数据
 		this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionData);
-		
-		//处理抽油机型号
-		this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
-		
-		//处理抽油机详情
-		this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
+		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+			//处理抽油机型号
+			this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);
+			//处理抽油机详情
+			this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
+		}
+		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+			MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,0,"update");
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+			MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,0,"update");
+		}
 		
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");

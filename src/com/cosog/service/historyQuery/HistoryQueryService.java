@@ -82,9 +82,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
 		
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
@@ -175,6 +172,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -255,9 +255,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		if(jedis!=null){
-			jedis.close();
 		}
 		String deviceTableName="tbl_rpcdevice";
 		String tableName="tbl_rpcacqdata_latest";
@@ -354,6 +351,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle)+"}");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -369,9 +369,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		if(jedis!=null){
-			jedis.close();
 		}
 		String deviceTableName="tbl_rpcdevice";
 		String tableName="tbl_rpcacqdata_latest";
@@ -427,6 +424,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -1507,9 +1507,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
@@ -1885,7 +1882,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		result_json.append(",\"CellInfo\":"+info_json);
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
-		
+
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -1956,10 +1956,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(jedis!=null){
-				jedis.close();
-			}
 		}
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
@@ -2129,7 +2125,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
 		}
-		result_json.append("]}");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString();
 	}
 	
@@ -2360,9 +2358,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
 		
 		String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.resultcode,t2.resultname,"
@@ -2483,6 +2478,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		dynSbf.append("]");
 		dynSbf.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		dynSbf.append("}");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	

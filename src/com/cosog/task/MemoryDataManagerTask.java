@@ -354,7 +354,6 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}
@@ -526,7 +525,6 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}

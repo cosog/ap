@@ -1,3 +1,4 @@
+Alter PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
 drop tablespace ap_temp including contents and datafiles;
 drop tablespace ap_data including contents and datafiles;
 drop user ap cascade;

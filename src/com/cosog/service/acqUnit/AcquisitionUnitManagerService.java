@@ -3568,7 +3568,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	public void doAcquisitionGroupOwnItemChange(final String ids) throws Exception {
 		String sql="delete from TBL_DISPLAY_ITEMS2UNIT_CONF t "
 				+ " where t.type<>1 "
-				+ " and t.type not in(select decode(t8.type,1,2,t8.type) from tbl_acq_group_conf t8 where t8.id="+ids+" )"
+				+ " and t.type in (select decode(t8.type,1,2,t8.type) from tbl_acq_group_conf t8 where t8.id="+ids+" )"
 				+ " and t.unitid in (select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_acq_group2unit_conf t4,tbl_acq_group_conf t5 "
 				+ "      where t2.acqunitid=t3.id and t3.id=t4.unitid and t4.groupid=t5.id and t5.id="+ids+") "
 				+ " and t.itemname not in( select t7.itemname from tbl_acq_group_conf t6,tbl_acq_item2group_conf t7 where t6.id=t7.groupid and t6.id="+ids+"  )";

@@ -88,9 +88,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
@@ -175,6 +172,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -183,11 +183,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
-		long time1 =System.nanoTime()/1000;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			long time2 =  System.nanoTime()/1000;
-			System.out.println("连接redis耗时："+(time2-time1));
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
@@ -200,10 +197,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			if(!jedis.exists("RPCWorkType".getBytes())){
 				MemoryDataManagerTask.loadRPCWorkType();
 			}
-			long time3 = System.nanoTime()/1000;
 			deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
-			long time4 = System.nanoTime()/1000;
-			System.out.println("取出设备列表耗时："+(time4-time3));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -249,13 +243,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("]");
 		}else{
 			if(deviceInfoByteList!=null){
-				long time5 = System.nanoTime()/1000;
 				Map<Integer,Integer> totalMap=new TreeMap<Integer,Integer>();
 				for(int i=0;i<deviceInfoByteList.size();i++){
-					long time8 = System.nanoTime()/1000;
 					Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-					long time9 = System.nanoTime()/1000;
-					System.out.println("反序列化耗时："+(time9-time8));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
 						if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
@@ -268,8 +258,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						}
 					}
 				}
-				long time6 = System.nanoTime()/1000;
-				System.out.println("遍历统计耗时："+(time6-time5));
 				
 				int index=1;
 				result_json.append("\"totalCount\":"+totalMap.size()+",");
@@ -291,8 +279,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					result_json.deleteCharAt(result_json.length() - 1);
 				}
 				result_json.append("]");
-				long time7 = System.nanoTime()/1000;
-				System.out.println("遍历统计后的map耗时："+(time7-time6));
 			}
 		}
 		
@@ -575,9 +561,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
 		String tableName="tbl_rpcacqdata_latest";
 		String deviceTableName="viw_rpcdevice";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
@@ -588,9 +571,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String sql="select t.devicetypename,t.devicetype,count(1) from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t.id=t2.wellid "
 				+ " where t.orgid in("+orgId+") ";
-		
-		
-		
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
 			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
 		}
@@ -620,6 +600,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
@@ -1789,11 +1772,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
-		
-		
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
 		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
@@ -2166,7 +2144,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append(",\"CellInfo\":"+info_json);
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
 		result_json.append("}");
-		
+		if(jedis!=null){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -2885,8 +2865,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			calItemSet= jedis.zrange(calItemsKey.getBytes(), 0, -1);
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			jedis.close();
 		}
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
@@ -3076,6 +3054,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 		}
 		result_json.append("]}");
+		if(jedis!=null&&jedis.isConnected()){
+			jedis.close();
+		}
 		return result_json.toString();
 	}
 	

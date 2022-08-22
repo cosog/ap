@@ -58,8 +58,18 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
+//		StringBuffer s=new StringBuffer();
+//		try{
+//			for(int i=0;i<100000000l;i++){
+//				s.append("a");
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			System.out.println("异常后长度:"+s.length());
+//		}
+//		System.out.println(s.length());
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String allOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
@@ -154,7 +164,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;

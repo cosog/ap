@@ -905,7 +905,6 @@ public class DriverAPIController extends BaseController{
 									FESDiagramAcqCount=StringManagerUtils.stringToInteger(rawValue);
 								}else if("FESDiagramAcqtime".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									String FESDiagramAcqtime="";
-									
 									if(rawValue.endsWith("simulate")){
 										FESDiagramAcqtime=acqTime;
 									}else{
@@ -920,6 +919,11 @@ public class DriverAPIController extends BaseController{
 								}else if("stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
 								}else if("spm".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
+//									if(rpcDeviceInfo.getSignInId().startsWith("18800") && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.stringToFloat(rawValue)==0){
+//										rpcCalculateRequestData.getFESDiagram().setSPM(3.5f);
+//									}else{
+//										rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
+//									}
 									rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
 								}else if("position_curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									if(StringManagerUtils.isNotNull(rawValue)){

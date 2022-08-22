@@ -3092,58 +3092,63 @@ public class StringManagerUtils {
     }
 
     public static String join(Object objarr[], String sign) {
-        String result = "";
-        for (int i = 0; objarr != null && i < objarr.length; i++) {
-            result += objarr[i] + "";
-            if (i < objarr.length - 1) {
-                result += sign;
+    	StringBuffer result = new StringBuffer();
+    	int length=objarr != null?objarr.length:0;
+        for (int i = 0; objarr != null && i < length; i++) {
+        	result.append(objarr[i] + "");
+            if (i < length - 1) {
+                result.append(sign);
             }
         }
-        return result;
+        return result.toString();
     }
 
     public static String join(List < Object > objarr, String sign) {
-        String result = "";
-        for (int i = 0; objarr != null && i < objarr.size(); i++) {
-            result += objarr.get(i) + "";
-            if (i < objarr.size() - 1) {
-                result += sign;
+    	StringBuffer result = new StringBuffer();
+    	int length=objarr != null?objarr.size():0;
+        for (int i = 0; objarr != null && i < length; i++) {
+            result.append(objarr.get(i) + "");
+            if (i < length - 1) {
+            	result.append(sign);
             }
         }
-        return result;
+        return result.toString();
     }
 
     public static String joinStringArr(String objarr[], String sign) {
-        String result = "";
-        for (int i = 0; objarr != null && i < objarr.length; i++) {
-            result += "\"" + objarr[i] + "\"";
-            if (i < objarr.length - 1) {
-                result += sign;
+    	StringBuffer result = new StringBuffer();
+    	int length=objarr != null?objarr.length:0;
+        for (int i = 0; objarr != null && i < length; i++) {
+            result.append( "\"" + objarr[i] + "\"");
+            if (i < length - 1) {
+                result.append(sign);
             }
         }
-        return result;
+        return result.toString();
     }
 
     public static String joinStringArr(List < String > objarr, String sign) {
-        String result = "";
-        for (int i = 0; objarr != null && i < objarr.size(); i++) {
-            result += "\"" + objarr.get(i) + "\"";
-            if (i < objarr.size() - 1) {
-                result += sign;
+    	StringBuffer result = new StringBuffer();
+    	int length=objarr != null?objarr.size():0;
+        for (int i = 0; objarr != null && i < length; i++) {
+            result.append("\"" + objarr.get(i) + "\"");
+            if (i < length - 1) {
+            	result.append(sign);
             }
         }
-        return result;
+        return result.toString();
     }
 
     public static String joinStringArr2(List < String > objarr, String sign) {
-        String result = "";
-        for (int i = 0; objarr != null && i < objarr.size(); i++) {
-            result += "'" + objarr.get(i) + "'";
-            if (i < objarr.size() - 1) {
-                result += sign;
+    	StringBuffer result = new StringBuffer();
+    	int length=objarr != null?objarr.size():0;
+        for (int i = 0; objarr != null && i < length; i++) {
+            result.append("'" + objarr.get(i) + "'");
+            if (i < length - 1) {
+            	result.append(sign);
             }
         }
-        return result;
+        return result.toString();
     }
 
     public static String inChangeToExists(String values, String column) {

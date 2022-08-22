@@ -217,49 +217,57 @@ public class CalculateUtils {
 				energyPer100mLiftList.add(responseData.getSystemEfficiency().getEnergyPer100mLift());
 			}
 		}
-		
-		dataSbf.append("{\"AKString\":\"\",");
-		dataSbf.append("\"WellName\":\""+deviceInfo.getWellName()+"\",");
-		dataSbf.append("\"Date\":\""+date+"\",");
-		dataSbf.append("\"OffsetHour\":0,");
-		dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
-		dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
-		dataSbf.append("\"CommTime\":"+deviceInfo.getCommTime()+",");
-		dataSbf.append("\"CommTimeEfficiency\":"+deviceInfo.getCommEff()+",");
-		dataSbf.append("\"CommRange\":\""+deviceInfo.getCommRange()+"\",");
-		dataSbf.append("\"RunStatus\":["+StringUtils.join(runStatusList, ",")+"],");
-		dataSbf.append("\"RunTime\":"+deviceInfo.getRunTime()+",");
-		dataSbf.append("\"RunTimeEfficiency\":"+deviceInfo.getRunEff()+",");
-		dataSbf.append("\"RunRange\":\""+deviceInfo.getRunRange()+"\",");
-		dataSbf.append("\"ResultCode\":["+StringUtils.join(ResultCodeList, ",")+"],");
-		dataSbf.append("\"TheoreticalProduction\":["+StringUtils.join(theoreticalProductionList, ",")+"],");
-		dataSbf.append("\"LiquidVolumetricProduction\":["+StringUtils.join(liquidVolumetricProductionList, ",")+"],");
-		dataSbf.append("\"OilVolumetricProduction\":["+StringUtils.join(oilVolumetricProductionList, ",")+"],");
-		dataSbf.append("\"WaterVolumetricProduction\":["+StringUtils.join(waterVolumetricProductionList, ",")+"],");
-		dataSbf.append("\"VolumeWaterCut\":["+StringUtils.join(volumeWaterCutList, ",")+"],");
-		dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
-		dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
-		dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//		dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
-		dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
-		dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
-		dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
-		dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
-		dataSbf.append("\"Stroke\":["+StringUtils.join(strokeList, ",")+"],");
-		dataSbf.append("\"SPM\":["+StringUtils.join(spmList, ",")+"],");
-		dataSbf.append("\"FMax\":["+StringUtils.join(FMaxList, ",")+"],");
-		dataSbf.append("\"FMin\":["+StringUtils.join(FMinList, ",")+"],");
-		dataSbf.append("\"FullnessCoefficient\":["+StringUtils.join(fullnessCoefficientList, ",")+"],");
-		dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
-		dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
-		dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
-		dataSbf.append("\"PumpEff3\":["+StringUtils.join(pumpEff3List, ",")+"],");
-		dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
-		dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
-		dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
-		dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"]");
-		dataSbf.append("}");
-		
+		try{
+			dataSbf.append("{\"AKString\":\"\",");
+			dataSbf.append("\"WellName\":\""+deviceInfo.getWellName()+"\",");
+			dataSbf.append("\"Date\":\""+date+"\",");
+			dataSbf.append("\"OffsetHour\":0,");
+			dataSbf.append("\"AcqTime\":["+StringManagerUtils.joinStringArr(acqTimeList, ",")+"],");
+			dataSbf.append("\"CommStatus\":["+StringUtils.join(commStatusList, ",")+"],");
+			dataSbf.append("\"CommTime\":"+deviceInfo.getCommTime()+",");
+			dataSbf.append("\"CommTimeEfficiency\":"+deviceInfo.getCommEff()+",");
+			dataSbf.append("\"CommRange\":\""+deviceInfo.getCommRange()+"\",");
+			dataSbf.append("\"RunStatus\":["+StringUtils.join(runStatusList, ",")+"],");
+			dataSbf.append("\"RunTime\":"+deviceInfo.getRunTime()+",");
+			dataSbf.append("\"RunTimeEfficiency\":"+deviceInfo.getRunEff()+",");
+			dataSbf.append("\"RunRange\":\""+deviceInfo.getRunRange()+"\",");
+			dataSbf.append("\"ResultCode\":["+StringUtils.join(ResultCodeList, ",")+"],");
+			dataSbf.append("\"TheoreticalProduction\":["+StringUtils.join(theoreticalProductionList, ",")+"],");
+			dataSbf.append("\"LiquidVolumetricProduction\":["+StringUtils.join(liquidVolumetricProductionList, ",")+"],");
+			dataSbf.append("\"OilVolumetricProduction\":["+StringUtils.join(oilVolumetricProductionList, ",")+"],");
+			dataSbf.append("\"WaterVolumetricProduction\":["+StringUtils.join(waterVolumetricProductionList, ",")+"],");
+			dataSbf.append("\"VolumeWaterCut\":["+StringUtils.join(volumeWaterCutList, ",")+"],");
+			dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
+			dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
+			dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
+//			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+			dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
+			dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
+			dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
+			dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
+			dataSbf.append("\"Stroke\":["+StringUtils.join(strokeList, ",")+"],");
+			dataSbf.append("\"SPM\":["+StringUtils.join(spmList, ",")+"],");
+			dataSbf.append("\"FMax\":["+StringUtils.join(FMaxList, ",")+"],");
+			dataSbf.append("\"FMin\":["+StringUtils.join(FMinList, ",")+"],");
+			dataSbf.append("\"FullnessCoefficient\":["+StringUtils.join(fullnessCoefficientList, ",")+"],");
+			dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
+			dataSbf.append("\"PumpEff1\":["+StringUtils.join(pumpEff1List, ",")+"],");
+			dataSbf.append("\"PumpEff2\":["+StringUtils.join(pumpEff2List, ",")+"],");
+			dataSbf.append("\"PumpEff3\":["+StringUtils.join(pumpEff3List, ",")+"],");
+			dataSbf.append("\"PumpEff4\":["+StringUtils.join(pumpEff4List, ",")+"],");
+			dataSbf.append("\"WattDegreeBalance\":["+StringUtils.join(wattDegreeBalanceList, ",")+"],");
+			dataSbf.append("\"IDegreeBalance\":["+StringUtils.join(iDegreeBalanceList, ",")+"],");
+			dataSbf.append("\"DeltaRadius\":["+StringUtils.join(deltaRadiusList, ",")+"]");
+			dataSbf.append("}");
+			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
+				System.out.println("d1e3643c110d11d4汇总数据长度："+dataSbf.length());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			if("d1e3643c110d11d4".equalsIgnoreCase(deviceInfo.getSignInId())){
+				System.out.println("异常时，d1e3643c110d11d4汇总数据长度："+dataSbf.length());
+			}
+		}
 		return dataSbf.toString();
 	}
 	

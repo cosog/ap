@@ -1739,7 +1739,8 @@ public class WellInformationManagerController extends BaseController {
 			acqTime=waterCutRawData.getMessage().getAcqTime();
 			String startTime=acqTime.split("~")[0];
 			long timeStamp=StringManagerUtils.getTimeStamp(startTime, "yyyy-MM-dd HH:mm:ss");
-			for(int i=0;i<waterCutRawData.getMessage().getWaterCut().size();i++){
+			int size=waterCutRawData.getMessage().getWaterCut().size();
+			for(int i=0;i<size;i++){
 				if(i>0){
 					timeStamp+=waterCutRawData.getMessage().getInterval().get(i);
 				} 

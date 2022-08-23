@@ -2125,6 +2125,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				result_json.deleteCharAt(result_json.length() - 1);
 			}
 		}
+		result_json.append("]}");
 		if(jedis!=null){
 			jedis.close();
 		}

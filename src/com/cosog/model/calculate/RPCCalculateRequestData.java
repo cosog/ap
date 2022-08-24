@@ -530,6 +530,41 @@ public class RPCCalculateRequestData implements Serializable {
 	    }
 	}
 	
+	public static class PRTF implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		private List<Float> CrankAngle;
+		
+		private List<Float> PR;
+		
+		private List<Float> TF;
+
+		public List<Float> getCrankAngle() {
+			return CrankAngle;
+		}
+
+		public void setCrankAngle(List<Float> crankAngle) {
+			CrankAngle = crankAngle;
+		}
+
+		public List<Float> getPR() {
+			return PR;
+		}
+
+		public void setPR(List<Float> pR) {
+			PR = pR;
+		}
+
+		public List<Float> getTF() {
+			return TF;
+		}
+
+		public void setTF(List<Float> tF) {
+			TF = tF;
+		}
+		
+	}
+	
 	public static class Motor implements Serializable {
 		private static final long serialVersionUID = 1L;
 	    private String Manufacturer;
@@ -589,6 +624,8 @@ public class RPCCalculateRequestData implements Serializable {
 	    private Balance Balance;
 
 	    private Motor Motor;
+	    
+	    private PRTF PRTF;
 
 	    public void setManufacturer(String Manufacturer){
 	        this.Manufacturer = Manufacturer;
@@ -655,6 +692,12 @@ public class RPCCalculateRequestData implements Serializable {
 		}
 		public void setSingleCrankPinWeight(float singleCrankPinWeight) {
 			SingleCrankPinWeight = singleCrankPinWeight;
+		}
+		public PRTF getPRTF() {
+			return PRTF;
+		}
+		public void setPRTF(PRTF pRTF) {
+			PRTF = pRTF;
 		}
 	}
 

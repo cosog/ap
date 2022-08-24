@@ -2446,11 +2446,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String sql="select t.productiondata,t.balanceinfo,t.stroke,"
-				+ "t.pumpingmodelid,"
-				+ "t.manufacturer,t.model,t.crankrotationdirection,t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance"
-				+ " from viw_rpcdevice t"
+				+ " t.pumpingmodelid,"
+				+ " t2.manufacturer,t2.model,t2.crankrotationdirection,t2.offsetangleofcrank,t2.crankgravityradius,t2.singlecrankweight,t2.singlecrankpinweight,t2.structuralunbalance,"
+				+ " t2.prtf"
+				+ " from tbl_rpcdevice t "
+				+ " left outer join tbl_pumpingmodel t2 on t.pumpingmodelid=t2.id"
 				+ " where t.id= "+deviceId;
-		
 		List<?> list = this.findCallSql(sql);
 		
 		if(list.size()>0){
@@ -2478,6 +2479,43 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					calculateRequestData.getPumpingUnit().setSingleCrankWeight(StringManagerUtils.stringToFloat(object[9]+""));
 					calculateRequestData.getPumpingUnit().setSingleCrankPinWeight(StringManagerUtils.stringToFloat(object[10]+""));
 					calculateRequestData.getPumpingUnit().setStructuralUnbalance(StringManagerUtils.stringToFloat(object[11]+""));
+					
+					String prtf="";
+					if(object[12]!=null){
+						try {
+							SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(object[12]);
+							CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+							prtf=StringManagerUtils.CLOBtoString(realClob);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					if(!StringManagerUtils.isNotNull(prtf)){
+						prtf="";
+					}
+					type = new TypeToken<PumpingPRTFData>() {}.getType();
+					PumpingPRTFData pumpingPRTFData=gson.fromJson(prtf, type);
+					if(pumpingPRTFData!=null&&pumpingPRTFData.getList()!=null&&pumpingPRTFData.getList().size()>0){
+						for(int i=0;i<pumpingPRTFData.getList().size();i++){
+							if(stroke>0&&stroke==pumpingPRTFData.getList().get(i).getStroke()){
+								calculateRequestData.getPumpingUnit().setPRTF(new RPCCalculateRequestData.PRTF());
+								calculateRequestData.getPumpingUnit().getPRTF().setCrankAngle(new ArrayList<Float>());
+								calculateRequestData.getPumpingUnit().getPRTF().setPR(new ArrayList<Float>());
+								calculateRequestData.getPumpingUnit().getPRTF().setTF(new ArrayList<Float>());
+								if(pumpingPRTFData.getList().get(i).getPRTF()!=null && pumpingPRTFData.getList().get(i).getPRTF().size()>0){
+									int prtfSize=pumpingPRTFData.getList().get(i).getPRTF().size();
+									for(int j=0;j<prtfSize;j++){
+										calculateRequestData.getPumpingUnit().getPRTF().getCrankAngle().add(pumpingPRTFData.getList().get(i).getPRTF().get(j).getCrankAngle());
+										calculateRequestData.getPumpingUnit().getPRTF().getPR().add(pumpingPRTFData.getList().get(i).getPRTF().get(j).getPR());
+										calculateRequestData.getPumpingUnit().getPRTF().getTF().add(pumpingPRTFData.getList().get(i).getPRTF().get(j).getTF());
+									}
+								}
+								break;
+							}
+						}
+					}
 	        	}else{
 	        		calculateRequestData.setPumpingUnit(null);
 	        	}

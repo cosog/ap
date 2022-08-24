@@ -16,7 +16,7 @@ import com.cosog.utils.StringManagerUtils;
 
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -34,7 +34,7 @@ public class CalculateDataManagerTask {
 		}
 	}
 	
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -53,7 +53,7 @@ public class CalculateDataManagerTask {
 	 * 抽油机井汇总计算
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "0 0 1/24 * * ?")
+	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/FESDiagramDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
@@ -63,7 +63,7 @@ public class CalculateDataManagerTask {
 	 * 螺杆泵井汇总计算
 	 * */
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(cron = "0 0 1/24 * * ?")
+	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
 		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/RPMDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);

@@ -1710,7 +1710,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"name\",width:120 ,children:[] },"
 				+ "{ \"header\":\"规格型号\",\"dataIndex\":\"model\",width:80 ,children:[] }"
 				+ "]";
-		String sql = "select t.id,t.manufacturer,t.model from tbl_pumpingmodel t order by t.id, t.manufacturer,t.model";
+		String sql = "select t.id,t.manufacturer,t.model,t.stroke,t.balanceweight from tbl_pumpingmodel t order by t.id,t.manufacturer,t.model";
 		String devicePumpingModelSql="select t.pumpingmodelid from tbl_rpcdevice t where t.id="+deviceId;
 		String json = "";
 		List<?> list = this.findCallSql(sql);
@@ -1730,7 +1730,9 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"id\":\""+(i+1)+"\",");
 			result_json.append("\"realId\":\""+obj[0]+"\",");
 			result_json.append("\"manufacturer\":\""+obj[1]+"\",");
-			result_json.append("\"model\":\""+obj[2]+"\"},");
+			result_json.append("\"model\":\""+obj[2]+"\",");
+			result_json.append("\"stroke\":["+obj[3]+"],");
+			result_json.append("\"balanceWeight\":["+obj[4]+"]},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

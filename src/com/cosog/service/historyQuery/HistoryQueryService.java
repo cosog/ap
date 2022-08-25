@@ -536,12 +536,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
 				+ prodCol+""
-				+ "FMax,FMin,fullnessCoefficient,"
-				+ "averageWatt,polishrodPower,waterPower,"
-				+ "surfaceSystemEfficiency*100 as surfaceSystemEfficiency,welldownSystemEfficiency*100 as welldownSystemEfficiency,"
-				+ "systemEfficiency*100 as systemEfficiency,energyper100mlift,pumpEff*100 as pumpEff,"
-				+ "iDegreeBalance,wattDegreeBalance,deltaradius*100 as deltaradius,"
-				+ "levelCorrectValue,inverProducingfluidLevel,todayKWattH";
+				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
+				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
+				+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
+				+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
+				+ "t2.systemEfficiency*100 as systemEfficiency,"
+				+ "t2.energyper100mlift,t2.pumpEff*100 as pumpEff,"
+				+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
+				+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
 		
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
@@ -840,12 +842,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
 				+ prodCol+""
-				+ "FMax,FMin,fullnessCoefficient,"
-				+ "averageWatt,polishrodPower,waterPower,"
-				+ "surfaceSystemEfficiency*100 as surfaceSystemEfficiency,welldownSystemEfficiency*100 as welldownSystemEfficiency,"
-				+ "systemEfficiency*100 as systemEfficiency,energyper100mlift,pumpEff*100 as pumpEff,"
-				+ "iDegreeBalance,wattDegreeBalance,deltaradius*100 as deltaradius,"
-				+ "levelCorrectValue,inverProducingfluidLevel,todayKWattH";
+				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
+				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
+				+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
+				+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
+				+ "t2.systemEfficiency*100 as systemEfficiency,"
+				+ "t2.energyper100mlift,t2.pumpEff*100 as pumpEff,"
+				+ "t2.iDegreeBalance,t2.wattDegreeBalance,t2.deltaradius*100 as deltaradius,"
+				+ "t2.levelCorrectValue,t2.inverProducingfluidLevel,t2.todayKWattH";
 		
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){

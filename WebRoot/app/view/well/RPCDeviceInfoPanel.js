@@ -503,13 +503,11 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
             	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue('');
             	CreateAndLoadRPCPumoingModelInfoTable(0,'');
             	CreateAndLoadRPCProductionDataTable(0,'');
-            	CreateAndLoadRPCPumpingInfoTable(0,'');
             }else{
             	var selectedRow=Ext.getCmp("RPCDeviceSelectRow_Id").getValue();
             	var rowdata = rpcDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
             	CreateAndLoadRPCPumoingModelInfoTable(rowdata[0],rowdata[1]);
             	CreateAndLoadRPCProductionDataTable(rowdata[0],rowdata[1]);
-            	CreateAndLoadRPCPumpingInfoTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("RPCDeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -588,7 +586,6 @@ var RPCDeviceInfoHandsontableHelper = {
                     	Ext.getCmp("RPCDeviceSelectEndRow_Id").setValue('');
                     	CreateAndLoadRPCPumoingModelInfoTable(0,'');
                     	CreateAndLoadRPCProductionDataTable(0,'');
-                    	CreateAndLoadRPCPumpingInfoTable(0,'');
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -617,7 +614,6 @@ var RPCDeviceInfoHandsontableHelper = {
                     	}
                     	CreateAndLoadRPCPumoingModelInfoTable(recordId,deviceName);
                     	CreateAndLoadRPCProductionDataTable(recordId,deviceName);
-                    	CreateAndLoadRPCPumpingInfoTable(recordId,deviceName);
                 	}
                 },
                 afterDestroy: function () {
@@ -1070,8 +1066,8 @@ function CreateAndLoadRPCPumoingModelInfoTable(deviceId,deviceName,isNew){
 			}
 			if(rpcPumpingModelHandsontableHelper==null || rpcPumpingModelHandsontableHelper.hot==undefined){
 				rpcPumpingModelHandsontableHelper = RPCPumpingModelHandsontableHelper.createNew("RPCPumpingModelListTableDiv_id");
-				var colHeaders="['','序号','厂家','型号','']";
-				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'manufacturer'},{data:'model'},{data:'realId'}]";
+				var colHeaders="['','序号','厂家','型号','','','']";
+				var columns="[{data:'checked',type:'checkbox'},{data:'id'},{data:'manufacturer'},{data:'model'},{data:'realId'},{data:'stroke'},{data:'balanceWeight'}]";
 				
 				rpcPumpingModelHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcPumpingModelHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1083,6 +1079,12 @@ function CreateAndLoadRPCPumoingModelInfoTable(deviceId,deviceName,isNew){
 			}else{
 				rpcPumpingModelHandsontableHelper.hot.loadData(result.totalRoot);
 			}
+			
+			rpcPumpingModelHandsontableHelper.deviceId=deviceId;
+	        rpcPumpingModelHandsontableHelper.deviceName=deviceName;
+	        rpcPumpingModelHandsontableHelper.isNew=isNew;
+			
+			CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew);
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1104,6 +1106,10 @@ var RPCPumpingModelHandsontableHelper = {
 	        rpcPumpingModelHandsontableHelper.columns=[];
 	        rpcPumpingModelHandsontableHelper.AllData=[];
 	        
+	        rpcPumpingModelHandsontableHelper.deviceId;
+	        rpcPumpingModelHandsontableHelper.deviceName;
+	        rpcPumpingModelHandsontableHelper.isNew;
+	        
 	        rpcPumpingModelHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
 	             td.style.backgroundColor = 'rgb(242, 242, 242)';    
@@ -1121,7 +1127,7 @@ var RPCPumpingModelHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
 	        		hiddenColumns: {
-	                    columns: [4],
+	                    columns: [4,5,6],
 	                    indicators: false
 	                },
 	        		colWidths: [25,30,30,80],
@@ -1148,6 +1154,31 @@ var RPCPumpingModelHandsontableHelper = {
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
+	                	var selectedRow=row;
+	                	var selectedCol=column;
+	                	if(row>row2){
+	                		selectedRow=row2;
+	                	}
+	                	if(column>column2){
+	                		selectedCol=column2;
+	                	}
+	                	var checkboxColData=rpcPumpingModelHandsontableHelper.hot.getDataAtCol(0);
+	                	var rowdata = rpcPumpingModelHandsontableHelper.hot.getDataAtRow(selectedRow);
+	                	for(var i=0;i<checkboxColData.length;i++){
+                			if(i!=selectedRow&&checkboxColData[i]){
+                				rpcPumpingModelHandsontableHelper.hot.setDataAtCell(i,0,false);
+                			}
+                		}
+	                	
+	                	rpcPumpingModelHandsontableHelper.hot.setDataAtCell(selectedRow,0,true);
+	                	
+//	                	if(rpcPumpingInfoHandsontableHelper!=null && rpcPumpingInfoHandsontableHelper.hot!=undefined){
+//	                		rpcPumpingInfoHandsontableHelper.strokeList = rowdata[5];
+//		        	        rpcPumpingInfoHandsontableHelper.balanceWeightList = rowdata[6];
+//	                	}
+	        			
+	        			CreateAndLoadRPCPumpingInfoTable(rpcPumpingModelHandsontableHelper.deviceId,rpcPumpingModelHandsontableHelper.deviceName,rpcPumpingModelHandsontableHelper.isNew);
+	                	
 	                }
 	        	});
 	        }
@@ -1355,6 +1386,19 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 			Ext.getCmp("RPCPumpingInfoPanel_Id").setTitle(deviceName+"抽油机详情");
 			if(rpcPumpingInfoHandsontableHelper==null || rpcPumpingInfoHandsontableHelper.hot==undefined){
 				rpcPumpingInfoHandsontableHelper = RPCPumpingInfoHandsontableHelper.createNew("RPCPumpingInfoTableDiv_id");
+				
+				var checkboxColData=rpcPumpingModelHandsontableHelper.hot.getDataAtCol(0);
+	        	for(var i=0;i<checkboxColData.length;i++){
+	    			if(checkboxColData[i]){
+	    				var rowdata = rpcPumpingModelHandsontableHelper.hot.getDataAtRow(i);
+	    				if(rpcPumpingInfoHandsontableHelper!=null && rpcPumpingInfoHandsontableHelper.hot!=undefined){
+	    	        		rpcPumpingInfoHandsontableHelper.strokeList = rowdata[5];
+	    	    	        rpcPumpingInfoHandsontableHelper.balanceWeightList = rowdata[6];
+	    	        	}
+	    				break;
+	    			}
+	    		}
+				
 				var colHeaders="['序号','名称','值','']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemValue2'}]";
 				rpcPumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -1365,12 +1409,26 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 					rpcPumpingInfoHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
+				var checkboxColData=rpcPumpingModelHandsontableHelper.hot.getDataAtCol(0);
+	        	for(var i=0;i<checkboxColData.length;i++){
+	    			if(checkboxColData[i]){
+	    				var rowdata = rpcPumpingModelHandsontableHelper.hot.getDataAtRow(i);
+	    				if(rpcPumpingInfoHandsontableHelper!=null && rpcPumpingInfoHandsontableHelper.hot!=undefined){
+	    	        		rpcPumpingInfoHandsontableHelper.strokeList = rowdata[5];
+	    	    	        rpcPumpingInfoHandsontableHelper.balanceWeightList = rowdata[6];
+	    	        	}
+	    				break;
+	    			}
+	    		}
 				if(result.totalRoot.length==0){
 					rpcPumpingInfoHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{}]);
 				}else{
 					rpcPumpingInfoHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
+			
+			
+			
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1389,6 +1447,8 @@ var RPCPumpingInfoHandsontableHelper = {
 	        rpcPumpingInfoHandsontableHelper.divid = divid;
 	        rpcPumpingInfoHandsontableHelper.colHeaders = [];
 	        rpcPumpingInfoHandsontableHelper.columns = [];
+	        rpcPumpingInfoHandsontableHelper.strokeList = [];
+	        rpcPumpingInfoHandsontableHelper.balanceWeightList = [];
 	        rpcPumpingInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
@@ -1397,6 +1457,17 @@ var RPCPumpingInfoHandsontableHelper = {
 	        rpcPumpingInfoHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+	        
+	        rpcPumpingInfoHandsontableHelper.processingStrokeData = function (instance, td, row, col, prop, value, cellProperties) {
+	        	var showValue='';
+	        	for(var i=0;i<rpcPumpingInfoHandsontableHelper.strokeList.length;i++){
+	        		if(parseFloat(value)==rpcPumpingInfoHandsontableHelper.strokeList[i]){
+	        			showValue=value;
+	        			break;
+	        		}
+	        	}
+	        	value=showValue;
 	        }
 
 	        rpcPumpingInfoHandsontableHelper.createTable = function (data) {
@@ -1409,10 +1480,11 @@ var RPCPumpingInfoHandsontableHelper = {
 	                    columns: [0],
 	                    indicators: false
 	                },
+//	                colWidths: [25,30,30,80],
 	                columns: rpcPumpingInfoHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
-	                rowHeaders: true, //显示行头
+	                rowHeaders: false, //显示行头
 	                colHeaders: rpcPumpingInfoHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
 	                sortIndicator: true,
@@ -1443,20 +1515,20 @@ var RPCPumpingInfoHandsontableHelper = {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcPumpingInfoHandsontableHelper.addBoldBg;
 		                }
-	                    
-//	                    if (visualColIndex === 2 && visualRowIndex===13) {
-//	                    	this.type = 'dropdown';
-//	                    	this.source = ['杆式泵','管式泵'];
-//	                    	this.strict = true;
-//	                    	this.allowInvalid = false;
-//	                    }
+	                    if (visualColIndex === 2 && visualRowIndex===0) {
+	                    	this.type = 'dropdown';
+	                    	this.source = rpcPumpingInfoHandsontableHelper.strokeList;
+	                    	this.strict = true;
+	                    	this.allowInvalid = false;
+//	                    	cellProperties.renderer = rpcPumpingInfoHandsontableHelper.processingStrokeData;
+	                    }
 //	                    
-//	                    if (visualColIndex === 2 && visualRowIndex===14) {
-//	                    	this.type = 'dropdown';
-//	                    	this.source = ['组合泵','整筒泵'];
-//	                    	this.strict = true;
-//	                    	this.allowInvalid = false;
-//	                    }
+	                    if (visualColIndex === 3 && visualRowIndex>0) {
+	                    	this.type = 'dropdown';
+	                    	this.source = rpcPumpingInfoHandsontableHelper.balanceWeightList;
+	                    	this.strict = true;
+	                    	this.allowInvalid = true;
+	                    }
 //	                    
 //	                    if (visualColIndex === 2 && visualRowIndex===15) {
 //	                    	this.type = 'dropdown';

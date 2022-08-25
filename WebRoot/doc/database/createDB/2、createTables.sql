@@ -568,6 +568,7 @@ create table TBL_RPCDEVICE
   productiondataupdatetime DATE,
   pumpingmodelid           NUMBER(10),
   stroke                   NUMBER(8,2),
+  levelcorrectvalue        NUMBER(8,2) default 0,
   balanceinfo              VARCHAR2(400),
   status                   NUMBER(1) default 1,
   sortnum                  NUMBER(10) default 9999

@@ -891,6 +891,10 @@ CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_wellboreSlice in tbl_rpcacqdata_hist.wellboreslice%TYPE) as
   p_msg varchar2(3000) := 'error';
 begin
+  if v_ResultStatus=1 and v_ResultCode<>1232 then
+    update tbl_rpcdevice t set t.levelcorrectvalue=v_LevelCorrectValue where t.id=v_wellId;
+    commit;
+  end if;
   update tbl_rpcacqdata_latest t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,

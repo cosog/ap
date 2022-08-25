@@ -58,7 +58,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 //		StringBuffer s=new StringBuffer();
 //		try{
@@ -90,7 +90,7 @@ public class EquipmentDriverServerTask {
 //		String offLineData=stringManagerUtils.readFile(path,"utf-8");
 //		
 //		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
-//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/uponline";
+//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/online";
 //		String onlineUrl2=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/downonline";
 //		int i=0;
 //		while(true){
@@ -164,7 +164,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;

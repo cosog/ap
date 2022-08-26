@@ -49,6 +49,16 @@ public class PCPDeviceInfo implements Serializable {
 	
 	private String commRange;
 	
+	private String onLineAcqTime;
+	
+	private Integer onLineCommStatus;
+	
+	private float onLineCommTime;
+	
+	private float onLineCommEff;
+	
+	private String onLineCommRange;
+	
 	private Integer runStatus;
 	
 	private float runTime;
@@ -490,6 +500,56 @@ public class PCPDeviceInfo implements Serializable {
 
 	public void setSaveTime(String saveTime) {
 		this.saveTime = saveTime;
+	}
+
+
+	public Integer getOnLineCommStatus() {
+		return onLineCommStatus;
+	}
+
+
+	public void setOnLineCommStatus(Integer onLineCommStatus) {
+		this.onLineCommStatus = onLineCommStatus;
+	}
+
+
+	public float getOnLineCommTime() {
+		return onLineCommTime;
+	}
+
+
+	public void setOnLineCommTime(float onLineCommTime) {
+		this.onLineCommTime = onLineCommTime;
+	}
+
+
+	public float getOnLineCommEff() {
+		return onLineCommEff;
+	}
+
+
+	public void setOnLineCommEff(float onLineCommEff) {
+		this.onLineCommEff = onLineCommEff;
+	}
+
+
+	public String getOnLineCommRange() {
+		return onLineCommRange;
+	}
+
+
+	public void setOnLineCommRange(String onLineCommRange) {
+		this.onLineCommRange = onLineCommRange;
+	}
+
+
+	public String getOnLineAcqTime() {
+		return onLineAcqTime;
+	}
+
+
+	public void setOnLineAcqTime(String onLineAcqTime) {
+		this.onLineAcqTime = onLineAcqTime;
 	}
 
 

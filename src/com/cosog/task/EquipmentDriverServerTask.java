@@ -91,15 +91,12 @@ public class EquipmentDriverServerTask {
 //		
 //		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
 //		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/online";
-//		String onlineUrl2=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/downonline";
 //		int i=0;
 //		while(true){
 //			if(i%2==0){
 //				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//				StringManagerUtils.sendPostMethod(onlineUrl2, onLineData,"utf-8",0,0);
 //			}else{
 //				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
-//				StringManagerUtils.sendPostMethod(onlineUrl2, offLineData,"utf-8",0,0);
 //			}
 //			i++;
 //			

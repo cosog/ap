@@ -54,7 +54,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		}
 	}
 	
-	public void saveAndSendAlarmInfo(String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
+	public void saveAndSendAlarmInfo(int deviceId,String wellName,String deviceType,String acqTime,List<AcquisitionItemInfo> acquisitionItemInfoList) throws SQLException{
 		boolean isSendSMS=false;
 		boolean isSendMail=false;
 		StringBuffer SMSContent = new StringBuffer();
@@ -72,7 +72,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 				}else if(acquisitionItemInfoList.get(i).getAlarmLevel()==300){
 					alarmLevelName="三级报警";
 				}
-				String key=wellName+","+deviceType+","+acquisitionItemInfoList.get(i).getColumn()+","+acquisitionItemInfoList.get(i).getAlarmInfo();
+				String key=deviceId+","+deviceType+","+acquisitionItemInfoList.get(i).getColumn()+","+acquisitionItemInfoList.get(i).getAlarmInfo();
 				String lastAlarmTime=alarmInfoMap.get(key);
 				
 				long timeDiff=StringManagerUtils.getTimeDifference(lastAlarmTime, acqTime, "yyyy-MM-dd HH:mm:ss");

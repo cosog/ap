@@ -312,14 +312,13 @@ function websocketOnMessage(evt) {
 					var commStatus  = Ext.getCmp("RPCRealTimeMonitoringStatSelectCommStatus_Id").getValue();
 					for(var i=0;i<store.getCount();i++){
 						var record=store.getAt(i);
-						if(record.data.wellName==data.wellName){
+						if(record.data.id==data.wellId){
 							haveDevice=true;
-							if((data.commStatus==1&&commStatus=='离线') || (data.commStatus==0&&commStatus=='在线') ){
+							if(commStatus!='' && commStatus!=data.commStatusName){
 								store.loadPage(1);
 							}else{
-								record.set("commStatusName",(data.commStatus==1?"上线":"离线"));
+								record.set("commStatusName",(data.commStatus>0?"上线":"离线"));
 								record.set("commStatus",data.commStatus);
-//								record.set("commAlarmLevel",(data.commStatus==1?0:100));
 								record.set("commAlarmLevel",data.commAlarmLevel);
 								record.set("acqTime",data.acqTime);
 								record.commit();
@@ -328,10 +327,7 @@ function websocketOnMessage(evt) {
 						}
 					}
 					if((!haveDevice)
-							&&(commStatus==''
-									|| (data.commStatus==1&&commStatus=='在线') 
-									|| (data.commStatus==0&&commStatus=='离线') 
-								)
+							&&(commStatus=='' || commStatus==data.commStatusName)
 						){
 						store.loadPage(1);
 					}
@@ -342,7 +338,7 @@ function websocketOnMessage(evt) {
             			if(isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
     						var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
     						if(wellName==data.wellName){
-    							var value=data.wellName+":"+data.acqTime+" "+(data.commStatus==1?"在线":"离线");
+    							var value=data.wellName+":"+data.acqTime+" "+(data.commStatus>0?"上线":"离线");
     							rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
     						}
     					}
@@ -442,27 +438,22 @@ function websocketOnMessage(evt) {
 					var commStatus  = Ext.getCmp("PCPRealTimeMonitoringStatSelectCommStatus_Id").getValue();
 					for(var i=0;i<store.getCount();i++){
 						var record=store.getAt(i);
-						if(record.data.wellName==data.wellName){
+						if(record.data.id==data.wellId){
 							haveDevice=true;
-							if((data.commStatus==1&&commStatus=='离线') || (data.commStatus==0&&commStatus=='在线') ){
+							if(commStatus!='' && commStatus!=data.commStatusName){
 								store.loadPage(1);
 							}else{
-								record.set("commStatusName",(data.commStatus==1?"上线":"离线"));
+								record.set("commStatusName",(data.commStatus>0?"上线":"离线"));
 								record.set("commStatus",data.commStatus);
-//								record.set("commAlarmLevel",(data.commStatus==1?0:100));
 								record.set("commAlarmLevel",data.commAlarmLevel);
 								record.set("acqTime",data.acqTime);
 								record.commit();
 							}
-							
 							break;
 						}
 					}
 					if((!haveDevice)
-							&&(commStatus==''
-									|| (data.commStatus==1&&commStatus=='在线') 
-									|| (data.commStatus==0&&commStatus=='离线') 
-								)
+							&&(commStatus=='' || commStatus==data.commStatusName)
 						){
 						store.loadPage(1);
 					}
@@ -473,7 +464,7 @@ function websocketOnMessage(evt) {
             			if(isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
     						var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
     						if(wellName==data.wellName){
-    							var value=data.wellName+":"+data.acqTime+" "+(data.commStatus==1?"在线":"离线");
+    							var value=data.wellName+":"+data.acqTime+" "+(data.commStatus>0?"上线":"离线");
     							pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
     						}
     					}
@@ -693,6 +684,7 @@ function getDeviceCommStatusTotal(){
 				var result =  Ext.JSON.decode(response.responseText);
 				var all=result.all;
 				var online=result.online;
+				var goOnline=result.goOnline;
 				var offline=result.offline;
 				var chart =null;
 				if(deviceType===0){
@@ -705,6 +697,7 @@ function getDeviceCommStatusTotal(){
 					var series=chart.series[0];
 					var pieDataStr="[";
 					pieDataStr+="['在线',"+online+"],";
+					pieDataStr+="['上线',"+goOnline+"],";
 					pieDataStr+="['离线',"+offline+"]";
 					pieDataStr+="]";
 					var pieData = Ext.JSON.decode(pieDataStr);

@@ -102,14 +102,14 @@ public class DriverAPIController extends BaseController{
 							String commRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getCommRange())){
+							if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 								commRequest+= "\"Last\":{"
-										+ "\"AcqTime\": \""+rpcDeviceInfo.getAcqTime()+"\","
-										+ "\"CommStatus\": "+(rpcDeviceInfo.getCommStatus()==1?true:false)+","
+										+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
+										+ "\"CommStatus\": "+(rpcDeviceInfo.getOnLineCommStatus()==1?true:false)+","
 										+ "\"CommEfficiency\": {"
-										+ "\"Efficiency\": "+rpcDeviceInfo.getCommEff()+","
-										+ "\"Time\": "+rpcDeviceInfo.getCommTime()+","
-										+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getCommRange())+""
+										+ "\"Efficiency\": "+rpcDeviceInfo.getOnLineCommEff()+","
+										+ "\"Time\": "+rpcDeviceInfo.getOnLineCommTime()+","
+										+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getOnLineCommRange())+""
 										+ "}"
 										+ "},";
 							}	
@@ -155,11 +155,12 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							
-							rpcDeviceInfo.setCommStatus(0);
+							rpcDeviceInfo.setOnLineCommStatus(0);
+							rpcDeviceInfo.setOnLineAcqTime(time);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
-								rpcDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-								rpcDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-								rpcDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+								rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+								rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+								rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							}
 							String key=rpcDeviceInfo.getId()+"";
 							jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
@@ -184,14 +185,14 @@ public class DriverAPIController extends BaseController{
 							String commRequest="{"
 									+ "\"AKString\":\"\","
 									+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getCommRange())){
+							if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 								commRequest+= "\"Last\":{"
-										+ "\"AcqTime\": \""+pcpDeviceInfo.getAcqTime()+"\","
-										+ "\"CommStatus\": "+(pcpDeviceInfo.getCommStatus()==1?true:false)+","
+										+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
+										+ "\"CommStatus\": "+(pcpDeviceInfo.getOnLineCommStatus()==1?true:false)+","
 										+ "\"CommEfficiency\": {"
-										+ "\"Efficiency\": "+pcpDeviceInfo.getCommEff()+","
-										+ "\"Time\": "+pcpDeviceInfo.getCommTime()+","
-										+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getCommRange())+""
+										+ "\"Efficiency\": "+pcpDeviceInfo.getOnLineCommEff()+","
+										+ "\"Time\": "+pcpDeviceInfo.getOnLineCommTime()+","
+										+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getOnLineCommRange())+""
 										+ "}"
 										+ "},";
 							}	
@@ -206,9 +207,10 @@ public class DriverAPIController extends BaseController{
 							String updateRealCommRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
 							
 //							String updateHistData="update "+historyTable+" t set t.acqTime=to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus=0";
-							String insertHistColumns="wellid,acqTime,CommStatus";
-							String insertHistValue=pcpDeviceInfo.getId()+",to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'),0";
+							String insertHistColumns="wellid,acqTime,CommStatus,runStatus,runTimeEfficiency,runTime";
+							String insertHistValue=pcpDeviceInfo.getId()+",to_date('"+time+"','yyyy-mm-dd hh24:mi:ss'),0,null,null,null";
 							String insertHistSql="";
+							
 							String updateHistCommRangeClobSql="update "+historyTable+" t set t.commrange=?";
 							List<String> clobCont=new ArrayList<String>();
 							
@@ -237,11 +239,12 @@ public class DriverAPIController extends BaseController{
 							}
 							
 							
-							pcpDeviceInfo.setCommStatus(0);
+							pcpDeviceInfo.setOnLineCommStatus(0);
+							pcpDeviceInfo.setOnLineAcqTime(time);
 							if(commResponseData!=null && commResponseData.getResultStatus()==1){
-								pcpDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-								pcpDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-								pcpDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+								pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+								pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+								pcpDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 							}
 							String key=pcpDeviceInfo.getId()+"";
 							jedis.hset("PCPDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));
@@ -368,14 +371,14 @@ public class DriverAPIController extends BaseController{
 						commRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getCommRange())){
+						if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 							commRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+rpcDeviceInfo.getAcqTime()+"\","
-									+ "\"CommStatus\": "+(rpcDeviceInfo.getCommStatus()==1?true:false)+","
+									+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
+									+ "\"CommStatus\": "+(rpcDeviceInfo.getOnLineCommStatus()>0?true:false)+","
 									+ "\"CommEfficiency\": {"
-									+ "\"Efficiency\": "+rpcDeviceInfo.getCommEff()+","
-									+ "\"Time\": "+rpcDeviceInfo.getCommTime()+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getCommRange())+""
+									+ "\"Efficiency\": "+rpcDeviceInfo.getOnLineCommEff()+","
+									+ "\"Time\": "+rpcDeviceInfo.getOnLineCommTime()+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getOnLineCommRange())+""
 									+ "}"
 									+ "},";
 						}	
@@ -396,14 +399,14 @@ public class DriverAPIController extends BaseController{
 						commRequest="{"
 								+ "\"AKString\":\"\","
 								+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getCommRange())){
+						if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 							commRequest+= "\"Last\":{"
-									+ "\"AcqTime\": \""+pcpDeviceInfo.getAcqTime()+"\","
-									+ "\"CommStatus\": "+(pcpDeviceInfo.getCommStatus()==1?true:false)+","
+									+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
+									+ "\"CommStatus\": "+(pcpDeviceInfo.getOnLineCommStatus()>0?true:false)+","
 									+ "\"CommEfficiency\": {"
-									+ "\"Efficiency\": "+pcpDeviceInfo.getCommEff()+","
-									+ "\"Time\": "+pcpDeviceInfo.getCommTime()+","
-									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getCommRange())+""
+									+ "\"Efficiency\": "+pcpDeviceInfo.getOnLineCommEff()+","
+									+ "\"Time\": "+pcpDeviceInfo.getOnLineCommTime()+","
+									+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getOnLineCommRange())+""
 									+ "}"
 									+ "},";
 						}	
@@ -417,13 +420,13 @@ public class DriverAPIController extends BaseController{
 					
 					CommResponseData commResponseData=CalculateUtils.commCalculate(commRequest);
 					
-					String updateRealData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(acqOnline.getStatus()?1:0);
+					String updateRealData="update "+realtimeTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus="+(acqOnline.getStatus()?2:0);
 					String updateRealCommRangeClobSql="update "+realtimeTable+" t set t.commrange=?";
 					
 //					String updateHistData="update "+historyTable+" t set t.acqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'), t.CommStatus=0";
 					
-					String insertHistColumns="wellid,acqTime,CommStatus";
-					String insertHistValue=deviceId+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"+(acqOnline.getStatus()?1:0);
+					String insertHistColumns="wellid,acqTime,CommStatus,runStatus,runTimeEfficiency,runTime";
+					String insertHistValue=deviceId+",to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss'),"+(acqOnline.getStatus()?2:0)+",null,null,null";
 					String insertHistSql="";
 					
 					String updateHistCommRangeClobSql="update "+historyTable+" t set t.commrange=?";
@@ -464,11 +467,11 @@ public class DriverAPIController extends BaseController{
 					if(alarmInstanceOwnItem!=null){
 						Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 						if(acqOnline.getStatus()){
-							key=wellName+","+deviceType+",上线";
+							key=deviceId+","+deviceType+",上线";
 							alarmInfo="上线";
 							alarmSMSContent="设备"+wellName+"于"+currentTime+"上线";
 						}else{
-							key=wellName+","+deviceType+",离线";
+							key=deviceId+","+deviceType+",离线";
 							alarmInfo="离线";
 							alarmSMSContent="设备"+wellName+"于"+currentTime+"离线";
 						}
@@ -482,7 +485,7 @@ public class DriverAPIController extends BaseController{
 							}
 						}
 						commAlarm="insert into "+alarmTableName+" (wellid,alarmtime,itemname,alarmtype,alarmvalue,alarminfo,alarmlevel)"
-								+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?1:0)+",'"+alarmInfo+"',"+commAlarmLevel+")";
+								+ "values("+deviceId+",to_date('"+currentTime+"','yyyy-mm-dd hh24:mi:ss'),'通信状态',3,"+(acqOnline.getStatus()?2:0)+",'"+alarmInfo+"',"+commAlarmLevel+")";
 						
 						
 						String lastAlarmTime=alarmInfoMap.get(key);
@@ -495,31 +498,34 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					if(rpcDeviceInfo!=null){
-						rpcDeviceInfo.setCommStatus(acqOnline.getStatus()?1:0);
+						rpcDeviceInfo.setOnLineAcqTime(acqTime);
+						rpcDeviceInfo.setOnLineCommStatus(acqOnline.getStatus()?2:0);
 						if(commResponseData!=null && commResponseData.getResultStatus()==1){
-							rpcDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-							rpcDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-							rpcDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+							rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+							rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						}
 						jedis.hset("RPCDeviceInfo".getBytes(), (rpcDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));
 					}
 					
 					if(pcpDeviceInfo!=null){
-						pcpDeviceInfo.setCommStatus(acqOnline.getStatus()?1:0);
+						pcpDeviceInfo.setOnLineAcqTime(acqTime);
+						pcpDeviceInfo.setOnLineCommStatus(acqOnline.getStatus()?1:0);
 						if(commResponseData!=null && commResponseData.getResultStatus()==1){
-							pcpDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
-							pcpDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
-							pcpDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+							pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+							pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+							pcpDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 						}
 						jedis.hset("PCPDeviceInfo".getBytes(), (pcpDeviceInfo.getId()+"").getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));
 					}
 					
 					webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 					webSocketSendData.append("\"wellName\":\""+wellName+"\",");
+					webSocketSendData.append("\"wellId\":"+deviceId+",");
 					webSocketSendData.append("\"orgId\":"+orgId+",");
 					webSocketSendData.append("\"acqTime\":\""+currentTime+"\",");
-					webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?1:0)+",");
-					
+					webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?2:0)+",");
+					webSocketSendData.append("\"commStatusName\":\""+(acqOnline.getStatus()?"上线":"离线")+"\",");
 					webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel);
 					webSocketSendData.append("}");
 					if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
@@ -777,14 +783,14 @@ public class DriverAPIController extends BaseController{
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+rpcDeviceInfo.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(rpcDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getCommRange())){
+				if(StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(rpcDeviceInfo.getOnLineCommRange())){
 					commRequest+= "\"Last\":{"
-							+ "\"AcqTime\": \""+rpcDeviceInfo.getAcqTime()+"\","
-							+ "\"CommStatus\": "+(rpcDeviceInfo.getCommStatus()==1?true:false)+","
+							+ "\"AcqTime\": \""+rpcDeviceInfo.getOnLineAcqTime()+"\","
+							+ "\"CommStatus\": "+(rpcDeviceInfo.getOnLineCommStatus()==1?true:false)+","
 							+ "\"CommEfficiency\": {"
-							+ "\"Efficiency\": "+rpcDeviceInfo.getCommEff()+","
-							+ "\"Time\": "+rpcDeviceInfo.getCommTime()+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getCommRange())+""
+							+ "\"Efficiency\": "+rpcDeviceInfo.getOnLineCommEff()+","
+							+ "\"Time\": "+rpcDeviceInfo.getOnLineCommTime()+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(rpcDeviceInfo.getOnLineCommRange())+""
 							+ "}"
 							+ "},";
 				}	
@@ -1159,6 +1165,9 @@ public class DriverAPIController extends BaseController{
 				//通信
 				rpcDeviceInfo.setAcqTime(acqTime);
 				rpcDeviceInfo.setCommStatus(1);
+				
+				rpcDeviceInfo.setOnLineAcqTime(acqTime);
+				rpcDeviceInfo.setOnLineCommStatus(1);
 				calItemResolutionDataList.add(new ProtocolItemResolutionData("通信状态","通信状态","在线","1","","commStatusName","","","","",1));
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
@@ -1172,6 +1181,10 @@ public class DriverAPIController extends BaseController{
 					rpcDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 					rpcDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 					rpcDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					
+					rpcDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+					rpcDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+					rpcDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时间","通信时间",commResponseData.getCurrent().getCommEfficiency().getTime()+"",commResponseData.getCurrent().getCommEfficiency().getTime()+"","","commTime","","","","",1));
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时率","通信时率",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"","","commtimeEfficiency","","","","",1));
@@ -1467,7 +1480,7 @@ public class DriverAPIController extends BaseController{
 					}
 					//报警项
 					if(alarm){
-						calculateDataService.saveAndSendAlarmInfo(rpcDeviceInfo.getWellName(),rpcDeviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
+						calculateDataService.saveAndSendAlarmInfo(rpcDeviceInfo.getId(),rpcDeviceInfo.getWellName(),rpcDeviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
 					}
 				}
 				//放入内存数据库中
@@ -1882,14 +1895,14 @@ public class DriverAPIController extends BaseController{
 				String commRequest="{"
 						+ "\"AKString\":\"\","
 						+ "\"WellName\":\""+pcpDeviceInfo.getWellName()+"\",";
-				if(StringManagerUtils.isNotNull(pcpDeviceInfo.getAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getCommRange())){
+				if(StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineAcqTime())&&StringManagerUtils.isNotNull(pcpDeviceInfo.getOnLineCommRange())){
 					commRequest+= "\"Last\":{"
-							+ "\"AcqTime\": \""+pcpDeviceInfo.getAcqTime()+"\","
-							+ "\"CommStatus\": "+(pcpDeviceInfo.getCommStatus()==1?true:false)+","
+							+ "\"AcqTime\": \""+pcpDeviceInfo.getOnLineAcqTime()+"\","
+							+ "\"CommStatus\": "+(pcpDeviceInfo.getOnLineCommStatus()==1?true:false)+","
 							+ "\"CommEfficiency\": {"
-							+ "\"Efficiency\": "+pcpDeviceInfo.getCommEff()+","
-							+ "\"Time\": "+pcpDeviceInfo.getCommTime()+","
-							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getCommRange())+""
+							+ "\"Efficiency\": "+pcpDeviceInfo.getOnLineCommEff()+","
+							+ "\"Time\": "+pcpDeviceInfo.getOnLineCommTime()+","
+							+ "\"Range\": "+StringManagerUtils.getWellRuningRangeJson(pcpDeviceInfo.getOnLineCommRange())+""
 							+ "}"
 							+ "},";
 				}	
@@ -2121,6 +2134,8 @@ public class DriverAPIController extends BaseController{
 				//通信
 				pcpDeviceInfo.setAcqTime(acqTime);
 				pcpDeviceInfo.setCommStatus(1);
+				pcpDeviceInfo.setOnLineAcqTime(acqTime);
+				pcpDeviceInfo.setOnLineCommStatus(1);
 				calItemResolutionDataList.add(new ProtocolItemResolutionData("通信状态","通信状态","在线","1","","commStatusName","","","","",1));
 				if(commResponseData!=null&&commResponseData.getResultStatus()==1){
 					updateRealtimeData+=",t.commTimeEfficiency= "+commResponseData.getCurrent().getCommEfficiency().getEfficiency()
@@ -2134,6 +2149,10 @@ public class DriverAPIController extends BaseController{
 					pcpDeviceInfo.setCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
 					pcpDeviceInfo.setCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
 					pcpDeviceInfo.setCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
+					
+					pcpDeviceInfo.setOnLineCommTime(commResponseData.getCurrent().getCommEfficiency().getTime());
+					pcpDeviceInfo.setOnLineCommEff(commResponseData.getCurrent().getCommEfficiency().getEfficiency());
+					pcpDeviceInfo.setOnLineCommRange(commResponseData.getCurrent().getCommEfficiency().getRangeString());
 					
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时间","通信时间",commResponseData.getCurrent().getCommEfficiency().getTime()+"",commResponseData.getCurrent().getCommEfficiency().getTime()+"","","commTime","","","","",1));
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("通信时率","通信时率",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"",commResponseData.getCurrent().getCommEfficiency().getEfficiency()+"","","commtimeEfficiency","","","","",1));
@@ -2400,7 +2419,7 @@ public class DriverAPIController extends BaseController{
 					}
 					//报警项
 					if(alarm){
-						calculateDataService.saveAndSendAlarmInfo(pcpDeviceInfo.getWellName(),pcpDeviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
+						calculateDataService.saveAndSendAlarmInfo(pcpDeviceInfo.getId(),pcpDeviceInfo.getWellName(),pcpDeviceInfo.getDeviceType()+"",acqTime,acquisitionItemInfoList);
 					}
 				}
 				//放入内存数据库中

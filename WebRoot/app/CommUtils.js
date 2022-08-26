@@ -1478,7 +1478,7 @@ color16ToRgba = function(sColor,Opacity){
 	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
 	 		color='#'+alarmShowStyle.Comm.offline.Color;
 	 		opacity=alarmShowStyle.Comm.offline.Opacity
-		}else if (commStatus == 1) {
+		}else if (commStatus == 1 || commStatus == 2) {
 			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
 	 		color='#'+alarmShowStyle.Comm.online.Color;
 	 		opacity=alarmShowStyle.Comm.online.Opacity

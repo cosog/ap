@@ -90,7 +90,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ "]";
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"totalCount\":3,");
-		int total=0,online=0,offline=0;
+		int total=0,online=0,goOnline=0,offline=0;
 		if(jedis==null){
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="viw_rpcdevice";
@@ -113,6 +113,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				Object[] obj=(Object[]) list.get(i);
 				if(StringManagerUtils.stringToInteger(obj[0]+"")==1){
 					online=StringManagerUtils.stringToInteger(obj[1]+"");
+				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==2){
+					goOnline=StringManagerUtils.stringToInteger(obj[1]+"");
 				}else{
 					offline=StringManagerUtils.stringToInteger(obj[1]+"");
 				}
@@ -126,9 +128,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if (obj instanceof RPCDeviceInfo) {
 							RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
 							if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
-								commStatus=rpcDeviceInfo.getCommStatus();
+								commStatus=rpcDeviceInfo.getOnLineCommStatus();
 								if(commStatus==1){
 									online+=1;
+								}else if(commStatus==2){
+									goOnline+=1;
 								}else{
 									offline+=1;;
 								}
@@ -139,9 +143,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						if (obj instanceof PCPDeviceInfo) {
 							PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)obj;
 							if(StringManagerUtils.stringToArrExistNum(orgId, pcpDeviceInfo.getOrgId())){
-								commStatus=pcpDeviceInfo.getCommStatus();
+								commStatus=pcpDeviceInfo.getOnLineCommStatus();
 								if(commStatus==1){
 									online+=1;
+								}else if(commStatus==2){
+									goOnline+=1;
 								}else{
 									offline+=1;;
 								}
@@ -153,7 +159,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		
 		
-		total=online+offline;
+		total=online+goOnline+offline;
 		result_json.append("\"totalRoot\":[");
 		result_json.append("{\"id\":1,");
 		result_json.append("\"item\":\"全部\",");
@@ -166,6 +172,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		result_json.append("\"count\":"+online+"},");
 		
 		result_json.append("{\"id\":3,");
+		result_json.append("\"item\":\"上线\",");
+		result_json.append("\"itemCode\":\"goOnline\",");
+		result_json.append("\"count\":"+goOnline+"},");
+		
+		result_json.append("{\"id\":4,");
 		result_json.append("\"item\":\"离线\",");
 		result_json.append("\"itemCode\":\"offline\",");
 		result_json.append("\"count\":"+offline+"}");
@@ -271,7 +282,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ "]";
 		
 		String sql="select t.id,t.wellname,t2.commstatus,"
-				+ "decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 		sql+= " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
@@ -288,10 +299,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(runStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线')='"+runStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+runStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 			sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -378,7 +389,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		
 		String sql="select t.id,t.wellname,t2.commstatus,"
-				+ "decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
 		sql+= " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
@@ -395,7 +406,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(runStatusStatValue)){
 			sql+=" and decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线')='"+runStatusStatValue+"'";
@@ -530,9 +541,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线') as runStatusName,"
+				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
 				+ prodCol+""
@@ -836,9 +847,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线') as runStatusName,"
+				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
 				+ prodCol+""
@@ -1048,9 +1059,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线') as runStatusName,"
+				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ prodCol+""
 				+ "averageWatt,waterPower,"
@@ -1322,9 +1333,9 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		String sql="select t2.id,t.wellname,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线') as runStatusName,"
+				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ prodCol+""
 				+ "averageWatt,waterPower,"
@@ -1575,7 +1586,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						
 					}
 				}
-				String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
+				String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
 				for(int j=0;j<protocolItems.size();j++){
 					String col=dataSaveMode==0?("addr"+protocolItems.get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocolItems.get(j).getTitle()));
 					sql+=",t2."+col;

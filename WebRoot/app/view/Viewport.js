@@ -317,8 +317,11 @@ function websocketOnMessage(evt) {
 							if(commStatus!='' && commStatus!=data.commStatusName){
 								store.loadPage(1);
 							}else{
-								record.set("commStatusName",(data.commStatus>0?"上线":"离线"));
+								record.set("commStatusName",data.commStatusName);
 								record.set("commStatus",data.commStatus);
+								record.set("commTime",data.commTime);
+								record.set("commTimeEfficiency",data.commTimeEfficiency);
+								record.set("commRange",data.commRange);
 								record.set("commAlarmLevel",data.commAlarmLevel);
 								record.set("acqTime",data.acqTime);
 								record.commit();
@@ -443,8 +446,11 @@ function websocketOnMessage(evt) {
 							if(commStatus!='' && commStatus!=data.commStatusName){
 								store.loadPage(1);
 							}else{
-								record.set("commStatusName",(data.commStatus>0?"上线":"离线"));
+								record.set("commStatusName",data.commStatusName);
 								record.set("commStatus",data.commStatus);
+								record.set("commTime",data.commTime);
+								record.set("commTimeEfficiency",data.commTimeEfficiency);
+								record.set("commRange",data.commRange);
 								record.set("commAlarmLevel",data.commAlarmLevel);
 								record.set("acqTime",data.acqTime);
 								record.commit();

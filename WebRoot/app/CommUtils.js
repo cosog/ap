@@ -1478,10 +1478,14 @@ color16ToRgba = function(sColor,Opacity){
 	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
 	 		color='#'+alarmShowStyle.Comm.offline.Color;
 	 		opacity=alarmShowStyle.Comm.offline.Opacity
-		}else if (commStatus == 1 || commStatus == 2) {
+		}else if (commStatus == 1) {
 			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
 	 		color='#'+alarmShowStyle.Comm.online.Color;
 	 		opacity=alarmShowStyle.Comm.online.Opacity
+		}else if (commStatus == 2) {
+			backgroundColor='#'+alarmShowStyle.Comm.goOnline.BackgroundColor;
+	 		color='#'+alarmShowStyle.Comm.goOnline.Color;
+	 		opacity=alarmShowStyle.Comm.goOnline.Opacity
 		}
 	 	var rgba=color16ToRgba(backgroundColor,opacity);
 	 	o.style='background-color:'+rgba+';color:'+color+';';
@@ -2600,6 +2604,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
 	var spm=gtdata.spm;       // 冲次
 	var liquidProduction=gtdata.liquidProduction;     // 日产液量
 	var resultName=gtdata.resultName;     // 工况类型
+	var optimizationSuggestion=gtdata.optimizationSuggestion;     // 优化建议
 	var xtext='<span style="text-align:center;">'+cosog.string.position+'<br />';
 	var productionUnitStr='t/d';
     if(productionUnit!=0){
@@ -2612,6 +2617,7 @@ function initSurfaceCardChart(pointdata, gtdata, divid) {
     xtext+=' 冲次:'+spm+'/min';
     xtext+=' 产液:'+liquidProduction+productionUnitStr;
     xtext+=' 工况:'+resultName;
+    xtext+=' 优化建议:'+optimizationSuggestion;
     var upperlimit=parseFloat(fmax)+10;
     if(parseFloat(upperLoadLine)>=parseFloat(fmax)){
     	upperlimit=parseFloat(upperLoadLine)+10;

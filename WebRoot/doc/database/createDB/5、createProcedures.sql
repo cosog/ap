@@ -1512,13 +1512,16 @@ CREATE OR REPLACE PROCEDURE prd_save_alarmcolor (    overviewBackgroundColor0   
                                                         overviewOpacity2    in varchar2,
                                                         overviewOpacity3     in varchar2,
 
+                                                        goOnlineBackgroundColor   in varchar2,
                                                         onlineBackgroundColor   in varchar2,
                                                         offlineBackgroundColor     in varchar2,
+                                                        goOnlineColor   in varchar2,
                                                         onlineColor   in varchar2,
                                                         offlineColor     in varchar2,
+                                                        goOnlineOpacity   in varchar2,
                                                         onlineOpacity   in varchar2,
                                                         offlineOpacity     in varchar2,
-                                                        
+
                                                         runBackgroundColor   in varchar2,
                                                         stopBackgroundColor     in varchar2,
                                                         runColor   in varchar2,
@@ -1544,15 +1547,18 @@ begin
     Update tbl_code t1 set t1.itemname=overviewOpacity3 where t1.itemcode='BJYSTMD' and t1.itemvalue=300;
 
     --通信
+    Update tbl_code t1 set t1.itemname=goOnlineBackgroundColor where t1.itemcode='TXBJYS' and t1.itemvalue=2;
     Update tbl_code t1 set t1.itemname=onlineBackgroundColor where t1.itemcode='TXBJYS' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=offlineBackgroundColor where t1.itemcode='TXBJYS' and t1.itemvalue=0;
 
+    Update tbl_code t1 set t1.itemname=goOnlineColor where t1.itemcode='TXBJQJYS' and t1.itemvalue=2;
     Update tbl_code t1 set t1.itemname=onlineColor where t1.itemcode='TXBJQJYS' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=offlineColor where t1.itemcode='TXBJQJYS' and t1.itemvalue=0;
 
+    Update tbl_code t1 set t1.itemname=goOnlineOpacity where t1.itemcode='TXBJYSTMD' and t1.itemvalue=2;
     Update tbl_code t1 set t1.itemname=onlineOpacity where t1.itemcode='TXBJYSTMD' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=offlineOpacity where t1.itemcode='TXBJYSTMD' and t1.itemvalue=0;
-    
+
     --运行
     Update tbl_code t1 set t1.itemname=runBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=1;
     Update tbl_code t1 set t1.itemname=stopBackgroundColor where t1.itemcode='YXBJYS' and t1.itemvalue=0;

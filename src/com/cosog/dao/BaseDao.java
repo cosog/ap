@@ -2414,7 +2414,7 @@ public class BaseDao extends HibernateDaoSupport {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		try {
-			cs = conn.prepareCall("{call prd_save_alarmcolor(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_alarmcolor(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			cs.setString(1, alarmShowStyle.getData().getNormal().getBackgroundColor());
 			cs.setString(2, alarmShowStyle.getData().getFirstLevel().getBackgroundColor());
 			cs.setString(3, alarmShowStyle.getData().getSecondLevel().getBackgroundColor());
@@ -2428,19 +2428,22 @@ public class BaseDao extends HibernateDaoSupport {
 			cs.setString(11, alarmShowStyle.getData().getSecondLevel().getOpacity());
 			cs.setString(12, alarmShowStyle.getData().getThirdLevel().getOpacity());
 			
-			cs.setString(13, alarmShowStyle.getComm().getOnline().getBackgroundColor());
-			cs.setString(14, alarmShowStyle.getComm().getOffline().getBackgroundColor());
-			cs.setString(15, alarmShowStyle.getComm().getOnline().getColor());
-			cs.setString(16, alarmShowStyle.getComm().getOffline().getColor());
-			cs.setString(17, alarmShowStyle.getComm().getOnline().getOpacity());
-			cs.setString(18, alarmShowStyle.getComm().getOffline().getOpacity());
+			cs.setString(13, alarmShowStyle.getComm().getGoOnline().getBackgroundColor());
+			cs.setString(14, alarmShowStyle.getComm().getOnline().getBackgroundColor());
+			cs.setString(15, alarmShowStyle.getComm().getOffline().getBackgroundColor());
+			cs.setString(16, alarmShowStyle.getComm().getGoOnline().getColor());
+			cs.setString(17, alarmShowStyle.getComm().getOnline().getColor());
+			cs.setString(18, alarmShowStyle.getComm().getOffline().getColor());
+			cs.setString(19, alarmShowStyle.getComm().getGoOnline().getOpacity());
+			cs.setString(20, alarmShowStyle.getComm().getOnline().getOpacity());
+			cs.setString(21, alarmShowStyle.getComm().getOffline().getOpacity());
 			
-			cs.setString(19, alarmShowStyle.getRun().getRun().getBackgroundColor());
-			cs.setString(20, alarmShowStyle.getRun().getStop().getBackgroundColor());
-			cs.setString(21, alarmShowStyle.getRun().getRun().getColor());
-			cs.setString(22, alarmShowStyle.getRun().getStop().getColor());
-			cs.setString(23, alarmShowStyle.getRun().getRun().getOpacity());
-			cs.setString(24, alarmShowStyle.getRun().getStop().getOpacity());
+			cs.setString(22, alarmShowStyle.getRun().getRun().getBackgroundColor());
+			cs.setString(23, alarmShowStyle.getRun().getStop().getBackgroundColor());
+			cs.setString(24, alarmShowStyle.getRun().getRun().getColor());
+			cs.setString(25, alarmShowStyle.getRun().getStop().getColor());
+			cs.setString(26, alarmShowStyle.getRun().getRun().getOpacity());
+			cs.setString(27, alarmShowStyle.getRun().getStop().getOpacity());
 			cs.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

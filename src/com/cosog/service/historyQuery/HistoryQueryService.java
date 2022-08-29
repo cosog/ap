@@ -545,7 +545,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
+				+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 				+ prodCol+""
 				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
 				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
@@ -625,32 +625,33 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 			result_json.append("\"resultCode\":\""+obj[13]+"\",");
 			result_json.append("\"resultName\":\""+obj[14]+"\",");
+			result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
 			result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
-			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[15]+"\",");
-			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[16]+"\",");
-			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[17]+"\",");
-			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[18]+"\",");
+			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[16]+"\",");
+			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[17]+"\",");
+			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[18]+"\",");
+			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
 			
-			result_json.append("\"FMax\":\""+obj[19]+"\",");
-			result_json.append("\"FMin\":\""+obj[20]+"\",");
-			result_json.append("\"fullnessCoefficient\":\""+obj[21]+"\",");
+			result_json.append("\"FMax\":\""+obj[20]+"\",");
+			result_json.append("\"FMin\":\""+obj[21]+"\",");
+			result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
 			
-			result_json.append("\"averageWatt\":\""+obj[22]+"\",");
-			result_json.append("\"polishrodPower\":\""+obj[23]+"\",");
-			result_json.append("\"waterPower\":\""+obj[24]+"\",");
+			result_json.append("\"averageWatt\":\""+obj[23]+"\",");
+			result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
+			result_json.append("\"waterPower\":\""+obj[25]+"\",");
 			
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[25]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[26]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[27]+"\",");
-			result_json.append("\"energyper100mlift\":\""+obj[28]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[29]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
+			result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[30]+"\",");
 			
-			result_json.append("\"iDegreeBalance\":\""+obj[30]+"\",");
-			result_json.append("\"wattDegreeBalance\":\""+obj[31]+"\",");
-			result_json.append("\"deltaradius\":\""+obj[32]+"\",");
-			result_json.append("\"levelCorrectValue\":\""+obj[33]+"\",");
-			result_json.append("\"inverProducingfluidLevel\":\""+obj[34]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[35]+"\",");
+			result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
+			result_json.append("\"deltaradius\":\""+obj[33]+"\",");
+			result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
+			result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
 			result_json.append("\"details\":\"\",");
 			
 			alarmInfo.append("[");
@@ -683,7 +684,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[36+j]+"";
+				String rawValue=obj[37+j]+"";
 				String value=rawValue;
 				ModbusProtocolConfig.Items item=null;
 				if(protocol!=null){
@@ -851,7 +852,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
+				+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 				+ prodCol+""
 				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
 				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
@@ -904,35 +905,36 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
 			result_json.append("\"resultCode\":\""+obj[13]+"\",");
 			result_json.append("\"resultName\":\""+obj[14]+"\",");
-			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[15]+"\",");
-			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[16]+"\",");
-			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[17]+"\",");
-			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[18]+"\",");
+			result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[16]+"\",");
+			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[17]+"\",");
+			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[18]+"\",");
+			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
 			
-			result_json.append("\"FMax\":\""+obj[19]+"\",");
-			result_json.append("\"FMin\":\""+obj[20]+"\",");
-			result_json.append("\"fullnessCoefficient\":\""+obj[21]+"\",");
+			result_json.append("\"FMax\":\""+obj[20]+"\",");
+			result_json.append("\"FMin\":\""+obj[21]+"\",");
+			result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
 			
-			result_json.append("\"averageWatt\":\""+obj[22]+"\",");
-			result_json.append("\"polishrodPower\":\""+obj[23]+"\",");
-			result_json.append("\"waterPower\":\""+obj[24]+"\",");
+			result_json.append("\"averageWatt\":\""+obj[23]+"\",");
+			result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
+			result_json.append("\"waterPower\":\""+obj[25]+"\",");
 			
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[25]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[26]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[27]+"\",");
-			result_json.append("\"energyper100mlift\":\""+obj[28]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[29]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
+			result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[30]+"\",");
 			
-			result_json.append("\"iDegreeBalance\":\""+obj[30]+"\",");
-			result_json.append("\"wattDegreeBalance\":\""+obj[31]+"\",");
-			result_json.append("\"deltaradius\":\""+obj[32]+"\",");
-			result_json.append("\"levelCorrectValue\":\""+obj[33]+"\",");
-			result_json.append("\"inverProducingfluidLevel\":\""+obj[34]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[35]+"\",");
+			result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
+			result_json.append("\"deltaradius\":\""+obj[33]+"\",");
+			result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
+			result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
 			result_json.append("\"details\":\"\",");
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[36+j]+"";
+				String rawValue=obj[37+j]+"";
 				String value=rawValue;
 				if(protocol!=null){
 					for(int k=0;k<protocol.getItems().size();k++){
@@ -2271,7 +2273,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		allsql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.stroke,t.spm,"
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
-				+ " t.resultcode,t2.resultname,t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
+				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion,"
+				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
 				+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
 				+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
 				+ " and t.wellid="+deviceId+" "
@@ -2314,10 +2317,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			dynSbf.append("\"fmin\":\""+obj[6]+"\",");
 			
 			dynSbf.append("\"resultName\":\""+obj[10]+"\",");
+			dynSbf.append("\"optimizationSuggestion\":\""+obj[11]+"\",");
 			
-			dynSbf.append("\"upperLoadLine\":\"" + obj[11] + "\",");
-			dynSbf.append("\"lowerLoadLine\":\"" + obj[12] + "\",");
-			dynSbf.append("\"liquidProduction\":\""+obj[13]+"\",");
+			dynSbf.append("\"upperLoadLine\":\"" + obj[12] + "\",");
+			dynSbf.append("\"lowerLoadLine\":\"" + obj[13] + "\",");
+			dynSbf.append("\"liquidProduction\":\""+obj[14]+"\",");
 			
 			dynSbf.append("\"pointCount\":\""+pointCount+"\","); 
 			dynSbf.append("\"positionCurveData\":\""+DiagramXData+"\",");

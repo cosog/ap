@@ -23,6 +23,11 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
         Ext.apply(me, {
         	layout: 'fit',
         	tbar: [{
+                id: 'goOnlineOpacity_id',//报警背景色透明度
+                xtype: 'textfield',
+                value: 1,
+                hidden: true
+            },{
                 id: 'onlineOpacity_id',//报警背景色透明度
                 xtype: 'textfield',
                 value: 1,
@@ -98,6 +103,27 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                     	fieldLabel: '<font color=red >背景色</font>',
                     	value:''
                     },{
+                        id: 'goOnlineBackgroundColor_id',
+                        fieldLabel: '上线',
+                        labelWidth: 60,
+                        anchor:'90%',
+                        listeners : {
+                        	collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('goOnlineBackgroundColor_id')!=undefined){
+                            		Ext.getCmp('goOnlineOpacity_id').setValue(field.color.a);
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
                         id: 'onlineBackgroundColor_id',
                         fieldLabel: '在线',
                         labelWidth: 60,
@@ -271,6 +297,27 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
                     	fieldLabel: '<font color=red >前景色</font>',
                     	value:''
                     },{
+                        id: 'goOnlineColor_id',
+                        fieldLabel: '上线',
+                        labelWidth: 60,
+                        anchor:'90%',
+                        value:'#FFFFFF',
+                        listeners : {
+                            collapse: function (field,eOpts) {
+                            	if(Ext.getCmp('goOnlineColor_id')!=undefined){
+                            		var opacity=field.color.a;
+                            		field.setValue(field.value);
+                    	        	var BackgroundColor0=field.color;
+                    	        	BackgroundColor0.a=opacity;
+                    	        	field.inputEl.applyStyles({
+                    	        		background: '#'+field.value,
+                    	        		opacity:opacity
+                    	        	});
+                    	        	field.setColor(BackgroundColor0);
+                            	}
+                            }
+                        }
+                	},{
                         id: 'onlineColor_id',
                         fieldLabel: '在线',
                         labelWidth: 60,
@@ -455,6 +502,15 @@ function getAlarmLevelSetColor(){
 	        	var AlarmShowStyle = Ext.decode(response.responseText); // 获取返回数据
 	        	
 	        	//初始化概览数据报警颜色
+	        	Ext.getCmp('goOnlineBackgroundColor_id').setValue(AlarmShowStyle.Comm.goOnline.BackgroundColor);
+	        	var BackgroundColor0=Ext.getCmp('goOnlineBackgroundColor_id').color;
+	        	BackgroundColor0.a=AlarmShowStyle.Comm.goOnline.Opacity;
+	        	Ext.getCmp('goOnlineBackgroundColor_id').inputEl.applyStyles({
+	        		background: '#'+AlarmShowStyle.Comm.goOnline.BackgroundColor,
+	        		opacity:AlarmShowStyle.Comm.goOnline.Opacity
+	        	});
+	        	Ext.getCmp('goOnlineBackgroundColor_id').setColor(BackgroundColor0);
+	        	
 	        	Ext.getCmp('onlineBackgroundColor_id').setValue(AlarmShowStyle.Comm.online.BackgroundColor);
 	        	var BackgroundColor0=Ext.getCmp('onlineBackgroundColor_id').color;
 	        	BackgroundColor0.a=AlarmShowStyle.Comm.online.Opacity;
@@ -531,6 +587,12 @@ function getAlarmLevelSetColor(){
 	        	});
 	        	Ext.getCmp('thirdLevelBackgroundColor_id').setColor(BackgroundColor3);
 	            
+	        	
+	        	Ext.getCmp('goOnlineColor_id').setValue(AlarmShowStyle.Comm.goOnline.Color);
+	            var Color0=Ext.getCmp('goOnlineColor_id').color;
+	            Ext.getCmp('goOnlineColor_id').inputEl.applyStyles({
+	            	background: '#'+AlarmShowStyle.Comm.goOnline.Color,
+	            });
 
 	        	Ext.getCmp('onlineColor_id').setValue(AlarmShowStyle.Comm.online.Color);
 	            var Color0=Ext.getCmp('onlineColor_id').color;
@@ -582,6 +644,7 @@ function getAlarmLevelSetColor(){
 	            	background: '#'+AlarmShowStyle.Data.ThirdLevel.Color,
 	            });
 	            
+	            Ext.getCmp('goOnlineOpacity_id').setValue(AlarmShowStyle.Comm.goOnline.Opacity);
 	            Ext.getCmp('onlineOpacity_id').setValue(AlarmShowStyle.Comm.online.Opacity);
 	            Ext.getCmp('offlineOpacity_id').setValue(AlarmShowStyle.Comm.offline.Opacity);
 	            Ext.getCmp('runOpacity_id').setValue(AlarmShowStyle.Run.run.Opacity);
@@ -598,6 +661,7 @@ function getAlarmLevelSetColor(){
 }
 
 function saveAlarmColor(){
+	var goOnlineBackgroundColor=Ext.getCmp('goOnlineBackgroundColor_id').getValue();
 	var onlineBackgroundColor=Ext.getCmp('onlineBackgroundColor_id').getValue();
 	var offlineBackgroundColor=Ext.getCmp('offlineBackgroundColor_id').getValue();
 	var runBackgroundColor=Ext.getCmp('runBackgroundColor_id').getValue();
@@ -607,6 +671,7 @@ function saveAlarmColor(){
 	var secondLevelBackgroundColor=Ext.getCmp('secondLevelBackgroundColor_id').getValue();
 	var thirdLevelBackgroundColor=Ext.getCmp('thirdLevelBackgroundColor_id').getValue();
 	 
+	var goOnlineColor=Ext.getCmp('goOnlineColor_id').getValue();
 	var onlineColor=Ext.getCmp('onlineColor_id').getValue();
 	var offlineColor=Ext.getCmp('offlineColor_id').getValue();
 	var runColor=Ext.getCmp('runColor_id').getValue();
@@ -616,6 +681,7 @@ function saveAlarmColor(){
 	var secondLevelColor=Ext.getCmp('secondLevelColor_id').getValue();
 	var thirdLevelColor=Ext.getCmp('thirdLevelColor_id').getValue();
 	
+	var goOnlineOpacity=Ext.getCmp('goOnlineOpacity_id').getValue();
 	var onlineOpacity=Ext.getCmp('onlineOpacity_id').getValue();
 	var offlineOpacity=Ext.getCmp('offlineOpacity_id').getValue();
 	var runOpacity=Ext.getCmp('runOpacity_id').getValue();
@@ -651,13 +717,19 @@ function saveAlarmColor(){
 	 AlarmShowStyle.Data.ThirdLevel.Opacity=thirdLevelOpacity;
 	 
 	 AlarmShowStyle.Comm={};
+	 
+	 AlarmShowStyle.Comm.goOnline={};
+	 AlarmShowStyle.Comm.goOnline.Value=2;
+	 AlarmShowStyle.Comm.goOnline.BackgroundColor=goOnlineBackgroundColor;
+	 AlarmShowStyle.Comm.goOnline.Color=goOnlineColor;
+	 AlarmShowStyle.Comm.goOnline.Opacity=goOnlineOpacity;
 	 AlarmShowStyle.Comm.online={};
 	 AlarmShowStyle.Comm.online.Value=1;
 	 AlarmShowStyle.Comm.online.BackgroundColor=onlineBackgroundColor;
 	 AlarmShowStyle.Comm.online.Color=onlineColor;
 	 AlarmShowStyle.Comm.online.Opacity=onlineOpacity;
 	 AlarmShowStyle.Comm.offline={};
-	 AlarmShowStyle.Comm.offline.Value=1;
+	 AlarmShowStyle.Comm.offline.Value=0;
 	 AlarmShowStyle.Comm.offline.BackgroundColor=offlineBackgroundColor;
 	 AlarmShowStyle.Comm.offline.Color=offlineColor;
 	 AlarmShowStyle.Comm.offline.Opacity=offlineOpacity;
@@ -669,7 +741,7 @@ function saveAlarmColor(){
 	 AlarmShowStyle.Run.run.Color=runColor;
 	 AlarmShowStyle.Run.run.Opacity=runOpacity;
 	 AlarmShowStyle.Run.stop={};
-	 AlarmShowStyle.Run.stop.Value=1;
+	 AlarmShowStyle.Run.stop.Value=0;
 	 AlarmShowStyle.Run.stop.BackgroundColor=stopBackgroundColor;
 	 AlarmShowStyle.Run.stop.Color=stopColor;
 	 AlarmShowStyle.Run.stop.Opacity=stopOpacity;

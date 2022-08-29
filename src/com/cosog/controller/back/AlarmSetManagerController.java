@@ -130,7 +130,6 @@ public class AlarmSetManagerController extends BaseController {
 	@RequestMapping("/setAlarmColor")
 	public String setAlarmColor() throws Exception {
 		Gson gson = new Gson();
-		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
 		String data = ParamUtils.getParameter(request, "data");
 		java.lang.reflect.Type type = new TypeToken<AlarmShowStyle>() {}.getType();
 		AlarmShowStyle alarmShowStyleSaveData=gson.fromJson(data, type);

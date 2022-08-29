@@ -284,16 +284,25 @@ insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMAR
 values (1105, 'TXBJQJYS', '00ff00', '1', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
+values (1105, '1123', 'f09614', '2', null, null, null);
+
+insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1062, 'TXBJYS', '6c6262', '0', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1063, 'TXBJYS', '00ff00', '1', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
+values (1122, 'TXBJYS', 'f09614', '2', null, null, null);
+
+insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1066, 'TXBJYSTMD', '0', '0', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1067, 'TXBJYSTMD', '0', '1', null, null, null);
+
+insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
+values (1124, 'TXBJYSTMD', '0', '2', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1002, 'USER_TITLE', '中控室', '0', null, null, null);
@@ -615,22 +624,16 @@ insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPT
 values (23, 1223, '杆(泵)卡', '"图形呈斜条带状；可通过图形拐点找到被卡位置；油井不出油。"', '洗井或检泵', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
-values (24, 1224, '轻微结蜡', '"图形肥大；产量下降。"', '洗井或加药', null);
+values (24, 1224, '结蜡', '"图形肥大；产量下降。"', '洗井或加药', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
 values (25, 1225, '严重结蜡', null, '洗井或加药', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
-values (26, 1226, '轻微出砂', '"图形呈不规则、不重复的锯齿状；油井出油正常。"', '防砂', null);
+values (26, 1226, '出砂', '"图形呈不规则、不重复的锯齿状；油井出油正常。"', '防砂', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
 values (27, 1227, '严重出砂', null, '防砂', null);
-
-insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
-values (28, 1228, '轻微出煤渣', null, '防煤渣', null);
-
-insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
-values (29, 1229, '严重出煤渣', null, '防煤渣', null);
 
 insert into TBL_RPC_WORKTYPE (ID, RESULTCODE, RESULTNAME, RESULTDESCRIPTION, OPTIMIZATIONSUGGESTION, REMARK)
 values (30, 1230, '惯性载荷大', '"图形顺时针偏转。"', '降低冲次', null);

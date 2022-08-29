@@ -797,7 +797,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 				+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
+				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 				+ prodCol+""
 				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
 				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
@@ -916,33 +916,34 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 			result_json.append("\"resultCode\":\""+obj[14]+"\",");
 			result_json.append("\"resultName\":\""+obj[15]+"\",");
+			result_json.append("\"optimizationSuggestion\":\""+obj[16]+"\",");
 			result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
-			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[16]+"\",");
-			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[17]+"\",");
-			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[18]+"\",");
-			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
+			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[17]+"\",");
+			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[18]+"\",");
+			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[19]+"\",");
+			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[20]+"\",");
 			
-			result_json.append("\"FMax\":\""+obj[20]+"\",");
-			result_json.append("\"FMin\":\""+obj[21]+"\",");
-			result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
+			result_json.append("\"FMax\":\""+obj[21]+"\",");
+			result_json.append("\"FMin\":\""+obj[22]+"\",");
+			result_json.append("\"fullnessCoefficient\":\""+obj[23]+"\",");
 			
-			result_json.append("\"averageWatt\":\""+obj[23]+"\",");
-			result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
-			result_json.append("\"waterPower\":\""+obj[25]+"\",");
+			result_json.append("\"averageWatt\":\""+obj[24]+"\",");
+			result_json.append("\"polishrodPower\":\""+obj[25]+"\",");
+			result_json.append("\"waterPower\":\""+obj[26]+"\",");
 			
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
-			result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[30]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[28]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[29]+"\",");
+			result_json.append("\"energyper100mlift\":\""+obj[30]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[31]+"\",");
 			
-			result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
-			result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
-			result_json.append("\"deltaradius\":\""+obj[33]+"\",");
+			result_json.append("\"iDegreeBalance\":\""+obj[32]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[33]+"\",");
+			result_json.append("\"deltaradius\":\""+obj[34]+"\",");
 			
-			result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
-			result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
+			result_json.append("\"levelCorrectValue\":\""+obj[35]+"\",");
+			result_json.append("\"inverProducingfluidLevel\":\""+obj[36]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[37]+"\",");
 			
 			alarmInfo.append("[");
 			
@@ -975,7 +976,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			}
 			
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String rawValue=obj[37+j]+"";
+				String rawValue=obj[38+j]+"";
 				String value=rawValue;
 				ModbusProtocolConfig.Items item=null;
 				if(protocol!=null){
@@ -1100,7 +1101,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 				+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
-				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,"
+				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 				+ prodCol+""
 				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
 				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
@@ -1190,33 +1191,34 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
 			result_json.append("\"resultCode\":\""+obj[14]+"\",");
 			result_json.append("\"resultName\":\""+obj[15]+"\",");
-			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[16]+"\",");
-			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[17]+"\",");
-			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[18]+"\",");
-			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
+			result_json.append("\"optimizationSuggestion\":\""+obj[16]+"\",");
+			result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[17]+"\",");
+			result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[18]+"\",");
+			result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[19]+"\",");
+			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[20]+"\",");
 			
 			result_json.append("\"FMax\":\""+obj[20]+"\",");
-			result_json.append("\"FMin\":\""+obj[21]+"\",");
-			result_json.append("\"fullnessCoefficient\":\""+obj[22]+"\",");
+			result_json.append("\"FMin\":\""+obj[22]+"\",");
+			result_json.append("\"fullnessCoefficient\":\""+obj[23]+"\",");
 			
-			result_json.append("\"averageWatt\":\""+obj[23]+"\",");
-			result_json.append("\"polishrodPower\":\""+obj[24]+"\",");
-			result_json.append("\"waterPower\":\""+obj[25]+"\",");
+			result_json.append("\"averageWatt\":\""+obj[24]+"\",");
+			result_json.append("\"polishrodPower\":\""+obj[25]+"\",");
+			result_json.append("\"waterPower\":\""+obj[26]+"\",");
 			
-			result_json.append("\"surfaceSystemEfficiency\":\""+obj[26]+"\",");
-			result_json.append("\"welldownSystemEfficiency\":\""+obj[27]+"\",");
-			result_json.append("\"systemEfficiency\":\""+obj[28]+"\",");
-			result_json.append("\"energyper100mlift\":\""+obj[29]+"\",");
-			result_json.append("\"pumpEff\":\""+obj[30]+"\",");
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[28]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[29]+"\",");
+			result_json.append("\"energyper100mlift\":\""+obj[30]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[31]+"\",");
 			
-			result_json.append("\"iDegreeBalance\":\""+obj[31]+"\",");
-			result_json.append("\"wattDegreeBalance\":\""+obj[32]+"\",");
-			result_json.append("\"deltaradius\":\""+obj[33]+"\",");
-			result_json.append("\"levelCorrectValue\":\""+obj[34]+"\",");
-			result_json.append("\"inverProducingfluidLevel\":\""+obj[35]+"\",");
-			result_json.append("\"todayKWattH\":\""+obj[36]+"\",");
+			result_json.append("\"iDegreeBalance\":\""+obj[32]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[33]+"\",");
+			result_json.append("\"deltaradius\":\""+obj[34]+"\",");
+			result_json.append("\"levelCorrectValue\":\""+obj[35]+"\",");
+			result_json.append("\"inverProducingfluidLevel\":\""+obj[36]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[37]+"\",");
 			for(int j=0;j<ddicColumnsList.size();j++){
-				String value=obj[37+j]+"";
+				String value=obj[38+j]+"";
 				if(protocol!=null){
 					for(int k=0;k<protocol.getItems().size();k++){
 						String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
@@ -3133,7 +3135,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
         		+ " t.pumpfsdiagram,"
         		+ " t.upperloadline,t.lowerloadline, t.fmax,t.fmin,t.stroke,t.spm, "
         		+ " t."+prodCol+","
-        		+ " status.resultname,status.resultcode, "
+        		+ " status.resultname,status.resultcode,status.optimizationSuggestion, "//12
         		+ " t.rodstring,"
         		+ " t.pumpeff1*100 as pumpeff1, t.pumpeff2*100 as pumpeff2, t.pumpeff3*100 as pumpeff3, t.pumpeff4*100 as pumpeff4,"
         		+ " t.position_curve,t.load_curve"
@@ -3157,8 +3159,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				pumpFSDiagram=StringManagerUtils.CLOBtoString(realClob);
 			}
 			
-			if(obj[17]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
+			if(obj[18]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				positionCurveData=StringManagerUtils.CLOBtoString(realClob);
 				if(StringManagerUtils.isNotNull(positionCurveData)){
@@ -3166,8 +3168,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				}
 			}
 			
-			if(obj[18]!=null){
-				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
+			if(obj[19]!=null){
+				proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[19]);
 				realClob = (CLOB) proxy.getWrappedClob(); 
 				loadCurveData=StringManagerUtils.CLOBtoString(realClob);
 			}
@@ -3193,8 +3195,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		        	pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 		        	pumpFSDiagramStrBuff.append("#");
 		        }
-		        if(obj[12]!=null){
-		        	String rodDataArr[]=obj[12].toString().split(";");
+		        if(obj[13]!=null){
+		        	String rodDataArr[]=obj[13].toString().split(";");
 			        for(int i=1;i<rodDataArr.length;i++){
 			        	if(i==1&&rodDataArr[i].split(",").length==6){
 			        		rodStressRatio1=rodDataArr[i].split(",")[5];
@@ -3226,16 +3228,17 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("liquidProduction:\""+obj[9]+"\",");         // 日产液量
 	        dataSbf.append("resultName:\""+obj[10]+"\",");         // 工况类型
 	        dataSbf.append("resultCode:\""+obj[11]+"\",");         // 工况代码
+	        dataSbf.append("optimizationSuggestion:\""+obj[12]+"\",");         // 优化建议
 	        
 	        dataSbf.append("rodStressRatio1:"+rodStressRatio1+",");       // 一级应力百分比
 	        dataSbf.append("rodStressRatio2:"+rodStressRatio2+",");       // 二级应力百分比 
 	        dataSbf.append("rodStressRatio3:"+rodStressRatio3+",");           // 三级应力百分比
 	        dataSbf.append("rodStressRatio4:"+rodStressRatio4+",");           // 四级应力百分比
 	        
-	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[13].toString(),1)+",");       // 冲程损失系数
-	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[14].toString().toString(),1)+",");       // 充满系数
-	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[15].toString().toString(),1)+",");           // 漏失系数
-	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[16].toString().toString(),1)+",");           // 液体收缩系数
+	        dataSbf.append("pumpEff1:"+StringManagerUtils.stringToFloat(obj[13]==null?"":obj[14].toString(),1)+",");       // 冲程损失系数
+	        dataSbf.append("pumpEff2:"+StringManagerUtils.stringToFloat(obj[14]==null?"":obj[15].toString().toString(),1)+",");       // 充满系数
+	        dataSbf.append("pumpEff3:"+StringManagerUtils.stringToFloat(obj[15]==null?"":obj[16].toString().toString(),1)+",");           // 漏失系数
+	        dataSbf.append("pumpEff4:"+StringManagerUtils.stringToFloat(obj[16]==null?"":obj[17].toString().toString(),1)+",");           // 液体收缩系数
 	        dataSbf.append("pumpFSDiagramData:\""+pumpFSDiagramData+"\",");         // 泵功图数据
 	        dataSbf.append("positionCurveData:\""+positionCurveData+"\",");         
 	        dataSbf.append("loadCurveData:\""+loadCurveData+"\""); 
@@ -3254,6 +3257,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("liquidProduction:\"\",");  
 	        dataSbf.append("resultName:\"\",");
 	        dataSbf.append("resultCode:\"\",");  
+	        dataSbf.append("optimizationSuggestion:\"\",");
 	        dataSbf.append("rodStressRatio1:\"\","); 
 	        dataSbf.append("rodStressRatio2:\"\",");  
 	        dataSbf.append("rodStressRatio3:\"\",");

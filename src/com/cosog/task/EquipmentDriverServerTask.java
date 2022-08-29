@@ -58,18 +58,8 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-//		StringBuffer s=new StringBuffer();
-//		try{
-//			for(int i=0;i<100000000l;i++){
-//				s.append("a");
-//			}
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			System.out.println("异常后长度:"+s.length());
-//		}
-//		System.out.println(s.length());
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		String allOfflineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/allDeviceOffline";
@@ -80,84 +70,87 @@ public class EquipmentDriverServerTask {
 		
 		
 		
-//		String path="";
-//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//		
-//		path=stringManagerUtils.getFilePath("test3.json","example/");
-//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		path=stringManagerUtils.getFilePath("test4.json","example/");
-//		String offLineData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
-//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/online";
-//		int i=0;
-//		while(true){
+		String path="";
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		
+		path=stringManagerUtils.getFilePath("test3.json","example/");
+		String onLineData=stringManagerUtils.readFile(path,"utf-8");
+		
+		path=stringManagerUtils.getFilePath("test4.json","example/");
+		String offLineData=stringManagerUtils.readFile(path,"utf-8");
+		
+		path=stringManagerUtils.getFilePath("test7.json","example/");
+		String testData=stringManagerUtils.readFile(path,"utf-8");
+		
+		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/group";
+		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/online";
+		int i=0;
+		while(true){
 //			if(i%2==0){
 //				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
 //			}else{
 //				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
 //			}
 //			i++;
-//			
-////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//			
-//			Thread.sleep(1000*5);
-//		}
-		
-		initServerConfig();
-		initProtocolConfig("","");
-		initInstanceConfig(null,"");
-		initSMSInstanceConfig(null,"");
-		initSMSDevice(null,"");
-		initRPCDriverAcquisitionInfoConfig(null,"");
-		initPCPDriverAcquisitionInfoConfig(null,"");
-		
-		boolean sendMsg=false;
-		exampleDataManage();
-		do{
-			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-			type = new TypeToken<DriverProbeResponse>() {}.getType();
-			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
 			
-			String Ver="";
-			if(driverProbeResponse!=null){
-				sendMsg=false;
-				if(!driverProbeResponse.getHttpServerInitStatus()){
-					initServerConfig();
-				}
-				if(!driverProbeResponse.getProtocolInitStatus()){
-					initProtocolConfig("","");
-				}
-				if(!driverProbeResponse.getInstanceInitStatus()){
-					initInstanceConfig(null,"");
-					initSMSInstanceConfig(null,"");
-				}
-				if(!driverProbeResponse.getSMSInitStatus()){
-					initSMSDevice(null,"");
-				}
-				if(!driverProbeResponse.getIDInitStatus()){
-					//清空内存
-					Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-					Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-					if(initializedDeviceList!=null){
-						dataModelMap.remove("InitializedDeviceList");
-						initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
-						dataModelMap.put("InitializedDeviceList", initializedDeviceList);
-					}
-					
-					initRPCDriverAcquisitionInfoConfig(null,"");
-					initPCPDriverAcquisitionInfoConfig(null,"");
-				}
-				Ver=driverProbeResponse.getVer();
-			}else{
-				if(!sendMsg){
-					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-					sendMsg=true;
-				}
-			}
-			Thread.sleep(1000*1);
-		}while(true);
+			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
+			
+			Thread.sleep(1000*5);
+		}
+		
+//		initServerConfig();
+//		initProtocolConfig("","");
+//		initInstanceConfig(null,"");
+//		initSMSInstanceConfig(null,"");
+//		initSMSDevice(null,"");
+//		initRPCDriverAcquisitionInfoConfig(null,"");
+//		initPCPDriverAcquisitionInfoConfig(null,"");
+//		
+//		boolean sendMsg=false;
+//		exampleDataManage();
+//		do{
+//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+//			type = new TypeToken<DriverProbeResponse>() {}.getType();
+//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+//			
+//			String Ver="";
+//			if(driverProbeResponse!=null){
+//				sendMsg=false;
+//				if(!driverProbeResponse.getHttpServerInitStatus()){
+//					initServerConfig();
+//				}
+//				if(!driverProbeResponse.getProtocolInitStatus()){
+//					initProtocolConfig("","");
+//				}
+//				if(!driverProbeResponse.getInstanceInitStatus()){
+//					initInstanceConfig(null,"");
+//					initSMSInstanceConfig(null,"");
+//				}
+//				if(!driverProbeResponse.getSMSInitStatus()){
+//					initSMSDevice(null,"");
+//				}
+//				if(!driverProbeResponse.getIDInitStatus()){
+//					//清空内存
+//					Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+//					Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+//					if(initializedDeviceList!=null){
+//						dataModelMap.remove("InitializedDeviceList");
+//						initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+//						dataModelMap.put("InitializedDeviceList", initializedDeviceList);
+//					}
+//					
+//					initRPCDriverAcquisitionInfoConfig(null,"");
+//					initPCPDriverAcquisitionInfoConfig(null,"");
+//				}
+//				Ver=driverProbeResponse.getVer();
+//			}else{
+//				if(!sendMsg){
+//					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+//					sendMsg=true;
+//				}
+//			}
+//			Thread.sleep(1000*1);
+//		}while(true);
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })

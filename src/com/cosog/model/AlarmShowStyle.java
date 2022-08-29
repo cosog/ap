@@ -19,6 +19,7 @@ public class AlarmShowStyle implements java.io.Serializable {
 		
 		this.Comm.setOnline(new AlarmStyle());
 		this.Comm.setOffline(new AlarmStyle());
+		this.Comm.setGoOnline(new AlarmStyle());
 		
 		this.Run.setRun(new AlarmStyle());
 		this.Run.setStop(new AlarmStyle());
@@ -35,6 +36,8 @@ public class AlarmShowStyle implements java.io.Serializable {
     	private AlarmStyle online;
 
         private AlarmStyle offline;
+        
+        private AlarmStyle goOnline;
 
 		public AlarmStyle getOnline() {
 			return online;
@@ -50,6 +53,14 @@ public class AlarmShowStyle implements java.io.Serializable {
 
 		public void setOffline(AlarmStyle offline) {
 			this.offline = offline;
+		}
+
+		public AlarmStyle getGoOnline() {
+			return goOnline;
+		}
+
+		public void setGoOnline(AlarmStyle goOnline) {
+			this.goOnline = goOnline;
 		}
     }
 	

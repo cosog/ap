@@ -1,7 +1,7 @@
 create sequence HIBERNATE_SEQUENCE
 minvalue 1
 maxvalue 999999999999999999999999999
-start with 135255
+start with 135315
 increment by 1
 cache 20;
 /
@@ -73,7 +73,7 @@ cache 20;
 create sequence SEQ_CODE
 minvalue 1
 maxvalue 9999999999999999999999999
-start with 1122
+start with 1142
 increment by 1
 cache 20;
 /

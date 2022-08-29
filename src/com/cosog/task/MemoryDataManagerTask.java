@@ -1443,6 +1443,11 @@ public class MemoryDataManagerTask {
 					alarmShowStyle.getComm().getOnline().setBackgroundColor(rs.getString(2));
 					alarmShowStyle.getComm().getOnline().setColor(rs.getString(3));
 					alarmShowStyle.getComm().getOnline().setOpacity(rs.getString(4));
+				}else if(rs.getInt(1)==2){
+					alarmShowStyle.getComm().getGoOnline().setValue(rs.getInt(1));
+					alarmShowStyle.getComm().getGoOnline().setBackgroundColor(rs.getString(2));
+					alarmShowStyle.getComm().getGoOnline().setColor(rs.getString(3));
+					alarmShowStyle.getComm().getGoOnline().setOpacity(rs.getString(4));
 				}
 			}
 			pstmt = conn.prepareStatement(runAlarmSql); 

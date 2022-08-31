@@ -582,12 +582,18 @@ public class ConfigFile {
 	    private String instance;
 
 	    private String id;
+	    
+	    private String ipPort;
 
 	    private String SMS;
 
 	    private String readAddr;
+	    
+	    private String readAddr_ipPort;
 
 	    private String writeAddr;
+	    
+	    private String writeAddr_ipPort;
 
 	    private String writeSMS;
 
@@ -647,6 +653,24 @@ public class ConfigFile {
 	    public AdProbe getProbe(){
 	        return this.probe;
 	    }
+		public String getIpPort() {
+			return ipPort;
+		}
+		public void setIpPort(String ipPort) {
+			this.ipPort = ipPort;
+		}
+		public String getReadAddr_ipPort() {
+			return readAddr_ipPort;
+		}
+		public void setReadAddr_ipPort(String readAddr_ipPort) {
+			this.readAddr_ipPort = readAddr_ipPort;
+		}
+		public String getWriteAddr_ipPort() {
+			return writeAddr_ipPort;
+		}
+		public void setWriteAddr_ipPort(String writeAddr_ipPort) {
+			this.writeAddr_ipPort = writeAddr_ipPort;
+		}
 	}
 	
 	public static class Ad_rpc

@@ -74,9 +74,12 @@ ad:
    protocol: http://8.142.92.84:19200/api/init/protocol
    instance: http://8.142.92.84:19200/api/init/instance
    id: http://8.142.92.84:19200/api/init/id
+   ipPort: http://8.142.92.84:19200/api/init/ipport
    SMS: http://8.142.92.84:19200/api/init/sms
-   readAddr: http://8.142.92.84:19200/api/read/addr
-   writeAddr: http://8.142.92.84:19200/api/write/addr
+   readAddr: http://8.142.92.84:19200/api/read/id/addr
+   readAddr_ipPort: http://8.142.92.84:19200/api/read/ipport/addr
+   writeAddr: http://8.142.92.84:19200/api/write/id/addr
+   writeAddr_ipPort: http://8.142.92.84:19200/api/write/ipport/addr
    writeSMS: http://8.142.92.84:19200/api/write/sms
    probe:
       init: http://8.142.92.84:19200/api/probe/init

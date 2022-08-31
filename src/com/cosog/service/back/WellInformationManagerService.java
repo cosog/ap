@@ -481,6 +481,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					collisionBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
 					collisionBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
+					collisionBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					collisionBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
@@ -544,6 +545,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					overlayBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
 					overlayBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
+					overlayBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					overlayBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
@@ -723,6 +725,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					collisionBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
 					collisionBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
+					collisionBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					collisionBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
@@ -736,6 +739,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"instanceName\":\""+list.get(i).getInstanceName()+"\",");
 					overlayBuff.append("\"displayInstanceName\":\""+list.get(i).getDisplayInstanceName()+"\",");
 					overlayBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
+					overlayBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					overlayBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
@@ -1096,7 +1100,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,signInId,slave,"
+		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+				+ " tcptype,signInId,slave,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1178,13 +1183,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"instanceName\":\""+obj[4]+"\",");
 			result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
 			result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-			result_json.append("\"signInId\":\""+obj[7]+"\",");
-			result_json.append("\"slave\":\""+obj[8]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[9]+"\",");
-			result_json.append("\"status\":\""+obj[11]+"\",");
-			result_json.append("\"statusName\":\""+obj[12]+"\",");
-			result_json.append("\"allPath\":\""+obj[13]+"\",");
-			result_json.append("\"sortNum\":\""+obj[10]+"\"},");
+			result_json.append("\"tcpType\":\""+obj[7]+"\",");
+			result_json.append("\"signInId\":\""+obj[8]+"\",");
+			result_json.append("\"slave\":\""+obj[9]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
+			result_json.append("\"status\":\""+obj[12]+"\",");
+			result_json.append("\"statusName\":\""+obj[13]+"\",");
+			result_json.append("\"allPath\":\""+obj[14]+"\",");
+			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -1205,7 +1211,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if (StringManagerUtils.isNotNull(wellInformationName)) {
 			WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
 		}
-		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,signInId,slave,"
+		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+				+ " tcptype,signInId,slave,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1226,13 +1233,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"instanceName\":\""+obj[4]+"\",");
 			result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
 			result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-			result_json.append("\"signInId\":\""+obj[7]+"\",");
-			result_json.append("\"slave\":\""+obj[8]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[9]+"\",");
-			result_json.append("\"status\":\""+obj[11]+"\",");
-			result_json.append("\"statusName\":\""+obj[12]+"\",");
-			result_json.append("\"allPath\":\""+obj[13]+"\",");
-			result_json.append("\"sortNum\":\""+obj[10]+"\"},");
+			result_json.append("\"tcpType\":\""+obj[7]+"\",");
+			result_json.append("\"signInId\":\""+obj[8]+"\",");
+			result_json.append("\"slave\":\""+obj[9]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
+			result_json.append("\"status\":\""+obj[12]+"\",");
+			result_json.append("\"statusName\":\""+obj[13]+"\",");
+			result_json.append("\"allPath\":\""+obj[14]+"\",");
+			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -1264,7 +1272,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		String columns=service.showTableHeadersColumns(ddicName);
-		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,signInId,slave,"
+		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+				+ " tcptype,signInId,slave,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1347,13 +1356,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"instanceName\":\""+obj[4]+"\",");
 			result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
 			result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-			result_json.append("\"signInId\":\""+obj[7]+"\",");
-			result_json.append("\"slave\":\""+obj[8]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[9]+"\",");
-			result_json.append("\"status\":\""+obj[11]+"\",");
-			result_json.append("\"statusName\":\""+obj[12]+"\",");
-			result_json.append("\"allPath\":\""+obj[13]+"\",");
-			result_json.append("\"sortNum\":\""+obj[10]+"\"},");
+			result_json.append("\"tcpType\":\""+obj[7]+"\",");
+			result_json.append("\"signInId\":\""+obj[8]+"\",");
+			result_json.append("\"slave\":\""+obj[9]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
+			result_json.append("\"status\":\""+obj[12]+"\",");
+			result_json.append("\"statusName\":\""+obj[13]+"\",");
+			result_json.append("\"allPath\":\""+obj[14]+"\",");
+			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
 		}
 //		for(int i=1;i<=recordCount-list.size();i++){
 //			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -1378,7 +1388,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
 		}
 		
-		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,signInId,slave,"
+		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+				+ " tcptype,signInId,slave,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1401,13 +1412,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"instanceName\":\""+obj[4]+"\",");
 			result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
 			result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
-			result_json.append("\"signInId\":\""+obj[7]+"\",");
-			result_json.append("\"slave\":\""+obj[8]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[9]+"\",");
-			result_json.append("\"status\":\""+obj[11]+"\",");
-			result_json.append("\"statusName\":\""+obj[12]+"\",");
-			result_json.append("\"allPath\":\""+obj[13]+"\",");
-			result_json.append("\"sortNum\":\""+obj[10]+"\"},");
+			result_json.append("\"tcpType\":\""+obj[7]+"\",");
+			result_json.append("\"signInId\":\""+obj[8]+"\",");
+			result_json.append("\"slave\":\""+obj[9]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
+			result_json.append("\"status\":\""+obj[12]+"\",");
+			result_json.append("\"statusName\":\""+obj[13]+"\",");
+			result_json.append("\"allPath\":\""+obj[14]+"\",");
+			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");

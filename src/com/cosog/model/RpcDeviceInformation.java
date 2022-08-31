@@ -27,6 +27,7 @@ public class RpcDeviceInformation implements java.io.Serializable {
 	private String instanceCode;
 	private String displayInstanceCode;
 	private String alarmInstanceCode;
+	private String tcpType;
 	private String signInId;
 	private String slave;
 	private String videoUrl;
@@ -41,7 +42,7 @@ public class RpcDeviceInformation implements java.io.Serializable {
 
 	/** full constructor */
 	public RpcDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
-			Integer applicationScenarios, String instanceCode, String alarmInstanceCode,String displayInstanceCode, String signInId, String slave,
+			Integer applicationScenarios, String instanceCode, String alarmInstanceCode,String displayInstanceCode, String tcpType, String signInId, String slave,
 			String videoUrl, Integer sortNum) {
 		super();
 		this.id = id;
@@ -52,6 +53,7 @@ public class RpcDeviceInformation implements java.io.Serializable {
 		this.instanceCode = instanceCode;
 		this.displayInstanceCode = displayInstanceCode;
 		this.alarmInstanceCode = alarmInstanceCode;
+		this.tcpType = tcpType;
 		this.signInId = signInId;
 		this.slave = slave;
 		this.videoUrl = videoUrl;
@@ -175,5 +177,14 @@ public class RpcDeviceInformation implements java.io.Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	@Column(name = "TCPTYPE", nullable = true, length = 50)
+	public String getTcpType() {
+		return tcpType;
+	}
+
+	public void setTcpType(String tcpType) {
+		this.tcpType = tcpType;
 	}
 }

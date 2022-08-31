@@ -44,6 +44,8 @@ public class WellHandsontableChangedData {
 	    private String displayInstanceName="";
 	    
 	    private String alarmInstanceName="";
+	    
+	    private String tcpType="";
 
 	    private String signInId="";
 
@@ -699,6 +701,14 @@ public class WellHandsontableChangedData {
 
 		public void setNetGrossValue(String netGrossValue) {
 			this.netGrossValue = netGrossValue;
+		}
+
+		public String getTcpType() {
+			return tcpType;
+		}
+
+		public void setTcpType(String tcpType) {
+			this.tcpType = tcpType;
 		}
 	    
 	}

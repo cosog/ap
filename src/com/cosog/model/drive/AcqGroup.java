@@ -4,6 +4,8 @@ import java.util.List;
 
 public class AcqGroup {
 
+	private String IPPort;
+	
 	private String ID;
 	
 	private byte Slave;
@@ -62,6 +64,14 @@ public class AcqGroup {
 
 	public void setRawData(String rawData) {
 		RawData = rawData;
+	}
+
+	public String getIPPort() {
+		return IPPort;
+	}
+
+	public void setIPPort(String iPPort) {
+		IPPort = iPPort;
 	}
 	
 }

@@ -309,9 +309,40 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 id: 'pcpDeviceAlarmInstanceCode_Id',
                 value: '',
                 name: "pcpDeviceInformation.alarmInstanceCode"
+            }, {
+            	xtype : "combobox",
+				fieldLabel : '下位机TCP类型<font color=red>*</font>',
+				id : 'pcpDeviceTcpTypeComb_Id',
+				anchor : '95%',
+				triggerAction : 'all',
+				selectOnFocus : false,
+			    forceSelection : true,
+			    value:'',
+			    allowBlank: true,
+				editable : false,
+				store : new Ext.data.SimpleStore({
+							fields : ['value', 'text'],
+							data : [['TCP Server', 'TCP Server'],['TCP Client', 'TCP Client']]
+						}),
+				displayField : 'text',
+				valueField : 'value',
+				queryMode : 'local',
+				emptyText : '请选择下位机TCP类型',
+				blankText : '请选择下位机TCP类型',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("pcpDeviceTcpType_Id").setValue(this.value);
+					}
+				}
+            },{
+                xtype: "hidden",
+                fieldLabel: '下位机TCP类型值',
+                id: 'pcpDeviceTcpType_Id',
+                value: '',
+                name: "pcpDeviceInformation.tcpType"
             },{
                 xtype: "textfield",
-                fieldLabel: '注册包ID',
+                fieldLabel: '注册包ID/IP端口',
                 allowBlank: true,
                 id: 'pcpDeviceSignInId_Id',
                 anchor: '95%',
@@ -335,7 +366,7 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID和设备从地址与其他设备冲突】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,请确认！", function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }
@@ -374,7 +405,7 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                                     var obj = Ext.decode(response.responseText);
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
-                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID和设备从地址与其他设备冲突】</font>,请确认！", function(btn, text){
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,请确认！", function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }

@@ -12,19 +12,22 @@ public class InitializedDeviceInfo {
 	
 	public int deviceType;
 	
+	private String tcpServer;
+	
 	private String signinid;
 
     private byte slave;
 
     private String instanceName;
 
-	public InitializedDeviceInfo(int orgId,int deviceId, String deviceName, int deviceType, String signinid, byte slave,
+	public InitializedDeviceInfo(int orgId,int deviceId, String deviceName, int deviceType, String tcpServer, String signinid, byte slave,
 			String instanceName) {
 		super();
 		this.orgId = orgId;
 		this.deviceId = deviceId;
 		this.deviceName = deviceName;
 		this.deviceType = deviceType;
+		this.tcpServer = tcpServer;
 		this.signinid = signinid;
 		this.slave = slave;
 		this.instanceName = instanceName;
@@ -88,6 +91,14 @@ public class InitializedDeviceInfo {
 
 	public void setOrgId(int orgId) {
 		this.orgId = orgId;
+	}
+
+	public String getTcpServer() {
+		return tcpServer;
+	}
+
+	public void setTcpServer(String tcpServer) {
+		this.tcpServer = tcpServer;
 	}
     
 }

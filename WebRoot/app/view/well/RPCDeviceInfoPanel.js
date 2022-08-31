@@ -481,6 +481,8 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcDeviceInfoHandsontableHelper);}}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
                     } else {
                         columns += "{data:'" + result.columns[i].dataIndex + "'}";
                     }

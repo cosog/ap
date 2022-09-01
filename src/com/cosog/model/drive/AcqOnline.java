@@ -2,6 +2,8 @@ package com.cosog.model.drive;
 
 public class AcqOnline {
 
+	private String IPPort;
+	
 	private String ID;
 	
 	private byte Slave;
@@ -30,5 +32,13 @@ public class AcqOnline {
 
 	public void setStatus(boolean status) {
 		Status = status;
+	}
+
+	public String getIPPort() {
+		return IPPort;
+	}
+
+	public void setIPPort(String iPPort) {
+		IPPort = iPPort;
 	}
 }

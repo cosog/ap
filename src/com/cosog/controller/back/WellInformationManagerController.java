@@ -630,7 +630,7 @@ public class WellInformationManagerController extends BaseController {
 		String json ="{success:true}";
 		User user = (User) session.getAttribute("userLogin");
 		int deviceId = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "deviceId"));
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		String pumpingModelId = ParamUtils.getParameter(request, "pumpingModelId");
 		String stroke = ParamUtils.getParameter(request, "stroke");
 		String balanceInfo = ParamUtils.getParameter(request, "balanceInfo").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
@@ -682,7 +682,7 @@ public class WellInformationManagerController extends BaseController {
 	public String batchAddDevice() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -1248,7 +1248,7 @@ public class WellInformationManagerController extends BaseController {
 			List<String> addWellList=new ArrayList<String>();
 			addWellList.add(rpcDeviceInformation.getWellName());
 			if(rpcDeviceInformation.getStatus()==1){
-				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,"update");
+				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,1,"update");
 			}
 			rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, rpcDeviceInformation.getDeviceType(), user);
 			result = "{success:true,msg:true,resultCode:1}";
@@ -1276,8 +1276,8 @@ public class WellInformationManagerController extends BaseController {
 			}
 			this.rpcDeviceManagerService.doRPCDeviceEdit(rpcDeviceInformation);
 			List<String> addWellList=new ArrayList<String>();
-			addWellList.add(rpcDeviceInformation.getWellName());
-			EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,"update");
+			addWellList.add(rpcDeviceInformation.getId()+"");
+			EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,0,"update");
 			rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, rpcDeviceInformation.getDeviceType(), user);
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -1307,7 +1307,7 @@ public class WellInformationManagerController extends BaseController {
 			List<String> addWellList=new ArrayList<String>();
 			addWellList.add(pcpDeviceInformation.getWellName());
 			if(pcpDeviceInformation.getStatus()==1){
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(addWellList,"update");
+				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(addWellList,1,"update");
 			}
 			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, pcpDeviceInformation.getDeviceType(), user);
 			result = "{success:true,msg:true,resultCode:1}";

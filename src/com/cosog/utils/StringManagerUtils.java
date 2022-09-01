@@ -49,11 +49,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -69,6 +71,10 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
+import javax.management.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.batik.transcoder.TranscoderException;
@@ -3584,5 +3590,42 @@ public class StringManagerUtils {
 	         }
 	     }
 	     return split;
+	 }
+	 
+	 public static int getHttpPort() {
+		 try {
+			 MBeanServer server;
+			 if (MBeanServerFactory.findMBeanServer(null).size() > 0) {
+				 server = MBeanServerFactory.findMBeanServer(null).get(0);
+			 } else {
+				 log.error("no MBeanServer!");
+				 return -1;
+			 }
+			 Set names = server.queryNames(new ObjectName("Catalina:type=Connector,*"),Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
+			 Iterator iterator = names.iterator();
+			 if (iterator.hasNext()) {
+				 ObjectName name = (ObjectName) iterator.next();
+				 return Integer.parseInt(server.getAttribute(name, "port").toString());
+			 }
+		 } catch (Exception e) {
+			 log.error("getHttpPort", e);
+		 }
+		 return -1;
+	 }
+	 
+	 public String getProjectName(){
+		 URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+		 String path = url.toString();
+		 String s1=path.split("webapps")[1].split("WEB-INF")[0].replaceAll("/", "");
+		 return s1;
+	 }
+	 
+	 public static String getProjectUrl(){
+		 StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		 String networkProtocol="http";
+		 String ip="127.0.0.1";
+		 int port=StringManagerUtils.getHttpPort();
+		 String webApp=stringManagerUtils.getProjectName();
+		 return networkProtocol+"://"+ip+":"+port+"/"+webApp;
 	 }
 }

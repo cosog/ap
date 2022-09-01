@@ -23,6 +23,7 @@ public class PCPDeviceInfo implements Serializable {
 	private String displayInstanceName;
 	private String alarmInstanceCode;
 	private String alarmInstanceName;
+	private String tcpType;
 	private String signInId;
 	private String slave;
 	private String videoUrl;
@@ -550,6 +551,16 @@ public class PCPDeviceInfo implements Serializable {
 
 	public void setOnLineAcqTime(String onLineAcqTime) {
 		this.onLineAcqTime = onLineAcqTime;
+	}
+
+
+	public String getTcpType() {
+		return tcpType;
+	}
+
+
+	public void setTcpType(String tcpType) {
+		this.tcpType = tcpType;
 	}
 
 

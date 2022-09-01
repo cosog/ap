@@ -13,10 +13,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.annotation.Resource;
-
-
-
-
+import javax.servlet.http.HttpServletRequest;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
@@ -1157,5 +1154,14 @@ public class BaseService<T> {
 			}
 		}
 		return rgzsjd;
+	}
+	
+	public String getProjectUrl(HttpServletRequest request){
+		String networkProtocol=request.getScheme();
+		String ip=request.getServerName();
+		ip="127.0.0.1";
+		int port=request.getServerPort();
+		String webApp=request.getContextPath();
+		return networkProtocol+"://"+ip+":"+port+webApp;
 	}
 }

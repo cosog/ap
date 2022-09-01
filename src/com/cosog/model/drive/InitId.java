@@ -6,6 +6,8 @@ public class InitId {
 	
 	private String Method;
 	
+	private String IPPort;
+	
 	private String ID;
 
     private byte Slave;
@@ -42,6 +44,14 @@ public class InitId {
 
 	public void setInstanceName(String instanceName) {
 		InstanceName = instanceName;
+	}
+
+	public String getIPPort() {
+		return IPPort;
+	}
+
+	public void setIPPort(String iPPort) {
+		IPPort = iPPort;
 	}
     
 }

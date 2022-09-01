@@ -74,35 +74,14 @@ public class RealTimeMonitoringController extends BaseController {
 	private String orgId;
 	private int totals;
 	
-	@RequestMapping("/getDeviceRealTimeStat")
-	public String getDeviceRealTimeStat() throws Exception {
-		String json = "";
-		orgId = ParamUtils.getParameter(request, "orgId");
-		deviceType = ParamUtils.getParameter(request, "deviceType");
-		this.pager = new Page("pagerForm", request);
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		json = realTimeMonitoringService.getDeviceRealTimeStat(orgId,deviceType);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
 	@RequestMapping("/getRealTimeMonitoringFESDiagramResultStatData")
 	public String getRealTimeMonitoringFESDiagramResultStatData() throws Exception {
 		String json = "";
+		String aa=request.getServerName();
+		String bb=request.getServerPort()+"";
+		String cc=request.getServletPath();
+		String dd = request.getContextPath(); 
+		String url=realTimeMonitoringService.getProjectUrl(request);
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
@@ -193,32 +172,6 @@ public class RealTimeMonitoringController extends BaseController {
 		}
 		json = realTimeMonitoringService.getRealTimeMonitoringDeviceTypeStatData(orgId,deviceType,commStatusStatValue);
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/getDeviceRealTimeCommStatusStat")
-	public String getDeviceRealTimeCommStatusStat() throws Exception {
-		String json = "";
-		orgId = ParamUtils.getParameter(request, "orgId");
-		deviceType = ParamUtils.getParameter(request, "deviceType");
-		this.pager = new Page("pagerForm", request);
-		User user=null;
-		if (!StringManagerUtils.isNotNull(orgId)) {
-			HttpSession session=request.getSession();
-			user = (User) session.getAttribute("userLogin");
-			if (user != null) {
-				orgId = "" + user.getUserorgids();
-			}
-		}
-		json = realTimeMonitoringService.getDeviceRealTimeCommStatusStat(orgId,deviceType);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
 		pw.print(json);
@@ -428,7 +381,7 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	public boolean DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String ID,String Slave,String itemCode,String controlValue){
+	public boolean DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String tcpType,String ID,String Slave,String itemCode,String controlValue){
 		boolean result=true;
 		try {
 			int dataSaveMode=1;
@@ -472,15 +425,21 @@ public class RealTimeMonitoringController extends BaseController {
 					break;
 				}
 			}
+			String IDOrIPPort="ID";
+			if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
+				IDOrIPPort="IPPort";
+				url=Config.getInstance().configFile.getAd().getWriteAddr_ipPort();
+				readUrl=Config.getInstance().configFile.getAd().getReadAddr_ipPort();
+			}
 			if(StringManagerUtils.isNotNull(title) && addr!=-99){
 				String ctrlJson="{"
-						+ "\"ID\":\""+ID+"\","
+						+ "\""+IDOrIPPort+"\":\""+ID+"\","
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+","
 						+ "\"Value\":["+StringManagerUtils.objectToString(controlValue, dataType)+"]"
 						+ "}";
 				String readJson="{"
-						+ "\"ID\":\""+ID+"\","
+						+ "\""+IDOrIPPort+"\":\""+ID+"\","
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
@@ -526,20 +485,21 @@ public class RealTimeMonitoringController extends BaseController {
 //			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			String getOld = StringManagerUtils.stringToMD5(password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t3.protocol, t.signinid,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				String sql="select t3.protocol,t.tcpType, t.signinid,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.wellname='"+wellName+"' ";
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
 					String protocol=obj[0]+"";
-					String signinid=obj[1]+"";
-					String slave=obj[2]+"";
-					String realDeviceType=obj[3]+"";
-					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(signinid)){
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String slave=obj[3]+"";
+					String realDeviceType=obj[4]+"";
+					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
 //							jsonLogin=
-							if(DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,signinid,slave,controlType,controlValue)){
+							if(DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue)){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
 							}else{
 								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送失败。</font>'}";
@@ -588,20 +548,21 @@ public class RealTimeMonitoringController extends BaseController {
 		// 用户不存在
 		if (null != userInfo) {
 			if (StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t3.protocol, t.signinid,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				String sql="select t3.protocol,t.tcpType, t.signinid,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.id="+deviceId;
 				List list = this.service.findCallSql(sql);
 				if(list.size()>0){
 					Object[] obj=(Object[]) list.get(0);
 					String protocol=obj[0]+"";
-					String signinid=obj[1]+"";
-					String slave=obj[2]+"";
-					String realDeviceType=obj[3]+"";
-					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(signinid)){
+					String tcpType=obj[1]+"";
+					String signinid=obj[2]+"";
+					String slave=obj[3]+"";
+					String realDeviceType=obj[4]+"";
+					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
 //							jsonLogin=
-							if(DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,signinid,slave,controlType,controlValue)){
+							if(DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue)){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
 							}else{
 								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送失败。</font>'}";

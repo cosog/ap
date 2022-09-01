@@ -310,7 +310,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 name: "rpcDeviceInformation.alarmInstanceCode"
             }, {
             	xtype : "combobox",
-				fieldLabel : '下位机TCP类型<font color=red>*</font>',
+				fieldLabel : '下位机TCP类型',
 				id : 'rpcDeviceTcpTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',

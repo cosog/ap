@@ -571,15 +571,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		for(int i=0;i<ddicColumnsList.size();i++){
 			sql+=",t2."+ddicColumnsList.get(i);
 		}
-		
 		sql+= " from "+deviceTableName+" t "
 				+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
 				+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
 				+ " where  t.orgid in ("+orgId+") "
 				+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
 				+ "  order by t2.acqtime desc";
-		
-		
 		int maxvalue=pager.getLimit()+pager.getStart();
 		String finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
 		
@@ -2275,10 +2272,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
 				+ " t.resultcode,t2.resultname,t2.optimizationSuggestion,"
 				+ " t.upperloadline,t.lowerloadline,t.liquidvolumetricproduction "
-				+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
-				+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
+				+ " from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.wellid="+deviceId+" "
-				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') order by t.fesdiagramacqtime desc";
+				+ " order by t.fesdiagramacqtime desc";
+		
 		
 		sql="select b.* from (select a.*,rownum as rn from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn > "+ start +"";
 		int totals = getTotalCountRows(allsql);//获取总记录数
@@ -2386,10 +2387,12 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " t.upperloadline,t.lowerloadline,"+prodCol+", "
 				+ " t.iDegreeBalance,t.wattDegreeBalance,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve"
-				+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
-				+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
-				+ " and t.wellid="+deviceId+" "
+				+ " from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.wellid="+deviceId+" "
 				+ " order by t.fesdiagramacqtime desc";
 		
 		List<?> list=this.findCallSql(sql);

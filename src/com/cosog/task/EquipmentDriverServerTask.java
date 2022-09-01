@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,35 +15,27 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.cosog.model.AlarmShowStyle;
-import com.cosog.model.CommStatus;
-import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.InitializedDeviceInfo;
-import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
-import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
-import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import redis.clients.jedis.Jedis;
 
 @Component("EquipmentDriverServerTask")  
 public class EquipmentDriverServerTask {
@@ -73,11 +64,11 @@ public class EquipmentDriverServerTask {
 		
 		
 		
-//		String path="";
-//		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//		
-//		path=stringManagerUtils.getFilePath("test3.json","example/");
-//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
+		String path="";
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		
+		path=stringManagerUtils.getFilePath("test3.json","example/");
+		String onLineData=stringManagerUtils.readFile(path,"utf-8");
 //		
 //		path=stringManagerUtils.getFilePath("test4.json","example/");
 //		String offLineData=stringManagerUtils.readFile(path,"utf-8");
@@ -85,8 +76,8 @@ public class EquipmentDriverServerTask {
 //		path=stringManagerUtils.getFilePath("test7.json","example/");
 //		String testData=stringManagerUtils.readFile(path,"utf-8");
 //		
-//		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/id/acq/group";
-//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/id/online";
+//		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/ipport/group";
+//		String onlineUrl=Config.getInstance().configFile.getAp().getServer().getUrl()+"/api/acq/ipport/online";
 //		int i=0;
 //		while(true){
 ////			if(i%2==0){
@@ -96,9 +87,9 @@ public class EquipmentDriverServerTask {
 ////			}
 ////			i++;
 //			
-//			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
 //			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
-//			Thread.sleep(1000*60);
+//			Thread.sleep(1000*5);
 //		}
 		
 		initServerConfig();

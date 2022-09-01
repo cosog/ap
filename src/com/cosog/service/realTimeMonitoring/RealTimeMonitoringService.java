@@ -62,133 +62,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	@Autowired
 	private DataitemsInfoService dataitemsInfoService;
 	
-	public String getDeviceRealTimeStat(String orgId,String deviceType) throws IOException, SQLException{
-		StringBuffer result_json = new StringBuffer();
-		Jedis jedis = null;
-		AlarmShowStyle alarmShowStyle=null;
-		List<byte[]> deviceInfoByteList=null;
-		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("AlarmShowStyle".getBytes())){
-				MemoryDataManagerTask.initAlarmStyle();
-			}
-			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-			
-			if(StringManagerUtils.stringToInteger(deviceType) ==0){
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
-				}
-				deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
-			}else{
-				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
-				}
-				deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		String columns = "["
-				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"item\",children:[] },"
-				+ "{ \"header\":\"变量\",\"dataIndex\":\"count\",children:[] }"
-				+ "]";
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"totalCount\":4,");
-		int total=0,online=0,goOnline=0,offline=0;
-		if(jedis==null){
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="viw_rpcdevice";
-			if(StringManagerUtils.stringToInteger(deviceType)!=0){
-				tableName="tbl_pcpacqdata_latest";
-				deviceTableName="viw_pcpdevice";
-			}
-			
-			String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
-					+ " where t.orgid in("+orgId+") ";
-			sql+=" group by t2.commstatus";
-			
-			List<?> list = this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[]) list.get(i);
-				if(StringManagerUtils.stringToInteger(obj[0]+"")==1){
-					online=StringManagerUtils.stringToInteger(obj[1]+"");
-				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==2){
-					goOnline=StringManagerUtils.stringToInteger(obj[1]+"");
-				}else{
-					offline=StringManagerUtils.stringToInteger(obj[1]+"");
-				}
-			}
-		}else{
-			if(deviceInfoByteList!=null){
-				for(int i=0;i<deviceInfoByteList.size();i++){
-					int commStatus=0;
-					if(StringManagerUtils.stringToInteger(deviceType) ==0){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof RPCDeviceInfo) {
-							RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
-								commStatus=rpcDeviceInfo.getOnLineCommStatus();
-								if(commStatus==1){
-									online+=1;
-								}else if(commStatus==2){
-									goOnline+=1;
-								}else{
-									offline+=1;;
-								}
-							}
-						}
-					}else{
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof PCPDeviceInfo) {
-							PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, pcpDeviceInfo.getOrgId())){
-								commStatus=pcpDeviceInfo.getOnLineCommStatus();
-								if(commStatus==1){
-									online+=1;
-								}else if(commStatus==2){
-									goOnline+=1;
-								}else{
-									offline+=1;;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		total=online+goOnline+offline;
-		result_json.append("\"totalRoot\":[");
-		result_json.append("{\"id\":1,");
-		result_json.append("\"item\":\"全部\",");
-		result_json.append("\"itemCode\":\"all\",");
-		result_json.append("\"count\":"+total+"},");
-		
-		result_json.append("{\"id\":2,");
-		result_json.append("\"item\":\"在线\",");
-		result_json.append("\"itemCode\":\"online\",");
-		result_json.append("\"count\":"+online+"},");
-		
-		result_json.append("{\"id\":3,");
-		result_json.append("\"item\":\"上线\",");
-		result_json.append("\"itemCode\":\"goOnline\",");
-		result_json.append("\"count\":"+goOnline+"},");
-		
-		result_json.append("{\"id\":4,");
-		result_json.append("\"item\":\"离线\",");
-		result_json.append("\"itemCode\":\"offline\",");
-		result_json.append("\"count\":"+offline+"}");
-		result_json.append("]");
-		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
-		result_json.append("}");
-		if(jedis!=null){
-			jedis.close();
-		}
-		return result_json.toString().replaceAll("\"null\"", "\"\"");
-	}
-	
 	public String getRealTimeMonitoringFESDiagramResultStatData(String orgId,String deviceType,String commStatusStatValue,String deviceTypeStatValue) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		Jedis jedis = null;
@@ -504,9 +377,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						if (obj instanceof RPCDeviceInfo) {
 							RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
 							if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
-								commStatus=rpcDeviceInfo.getCommStatus();
+								commStatus=rpcDeviceInfo.getOnLineCommStatus();
 								runStatus=rpcDeviceInfo.getRunStatus();
-								if(commStatus==1){
+								if(commStatus>0){
 									if(runStatus==1){
 										run+=1;
 									}else{
@@ -522,9 +395,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						if (obj instanceof PCPDeviceInfo) {
 							PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)obj;
 							if(StringManagerUtils.stringToArrExistNum(orgId, pcpDeviceInfo.getOrgId())){
-								commStatus=pcpDeviceInfo.getCommStatus();
+								commStatus=pcpDeviceInfo.getOnLineCommStatus();
 								runStatus=pcpDeviceInfo.getRunStatus();
-								if(commStatus==1){
+								if(commStatus>0){
 									if(runStatus==1){
 										run+=1;
 									}else{
@@ -621,104 +494,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		result_json.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
-		result_json.append("}");
-		if(jedis!=null){
-			jedis.close();
-		}
-		return result_json.toString().replaceAll("\"null\"", "\"\"");
-	}
-	
-	public String getDeviceRealTimeCommStatusStat(String orgId,String deviceType) throws IOException, SQLException{
-		StringBuffer result_json = new StringBuffer();
-		Jedis jedis=null;
-		List<byte[]> deviceInfoByteList=null;
-		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(StringManagerUtils.stringToInteger(deviceType) ==0){
-				if(!jedis.exists("RPCDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
-				}
-				deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
-			}else{
-				if(!jedis.exists("PCPDeviceInfo".getBytes())){
-					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
-				}
-				deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		result_json.append("{ \"success\":true,\"orgId\":\""+orgId+"\",\"deviceType\":"+deviceType+",");
-		int all=0,online=0,goOnline=0,offline=0;
-		if(jedis==null){
-			String tableName="tbl_rpcacqdata_latest";
-			String deviceTableName="viw_rpcdevice";
-			if(StringManagerUtils.stringToInteger(deviceType)!=0){
-				tableName="tbl_pcpacqdata_latest";
-				deviceTableName="viw_pcpdevice";
-			}
-			
-			String sql="select t2.commstatus,count(1) from "+deviceTableName+" t "
-					+ " left outer join "+tableName+" t2 on  t2.wellid=t.id "
-					+ " where t.orgid in("+orgId+") ";
-			sql+=" group by t2.commstatus";
-			
-			List<?> list = this.findCallSql(sql);
-			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[]) list.get(i);
-				if(StringManagerUtils.stringToInteger(obj[0]+"")==1){
-					online=StringManagerUtils.stringToInteger(obj[1]+"");
-				}else if(StringManagerUtils.stringToInteger(obj[0]+"")==2){
-					goOnline=StringManagerUtils.stringToInteger(obj[1]+"");
-				}else{
-					offline=StringManagerUtils.stringToInteger(obj[1]+"");
-				}
-			}
-		}else{
-			if(deviceInfoByteList!=null){
-				for(int i=0;i<deviceInfoByteList.size();i++){
-					int commStatus=0;
-					if(StringManagerUtils.stringToInteger(deviceType) ==0){
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof RPCDeviceInfo) {
-							RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, rpcDeviceInfo.getOrgId())){
-								commStatus=rpcDeviceInfo.getOnLineCommStatus();
-								if(commStatus==1){
-									online+=1;
-								}else if(commStatus==2){
-									goOnline+=1;
-								}else{
-									offline+=1;;
-								}
-							}
-						}
-					}else{
-						Object obj = SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
-						if (obj instanceof PCPDeviceInfo) {
-							PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)obj;
-							if(StringManagerUtils.stringToArrExistNum(orgId, pcpDeviceInfo.getOrgId())){
-								commStatus=pcpDeviceInfo.getOnLineCommStatus();
-								if(commStatus==1){
-									online+=1;
-								}else if(commStatus==2){
-									goOnline+=1;
-								}else{
-									offline+=1;;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		all=online+goOnline+offline;
-		result_json.append("\"all\":"+all+",");
-		result_json.append("\"online\":"+online+",");
-		result_json.append("\"goOnline\":"+goOnline+",");
-		result_json.append("\"offline\":"+offline);
 		result_json.append("}");
 		if(jedis!=null){
 			jedis.close();

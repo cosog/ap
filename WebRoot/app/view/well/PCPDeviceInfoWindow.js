@@ -311,7 +311,7 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 name: "pcpDeviceInformation.alarmInstanceCode"
             }, {
             	xtype : "combobox",
-				fieldLabel : '下位机TCP类型<font color=red>*</font>',
+				fieldLabel : '下位机TCP类型',
 				id : 'pcpDeviceTcpTypeComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',

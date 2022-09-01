@@ -304,6 +304,7 @@ function websocketOnMessage(evt) {
 			if(activeId=="RPCRealTimeMonitoringInfoPanel_Id" && isExist(orgIdArr,data.orgId+"")>0){
 				//更新通信状态统计
 				getDeviceCommStatusTotal();
+				getDeviceRunStatusTotal();
 				var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
 					var store = gridPanel.getStore();
@@ -433,6 +434,7 @@ function websocketOnMessage(evt) {
 			if(activeId=="PCPRealTimeMonitoringInfoPanel_Id"  && isExist(orgIdArr,data.orgId+"")>0 ){
 				//更新通信状态统计
 				getDeviceCommStatusTotal();
+				getDeviceRunStatusTotal();
 				var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
 					var store = gridPanel.getStore();
@@ -685,7 +687,7 @@ function getDeviceCommStatusTotal(){
 	if(load){
 		Ext.Ajax.request({
 			method:'POST',
-			url:context + '/realTimeMonitoringController/getDeviceRealTimeCommStatusStat',
+			url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
 			success:function(response) {
 				var result =  Ext.JSON.decode(response.responseText);
 				var all=result.all;
@@ -701,12 +703,28 @@ function getDeviceCommStatusTotal(){
 				
 				if(isNotVal(chart)){
 					var series=chart.series[0];
-					var pieDataStr="[";
-					pieDataStr+="['在线',"+online+"],";
-					pieDataStr+="['上线',"+goOnline+"],";
-					pieDataStr+="['离线',"+offline+"]";
-					pieDataStr+="]";
-					var pieData = Ext.JSON.decode(pieDataStr);
+					var colors=[];
+					var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+					var pieData=[];
+					var datalist=result.totalRoot;
+					for(var i=0;i<datalist.length;i++){
+						if(datalist[i].itemCode!='all'){
+							if(datalist[i].count>0){
+								var singleData={};
+								singleData.name=datalist[i].item;
+								singleData.y=datalist[i].count;
+								
+								if(datalist[i].itemCode=='online'){
+									singleData.color='#'+alarmShowStyle.Comm.online.Color;
+								}else if(datalist[i].itemCode=='goOnline'){
+									singleData.color='#'+alarmShowStyle.Comm.goOnline.Color;
+								}else if(datalist[i].itemCode=='offline'){
+									singleData.color='#'+alarmShowStyle.Comm.offline.Color;
+								}
+								pieData.push(singleData);
+							}
+						}
+					}
 					series.setData(pieData);
 				}
 			},
@@ -757,31 +775,28 @@ function getDeviceRunStatusTotal(){
 				
 				if(isNotVal(chart)){
 					var series=chart.series[0];
-					
 					var colors=[];
 					var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
-					var pieDataStr="[";
+					var pieData=[];
 					var datalist=result.totalRoot;
 					for(var i=0;i<datalist.length;i++){
 						if(datalist[i].itemCode!='all'){
 							if(datalist[i].count>0){
-								pieDataStr+="['"+datalist[i].item+"',"+datalist[i].count+"],";
+								var singleData={};
+								singleData.name=datalist[i].item;
+								singleData.y=datalist[i].count;
+								
 								if(datalist[i].itemCode=='run'){
-									colors.push('#'+alarmShowStyle.Comm.online.BackgroundColor);
+									singleData.color='#'+alarmShowStyle.Run.run.Color;
 								}else if(datalist[i].itemCode=='stop'){
-									colors.push('#'+alarmShowStyle.Comm.offline.BackgroundColor);
+									singleData.color='#'+alarmShowStyle.Run.stop.Color;
 								}else if(datalist[i].itemCode=='offline'){
-									colors.push('#767272');
+									singleData.color='#'+alarmShowStyle.Comm.offline.Color;
 								}
+								pieData.push(singleData);
 							}
 						}
 					}
-					
-					if(stringEndWith(pieDataStr,",")){
-						pieDataStr = pieDataStr.substring(0, pieDataStr.length - 1);
-					}
-					pieDataStr+="]";
-					var pieData = Ext.JSON.decode(pieDataStr);
 					series.setData(pieData);
 				}
 			},

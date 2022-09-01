@@ -149,7 +149,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        		var text="";
     			        		var hand=false;
     			        		var hidden=false;
-    			        		if(commStatus==1&&isControl==1){
+    			        		if(commStatus>0&&isControl==1){
     			        			hand=false;
     			        		}else{
     			        			hand=true;

@@ -55,6 +55,7 @@ public class HistoryQueryController extends BaseController  {
 	@RequestMapping("/getHistoryQueryCommStatusStatData")
 	public String getHistoryQueryCommStatusStatData() throws Exception {
 		String json = "";
+		
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");

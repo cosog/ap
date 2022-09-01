@@ -315,8 +315,14 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo memRPCDeviceInfo=(RPCDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId())){
-							rpcDeviceInfoList.add(memRPCDeviceInfo);
+						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memRPCDeviceInfo.getSlave()) && memRPCDeviceInfo.getStatus()==1){
+							if(acqOnline.getSlave()>0){
+								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memRPCDeviceInfo.getSlave())){
+									rpcDeviceInfoList.add(memRPCDeviceInfo);
+								}
+							}else{
+								rpcDeviceInfoList.add(memRPCDeviceInfo);
+							}
 						}
 					}
 				}
@@ -326,8 +332,14 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(pcpDeviceInfoByteList.get(i));
 					if (obj instanceof PCPDeviceInfo) {
 						PCPDeviceInfo memPCPDeviceInfo=(PCPDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId())){
-							pcpDeviceInfoList.add(memPCPDeviceInfo);
+						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memPCPDeviceInfo.getSlave())  && memPCPDeviceInfo.getStatus()==1){
+							if(acqOnline.getSlave()>0){
+								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memPCPDeviceInfo.getSlave())){
+									pcpDeviceInfoList.add(memPCPDeviceInfo);
+								}
+							}else{
+								pcpDeviceInfoList.add(memPCPDeviceInfo);
+							}
 						}
 					}
 				}
@@ -689,8 +701,14 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo memRPCDeviceInfo=(RPCDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId())){
-							rpcDeviceInfoList.add(memRPCDeviceInfo);
+						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memRPCDeviceInfo.getSlave()) && memRPCDeviceInfo.getStatus()==1){
+							if(acqOnline.getSlave()>0){
+								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memRPCDeviceInfo.getSlave())){
+									rpcDeviceInfoList.add(memRPCDeviceInfo);
+								}
+							}else{
+								rpcDeviceInfoList.add(memRPCDeviceInfo);
+							}
 						}
 					}
 				}
@@ -700,8 +718,14 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(pcpDeviceInfoByteList.get(i));
 					if (obj instanceof PCPDeviceInfo) {
 						PCPDeviceInfo memPCPDeviceInfo=(PCPDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId())){
-							pcpDeviceInfoList.add(memPCPDeviceInfo);
+						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memPCPDeviceInfo.getSlave())  && memPCPDeviceInfo.getStatus()==1){
+							if(acqOnline.getSlave()>0){
+								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memPCPDeviceInfo.getSlave())){
+									pcpDeviceInfoList.add(memPCPDeviceInfo);
+								}
+							}else{
+								pcpDeviceInfoList.add(memPCPDeviceInfo);
+							}
 						}
 					}
 				}

@@ -598,21 +598,16 @@ function initRealTimeMonitoringFESDiagramResultStatPieOrColChat(get_rawData) {
 	var title="工况诊断";
 	var datalist=get_rawData.totalRoot;
 	
-	var pieDataStr="[";
+	var pieData=[];
 	for(var i=0;i<datalist.length;i++){
-		pieDataStr+="['"+datalist[i].item+"',"+datalist[i].count+"],";
+		var singleData={};
+		singleData.name=datalist[i].item;
+		singleData.y=datalist[i].count;
+		pieData.push(singleData);
 	}
-	
-	if(stringEndWith(pieDataStr,",")){
-		pieDataStr = pieDataStr.substring(0, pieDataStr.length - 1);
-	}
-	pieDataStr+="]";
-	var pieData = Ext.JSON.decode(pieDataStr);
 	
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	var colors=[];
-//	colors.push('#'+alarmShowStyle.Comm.online.BackgroundColor);
-//	colors.push('#'+alarmShowStyle.Comm.offline.BackgroundColor);
 	
 	ShowRealTimeMonitoringFESDiagramResultStatPieOrColChat(title,divid, "设备数占", pieData,colors);
 };
@@ -749,28 +744,28 @@ function initRealTimeMonitoringStatPieOrColChat(get_rawData) {
 	}
 	var title="通信状态";
 	var datalist=get_rawData.totalRoot;
-	
-	var pieDataStr="[";
+	var colors=[];
+	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
+	var pieData=[];
 	for(var i=0;i<datalist.length;i++){
 		if(datalist[i].itemCode!='all'){
-			pieDataStr+="['"+datalist[i].item+"',"+datalist[i].count+"],";
+			if(datalist[i].count>0){
+				var singleData={};
+				singleData.name=datalist[i].item;
+				singleData.y=datalist[i].count;
+				
+				if(datalist[i].itemCode=='online'){
+					singleData.color='#'+alarmShowStyle.Comm.online.Color;
+				}else if(datalist[i].itemCode=='goOnline'){
+					singleData.color='#'+alarmShowStyle.Comm.goOnline.Color;
+				}else if(datalist[i].itemCode=='offline'){
+					singleData.color='#'+alarmShowStyle.Comm.offline.Color;
+				}
+				pieData.push(singleData);
+			}
 		}
 	}
-	
-	if(stringEndWith(pieDataStr,",")){
-		pieDataStr = pieDataStr.substring(0, pieDataStr.length - 1);
-	}
-	pieDataStr+="]";
-	var pieData = Ext.JSON.decode(pieDataStr);
-	
-	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
-	var colors=[];
-	colors.push('#'+alarmShowStyle.Comm.online.Color);
-	colors.push('#'+alarmShowStyle.Comm.online.Color);
-	colors.push('#'+alarmShowStyle.Comm.offline.Color);
-	
 	ShowRealTimeMonitoringStatPieOrColChat(title,divid, "设备数占", pieData,colors);
-	
 };
 
 function ShowRealTimeMonitoringStatPieOrColChat(title,divid, name, data,colors) {
@@ -916,29 +911,26 @@ function initRealTimeMonitoringRunStatusStatPieOrColChat(get_rawData) {
 	var datalist=get_rawData.totalRoot;
 	var colors=[];
 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
-	var pieDataStr="[";
+	var pieData=[];
 	for(var i=0;i<datalist.length;i++){
 		if(datalist[i].itemCode!='all'){
 			if(datalist[i].count>0){
-				pieDataStr+="['"+datalist[i].item+"',"+datalist[i].count+"],";
+				var singleData={};
+				singleData.name=datalist[i].item;
+				singleData.y=datalist[i].count;
+				
 				if(datalist[i].itemCode=='run'){
-					colors.push('#'+alarmShowStyle.Run.run.Color);
+					singleData.color='#'+alarmShowStyle.Run.run.Color;
 				}else if(datalist[i].itemCode=='stop'){
-					colors.push('#'+alarmShowStyle.Run.stop.Color);
+					singleData.color='#'+alarmShowStyle.Run.stop.Color;
 				}else if(datalist[i].itemCode=='offline'){
-					colors.push('#'+alarmShowStyle.Comm.offline.Color);
+					singleData.color='#'+alarmShowStyle.Comm.offline.Color;
 				}
+				pieData.push(singleData);
 			}
 		}
 	}
-	
-	if(stringEndWith(pieDataStr,",")){
-		pieDataStr = pieDataStr.substring(0, pieDataStr.length - 1);
-	}
-	pieDataStr+="]";
-	var pieData = Ext.JSON.decode(pieDataStr);
 	ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divid, "设备数占", pieData,colors);
-	
 };
 
 function ShowRealTimeMonitoringRunStatusStatPieOrColChat(title,divid, name, data,colors) {

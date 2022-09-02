@@ -1036,7 +1036,8 @@ public class BaseDao extends HibernateDaoSupport {
 				}
 			}
 			if(disableWellIdList.size()>0){
-				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(disableWellIdList,0,"delete");
+//				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(disableWellIdList,0,"delete");
+//				EquipmentDriverServerTask.sendDeviceOfflineInfo(disableWellIdList, 0);
 			}
 			if(wellHandsontableChangedData.getDelidslist()!=null&&wellHandsontableChangedData.getDelidslist().size()>0){
 				String delIds="";
@@ -1096,7 +1097,6 @@ public class BaseDao extends HibernateDaoSupport {
 		List<String> updateWellList=new ArrayList<String>();
 		List<String> addWellList=new ArrayList<String>();
 		List<String> deleteWellList=new ArrayList<String>();
-		List<String> disableWellIdList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
 		
 //		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
@@ -1546,7 +1546,8 @@ public class BaseDao extends HibernateDaoSupport {
 				}
 			}
 			if(disableWellIdList.size()>0){
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(disableWellIdList,0,"delete");
+//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(disableWellIdList,0,"delete");
+//				EquipmentDriverServerTask.sendDeviceOfflineInfo(disableWellIdList, 1);
 			}
 			if(wellHandsontableChangedData.getDelidslist()!=null&&wellHandsontableChangedData.getDelidslist().size()>0){
 				String delIds="";

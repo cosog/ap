@@ -16,7 +16,7 @@ import com.cosog.utils.StringManagerUtils;
 
 @Component("calculateDataManagerTast")  
 public class CalculateDataManagerTask {
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
@@ -24,7 +24,8 @@ public class CalculateDataManagerTask {
 					+ " where resultstatus =2 "
 					+ " and t.productiondata is not null "
 					+ " and t.fesdiagramacqtime is not null ";
-			String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/getBatchCalculateTime";
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/getBatchCalculateTime";
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
@@ -39,7 +40,8 @@ public class CalculateDataManagerTask {
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
 			String sql="select count(1) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.rpm is not null";
-			String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/getPCPBatchCalculateTime";
+			StringManagerUtils stringManagerUtils=new StringManagerUtils();
+			String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/getPCPBatchCalculateTime";
 			String result="无未计算数据";
 			int count=getCount(sql);
 			if(count>0){
@@ -55,7 +57,8 @@ public class CalculateDataManagerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void RPCTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/FESDiagramDailyCalculation";
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/FESDiagramDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
@@ -65,7 +68,8 @@ public class CalculateDataManagerTask {
 	@SuppressWarnings({ "static-access", "unused" })
 //	@Scheduled(cron = "0 0 1/24 * * ?")
 	public void PCPTotalCalculationTast() throws SQLException, UnsupportedEncodingException, ParseException{
-		String url=Config.getInstance().configFile.getAp().getServer().getUrl()+"/calculateDataController/RPMDailyCalculation";
+		StringManagerUtils stringManagerUtils=new StringManagerUtils();
+		String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/RPMDailyCalculation";
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	

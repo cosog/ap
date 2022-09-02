@@ -29,17 +29,17 @@ public class ConfigFile {
         return this.ad;
     }
 	
-	public static class Server
-	{
-	    private String url;
-
-	    public void setUrl(String url){
-	        this.url = url;
-	    }
-	    public String getUrl(){
-	        return this.url;
-	    }
-	}
+//	public static class Server
+//	{
+//	    private String url;
+//
+//	    public void setUrl(String url){
+//	        this.url = url;
+//	    }
+//	    public String getUrl(){
+//	        return this.url;
+//	    }
+//	}
 
 	public static class Datasource
 	{
@@ -295,7 +295,7 @@ public class ConfigFile {
 	
 	public static class Ap
 	{
-	    private Server server;
+//	    private Server server;
 
 	    private Datasource datasource;
 
@@ -305,12 +305,12 @@ public class ConfigFile {
 
 	    private Others others;
 
-	    public void setServer(Server server){
-	        this.server = server;
-	    }
-	    public Server getServer(){
-	        return this.server;
-	    }
+//	    public void setServer(Server server){
+//	        this.server = server;
+//	    }
+//	    public Server getServer(){
+//	        return this.server;
+//	    }
 	    public void setDatasource(Datasource datasource){
 	        this.datasource = datasource;
 	    }

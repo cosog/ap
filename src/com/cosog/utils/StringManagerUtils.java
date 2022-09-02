@@ -133,12 +133,12 @@ public class StringManagerUtils {
     // 注意，“\\”必须放在最前端，因为要处理后面的特殊字符时还要用到它
     private final static String[] jsSpecialChars = { "\\", "\'", "\"" };
 
-	// 单位字符，
-	public static final char[] ascchars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '|', '\\', '[', ']', '{', '}', '\'', '\"', ';', ':', ',', '.','<', '>', '/', '?' };
+    // 单位字符，
+    public static final char[] ascchars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '|', '\\', '[', ']', '{', '}', '\'', '\"', ';', ':', ',', '.','<', '>', '/', '?' };
 
 	private final static int[] li_SecPosValue = { 1601, 1637, 1833, 2078, 2274,2302, 2433, 2594, 2787, 3106, 3212, 3472, 3635, 3722, 3730, 3858,4027, 4086, 4390, 4558, 4684, 4925, 5249, 5590 };
     private final static String[] lc_FirstLetter = { "a", "b", "c", "d", "e","f", "g", "h", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s","t", "w", "x", "y", "z" };
-	
+
     //验证手机号码的正则表达式
     /**
      * ^ 匹配输入字符串开始的位置
@@ -151,9 +151,9 @@ public class StringManagerUtils {
     private static final Pattern COLOR_PATTERN = Pattern.compile("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$");
 
     public static String protocolItemNameToCol(String str) {
-        return "c_"+getAllFirstLetter(str);
+        return "c_" + getAllFirstLetter(str);
     }
-    
+
     /**
      * 取得给定汉字串的首字母串,即声母串 
      * @param str 给定汉字串 
@@ -192,29 +192,29 @@ public class StringManagerUtils {
             int li_SecPosCode = li_SectorCode * 100 + li_PositionCode; // 汉字区位码  
             if (li_SecPosCode > 1600 && li_SecPosCode < 5590) {
                 for (int i = 0; i < 23; i++) {
-                    if (li_SecPosCode >= li_SecPosValue[i]
-                            && li_SecPosCode < li_SecPosValue[i + 1]) {
+                    if (li_SecPosCode >= li_SecPosValue[i] &&
+                        li_SecPosCode < li_SecPosValue[i + 1]) {
                         chinese = lc_FirstLetter[i];
                         break;
                     }
                 }
             } else // 非汉字字符,如图形符号或ASCII码  
             {
-//              chinese = conversionStr(chinese, "ISO8859-1", "GB2312");
-//              chinese = chinese.substring(0, 1);
-            	//过滤掉汉字图形符号或ASCII码  
-            	chinese="";
+                //              chinese = conversionStr(chinese, "ISO8859-1", "GB2312");
+                //              chinese = chinese.substring(0, 1);
+                //过滤掉汉字图形符号或ASCII码  
+                chinese = "";
             }
-        }else{
-        	int asciiValue=Integer.valueOf(chinese.charAt(0));
-        	if(!((asciiValue>=48&&asciiValue<=57)||(asciiValue>=65&&asciiValue<=90)||(asciiValue>=97&&asciiValue<=122))){//如果是特殊字符
-        		chinese="";
-        	}
+        } else {
+            int asciiValue = Integer.valueOf(chinese.charAt(0));
+            if (!((asciiValue >= 48 && asciiValue <= 57) || (asciiValue >= 65 && asciiValue <= 90) || (asciiValue >= 97 && asciiValue <= 122))) { //如果是特殊字符
+                chinese = "";
+            }
         }
 
         return chinese;
     }
-    
+
     /**
      * 字符串编码转换 
      * @param str 要转换编码的字符串 
@@ -222,7 +222,7 @@ public class StringManagerUtils {
      * @param toCharsetName 转换后的编码 
      * @return 经过编码转换后的字符串
      */
-    private static String conversionStr(String str, String charsetName,String toCharsetName) {
+    private static String conversionStr(String str, String charsetName, String toCharsetName) {
         try {
             str = new String(str.getBytes(charsetName), toCharsetName);
         } catch (UnsupportedEncodingException ex) {
@@ -230,7 +230,7 @@ public class StringManagerUtils {
         }
         return str;
     }
-    
+
     //    //邮件正则表达式
     private static final Pattern MAIL_PATTERN = Pattern.compile("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
     /**
@@ -271,17 +271,17 @@ public class StringManagerUtils {
         Matcher m = MAIL_PATTERN.matcher(str);
         return m.matches();
     }
-    
-    public static void printLog(String x){
-    	if(Config.getInstance().configFile.getAp().getOthers().getPrintLog()){
-    		System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss")+":"+x);
-    	}
+
+    public static void printLog(String x) {
+        if (Config.getInstance().configFile.getAp().getOthers().getPrintLog()) {
+            System.out.println(StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ":" + x);
+        }
     }
-    
-    public static void printLog(Object x){
-    	if(Config.getInstance().configFile.getAp().getOthers().getPrintLog()){
-    		System.out.println(x);
-    	}
+
+    public static void printLog(Object x) {
+        if (Config.getInstance().configFile.getAp().getOthers().getPrintLog()) {
+            System.out.println(x);
+        }
     }
 
     /**
@@ -496,10 +496,10 @@ public class StringManagerUtils {
         }
         return flag;
     }
-    
-    public static boolean existOrNot(Map <String,String > map, String str, boolean caseSensitive) {
+
+    public static boolean existOrNot(Map < String, String > map, String str, boolean caseSensitive) {
         boolean flag = false;
-        for(String key : map.keySet()) {
+        for (String key: map.keySet()) {
             boolean match = false;
             if (caseSensitive) {
                 match = key.equals(str);
@@ -513,15 +513,15 @@ public class StringManagerUtils {
         }
         return flag;
     }
-    
-    public static boolean existOrNot(Map <String,String > map, String keyStr,String valueStr, boolean caseSensitive) {
+
+    public static boolean existOrNot(Map < String, String > map, String keyStr, String valueStr, boolean caseSensitive) {
         boolean flag = false;
-        for(String key : map.keySet()) {
+        for (String key: map.keySet()) {
             boolean match = false;
             if (caseSensitive) {
-                match = key.equals(keyStr)&&map.get(key).equals(valueStr);
+                match = key.equals(keyStr) && map.get(key).equals(valueStr);
             } else {
-                match = key.equalsIgnoreCase(keyStr)&&map.get(key).equalsIgnoreCase(valueStr);
+                match = key.equalsIgnoreCase(keyStr) && map.get(key).equalsIgnoreCase(valueStr);
             }
             if (match) {
                 flag = true;
@@ -530,10 +530,10 @@ public class StringManagerUtils {
         }
         return flag;
     }
-    
-    public static boolean existOrNotByValue(Map <String,String > map, String str, boolean caseSensitive) {
+
+    public static boolean existOrNotByValue(Map < String, String > map, String str, boolean caseSensitive) {
         boolean flag = false;
-        for(String key : map.keySet()) {
+        for (String key: map.keySet()) {
             boolean match = false;
             if (caseSensitive) {
                 match = map.get(key).equals(str);
@@ -547,10 +547,10 @@ public class StringManagerUtils {
         }
         return flag;
     }
-    
-    public static boolean existOrNot(Map <String,Object > map, String str) {
+
+    public static boolean existOrNot(Map < String, Object > map, String str) {
         boolean flag = false;
-        for(String key : map.keySet()) {
+        for (String key: map.keySet()) {
             boolean match = false;
             match = key.equals(str);
             if (match) {
@@ -1235,117 +1235,117 @@ public class StringManagerUtils {
         return flag;
 
     }
-    
+
     public static boolean databaseColumnFiter(String value) {
         boolean flag = false;
         String arrays[] = {
-        		"ID",
-        		"WELLID",
-        		"ACQTIME",
-        		"COMMSTATUS",
-        		"COMMTIME",
-        		"COMMTIMEEFFICIENCY",
-        		"COMMRANGE",
-        		"RUNSTATUS",
-        		"RUNTIMEEFFICIENCY",
-        		"RUNTIME",
-        		"RUNRANGE",
-        		"PRODUCTIONDATA",
-        		"PUMPINGMODELID",
-        		"BALANCEINFO",
-        		"FESDIAGRAMACQTIME",
-        		"STROKE",
-        		"SPM",
-        		"FMAX",
-        		"FMIN",
-        		"POSITION_CURVE",
-        		"ANGLE_CURVE",
-        		"LOAD_CURVE",
-        		"POWER_CURVE",
-        		"CURRENT_CURVE",
-        		"RESULTCODE",
-        		"FULLNESSCOEFFICIENT",
-        		"UPPERLOADLINE",
-        		"UPPERLOADLINEOFEXACT",
-        		"LOWERLOADLINE",
-        		"PUMPFSDIAGRAM",
-        		"SUBMERGENCE",
-        		"THEORETICALPRODUCTION",
-        		"LIQUIDVOLUMETRICPRODUCTION",
-        		"OILVOLUMETRICPRODUCTION",
-        		"WATERVOLUMETRICPRODUCTION",
-        		"AVAILABLEPLUNGERSTROKEPROD_V",
-        		"PUMPCLEARANCELEAKPROD_V",
-        		"TVLEAKVOLUMETRICPRODUCTION",
-        		"SVLEAKVOLUMETRICPRODUCTION",
-        		"GASINFLUENCEPROD_V",
-        		"LIQUIDWEIGHTPRODUCTION",
-        		"OILWEIGHTPRODUCTION",
-        		"WATERWEIGHTPRODUCTION",
-        		"AVAILABLEPLUNGERSTROKEPROD_W",
-        		"PUMPCLEARANCELEAKPROD_W",
-        		"TVLEAKWEIGHTPRODUCTION",
-        		"SVLEAKWEIGHTPRODUCTION",
-        		"GASINFLUENCEPROD_W",
-        		"AVERAGEWATT",
-        		"POLISHRODPOWER",
-        		"WATERPOWER",
-        		"SURFACESYSTEMEFFICIENCY",
-        		"WELLDOWNSYSTEMEFFICIENCY",
-        		"SYSTEMEFFICIENCY",
-        		"ENERGYPER100MLIFT",
-        		"AREA",
-        		"RODFLEXLENGTH",
-        		"TUBINGFLEXLENGTH",
-        		"INERTIALENGTH",
-        		"PUMPEFF1",
-        		"PUMPEFF2",
-        		"PUMPEFF3",
-        		"PUMPEFF4",
-        		"PUMPEFF",
-        		"PUMPINTAKEP",
-        		"PUMPINTAKET",
-        		"PUMPINTAKEGOL",
-        		"PUMPINTAKEVISL",
-        		"PUMPINTAKEBO",
-        		"PUMPOUTLETP",
-        		"PUMPOUTLETT",
-        		"PUMPOUTLETGOL",
-        		"PUMPOUTLETVISL",
-        		"PUMPOUTLETBO",
-        		"RODSTRING",
-        		"PLUNGERSTROKE",
-        		"AVAILABLEPLUNGERSTROKE",
-        		"LEVELCORRECTVALUE",
-        		"INVERPRODUCINGFLUIDLEVEL",
-        		"NOLIQUIDFULLNESSCOEFFICIENT",
-        		"NOLIQUIDAVAILABLEPLUNGERSTROKE",
-        		"SMAXINDEX",
-        		"SMININDEX",
-        		"UPSTROKEIMAX",
-        		"DOWNSTROKEIMAX",
-        		"UPSTROKEWATTMAX",
-        		"DOWNSTROKEWATTMAX",
-        		"IDEGREEBALANCE",
-        		"WATTDEGREEBALANCE",
-        		"DELTARADIUS",
-        		"CRANKANGLE",
-        		"POLISHRODV",
-        		"POLISHRODA",
-        		"PR",
-        		"TF",
-        		"LOADTORQUE",
-        		"CRANKTORQUE",
-        		"CURRENTBALANCETORQUE",
-        		"CURRENTNETTORQUE",
-        		"EXPECTEDBALANCETORQUE",
-        		"EXPECTEDNETTORQUE",
-        		"WELLBORESLICE",
-        		"RESULTSTATUS",
-        		"SAVETIME",
-        		"RPM",
-        		"TORQUE",
-        		"REMARK"
+            "ID",
+            "WELLID",
+            "ACQTIME",
+            "COMMSTATUS",
+            "COMMTIME",
+            "COMMTIMEEFFICIENCY",
+            "COMMRANGE",
+            "RUNSTATUS",
+            "RUNTIMEEFFICIENCY",
+            "RUNTIME",
+            "RUNRANGE",
+            "PRODUCTIONDATA",
+            "PUMPINGMODELID",
+            "BALANCEINFO",
+            "FESDIAGRAMACQTIME",
+            "STROKE",
+            "SPM",
+            "FMAX",
+            "FMIN",
+            "POSITION_CURVE",
+            "ANGLE_CURVE",
+            "LOAD_CURVE",
+            "POWER_CURVE",
+            "CURRENT_CURVE",
+            "RESULTCODE",
+            "FULLNESSCOEFFICIENT",
+            "UPPERLOADLINE",
+            "UPPERLOADLINEOFEXACT",
+            "LOWERLOADLINE",
+            "PUMPFSDIAGRAM",
+            "SUBMERGENCE",
+            "THEORETICALPRODUCTION",
+            "LIQUIDVOLUMETRICPRODUCTION",
+            "OILVOLUMETRICPRODUCTION",
+            "WATERVOLUMETRICPRODUCTION",
+            "AVAILABLEPLUNGERSTROKEPROD_V",
+            "PUMPCLEARANCELEAKPROD_V",
+            "TVLEAKVOLUMETRICPRODUCTION",
+            "SVLEAKVOLUMETRICPRODUCTION",
+            "GASINFLUENCEPROD_V",
+            "LIQUIDWEIGHTPRODUCTION",
+            "OILWEIGHTPRODUCTION",
+            "WATERWEIGHTPRODUCTION",
+            "AVAILABLEPLUNGERSTROKEPROD_W",
+            "PUMPCLEARANCELEAKPROD_W",
+            "TVLEAKWEIGHTPRODUCTION",
+            "SVLEAKWEIGHTPRODUCTION",
+            "GASINFLUENCEPROD_W",
+            "AVERAGEWATT",
+            "POLISHRODPOWER",
+            "WATERPOWER",
+            "SURFACESYSTEMEFFICIENCY",
+            "WELLDOWNSYSTEMEFFICIENCY",
+            "SYSTEMEFFICIENCY",
+            "ENERGYPER100MLIFT",
+            "AREA",
+            "RODFLEXLENGTH",
+            "TUBINGFLEXLENGTH",
+            "INERTIALENGTH",
+            "PUMPEFF1",
+            "PUMPEFF2",
+            "PUMPEFF3",
+            "PUMPEFF4",
+            "PUMPEFF",
+            "PUMPINTAKEP",
+            "PUMPINTAKET",
+            "PUMPINTAKEGOL",
+            "PUMPINTAKEVISL",
+            "PUMPINTAKEBO",
+            "PUMPOUTLETP",
+            "PUMPOUTLETT",
+            "PUMPOUTLETGOL",
+            "PUMPOUTLETVISL",
+            "PUMPOUTLETBO",
+            "RODSTRING",
+            "PLUNGERSTROKE",
+            "AVAILABLEPLUNGERSTROKE",
+            "LEVELCORRECTVALUE",
+            "INVERPRODUCINGFLUIDLEVEL",
+            "NOLIQUIDFULLNESSCOEFFICIENT",
+            "NOLIQUIDAVAILABLEPLUNGERSTROKE",
+            "SMAXINDEX",
+            "SMININDEX",
+            "UPSTROKEIMAX",
+            "DOWNSTROKEIMAX",
+            "UPSTROKEWATTMAX",
+            "DOWNSTROKEWATTMAX",
+            "IDEGREEBALANCE",
+            "WATTDEGREEBALANCE",
+            "DELTARADIUS",
+            "CRANKANGLE",
+            "POLISHRODV",
+            "POLISHRODA",
+            "PR",
+            "TF",
+            "LOADTORQUE",
+            "CRANKTORQUE",
+            "CURRENTBALANCETORQUE",
+            "CURRENTNETTORQUE",
+            "EXPECTEDBALANCETORQUE",
+            "EXPECTEDNETTORQUE",
+            "WELLBORESLICE",
+            "RESULTSTATUS",
+            "SAVETIME",
+            "RPM",
+            "TORQUE",
+            "REMARK"
         };
         for (String str: arrays) {
             if (str.equalsIgnoreCase(value)) {
@@ -1588,10 +1588,10 @@ public class StringManagerUtils {
 
     //Clob转字符串
     public static String CLOBtoString2(Clob clob) throws SQLException, IOException {
-    	if (clob == null) {
+        if (clob == null) {
             return "";
         }
-    	BufferedReader reader = null;
+        BufferedReader reader = null;
         InputStreamReader is = new InputStreamReader(clob.getAsciiStream());
         reader = new BufferedReader(is);
         String result = "";
@@ -1664,7 +1664,7 @@ public class StringManagerUtils {
      *            编码格式
      * @return 服务器响应结果
      */
-    public static String sendPostMethod(String url, String param, String encoding,int connectTimeout,int readTimeout) {
+    public static String sendPostMethod(String url, String param, String encoding, int connectTimeout, int readTimeout) {
         PrintWriter out = null;
         BufferedReader in = null;
         HttpURLConnection conn = null;
@@ -1683,11 +1683,11 @@ public class StringManagerUtils {
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             //超时设置
-            if(connectTimeout>0){
-            	conn.setConnectTimeout(1000*connectTimeout);//连接主机超时设置
+            if (connectTimeout > 0) {
+                conn.setConnectTimeout(1000 * connectTimeout); //连接主机超时设置
             }
-            if(readTimeout>0){
-            	conn.setReadTimeout(1000*readTimeout);//从主机读取数据超时设置
+            if (readTimeout > 0) {
+                conn.setReadTimeout(1000 * readTimeout); //从主机读取数据超时设置
             }
 
             // 发送POST请求必须设置如下两行
@@ -1697,7 +1697,7 @@ public class StringManagerUtils {
             out = new PrintWriter(os);
             out.print(param);
             out.flush();
-            
+
             // 定义BufferedReader输入流来读取URL的响应
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 is = new InputStreamReader(conn.getInputStream(), encoding); in = new BufferedReader(is);
@@ -1719,7 +1719,7 @@ public class StringManagerUtils {
             }
         } catch (Exception e) {
             StringManagerUtils.printLog("发送 POST 请求出现异常！" + e);
-            StringManagerUtils.printLog("url:"+url+",param:"+param);
+            StringManagerUtils.printLog("url:" + url + ",param:" + param);
             e.printStackTrace();
         } finally {
             try {
@@ -1822,7 +1822,7 @@ public class StringManagerUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return fileContent;//.replaceAll(" ", "");
+        return fileContent; //.replaceAll(" ", "");
     }
 
     /*
@@ -2068,10 +2068,10 @@ public class StringManagerUtils {
      * @return 格式化后的JSON字符串
      */
     public static String toPrettyFormat(String json) {
-        if(!StringManagerUtils.isNotNull(json)){
-        	return json;
+        if (!StringManagerUtils.isNotNull(json)) {
+            return json;
         }
-    	if (json.indexOf("'") != -1) {
+        if (json.indexOf("'") != -1) {
             //将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的  
             json = json.replaceAll("'", "\\'");
         }
@@ -2239,45 +2239,6 @@ public class StringManagerUtils {
             // TODO: handle exception
         }
         return bool;
-    }
-
-    /**
-     * 获取本机IP
-     * @return
-     */
-    public static String getLocalIPAddress() throws IOException {
-        InetAddress ia = InetAddress.getLocalHost();
-        return ia.getHostAddress();
-    }
-
-    /** 
-     * 获取访问用户的客户端IP（适用于公网与局域网）. 
-     */
-    public static final String getIpAddr(final HttpServletRequest request) throws Exception {
-        if (request == null) {
-            throw (new Exception("getIpAddr method HttpServletRequest Object is null"));
-        }
-        String ipString = request.getHeader("x-forwarded-for");
-        if ((!isNotNull(ipString)) || "unknown".equalsIgnoreCase(ipString)) {
-            ipString = request.getHeader("Proxy-Client-IP");
-        }
-        if ((!isNotNull(ipString)) || "unknown".equalsIgnoreCase(ipString)) {
-            ipString = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if ((!isNotNull(ipString)) || "unknown".equalsIgnoreCase(ipString)) {
-            ipString = request.getRemoteAddr();
-        }
-
-        // 多个路由时，取第一个非unknown的ip  
-        final String[] arr = ipString.split(",");
-        for (final String str: arr) {
-            if (!"unknown".equalsIgnoreCase(str)) {
-                ipString = str;
-                break;
-            }
-        }
-
-        return ipString;
     }
 
     /**
@@ -3098,10 +3059,10 @@ public class StringManagerUtils {
     }
 
     public static String join(Object objarr[], String sign) {
-    	StringBuffer result = new StringBuffer();
-    	int length=objarr != null?objarr.length:0;
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.length : 0;
         for (int i = 0; objarr != null && i < length; i++) {
-        	result.append(objarr[i] + "");
+            result.append(objarr[i] + "");
             if (i < length - 1) {
                 result.append(sign);
             }
@@ -3110,22 +3071,22 @@ public class StringManagerUtils {
     }
 
     public static String join(List < Object > objarr, String sign) {
-    	StringBuffer result = new StringBuffer();
-    	int length=objarr != null?objarr.size():0;
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.size() : 0;
         for (int i = 0; objarr != null && i < length; i++) {
             result.append(objarr.get(i) + "");
             if (i < length - 1) {
-            	result.append(sign);
+                result.append(sign);
             }
         }
         return result.toString();
     }
 
     public static String joinStringArr(String objarr[], String sign) {
-    	StringBuffer result = new StringBuffer();
-    	int length=objarr != null?objarr.length:0;
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.length : 0;
         for (int i = 0; objarr != null && i < length; i++) {
-            result.append( "\"" + objarr[i] + "\"");
+            result.append("\"" + objarr[i] + "\"");
             if (i < length - 1) {
                 result.append(sign);
             }
@@ -3134,24 +3095,24 @@ public class StringManagerUtils {
     }
 
     public static String joinStringArr(List < String > objarr, String sign) {
-    	StringBuffer result = new StringBuffer();
-    	int length=objarr != null?objarr.size():0;
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.size() : 0;
         for (int i = 0; objarr != null && i < length; i++) {
             result.append("\"" + objarr.get(i) + "\"");
             if (i < length - 1) {
-            	result.append(sign);
+                result.append(sign);
             }
         }
         return result.toString();
     }
 
     public static String joinStringArr2(List < String > objarr, String sign) {
-    	StringBuffer result = new StringBuffer();
-    	int length=objarr != null?objarr.size():0;
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.size() : 0;
         for (int i = 0; objarr != null && i < length; i++) {
             result.append("'" + objarr.get(i) + "'");
             if (i < length - 1) {
-            	result.append(sign);
+                result.append(sign);
             }
         }
         return result.toString();
@@ -3315,9 +3276,9 @@ public class StringManagerUtils {
     public static String objectListToString(List < Object > list, ModbusProtocolConfig.Items item) {
         StringBuffer jsonBuffer = new StringBuffer();
         for (int i = 0; i < list.size(); i++) {
-            if(list.get(i)==null){
-            	jsonBuffer.append(",");
-            }else if ("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")) {
+            if (list.get(i) == null) {
+                jsonBuffer.append(",");
+            } else if ("int".equalsIgnoreCase(item.getIFDataType()) || "uint".equalsIgnoreCase(item.getIFDataType()) || item.getIFDataType().contains("int")) {
                 jsonBuffer.append(StringManagerUtils.stringToInteger(list.get(i) + "") + ",");
             } else if ("float32".equalsIgnoreCase(item.getIFDataType())) {
                 jsonBuffer.append(StringManagerUtils.stringToFloat(list.get(i) + "") + ",");
@@ -3341,7 +3302,7 @@ public class StringManagerUtils {
         if (jsonBuffer.toString().endsWith(",")) {
             jsonBuffer.deleteCharAt(jsonBuffer.length() - 1);
         }
-        
+
         return jsonBuffer.toString();
     }
 
@@ -3376,10 +3337,10 @@ public class StringManagerUtils {
         }
         return result;
     }
-    
-    public static long getTimeStamp(String timeStr,String format){
-    	long result = 0;
-    	try {
+
+    public static long getTimeStamp(String timeStr, String format) {
+        long result = 0;
+        try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
             if (StringManagerUtils.isNotNull(timeStr)) {
                 Date date = simpleDateFormat.parse(timeStr);
@@ -3390,14 +3351,14 @@ public class StringManagerUtils {
             e.printStackTrace();
             result = 0;
         }
-    	return result;
+        return result;
     }
-    
-    public static String timeStamp2Date(long seconds,String format) {
-    	if(format == null || format.isEmpty()) 
-    		format = "yyyy-MM-dd HH:mm:ss";
-    	SimpleDateFormat sdf = new SimpleDateFormat(format);
-    	return sdf.format(new Date(seconds));
+
+    public static String timeStamp2Date(long seconds, String format) {
+        if (format == null || format.isEmpty())
+            format = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(seconds));
     }
 
     public static boolean sendEMail(String topic, String content, List < String > receivingAccount) {
@@ -3408,14 +3369,14 @@ public class StringManagerUtils {
         String myEMailAccount = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getAccount();
         String myEMailPassword = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getPassword(); //YAOLBHNROJWHYCVX  NLEILMQVNBXGRNBT
         String myEMailSMTPHost = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getSmtpHost();
-        String smtpPort = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getSmtpPort()+"";
+        String smtpPort = Config.getInstance().configFile.getAp().getEmail().getSnedAccount().getSmtpPort() + "";
         try {
-            Properties properties = System.getProperties();// new Properties();
+            Properties properties = System.getProperties(); // new Properties();
             //设置邮件服务器
             properties.setProperty("mail.smtp.host", myEMailSMTPHost);
             properties.setProperty("mail.transport.protocol", "smtp");
             properties.setProperty("mail.smtp.auth", "true");
-            
+
             properties.put("mail.smtp.ssl.enable", "true");
             //SSL加密
             properties.put("mail.smtp.socketFactory.port", smtpPort);
@@ -3503,10 +3464,10 @@ public class StringManagerUtils {
         }
         return rt.toString();
     }
-    
-    public static boolean existAcqItem(List<AcqInstanceOwnItem.AcqItem> acqInstanceOwnItemList, String key, boolean caseSensitive ){
-		boolean flag = false;
-		for (int i = 0; i < acqInstanceOwnItemList.size(); i++) {
+
+    public static boolean existAcqItem(List < AcqInstanceOwnItem.AcqItem > acqInstanceOwnItemList, String key, boolean caseSensitive) {
+        boolean flag = false;
+        for (int i = 0; i < acqInstanceOwnItemList.size(); i++) {
             boolean match = false;
             if (caseSensitive) {
                 match = key.equals(acqInstanceOwnItemList.get(i).getItemName());
@@ -3518,12 +3479,12 @@ public class StringManagerUtils {
                 break;
             }
         }
-		return flag;
-	}
-	
-	public static boolean existDisplayItem(List<DisplayInstanceOwnItem.DisplayItem> displayItemList, String key, boolean caseSensitive ){
-		boolean flag = false;
-		for (int i = 0; i < displayItemList.size(); i++) {
+        return flag;
+    }
+
+    public static boolean existDisplayItem(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive) {
+        boolean flag = false;
+        for (int i = 0; i < displayItemList.size(); i++) {
             boolean match = false;
             if (caseSensitive) {
                 match = key.equals(displayItemList.get(i).getItemName());
@@ -3535,14 +3496,14 @@ public class StringManagerUtils {
                 break;
             }
         }
-		return flag;
-	}
-	
-	public static boolean existDisplayItemCode(List<DisplayInstanceOwnItem.DisplayItem> displayItemList, String key, boolean caseSensitive,int type ){
-		boolean flag = false;
-		for (int i = 0; i < displayItemList.size(); i++) {
-            if((type==0&&displayItemList.get(i).getType()!=2)||(type==1&&displayItemList.get(i).getType()==2)){
-            	boolean match = false;
+        return flag;
+    }
+
+    public static boolean existDisplayItemCode(List < DisplayInstanceOwnItem.DisplayItem > displayItemList, String key, boolean caseSensitive, int type) {
+        boolean flag = false;
+        for (int i = 0; i < displayItemList.size(); i++) {
+            if ((type == 0 && displayItemList.get(i).getType() != 2) || (type == 1 && displayItemList.get(i).getType() == 2)) {
+                boolean match = false;
                 if (caseSensitive) {
                     match = key.equals(displayItemList.get(i).getItemCode());
                 } else {
@@ -3554,78 +3515,118 @@ public class StringManagerUtils {
                 }
             }
         }
-		return flag;
-	}
-	
-	public static boolean stringToArrExistNum(String str,int num){
-		boolean flag = false;
-		if(StringManagerUtils.isNotNull(str)){
-			String[] strArr=str.split(",");
-			for(String s:strArr){
-				if(StringManagerUtils.stringToInteger(s)==num){
-					flag = true;
-	                break;
-				}
-			}
-		}
-		return flag;
-	}
-	
-	 public static String[] stringToStringArray(String src, int length) {
-	     //检查参数是否合法
-	     if (null == src || src.equals("")) {
-	         return null;
-	     }
+        return flag;
+    }
 
-	     if (length <= 0) {
-	         return null;
-	     }
-	     int n = (src.length() + length - 1) / length; //获取整个字符串可以被切割成字符子串的个数
-	     String[] split = new String[n];
-	     for (int i = 0; i < n; i++) {
-	         if (i < (n - 1)) {
-	             split[i] = src.substring(i * length, (i + 1) * length);
-	         } else {
-	             split[i] = src.substring(i * length);
-	         }
-	     }
-	     return split;
-	 }
-	 
-	 public static int getHttpPort() {
-		 try {
-			 MBeanServer server;
-			 if (MBeanServerFactory.findMBeanServer(null).size() > 0) {
-				 server = MBeanServerFactory.findMBeanServer(null).get(0);
-			 } else {
-				 log.error("no MBeanServer!");
-				 return -1;
-			 }
-			 Set names = server.queryNames(new ObjectName("Catalina:type=Connector,*"),Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
-			 Iterator iterator = names.iterator();
-			 if (iterator.hasNext()) {
-				 ObjectName name = (ObjectName) iterator.next();
-				 return Integer.parseInt(server.getAttribute(name, "port").toString());
-			 }
-		 } catch (Exception e) {
-			 log.error("getHttpPort", e);
-		 }
-		 return -1;
-	 }
-	 
-	 public String getProjectName(){
-		 URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
-		 String path = url.toString();
-		 String s1=path.split("webapps")[1].split("WEB-INF")[0].replaceAll("/", "");
-		 return s1;
-	 }
-	 
-	 public static String getProjectUrl(){
-		 StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		 String networkProtocol="http";
-		 String ip="127.0.0.1";
-		 int port=StringManagerUtils.getHttpPort();
-		 String webApp=stringManagerUtils.getProjectName();
-		 return networkProtocol+"://"+ip+":"+port+"/"+webApp;
-	 }
+    public static boolean stringToArrExistNum(String str, int num) {
+        boolean flag = false;
+        if (StringManagerUtils.isNotNull(str)) {
+            String[] strArr = str.split(",");
+            for (String s: strArr) {
+                if (StringManagerUtils.stringToInteger(s) == num) {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+
+    public static String[] stringToStringArray(String src, int length) {
+        //检查参数是否合法
+        if (null == src || src.equals("")) {
+            return null;
+        }
+
+        if (length <= 0) {
+            return null;
+        }
+        int n = (src.length() + length - 1) / length; //获取整个字符串可以被切割成字符子串的个数
+        String[] split = new String[n];
+        for (int i = 0; i < n; i++) {
+            if (i < (n - 1)) {
+                split[i] = src.substring(i * length, (i + 1) * length);
+            } else {
+                split[i] = src.substring(i * length);
+            }
+        }
+        return split;
+    }
+
+
+    /**
+     * 获取本机IP
+     * @return
+     */
+    public static String getLocalIPAddress() throws IOException {
+        InetAddress ia = InetAddress.getLocalHost();
+        return ia.getHostAddress();
+    }
+
+    /** 
+     * 获取访问用户的客户端IP（适用于公网与局域网）. 
+     */
+    public static final String getIpAddr(final HttpServletRequest request) throws Exception {
+        if (request == null) {
+            throw (new Exception("getIpAddr method HttpServletRequest Object is null"));
+        }
+        String ipString = request.getHeader("x-forwarded-for");
+        if ((!isNotNull(ipString)) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getHeader("Proxy-Client-IP");
+        }
+        if ((!isNotNull(ipString)) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if ((!isNotNull(ipString)) || "unknown".equalsIgnoreCase(ipString)) {
+            ipString = request.getRemoteAddr();
+        }
+
+        // 多个路由时，取第一个非unknown的ip  
+        final String[] arr = ipString.split(",");
+        for (final String str: arr) {
+            if (!"unknown".equalsIgnoreCase(str)) {
+                ipString = str;
+                break;
+            }
+        }
+
+        return ipString;
+    }
+
+    public static int getHttpPort() {
+        try {
+            MBeanServer server;
+            if (MBeanServerFactory.findMBeanServer(null).size() > 0) {
+                server = MBeanServerFactory.findMBeanServer(null).get(0);
+            } else {
+                log.error("no MBeanServer!");
+                return -1;
+            }
+            Set names = server.queryNames(new ObjectName("Catalina:type=Connector,*"), Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
+            Iterator iterator = names.iterator();
+            if (iterator.hasNext()) {
+                ObjectName name = (ObjectName) iterator.next();
+                return Integer.parseInt(server.getAttribute(name, "port").toString());
+            }
+        } catch (Exception e) {
+            log.error("getHttpPort", e);
+        }
+        return -1;
+    }
+
+    public String getProjectName() {
+        URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
+        String path = url.toString();
+        String s1 = path.split("webapps")[1].split("WEB-INF")[0].replaceAll("/", "");
+        return s1;
+    }
+
+    public static String getProjectUrl() {
+        StringManagerUtils stringManagerUtils = new StringManagerUtils();
+        String networkProtocol = "http";
+        String ip = "127.0.0.1";
+        int port = StringManagerUtils.getHttpPort();
+        String webApp = stringManagerUtils.getProjectName();
+        return networkProtocol + "://" + ip + ":" + port + "/" + webApp;
+    }
 }

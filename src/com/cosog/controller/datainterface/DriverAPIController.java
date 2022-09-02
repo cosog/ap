@@ -1522,12 +1522,12 @@ public class DriverAPIController extends BaseController{
 								}else if("stroke".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									rpcCalculateRequestData.getFESDiagram().setStroke(StringManagerUtils.stringToFloat(rawValue));
 								}else if("spm".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
-//									if(rpcDeviceInfo.getSignInId().startsWith("18800") && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.stringToFloat(rawValue)==0){
-//										rpcCalculateRequestData.getFESDiagram().setSPM(3.5f);
-//									}else{
-//										rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
-//									}
-									rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
+									if(rpcDeviceInfo.getSignInId().startsWith("18800") && StringManagerUtils.isNotNull(rawValue) && StringManagerUtils.stringToFloat(rawValue)==0){
+										rpcCalculateRequestData.getFESDiagram().setSPM(3.5f);
+									}else{
+										rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
+									}
+//									rpcCalculateRequestData.getFESDiagram().setSPM(StringManagerUtils.stringToFloat(rawValue));
 								}else if("position_curve".equalsIgnoreCase(dataMappingColumn.getCalColumn())){
 									if(StringManagerUtils.isNotNull(rawValue)){
 										String[] dataArr=rawValue.split(",");
@@ -2119,8 +2119,8 @@ public class DriverAPIController extends BaseController{
 					wellBoreChartsData.append("\"wellName\":\""+rpcDeviceInfo.getWellName()+"\",");
 					wellBoreChartsData.append("\"acqTime\":\""+rpcCalculateRequestData.getFESDiagram().getAcqTime()+"\",");
 					wellBoreChartsData.append("\"pointCount\":\""+rpcCalculateRequestData.getFESDiagram().getS().size()+"\",");
-					wellBoreChartsData.append("\"upperLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
-					wellBoreChartsData.append("\"lowerLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232?rpcCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
+					wellBoreChartsData.append("\"upperLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getUpperLoadLine():"")+"\",");
+					wellBoreChartsData.append("\"lowerLoadLine\":\""+(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1?rpcCalculateResponseData.getFESDiagram().getLowerLoadLine():"")+"\",");
 					
 					String fmax="",fmin="";
 					if(rpcCalculateResponseData!=null&&(rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1||rpcCalculateResponseData.getCalculationStatus().getResultStatus()==-99)){

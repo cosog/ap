@@ -49,6 +49,7 @@ import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
@@ -643,7 +644,7 @@ public class WellInformationManagerController extends BaseController {
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			deviceTableName="tbl_rpcdevice";
-			json=this.wellInformationManagerService.saveRPCDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			deviceTableName="tbl_pcpdevice";
 			json=this.wellInformationManagerService.savePCPDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
@@ -691,7 +692,7 @@ public class WellInformationManagerController extends BaseController {
 		java.lang.reflect.Type type = new TypeToken<WellHandsontableChangedData>() {}.getType();
 		WellHandsontableChangedData wellHandsontableChangedData=gson.fromJson(data, type);
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json=this.wellInformationManagerService.batchAddRPCDevice(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
+			json=this.wellInformationManagerService.batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			json=this.wellInformationManagerService.batchAddPCPDevice(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
@@ -1244,42 +1245,30 @@ public class WellInformationManagerController extends BaseController {
 			this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
 			List<String> wells=new ArrayList<String>();
 			wells.add(rpcDeviceInformation.getWellName());
-			MemoryDataManagerTask.loadRPCDeviceInfo(wells,1,"update");
-			List<String> addWellList=new ArrayList<String>();
-			addWellList.add(rpcDeviceInformation.getWellName());
-			if(rpcDeviceInformation.getStatus()==1){
-				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,1,"update");
-			}
-			rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, rpcDeviceInformation.getDeviceType(), user);
+			
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(0);
+			dataSynchronizationThread.setDeviceType(0);
+			dataSynchronizationThread.setInitWellList(wells);
+			dataSynchronizationThread.setUpdateList(null);
+			dataSynchronizationThread.setAddList(wells);
+			dataSynchronizationThread.setDeleteList(null);
+			dataSynchronizationThread.setCondition(1);
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.setRpcDeviceInformation(rpcDeviceInformation);
+			dataSynchronizationThread.setUser(user);
+			dataSynchronizationThread.setRpcDeviceManagerService(rpcDeviceManagerService);
+			dataSynchronizationThread.start();
+			
+//			MemoryDataManagerTask.loadRPCDeviceInfo(wells,1,"update");
+//			List<String> addWellList=new ArrayList<String>();
+//			addWellList.add(rpcDeviceInformation.getWellName());
+//			if(rpcDeviceInformation.getStatus()==1){
+//				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,1,"update");
+//			}
+//			rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, rpcDeviceInformation.getDeviceType(), user);
 			result = "{success:true,msg:true,resultCode:1}";
 			
-			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			out.print(result);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			result = "{success:false,msg:false}";
-			out.print(result);
-		}
-		return null;
-	}
-	
-	@RequestMapping("/doRPCDeviceEdit")
-	public String doRPCDeviceEdit(@ModelAttribute RpcDeviceInformation rpcDeviceInformation) throws IOException {
-		String result = "";
-		PrintWriter out = response.getWriter();
-		HttpSession session=request.getSession();
-		try {
-			User user = (User) session.getAttribute("userLogin");
-			if(rpcDeviceInformation.getOrgId()==null){
-				rpcDeviceInformation.setOrgId(user.getUserOrgid());
-			}
-			this.rpcDeviceManagerService.doRPCDeviceEdit(rpcDeviceInformation);
-			List<String> addWellList=new ArrayList<String>();
-			addWellList.add(rpcDeviceInformation.getId()+"");
-			EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,0,"update");
-			rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, rpcDeviceInformation.getDeviceType(), user);
-			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
 		} catch (Exception e) {

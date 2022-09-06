@@ -50,7 +50,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -1198,188 +1198,116 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("unchecked")
 	public static int initRPCDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
-		String initUrl=Config.getInstance().configFile.getAd().getId();
-		String initIPPortUrl=Config.getInstance().configFile.getAd().getIpPort();
-		Gson gson = new Gson();
-		int result=0;
-		
-		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-		Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
-		if(initializedDeviceList==null){
-			initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
-		}
-		if(initializedIPPortDeviceList==null){
-			initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
-		}
-		
-		String wells="";
-		if(condition==0){
-			wells=StringUtils.join(wellList, ",");
-		}else{
-			wells=StringManagerUtils.joinStringArr2(wellList, ",");
-		}
-		if(!StringManagerUtils.isNotNull(method)){
-			method="update";
-		}
-		
-		String sql="select t.wellname,t.tcptype,t.signinid,t.slave,t2.name,t.devicetype,t.id,t.orgid,t.status "
-				+ " from tbl_rpcdevice t,tbl_protocolinstance t2 "
-				+ " where t.instancecode=t2.code ";
-		if(StringManagerUtils.isNotNull(wells)){
-			if(condition==0){
-				sql+=" and t.id in("+wells+")";
-			}else{
-				sql+=" and t.wellName in("+wells+")";
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			String initUrl=Config.getInstance().configFile.getAd().getId();
+			String initIPPortUrl=Config.getInstance().configFile.getAd().getIpPort();
+			Gson gson = new Gson();
+
+			if(!StringManagerUtils.isNotNull(method)){
+				method="update";
 			}
-		}
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null ){
-        	return -1;
-        }
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				String wellName=rs.getString(1)==null?"":rs.getString(1);
-				String tcpType=rs.getString(2)==null?"":rs.getString(2);
-				String signinId=rs.getString(3)==null?"":rs.getString(3);
-				String slaveStr=rs.getString(4)==null?"":rs.getString(4);
-				int slave=StringManagerUtils.stringToInteger(slaveStr);
-				String instanceName=rs.getString(5)==null?"":rs.getString(5);
-				int deviceType=rs.getInt(6);
-				int deviceId=rs.getInt(7);
-				int orgId=rs.getInt(8);
-				int status=rs.getInt(9);
-				
-				InitializedDeviceInfo initialized=null;
-				InitializedDeviceInfo otherInitialized=null;
-				String url=initUrl;
-				int initType=0;
-				if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
-					url=initIPPortUrl;
-					initType=1;
-					initialized=initializedIPPortDeviceList.get(0+"_"+deviceId);
-					//另一种方式是否执行了初始化，是则删除
-					otherInitialized=initializedDeviceList.get(0+"_"+deviceId);
-					if(otherInitialized!=null){
-						InitId initId=new InitId();
-						initId.setMethod("delete");
-						initId.setID(otherInitialized.getSigninid());
-						initId.setSlave(otherInitialized.getSlave());
-						initId.setInstanceName(otherInitialized.getInstanceName());
-						StringManagerUtils.printLog("抽油机ID初始化："+initUrl+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							initializedDeviceList.remove(0+"_"+deviceId);
-						}
-					}
+			
+			Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+			Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+			Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
+			if(initializedDeviceList==null){
+				initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+			}
+			if(initializedIPPortDeviceList==null){
+				initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
+			}
+			
+			if(!jedis.exists("RPCDeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			}
+			List<byte[]> deviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+			for(int i=0;i<deviceInfoByteList.size();i++){
+				boolean matching=false;
+				RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				if(wellList==null){
+					matching=true;
 				}else{
-					initialized=initializedDeviceList.get(0+"_"+deviceId);
-					//另一种方式是否执行了初始化，是则删除
-					otherInitialized=initializedIPPortDeviceList.get(0+"_"+deviceId);
-					if(otherInitialized!=null){
-						InitId initId=new InitId();
-						initId.setMethod("delete");
-						initId.setIPPort(otherInitialized.getSigninid());;
-						initId.setSlave(otherInitialized.getSlave());
-						initId.setInstanceName(otherInitialized.getInstanceName());
-						StringManagerUtils.printLog("抽油机ID初始化："+initIPPortUrl+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
+					if(condition==0){
+						if(StringManagerUtils.existOrNot(wellList, rpcDeviceInfo.getId()+"", false)){
+							matching=true;
 						}
-						if(StringManagerUtils.isNotNull(response)){
-							initializedIPPortDeviceList.remove(0+"_"+deviceId);
+					}else if(condition==1){
+						if(StringManagerUtils.existOrNot(wellList, rpcDeviceInfo.getWellName()+"", false)){
+							matching=true;
 						}
 					}
 				}
 				
-				 
-				if("update".equalsIgnoreCase(method)&&status==1){
-					if(initialized==null
-							&& StringManagerUtils.isNotNull(tcpType)
-							&& StringManagerUtils.isNotNull(signinId)
-//							&& slave>0 
-							&& StringManagerUtils.isNotNull(slaveStr)
-							&& StringManagerUtils.isNotNull(instanceName)
-							){//如果未初始化
-						InitId initId=new InitId();
-						initId.setMethod("update");
-						if(initType==0){
-							initId.setID(signinId);
-						}else{
-							initId.setIPPort(signinId);
-						}
-						initId.setSlave((byte) slave);
-						initId.setInstanceName(instanceName);
-						StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
-							
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
-							if(initType==0){
-								initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
-							}else{
-								initializedIPPortDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
-							}
-						}
-					}else if(initialized!=null){
-						//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
-						if( (!StringManagerUtils.isNotNull(tcpType)) 
-								||(!StringManagerUtils.isNotNull(signinId)) 
-//								|| slave==0 
-								|| (!StringManagerUtils.isNotNull(slaveStr)) 
-								|| (!StringManagerUtils.isNotNull(instanceName)) 
-								){
+				if(matching){
+					String wellName=rpcDeviceInfo.getWellName();
+					String tcpType=rpcDeviceInfo.getTcpType()==null?"":rpcDeviceInfo.getTcpType();
+					String signinId=rpcDeviceInfo.getSignInId()==null?"":rpcDeviceInfo.getSignInId();
+					String slaveStr=rpcDeviceInfo.getSlave()==null?"":rpcDeviceInfo.getSlave();
+					int slave=StringManagerUtils.stringToInteger(slaveStr);
+					String instanceName=rpcDeviceInfo.getInstanceName()==null?"":rpcDeviceInfo.getInstanceName();
+					int deviceType=rpcDeviceInfo.getDeviceType();
+					int deviceId=rpcDeviceInfo.getId();
+					int orgId=rpcDeviceInfo.getOrgId();
+					int status=rpcDeviceInfo.getStatus();
+					
+					InitializedDeviceInfo initialized=null;
+					InitializedDeviceInfo otherInitialized=null;
+					String url=initUrl;
+					int initType=0;
+					if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
+						url=initIPPortUrl;
+						initType=1;
+						initialized=initializedIPPortDeviceList.get(0+"_"+deviceId);
+						//另一种方式是否执行了初始化，是则删除
+						otherInitialized=initializedDeviceList.get(0+"_"+deviceId);
+						if(otherInitialized!=null){
 							InitId initId=new InitId();
 							initId.setMethod("delete");
-							if(initType==0){
-								initId.setID(initialized.getSigninid());
-							}else{
-								initId.setIPPort(initialized.getSigninid());
-							}
-							initId.setSlave(initialized.getSlave());
-							initId.setInstanceName(initialized.getInstanceName());
-							StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+							initId.setID(otherInitialized.getSigninid());
+							initId.setSlave(otherInitialized.getSlave());
+							initId.setInstanceName(otherInitialized.getInstanceName());
+							StringManagerUtils.printLog("抽油机ID初始化："+initUrl+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
 							}
-							if(StringManagerUtils.isNotNull(response)){
-								if(initType==0){
-									initializedDeviceList.remove(0+"_"+deviceId);
-								}else{
-									initializedIPPortDeviceList.remove(0+"_"+deviceId);
-								}
-							}
+//							if(StringManagerUtils.isNotNull(response)){
+								initializedDeviceList.remove(0+"_"+deviceId);
+//							}
 						}
-						//如果已经初始化但信息有变化
-						else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
-							//删掉原有初始化
+					}else{
+						initialized=initializedDeviceList.get(0+"_"+deviceId);
+						//另一种方式是否执行了初始化，是则删除
+						otherInitialized=initializedIPPortDeviceList.get(0+"_"+deviceId);
+						if(otherInitialized!=null){
 							InitId initId=new InitId();
 							initId.setMethod("delete");
-							if(initType==0){
-								initId.setID(initialized.getSigninid());
-							}else{
-								initId.setIPPort(initialized.getSigninid());
-							}
-							initId.setSlave(initialized.getSlave());
-							initId.setInstanceName(initialized.getInstanceName());
-							StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+							initId.setIPPort(otherInitialized.getSigninid());;
+							initId.setSlave(otherInitialized.getSlave());
+							initId.setInstanceName(otherInitialized.getInstanceName());
+							StringManagerUtils.printLog("抽油机ID初始化："+initIPPortUrl+","+gson.toJson(initId));
+							String response="";
 							if(initEnable){
-								StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
 							}
-							//重新初始化
+//							if(StringManagerUtils.isNotNull(response)){
+								initializedIPPortDeviceList.remove(0+"_"+deviceId);
+//							}
+						}
+					}
+					 
+					if("update".equalsIgnoreCase(method)&&status==1){
+						if(initialized==null
+								&& StringManagerUtils.isNotNull(tcpType)
+								&& StringManagerUtils.isNotNull(signinId)
+//								&& slave>0 
+								&& StringManagerUtils.isNotNull(slaveStr)
+								&& StringManagerUtils.isNotNull(instanceName)
+								){//如果未初始化
+							InitId initId=new InitId();
 							initId.setMethod("update");
 							if(initType==0){
 								initId.setID(signinId);
@@ -1393,228 +1321,86 @@ public class EquipmentDriverServerTask {
 							if(initEnable){
 								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 							}
-							if(StringManagerUtils.isNotNull(response)){
+//							if(StringManagerUtils.isNotNull(response)){
 								InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
 								if(initType==0){
 									initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 								}else{
 									initializedIPPortDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 								}
-							}
-						}
-					}
-				}else{
-					if(initialized!=null){
-						//删掉原有初始化
-						InitId initId=new InitId();
-						initId.setMethod("delete");
-						if(initType==0){
-							initId.setID(initialized.getSigninid());
-						}else{
-							initId.setIPPort(initialized.getSigninid());
-						}
-						initId.setSlave(initialized.getSlave());
-						initId.setInstanceName(initialized.getInstanceName());
-						StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							if(initType==0){
-								initializedDeviceList.remove(0+"_"+deviceId);
-							}else{
-								initializedIPPortDeviceList.remove(0+"_"+deviceId);
-							}
-						}
-						if("update".equalsIgnoreCase(method)){
-							List<String> offlineWellList=new ArrayList<String>();
-							offlineWellList.add(deviceId+"");
-							sendDeviceOfflineInfo(offlineWellList,0);
-						}
-					}
-				}
-			}
-			dataModelMap.put("InitializedDeviceList", initializedDeviceList);
-			dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
-		} catch (SQLException e) {
-			StringManagerUtils.printLog("ID初始化sql："+sql);
-			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
-		}
-		return result;
-	}
-	
-	public static int initPCPDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
-		String initUrl=Config.getInstance().configFile.getAd().getId();
-		String initIPPortUrl=Config.getInstance().configFile.getAd().getIpPort();
-		Gson gson = new Gson();
-		int result=0;
-		
-		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-		Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
-		if(initializedDeviceList==null){
-			initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
-		}
-		if(initializedIPPortDeviceList==null){
-			initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
-		}
-		
-		String wells="";
-		if(condition==0){
-			wells=StringUtils.join(wellList, ",");
-		}else{
-			wells=StringManagerUtils.joinStringArr2(wellList, ",");
-		}
-		if(!StringManagerUtils.isNotNull(method)){
-			method="update";
-		}
-		
-		String sql="select t.wellname,t.tcptype,t.signinid,t.slave,t2.name,t.devicetype,t.id,t.orgid,t.status "
-				+ " from tbl_pcpdevice t,tbl_protocolinstance t2 "
-				+ " where t.instancecode=t2.code ";
-		if(StringManagerUtils.isNotNull(wells)){
-			if(condition==0){
-				sql+=" and t.id in("+wells+")";
-			}else{
-				sql+=" and t.wellName in("+wells+")";
-			}
-		}
-		Connection conn = null;   
-		PreparedStatement pstmt = null;   
-		ResultSet rs = null;
-		conn=OracleJdbcUtis.getConnection();
-		if(conn==null ){
-        	return -1;
-        }
-		try {
-			pstmt = conn.prepareStatement(sql);
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				String wellName=rs.getString(1)==null?"":rs.getString(1);
-				String tcpType=rs.getString(2)==null?"":rs.getString(2);
-				String signinId=rs.getString(3)==null?"":rs.getString(3);
-				String slaveStr=rs.getString(4)==null?"":rs.getString(4);
-				int slave=StringManagerUtils.stringToInteger(slaveStr);
-				String instanceName=rs.getString(5)==null?"":rs.getString(5);
-				int deviceType=rs.getInt(6);
-				int deviceId=rs.getInt(7);
-				int orgId=rs.getInt(8);
-				int status=rs.getInt(9);
-				
-				InitializedDeviceInfo initialized=null;
-				InitializedDeviceInfo otherInitialized=null;
-				String url=initUrl;
-				int initType=0;
-				if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
-					url=initIPPortUrl;
-					initType=1;
-					initialized=initializedIPPortDeviceList.get(1+"_"+deviceId);
-					//另一种方式是否执行了初始化，是则删除
-					otherInitialized=initializedDeviceList.get(1+"_"+deviceId);
-					if(otherInitialized!=null){
-						InitId initId=new InitId();
-						initId.setMethod("delete");
-						initId.setID(otherInitialized.getSigninid());
-						initId.setSlave(otherInitialized.getSlave());
-						initId.setInstanceName(otherInitialized.getInstanceName());
-						StringManagerUtils.printLog("螺杆泵ID初始化："+initUrl+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							initializedDeviceList.remove(1+"_"+deviceId);
-						}
-					}
-				}else{
-					initialized=initializedDeviceList.get(1+"_"+deviceId);
-					//另一种方式是否执行了初始化，是则删除
-					otherInitialized=initializedIPPortDeviceList.get(1+"_"+deviceId);
-					if(otherInitialized!=null){
-						InitId initId=new InitId();
-						initId.setMethod("delete");
-						initId.setIPPort(otherInitialized.getSigninid());;
-						initId.setSlave(otherInitialized.getSlave());
-						initId.setInstanceName(otherInitialized.getInstanceName());
-						StringManagerUtils.printLog("螺杆泵ID初始化："+initIPPortUrl+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							initializedIPPortDeviceList.remove(1+"_"+deviceId);
-						}
-					}
-				}
-				
-				 
-				if("update".equalsIgnoreCase(method)&&status==1){
-					if(initialized==null
-							&& StringManagerUtils.isNotNull(tcpType)
-							&& StringManagerUtils.isNotNull(signinId)
-//							&& slave>0 
-							&& StringManagerUtils.isNotNull(slaveStr)
-							&& StringManagerUtils.isNotNull(instanceName)
-							){//如果未初始化
-						InitId initId=new InitId();
-						initId.setMethod("update");
-						if(initType==0){
-							initId.setID(signinId);
-						}else{
-							initId.setIPPort(signinId);
-						}
-						initId.setSlave((byte) slave);
-						initId.setInstanceName(instanceName);
-						StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
-							if(initType==0){
-								initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
-							}else{
-								initializedIPPortDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
-							}
-						}
-					}else if(initialized!=null){
-						//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
-						if( (!StringManagerUtils.isNotNull(tcpType)) 
-								||(!StringManagerUtils.isNotNull(signinId)) 
-//								|| slave==0 
-								|| (!StringManagerUtils.isNotNull(slaveStr)) 
-								|| (!StringManagerUtils.isNotNull(instanceName)) 
-								){
-							InitId initId=new InitId();
-							initId.setMethod("delete");
-							if(initType==0){
-								initId.setID(initialized.getSigninid());
-							}else{
-								initId.setIPPort(initialized.getSigninid());
-							}
-							initId.setSlave(initialized.getSlave());
-							initId.setInstanceName(initialized.getInstanceName());
-							StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
-							String response="";
-							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
-								
-							}
-							if(StringManagerUtils.isNotNull(response)){
-								initializedDeviceList.remove(1+"_"+deviceId);
+//							}
+						}else if(initialized!=null){
+							//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
+							if( (!StringManagerUtils.isNotNull(tcpType)) 
+									||(!StringManagerUtils.isNotNull(signinId)) 
+//									|| slave==0 
+									|| (!StringManagerUtils.isNotNull(slaveStr)) 
+									|| (!StringManagerUtils.isNotNull(instanceName)) 
+									){
+								InitId initId=new InitId();
+								initId.setMethod("delete");
 								if(initType==0){
-									initializedDeviceList.remove(1+"_"+deviceId);
+									initId.setID(initialized.getSigninid());
 								}else{
-									initializedIPPortDeviceList.remove(1+"_"+deviceId);
+									initId.setIPPort(initialized.getSigninid());
 								}
+								initId.setSlave(initialized.getSlave());
+								initId.setInstanceName(initialized.getInstanceName());
+								StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+								String response="";
+								if(initEnable){
+									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								}
+//								if(StringManagerUtils.isNotNull(response)){
+									if(initType==0){
+										initializedDeviceList.remove(0+"_"+deviceId);
+									}else{
+										initializedIPPortDeviceList.remove(0+"_"+deviceId);
+									}
+//								}
+							}
+							//如果已经初始化但信息有变化
+							else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
+								//删掉原有初始化
+								InitId initId=new InitId();
+								initId.setMethod("delete");
+								if(initType==0){
+									initId.setID(initialized.getSigninid());
+								}else{
+									initId.setIPPort(initialized.getSigninid());
+								}
+								initId.setSlave(initialized.getSlave());
+								initId.setInstanceName(initialized.getInstanceName());
+								StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+								if(initEnable){
+									StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								}
+								//重新初始化
+								initId.setMethod("update");
+								if(initType==0){
+									initId.setID(signinId);
+								}else{
+									initId.setIPPort(signinId);
+								}
+								initId.setSlave((byte) slave);
+								initId.setInstanceName(instanceName);
+								StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+								String response="";
+								if(initEnable){
+									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								}
+//								if(StringManagerUtils.isNotNull(response)){
+									InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
+									if(initType==0){
+										initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+									}else{
+										initializedIPPortDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+									}
+//								}
 							}
 						}
-						//如果已经初始化但信息有变化
-						else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
+					}else{
+						if(initialized!=null){
 							//删掉原有初始化
 							InitId initId=new InitId();
 							initId.setMethod("delete");
@@ -1625,11 +1411,150 @@ public class EquipmentDriverServerTask {
 							}
 							initId.setSlave(initialized.getSlave());
 							initId.setInstanceName(initialized.getInstanceName());
-							StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
+							StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+							String response="";
 							if(initEnable){
-								StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 							}
-							//重新初始化
+//							if(StringManagerUtils.isNotNull(response)){
+								if(initType==0){
+									initializedDeviceList.remove(0+"_"+deviceId);
+								}else{
+									initializedIPPortDeviceList.remove(0+"_"+deviceId);
+								}
+//							}
+							if("update".equalsIgnoreCase(method)){
+								List<String> offlineWellList=new ArrayList<String>();
+								offlineWellList.add(deviceId+"");
+								sendDeviceOfflineInfo(offlineWellList,0);
+							}
+						}
+					}
+				}
+			}
+			dataModelMap.put("InitializedDeviceList", initializedDeviceList);
+			dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return 0;
+	}
+	
+	public static int initPCPDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			
+			String initUrl=Config.getInstance().configFile.getAd().getId();
+			String initIPPortUrl=Config.getInstance().configFile.getAd().getIpPort();
+			Gson gson = new Gson();
+
+			if(!StringManagerUtils.isNotNull(method)){
+				method="update";
+			}
+			
+			Map<String, Object> dataModelMap = DataModelMap.getMapObject();
+			Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
+			Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
+			if(initializedDeviceList==null){
+				initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+			}
+			if(initializedIPPortDeviceList==null){
+				initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
+			}
+			
+			if(!jedis.exists("PCPDeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			}
+			List<byte[]> deviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
+			for(int i=0;i<deviceInfoByteList.size();i++){
+				boolean matching=false;
+				PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(deviceInfoByteList.get(i));
+				if(wellList==null){
+					matching=true;
+				}else{
+					if(condition==0){
+						if(StringManagerUtils.existOrNot(wellList, pcpDeviceInfo.getId()+"", false)){
+							matching=true;
+						}
+					}else if(condition==1){
+						if(StringManagerUtils.existOrNot(wellList, pcpDeviceInfo.getWellName()+"", false)){
+							matching=true;
+						}
+					}
+				}
+				
+				if(matching){
+					String wellName=pcpDeviceInfo.getWellName();
+					String tcpType=pcpDeviceInfo.getTcpType()==null?"":pcpDeviceInfo.getTcpType();
+					String signinId=pcpDeviceInfo.getSignInId()==null?"":pcpDeviceInfo.getSignInId();
+					String slaveStr=pcpDeviceInfo.getSlave()==null?"":pcpDeviceInfo.getSlave();
+					int slave=StringManagerUtils.stringToInteger(slaveStr);
+					String instanceName=pcpDeviceInfo.getInstanceName()==null?"":pcpDeviceInfo.getInstanceName();
+					int deviceType=pcpDeviceInfo.getDeviceType();
+					int deviceId=pcpDeviceInfo.getId();
+					int orgId=pcpDeviceInfo.getOrgId();
+					int status=pcpDeviceInfo.getStatus();
+					
+					InitializedDeviceInfo initialized=null;
+					InitializedDeviceInfo otherInitialized=null;
+					String url=initUrl;
+					int initType=0;
+					if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
+						url=initIPPortUrl;
+						initType=1;
+						initialized=initializedIPPortDeviceList.get(1+"_"+deviceId);
+						//另一种方式是否执行了初始化，是则删除
+						otherInitialized=initializedDeviceList.get(1+"_"+deviceId);
+						if(otherInitialized!=null){
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							initId.setID(otherInitialized.getSigninid());
+							initId.setSlave(otherInitialized.getSlave());
+							initId.setInstanceName(otherInitialized.getInstanceName());
+							StringManagerUtils.printLog("螺杆泵ID初始化："+initUrl+","+gson.toJson(initId));
+							String response="";
+							if(initEnable){
+								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
+							}
+							if(StringManagerUtils.isNotNull(response)){
+								initializedDeviceList.remove(1+"_"+deviceId);
+							}
+						}
+					}else{
+						initialized=initializedDeviceList.get(1+"_"+deviceId);
+						//另一种方式是否执行了初始化，是则删除
+						otherInitialized=initializedIPPortDeviceList.get(1+"_"+deviceId);
+						if(otherInitialized!=null){
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							initId.setIPPort(otherInitialized.getSigninid());;
+							initId.setSlave(otherInitialized.getSlave());
+							initId.setInstanceName(otherInitialized.getInstanceName());
+							StringManagerUtils.printLog("螺杆泵ID初始化："+initIPPortUrl+","+gson.toJson(initId));
+							String response="";
+							if(initEnable){
+								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
+							}
+							if(StringManagerUtils.isNotNull(response)){
+								initializedIPPortDeviceList.remove(1+"_"+deviceId);
+							}
+						}
+					}
+					 
+					if("update".equalsIgnoreCase(method)&&status==1){
+						if(initialized==null
+								&& StringManagerUtils.isNotNull(tcpType)
+								&& StringManagerUtils.isNotNull(signinId)
+//								&& slave>0 
+								&& StringManagerUtils.isNotNull(slaveStr)
+								&& StringManagerUtils.isNotNull(instanceName)
+								){//如果未初始化
+							InitId initId=new InitId();
 							initId.setMethod("update");
 							if(initType==0){
 								initId.setID(signinId);
@@ -1652,50 +1577,119 @@ public class EquipmentDriverServerTask {
 									initializedIPPortDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 								}
 							}
-						}
-					}
-				}else{
-					if(initialized!=null){
-						//删掉原有初始化
-						InitId initId=new InitId();
-						initId.setMethod("delete");
-						if(initType==0){
-							initId.setID(initialized.getSigninid());
-						}else{
-							initId.setIPPort(initialized.getSigninid());
-						}
-						initId.setSlave(initialized.getSlave());
-						initId.setInstanceName(initialized.getInstanceName());
-						StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
-						String response="";
-						if(initEnable){
-							response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
-						}
-						if(StringManagerUtils.isNotNull(response)){
-							if(initType==0){
-								initializedDeviceList.remove(1+"_"+deviceId);
-							}else{
-								initializedIPPortDeviceList.remove(1+"_"+deviceId);
+						}else if(initialized!=null){
+							//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
+							if( (!StringManagerUtils.isNotNull(tcpType)) 
+									||(!StringManagerUtils.isNotNull(signinId)) 
+//									|| slave==0 
+									|| (!StringManagerUtils.isNotNull(slaveStr)) 
+									|| (!StringManagerUtils.isNotNull(instanceName)) 
+									){
+								InitId initId=new InitId();
+								initId.setMethod("delete");
+								if(initType==0){
+									initId.setID(initialized.getSigninid());
+								}else{
+									initId.setIPPort(initialized.getSigninid());
+								}
+								initId.setSlave(initialized.getSlave());
+								initId.setInstanceName(initialized.getInstanceName());
+								StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
+								String response="";
+								if(initEnable){
+									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								}
+								if(StringManagerUtils.isNotNull(response)){
+									if(initType==0){
+										initializedDeviceList.remove(1+"_"+deviceId);
+									}else{
+										initializedIPPortDeviceList.remove(1+"_"+deviceId);
+									}
+								}
+							}
+							//如果已经初始化但信息有变化
+							else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
+								//删掉原有初始化
+								InitId initId=new InitId();
+								initId.setMethod("delete");
+								if(initType==0){
+									initId.setID(initialized.getSigninid());
+								}else{
+									initId.setIPPort(initialized.getSigninid());
+								}
+								initId.setSlave(initialized.getSlave());
+								initId.setInstanceName(initialized.getInstanceName());
+								StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
+								if(initEnable){
+									StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								}
+								//重新初始化
+								initId.setMethod("update");
+								if(initType==0){
+									initId.setID(signinId);
+								}else{
+									initId.setIPPort(signinId);
+								}
+								initId.setSlave((byte) slave);
+								initId.setInstanceName(instanceName);
+								StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
+								String response="";
+								if(initEnable){
+									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								}
+								if(StringManagerUtils.isNotNull(response)){
+									InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
+									if(initType==0){
+										initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+									}else{
+										initializedIPPortDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
+									}
+								}
 							}
 						}
-							
-						if("update".equalsIgnoreCase(method)){
-							List<String> offlineWellList=new ArrayList<String>();
-							offlineWellList.add(deviceId+"");
-							sendDeviceOfflineInfo(offlineWellList,1);
+					}else{
+						if(initialized!=null){
+							//删掉原有初始化
+							InitId initId=new InitId();
+							initId.setMethod("delete");
+							if(initType==0){
+								initId.setID(initialized.getSigninid());
+							}else{
+								initId.setIPPort(initialized.getSigninid());
+							}
+							initId.setSlave(initialized.getSlave());
+							initId.setInstanceName(initialized.getInstanceName());
+							StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
+							String response="";
+							if(initEnable){
+								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+							}
+							if(StringManagerUtils.isNotNull(response)){
+								if(initType==0){
+									initializedDeviceList.remove(1+"_"+deviceId);
+								}else{
+									initializedIPPortDeviceList.remove(1+"_"+deviceId);
+								}
+							}
+							if("update".equalsIgnoreCase(method)){
+								List<String> offlineWellList=new ArrayList<String>();
+								offlineWellList.add(deviceId+"");
+								sendDeviceOfflineInfo(offlineWellList,1);
+							}
 						}
 					}
 				}
 			}
 			dataModelMap.put("InitializedDeviceList", initializedDeviceList);
 			dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
-		} catch (SQLException e) {
-			StringManagerUtils.printLog("ID初始化sql："+sql);
+		}catch(Exception e){
 			e.printStackTrace();
-		} finally{
-			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
-		return result;
+		return 0;
 	}
 	
 	@SuppressWarnings("resource")
@@ -2004,6 +1998,7 @@ public class EquipmentDriverServerTask {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		try {
 			String host = StringManagerUtils.getLocalIPAddress();
+//			host = "127.0.0.1";
 			int port=StringManagerUtils.getHttpPort();
 			String projectName=stringManagerUtils.getProjectName();
 			

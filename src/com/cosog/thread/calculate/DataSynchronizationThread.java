@@ -29,26 +29,37 @@ public class DataSynchronizationThread  extends Thread{
 	public PcpDeviceInformation pcpDeviceInformation;
 	public WellInformationManagerService<?> wellInformationManagerService;
 	public WellInformationManagerService<RpcDeviceInformation> rpcDeviceManagerService;
+	public WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService;
 	public void run(){
 		try {
-			if(sign==0){//添加抽油机
+			if(sign==101){//添加抽油机
 				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,condition,method);
 				if(rpcDeviceInformation.getStatus()==1){
 					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
 				rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, rpcDeviceInformation.getDeviceType(), user);
-			}else if(sign==1){//删除抽油机
+			}else if(sign==102){//删除抽油机
 				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadRPCDeviceInfo(deleteList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
-			}else if(sign==2){//修改抽油机
+			}else if(sign==103){//修改抽油机
 				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,condition,method);
 				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
-			}else if(sign==3){
-				
-			}else if(sign==4){
-				
+			}else if(sign==201){//添加螺杆泵
+				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,condition,method);
+				if(pcpDeviceInformation.getStatus()==1){
+					EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,condition,method);
+				}
+				pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, pcpDeviceInformation.getDeviceType(), user);
+			}else if(sign==202){//删除螺杆泵
+				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteList,condition,method);
+				MemoryDataManagerTask.loadPCPDeviceInfo(deleteList,condition,method);
+				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
+			}else if(sign==203){//修改螺杆泵
+				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,condition,method);
+				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,condition,method);
+				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -145,5 +156,11 @@ public class DataSynchronizationThread  extends Thread{
 	}
 	public void setWellInformationManagerService(WellInformationManagerService<?> wellInformationManagerService) {
 		this.wellInformationManagerService = wellInformationManagerService;
+	}
+	public WellInformationManagerService<PcpDeviceInformation> getPcpDeviceManagerService() {
+		return pcpDeviceManagerService;
+	}
+	public void setPcpDeviceManagerService(WellInformationManagerService<PcpDeviceInformation> pcpDeviceManagerService) {
+		this.pcpDeviceManagerService = pcpDeviceManagerService;
 	}
 }

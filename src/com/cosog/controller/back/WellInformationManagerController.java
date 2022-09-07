@@ -647,7 +647,7 @@ public class WellInformationManagerController extends BaseController {
 			json=this.wellInformationManagerService.saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
 			deviceTableName="tbl_pcpdevice";
-			json=this.wellInformationManagerService.savePCPDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
+			json=this.wellInformationManagerService.savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}
@@ -694,7 +694,7 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			json=this.wellInformationManagerService.batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			json=this.wellInformationManagerService.batchAddPCPDevice(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
+			json=this.wellInformationManagerService.batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),isCheckout,user);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			this.wellInformationManagerService.saveSMSDeviceData(wellHandsontableChangedData,orgId,StringManagerUtils.stringToInteger(deviceType),user);
 		}
@@ -1247,7 +1247,7 @@ public class WellInformationManagerController extends BaseController {
 			wells.add(rpcDeviceInformation.getWellName());
 			
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-			dataSynchronizationThread.setSign(0);
+			dataSynchronizationThread.setSign(101);
 			dataSynchronizationThread.setDeviceType(0);
 			dataSynchronizationThread.setInitWellList(wells);
 			dataSynchronizationThread.setUpdateList(null);
@@ -1291,14 +1291,29 @@ public class WellInformationManagerController extends BaseController {
 			
 			List<String> wells=new ArrayList<String>();
 			wells.add(pcpDeviceInformation.getWellName());
-			MemoryDataManagerTask.loadPCPDeviceInfo(wells,1,"update");
+//			MemoryDataManagerTask.loadPCPDeviceInfo(wells,1,"update");
+//			
+//			List<String> addWellList=new ArrayList<String>();
+//			addWellList.add(pcpDeviceInformation.getWellName());
+//			if(pcpDeviceInformation.getStatus()==1){
+//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(addWellList,1,"update");
+//			}
+//			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, pcpDeviceInformation.getDeviceType(), user);
 			
-			List<String> addWellList=new ArrayList<String>();
-			addWellList.add(pcpDeviceInformation.getWellName());
-			if(pcpDeviceInformation.getStatus()==1){
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(addWellList,1,"update");
-			}
-			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, pcpDeviceInformation.getDeviceType(), user);
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(201);
+			dataSynchronizationThread.setDeviceType(1);
+			dataSynchronizationThread.setInitWellList(wells);
+			dataSynchronizationThread.setUpdateList(null);
+			dataSynchronizationThread.setAddList(wells);
+			dataSynchronizationThread.setDeleteList(null);
+			dataSynchronizationThread.setCondition(1);
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.setPcpDeviceInformation(pcpDeviceInformation);
+			dataSynchronizationThread.setUser(user);
+			dataSynchronizationThread.setPcpDeviceManagerService(pcpDeviceManagerService);
+			dataSynchronizationThread.start();
+			
 			result = "{success:true,msg:true,resultCode:1}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);

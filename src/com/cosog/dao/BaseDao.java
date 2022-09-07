@@ -1074,7 +1074,7 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(1);
+				dataSynchronizationThread.setSign(102);
 				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(null);
 				dataSynchronizationThread.setUpdateList(null);
@@ -1094,7 +1094,7 @@ public class BaseDao extends HibernateDaoSupport {
 //				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,1,"update");
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(2);
+				dataSynchronizationThread.setSign(103);
 				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(initWellList);
 				dataSynchronizationThread.setUpdateList(updateWellList);
@@ -1465,7 +1465,7 @@ public class BaseDao extends HibernateDaoSupport {
 				
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(1);
+				dataSynchronizationThread.setSign(102);
 				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(null);
 				dataSynchronizationThread.setUpdateList(null);
@@ -1485,7 +1485,7 @@ public class BaseDao extends HibernateDaoSupport {
 //				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,1,"update");
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-				dataSynchronizationThread.setSign(2);
+				dataSynchronizationThread.setSign(103);
 				dataSynchronizationThread.setDeviceType(deviceType);
 				dataSynchronizationThread.setInitWellList(initWellList);
 				dataSynchronizationThread.setUpdateList(updateWellList);
@@ -1514,7 +1514,7 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	@SuppressWarnings("resource")
-	public List<WellHandsontableChangedData.Updatelist> savePCPDeviceData(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws SQLException {
+	public List<WellHandsontableChangedData.Updatelist> savePCPDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
@@ -1645,19 +1645,50 @@ public class BaseDao extends HibernateDaoSupport {
 					deleteWellList.add(obj[0]+"");
 					deleteWellNameList.add(obj[1]+"");
 				}
-				if(deleteWellList.size()>0){
-					EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
-					MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
-				}
+				
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
-			
-			if(initWellList.size()>0){
-				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,1,"update");
+			if(deleteWellList.size()>0){
+//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
+//				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
+				
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(202);
+				dataSynchronizationThread.setDeviceType(deviceType);
+				dataSynchronizationThread.setInitWellList(null);
+				dataSynchronizationThread.setUpdateList(null);
+				dataSynchronizationThread.setAddList(null);
+				dataSynchronizationThread.setDeleteList(deleteWellList);
+				dataSynchronizationThread.setDeleteNameList(deleteWellNameList);
+				dataSynchronizationThread.setCondition(0);
+				dataSynchronizationThread.setMethod("delete");
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
+				dataSynchronizationThread.start();
+				
+				
 			}
+			if(initWellList.size()>0){
+//				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
+//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,1,"update");
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(203);
+				dataSynchronizationThread.setDeviceType(deviceType);
+				dataSynchronizationThread.setInitWellList(initWellList);
+				dataSynchronizationThread.setUpdateList(updateWellList);
+				dataSynchronizationThread.setAddList(addWellList);
+				dataSynchronizationThread.setDeleteList(null);
+				dataSynchronizationThread.setDeleteNameList(null);
+				dataSynchronizationThread.setCondition(1);
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
+				dataSynchronizationThread.start();
+			}
+//			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -1672,7 +1703,7 @@ public class BaseDao extends HibernateDaoSupport {
 		return collisionList;
 	}
 	
-	public List<WellHandsontableChangedData.Updatelist> batchAddPCPDevice(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,String isCheckout,User user) throws SQLException {
+	public List<WellHandsontableChangedData.Updatelist> batchAddPCPDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,String isCheckout,User user) throws SQLException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		PreparedStatement ps=null;
@@ -1680,6 +1711,7 @@ public class BaseDao extends HibernateDaoSupport {
 		List<String> updateWellList=new ArrayList<String>();
 		List<String> addWellList=new ArrayList<String>();
 		List<String> deleteWellList=new ArrayList<String>();
+		List<String> deleteWellNameList=new ArrayList<String>();
 		List<String> disableWellIdList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
 		
@@ -1941,7 +1973,7 @@ public class BaseDao extends HibernateDaoSupport {
 						delIds+=",";
 					}
 				}
-				queryDeleteWellSql="select id from tbl_pcpdevice t "
+				queryDeleteWellSql="select id,t.wellname from tbl_pcpdevice t "
 						+ " where t.devicetype="+deviceType+" "
 						+ " and t.id in ("+StringUtils.join(wellHandsontableChangedData.getDelidslist(), ",")+")"
 						+ " and t.orgid in("+orgId+")";
@@ -1951,21 +1983,53 @@ public class BaseDao extends HibernateDaoSupport {
 						+ " and t.orgid in("+orgId+")";
 				List<?> list = this.findCallSql(queryDeleteWellSql);
 				for(int i=0;i<list.size();i++){
-					deleteWellList.add(list.get(i)+"");
-				}
-				if(deleteWellList.size()>0){
-					EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(wellHandsontableChangedData.getDelidslist(),0,"delete");
-					MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList, 0, "delete");
+					Object[] obj=(Object[]) list.get(i);
+					deleteWellList.add(obj[0]+"");
+					deleteWellNameList.add(obj[1]+"");
 				}
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			saveDeviceOperationLog(updateWellList,addWellList,deleteWellList,deviceType,user);
-			
-			if(initWellList.size()>0){
-				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
-				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,1,"update");
+			if(deleteWellList.size()>0){
+//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
+//				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
+				
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(202);
+				dataSynchronizationThread.setDeviceType(deviceType);
+				dataSynchronizationThread.setInitWellList(null);
+				dataSynchronizationThread.setUpdateList(null);
+				dataSynchronizationThread.setAddList(null);
+				dataSynchronizationThread.setDeleteList(deleteWellList);
+				dataSynchronizationThread.setDeleteNameList(deleteWellNameList);
+				dataSynchronizationThread.setCondition(0);
+				dataSynchronizationThread.setMethod("delete");
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
+				dataSynchronizationThread.start();
+				
+				
 			}
+			if(initWellList.size()>0){
+//				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
+//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,1,"update");
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(203);
+				dataSynchronizationThread.setDeviceType(deviceType);
+				dataSynchronizationThread.setInitWellList(initWellList);
+				dataSynchronizationThread.setUpdateList(updateWellList);
+				dataSynchronizationThread.setAddList(addWellList);
+				dataSynchronizationThread.setDeleteList(null);
+				dataSynchronizationThread.setDeleteNameList(null);
+				dataSynchronizationThread.setCondition(1);
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
+				dataSynchronizationThread.start();
+			}
+//			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{

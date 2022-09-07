@@ -1521,9 +1521,9 @@ public class EquipmentDriverServerTask {
 							if(initEnable){
 								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
 							}
-							if(StringManagerUtils.isNotNull(response)){
+//							if(StringManagerUtils.isNotNull(response)){
 								initializedDeviceList.remove(1+"_"+deviceId);
-							}
+//							}
 						}
 					}else{
 						initialized=initializedDeviceList.get(1+"_"+deviceId);
@@ -1540,9 +1540,9 @@ public class EquipmentDriverServerTask {
 							if(initEnable){
 								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
 							}
-							if(StringManagerUtils.isNotNull(response)){
+//							if(StringManagerUtils.isNotNull(response)){
 								initializedIPPortDeviceList.remove(1+"_"+deviceId);
-							}
+//							}
 						}
 					}
 					 
@@ -1569,14 +1569,14 @@ public class EquipmentDriverServerTask {
 								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								
 							}
-							if(StringManagerUtils.isNotNull(response)){
+//							if(StringManagerUtils.isNotNull(response)){
 								InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
 								if(initType==0){
 									initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 								}else{
 									initializedIPPortDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 								}
-							}
+//							}
 						}else if(initialized!=null){
 							//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
 							if( (!StringManagerUtils.isNotNull(tcpType)) 
@@ -1599,13 +1599,13 @@ public class EquipmentDriverServerTask {
 								if(initEnable){
 									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
-								if(StringManagerUtils.isNotNull(response)){
+//								if(StringManagerUtils.isNotNull(response)){
 									if(initType==0){
 										initializedDeviceList.remove(1+"_"+deviceId);
 									}else{
 										initializedIPPortDeviceList.remove(1+"_"+deviceId);
 									}
-								}
+//								}
 							}
 							//如果已经初始化但信息有变化
 							else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
@@ -1637,14 +1637,14 @@ public class EquipmentDriverServerTask {
 								if(initEnable){
 									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
-								if(StringManagerUtils.isNotNull(response)){
+//								if(StringManagerUtils.isNotNull(response)){
 									InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
 									if(initType==0){
 										initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 									}else{
 										initializedIPPortDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 									}
-								}
+//								}
 							}
 						}
 					}else{
@@ -1664,13 +1664,13 @@ public class EquipmentDriverServerTask {
 							if(initEnable){
 								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 							}
-							if(StringManagerUtils.isNotNull(response)){
+//							if(StringManagerUtils.isNotNull(response)){
 								if(initType==0){
 									initializedDeviceList.remove(1+"_"+deviceId);
 								}else{
 									initializedIPPortDeviceList.remove(1+"_"+deviceId);
 								}
-							}
+//							}
 							if("update".equalsIgnoreCase(method)){
 								List<String> offlineWellList=new ArrayList<String>();
 								offlineWellList.add(deviceId+"");

@@ -3469,7 +3469,7 @@ public class DriverAPIController extends BaseController{
 		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
 		AcqOnline acqOnline=gson.fromJson(data, type);
 		if(acqOnline!=null){
-			String sql="update tbl_rpcacqdata_latest t set t.upcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid=( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
+			String sql="update tbl_rpcacqdata_latest t set t.upcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
 			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
 			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 			webSocketSendData.append("\"signinId\":\""+acqOnline.getID()+"\",");
@@ -3502,7 +3502,7 @@ public class DriverAPIController extends BaseController{
 		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
 		AcqOnline acqOnline=gson.fromJson(data, type);
 		if(acqOnline!=null){
-			String sql="update tbl_rpcacqdata_latest t set t.downcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid=( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
+			String sql="update tbl_rpcacqdata_latest t set t.downcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
 			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
 			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 			webSocketSendData.append("\"signinId\":\""+acqOnline.getID()+"\",");
@@ -3529,7 +3529,7 @@ public class DriverAPIController extends BaseController{
 		StringManagerUtils.printLog("ad_rpc退出："+time);
 		StringBuffer webSocketSendData = new StringBuffer();
 		String functionCode="adExitAndDeviceOffline_rpc";
-		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0";
+		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0 where t.upcommstatus=0 or t.downcommstatus=0";
 		int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
 		webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
 		webSocketSendData.append("\"time\":\""+time+"\"");

@@ -2394,8 +2394,20 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.wellid="+deviceId+" "
 				+ " order by t.fesdiagramacqtime desc";
-		
-		List<?> list=this.findCallSql(sql);
+		String countSql="select count(1) from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.wellid="+deviceId;
+		int total=this.getTotalCountRows(countSql);
+		int coefficient=1500;
+		int rarefy=(total%coefficient)==0?(total/coefficient):(total/coefficient+1);
+		String finalSql=sql;
+		if(rarefy>1){
+			finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+		}
+		List<?> list=this.findCallSql(finalSql);
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("FESDiagramOverlay");
 		String columns = ddic.getTableHeader();
 		String[] ddicColumns=ddic.getSql().split(",");

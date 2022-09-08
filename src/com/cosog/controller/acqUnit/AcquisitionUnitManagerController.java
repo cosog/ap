@@ -60,6 +60,7 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.RoleManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.BackModuleRecursion;
 import com.cosog.utils.Config;
@@ -249,8 +250,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocol.setSort(StringManagerUtils.stringToInteger(sort));
 				protocol.setItems(new ArrayList<ModbusProtocolConfig.Items>());
 				modbusProtocolConfig.getProtocol().add(protocol);
+				
+				StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
+				Jedis jedis=null;
+				try{
+					jedis = RedisUtil.jedisPool.getResource();
+					jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				if(jedis!=null){
+					jedis.close();
+				}
+				
+				
 			}
-			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
@@ -293,9 +307,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 				acquisitionUnitGroup.setMatrix("0,0,0");
 				this.acquisitionUnitItemManagerService.grantAcquisitionGroupsPermission(acquisitionUnitGroup);
 			}
-			if(StringManagerUtils.isNotNull(groupId)){
-				EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(groupId, "update");
-			}
+//			if(StringManagerUtils.isNotNull(groupId)){
+//				EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(groupId, "update");
+//			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 		} catch (Exception e) {
@@ -544,12 +558,21 @@ public class AcquisitionUnitManagerController extends BaseController {
 						this.acquisitionUnitItemManagerService.grantAcquisitionItemsPermission(acquisitionGroupItem);
 					}
 				}
-				EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(groupId+"","update");
-				EquipmentDriverServerTask.initPumpDriverAcquisitionInfoConfigByAcqGroupId(groupId+"","update");
-				this.acquisitionUnitItemManagerService.doAcquisitionGroupOwnItemChange(groupId);
-				MemoryDataManagerTask.loadAcqInstanceOwnItemByGroupId(groupId,"update");
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqGroupId(groupId,"update");
 			}
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(021);
+			dataSynchronizationThread.setParam1(groupId);
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+			dataSynchronizationThread.start();
+			
+//			EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(groupId,"update");
+//			EquipmentDriverServerTask.initPumpDriverAcquisitionInfoConfigByAcqGroupId(groupId,"update");
+//			this.acquisitionUnitManagerService.doAcquisitionGroupOwnItemChange(groupId);
+//			MemoryDataManagerTask.loadAcqInstanceOwnItemByGroupId(groupId,"update");
+//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByAcqGroupId(groupId,"update");
+			
+			
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -692,9 +715,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setMatrix(module_[10]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+					
 				}
 			}
+//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -784,9 +808,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 						displayUnitItem.setMatrix(module_[6]);
 						this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 					}
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+					
 				}
 			}
+			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -843,9 +868,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 					displayUnitItem.setMatrix(module_[8]);
 					this.displayUnitItemManagerService.grantDisplayItemsPermission(displayUnitItem);
 				}
-				MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+				
 			}
-		
+//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -1462,16 +1487,23 @@ public class AcquisitionUnitManagerController extends BaseController {
 			}else if(modbusProtocolConfig.getProtocol()==null){
 				modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
 			}
-			boolean isAdd=true;
 			
 			//删除协议
 			for(int i=0;modbusDriverSaveData.getDelidslist()!=null&&i<modbusDriverSaveData.getDelidslist().size();i++){
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
 					if(modbusDriverSaveData.getDelidslist().get(i).equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),modbusProtocolConfig.getProtocol().get(j).getDeviceType(),"delete");
-						EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
-						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
-						this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getDeviceType(),modbusProtocolConfig.getProtocol().get(j).getName());
+						DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+						dataSynchronizationThread.setSign(002);
+						dataSynchronizationThread.setParam1(modbusProtocolConfig.getProtocol().get(j).getName());
+						dataSynchronizationThread.setDeviceType(modbusProtocolConfig.getProtocol().get(j).getDeviceType());
+						dataSynchronizationThread.setMethod("delete");
+						dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+						dataSynchronizationThread.start();
+						
+//						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),modbusProtocolConfig.getProtocol().get(j).getDeviceType(),"delete");
+//						EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
+//						EquipmentDriverServerTask.initProtocolConfig(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
+//						this.acquisitionUnitManagerService.doDeleteProtocolAssociation(modbusProtocolConfig.getProtocol().get(j).getDeviceType(),modbusProtocolConfig.getProtocol().get(j).getName());
 						modbusProtocolConfig.getProtocol().remove(j);
 						break;
 					}
@@ -1481,7 +1513,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
 				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
 					if(modbusDriverSaveData.getProtocolCode().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
-						isAdd=false;
 						String oldName=modbusProtocolConfig.getProtocol().get(i).getName();
 						modbusProtocolConfig.getProtocol().get(i).setName(modbusDriverSaveData.getProtocolName());
 						modbusProtocolConfig.getProtocol().get(i).setCode(modbusDriverSaveData.getProtocolName());
@@ -1596,9 +1627,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 							String unitSql="update tbl_acq_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
 							String groupSql="update tbl_acq_group_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
 							String alatmUnitSql="update tbl_alarm_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
+							String displayUnitSql="update tbl_display_unit_conf t set t.protocol='"+modbusDriverSaveData.getProtocolName()+"' where t.protocol='"+oldName+"'";
 							service.updateSql(unitSql);
 							service.updateSql(groupSql);
 							service.updateSql(alatmUnitSql);
+							service.updateSql(displayUnitSql);
 						}
 						if(delItemList.size()>0){
 							String delSql="delete from tbl_acq_item2group_conf t5 "
@@ -1607,59 +1640,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 									+ " where t.id=t2.unitid and t2.groupid=t3.id and t3.id=t4.groupid "
 									+ "and t.protocol='"+modbusDriverSaveData.getProtocolName()+"' "
 									+ " and t4.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+"))";
+							String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
+									+ "where t.type<>1 "
+									+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolName()+"'  )"
+									+ " and t4.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
+							service.updateSql(delSql);
 							service.updateSql(delSql);
 						}
 						Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
 						break;
 					}
-				}
-				if(isAdd){
-					ModbusProtocolConfig.Protocol protocol=new ModbusProtocolConfig.Protocol();
-					String protocolCode=modbusDriverSaveData.getProtocolName();
-					protocol.setName(modbusDriverSaveData.getProtocolName());
-					protocol.setCode(protocolCode);
-					modbusDriverSaveData.setProtocolCode(protocolCode);
-					protocol.setSort(modbusDriverSaveData.getSort());
-					protocol.setDeviceType(modbusDriverSaveData.getDeviceType());
-					protocol.setItems(new ArrayList<ModbusProtocolConfig.Items>());
-					for(int i=0;i<modbusDriverSaveData.getDataConfig().size();i++){
-						String acqMode="passive";
-						if("主动上传".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getAcqMode())){
-							acqMode="active";
-						}else if("被动响应".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getAcqMode())){
-							acqMode="passive";
-						}
-						
-						String RWType="r";
-						if("读写".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getRWType())){
-							RWType="rw";
-						}else if("只读".equalsIgnoreCase(modbusDriverSaveData.getDataConfig().get(i).getRWType())){
-							RWType="r";
-						}
-						
-						ModbusProtocolConfig.Items item=new ModbusProtocolConfig.Items();
-						item.setTitle(modbusDriverSaveData.getDataConfig().get(i).getTitle());
-						item.setAddr(modbusDriverSaveData.getDataConfig().get(i).getAddr());
-						item.setQuantity(modbusDriverSaveData.getDataConfig().get(i).getQuantity());
-						item.setUnit(modbusDriverSaveData.getDataConfig().get(i).getUnit());
-						item.setRatio(modbusDriverSaveData.getDataConfig().get(i).getRatio());
-						item.setStoreDataType(modbusDriverSaveData.getDataConfig().get(i).getStoreDataType());
-						item.setIFDataType(modbusDriverSaveData.getDataConfig().get(i).getIFDataType());
-						item.setRWType(RWType);
-						item.setAcqMode(acqMode);
-						if(modbusDriverSaveData.getDataConfig().get(i).getMeaning()!=null && modbusDriverSaveData.getDataConfig().get(i).getMeaning().size()>0){
-							item.setMeaning(new ArrayList<ItemsMeaning>());
-							for(int m=0;m<modbusDriverSaveData.getDataConfig().get(i).getMeaning().size();m++){
-								ItemsMeaning itemsMeaning=new ItemsMeaning();
-								itemsMeaning.setValue(modbusDriverSaveData.getDataConfig().get(i).getMeaning().get(m).getValue());
-								itemsMeaning.setMeaning(modbusDriverSaveData.getDataConfig().get(i).getMeaning().get(m).getMeaning());
-								item.getMeaning().add(itemsMeaning);
-							}
-						}
-						protocol.getItems().add(item);
-					}
-					Collections.sort(protocol.getItems());
-					modbusProtocolConfig.getProtocol().add(protocol);
 				}
 			}
 			StringManagerUtils.writeFile(path,StringManagerUtils.jsonStringFormat(gson.toJson(modbusProtocolConfig)));
@@ -1674,8 +1664,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 				jedis.close();
 			}
 			if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
-				EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolName(),"update");
-				EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusDriverSaveData.getProtocolName(),"update");
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(003);
+				dataSynchronizationThread.setParam1(modbusDriverSaveData.getProtocolName());
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.start();
+				
+//				EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolName(),"update");
+//				EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusDriverSaveData.getProtocolName(),"update");
 			}
 		}
 		json ="{success:true}";
@@ -1699,11 +1695,19 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(acquisitionUnitHandsontableChangeData!=null){
 			if(acquisitionUnitHandsontableChangeData.getDelidslist()!=null){
 				for(int i=0;i<acquisitionUnitHandsontableChangeData.getDelidslist().size();i++){
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
-					this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(acquisitionUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(011);
+					dataSynchronizationThread.setParam1(acquisitionUnitHandsontableChangeData.getDelidslist().get(i));
+					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
+					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+					dataSynchronizationThread.start();
+					
+//					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
+//					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
+//					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
+//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
+//					this.acquisitionUnitManagerService.doAcquisitionUnitBulkDelete(acquisitionUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
 				}
 			}
 			if(acquisitionUnitHandsontableChangeData.getUpdatelist()!=null){
@@ -1756,9 +1760,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 			if(acquisitionGroupHandsontableChangeData.getDelidslist()!=null){
 				for(int i=0;i<acquisitionGroupHandsontableChangeData.getDelidslist().size();i++){
 					this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(acquisitionGroupHandsontableChangeData.getDelidslist().get(i));
-					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId, "update");
-					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(unitId,"update");
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(022);
+					dataSynchronizationThread.setParam1(unitId);
+					dataSynchronizationThread.setMethod("update");
+					dataSynchronizationThread.start();
+					
+//					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId, "update");
+//					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(unitId,"update");
+//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 				}
 			}
 			if(acquisitionGroupHandsontableChangeData.getUpdatelist()!=null){
@@ -1817,7 +1827,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(displayUnitHandsontableChangeData!=null){
 			if(displayUnitHandsontableChangeData.getDelidslist()!=null){
 				for(int i=0;i<displayUnitHandsontableChangeData.getDelidslist().size();i++){
-					this.displayUnitManagerService.doDisplayUnitBulkDelete(displayUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(041);
+					dataSynchronizationThread.setParam1(displayUnitHandsontableChangeData.getDelidslist().get(i));
+					dataSynchronizationThread.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
+					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+					dataSynchronizationThread.start();
+					
+//					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(displayUnitHandsontableChangeData.getDelidslist().get(i), "delete");
+//					this.displayUnitManagerService.doDisplayUnitBulkDelete(displayUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
 				}
 			}
 			if(displayUnitHandsontableChangeData.getUpdatelist()!=null){
@@ -1868,8 +1887,15 @@ public class AcquisitionUnitManagerController extends BaseController {
 			this.protocolInstanceManagerService.doModbusProtocolInstanceAdd(protocolInstance);
 			List<String> instanceList=new ArrayList<String>();
 			instanceList.add(protocolInstance.getName());
-			MemoryDataManagerTask.loadAcqInstanceOwnItemByCode(protocolInstance.getCode(),"update");
-			EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(051);
+			dataSynchronizationThread.setParam1(protocolInstance.getCode());
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.setInitWellList(instanceList);
+			dataSynchronizationThread.start();
+			
+//			MemoryDataManagerTask.loadAcqInstanceOwnItemByCode(protocolInstance.getCode(),"update");
+//			EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1934,8 +1960,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(modbusProtocolAlarmUnitSaveData!=null){
 			if(modbusProtocolAlarmUnitSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmUnitSaveData.getDelidslist().size();i++){
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i),"delete");
-					this.acquisitionUnitManagerService.doModbusProtocolAlarmUnitDelete(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(031);
+					dataSynchronizationThread.setParam1(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
+					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.start();
+					
+//					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i),"delete");
+//					this.acquisitionUnitManagerService.doModbusProtocolAlarmUnitDelete(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
 				}
 			}
 			
@@ -2017,8 +2049,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 								this.alarmUnitItemManagerService.grantAlarmItemsPermission(alarmUnitItem);
 							}
 						}
-						
-						MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getId()+"","update");
+						DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+						dataSynchronizationThread.setSign(032);
+						dataSynchronizationThread.setParam1(modbusProtocolAlarmUnitSaveData.getId()+"");
+						dataSynchronizationThread.setMethod("update");
+						dataSynchronizationThread.start();
+//						MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getId()+"","update");
 					}
 					
 					json = "{success:true,msg:true}";
@@ -2052,9 +2088,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 				for(int i=0;i<modbusProtocolInstanceSaveData.getDelidslist().size();i++){
 					List<String> deleteInstanceList=new ArrayList<String>();
 					deleteInstanceList.add(modbusProtocolInstanceSaveData.getName());
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
-					EquipmentDriverServerTask.initInstanceConfig(deleteInstanceList, "delete");
-					this.acquisitionUnitManagerService.doModbusProtocolInstanceBulkDelete(modbusProtocolInstanceSaveData.getDelidslist().get(i),modbusProtocolInstanceSaveData.getDeviceType());
+					
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(052);
+					dataSynchronizationThread.setParam1(modbusProtocolInstanceSaveData.getDelidslist().get(i));
+					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
+					dataSynchronizationThread.setInitWellList(deleteInstanceList);
+					dataSynchronizationThread.start();
+					
+//					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
+//					EquipmentDriverServerTask.initInstanceConfig(deleteInstanceList, "delete");
+//					this.acquisitionUnitManagerService.doModbusProtocolInstanceBulkDelete(modbusProtocolInstanceSaveData.getDelidslist().get(i),modbusProtocolInstanceSaveData.getDeviceType());
 				}
 			}
 			
@@ -2099,17 +2144,35 @@ public class AcquisitionUnitManagerController extends BaseController {
 					if(modbusProtocolInstanceSaveData.getName().equals(modbusProtocolInstanceSaveData.getOldName())){
 						List<String> instanceList=new ArrayList<String>();
 						instanceList.add(protocolInstance.getName());
-						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
-					}else{
-						List<String> instanceList=new ArrayList<String>();
-						instanceList.add(modbusProtocolInstanceSaveData.getOldName());
-						EquipmentDriverServerTask.initInstanceConfig(instanceList, "delete");
+						DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+						dataSynchronizationThread.setSign(053);
+						dataSynchronizationThread.setParam1(modbusProtocolInstanceSaveData.getId()+"");
+						dataSynchronizationThread.setInitWellList(instanceList);
+						dataSynchronizationThread.setMethod("update");
+						dataSynchronizationThread.start();
 						
-						instanceList=new ArrayList<String>();
+//						MemoryDataManagerTask.loadAcqInstanceOwnItemById(modbusProtocolInstanceSaveData.getId()+"", "update");
+//						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
+//						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
+					}else{
+						List<String> delInstanceList=new ArrayList<String>();
+						delInstanceList.add(modbusProtocolInstanceSaveData.getOldName());
+						List<String> instanceList=new ArrayList<String>();
 						instanceList.add(modbusProtocolInstanceSaveData.getName());
-						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
+						
+						DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+						dataSynchronizationThread.setSign(054);
+						dataSynchronizationThread.setDeleteList(delInstanceList);
+						dataSynchronizationThread.setInitWellList(instanceList);
+						dataSynchronizationThread.setParam1(modbusProtocolInstanceSaveData.getId()+"");
+						dataSynchronizationThread.start();
+						
+//						EquipmentDriverServerTask.initInstanceConfig(delInstanceList, "delete");
+//						MemoryDataManagerTask.loadAcqInstanceOwnItemById(modbusProtocolInstanceSaveData.getId()+"", "update");
+//						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
+//						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
 					}
-					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getId()+"", "update");
+					
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

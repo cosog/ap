@@ -3551,6 +3551,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		
 		String delDisplayItem="delete from TBL_DISPLAY_ITEMS2UNIT_CONF t "
 				+ " where t.type<>1 "
+				+ " and t.type in (select decode(t8.type,1,2,t8.type) from tbl_acq_group_conf t8 where t8.id="+ids+" )"
 				+ " and t.unitid in (select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3,tbl_acq_group2unit_conf t4,tbl_acq_group_conf t5 "
 				+ "      where t2.acqunitid=t3.id and t3.id=t4.unitid and t4.groupid=t5.id and t5.id="+ids+") ";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(delDisplayItem);
@@ -3589,7 +3590,21 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			tableName="tbl_pcpdevice";
 		}
-		String sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from tbl_protocolinstance t2  where t2.unitid in ("+ids+") )";
+		//处理显示实例、显示单元数据
+		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3 where t2.displayunitid=t3.id and t3.acqunitid in("+ids+") )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+				
+		sql="delete from tbl_display_items2unit_conf t where t.unitid in ( select t2.id from tbl_display_unit_conf t2 where t2.acqunitid in("+ids+") )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+				
+		sql="delete from tbl_protocoldisplayinstance t where t.displayunitid in ( select t2.id from tbl_display_unit_conf t2 where t2.acqunitid in("+ids+") )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+				
+		sql="delete from tbl_display_unit_conf t where t.acqunitid in( "+ids+")";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//处理采集实例、采集单元、采集组数据
+		sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from tbl_protocolinstance t2  where t2.unitid in ("+ids+") )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from TBL_ACQ_ITEM2GROUP_CONF t where t.groupid in (select t2.id from tbl_acq_group_conf t2,tbl_acq_group2unit_conf t3 where t2.id=t3.groupid and t3.unitid in("+ids+"))";
@@ -3614,7 +3629,34 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		if(deviceType==1){
 			tableName="tbl_pcpdevice";
 		}
-		String sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
+		//处理显示实例、显示单元数据
+		String sql = "update "+tableName+" t set t.displayinstancecode='' where t.displayinstancecode in ( select t2.code from tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_acq_unit_conf t4 where t2.displayunitid=t3.id and t3.acqunitid=t4.id and t4.protocol='"+protocolName+"' )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_display_items2unit_conf t where t.unitid in ( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_protocoldisplayinstance t where t.displayunitid in ( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_display_unit_conf t where t.acqunitid in( select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"')";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//处理报警实例、报警单元数据
+		sql = "update "+tableName+" t set t.alarminstancecode='' where t.alarminstancecode in ( select t2.code from tbl_protocolalarminstance t2,tbl_alarm_unit_conf t3 where t2.alarmunitid=t3.id and t3.protocol='"+protocolName+"' )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_alarm_item2unit_conf t where t.unitid in( select id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_protocolalarminstance t where t.alarmunitid in( select id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		sql="delete from tbl_alarm_unit_conf t where t.protocol ='"+protocolName+"'";
+		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
+		
+		//处理采集实例、采集单元、采集组数据
+		sql = "update "+tableName+" t set t.instancecode='' where t.instancecode in ( select t2.code from tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t2.unitid=t3.id and t3.protocol='"+protocolName+"' )";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from TBL_ACQ_ITEM2GROUP_CONF t where t.groupid in (select t2.id from tbl_acq_group_conf t2 where t2.protocol='"+protocolName+"')";
@@ -3630,19 +3672,6 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 		
 		sql="delete from tbl_acq_unit_conf t where t.protocol ='"+protocolName+"'";
-		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		
-		sql = "update "+tableName+" t set t.alarminstancecode='' where t.alarminstancecode in ( select t2.code from tbl_protocolalarminstance t2,tbl_alarm_unit_conf t3 where t2.alarmunitid=t3.id and t3.protocol='"+protocolName+"' )";
-		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		sql="delete from tbl_alarm_item2unit_conf t where t.unitid in( select id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"' )";
-		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		sql="delete from tbl_protocolalarminstance t where t.alarmunitid in( select id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"' )";
-		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
-		
-		sql="delete from tbl_alarm_unit_conf t where t.protocol ='"+protocolName+"'";
 		delorUpdateCount=this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -3740,8 +3769,10 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 	}
 	
 	public void doModbusProtocolAlarmUnitDelete(final String ids) throws Exception {
-		final String hql = "DELETE AlarmUnit u where u.id in (" + ids + ")";
-		super.bulkObjectDelete(hql);
+		String delItemHql = "DELETE AlarmUnitItem u where u.unitId in (" + ids + ")";
+		String hql = "DELETE AlarmUnit u where u.id in (" + ids + ")";
+		getBaseDao().bulkObjectDelete(delItemHql);
+		getBaseDao().bulkObjectDelete(hql);
 	}
 	
 	public void deleteCurrentAlarmUnitOwnItems(ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData) throws Exception {

@@ -724,6 +724,31 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadAcqInstanceOwnItemByProtocolName(String protocolName,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(protocolName)){
+				instanceSql+=" and t.unitid in( select t2.id from tbl_acq_unit_conf t2 where t2.protocol='"+protocolName+"' )";
+			}
+			pstmt = conn.prepareStatement(instanceSql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
 	public static void loadDisplayInstanceOwnItemById(String instanceId,String method){
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -899,6 +924,32 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadDisplayInstanceOwnItemByProtocolName(String protocolName,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(protocolName)){
+				instanceSql+=" and t.displayunitid in( select t2.id from tbl_display_unit_conf t2,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+protocolName+"' )";
+			}
+			
+			pstmt = conn.prepareStatement(instanceSql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
 	public static void loadAlarmInstanceOwnItemById(String instanceId,String method){
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -1050,6 +1101,31 @@ public class MemoryDataManagerTask {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(unitId)){
 				instanceSql+=" and t.alarmunitid="+unitId;
+			}
+			pstmt = conn.prepareStatement(instanceSql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadAlarmInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadAlarmInstanceOwnItemByProtocolName(String protocolName,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(protocolName)){
+				instanceSql+=" and t.alarmunitid in (select t2.id from tbl_alarm_unit_conf t2 where t2.protocol='"+protocolName+"')";
 			}
 			pstmt = conn.prepareStatement(instanceSql);
 			rs=pstmt.executeQuery();

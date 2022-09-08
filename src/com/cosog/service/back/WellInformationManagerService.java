@@ -377,10 +377,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 //		getBaseDao().saveWellEditerGridData(wellHandsontableChangedData,orgId,deviceType,user);
 //	}
 	
-	public String saveRPCDeviceData(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
+	public String saveRPCDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer collisionbuff = new StringBuffer();
-		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().saveRPCDeviceData(wellHandsontableChangedData,orgId,deviceType,user);
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().saveRPCDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,user);
 		int successCount=0;
 		int collisionCount=0;
 		collisionbuff.append("[");
@@ -401,7 +401,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String batchAddRPCDevice(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,String isCheckout,User user) throws Exception {
+	public String batchAddRPCDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,String isCheckout,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer  collisionBuff = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
@@ -413,7 +413,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int overlayCount=0;
 		String ddicName="rpcDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
-		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddRPCDevice(wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype=0 order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=0 order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype=0 order by t.sort";
@@ -621,10 +621,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String savePCPDeviceData(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
+	public String savePCPDeviceData(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer collisionbuff = new StringBuffer();
-		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().savePCPDeviceData(wellHandsontableChangedData,orgId,deviceType,user);
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().savePCPDeviceData(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,user);
 		int successCount=0;
 		int collisionCount=0;
 		collisionbuff.append("[");
@@ -645,7 +645,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public String batchAddPCPDevice(WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,String isCheckout,User user) throws Exception {
+	public String batchAddPCPDevice(WellInformationManagerService<?> wellInformationManagerService,WellHandsontableChangedData wellHandsontableChangedData,String orgId,int deviceType,String isCheckout,User user) throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer  collisionBuff = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
@@ -657,7 +657,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		int overlayCount=0;
 		String ddicName="pcpDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
-		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPCPDevice(wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
+		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype=1 order by t.sort";
 		String displayInstanceSql="select t.name from tbl_protocoldisplayinstance t where t.devicetype=1 order by t.sort";
 		String alarmInstanceSql="select t.name from tbl_protocolalarminstance t where t.devicetype=1 order by t.sort";
@@ -772,10 +772,6 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public void doRPCDeviceAdd(RpcDeviceInformation rpcDeviceInformation) throws Exception {
 		getBaseDao().addObject(rpcDeviceInformation);
-	}
-	
-	public void doRPCDeviceEdit(RpcDeviceInformation rpcDeviceInformation) throws Exception {
-		getBaseDao().updateObject(rpcDeviceInformation);
 	}
 	
 	public void doPCPDeviceAdd(PcpDeviceInformation pcpDeviceInformation) throws Exception {

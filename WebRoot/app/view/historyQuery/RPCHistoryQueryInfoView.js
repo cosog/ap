@@ -639,7 +639,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                        	 	var columnStr=Ext.getCmp("RPCHistoryQueryDataColumnStr_Id").getValue();
                        	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }
-                    },'->', {
+                    },'->',{
                         id: 'SurfaceCardTotalCount_Id',
                         xtype: 'component',
                         tpl: cosog.string.totalCount + ': {count}', // 总记录数

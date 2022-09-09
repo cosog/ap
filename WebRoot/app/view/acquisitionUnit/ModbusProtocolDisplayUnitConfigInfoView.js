@@ -731,72 +731,70 @@ var grantDisplayAcqItemsPermission = function () {
     if (!isNotVal(unitCode)) {
         return false
     }
-    if (acqItemsData.length > 0) {
-        Ext.Array.each(acqItemsData, function (name, index, countriesItSelf) {
-            if ((acqItemsData[index][0]+'')==='true') {
-            	var itemName = acqItemsData[index][2];
-            	
-            	var itemShowLevel = acqItemsData[index][4];
-            	var itemSort = acqItemsData[index][5];
-            	var isRealtimeCurve=acqItemsData[index][6];
-            	var realtimeCurveColor=acqItemsData[index][7];
-            	var isHistoryCurve=acqItemsData[index][8];
-            	var historyCurveColor=acqItemsData[index][9];
-            	
-            	var resolutionMode = acqItemsData[index][10];
-            	var itemAddr = acqItemsData[index][11];
-            	var bitIndex=acqItemsData[index][12];
-                
-                addjson.push(itemName);
-                addItemSort.push(itemSort);
-                var matrix_value = '0,0,0';
-                matrixData += itemName + ":"
-                + itemSort+ ":"
-                + itemShowLevel+ ":" 
-                + isRealtimeCurve+ ":" 
-                + realtimeCurveColor+ ":" 
-                + isHistoryCurve + ":" 
-                + historyCurveColor + ":" 
-                
-                + resolutionMode+ ":"
-                + itemAddr + ":" 
-                + bitIndex +":"
-                
-                + matrix_value+ "|";
-            }
-        });
-        if (addjson.length > 0) {
-            matrixData = matrixData.substring(0, matrixData.length - 1);
-            var addparams = "" + addjson.join(",");
-            var addSortParams = "" + addItemSort.join(",");
-            var matrixCodes_ = "" + matrixData;
-            Ext.Ajax.request({
-                url: addUrl,
-                method: "POST",
-                params: {
-                    params: addparams,
-                    sorts: addSortParams,
-                    protocol :protocol,
-                    unitCode: unitCode,
-                    unitId:unitId,
-                    itemType:0,
-                    matrixCodes: matrixCodes_
-                },
-                success: function (response) {
-                    var result = Ext.JSON.decode(response.responseText);
-                    if (result.msg == true) {
-                        Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
-                    }
-                    if (result.msg == false) {
-                        Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
-                    }
-                },
-                failure: function () {
-                    Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
-                }
-            });
+
+    Ext.Array.each(acqItemsData, function (name, index, countriesItSelf) {
+        if ((acqItemsData[index][0]+'')==='true') {
+        	var itemName = acqItemsData[index][2];
+        	
+        	var itemShowLevel = acqItemsData[index][4];
+        	var itemSort = acqItemsData[index][5];
+        	var isRealtimeCurve=acqItemsData[index][6];
+        	var realtimeCurveColor=acqItemsData[index][7];
+        	var isHistoryCurve=acqItemsData[index][8];
+        	var historyCurveColor=acqItemsData[index][9];
+        	
+        	var resolutionMode = acqItemsData[index][10];
+        	var itemAddr = acqItemsData[index][11];
+        	var bitIndex=acqItemsData[index][12];
+            
+            addjson.push(itemName);
+            addItemSort.push(itemSort);
+            var matrix_value = '0,0,0';
+            matrixData += itemName + ":"
+            + itemSort+ ":"
+            + itemShowLevel+ ":" 
+            + isRealtimeCurve+ ":" 
+            + realtimeCurveColor+ ":" 
+            + isHistoryCurve + ":" 
+            + historyCurveColor + ":" 
+            
+            + resolutionMode+ ":"
+            + itemAddr + ":" 
+            + bitIndex +":"
+            
+            + matrix_value+ "|";
         }
-    }
+    });
+
+    matrixData = matrixData.substring(0, matrixData.length - 1);
+    var addparams = "" + addjson.join(",");
+    var addSortParams = "" + addItemSort.join(",");
+    var matrixCodes_ = "" + matrixData;
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        params: {
+            params: addparams,
+            sorts: addSortParams,
+            protocol :protocol,
+            unitCode: unitCode,
+            unitId:unitId,
+            itemType:0,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
     return false;
 }
 
@@ -821,64 +819,63 @@ var grantDisplayCalItemsPermission = function () {
     if (!isNotVal(unitCode)) {
         return false
     }
-    if (calItemsData.length > 0) {
-        Ext.Array.each(calItemsData, function (name, index, countriesItSelf) {
-            if ((calItemsData[index][0]+'')==='true') {
-            	var itemName = calItemsData[index][2];
-            	
-            	var itemShowLevel = calItemsData[index][4];
-            	var itemSort = calItemsData[index][5];
-            	var isRealtimeCurve=calItemsData[index][6];
-            	var realtimeCurveColor=calItemsData[index][7];
-            	var isHistoryCurve=calItemsData[index][8];
-            	var historyCurveColor=calItemsData[index][9];
-            	
-            	var itemCode = calItemsData[index][10];
-            	
-                addjson.push(itemCode);
-                addItemSort.push(itemSort);
-                var matrix_value = '0,0,0';
-                matrixData += itemName + ":"
-                + itemCode+ ":"
-                + itemSort+ ":"
-                + itemShowLevel+ ":" 
-                + isRealtimeCurve+ ":" 
-                + realtimeCurveColor+ ":" 
-                + isHistoryCurve + ":" 
-                + historyCurveColor + ":" 
-                + matrix_value+ "|";
+
+    Ext.Array.each(calItemsData, function (name, index, countriesItSelf) {
+        if ((calItemsData[index][0]+'')==='true') {
+        	var itemName = calItemsData[index][2];
+        	
+        	var itemShowLevel = calItemsData[index][4];
+        	var itemSort = calItemsData[index][5];
+        	var isRealtimeCurve=calItemsData[index][6];
+        	var realtimeCurveColor=calItemsData[index][7];
+        	var isHistoryCurve=calItemsData[index][8];
+        	var historyCurveColor=calItemsData[index][9];
+        	
+        	var itemCode = calItemsData[index][10];
+        	
+            addjson.push(itemCode);
+            addItemSort.push(itemSort);
+            var matrix_value = '0,0,0';
+            matrixData += itemName + ":"
+            + itemCode+ ":"
+            + itemSort+ ":"
+            + itemShowLevel+ ":" 
+            + isRealtimeCurve+ ":" 
+            + realtimeCurveColor+ ":" 
+            + isHistoryCurve + ":" 
+            + historyCurveColor + ":" 
+            + matrix_value+ "|";
+        }
+    });
+    matrixData = matrixData.substring(0, matrixData.length - 1);
+    var addparams = "" + addjson.join(",");
+    var addSortParams = "" + addItemSort.join(",");
+    var matrixCodes_ = "" + matrixData;
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        params: {
+            params: addparams,
+            sorts: addSortParams,
+            protocol :protocol,
+            unitCode: unitCode,
+            unitId:unitId,
+            itemType:1,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
             }
-        });
-        matrixData = matrixData.substring(0, matrixData.length - 1);
-        var addparams = "" + addjson.join(",");
-        var addSortParams = "" + addItemSort.join(",");
-        var matrixCodes_ = "" + matrixData;
-        Ext.Ajax.request({
-            url: addUrl,
-            method: "POST",
-            params: {
-                params: addparams,
-                sorts: addSortParams,
-                protocol :protocol,
-                unitCode: unitCode,
-                unitId:unitId,
-                itemType:1,
-                matrixCodes: matrixCodes_
-            },
-            success: function (response) {
-                var result = Ext.JSON.decode(response.responseText);
-                if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
-                }
-                if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
-                }
-            },
-            failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '计算项安排失败' + "。</font>");
             }
-        });
-    }
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
     return false;
 }
 
@@ -903,63 +900,62 @@ var grantDisplayCtrlItemsPermission = function () {
     if (!isNotVal(unitCode)) {
         return false
     }
-    if (ctrlItemsData.length > 0) {
-        Ext.Array.each(ctrlItemsData, function (name, index, countriesItSelf) {
-            if ((ctrlItemsData[index][0]+'')==='true') {
-            	var itemName = ctrlItemsData[index][2];
-            	
-            	var itemShowLevel = ctrlItemsData[index][4];
-            	var itemSort = ctrlItemsData[index][5];
-            	
-            	var resolutionMode = ctrlItemsData[index][6];
-            	var itemAddr = ctrlItemsData[index][7];
-            	var bitIndex=ctrlItemsData[index][8];
-                
-                addjson.push(itemName);
-                addItemSort.push(itemSort);
-                var matrix_value = '0,0,0';
-                matrixData += itemName + ":"
-                + itemSort+ ":"
-                + itemShowLevel+ ":" 
-                
-                + resolutionMode+ ":"
-                + itemAddr + ":" 
-                + bitIndex +":"
-                
-                + matrix_value+ "|";
-            }
-        });
-        if (addjson.length > 0) {
-            matrixData = matrixData.substring(0, matrixData.length - 1);
-            var addparams = "" + addjson.join(",");
-            var addSortParams = "" + addItemSort.join(",");
-            var matrixCodes_ = "" + matrixData;
-            Ext.Ajax.request({
-                url: addUrl,
-                method: "POST",
-                params: {
-                    params: addparams,
-                    sorts: addSortParams,
-                    protocol :protocol,
-                    unitCode: unitCode,
-                    unitId:unitId,
-                    itemType:2,
-                    matrixCodes: matrixCodes_
-                },
-                success: function (response) {
-                    var result = Ext.JSON.decode(response.responseText);
-                    if (result.msg == true) {
-                        Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
-                    }
-                    if (result.msg == false) {
-                        Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
-                    }
-                },
-                failure: function () {
-                    Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
-                }
-            });
+
+    Ext.Array.each(ctrlItemsData, function (name, index, countriesItSelf) {
+        if ((ctrlItemsData[index][0]+'')==='true') {
+        	var itemName = ctrlItemsData[index][2];
+        	
+        	var itemShowLevel = ctrlItemsData[index][4];
+        	var itemSort = ctrlItemsData[index][5];
+        	
+        	var resolutionMode = ctrlItemsData[index][6];
+        	var itemAddr = ctrlItemsData[index][7];
+        	var bitIndex=ctrlItemsData[index][8];
+            
+            addjson.push(itemName);
+            addItemSort.push(itemSort);
+            var matrix_value = '0,0,0';
+            matrixData += itemName + ":"
+            + itemSort+ ":"
+            + itemShowLevel+ ":" 
+            
+            + resolutionMode+ ":"
+            + itemAddr + ":" 
+            + bitIndex +":"
+            
+            + matrix_value+ "|";
         }
-    }
+    });
+
+    matrixData = matrixData.substring(0, matrixData.length - 1);
+    var addparams = "" + addjson.join(",");
+    var addSortParams = "" + addItemSort.join(",");
+    var matrixCodes_ = "" + matrixData;
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        params: {
+            params: addparams,
+            sorts: addSortParams,
+            protocol :protocol,
+            unitCode: unitCode,
+            unitId:unitId,
+            itemType:2,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "<font color=blue>保存成功</font>");
+            }
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + '采集项安排失败' + "。</font>");
+            }
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
+
     return false;
 }

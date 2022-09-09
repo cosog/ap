@@ -50,7 +50,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -128,9 +128,9 @@ public class EquipmentDriverServerTask {
 					initSMSInstanceConfig(null,"");
 				}
 				if(!driverProbeResponse.getSMSInitStatus()){
-					initSMSDevice(null,"");
+//					initSMSDevice(null,"");
 				}
-				if(!driverProbeResponse.getIDInitStatus()){
+				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
 					//清空内存
 					Map<String, Object> dataModelMap = DataModelMap.getMapObject();
 					Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
@@ -269,6 +269,7 @@ public class EquipmentDriverServerTask {
 		public boolean ProtocolInitStatus;
 		public boolean InstanceInitStatus;
 		public boolean IDInitStatus;
+		public boolean IPPortInitStatus;
 		public boolean HttpServerInitStatus;
 		public boolean SMSInitStatus;
 		public String Ver;
@@ -308,6 +309,12 @@ public class EquipmentDriverServerTask {
 		}
 		public void setSMSInitStatus(boolean sMSInitStatus) {
 			SMSInitStatus = sMSInitStatus;
+		}
+		public boolean getIPPortInitStatus() {
+			return IPPortInitStatus;
+		}
+		public void setIPPortInitStatus(boolean iPPortInitStatus) {
+			IPPortInitStatus = iPPortInitStatus;
 		}
 	}
 	

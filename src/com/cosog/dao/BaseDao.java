@@ -2168,7 +2168,7 @@ public class BaseDao extends HibernateDaoSupport {
 						pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
 						collisionList.add(pumpingModelHandsontableChangedData.getUpdatelist().get(i));
 						if(saveSign==1){
-							MemoryDataManagerTask.loadRPCDeviceInfoByPumpingId(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId());
+							MemoryDataManagerTask.loadRPCDeviceInfoByPumpingId(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId(),"update");
 						}
 					}
 				}

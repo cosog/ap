@@ -262,8 +262,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 				if(jedis!=null){
 					jedis.close();
 				}
-				
-				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(001);
+				dataSynchronizationThread.setParam1(protocol.getName());
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.start();
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -658,7 +661,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			if (paramsArr.length > 0 && StringManagerUtils.isNotNull(unitId) && protocol!=null) {
+			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
 				int protocolType=protocol.getDeviceType();
 				String columnsKey="rpcDeviceAcquisitionItemColumns";
@@ -671,7 +674,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 				
-				if (matrixCodes != "" || matrixCodes != null) {
+				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					List<String> itemsList=new ArrayList<String>();
 					for (int i = 0; i < module_matrix.length; i++) {
@@ -760,7 +763,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 			}
 			
-			if (paramsArr.length > 0 && StringManagerUtils.isNotNull(unitId) && protocol!=null) {
+			if (StringManagerUtils.isNotNull(unitId) && protocol!=null) {
 				this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
 				int protocolType=protocol.getDeviceType();
 				String columnsKey="rpcDeviceAcquisitionItemColumns";
@@ -772,7 +775,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					EquipmentDriverServerTask.loadAcquisitionItemColumns(protocolType);
 				}
 				Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
-				if (matrixCodes != "" || matrixCodes != null) {
+				if (StringManagerUtils.isNotNull(matrixCodes)) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					List<String> itemsList=new ArrayList<String>();
 					for (int i = 0; i < module_matrix.length; i++) {
@@ -811,7 +814,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 				}
 			}
-			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(042);
+			dataSynchronizationThread.setParam1(unitId);
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.start();
+//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
+			
+			
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
 			out.print(result);
@@ -844,7 +854,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			String paramsArr[] = StringManagerUtils.split(params, ",");
 
 			this.displayUnitItemManagerService.deleteCurrentDisplayUnitOwnItems(unitId,itemType);
-			if (matrixCodes != "" || matrixCodes != null) {
+			if (StringManagerUtils.isNotNull(matrixCodes)) {
 				String module_matrix[] = matrixCodes.split("\\|");
 				List<String> itemsList=new ArrayList<String>();
 				for (int i = 0; i < module_matrix.length; i++) {
@@ -1889,7 +1899,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 			instanceList.add(protocolInstance.getName());
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(051);
-			dataSynchronizationThread.setParam1(protocolInstance.getCode());
+			dataSynchronizationThread.setParam1(protocolInstance.getName());
 			dataSynchronizationThread.setMethod("update");
 			dataSynchronizationThread.setInitWellList(instanceList);
 			dataSynchronizationThread.start();
@@ -1964,6 +1974,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setSign(031);
 					dataSynchronizationThread.setParam1(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
 					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					dataSynchronizationThread.start();
 					
 //					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i),"delete");
@@ -2095,6 +2106,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
 					dataSynchronizationThread.setInitWellList(deleteInstanceList);
+					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
 					dataSynchronizationThread.start();
 					
 //					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
@@ -2196,7 +2208,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		try {
 			this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceAdd(protocolDisplayInstance);
-			MemoryDataManagerTask.loadDisplayInstanceOwnItemByCode(protocolDisplayInstance.getCode(),"update");
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(061);
+			dataSynchronizationThread.setParam1(protocolDisplayInstance.getName());
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.start();
+//			MemoryDataManagerTask.loadDisplayInstanceOwnItemByCode(protocolDisplayInstance.getCode(),"update");
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -2223,8 +2240,16 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(modbusProtocolDisplayInstanceSaveData!=null){
 			if(modbusProtocolDisplayInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolDisplayInstanceSaveData.getDelidslist().size();i++){
-					this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceBulkDelete(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i),"delete");
+					
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(062);
+					dataSynchronizationThread.setParam1(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
+					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+					dataSynchronizationThread.start();
+					
+//					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i),"delete");
+//					this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceBulkDelete(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
 				}
 			}
 			
@@ -2242,7 +2267,14 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				try {
 					this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceEdit(protocolDisplayInstance);
-					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(protocolDisplayInstance.getId()+"","update");
+					
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(063);
+					dataSynchronizationThread.setParam1(protocolDisplayInstance.getId()+"");
+					dataSynchronizationThread.setMethod("update");
+					dataSynchronizationThread.start();
+					
+//					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(protocolDisplayInstance.getId()+"","update");
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -2266,7 +2298,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		try {
 			this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceAdd(protocolAlarmInstance);
-			MemoryDataManagerTask.loadAlarmInstanceOwnItemByCode(protocolAlarmInstance.getCode(),"update");
+			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+			dataSynchronizationThread.setSign(071);
+			dataSynchronizationThread.setParam1(protocolAlarmInstance.getName());
+			dataSynchronizationThread.setMethod("update");
+			dataSynchronizationThread.start();
+//			MemoryDataManagerTask.loadAlarmInstanceOwnItemByCode(protocolAlarmInstance.getCode(),"update");
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -2293,8 +2330,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 		if(modbusProtocolAlarmInstanceSaveData!=null){
 			if(modbusProtocolAlarmInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmInstanceSaveData.getDelidslist().size();i++){
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemById(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i),"delete");
-					this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceBulkDelete(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(072);
+					dataSynchronizationThread.setParam1(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
+					dataSynchronizationThread.setMethod("delete");
+					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
+					dataSynchronizationThread.start();
+//					this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceBulkDelete(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
 				}
 			}
 			
@@ -2312,7 +2354,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 				}
 				try {
 					this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceEdit(protocolAlarmInstance);
-					MemoryDataManagerTask.loadAlarmInstanceOwnItemById(protocolAlarmInstance.getId()+"","update");
+					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+					dataSynchronizationThread.setSign(073);
+					dataSynchronizationThread.setParam1(protocolAlarmInstance.getId()+"");
+					dataSynchronizationThread.setMethod("update");
+					dataSynchronizationThread.start();
+//					MemoryDataManagerTask.loadAlarmInstanceOwnItemById(protocolAlarmInstance.getId()+"","update");
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

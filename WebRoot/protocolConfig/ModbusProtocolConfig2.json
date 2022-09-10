@@ -1,26 +1,14 @@
 {
     "Protocol": [
         {
-            "Name": "飞舟泵产品协议",
-            "Code": "飞舟泵产品协议",
+            "Name": "A11-抽油机",
+            "Code": "A11-抽油机",
             "DeviceType": 0,
             "Sort": 1,
             "Items": [
                 {
-                    "Title": "设备型号标识位",
-                    "Addr": 0,
-                    "StoreDataType": "byte",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "变频器运行状态",
-                    "Addr": 2,
+                    "Title": "运行状态",
+                    "Addr": 40317,
                     "StoreDataType": "uint16",
                     "IFDataType": "int",
                     "Quantity": 1,
@@ -28,2173 +16,739 @@
                     "RWType": "r",
                     "Unit": "",
                     "ResolutionMode": 1,
-                    "AcqMode": "active",
+                    "AcqMode": "passive",
                     "Meaning": [{
+                        "Value": 0,
+                        "Meaning": "停抽"
+                    }, {
                         "Value": 1,
-                        "Meaning": "正转运行中"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "反转运行中"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "变频停机中"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "变频故障中"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "变频POFF状态"
+                        "Meaning": "运行"
                     }]
                 },
                 {
-                    "Title": "变频器故障代码",
-                    "Addr": 4,
+                    "Title": "启停控制",
+                    "Addr": 40320,
                     "StoreDataType": "uint16",
                     "IFDataType": "int",
                     "Quantity": 1,
                     "Ratio": 1.0,
-                    "RWType": "r",
+                    "RWType": "rw",
                     "Unit": "",
                     "ResolutionMode": 1,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 0,
-                        "Meaning": "无故障"
-                    }, {
-                        "Value": 1,
-                        "Meaning": "逆变单元U相保护"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "逆变单元V相保护"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "逆变单元W相保护"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "加速过电流"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "减速过电流"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "恒速过电流"
-                    }, {
-                        "Value": 7,
-                        "Meaning": "加速过电压"
-                    }, {
-                        "Value": 8,
-                        "Meaning": "减速过电压"
-                    }, {
-                        "Value": 9,
-                        "Meaning": "恒速过电压"
-                    }, {
-                        "Value": 10,
-                        "Meaning": "母线欠压故障"
-                    }, {
-                        "Value": 11,
-                        "Meaning": "电机过载"
-                    }, {
-                        "Value": 12,
-                        "Meaning": "变频器过载"
-                    }, {
-                        "Value": 13,
-                        "Meaning": "输入侧缺相"
-                    }, {
-                        "Value": 14,
-                        "Meaning": "输出侧缺相"
-                    }, {
-                        "Value": 15,
-                        "Meaning": "整流模块过热"
-                    }, {
-                        "Value": 16,
-                        "Meaning": "逆变模块过热"
-                    }, {
-                        "Value": 17,
-                        "Meaning": "外部故障"
-                    }, {
-                        "Value": 18,
-                        "Meaning": "485通讯故障"
-                    }, {
-                        "Value": 19,
-                        "Meaning": "电流检测故障"
-                    }, {
-                        "Value": 20,
-                        "Meaning": "电机自学习故障"
-                    }, {
-                        "Value": 21,
-                        "Meaning": "EEPROM操作故障"
-                    }, {
-                        "Value": 22,
-                        "Meaning": "PID反馈断线故障"
-                    }, {
-                        "Value": 23,
-                        "Meaning": "制动单元故障"
-                    }, {
-                        "Value": 24,
-                        "Meaning": "运行时间达到"
-                    }, {
-                        "Value": 25,
-                        "Meaning": "电子过载"
-                    }, {
-                        "Value": 26,
-                        "Meaning": "键盘通讯故障"
-                    }, {
-                        "Value": 27,
-                        "Meaning": "参数上传错误"
-                    }, {
-                        "Value": 28,
-                        "Meaning": "参数下载错误"
-                    }, {
-                        "Value": 32,
-                        "Meaning": "对地短路故障1"
-                    }, {
-                        "Value": 33,
-                        "Meaning": "对地短路故障2"
-                    }, {
-                        "Value": 36,
-                        "Meaning": "欠载故障"
-                    }]
-                },
-                {
-                    "Title": "A相电压",
-                    "Addr": 6,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "A相电流",
-                    "Addr": 8,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "B相电压",
-                    "Addr": 10,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "B相电流",
-                    "Addr": 12,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "C相电压",
-                    "Addr": 14,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "C相电流",
-                    "Addr": 16,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "平均电压",
-                    "Addr": 18,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "平均电流",
-                    "Addr": 20,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总功率",
-                    "Addr": 22,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "kW",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "合计功率因数",
-                    "Addr": 24,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "%",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总频率",
-                    "Addr": 26,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "Hz",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总电能",
-                    "Addr": 28,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "kWh",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总累计时间",
-                    "Addr": 30,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "d",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口温度",
-                    "Addr": 32,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "井口压力",
-                    "Addr": 34,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下温度",
-                    "Addr": 36,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "井下压力",
-                    "Addr": 38,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "套管压力",
-                    "Addr": 40,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "柜内温度",
-                    "Addr": 42,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "自制井下温度",
-                    "Addr": 48,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "自制井下压力",
-                    "Addr": 50,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制故障码",
-                    "Addr": 52,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "保护开关",
-                    "Addr": 54,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "bool",
-                    "Quantity": 16,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 0,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 0,
-                        "Meaning": "外置井下温度开关"
-                    }, {
-                        "Value": 1,
-                        "Meaning": "外置井下压力开关"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "内置井下压力开关"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "内置井下温度开关"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "外置液面保护开关"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "内置液面保护开关"
-                    }, {
-                        "Value": 8,
-                        "Meaning": "欠压保护开关"
-                    }, {
-                        "Value": 9,
-                        "Meaning": "过压保护开关"
-                    }, {
-                        "Value": 10,
-                        "Meaning": "欠流保护开关"
-                    }, {
-                        "Value": 11,
-                        "Meaning": "过流保护开关"
-                    }, {
-                        "Value": 12,
-                        "Meaning": "电压不平衡保护开关"
-                    }, {
-                        "Value": 13,
-                        "Meaning": "电流不平衡保护开关"
-                    }, {
-                        "Value": 14,
-                        "Meaning": "井口温度开关"
-                    }, {
-                        "Value": 15,
-                        "Meaning": "井口压力开关"
-                    }]
-                },
-                {
-                    "Title": "保护执行状态",
-                    "Addr": 56,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "bool",
-                    "Quantity": 16,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 0,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 0,
-                        "Meaning": "井下温度保护"
-                    }, {
-                        "Value": 1,
-                        "Meaning": "外置井下压力保护"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "内置井下压力保护"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "外置液面保护"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "内置液面保护"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "内置井下温度保护"
-                    }, {
-                        "Value": 8,
-                        "Meaning": "欠压保护"
-                    }, {
-                        "Value": 9,
-                        "Meaning": "过压保护"
-                    }, {
-                        "Value": 10,
-                        "Meaning": "欠流保护"
-                    }, {
-                        "Value": 11,
-                        "Meaning": "过流保护"
-                    }, {
-                        "Value": 12,
-                        "Meaning": "电压不平衡保护"
-                    }, {
-                        "Value": 13,
-                        "Meaning": "电流不平衡保护"
-                    }, {
-                        "Value": 14,
-                        "Meaning": "井口温度保护"
-                    }, {
-                        "Value": 15,
-                        "Meaning": "井口压力保护"
-                    }]
-                },
-                {
-                    "Title": "欠压保护值",
-                    "Addr": 58,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠压延时值",
-                    "Addr": 60,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "过压保护值",
-                    "Addr": 62,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "过压延时值",
-                    "Addr": 64,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠载保护值",
-                    "Addr": 66,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠载延时值",
-                    "Addr": 68,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "过载保护值",
-                    "Addr": 70,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                 },
-                {
-                    "Title": "过载延时值",
-                    "Addr": 72,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电压不平衡保护值",
-                    "Addr": 74,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "%",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电压不平衡延时值",
-                    "Addr": 76,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电流不平衡保护值",
-                    "Addr": 78,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "%",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电流不平衡延时值",
-                    "Addr": 80,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口温度保护值",
-                    "Addr": 82,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口温度保护延时值",
-                    "Addr": 84,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口压力保护值",
-                    "Addr": 86,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口压力保护延时值",
-                    "Addr": 88,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下温度保护值",
-                    "Addr": 90,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下温度保护延时值",
-                    "Addr": 92,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "内置井下温度保护值",
-                    "Addr": 94,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "内置井下温度保护延时值",
-                    "Addr": 96,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下压力保护值",
-                    "Addr": 98,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下压力保护延时值",
-                    "Addr": 100,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制井下压力保护值",
-                    "Addr": 102,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制井下压力保护延时值",
-                    "Addr": 104,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "液面保护值",
-                    "Addr": 106,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "液面保护延时值",
-                    "Addr": 108,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制液面保护值",
-                    "Addr": 110,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制液面保护延时值",
-                    "Addr": 112,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "运行模式",
-                    "Addr": 114,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 1,
-                    "AcqMode": "active",
+                    "AcqMode": "passive",
                     "Meaning": [{
                         "Value": 1,
-                        "Meaning": "手动控制"
+                        "Meaning": "启抽"
                     }, {
                         "Value": 2,
-                        "Meaning": "流压闭环控制"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "间歇自动控制"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "流压自动控制"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "液面自动控制"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "液面闭环控制"
+                        "Meaning": "停抽"
                     }]
                 },
                 {
-                    "Title": "间歇运行时间",
-                    "Addr": 116,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "min",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "间歇停机时间",
-                    "Addr": 118,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "min",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "目标井下压力",
-                    "Addr": 120,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制目标井下压力",
-                    "Addr": 122,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "目标液面深度",
-                    "Addr": 124,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制目标液面深度",
-                    "Addr": 126,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "程序版本号",
-                    "Addr": 128,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "气体压力",
-                    "Addr": 130,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "KPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "气体瞬时流量",
-                    "Addr": 132,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m³/h",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "气体累计流量",
-                    "Addr": 134,
+                    "Title": "光杆温度",
+                    "Addr": 40331,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 1,
                     "Ratio": 1.0,
                     "RWType": "r",
-                    "Unit": "m³",
+                    "Unit": "℃",
                     "ResolutionMode": 2,
-                    "AcqMode": "active"
+                    "AcqMode": "passive"
                 },
                 {
-                    "Title": "瞬时排量",
-                    "Addr": 138,
-                    "StoreDataType": "uint16",
+                    "Title": "盘根盒温度",
+                    "Addr": 40333,
+                    "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 1,
-                    "Ratio": 0.01,
+                    "Ratio": 1.0,
                     "RWType": "r",
-                    "Unit": "m³/d",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠压保护开关",
-                    "Addr": 40201,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1,
-                    "RWType": "w",
-                    "Unit": "",
-                    "ResolutionMode": 1,
-                    "AcqMode": "passive",
-                    "Meaning": [{
-                        "Value": 1,
-                        "Meaning": "启用"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "禁用"
-                    }]
-                },
-                {
-                    "Title": "设定欠压保护值",
-                    "Addr": 40202,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1,
-                    "RWType": "w",
-                    "Unit": "",
+                    "Unit": "℃",
                     "ResolutionMode": 2,
                     "AcqMode": "passive"
                 },
                 {
-                    "Title": "设定欠压保护延时值",
-                    "Addr": 40203,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1,
-                    "RWType": "w",
-                    "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "passive"
-                },
-                {
-                    "Title": "设定工作模式",
-                    "Addr": 40243,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1,
-                    "RWType": "w",
-                    "Unit": "",
-                    "ResolutionMode": 1,
-                    "AcqMode": "passive",
-                    "Meaning": [{
-                        "Value": 1,
-                        "Meaning": "手动控制"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "流压闭环控制"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "间歇自动控制"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "流压自动控制"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "液面自动控制"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "液面闭环控制"
-                    }]
-                },
-                {
-                    "Title": "设定运行频率",
-                    "Addr": 40251,
-                    "StoreDataType": "uint16",
+                    "Title": "A相电流",
+                    "Addr": 40351,
+                    "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "w",
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "A",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "B相电流",
+                    "Addr": 40353,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "A",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "C相电流",
+                    "Addr": 40355,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "A相电压",
+                    "Addr": 40357,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "B相电压",
+                    "Addr": 40359,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "C相电压",
+                    "Addr": 40361,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "有功功耗",
+                    "Addr": 40363,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kW·h",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "无功功耗",
+                    "Addr": 40365,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kVar·h",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "有功功率",
+                    "Addr": 40367,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kW",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "无功功率",
+                    "Addr": 40369,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kVar",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "反向功率",
+                    "Addr": 40371,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kW",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功率因数",
+                    "Addr": 40373,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "油压",
+                    "Addr": 40300,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "MPa",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "套压",
+                    "Addr": 40302,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "MPa",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "回压",
+                    "Addr": 40304,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "MPa",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "井口温度",
+                    "Addr": 40306,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "℃",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "动液面",
+                    "Addr": 40329,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "m",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "含水率",
+                    "Addr": 40327,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "%",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "变频设置频率",
+                    "Addr": 40402,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "rw",
                     "Unit": "Hz",
                     "ResolutionMode": 2,
                     "AcqMode": "passive"
-                }
-            ]
-        },
-        {
-            "Name": "泵产品协议test2",
-            "Code": "泵产品协议test2",
-            "DeviceType": 0,
-            "Sort": 2,
-            "Items": [
+                },
                 {
-                    "Title": "A相电流",
-                    "Addr": 140,
-                    "StoreDataType": "uint16",
+                    "Title": "变频运行频率",
+                    "Addr": 40404,
+                    "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "Hz",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图采集间隔",
+                    "Addr": 40981,
+                    "StoreDataType": "uint16",
+                    "IFDataType": "int",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "rw",
+                    "Unit": "min",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图设置点数",
+                    "Addr": 40983,
+                    "StoreDataType": "uint16",
+                    "IFDataType": "int",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "rw",
+                    "Unit": "",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图实测点数",
+                    "Addr": 40984,
+                    "StoreDataType": "uint16",
+                    "IFDataType": "int",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图采集时间",
+                    "Addr": 40985,
+                    "StoreDataType": "bcd",
+                    "IFDataType": "string",
+                    "Quantity": 24,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "冲次",
+                    "Addr": 40991,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "次/min",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "冲程",
+                    "Addr": 40993,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "m",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图数据-位移",
+                    "Addr": 41001,
+                    "StoreDataType": "int16",
+                    "IFDataType": "float32",
+                    "Quantity": 250,
+                    "Ratio": 0.01,
+                    "RWType": "r",
+                    "Unit": "m",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图数据-载荷",
+                    "Addr": 41251,
+                    "StoreDataType": "int16",
+                    "IFDataType": "float32",
+                    "Quantity": 250,
+                    "Ratio": 0.01,
+                    "RWType": "r",
+                    "Unit": "kN",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图数据-电流",
+                    "Addr": 41501,
+                    "StoreDataType": "int16",
+                    "IFDataType": "float32",
+                    "Quantity": 250,
                     "Ratio": 0.01,
                     "RWType": "r",
                     "Unit": "A",
                     "ResolutionMode": 2,
-                    "AcqMode": "active"
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功图数据-功率",
+                    "Addr": 41751,
+                    "StoreDataType": "int16",
+                    "IFDataType": "float32",
+                    "Quantity": 250,
+                    "Ratio": 0.01,
+                    "RWType": "r",
+                    "Unit": "kW",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "声光报警控制位",
+                    "Addr": 3,
+                    "StoreDataType": "bit",
+                    "IFDataType": "bool",
+                    "Quantity": 3,
+                    "Ratio": 1.0,
+                    "RWType": "rw",
+                    "Unit": "",
+                    "ResolutionMode": 0,
+                    "AcqMode": "passive"
                 }
             ]
         },
         {
-            "Name": "飞舟管产品协议",
-            "Code": "飞舟管产品协议",
+            "Name": "A11-螺杆泵",
+            "Code": "A11-螺杆泵",
             "DeviceType": 1,
-            "Sort": 2,
+            "Sort": 1,
             "Items": [
                 {
-                    "Title": "设备型号标识位",
-                    "Addr": 0,
-                    "StoreDataType": "byte",
+                    "Title": "运行状态",
+                    "Addr": 40317,
+                    "StoreDataType": "uint16",
                     "IFDataType": "int",
                     "Quantity": 1,
                     "Ratio": 1.0,
                     "RWType": "r",
                     "Unit": "",
                     "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "变频器运行状态",
-                    "Addr": 2,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 1,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 1,
-                        "Meaning": "正转运行中"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "反转运行中"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "变频停机中"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "变频故障中"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "变频POFF状态"
-                    }]
-                },
-                {
-                    "Title": "变频器故障代码",
-                    "Addr": 4,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 1,
-                    "AcqMode": "active",
+                    "AcqMode": "passive",
                     "Meaning": [{
                         "Value": 0,
-                        "Meaning": "无故障"
+                        "Meaning": "停抽"
                     }, {
                         "Value": 1,
-                        "Meaning": "逆变单元U相保护"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "逆变单元V相保护"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "逆变单元W相保护"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "加速过电流"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "减速过电流"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "恒速过电流"
-                    }, {
-                        "Value": 7,
-                        "Meaning": "加速过电压"
-                    }, {
-                        "Value": 8,
-                        "Meaning": "减速过电压"
-                    }, {
-                        "Value": 9,
-                        "Meaning": "恒速过电压"
-                    }, {
-                        "Value": 10,
-                        "Meaning": "母线欠压故障"
-                    }, {
-                        "Value": 11,
-                        "Meaning": "电机过载"
-                    }, {
-                        "Value": 12,
-                        "Meaning": "变频器过载"
-                    }, {
-                        "Value": 13,
-                        "Meaning": "输入侧缺相"
-                    }, {
-                        "Value": 14,
-                        "Meaning": "输出侧缺相"
-                    }, {
-                        "Value": 15,
-                        "Meaning": "整流模块过热"
-                    }, {
-                        "Value": 16,
-                        "Meaning": "逆变模块过热"
-                    }, {
-                        "Value": 17,
-                        "Meaning": "外部故障"
-                    }, {
-                        "Value": 18,
-                        "Meaning": "485通讯故障"
-                    }, {
-                        "Value": 19,
-                        "Meaning": "电流检测故障"
-                    }, {
-                        "Value": 20,
-                        "Meaning": "电机自学习故障"
-                    }, {
-                        "Value": 21,
-                        "Meaning": "EEPROM操作故障"
-                    }, {
-                        "Value": 22,
-                        "Meaning": "PID反馈断线故障"
-                    }, {
-                        "Value": 23,
-                        "Meaning": "制动单元故障"
-                    }, {
-                        "Value": 24,
-                        "Meaning": "运行时间达到"
-                    }, {
-                        "Value": 25,
-                        "Meaning": "电子过载"
-                    }, {
-                        "Value": 26,
-                        "Meaning": "键盘通讯故障"
-                    }, {
-                        "Value": 27,
-                        "Meaning": "参数上传错误"
-                    }, {
-                        "Value": 28,
-                        "Meaning": "参数下载错误"
-                    }, {
-                        "Value": 32,
-                        "Meaning": "对地短路故障1"
-                    }, {
-                        "Value": 33,
-                        "Meaning": "对地短路故障2"
-                    }, {
-                        "Value": 36,
-                        "Meaning": "欠载故障"
+                        "Meaning": "运行"
                     }]
                 },
                 {
-                    "Title": "A相电压",
-                    "Addr": 6,
+                    "Title": "启停控制",
+                    "Addr": 40320,
                     "StoreDataType": "uint16",
-                    "IFDataType": "float32",
+                    "IFDataType": "int",
                     "Quantity": 1,
                     "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
+                    "RWType": "rw",
+                    "Unit": "",
+                    "ResolutionMode": 1,
+                    "AcqMode": "passive",
+                    "Meaning": [{
+                        "Value": 1,
+                        "Meaning": "启抽"
+                    }, {
+                        "Value": 2,
+                        "Meaning": "停抽"
+                    }]
                 },
                 {
                     "Title": "A相电流",
-                    "Addr": 8,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "B相电压",
-                    "Addr": 10,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "B相电流",
-                    "Addr": 12,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "C相电压",
-                    "Addr": 14,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "C相电流",
-                    "Addr": 16,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "平均电压",
-                    "Addr": 18,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "平均电流",
-                    "Addr": 20,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总功率",
-                    "Addr": 22,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "kW",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "合计功率因数",
-                    "Addr": 24,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "%",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总频率",
-                    "Addr": 26,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "Hz",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总电能",
-                    "Addr": 28,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "kWh",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "总累计时间",
-                    "Addr": 30,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "d",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口温度",
-                    "Addr": 32,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "井口压力",
-                    "Addr": 34,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下温度",
-                    "Addr": 36,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "井下压力",
-                    "Addr": 38,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "套管压力",
-                    "Addr": 40,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "柜内温度",
-                    "Addr": 42,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "自制井下温度",
-                    "Addr": 48,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": -50,
-                        "Meaning": "N/A"
-                    }]
-                },
-                {
-                    "Title": "自制井下压力",
-                    "Addr": 50,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制故障码",
-                    "Addr": 52,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "保护开关",
-                    "Addr": 54,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "bool",
-                    "Quantity": 16,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 0,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 0,
-                        "Meaning": "外置井下温度开关"
-                    }, {
-                        "Value": 1,
-                        "Meaning": "外置井下压力开关"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "内置井下压力开关"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "内置井下温度开关"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "外置液面保护开关"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "内置液面保护开关"
-                    }, {
-                        "Value": 8,
-                        "Meaning": "欠压保护开关"
-                    }, {
-                        "Value": 9,
-                        "Meaning": "过压保护开关"
-                    }, {
-                        "Value": 10,
-                        "Meaning": "欠流保护开关"
-                    }, {
-                        "Value": 11,
-                        "Meaning": "过流保护开关"
-                    }, {
-                        "Value": 12,
-                        "Meaning": "电压不平衡保护开关"
-                    }, {
-                        "Value": 13,
-                        "Meaning": "电流不平衡保护开关"
-                    }, {
-                        "Value": 14,
-                        "Meaning": "井口温度开关"
-                    }, {
-                        "Value": 15,
-                        "Meaning": "井口压力开关"
-                    }]
-                },
-                {
-                    "Title": "保护执行状态",
-                    "Addr": 56,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "bool",
-                    "Quantity": 16,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 0,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 0,
-                        "Meaning": "井下温度保护"
-                    }, {
-                        "Value": 1,
-                        "Meaning": "外置井下压力保护"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "内置井下压力保护"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "外置液面保护"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "内置液面保护"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "内置井下温度保护"
-                    }, {
-                        "Value": 8,
-                        "Meaning": "欠压保护"
-                    }, {
-                        "Value": 9,
-                        "Meaning": "过压保护"
-                    }, {
-                        "Value": 10,
-                        "Meaning": "欠流保护"
-                    }, {
-                        "Value": 11,
-                        "Meaning": "过流保护"
-                    }, {
-                        "Value": 12,
-                        "Meaning": "电压不平衡保护"
-                    }, {
-                        "Value": 13,
-                        "Meaning": "电流不平衡保护"
-                    }, {
-                        "Value": 14,
-                        "Meaning": "井口温度保护"
-                    }, {
-                        "Value": 15,
-                        "Meaning": "井口压力保护"
-                    }]
-                },
-                {
-                    "Title": "欠压保护值",
-                    "Addr": 58,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠压延时值",
-                    "Addr": 60,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "过压保护值",
-                    "Addr": 62,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "V",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "过压延时值",
-                    "Addr": 64,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠载保护值",
-                    "Addr": 66,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "欠载延时值",
-                    "Addr": 68,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "过载保护值",
-                    "Addr": 70,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "A",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                 },
-                {
-                    "Title": "过载延时值",
-                    "Addr": 72,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电压不平衡保护值",
-                    "Addr": 74,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "%",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电压不平衡延时值",
-                    "Addr": 76,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电流不平衡保护值",
-                    "Addr": 78,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "%",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "电流不平衡延时值",
-                    "Addr": 80,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口温度保护值",
-                    "Addr": 82,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口温度保护延时值",
-                    "Addr": 84,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口压力保护值",
-                    "Addr": 86,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井口压力保护延时值",
-                    "Addr": 88,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下温度保护值",
-                    "Addr": 90,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下温度保护延时值",
-                    "Addr": 92,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "内置井下温度保护值",
-                    "Addr": 94,
-                    "StoreDataType": "int16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "℃",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "内置井下温度保护延时值",
-                    "Addr": 96,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下压力保护值",
-                    "Addr": 98,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "井下压力保护延时值",
-                    "Addr": 100,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制井下压力保护值",
-                    "Addr": 102,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制井下压力保护延时值",
-                    "Addr": 104,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "液面保护值",
-                    "Addr": 106,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "液面保护延时值",
-                    "Addr": 108,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制液面保护值",
-                    "Addr": 110,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制液面保护延时值",
-                    "Addr": 112,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "s",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "运行模式",
-                    "Addr": 114,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 1,
-                    "AcqMode": "active",
-                    "Meaning": [{
-                        "Value": 1,
-                        "Meaning": "手动控制"
-                    }, {
-                        "Value": 2,
-                        "Meaning": "流压闭环控制"
-                    }, {
-                        "Value": 3,
-                        "Meaning": "间歇自动控制"
-                    }, {
-                        "Value": 4,
-                        "Meaning": "流压自动控制"
-                    }, {
-                        "Value": 5,
-                        "Meaning": "液面自动控制"
-                    }, {
-                        "Value": 6,
-                        "Meaning": "液面闭环控制"
-                    }]
-                },
-                {
-                    "Title": "间歇运行时间",
-                    "Addr": 116,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "min",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "间歇停机时间",
-                    "Addr": 118,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "int",
-                    "Quantity": 1,
-                    "Ratio": 1.0,
-                    "RWType": "r",
-                    "Unit": "min",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "目标井下压力",
-                    "Addr": 120,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制目标井下压力",
-                    "Addr": 122,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.001,
-                    "RWType": "r",
-                    "Unit": "MPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "目标液面深度",
-                    "Addr": 124,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "自制目标液面深度",
-                    "Addr": 126,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "程序版本号",
-                    "Addr": 128,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.01,
-                    "RWType": "r",
-                    "Unit": "",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "气体压力",
-                    "Addr": 130,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "KPa",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "气体瞬时流量",
-                    "Addr": 132,
-                    "StoreDataType": "uint16",
-                    "IFDataType": "float32",
-                    "Quantity": 1,
-                    "Ratio": 0.1,
-                    "RWType": "r",
-                    "Unit": "m³/h",
-                    "ResolutionMode": 2,
-                    "AcqMode": "active"
-                },
-                {
-                    "Title": "气体累计流量",
-                    "Addr": 134,
+                    "Addr": 40351,
                     "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 1,
                     "Ratio": 1.0,
                     "RWType": "r",
-                    "Unit": "m³",
+                    "Unit": "A",
                     "ResolutionMode": 2,
-                    "AcqMode": "active"
+                    "AcqMode": "passive"
                 },
                 {
-                    "Title": "瞬时排量",
-                    "Addr": 138,
-                    "StoreDataType": "uint16",
+                    "Title": "B相电流",
+                    "Addr": 40353,
+                    "StoreDataType": "float32",
                     "IFDataType": "float32",
                     "Quantity": 1,
-                    "Ratio": 0.01,
+                    "Ratio": 1.0,
                     "RWType": "r",
-                    "Unit": "m³/d",
+                    "Unit": "A",
                     "ResolutionMode": 2,
-                    "AcqMode": "active"
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "C相电流",
+                    "Addr": 40355,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "A相电压",
+                    "Addr": 40357,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "B相电压",
+                    "Addr": 40359,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "C相电压",
+                    "Addr": 40361,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "V",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "有功功耗",
+                    "Addr": 40363,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kW·h",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "无功功耗",
+                    "Addr": 40365,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kVar·h",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "有功功率",
+                    "Addr": 40367,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kW",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "无功功率",
+                    "Addr": 40369,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kVar",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "反向功率",
+                    "Addr": 40371,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kW",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "功率因数",
+                    "Addr": 40373,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "油压",
+                    "Addr": 40300,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "MPa",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "套压",
+                    "Addr": 40302,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "MPa",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "回压",
+                    "Addr": 40304,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "MPa",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "井口温度",
+                    "Addr": 40306,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "℃",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "动液面",
+                    "Addr": 40329,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "m",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "含水率",
+                    "Addr": 40327,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "%",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "变频设置频率",
+                    "Addr": 40402,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "rw",
+                    "Unit": "Hz",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "变频运行频率",
+                    "Addr": 40404,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "Hz",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "螺杆泵转速",
+                    "Addr": 40430,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "r/min",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
+                },
+                {
+                    "Title": "螺杆泵扭矩",
+                    "Addr": 40432,
+                    "StoreDataType": "float32",
+                    "IFDataType": "float32",
+                    "Quantity": 1,
+                    "Ratio": 1.0,
+                    "RWType": "r",
+                    "Unit": "kN·m",
+                    "ResolutionMode": 2,
+                    "AcqMode": "passive"
                 }
             ]
         }

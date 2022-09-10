@@ -9,6 +9,8 @@ public class AppRunStatusProbeResonanceData {
 	private int LicenseNumber;
 	
 	private int IDSlaveNumber;
+	
+	private int IPPortSlaveNumber;
 
     private List<String> URL;
 
@@ -35,5 +37,11 @@ public class AppRunStatusProbeResonanceData {
 	}
 	public void setIDSlaveNumber(int iDSlaveNumber) {
 		IDSlaveNumber = iDSlaveNumber;
+	}
+	public int getIPPortSlaveNumber() {
+		return IPPortSlaveNumber;
+	}
+	public void setIPPortSlaveNumber(int iPPortSlaveNumber) {
+		IPPortSlaveNumber = iPPortSlaveNumber;
 	}
 }

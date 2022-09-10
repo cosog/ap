@@ -374,7 +374,7 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
-	public static void loadRPCDeviceInfoByPumpingId(String pumpingModelId){
+	public static void loadRPCDeviceInfoByPumpingId(String pumpingModelId,String method){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -398,7 +398,175 @@ public class MemoryDataManagerTask {
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 		}
 		if(wellList.size()>0){
-			loadRPCDeviceInfo(wellList,0,"update");
+			loadRPCDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadRPCDeviceInfoByInstanceId(String instanceId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_rpcdevice t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadRPCDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadRPCDeviceInfoByInstanceCode(String instanceCode,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_rpcdevice t where t.instancecode= '"+instanceCode+"'";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadRPCDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadRPCDeviceInfoByDisplayInstanceId(String instanceId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_rpcdevice t,tbl_protocoldisplayinstance t2 where t.displayinstancecode=t2.code and t2.id= "+instanceId;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadRPCDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadRPCDeviceInfoByDisplayInstanceCode(String instanceCode,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_rpcdevice t where t.displayinstancecode= '"+instanceCode+"'";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadRPCDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadRPCDeviceInfoByAlarmInstanceId(String instanceId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_rpcdevice t,tbl_protocolalarminstance t2 where t.alarminstancecode=t2.code and t2.id= "+instanceId;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadRPCDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadRPCDeviceInfoByAlarmInstanceCode(String instanceCode,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_rpcdevice t where t.alarminstancecode= '"+instanceCode+"'";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadRPCDeviceInfo(wellList,0,method);
 		}
 	}
 	
@@ -554,6 +722,174 @@ public class MemoryDataManagerTask {
 		}
 	}
 	
+	public static void loadPCPDeviceInfoByInstanceId(String instanceId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_pcpdevice t,tbl_protocolinstance t2 where t.instancecode=t2.code and t2.id= "+instanceId;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadPCPDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadPCPDeviceInfoByInstanceCode(String instanceCode,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_pcpdevice t where t.instancecode= '"+instanceCode+"'";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadPCPDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadPCPDeviceInfoByDisplayInstanceId(String instanceId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_pcpdevice t,tbl_protocoldisplayinstance t2 where t.displayinstancecode=t2.code and t2.id= "+instanceId;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadPCPDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadPCPDeviceInfoByDisplayInstanceCode(String instanceCode,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_pcpdevice t where t.displayinstancecode= '"+instanceCode+"'";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadPCPDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadPCPDeviceInfoByAlarmInstanceId(String instanceId,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_pcpdevice t,tbl_protocolalarminstance t2 where t.alarminstancecode=t2.code and t2.id= "+instanceId;
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadPCPDeviceInfo(wellList,0,method);
+		}
+	}
+	
+	public static void loadPCPDeviceInfoByAlarmInstanceCode(String instanceCode,String method){
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<String> wellList =new ArrayList<String>();
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		String sql="select t.id from tbl_pcpdevice t where t.alarminstancecode= '"+instanceCode+"'";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				wellList.add(rs.getInt(1)+"");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		if(wellList.size()>0){
+			loadPCPDeviceInfo(wellList,0,method);
+		}
+	}
+	
 	public static void loadAcqInstanceOwnItemById(String instanceId,String method){
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -660,7 +996,32 @@ public class MemoryDataManagerTask {
 		try {
 			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceCode)){
-				instanceSql+=" and t.instanceCode='"+instanceCode+"'";
+				instanceSql+=" and t.code='"+instanceCode+"'";
+			}
+			pstmt = conn.prepareStatement(instanceSql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadAcqInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadAcqInstanceOwnItemByName(String instanceName,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String instanceSql="select t.id from tbl_protocolinstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(instanceName)){
+				instanceSql+=" and t.name='"+instanceName+"'";
 			}
 			pstmt = conn.prepareStatement(instanceSql);
 			rs=pstmt.executeQuery();
@@ -909,7 +1270,33 @@ public class MemoryDataManagerTask {
 		try {
 			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceCode)){
-				instanceSql+=" and t.instanceCode='"+instanceCode+"'";
+				instanceSql+=" and t.code='"+instanceCode+"'";
+			}
+			
+			pstmt = conn.prepareStatement(instanceSql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadDisplayInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadDisplayInstanceOwnItemByName(String instanceName,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String instanceSql="select t.id from tbl_protocoldisplayinstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(instanceName)){
+				instanceSql+=" and t.name='"+instanceName+"'";
 			}
 			
 			pstmt = conn.prepareStatement(instanceSql);
@@ -1074,7 +1461,36 @@ public class MemoryDataManagerTask {
 		try {
 			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
 			if(StringManagerUtils.isNotNull(instanceCode)){
-				instanceSql+=" and t.instanceCode='"+instanceCode+"'";
+				instanceSql+=" and t.code='"+instanceCode+"'";
+			}
+			
+			pstmt = conn.prepareStatement(instanceSql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				loadAlarmInstanceOwnItemById(rs.getInt(1)+"",method);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+	}
+	
+	public static void loadAlarmInstanceOwnItemByName(String instanceName,String method){
+		Connection conn = null;   
+		PreparedStatement pstmt = null;   
+		ResultSet rs = null;
+		int result=0;
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		conn=OracleJdbcUtis.getConnection();
+		if(conn==null){
+        	return;
+        }
+		try {
+			String instanceSql="select t.id from tbl_protocolalarminstance t where 1=1 ";
+			if(StringManagerUtils.isNotNull(instanceName)){
+				instanceSql+=" and t.name='"+instanceName+"'";
 			}
 			
 			pstmt = conn.prepareStatement(instanceSql);

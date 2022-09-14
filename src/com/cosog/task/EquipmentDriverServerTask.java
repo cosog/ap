@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,6 +30,8 @@ import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
+import com.cosog.thread.calculate.HttpRequstThread;
+import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
@@ -50,7 +53,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -84,18 +87,18 @@ public class EquipmentDriverServerTask {
 //		String testData=stringManagerUtils.readFile(path,"utf-8");
 //		
 //		String url=stringManagerUtils.getProjectUrl()+"/api/acq/ipport/group";
-//		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/ipport/online";
+//		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
 //		int i=0;
 //		while(true){
-////			if(i%2==0){
-////				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-////			}else{
-////				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
-////			}
-////			i++;
+//			if(i%2==0){
+//				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+//			}else{
+//				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
+//			}
+//			i++;
 //			
 ////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
+////			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
 //			Thread.sleep(1000*5);
 //		}
 		
@@ -206,7 +209,7 @@ public class EquipmentDriverServerTask {
 			try {
 				Thread.sleep(1000*wait);
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
-				String url=stringManagerUtils.getProjectUrl()+"/api/acq/id/group";
+				String url=stringManagerUtils.getProjectUrl()+"/api/acq/group";
 				
 				String path="";
 				path=stringManagerUtils.getFilePath(deviceName+"_01.json","example/");
@@ -1207,6 +1210,8 @@ public class EquipmentDriverServerTask {
 	public static int initRPCDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
 		Jedis jedis=null;
 		try{
+			ThreadPool executor = new ThreadPool("adInit",100, 120, 5, TimeUnit.SECONDS, 10);
+			
 			jedis = RedisUtil.jedisPool.getResource();
 			
 			String initUrl=Config.getInstance().configFile.getAd().getId();
@@ -1222,9 +1227,11 @@ public class EquipmentDriverServerTask {
 			Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
 			if(initializedDeviceList==null){
 				initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+				dataModelMap.put("InitializedDeviceList", initializedDeviceList);
 			}
 			if(initializedIPPortDeviceList==null){
 				initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
+				dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
 			}
 			
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
@@ -1279,7 +1286,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("抽油机ID初始化："+initUrl+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(initUrl, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								initializedDeviceList.remove(0+"_"+deviceId);
@@ -1298,7 +1306,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("抽油机ID初始化："+initIPPortUrl+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(initIPPortUrl, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								initializedIPPortDeviceList.remove(0+"_"+deviceId);
@@ -1326,7 +1335,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
@@ -1356,7 +1366,8 @@ public class EquipmentDriverServerTask {
 								StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 								String response="";
 								if(initEnable){
-									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+									executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
 //								if(StringManagerUtils.isNotNull(response)){
 									if(initType==0){
@@ -1380,7 +1391,8 @@ public class EquipmentDriverServerTask {
 								initId.setInstanceName(initialized.getInstanceName());
 								StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 								if(initEnable){
-									StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+									executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//									StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
 								//重新初始化
 								initId.setMethod("update");
@@ -1394,7 +1406,8 @@ public class EquipmentDriverServerTask {
 								StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 								String response="";
 								if(initEnable){
-									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+									executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
 //								if(StringManagerUtils.isNotNull(response)){
 									InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
@@ -1421,7 +1434,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								if(initType==0){
@@ -1454,6 +1468,7 @@ public class EquipmentDriverServerTask {
 	public static int initPCPDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
 		Jedis jedis=null;
 		try{
+			ThreadPool executor = new ThreadPool("adInit",100, 120, 5, TimeUnit.SECONDS, 10);
 			jedis = RedisUtil.jedisPool.getResource();
 			
 			String initUrl=Config.getInstance().configFile.getAd().getId();
@@ -1469,10 +1484,13 @@ public class EquipmentDriverServerTask {
 			Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
 			if(initializedDeviceList==null){
 				initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
+				dataModelMap.put("InitializedDeviceList", initializedDeviceList);
 			}
 			if(initializedIPPortDeviceList==null){
 				initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
+				dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
 			}
+			
 			
 			if(!jedis.exists("PCPDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
@@ -1526,7 +1544,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("螺杆泵ID初始化："+initUrl+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(initUrl, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(initUrl, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								initializedDeviceList.remove(1+"_"+deviceId);
@@ -1545,7 +1564,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("螺杆泵ID初始化："+initIPPortUrl+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(initIPPortUrl, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(initIPPortUrl, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								initializedIPPortDeviceList.remove(1+"_"+deviceId);
@@ -1573,7 +1593,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								
 							}
 //							if(StringManagerUtils.isNotNull(response)){
@@ -1604,7 +1625,8 @@ public class EquipmentDriverServerTask {
 								StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 								String response="";
 								if(initEnable){
-									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+									executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
 //								if(StringManagerUtils.isNotNull(response)){
 									if(initType==0){
@@ -1628,7 +1650,8 @@ public class EquipmentDriverServerTask {
 								initId.setInstanceName(initialized.getInstanceName());
 								StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 								if(initEnable){
-									StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+									executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//									StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
 								//重新初始化
 								initId.setMethod("update");
@@ -1642,7 +1665,8 @@ public class EquipmentDriverServerTask {
 								StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 								String response="";
 								if(initEnable){
-									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+									executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//									response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 								}
 //								if(StringManagerUtils.isNotNull(response)){
 									InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
@@ -1669,7 +1693,8 @@ public class EquipmentDriverServerTask {
 							StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 							String response="";
 							if(initEnable){
-								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+								executor.execute(new HttpRequstThread(url, gson.toJson(initId),"utf-8",0,0));
+//								response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 							}
 //							if(StringManagerUtils.isNotNull(response)){
 								if(initType==0){

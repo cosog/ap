@@ -276,7 +276,7 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/acq/id/online")
+	@RequestMapping(path={"/acq/id/online","/acq/online"})
 	public String AcqOnlineData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		Gson gson=new Gson();
@@ -315,12 +315,12 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo memRPCDeviceInfo=(RPCDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memRPCDeviceInfo.getSlave()) && memRPCDeviceInfo.getStatus()==1){
-							if(acqOnline.getSlave()>0){
+						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memRPCDeviceInfo.getSlave())){
+							if(acqOnline.getSlave()>0 || data.contains("\"Slave\"")){
 								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memRPCDeviceInfo.getSlave())){
 									rpcDeviceInfoList.add(memRPCDeviceInfo);
 								}
-							}else{
+							}else if(memRPCDeviceInfo.getStatus()==1){
 								rpcDeviceInfoList.add(memRPCDeviceInfo);
 							}
 						}
@@ -332,12 +332,12 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(pcpDeviceInfoByteList.get(i));
 					if (obj instanceof PCPDeviceInfo) {
 						PCPDeviceInfo memPCPDeviceInfo=(PCPDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memPCPDeviceInfo.getSlave())  && memPCPDeviceInfo.getStatus()==1){
-							if(acqOnline.getSlave()>0){
+						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memPCPDeviceInfo.getSlave())){
+							if(acqOnline.getSlave()>0 || data.contains("\"Slave\"")){
 								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memPCPDeviceInfo.getSlave())){
 									pcpDeviceInfoList.add(memPCPDeviceInfo);
 								}
-							}else{
+							}else if(memPCPDeviceInfo.getStatus()==1){
 								pcpDeviceInfoList.add(memPCPDeviceInfo);
 							}
 						}
@@ -1047,7 +1047,7 @@ public class DriverAPIController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/acq/id/group")
+	@RequestMapping(path={"/acq/id/group","/acq/group"})
 	public String AcqGroupData() throws Exception{
 		ServletInputStream ss = request.getInputStream();
 		Gson gson=new Gson();
@@ -1120,7 +1120,7 @@ public class DriverAPIController extends BaseController{
 		pw.flush();
 		pw.close();
 		return null;
-	};
+	}
 	
 	@RequestMapping("/acq/ipport/group")
 	public String IPPortAcqGroupData() throws Exception{

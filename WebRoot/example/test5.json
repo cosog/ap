@@ -1,0 +1,31 @@
+{
+    "ProtocolName": "yd_A11_yj", 
+    "SignInPrefix": "AA01", 
+    "Method": "update", 
+    "InstanceName": "yd_A11_yj_instance", 
+    "HeartbeatSuffix": "0D", 
+    "PrefixSuffixHex": true, 
+    "SignInSuffix": "0D", 
+    "AcqProtocolType": "modbus-tcp", 
+    "CtrlProtocolType": "modbus-tcp", 
+    "CtrlGroup": [
+        {
+            "Addr": [
+                40320, 
+                40402, 
+                40981, 
+                40983
+            ]
+        }
+    ], 
+    "AcqGroup": [
+        {
+            "GroupTimingInterval": 60, 
+            "Addr": [
+                40306
+            ]
+        }
+    ], 
+    "HeartbeatPrefix": "AA01", 
+    "PacketSendInterval": 100
+}

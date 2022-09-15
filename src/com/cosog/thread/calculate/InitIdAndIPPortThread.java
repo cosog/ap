@@ -9,6 +9,7 @@ import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.utils.AdInitMap;
 import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.StringManagerUtils;
@@ -32,22 +33,27 @@ public class InitIdAndIPPortThread implements Runnable{
 	}
 
 
-
+	@Override
 	public void run(){
+		long time1 =System.nanoTime()/1000;
 		if(deviceType==0){
 			initRPCDevice(rpcDeviceInfo,initEnable,method);
 		}else{
 			initPCPDevice(pcpDeviceInfo,initEnable,method);
 		}
+		long time2 =System.nanoTime()/1000;
+		System.out.println("ID/IPPort初始化耗时："+(time2-time1)+"μs");
 	}
 
 	public static void initRPCDevice(RPCDeviceInfo rpcDeviceInfo,boolean initEnable,String method){
+		if(rpcDeviceInfo==null){
+			return;
+		}
 		Gson gson = new Gson();
 		String initUrl=Config.getInstance().configFile.getAd().getId();
 		String initIPPortUrl=Config.getInstance().configFile.getAd().getIpPort();
-		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-		Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
+		Map<String,InitializedDeviceInfo> initializedDeviceList=AdInitMap.getIdInitMapObject();
+		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=AdInitMap.getIpPoetInitMapObject();
 
 		String wellName=rpcDeviceInfo.getWellName();
 		String tcpType=rpcDeviceInfo.getTcpType()==null?"":rpcDeviceInfo.getTcpType();
@@ -126,7 +132,10 @@ public class InitIdAndIPPortThread implements Runnable{
 				StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
+					long time1 =System.nanoTime()/1000;
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+					long time2 =System.nanoTime()/1000;
+					System.out.println("抽油机ID初始化耗时："+(time2-time1));
 				}
 //				if(StringManagerUtils.isNotNull(response)){
 					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
@@ -237,17 +246,17 @@ public class InitIdAndIPPortThread implements Runnable{
 				}
 			}
 		}
-		dataModelMap.put("InitializedDeviceList", initializedDeviceList);
-		dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
 	}
 	
 	public static void initPCPDevice(PCPDeviceInfo pcpDeviceInfo,boolean initEnable,String method){
+		if(pcpDeviceInfo==null){
+			return;
+		}
 		Gson gson = new Gson();
 		String initUrl=Config.getInstance().configFile.getAd().getId();
 		String initIPPortUrl=Config.getInstance().configFile.getAd().getIpPort();
-		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-		Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
+		Map<String,InitializedDeviceInfo> initializedDeviceList=AdInitMap.getIdInitMapObject();
+		Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=AdInitMap.getIpPoetInitMapObject();
 		String wellName=pcpDeviceInfo.getWellName();
 		String tcpType=pcpDeviceInfo.getTcpType()==null?"":pcpDeviceInfo.getTcpType();
 		String signinId=pcpDeviceInfo.getSignInId()==null?"":pcpDeviceInfo.getSignInId();
@@ -437,8 +446,6 @@ public class InitIdAndIPPortThread implements Runnable{
 				}
 			}
 		}
-		dataModelMap.put("InitializedDeviceList", initializedDeviceList);
-		dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
 	}
 
 	public RPCDeviceInfo getRpcDeviceInfo() {
@@ -465,25 +472,17 @@ public class InitIdAndIPPortThread implements Runnable{
 		this.deviceType = deviceType;
 	}
 
-
-
 	public boolean isInitEnable() {
 		return initEnable;
 	}
-
-
 
 	public void setInitEnable(boolean initEnable) {
 		this.initEnable = initEnable;
 	}
 
-
-
 	public String getMethod() {
 		return method;
 	}
-
-
 
 	public void setMethod(String method) {
 		this.method = method;

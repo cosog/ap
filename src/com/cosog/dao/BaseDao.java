@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
@@ -92,6 +93,8 @@ import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
+import com.cosog.thread.calculate.ThreadPool;
+import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.LicenseMap;
@@ -1066,7 +1069,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
@@ -1085,9 +1092,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("delete");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
-				
-				
+				executor.execute(dataSynchronizationThread);
 			}
 			if(initWellList.size()>0){
 //				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,1,"update");
@@ -1105,7 +1110,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
+				executor.execute(dataSynchronizationThread);
 			}
 //			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
 		} catch (SQLException e) {
@@ -1459,6 +1464,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
 //				MemoryDataManagerTask.loadRPCDeviceInfo(deleteWellList,0,"delete");
@@ -1476,9 +1486,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("delete");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
-				
-				
+				executor.execute(dataSynchronizationThread);
 			}
 			if(initWellList.size()>0){
 //				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,1,"update");
@@ -1496,7 +1504,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
+				executor.execute(dataSynchronizationThread);
 			}
 //			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
 		} catch (SQLException e) {
@@ -1649,6 +1657,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
 //				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
@@ -1666,9 +1679,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("delete");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
-				
-				
+				executor.execute(dataSynchronizationThread);
 			}
 			if(initWellList.size()>0){
 //				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
@@ -1686,7 +1697,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
+				executor.execute(dataSynchronizationThread);
 			}
 //			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
 		} catch (SQLException e) {
@@ -1990,6 +2001,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
 //				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
@@ -2007,9 +2023,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("delete");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
-				
-				
+				executor.execute(dataSynchronizationThread);
 			}
 			if(initWellList.size()>0){
 //				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,1,"update");
@@ -2027,7 +2041,7 @@ public class BaseDao extends HibernateDaoSupport {
 				dataSynchronizationThread.setMethod("update");
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setWellInformationManagerService(wellInformationManagerService);
-				dataSynchronizationThread.start();
+				executor.execute(dataSynchronizationThread);
 			}
 //			saveDeviceOperationLog(updateWellList,addWellList,deleteWellNameList,deviceType,user);
 		} catch (SQLException e) {

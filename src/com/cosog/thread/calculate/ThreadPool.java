@@ -47,7 +47,8 @@ public class ThreadPool {
 		synchronized (map) {
 			this.name = name;
 			this.wattingCount = workQueue.size();
-			String key = buildKey(name, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue.size(), "#");
+			String key=this.name;
+//			String key = buildKey(name, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue.size(), "#");
 			if (map.containsKey(key)) {
 				executor = (ThreadPoolExecutor) map.get(key);
 			} else {
@@ -82,14 +83,15 @@ public class ThreadPool {
 		synchronized (map) {
 			this.name = name;
 			this.wattingCount = (int) (wattingCount * 1.5);
-			String key = buildKey(name, corePoolSize, maximumPoolSize, keepAliveTime, unit, wattingCount, "#");
+			if(this.wattingCount<=0){
+				this.wattingCount=Integer.MAX_VALUE;
+			}
+			String key=this.name;
+//			String key = buildKey(name, corePoolSize, maximumPoolSize, keepAliveTime, unit, wattingCount, "#");
 			if (map.containsKey(key)) {
 				executor = (ThreadPoolExecutor) map.get(key);
 			} else {
-				LinkedBlockingQueue linkedBlockingQueue = new LinkedBlockingQueue<>();
-				if(this.wattingCount>0){
-					linkedBlockingQueue=new LinkedBlockingQueue<>(this.wattingCount);
-				}
+				LinkedBlockingQueue linkedBlockingQueue=new LinkedBlockingQueue<>(this.wattingCount);
 				executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit,linkedBlockingQueue);
 				map.put(key, executor);
 			}

@@ -15,7 +15,7 @@ import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 
-public class DataSynchronizationThread  extends Thread{
+public class DataSynchronizationThread implements Runnable{
 	public List<String> initWellList;
 	public List<String> updateList;
 	public List<String> addList;

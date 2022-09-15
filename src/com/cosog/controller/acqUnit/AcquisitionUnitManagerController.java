@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -61,7 +62,9 @@ import com.cosog.service.right.RoleManagerService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
+import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
+import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.BackModuleRecursion;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
@@ -262,11 +265,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 				if(jedis!=null){
 					jedis.close();
 				}
+				
+				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(001);
 				dataSynchronizationThread.setParam1(protocol.getName());
 				dataSynchronizationThread.setMethod("update");
-				dataSynchronizationThread.start();
+				executor.execute(dataSynchronizationThread);
 			}
 			result = "{success:true,msg:true}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);
@@ -562,12 +572,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 			}
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(021);
 			dataSynchronizationThread.setParam1(groupId);
 			dataSynchronizationThread.setMethod("update");
 			dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-			dataSynchronizationThread.start();
+			executor.execute(dataSynchronizationThread);
 			
 //			EquipmentDriverServerTask.initInstanceConfigByAcqGroupId(groupId,"update");
 //			EquipmentDriverServerTask.initPumpDriverAcquisitionInfoConfigByAcqGroupId(groupId,"update");
@@ -814,11 +830,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 				}
 			}
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(042);
 			dataSynchronizationThread.setParam1(unitId);
 			dataSynchronizationThread.setMethod("update");
-			dataSynchronizationThread.start();
+			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(unitId,"update");
 			
 			
@@ -1498,6 +1520,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 				modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
 			}
 			
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			
 			//删除协议
 			for(int i=0;modbusDriverSaveData.getDelidslist()!=null&&i<modbusDriverSaveData.getDelidslist().size();i++){
 				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
@@ -1508,7 +1536,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						dataSynchronizationThread.setDeviceType(modbusProtocolConfig.getProtocol().get(j).getDeviceType());
 						dataSynchronizationThread.setMethod("delete");
 						dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-						dataSynchronizationThread.start();
+						executor.execute(dataSynchronizationThread);
 						
 //						EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),modbusProtocolConfig.getProtocol().get(j).getDeviceType(),"delete");
 //						EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusProtocolConfig.getProtocol().get(j).getName(),"delete");
@@ -1678,7 +1706,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 				dataSynchronizationThread.setSign(003);
 				dataSynchronizationThread.setParam1(modbusDriverSaveData.getProtocolName());
 				dataSynchronizationThread.setMethod("update");
-				dataSynchronizationThread.start();
+				executor.execute(dataSynchronizationThread);
 				
 //				EquipmentDriverServerTask.initProtocolConfig(modbusDriverSaveData.getProtocolName(),"update");
 //				EquipmentDriverServerTask.initInstanceConfigByProtocolName(modbusDriverSaveData.getProtocolName(),"update");
@@ -1704,6 +1732,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		AcquisitionUnitHandsontableChangeData acquisitionUnitHandsontableChangeData=gson.fromJson(data, type);
 		if(acquisitionUnitHandsontableChangeData!=null){
 			if(acquisitionUnitHandsontableChangeData.getDelidslist()!=null){
+				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 				for(int i=0;i<acquisitionUnitHandsontableChangeData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(011);
@@ -1711,7 +1744,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
 //					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(acquisitionUnitHandsontableChangeData.getDelidslist().get(i), "delete");
@@ -1768,13 +1801,18 @@ public class AcquisitionUnitManagerController extends BaseController {
 		AcquisitionGroupHandsontableChangeData acquisitionGroupHandsontableChangeData=gson.fromJson(data, type);
 		if(acquisitionGroupHandsontableChangeData!=null){
 			if(acquisitionGroupHandsontableChangeData.getDelidslist()!=null){
+				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 				for(int i=0;i<acquisitionGroupHandsontableChangeData.getDelidslist().size();i++){
 					this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(acquisitionGroupHandsontableChangeData.getDelidslist().get(i));
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(022);
 					dataSynchronizationThread.setParam1(unitId);
 					dataSynchronizationThread.setMethod("update");
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					EquipmentDriverServerTask.initInstanceConfigByAcqUnitId(unitId, "update");
 //					MemoryDataManagerTask.loadAcqInstanceOwnItemByUnitId(unitId,"update");
@@ -1836,6 +1874,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DisplayUnitHandsontableChangeData displayUnitHandsontableChangeData=gson.fromJson(data, type);
 		if(displayUnitHandsontableChangeData!=null){
 			if(displayUnitHandsontableChangeData.getDelidslist()!=null){
+				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 				for(int i=0;i<displayUnitHandsontableChangeData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(041);
@@ -1843,7 +1886,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setDeviceType(StringManagerUtils.stringToInteger(deviceType));
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemByUnitId(displayUnitHandsontableChangeData.getDelidslist().get(i), "delete");
 //					this.displayUnitManagerService.doDisplayUnitBulkDelete(displayUnitHandsontableChangeData.getDelidslist().get(i),deviceType);
@@ -1902,8 +1945,13 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setParam1(protocolInstance.getName());
 			dataSynchronizationThread.setMethod("update");
 			dataSynchronizationThread.setInitWellList(instanceList);
-			dataSynchronizationThread.start();
 			
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadAcqInstanceOwnItemByCode(protocolInstance.getCode(),"update");
 //			EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
 			result = "{success:true,msg:true}";
@@ -1968,6 +2016,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolAlarmUnitSaveData!=null){
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(modbusProtocolAlarmUnitSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmUnitSaveData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -1975,7 +2028,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setParam1(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i),"delete");
 //					this.acquisitionUnitManagerService.doModbusProtocolAlarmUnitDelete(modbusProtocolAlarmUnitSaveData.getDelidslist().get(i));
@@ -2064,7 +2117,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						dataSynchronizationThread.setSign(032);
 						dataSynchronizationThread.setParam1(modbusProtocolAlarmUnitSaveData.getId()+"");
 						dataSynchronizationThread.setMethod("update");
-						dataSynchronizationThread.start();
+						executor.execute(dataSynchronizationThread);
 //						MemoryDataManagerTask.loadAlarmInstanceOwnItemByUnitId(modbusProtocolAlarmUnitSaveData.getId()+"","update");
 					}
 					
@@ -2095,6 +2148,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolInstanceSaveData modbusProtocolInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolInstanceSaveData!=null){
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(modbusProtocolInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolInstanceSaveData.getDelidslist().size();i++){
 					List<String> deleteInstanceList=new ArrayList<String>();
@@ -2107,7 +2165,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setDeviceType(modbusProtocolInstanceSaveData.getDeviceType());
 					dataSynchronizationThread.setInitWellList(deleteInstanceList);
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					EquipmentDriverServerTask.initDriverAcquisitionInfoConfigByProtocolInstanceId(modbusProtocolInstanceSaveData.getDelidslist().get(i), "delete");
 //					EquipmentDriverServerTask.initInstanceConfig(deleteInstanceList, "delete");
@@ -2161,7 +2219,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						dataSynchronizationThread.setParam1(modbusProtocolInstanceSaveData.getId()+"");
 						dataSynchronizationThread.setInitWellList(instanceList);
 						dataSynchronizationThread.setMethod("update");
-						dataSynchronizationThread.start();
+						executor.execute(dataSynchronizationThread);
 						
 //						MemoryDataManagerTask.loadAcqInstanceOwnItemById(modbusProtocolInstanceSaveData.getId()+"", "update");
 //						EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
@@ -2177,7 +2235,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 						dataSynchronizationThread.setDeleteList(delInstanceList);
 						dataSynchronizationThread.setInitWellList(instanceList);
 						dataSynchronizationThread.setParam1(modbusProtocolInstanceSaveData.getId()+"");
-						dataSynchronizationThread.start();
+						executor.execute(dataSynchronizationThread);
 						
 //						EquipmentDriverServerTask.initInstanceConfig(delInstanceList, "delete");
 //						MemoryDataManagerTask.loadAcqInstanceOwnItemById(modbusProtocolInstanceSaveData.getId()+"", "update");
@@ -2212,7 +2270,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setSign(061);
 			dataSynchronizationThread.setParam1(protocolDisplayInstance.getName());
 			dataSynchronizationThread.setMethod("update");
-			dataSynchronizationThread.start();
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadDisplayInstanceOwnItemByCode(protocolDisplayInstance.getCode(),"update");
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
@@ -2238,6 +2301,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolDisplayInstanceSaveData modbusProtocolDisplayInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolDisplayInstanceSaveData!=null){
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(modbusProtocolDisplayInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolDisplayInstanceSaveData.getDelidslist().size();i++){
 					
@@ -2246,7 +2314,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setParam1(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i),"delete");
 //					this.protocolDisplayInstanceManagerService.doModbusProtocolDisplayInstanceBulkDelete(modbusProtocolDisplayInstanceSaveData.getDelidslist().get(i));
@@ -2272,7 +2340,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setSign(063);
 					dataSynchronizationThread.setParam1(protocolDisplayInstance.getId()+"");
 					dataSynchronizationThread.setMethod("update");
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 					
 //					MemoryDataManagerTask.loadDisplayInstanceOwnItemById(protocolDisplayInstance.getId()+"","update");
 					json = "{success:true,msg:true}";
@@ -2302,7 +2370,12 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setSign(071);
 			dataSynchronizationThread.setParam1(protocolAlarmInstance.getName());
 			dataSynchronizationThread.setMethod("update");
-			dataSynchronizationThread.start();
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadAlarmInstanceOwnItemByCode(protocolAlarmInstance.getCode(),"update");
 			result = "{success:true,msg:true}";
 		} catch (Exception e) {
@@ -2328,6 +2401,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolAlarmInstanceSaveData modbusProtocolAlarmInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolAlarmInstanceSaveData!=null){
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
 			if(modbusProtocolAlarmInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmInstanceSaveData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -2335,7 +2413,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setParam1(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
 					dataSynchronizationThread.setMethod("delete");
 					dataSynchronizationThread.setAcquisitionUnitManagerService(acquisitionUnitManagerService);
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 //					this.protocolAlarmInstanceManagerService.doModbusProtocolAlarmInstanceBulkDelete(modbusProtocolAlarmInstanceSaveData.getDelidslist().get(i));
 				}
 			}
@@ -2358,7 +2436,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 					dataSynchronizationThread.setSign(073);
 					dataSynchronizationThread.setParam1(protocolAlarmInstance.getId()+"");
 					dataSynchronizationThread.setMethod("update");
-					dataSynchronizationThread.start();
+					executor.execute(dataSynchronizationThread);
 //					MemoryDataManagerTask.loadAlarmInstanceOwnItemById(protocolAlarmInstance.getId()+"","update");
 					json = "{success:true,msg:true}";
 				} catch (Exception e) {

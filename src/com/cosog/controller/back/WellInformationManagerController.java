@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,8 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
+import com.cosog.thread.calculate.ThreadPool;
+import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
@@ -1258,8 +1261,12 @@ public class WellInformationManagerController extends BaseController {
 			dataSynchronizationThread.setRpcDeviceInformation(rpcDeviceInformation);
 			dataSynchronizationThread.setUser(user);
 			dataSynchronizationThread.setRpcDeviceManagerService(rpcDeviceManagerService);
-			dataSynchronizationThread.start();
-			
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadRPCDeviceInfo(wells,1,"update");
 //			List<String> addWellList=new ArrayList<String>();
 //			addWellList.add(rpcDeviceInformation.getWellName());
@@ -1312,7 +1319,12 @@ public class WellInformationManagerController extends BaseController {
 			dataSynchronizationThread.setPcpDeviceInformation(pcpDeviceInformation);
 			dataSynchronizationThread.setUser(user);
 			dataSynchronizationThread.setPcpDeviceManagerService(pcpDeviceManagerService);
-			dataSynchronizationThread.start();
+			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+					TimeUnit.SECONDS, 
+					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+			executor.execute(dataSynchronizationThread);
 			
 			result = "{success:true,msg:true,resultCode:1}";
 			response.setCharacterEncoding(Constants.ENCODING_UTF8);

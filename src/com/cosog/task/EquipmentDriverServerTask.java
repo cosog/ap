@@ -56,7 +56,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -77,93 +77,94 @@ public class EquipmentDriverServerTask {
 		
 		
 		
-//		String path="";
-//		
-//		
-//		path=stringManagerUtils.getFilePath("test3.json","example/");
-//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		path=stringManagerUtils.getFilePath("test4.json","example/");
-//		String offLineData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		path=stringManagerUtils.getFilePath("test7.json","example/");
-//		String testData=stringManagerUtils.readFile(path,"utf-8");
-//		
-//		String url=stringManagerUtils.getProjectUrl()+"/api/acq/ipport/group";
-//		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
-//		int i=0;
-//		while(true){
-//			if(i%2==0){
-//				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//			}else{
-//				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
-//			}
-//			i++;
-//			
-////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-////			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
-//			Thread.sleep(1000*5);
-//		}
+		String path="";
 		
-		initServerConfig();
-		initProtocolConfig("","");
-		initInstanceConfig(null,"");
-		initSMSInstanceConfig(null,"");
-		initSMSDevice(null,"");
-		initRPCDriverAcquisitionInfoConfig(null,0,"");
-		initPCPDriverAcquisitionInfoConfig(null,0,"");
 		
-		boolean sendMsg=false;
-		exampleDataManage();
-		do{
-			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-			type = new TypeToken<DriverProbeResponse>() {}.getType();
-			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-			
-			String Ver="";
-			if(driverProbeResponse!=null){
-				sendMsg=false;
-				if(!driverProbeResponse.getHttpServerInitStatus()){
-					initServerConfig();
-				}
-				if(!driverProbeResponse.getProtocolInitStatus()){
-					initProtocolConfig("","");
-				}
-				if(!driverProbeResponse.getInstanceInitStatus()){
-					initInstanceConfig(null,"");
-					initSMSInstanceConfig(null,"");
-				}
-				if(!driverProbeResponse.getSMSInitStatus()){
-//					initSMSDevice(null,"");
-				}
-				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-					//清空内存
-					Map<String, Object> dataModelMap = DataModelMap.getMapObject();
-					Map<String,InitializedDeviceInfo> initializedDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
-					Map<String,InitializedDeviceInfo> initializedIPPortDeviceList=(Map<String,InitializedDeviceInfo>) dataModelMap.get("InitializedIPPortDeviceList");
-					if(initializedDeviceList!=null){
-						dataModelMap.remove("InitializedDeviceList");
-						initializedDeviceList=new HashMap<String,InitializedDeviceInfo>();
-						dataModelMap.put("InitializedDeviceList", initializedDeviceList);
-					}
-					if(initializedIPPortDeviceList!=null){
-						dataModelMap.remove("InitializedIPPortDeviceList");
-						initializedIPPortDeviceList=new HashMap<String,InitializedDeviceInfo>();
-						dataModelMap.put("InitializedIPPortDeviceList", initializedIPPortDeviceList);
-					}
-					
-					initRPCDriverAcquisitionInfoConfig(null,0,"");
-					initPCPDriverAcquisitionInfoConfig(null,0,"");
-				}
-				Ver=driverProbeResponse.getVer();
+		path=stringManagerUtils.getFilePath("test3.json","example/");
+		String onLineData=stringManagerUtils.readFile(path,"utf-8");
+		
+		path=stringManagerUtils.getFilePath("test4.json","example/");
+		String offLineData=stringManagerUtils.readFile(path,"utf-8");
+		
+		path=stringManagerUtils.getFilePath("test7.json","example/");
+		String testData=stringManagerUtils.readFile(path,"utf-8");
+		
+		String url=stringManagerUtils.getProjectUrl()+"/api/acq/ipport/group";
+		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
+		int i=0;
+		while(true){
+			if(i%2==0){
+				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
 			}else{
-				if(!sendMsg){
-					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-					sendMsg=true;
-				}
+				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
 			}
-			Thread.sleep(1000*1);
-		}while(true);
+			i++;
+			
+//			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+//			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
+			Thread.sleep(1000*5);
+		}
+		
+//		initServerConfig();
+//		initProtocolConfig("","");
+//		initInstanceConfig(null,"");
+//		initSMSInstanceConfig(null,"");
+//		initSMSDevice(null,"");
+//		initRPCDriverAcquisitionInfoConfig(null,0,"");
+//		initPCPDriverAcquisitionInfoConfig(null,0,"");
+//		
+//		ThreadPool executor = new ThreadPool("adInit",
+//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
+//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
+//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+//				TimeUnit.SECONDS, 
+//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+//		while (!executor.isCompletedByTaskCount()) {
+//			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+//			Thread.sleep(1000*1);
+//	    }
+//		System.out.println("线程池任务执行完毕！");
+//		boolean sendMsg=false;
+//		exampleDataManage();
+//		do{
+//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+//			type = new TypeToken<DriverProbeResponse>() {}.getType();
+//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+//			
+//			String Ver="";
+//			if(driverProbeResponse!=null){
+//				sendMsg=false;
+//				if(!driverProbeResponse.getHttpServerInitStatus()){
+//					initServerConfig();
+//				}
+//				if(!driverProbeResponse.getProtocolInitStatus()){
+//					initProtocolConfig("","");
+//				}
+//				if(!driverProbeResponse.getInstanceInitStatus()){
+//					initInstanceConfig(null,"");
+//					initSMSInstanceConfig(null,"");
+//				}
+//				if(!driverProbeResponse.getSMSInitStatus()){
+////					initSMSDevice(null,"");
+//				}
+//				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+//					if(executor.isCompletedByTaskCount()){
+//						//清空内存
+//						AdInitMap.cleanData();
+//						
+//						initRPCDriverAcquisitionInfoConfig(null,0,"");
+//						initPCPDriverAcquisitionInfoConfig(null,0,"");
+//					}
+//				}
+//				Ver=driverProbeResponse.getVer();
+//			}else{
+//				if(!sendMsg){
+//					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+//					sendMsg=true;
+//				}
+//			}
+//			Thread.sleep(1000*1);
+//		}while(true);
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })

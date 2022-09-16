@@ -51,6 +51,8 @@ public class WellHandsontableChangedData {
 
 	    private String slave="";
 	    
+	    private String peakDelay="";
+	    
 	    private String videoUrl="";
 	    
 	    private String statusName="";
@@ -709,6 +711,14 @@ public class WellHandsontableChangedData {
 
 		public void setTcpType(String tcpType) {
 			this.tcpType = tcpType;
+		}
+
+		public String getPeakDelay() {
+			return peakDelay;
+		}
+
+		public void setPeakDelay(String peakDelay) {
+			this.peakDelay = peakDelay;
 		}
 	    
 	}

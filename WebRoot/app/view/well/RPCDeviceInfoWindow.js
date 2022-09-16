@@ -419,6 +419,15 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                     }
                 }
             },{
+            	xtype: 'numberfield',
+            	id: "rpcDevicePeakDelay_Id",
+            	name: "rpcDeviceInformation.peakDelay",
+                fieldLabel: '错峰延时(s)',
+                allowBlank: true,
+                minValue: 0,
+                anchor: '95%',
+                msgTarget: 'side'
+            },{
             	xtype: 'fieldcontainer',
                 fieldLabel : '状态<font color=red>*</font>',
                 defaultType: 'radiofield',

@@ -225,7 +225,7 @@ public class MemoryDataManagerTask {
 			}
 					
 			String sql="select t.id,t.orgid,t.orgName,t.wellname,t.devicetype,t.devicetypename,t.applicationscenarios,t.applicationScenariosName,"
-					+ "t.tcptype,t.signinid,t.slave,"
+					+ "t.tcptype,t.signinid,t.slave,t.peakdelay,"
 					+ "t.videourl,"
 					+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
 					+ "t.status,t.statusName,"
@@ -264,22 +264,24 @@ public class MemoryDataManagerTask {
 				rpcDeviceInfo.setTcpType(rs.getString(9)+"");
 				rpcDeviceInfo.setSignInId(rs.getString(10)+"");
 				rpcDeviceInfo.setSlave(rs.getString(11)+"");
-				rpcDeviceInfo.setVideoUrl(rs.getString(12)+"");
-				rpcDeviceInfo.setInstanceCode(rs.getString(13)+"");
-				rpcDeviceInfo.setInstanceName(rs.getString(14)+"");
-				rpcDeviceInfo.setAlarmInstanceCode(rs.getString(15)+"");
-				rpcDeviceInfo.setAlarmInstanceName(rs.getString(16)+"");
-				rpcDeviceInfo.setDisplayInstanceCode(rs.getString(17)+"");
-				rpcDeviceInfo.setDisplayInstanceName(rs.getString(18)+"");
-				rpcDeviceInfo.setStatus(rs.getInt(19));
-				rpcDeviceInfo.setStatusName(rs.getString(20)+"");
-				String productionData=rs.getString(21)+"";
-				String balanceInfo=rs.getString(22)+"";
-				float stroke=rs.getFloat(23);
-				float levelCorrectValue=rs.getFloat(24);
+				rpcDeviceInfo.setPeakDelay(rs.getInt(12));
+				
+				rpcDeviceInfo.setVideoUrl(rs.getString(13)+"");
+				rpcDeviceInfo.setInstanceCode(rs.getString(14)+"");
+				rpcDeviceInfo.setInstanceName(rs.getString(15)+"");
+				rpcDeviceInfo.setAlarmInstanceCode(rs.getString(16)+"");
+				rpcDeviceInfo.setAlarmInstanceName(rs.getString(17)+"");
+				rpcDeviceInfo.setDisplayInstanceCode(rs.getString(18)+"");
+				rpcDeviceInfo.setDisplayInstanceName(rs.getString(19)+"");
+				rpcDeviceInfo.setStatus(rs.getInt(20));
+				rpcDeviceInfo.setStatusName(rs.getString(21)+"");
+				String productionData=rs.getString(22)+"";
+				String balanceInfo=rs.getString(23)+"";
+				float stroke=rs.getFloat(24);
+				float levelCorrectValue=rs.getFloat(25);
 				
 				
-				int pumpingModelId=rs.getInt(25);
+				int pumpingModelId=rs.getInt(26);
 				rpcDeviceInfo.setPumpingModelId(pumpingModelId);
 				if(StringManagerUtils.isNotNull(productionData)){
 					type = new TypeToken<RPCDeviceInfo>() {}.getType();
@@ -297,15 +299,15 @@ public class MemoryDataManagerTask {
 					rpcDeviceInfo.setManualIntervention(rpcProductionData.getManualIntervention());
 					if(pumpingModelId>0){
 						rpcDeviceInfo.setPumpingUnit(new RPCCalculateRequestData.PumpingUnit());
-						rpcDeviceInfo.getPumpingUnit().setManufacturer(rs.getString(26)+"");
-						rpcDeviceInfo.getPumpingUnit().setModel(rs.getString(27)+"");
+						rpcDeviceInfo.getPumpingUnit().setManufacturer(rs.getString(27)+"");
+						rpcDeviceInfo.getPumpingUnit().setModel(rs.getString(28)+"");
 						rpcDeviceInfo.getPumpingUnit().setStroke(stroke);
-						rpcDeviceInfo.getPumpingUnit().setCrankRotationDirection(rs.getString(28)+"");
-						rpcDeviceInfo.getPumpingUnit().setOffsetAngleOfCrank(rs.getFloat(29));
-						rpcDeviceInfo.getPumpingUnit().setCrankGravityRadius(rs.getFloat(30));
-						rpcDeviceInfo.getPumpingUnit().setSingleCrankWeight(rs.getFloat(31));
-						rpcDeviceInfo.getPumpingUnit().setSingleCrankPinWeight(rs.getFloat(32));
-						rpcDeviceInfo.getPumpingUnit().setStructuralUnbalance(rs.getFloat(33));
+						rpcDeviceInfo.getPumpingUnit().setCrankRotationDirection(rs.getString(29)+"");
+						rpcDeviceInfo.getPumpingUnit().setOffsetAngleOfCrank(rs.getFloat(30));
+						rpcDeviceInfo.getPumpingUnit().setCrankGravityRadius(rs.getFloat(31));
+						rpcDeviceInfo.getPumpingUnit().setSingleCrankWeight(rs.getFloat(32));
+						rpcDeviceInfo.getPumpingUnit().setSingleCrankPinWeight(rs.getFloat(33));
+						rpcDeviceInfo.getPumpingUnit().setStructuralUnbalance(rs.getFloat(34));
 						type = new TypeToken<RPCCalculateRequestData.Balance>() {}.getType();
 						RPCCalculateRequestData.Balance balance=gson.fromJson(balanceInfo, type);
 						if(balance!=null){
@@ -325,32 +327,32 @@ public class MemoryDataManagerTask {
 					rpcDeviceInfo.setPumpingUnit(null);
 					rpcDeviceInfo.setManualIntervention(null);
 				}
-				rpcDeviceInfo.setSortNum(rs.getInt(34));
+				rpcDeviceInfo.setSortNum(rs.getInt(35));
 				
-				rpcDeviceInfo.setAcqTime(rs.getString(35));
+				rpcDeviceInfo.setAcqTime(rs.getString(36));
 				rpcDeviceInfo.setSaveTime("");
 				
-				rpcDeviceInfo.setCommStatus(rs.getInt(36));
-				rpcDeviceInfo.setCommTime(rs.getFloat(37));
-				rpcDeviceInfo.setCommEff(rs.getFloat(38));
-				rpcDeviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(39)));
+				rpcDeviceInfo.setCommStatus(rs.getInt(37));
+				rpcDeviceInfo.setCommTime(rs.getFloat(38));
+				rpcDeviceInfo.setCommEff(rs.getFloat(39));
+				rpcDeviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(40)));
 				
-				rpcDeviceInfo.setOnLineAcqTime(rs.getString(35));
-				rpcDeviceInfo.setOnLineCommStatus(rs.getInt(36));
-				rpcDeviceInfo.setOnLineCommTime(rs.getFloat(37));
-				rpcDeviceInfo.setOnLineCommEff(rs.getFloat(38));
-				rpcDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(39)));
+				rpcDeviceInfo.setOnLineAcqTime(rs.getString(36));
+				rpcDeviceInfo.setOnLineCommStatus(rs.getInt(37));
+				rpcDeviceInfo.setOnLineCommTime(rs.getFloat(38));
+				rpcDeviceInfo.setOnLineCommEff(rs.getFloat(39));
+				rpcDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(40)));
 				
-				rpcDeviceInfo.setRunStatus(rs.getInt(40));
-				rpcDeviceInfo.setRunTime(rs.getFloat(41));
-				rpcDeviceInfo.setRunEff(rs.getFloat(42));
-				rpcDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(43)));
+				rpcDeviceInfo.setRunStatus(rs.getInt(41));
+				rpcDeviceInfo.setRunTime(rs.getFloat(42));
+				rpcDeviceInfo.setRunEff(rs.getFloat(43));
+				rpcDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(44)));
 				
-				rpcDeviceInfo.setTotalKWattH(rs.getFloat(44));
-				rpcDeviceInfo.setTodayKWattH(rs.getFloat(45));
+				rpcDeviceInfo.setTotalKWattH(rs.getFloat(45));
+				rpcDeviceInfo.setTodayKWattH(rs.getFloat(46));
 				
-				rpcDeviceInfo.setResultStatus(rs.getInt(46));
-				rpcDeviceInfo.setResultCode(rs.getInt(47));
+				rpcDeviceInfo.setResultStatus(rs.getInt(47));
+				rpcDeviceInfo.setResultCode(rs.getInt(48));
 				
 				String key=rpcDeviceInfo.getId()+"";
 				jedis.hset("RPCDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(rpcDeviceInfo));//哈希(Hash)
@@ -615,7 +617,7 @@ public class MemoryDataManagerTask {
 			}
 			
 			String sql="select t.id,t.orgid,t.orgName,t.wellname,t.devicetype,t.devicetypename,t.applicationscenarios,t.applicationScenariosName,"
-					+ "t.tcptype,t.signinid,t.slave,"
+					+ "t.tcptype,t.signinid,t.slave,t.peakdelay,"
 					+ "t.videourl,"
 					+ "t.instancecode,t.instancename,t.alarminstancecode,t.alarminstancename,t.displayinstancecode,t.displayinstancename,"
 					+ "t.status,t.statusName,"
@@ -650,16 +652,18 @@ public class MemoryDataManagerTask {
 				pcpDeviceInfo.setTcpType(rs.getString(9)+"");
 				pcpDeviceInfo.setSignInId(rs.getString(10)+"");
 				pcpDeviceInfo.setSlave(rs.getString(11)+"");
-				pcpDeviceInfo.setVideoUrl(rs.getString(12)+"");
-				pcpDeviceInfo.setInstanceCode(rs.getString(13)+"");
-				pcpDeviceInfo.setInstanceName(rs.getString(14)+"");
-				pcpDeviceInfo.setAlarmInstanceCode(rs.getString(15)+"");
-				pcpDeviceInfo.setAlarmInstanceName(rs.getString(16)+"");
-				pcpDeviceInfo.setDisplayInstanceCode(rs.getString(17)+"");
-				pcpDeviceInfo.setDisplayInstanceName(rs.getString(18)+"");
-				pcpDeviceInfo.setStatus(rs.getInt(19));
-				pcpDeviceInfo.setStatusName(rs.getString(20)+"");
-				String productionData=rs.getString(21);
+				pcpDeviceInfo.setPeakDelay(rs.getInt(12));
+				
+				pcpDeviceInfo.setVideoUrl(rs.getString(13)+"");
+				pcpDeviceInfo.setInstanceCode(rs.getString(14)+"");
+				pcpDeviceInfo.setInstanceName(rs.getString(15)+"");
+				pcpDeviceInfo.setAlarmInstanceCode(rs.getString(16)+"");
+				pcpDeviceInfo.setAlarmInstanceName(rs.getString(17)+"");
+				pcpDeviceInfo.setDisplayInstanceCode(rs.getString(18)+"");
+				pcpDeviceInfo.setDisplayInstanceName(rs.getString(19)+"");
+				pcpDeviceInfo.setStatus(rs.getInt(20));
+				pcpDeviceInfo.setStatusName(rs.getString(21)+"");
+				String productionData=rs.getString(22);
 				if(StringManagerUtils.isNotNull(productionData)){
 					type = new TypeToken<PCPDeviceInfo>() {}.getType();
 					PCPDeviceInfo pcpProductionData=gson.fromJson(productionData, type);
@@ -683,29 +687,29 @@ public class MemoryDataManagerTask {
 					pcpDeviceInfo.setProduction(null);
 					pcpDeviceInfo.setManualIntervention(null);
 				}
-				pcpDeviceInfo.setSortNum(rs.getInt(22));
+				pcpDeviceInfo.setSortNum(rs.getInt(23));
 				
-				pcpDeviceInfo.setAcqTime(rs.getString(23));
+				pcpDeviceInfo.setAcqTime(rs.getString(24));
 				pcpDeviceInfo.setSaveTime("");
 				
-				pcpDeviceInfo.setCommStatus(rs.getInt(24));
-				pcpDeviceInfo.setCommTime(rs.getFloat(25));
-				pcpDeviceInfo.setCommEff(rs.getFloat(26));
-				pcpDeviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(27)));
+				pcpDeviceInfo.setCommStatus(rs.getInt(25));
+				pcpDeviceInfo.setCommTime(rs.getFloat(26));
+				pcpDeviceInfo.setCommEff(rs.getFloat(27));
+				pcpDeviceInfo.setCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(28)));
 				
-				pcpDeviceInfo.setOnLineAcqTime(rs.getString(23));
-				pcpDeviceInfo.setOnLineCommStatus(rs.getInt(24));
-				pcpDeviceInfo.setOnLineCommTime(rs.getFloat(25));
-				pcpDeviceInfo.setOnLineCommEff(rs.getFloat(26));
-				pcpDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(27)));
+				pcpDeviceInfo.setOnLineAcqTime(rs.getString(24));
+				pcpDeviceInfo.setOnLineCommStatus(rs.getInt(25));
+				pcpDeviceInfo.setOnLineCommTime(rs.getFloat(26));
+				pcpDeviceInfo.setOnLineCommEff(rs.getFloat(27));
+				pcpDeviceInfo.setOnLineCommRange(StringManagerUtils.CLOBtoString2(rs.getClob(28)));
 				
-				pcpDeviceInfo.setRunStatus(rs.getInt(28));
-				pcpDeviceInfo.setRunTime(rs.getFloat(29));
-				pcpDeviceInfo.setRunEff(rs.getFloat(30));
-				pcpDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(31)));
+				pcpDeviceInfo.setRunStatus(rs.getInt(29));
+				pcpDeviceInfo.setRunTime(rs.getFloat(30));
+				pcpDeviceInfo.setRunEff(rs.getFloat(31));
+				pcpDeviceInfo.setRunRange(StringManagerUtils.CLOBtoString2(rs.getClob(32)));
 				
-				pcpDeviceInfo.setTotalKWattH(rs.getFloat(32));
-				pcpDeviceInfo.setTodayKWattH(rs.getFloat(33));
+				pcpDeviceInfo.setTotalKWattH(rs.getFloat(33));
+				pcpDeviceInfo.setTodayKWattH(rs.getFloat(34));
 				String key=pcpDeviceInfo.getId()+"";
 				jedis.hset("PCPDeviceInfo".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(pcpDeviceInfo));//哈希(Hash)
 //				jedis.hset("PCPDeviceCommStatusInfo", pcpDeviceInfo.getCommStatus()+"", key);//哈希(Hash)

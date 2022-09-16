@@ -35,14 +35,28 @@ public class InitIdAndIPPortThread implements Runnable{
 
 	@Override
 	public void run(){
+		String id="";
+		String slave="";
+		String wellType="";
 		long time1 =System.nanoTime()/1000;
 		if(deviceType==0){
-			initRPCDevice(rpcDeviceInfo,initEnable,method);
+			if(rpcDeviceInfo!=null){
+				initRPCDevice(rpcDeviceInfo,initEnable,method);
+				id=rpcDeviceInfo.getSignInId();
+				slave=rpcDeviceInfo.getSlave();
+				wellType="抽油机";
+			}
 		}else{
-			initPCPDevice(pcpDeviceInfo,initEnable,method);
+			if(pcpDeviceInfo!=null){
+				initPCPDevice(pcpDeviceInfo,initEnable,method);
+				id=pcpDeviceInfo.getSignInId();
+				slave=pcpDeviceInfo.getSlave();
+				wellType="螺杆泵";
+			}
+			
 		}
 		long time2 =System.nanoTime()/1000;
-		System.out.println("ID/IPPort初始化耗时："+(time2-time1)+"μs");
+		StringManagerUtils.printLog(wellType+"ID/IPPort初始化耗时："+(time2-time1)+"μs"+",ID/IPPort:"+id+",Slave:"+slave+",ThreadId:"+Thread.currentThread().getId());
 	}
 
 	public static void initRPCDevice(RPCDeviceInfo rpcDeviceInfo,boolean initEnable,String method){
@@ -60,6 +74,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		String signinId=rpcDeviceInfo.getSignInId()==null?"":rpcDeviceInfo.getSignInId();
 		String slaveStr=rpcDeviceInfo.getSlave()==null?"":rpcDeviceInfo.getSlave();
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
+		int peakDelay=rpcDeviceInfo.getPeakDelay();
 		String instanceName=rpcDeviceInfo.getInstanceName()==null?"":rpcDeviceInfo.getInstanceName();
 		int deviceType=rpcDeviceInfo.getDeviceType();
 		int deviceId=rpcDeviceInfo.getId();
@@ -82,6 +97,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setID(otherInitialized.getSigninid());
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("抽油机ID初始化："+initUrl+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
@@ -101,6 +117,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setIPPort(otherInitialized.getSigninid());;
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("抽油机ID初始化："+initIPPortUrl+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
@@ -129,16 +146,14 @@ public class InitIdAndIPPortThread implements Runnable{
 				}
 				initId.setSlave((byte) slave);
 				initId.setInstanceName(instanceName);
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
-					long time1 =System.nanoTime()/1000;
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
-					long time2 =System.nanoTime()/1000;
-					System.out.println("抽油机ID初始化耗时："+(time2-time1));
 				}
 //				if(StringManagerUtils.isNotNull(response)){
-					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
+					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
 					if(initType==0){
 						initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 					}else{
@@ -162,6 +177,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					}
 					initId.setSlave(initialized.getSlave());
 					initId.setInstanceName(initialized.getInstanceName());
+					initId.setPeakDelay(peakDelay);
 					StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 					String response="";
 					if(initEnable){
@@ -176,22 +192,27 @@ public class InitIdAndIPPortThread implements Runnable{
 //					}
 				}
 				//如果已经初始化但信息有变化
-				else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
-					//删掉原有初始化
+				else if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName)  && initialized.getPeakDelay()==peakDelay)  ){
 					InitId initId=new InitId();
-					initId.setMethod("delete");
-					if(initType==0){
-						initId.setID(initialized.getSigninid());
-					}else{
-						initId.setIPPort(initialized.getSigninid());
-					}
-					initId.setSlave(initialized.getSlave());
-					initId.setInstanceName(initialized.getInstanceName());
-					StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
-					if(initEnable){
-						StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+					//如果注册包ID、设备从地址、实例变化，删除设备
+					if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName)) ){
+						//删掉原有初始化
+						initId.setMethod("delete");
+						if(initType==0){
+							initId.setID(initialized.getSigninid());
+						}else{
+							initId.setIPPort(initialized.getSigninid());
+						}
+						initId.setSlave(initialized.getSlave());
+						initId.setInstanceName(initialized.getInstanceName());
+						initId.setPeakDelay(peakDelay);
+						StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+						if(initEnable){
+							StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+						}
 					}
 					//重新初始化
+					initId=new InitId();
 					initId.setMethod("update");
 					if(initType==0){
 						initId.setID(signinId);
@@ -200,13 +221,14 @@ public class InitIdAndIPPortThread implements Runnable{
 					}
 					initId.setSlave((byte) slave);
 					initId.setInstanceName(instanceName);
+					initId.setPeakDelay(peakDelay);
 					StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 					String response="";
 					if(initEnable){
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 					}
 //					if(StringManagerUtils.isNotNull(response)){
-						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
+						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
 						if(initType==0){
 							initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 						}else{
@@ -227,6 +249,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				}
 				initId.setSlave(initialized.getSlave());
 				initId.setInstanceName(initialized.getInstanceName());
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
@@ -262,6 +285,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		String signinId=pcpDeviceInfo.getSignInId()==null?"":pcpDeviceInfo.getSignInId();
 		String slaveStr=pcpDeviceInfo.getSlave()==null?"":pcpDeviceInfo.getSlave();
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
+		int peakDelay=pcpDeviceInfo.getPeakDelay();
 		String instanceName=pcpDeviceInfo.getInstanceName()==null?"":pcpDeviceInfo.getInstanceName();
 		int deviceType=pcpDeviceInfo.getDeviceType();
 		int deviceId=pcpDeviceInfo.getId();
@@ -284,6 +308,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setID(otherInitialized.getSigninid());
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("螺杆泵ID初始化："+initUrl+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
@@ -303,6 +328,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				initId.setIPPort(otherInitialized.getSigninid());;
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("螺杆泵ID初始化："+initIPPortUrl+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
@@ -331,6 +357,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				}
 				initId.setSlave((byte) slave);
 				initId.setInstanceName(instanceName);
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){
@@ -338,7 +365,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					
 				}
 //				if(StringManagerUtils.isNotNull(response)){
-					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
+					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
 					if(initType==0){
 						initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 					}else{
@@ -362,6 +389,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					}
 					initId.setSlave(initialized.getSlave());
 					initId.setInstanceName(initialized.getInstanceName());
+					initId.setPeakDelay(peakDelay);
 					StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 					String response="";
 					if(initEnable){
@@ -376,22 +404,27 @@ public class InitIdAndIPPortThread implements Runnable{
 //					}
 				}
 				//如果已经初始化但信息有变化
-				else if(! (initialized.getSigninid().equalsIgnoreCase(signinId)&&initialized.getSlave()==(byte) slave&& initialized.getInstanceName().equalsIgnoreCase(instanceName))   ){
-					//删掉原有初始化
+				else if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName) && initialized.getPeakDelay()==peakDelay)  ){
 					InitId initId=new InitId();
-					initId.setMethod("delete");
-					if(initType==0){
-						initId.setID(initialized.getSigninid());
-					}else{
-						initId.setIPPort(initialized.getSigninid());
-					}
-					initId.setSlave(initialized.getSlave());
-					initId.setInstanceName(initialized.getInstanceName());
-					StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
-					if(initEnable){
-						StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+					//如果注册包ID、设备从地址、实例变化，删除设备
+					if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName)) ){
+						//删掉原有初始化
+						initId.setMethod("delete");
+						if(initType==0){
+							initId.setID(initialized.getSigninid());
+						}else{
+							initId.setIPPort(initialized.getSigninid());
+						}
+						initId.setSlave(initialized.getSlave());
+						initId.setInstanceName(initialized.getInstanceName());
+						initId.setPeakDelay(peakDelay);
+						StringManagerUtils.printLog("抽油机ID初始化："+url+","+gson.toJson(initId));
+						if(initEnable){
+							StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
+						}
 					}
 					//重新初始化
+					initId=new InitId();
 					initId.setMethod("update");
 					if(initType==0){
 						initId.setID(signinId);
@@ -400,13 +433,14 @@ public class InitIdAndIPPortThread implements Runnable{
 					}
 					initId.setSlave((byte) slave);
 					initId.setInstanceName(instanceName);
+					initId.setPeakDelay(peakDelay);
 					StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 					String response="";
 					if(initEnable){
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 					}
 //					if(StringManagerUtils.isNotNull(response)){
-						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,instanceName);
+						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
 						if(initType==0){
 							initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 						}else{
@@ -427,6 +461,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				}
 				initId.setSlave(initialized.getSlave());
 				initId.setInstanceName(initialized.getInstanceName());
+				initId.setPeakDelay(peakDelay);
 				StringManagerUtils.printLog("螺杆泵ID初始化："+url+","+gson.toJson(initId));
 				String response="";
 				if(initEnable){

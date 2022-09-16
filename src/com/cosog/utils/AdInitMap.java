@@ -27,4 +27,9 @@ public final class AdInitMap {
 	private void addIpPortInit(final String name, final InitializedDeviceInfo o) {
 		ipPortInitMap.put(name, o);
 	}
+	
+	public static void cleanData(){
+		idInitMap.clear();
+		ipPortInitMap.clear();
+	}
 }

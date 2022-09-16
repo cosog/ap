@@ -1,11 +1,4 @@
 {
-    "Method": "update",
-    "ProtocolName": "yd_A11-sj",
-    "Addr": [49000, 49002, 49004, 49005, 49006, 49007, 49009],
-    "Quantity": [1, 1, 1, 1, 1, 1, 1],
-    "StoreDataType": ["float32", "float32", "uint16", "uint16", "uint16", "float32", "float32"],
-    "RWType": ["r", "r", "rw", "rw", "rw", "r", "r"],
-    "Ratio": [1, 1, 1, 1, 1, 1, 1],
-    "AcqMode": ["passive", "passive", "passive", "passive", "passive", "passive", "passive"],
-    "IFDataType": ["float32", "float32", "int", "int", "int", "float32", "float32"]
+    "ID":"1010001",
+    "Status":false
 }

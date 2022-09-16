@@ -11,6 +11,8 @@ public class InitId {
 	private String ID;
 
     private byte Slave;
+    
+    private int PeakDelay;
 
     private String InstanceName;
 
@@ -52,6 +54,14 @@ public class InitId {
 
 	public void setIPPort(String iPPort) {
 		IPPort = iPPort;
+	}
+
+	public int getPeakDelay() {
+		return PeakDelay;
+	}
+
+	public void setPeakDelay(int peakDelay) {
+		PeakDelay = peakDelay;
 	}
     
 }

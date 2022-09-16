@@ -153,6 +153,13 @@ public class ThreadPool {
 	}
 	
 	/**
+	 * 判断线程池的所有任务是否执行完
+	 */
+	public boolean isCompletedByTaskCount() {
+	    return executor.getTaskCount() == executor.getCompletedTaskCount();
+	}
+	
+	/**
 	* Returns the number of elements in this collection. If this collection
 	* contains more than Integer.MAX_VALUE elements, returns
 	* Integer.MAX_VALUE.

@@ -30,6 +30,7 @@ public class RpcDeviceInformation implements java.io.Serializable {
 	private String tcpType;
 	private String signInId;
 	private String slave;
+	private Integer peakDelay;
 	private String videoUrl;
 	private Integer status;
 	private Integer sortNum;
@@ -186,5 +187,14 @@ public class RpcDeviceInformation implements java.io.Serializable {
 
 	public void setTcpType(String tcpType) {
 		this.tcpType = tcpType;
+	}
+
+	@Column(name = "peakDelay", precision = 22, scale = 0)
+	public Integer getPeakDelay() {
+		return peakDelay;
+	}
+
+	public void setPeakDelay(Integer peakDelay) {
+		this.peakDelay = peakDelay;
 	}
 }

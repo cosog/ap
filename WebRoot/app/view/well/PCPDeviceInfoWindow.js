@@ -420,6 +420,15 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                     }
                 }
             },{
+            	xtype: 'numberfield',
+            	id: "pcpDevicePeakDelay_Id",
+            	name: "pcpDeviceInformation.peakDelay",
+                fieldLabel: '错峰延时(s)',
+                allowBlank: true,
+                minValue: 0,
+                anchor: '95%',
+                msgTarget: 'side'
+            },{
             	xtype: 'fieldcontainer',
                 fieldLabel : '状态<font color=red>*</font>',
                 defaultType: 'radiofield',

@@ -484,6 +484,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					collisionBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
+					collisionBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					collisionBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
@@ -524,6 +525,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		        	collisionBuff.append("\"rodInsideDiameter4\":\""+list.get(i).getRodInsideDiameter4()+"\",");
 		        	collisionBuff.append("\"rodLength4\":\""+list.get(i).getRodLength4()+"\",");
 		        	collisionBuff.append("\"netGrossRatio\":\""+list.get(i).getNetGrossRatio()+"\",");
+		        	collisionBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
 		        	collisionBuff.append("\"manufacturer\":\""+list.get(i).getManufacturer()+"\",");
 		        	collisionBuff.append("\"model\":\""+list.get(i).getModel()+"\",");
 		        	collisionBuff.append("\"stroke\":\""+list.get(i).getStroke()+"\",");
@@ -548,6 +550,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					overlayBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
+					overlayBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					overlayBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
 					
@@ -588,6 +591,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		        	overlayBuff.append("\"rodInsideDiameter4\":\""+list.get(i).getRodInsideDiameter4()+"\",");
 		        	overlayBuff.append("\"rodLength4\":\""+list.get(i).getRodLength4()+"\",");
 		        	overlayBuff.append("\"netGrossRatio\":\""+list.get(i).getNetGrossRatio()+"\",");
+		        	overlayBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
 		        	overlayBuff.append("\"manufacturer\":\""+list.get(i).getManufacturer()+"\",");
 		        	overlayBuff.append("\"model\":\""+list.get(i).getModel()+"\",");
 		        	overlayBuff.append("\"stroke\":\""+list.get(i).getStroke()+"\",");
@@ -728,8 +732,50 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					collisionBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
+					collisionBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					collisionBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					collisionBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
+					
+					collisionBuff.append("\"crudeOilDensity\":\""+list.get(i).getCrudeOilDensity()+"\",");
+		        	collisionBuff.append("\"waterDensity\":\""+list.get(i).getWaterDensity()+"\",");
+		        	collisionBuff.append("\"naturalGasRelativeDensity\":\""+list.get(i).getNaturalGasRelativeDensity()+"\",");
+		        	collisionBuff.append("\"saturationPressure\":\""+list.get(i).getSaturationPressure()+"\",");
+		        	collisionBuff.append("\"reservoirDepth\":\""+list.get(i).getReservoirDepth()+"\",");
+		        	collisionBuff.append("\"reservoirTemperature\":\""+list.get(i).getReservoirTemperature()+"\",");
+		        	collisionBuff.append("\"tubingPressure\":\""+list.get(i).getTubingPressure()+"\",");
+		        	collisionBuff.append("\"casingPressure\":\""+list.get(i).getCasingPressure()+"\",");
+		        	collisionBuff.append("\"wellHeadTemperature\":\""+list.get(i).getWellHeadTemperature()+"\",");
+		        	collisionBuff.append("\"waterCut\":\""+list.get(i).getWaterCut()+"\",");
+		        	collisionBuff.append("\"productionGasOilRatio\":\""+list.get(i).getProductionGasOilRatio()+"\",");
+		        	collisionBuff.append("\"producingfluidLevel\":\""+list.get(i).getProducingfluidLevel()+"\",");
+		        	collisionBuff.append("\"pumpSettingDepth\":\""+list.get(i).getPumpSettingDepth()+"\",");
+		        	
+		        	collisionBuff.append("\"barrelLength\":\""+list.get(i).getBarrelLength()+"\",");
+		        	collisionBuff.append("\"barrelSeries\":\""+list.get(i).getBarrelSeries()+"\",");
+		        	collisionBuff.append("\"rotorDiameter\":\""+list.get(i).getRotorDiameter()+"\",");
+		        	collisionBuff.append("\"QPR\":\""+list.get(i).getQPR()+"\",");
+		        	collisionBuff.append("\"tubingStringInsideDiameter\":\""+list.get(i).getTubingStringInsideDiameter()+"\",");
+		        	collisionBuff.append("\"casingStringInsideDiameter\":\""+list.get(i).getCasingStringInsideDiameter()+"\",");
+		        	collisionBuff.append("\"rodGrade1\":\""+list.get(i).getRodGrade1()+"\",");
+		        	collisionBuff.append("\"rodOutsideDiameter1\":\""+list.get(i).getRodOutsideDiameter1()+"\",");
+		        	collisionBuff.append("\"rodInsideDiameter1\":\""+list.get(i).getRodInsideDiameter1()+"\",");
+		        	collisionBuff.append("\"rodLength1\":\""+list.get(i).getRodLength1()+"\",");
+		        	collisionBuff.append("\"rodGrade2\":\""+list.get(i).getRodGrade2()+"\",");
+		        	collisionBuff.append("\"rodOutsideDiameter2\":\""+list.get(i).getRodOutsideDiameter2()+"\",");
+		        	collisionBuff.append("\"rodInsideDiameter2\":\""+list.get(i).getRodInsideDiameter2()+"\",");
+		        	collisionBuff.append("\"rodLength2\":\""+list.get(i).getRodLength2()+"\",");
+		        	collisionBuff.append("\"rodGrade3\":\""+list.get(i).getRodGrade3()+"\",");
+		        	collisionBuff.append("\"rodOutsideDiameter3\":\""+list.get(i).getRodOutsideDiameter3()+"\",");
+		        	collisionBuff.append("\"rodInsideDiameter3\":\""+list.get(i).getRodInsideDiameter3()+"\",");
+		        	collisionBuff.append("\"rodLength3\":\""+list.get(i).getRodLength3()+"\",");
+		        	collisionBuff.append("\"rodGrade4\":\""+list.get(i).getRodGrade4()+"\",");
+		        	collisionBuff.append("\"rodOutsideDiameter4\":\""+list.get(i).getRodOutsideDiameter4()+"\",");
+		        	collisionBuff.append("\"rodInsideDiameter4\":\""+list.get(i).getRodInsideDiameter4()+"\",");
+		        	collisionBuff.append("\"rodLength4\":\""+list.get(i).getRodLength4()+"\",");
+		        	collisionBuff.append("\"netGrossRatio\":\""+list.get(i).getNetGrossRatio()+"\",");
+		        	collisionBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
+					
+					
 					collisionBuff.append("\"dataInfo\":\""+list.get(i).getSaveStr()+"\"},");
 				}else if(list.get(i).getSaveSign()==-33){//覆盖信息
 					overlayCount+=1;
@@ -742,8 +788,49 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"tcpType\":\""+list.get(i).getTcpType()+"\",");
 					overlayBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
+					overlayBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					overlayBuff.append("\"statusName\":\""+list.get(i).getStatusName()+"\",");
 					overlayBuff.append("\"sortNum\":\""+list.get(i).getSortNum()+"\",");
+					
+					overlayBuff.append("\"crudeOilDensity\":\""+list.get(i).getCrudeOilDensity()+"\",");
+					overlayBuff.append("\"waterDensity\":\""+list.get(i).getWaterDensity()+"\",");
+					overlayBuff.append("\"naturalGasRelativeDensity\":\""+list.get(i).getNaturalGasRelativeDensity()+"\",");
+					overlayBuff.append("\"saturationPressure\":\""+list.get(i).getSaturationPressure()+"\",");
+					overlayBuff.append("\"reservoirDepth\":\""+list.get(i).getReservoirDepth()+"\",");
+					overlayBuff.append("\"reservoirTemperature\":\""+list.get(i).getReservoirTemperature()+"\",");
+					overlayBuff.append("\"tubingPressure\":\""+list.get(i).getTubingPressure()+"\",");
+					overlayBuff.append("\"casingPressure\":\""+list.get(i).getCasingPressure()+"\",");
+					overlayBuff.append("\"wellHeadTemperature\":\""+list.get(i).getWellHeadTemperature()+"\",");
+					overlayBuff.append("\"waterCut\":\""+list.get(i).getWaterCut()+"\",");
+					overlayBuff.append("\"productionGasOilRatio\":\""+list.get(i).getProductionGasOilRatio()+"\",");
+					overlayBuff.append("\"producingfluidLevel\":\""+list.get(i).getProducingfluidLevel()+"\",");
+					overlayBuff.append("\"pumpSettingDepth\":\""+list.get(i).getPumpSettingDepth()+"\",");
+		        	
+					overlayBuff.append("\"barrelLength\":\""+list.get(i).getBarrelLength()+"\",");
+					overlayBuff.append("\"barrelSeries\":\""+list.get(i).getBarrelSeries()+"\",");
+					overlayBuff.append("\"rotorDiameter\":\""+list.get(i).getRotorDiameter()+"\",");
+					overlayBuff.append("\"QPR\":\""+list.get(i).getQPR()+"\",");
+					overlayBuff.append("\"tubingStringInsideDiameter\":\""+list.get(i).getTubingStringInsideDiameter()+"\",");
+					overlayBuff.append("\"casingStringInsideDiameter\":\""+list.get(i).getCasingStringInsideDiameter()+"\",");
+					overlayBuff.append("\"rodGrade1\":\""+list.get(i).getRodGrade1()+"\",");
+					overlayBuff.append("\"rodOutsideDiameter1\":\""+list.get(i).getRodOutsideDiameter1()+"\",");
+					overlayBuff.append("\"rodInsideDiameter1\":\""+list.get(i).getRodInsideDiameter1()+"\",");
+					overlayBuff.append("\"rodLength1\":\""+list.get(i).getRodLength1()+"\",");
+					overlayBuff.append("\"rodGrade2\":\""+list.get(i).getRodGrade2()+"\",");
+					overlayBuff.append("\"rodOutsideDiameter2\":\""+list.get(i).getRodOutsideDiameter2()+"\",");
+					overlayBuff.append("\"rodInsideDiameter2\":\""+list.get(i).getRodInsideDiameter2()+"\",");
+					overlayBuff.append("\"rodLength2\":\""+list.get(i).getRodLength2()+"\",");
+					overlayBuff.append("\"rodGrade3\":\""+list.get(i).getRodGrade3()+"\",");
+					overlayBuff.append("\"rodOutsideDiameter3\":\""+list.get(i).getRodOutsideDiameter3()+"\",");
+					overlayBuff.append("\"rodInsideDiameter3\":\""+list.get(i).getRodInsideDiameter3()+"\",");
+					overlayBuff.append("\"rodLength3\":\""+list.get(i).getRodLength3()+"\",");
+					overlayBuff.append("\"rodGrade4\":\""+list.get(i).getRodGrade4()+"\",");
+					overlayBuff.append("\"rodOutsideDiameter4\":\""+list.get(i).getRodOutsideDiameter4()+"\",");
+					overlayBuff.append("\"rodInsideDiameter4\":\""+list.get(i).getRodInsideDiameter4()+"\",");
+					overlayBuff.append("\"rodLength4\":\""+list.get(i).getRodLength4()+"\",");
+					overlayBuff.append("\"netGrossRatio\":\""+list.get(i).getNetGrossRatio()+"\",");
+					overlayBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
+		        	
 					overlayBuff.append("\"dataInfo\":\""+list.get(i).getSaveStr()+"\"},");
 				}
 			}
@@ -1097,7 +1184,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-				+ " tcptype,signInId,slave,"
+				+ " tcptype,signInId,slave,t.peakdelay,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1182,11 +1269,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"tcpType\":\""+obj[7]+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
 			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
-			result_json.append("\"status\":\""+obj[12]+"\",");
-			result_json.append("\"statusName\":\""+obj[13]+"\",");
-			result_json.append("\"allPath\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
+			result_json.append("\"peakDelay\":\""+obj[10]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+			result_json.append("\"status\":\""+obj[13]+"\",");
+			result_json.append("\"statusName\":\""+obj[14]+"\",");
+			result_json.append("\"allPath\":\""+obj[15]+"\",");
+			result_json.append("\"sortNum\":\""+obj[12]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -1208,7 +1296,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
 		}
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-				+ " tcptype,signInId,slave,"
+				+ " tcptype,signInId,slave,t.peakdelay,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1232,11 +1320,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"tcpType\":\""+obj[7]+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
 			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
-			result_json.append("\"status\":\""+obj[12]+"\",");
-			result_json.append("\"statusName\":\""+obj[13]+"\",");
-			result_json.append("\"allPath\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
+			result_json.append("\"peakDelay\":\""+obj[10]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+			result_json.append("\"status\":\""+obj[13]+"\",");
+			result_json.append("\"statusName\":\""+obj[14]+"\",");
+			result_json.append("\"allPath\":\""+obj[15]+"\",");
+			result_json.append("\"sortNum\":\""+obj[12]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -1269,7 +1358,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-				+ " tcptype,signInId,slave,"
+				+ " tcptype,signInId,slave,t.peakdelay,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1355,11 +1444,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"tcpType\":\""+obj[7]+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
 			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
-			result_json.append("\"status\":\""+obj[12]+"\",");
-			result_json.append("\"statusName\":\""+obj[13]+"\",");
-			result_json.append("\"allPath\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
+			result_json.append("\"peakDelay\":\""+obj[10]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+			result_json.append("\"status\":\""+obj[13]+"\",");
+			result_json.append("\"statusName\":\""+obj[14]+"\",");
+			result_json.append("\"allPath\":\""+obj[15]+"\",");
+			result_json.append("\"sortNum\":\""+obj[12]+"\"},");
 		}
 //		for(int i=1;i<=recordCount-list.size();i++){
 //			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -1385,7 +1475,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-				+ " tcptype,signInId,slave,"
+				+ " tcptype,signInId,slave,t.peakdelay,"
 				+ " videoUrl,sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
 				+ WellInformation_Str;
@@ -1411,11 +1501,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"tcpType\":\""+obj[7]+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
 			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[10]+"\",");
-			result_json.append("\"status\":\""+obj[12]+"\",");
-			result_json.append("\"statusName\":\""+obj[13]+"\",");
-			result_json.append("\"allPath\":\""+obj[14]+"\",");
-			result_json.append("\"sortNum\":\""+obj[11]+"\"},");
+			result_json.append("\"peakDelay\":\""+obj[10]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+			result_json.append("\"status\":\""+obj[13]+"\",");
+			result_json.append("\"statusName\":\""+obj[14]+"\",");
+			result_json.append("\"allPath\":\""+obj[15]+"\",");
+			result_json.append("\"sortNum\":\""+obj[12]+"\"},");
 		}
 		for(int i=1;i<=recordCount-list.size();i++){
 			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");

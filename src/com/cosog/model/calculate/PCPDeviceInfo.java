@@ -26,6 +26,7 @@ public class PCPDeviceInfo implements Serializable {
 	private String tcpType;
 	private String signInId;
 	private String slave;
+	private Integer PeakDelay;
 	private String videoUrl;
 	private Integer status;
 	private String statusName;
@@ -561,6 +562,16 @@ public class PCPDeviceInfo implements Serializable {
 
 	public void setTcpType(String tcpType) {
 		this.tcpType = tcpType;
+	}
+
+
+	public Integer getPeakDelay() {
+		return PeakDelay;
+	}
+
+
+	public void setPeakDelay(Integer peakDelay) {
+		PeakDelay = peakDelay;
 	}
 
 

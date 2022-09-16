@@ -17,10 +17,12 @@ public class InitializedDeviceInfo {
 	private String signinid;
 
     private byte slave;
+    
+    public int peakDelay;
 
     private String instanceName;
 
-	public InitializedDeviceInfo(int orgId,int deviceId, String deviceName, int deviceType, String tcpServer, String signinid, byte slave,
+	public InitializedDeviceInfo(int orgId,int deviceId, String deviceName, int deviceType, String tcpServer, String signinid, byte slave,int peakDelay,
 			String instanceName) {
 		super();
 		this.orgId = orgId;
@@ -30,6 +32,7 @@ public class InitializedDeviceInfo {
 		this.tcpServer = tcpServer;
 		this.signinid = signinid;
 		this.slave = slave;
+		this.peakDelay = peakDelay;
 		this.instanceName = instanceName;
 	}
 
@@ -99,6 +102,14 @@ public class InitializedDeviceInfo {
 
 	public void setTcpServer(String tcpServer) {
 		this.tcpServer = tcpServer;
+	}
+
+	public int getPeakDelay() {
+		return peakDelay;
+	}
+
+	public void setPeakDelay(int peakDelay) {
+		this.peakDelay = peakDelay;
 	}
     
 }

@@ -200,9 +200,22 @@ function websocketOnMessage(evt) {
 				getDeviceCommStatusTotal();
 				getDeviceRunStatusTotal();
 				getDeviceFESDiagramResultTotal();
+				
+				var isSelectWell=false;
+				var commStatusChange=false;
 				//更新设备概览列表
 				var RPCRealTimeMonitoringListGrid = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(RPCRealTimeMonitoringListGrid)){
+					if( RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection().length>0){
+						var selectedlName  = RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection()[0].data.wellName;
+						if(selectedlName==data.wellName){
+							isSelectWell=true;
+							if(RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection()[0].data.commStatus==0){
+								commStatusChange=true;
+							}
+						}
+					}
+					
 					var store = RPCRealTimeMonitoringListGrid.getStore();
 					for(var i=0;i<store.getCount();i++){
 						var record=store.getAt(i);
@@ -230,70 +243,70 @@ function websocketOnMessage(evt) {
 					}
 				}
 				//更新实时表和实时曲线
-				if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-					var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-					if(wellName==data.wellName && data.CellInfo.length>0){
-						var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
-		        		var activeId = tabPanel.getActiveTab().id;
-		        		if(activeId=="RPCRealTimeMonitoringCurveTabPanel_Id"){
-		        			//更新实时曲线
-		        			var container=$('#rpcRealTimeMonitoringCurveContainer');
-		        			if(container!=undefined && container.length>0){
-		        				var containerChildren=container[0].children;
-		        				if(containerChildren!=undefined && containerChildren.length>0){
-		        					for(var i=0;i<containerChildren.length;i++){
-		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
-		    							if(isNotVal(chart)){
-	    									var series=chart.series[0];
-	    									for(var j=0;j<data.CellInfo.length;j++){
-	    										if(series.name.split("(")[0]==data.CellInfo[j].columnName){
-	    											var translation=false;//添加点动作  是否平移
-	    											if(series.data.length>100){
-	    												translation=true;
-	    											}
-	    											series.addPoint([Date.parse(data.acqTime.replace(/-/g, '/')), parseFloat(data.CellInfo[j].rawValue)], true, translation);
-	    											break;
-	    										}
-	    									}
-		    							}
-		        					}
-		        				}
-		        			}
-		        		}else if(activeId=="RPCRealTimeMonitoringTableTabPanel_Id"){
-		        			//更新实时数据表
-		        			if(isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
-		        				rpcDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=data.CellInfo;
-								rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(data.totalRoot);
-		        			}
-		        		}else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
-		        			//井筒分析
-		        			showFSDiagramFromPumpcard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
-	                    	showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
-	                    	showPumpCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
-	                    	showPumpEfficiency(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
-		        		}else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
-		        			//地面分析
-		        			var deltaRadius=parseFloat(data.surfaceChartsData.deltaRadius);
-		                	var expectedTorqueChartTitle="扭矩曲线";
-		                	if(Math.abs(deltaRadius)>0){
-		                		if(deltaRadius>0){
-		                			expectedTorqueChartTitle="外移"+deltaRadius+"cm"+expectedTorqueChartTitle;
-		                		}else{
-		                			expectedTorqueChartTitle="內移"+Math.abs(deltaRadius)+"cm"+expectedTorqueChartTitle;
-		                		}
-		                	}else {
-		                		expectedTorqueChartTitle="预期扭矩曲线";
-		                	}
-		                	showPSDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
-		                	showASDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
-		                	showBalanceAnalysisCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.loadRorque,data.surfaceChartsData.crankTorque,data.surfaceChartsData.currentBalanceTorque,data.surfaceChartsData.currentNetTorque,
-		                			"目前扭矩曲线",data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
-		                	showBalanceAnalysisCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.loadRorque,data.surfaceChartsData.crankTorque,data.surfaceChartsData.expectedBalanceTorque,data.surfaceChartsData.expectedNetTorque,
-		                			expectedTorqueChartTitle,data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
-//		                	showBalanceAnalysisMotionCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.positionCurveData,data.surfaceChartsData.polishrodV,data.surfaceChartsData.polishrodA,
-//		                			"运动特性曲线",data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id",2);
-		        		}
-					}
+				if(isSelectWell){
+					var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
+	        		var activeId = tabPanel.getActiveTab().id;
+	        		if(activeId=="RPCRealTimeMonitoringCurveTabPanel_Id"){
+	        			//更新实时曲线
+	        			var container=$('#rpcRealTimeMonitoringCurveContainer');
+	        			if(container!=undefined && container.length>0){
+	        				var containerChildren=container[0].children;
+	        				if(containerChildren!=undefined && containerChildren.length>0){
+	        					for(var i=0;i<containerChildren.length;i++){
+	        						var chart = $("#"+containerChildren[i].id).highcharts(); 
+	    							if(isNotVal(chart)){
+    									var series=chart.series[0];
+    									for(var j=0;j<data.CellInfo.length;j++){
+    										if(series.name.split("(")[0]==data.CellInfo[j].columnName){
+    											var translation=false;//添加点动作  是否平移
+    											if(series.data.length>100){
+    												translation=true;
+    											}
+    											series.addPoint([Date.parse(data.acqTime.replace(/-/g, '/')), parseFloat(data.CellInfo[j].rawValue)], true, translation);
+    											break;
+    										}
+    									}
+	    							}
+	        					}
+	        				}
+	        			}
+	        		}else if(activeId=="RPCRealTimeMonitoringTableTabPanel_Id"){
+	        			//更新实时数据表
+	        			if(isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
+	        				rpcDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=data.CellInfo;
+							rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(data.totalRoot);
+	        			}
+	        		}else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
+	        			//井筒分析
+	        			showFSDiagramFromPumpcard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
+                    	showRodPress(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
+                    	showPumpCard(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv3_id"); // 调用画泵功图的函数
+                    	showPumpEfficiency(data.wellBoreChartsData, "FSDiagramAnalysisSingleWellboreDetailsDiv4_id");    // 调用画泵效组成的函数
+	        		}else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){
+	        			//地面分析
+	        			var deltaRadius=parseFloat(data.surfaceChartsData.deltaRadius);
+	                	var expectedTorqueChartTitle="扭矩曲线";
+	                	if(Math.abs(deltaRadius)>0){
+	                		if(deltaRadius>0){
+	                			expectedTorqueChartTitle="外移"+deltaRadius+"cm"+expectedTorqueChartTitle;
+	                		}else{
+	                			expectedTorqueChartTitle="內移"+Math.abs(deltaRadius)+"cm"+expectedTorqueChartTitle;
+	                		}
+	                	}else {
+	                		expectedTorqueChartTitle="预期扭矩曲线";
+	                	}
+	                	showPSDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
+	                	showASDiagram(data.surfaceChartsData, "FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
+	                	showBalanceAnalysisCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.loadRorque,data.surfaceChartsData.crankTorque,data.surfaceChartsData.currentBalanceTorque,data.surfaceChartsData.currentNetTorque,
+	                			"目前扭矩曲线",data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
+	                	showBalanceAnalysisCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.loadRorque,data.surfaceChartsData.crankTorque,data.surfaceChartsData.expectedBalanceTorque,data.surfaceChartsData.expectedNetTorque,
+	                			expectedTorqueChartTitle,data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
+//	                	showBalanceAnalysisMotionCurveChart(data.surfaceChartsData.crankAngle,data.surfaceChartsData.positionCurveData,data.surfaceChartsData.polishrodV,data.surfaceChartsData.polishrodA,
+//	                			"运动特性曲线",data.surfaceChartsData.wellName+' ['+data.surfaceChartsData.acqTime+']',"FSDiagramAnalysisSingleSurfaceDetailsDiv5_id",2);
+	        		}
+	        		if(commStatusChange){
+	        			Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
+	        		}
 				}
 			}
 		}
@@ -305,8 +318,21 @@ function websocketOnMessage(evt) {
 				//更新通信状态统计
 				getDeviceCommStatusTotal();
 				getDeviceRunStatusTotal();
+				
+				var isSelectWell=false;
+				var commStatusChange=false;
 				var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
+					if( gridPanel.getSelectionModel().getSelection().length>0){
+						var selectedlName  = gridPanel.getSelectionModel().getSelection()[0].data.wellName;
+						if(selectedlName==data.wellName){
+							isSelectWell=true;
+							if(gridPanel.getSelectionModel().getSelection()[0].data.commStatus!=data.commStatus){
+								commStatusChange=true;
+							}
+						}
+					}
+					
 					var store = gridPanel.getStore();
 					//更新概览表
 					var haveDevice=false;
@@ -336,17 +362,19 @@ function websocketOnMessage(evt) {
 						store.loadPage(1);
 					}
 					//更新实时表
-					var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
-            		var activeId = tabPanel.getActiveTab().id;
-            		if(activeId=="RPCRealTimeMonitoringTableTabPanel_Id"){
-            			if(isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
-    						var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-    						if(wellName==data.wellName){
-    							var value=data.wellName+":"+data.acqTime+" "+(data.commStatus>0?"上线":"离线");
-    							rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
-    						}
-    					}
-            		}
+					if(isSelectWell){
+						var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
+	            		var activeId = tabPanel.getActiveTab().id;
+	            		if(activeId=="RPCRealTimeMonitoringTableTabPanel_Id"){
+	            			if(isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
+	            				var value=data.wellName+":"+data.acqTime+" "+(data.commStatus>0?"上线":"离线");
+								rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
+	    					}
+	            		}
+	            		if(commStatusChange){
+	            			Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
+	            		}
+					}
 				}
 			}
 		}
@@ -358,9 +386,21 @@ function websocketOnMessage(evt) {
 				//更新通信状态统计
 				getDeviceCommStatusTotal();
 				getDeviceRunStatusTotal();
+				var isSelectWell=false;
+				var commStatusChange=false;
 				//更新设备概览列表
 				var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
+					if( gridPanel.getSelectionModel().getSelection().length>0){
+						var selectedlName  = gridPanel.getSelectionModel().getSelection()[0].data.wellName;
+						if(selectedlName==data.wellName){
+							isSelectWell=true;
+							if(gridPanel.getSelectionModel().getSelection()[0].data.commStatus==0){
+								commStatusChange=true;
+							}
+						}
+					}
+					
 					var store = gridPanel.getStore();
 					for(var i=0;i<store.getCount();i++){
 						var record=store.getAt(i);
@@ -387,43 +427,43 @@ function websocketOnMessage(evt) {
 					}
 				}
 				//更新实时表和实时曲线
-				if(Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-					var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-					if(wellName==data.wellName && data.CellInfo.length>0){
-						var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
-		        		var activeId = tabPanel.getActiveTab().id;
-		        		if(activeId=="PCPRealTimeMonitoringCurveTabPanel_Id"){
-		        			//更新实时曲线
-		        			var container=$('#pcpRealTimeMonitoringCurveContainer');
-		        			if(container!=undefined && container.length>0){
-		        				var containerChildren=container[0].children;
-		        				if(containerChildren!=undefined && containerChildren.length>0){
-		        					for(var i=0;i<containerChildren.length;i++){
-		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
-		    							if(isNotVal(chart)){
-	    									var series=chart.series[0];
-	    									for(var j=0;j<data.CellInfo.length;j++){
-	    										if(series.name.split("(")[0]==data.CellInfo[j].columnName){
-	    											var translation=false;//添加点动作  是否平移
-	    											if(series.data.length>100){
-	    												translation=true;
-	    											}
-	    											series.addPoint([Date.parse(data.acqTime.replace(/-/g, '/')), parseFloat(data.CellInfo[j].rawValue)], true, translation);
-	    											break;
-	    										}
-	    									}
-		    							}
-		        					}
-		        				}
-		        			}
-		        		}else if(activeId=="PCPRealTimeMonitoringTableTabPanel_Id"){
-		        			//更新实时数据表
-		        			if(isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
-		        				pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=data.CellInfo;
-		        				pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(data.totalRoot);
-		        			}
-		        		}
-					}
+				if(isSelectWell){
+					var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
+	        		var activeId = tabPanel.getActiveTab().id;
+	        		if(activeId=="PCPRealTimeMonitoringCurveTabPanel_Id"){
+	        			//更新实时曲线
+	        			var container=$('#pcpRealTimeMonitoringCurveContainer');
+	        			if(container!=undefined && container.length>0){
+	        				var containerChildren=container[0].children;
+	        				if(containerChildren!=undefined && containerChildren.length>0){
+	        					for(var i=0;i<containerChildren.length;i++){
+	        						var chart = $("#"+containerChildren[i].id).highcharts(); 
+	    							if(isNotVal(chart)){
+    									var series=chart.series[0];
+    									for(var j=0;j<data.CellInfo.length;j++){
+    										if(series.name.split("(")[0]==data.CellInfo[j].columnName){
+    											var translation=false;//添加点动作  是否平移
+    											if(series.data.length>100){
+    												translation=true;
+    											}
+    											series.addPoint([Date.parse(data.acqTime.replace(/-/g, '/')), parseFloat(data.CellInfo[j].rawValue)], true, translation);
+    											break;
+    										}
+    									}
+	    							}
+	        					}
+	        				}
+	        			}
+	        		}else if(activeId=="PCPRealTimeMonitoringTableTabPanel_Id"){
+	        			//更新实时数据表
+	        			if(isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
+	        				pcpDeviceRealTimeMonitoringDataHandsontableHelper.CellInfo=data.CellInfo;
+	        				pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.loadData(data.totalRoot);
+	        			}
+	        		}
+	        		if(commStatusChange){
+	        			Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringControlAndInfoStore');
+	        		}
 				}
 			}
 		}
@@ -435,8 +475,20 @@ function websocketOnMessage(evt) {
 				//更新通信状态统计
 				getDeviceCommStatusTotal();
 				getDeviceRunStatusTotal();
+				
+				var isSelectWell=false;
+				var commStatusChange=false;
 				var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
+					if(gridPanel.getSelectionModel().getSelection().length>0){
+						var selectedlName  = gridPanel.getSelectionModel().getSelection()[0].data.wellName;
+						if(selectedlName==data.wellName){
+							isSelectWell=true;
+							if(gridPanel.getSelectionModel().getSelection()[0].data.commStatus!=data.commStatus){
+								commStatusChange=true;
+							}
+						}
+					}
 					var store = gridPanel.getStore();
 					//更新概览表
 					var haveDevice=false;
@@ -466,17 +518,19 @@ function websocketOnMessage(evt) {
 						store.loadPage(1);
 					}
 					//更新实时表
-					var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
-            		var activeId = tabPanel.getActiveTab().id;
-            		if(activeId=="PCPRealTimeMonitoringTableTabPanel_Id"){
-            			if(isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
-    						var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-    						if(wellName==data.wellName){
-    							var value=data.wellName+":"+data.acqTime+" "+(data.commStatus>0?"上线":"离线");
+					if(isSelectWell){
+						var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
+	            		var activeId = tabPanel.getActiveTab().id;
+	            		if(activeId=="PCPRealTimeMonitoringTableTabPanel_Id"){
+	            			if(isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper) &&  isNotVal(pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot)){
+	            				var value=data.wellName+":"+data.acqTime+" "+(data.commStatus>0?"上线":"离线");
     							pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot.setDataAtCell(0, 0, value);
-    						}
-    					}
-            		}
+	    					}
+	            		}
+	            		if(commStatusChange){
+	            			Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringControlAndInfoStore');
+	            		}
+					}
 				}
 			}
 		}

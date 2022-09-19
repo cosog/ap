@@ -2693,7 +2693,8 @@ public class BaseDao extends HibernateDaoSupport {
 	}
 	
 	
-	public Boolean saveAcqFESDiagramAndCalculateData(RPCDeviceInfo rpcDeviceInfo,RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,boolean fesDiagramEnabled) throws SQLException, ParseException {
+	public Boolean saveAcqFESDiagramAndCalculateData(RPCDeviceInfo rpcDeviceInfo,RPCCalculateRequestData calculateRequestData,RPCCalculateResponseData calculateResponseData,
+			boolean fesDiagramEnabled) throws SQLException, ParseException {
 		Connection conn=SessionFactoryUtils.getDataSource(getSessionFactory()).getConnection();
 		CallableStatement cs=null;
 		StringBuffer pumpFSDiagramStrBuff = new StringBuffer();
@@ -2761,8 +2762,11 @@ public class BaseDao extends HibernateDaoSupport {
 		
 		if(calculateResponseData!=null
 				&&calculateResponseData.getCalculationStatus().getResultStatus()==1
-				&&calculateResponseData.getCalculationStatus().getResultCode()!=1232
-				&&calculateResponseData.getFESDiagram()!=null){
+//				&&calculateResponseData.getCalculationStatus().getResultCode()!=1232
+				&&calculateResponseData.getFESDiagram()!=null
+				&&calculateResponseData.getFESDiagram().getS()!=null
+				&&calculateResponseData.getFESDiagram().getS().size()>0
+				){
 			int curvecount=calculateResponseData.getFESDiagram().getS().get(0).size();
 			int pointcount=calculateResponseData.getFESDiagram().getS().size();
 			pumpFSDiagramStrBuff.append(curvecount+";"+pointcount+";");
@@ -2785,7 +2789,7 @@ public class BaseDao extends HibernateDaoSupport {
 		pumpFSDiagramClob = oracle.sql.CLOB.createTemporary(conn,false,1);
 		pumpFSDiagramClob.putString(1, pumpFSDiagramStrBuff.toString());
 		
-		if(fesDiagramEnabled && calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null&&calculateResponseData.getFESDiagram().getCrankAngle()!=null&&calculateResponseData.getFESDiagram().getCrankAngle().size()>0){
+		if(calculateResponseData!=null&&calculateResponseData.getFESDiagram()!=null&&calculateResponseData.getFESDiagram().getCrankAngle()!=null&&calculateResponseData.getFESDiagram().getCrankAngle().size()>0){
 			crankAngleClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getCrankAngle(), ","));
 			polishRodVClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getV(), ","));
 			polishRodAClob.putString(1, StringUtils.join(calculateResponseData.getFESDiagram().getA(), ","));
@@ -2813,7 +2817,9 @@ public class BaseDao extends HibernateDaoSupport {
 			expectedNetTorqueClob.putString(1, "");
 		}
 		
-		if(fesDiagramEnabled&&calculateResponseData!=null&&calculateResponseData.getWellboreSlice()!=null){
+		if(calculateResponseData!=null&&calculateResponseData.getWellboreSlice()!=null
+				&&calculateResponseData.getWellboreSlice().getMeasuringDepth()!=null
+				&&calculateResponseData.getWellboreSlice().getMeasuringDepth().size()>0){
 			wellboreSliceStrBuff.append(calculateResponseData.getWellboreSlice().getCNT()+";");
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getMeasuringDepth(), ",")+";");
 			wellboreSliceStrBuff.append(StringUtils.join(calculateResponseData.getWellboreSlice().getX(), ",")+";");

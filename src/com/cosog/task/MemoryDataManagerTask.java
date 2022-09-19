@@ -1714,7 +1714,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}

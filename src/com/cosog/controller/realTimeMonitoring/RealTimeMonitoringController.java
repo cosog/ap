@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cosog.controller.base.BaseController;
 import com.cosog.model.Org;
 import com.cosog.model.User;
+import com.cosog.model.calculate.ResultStatusData;
 import com.cosog.model.data.DataDictionary;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.gridmodel.WellGridPanelData;
@@ -381,9 +382,11 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	public boolean DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String tcpType,String ID,String Slave,String itemCode,String controlValue){
-		boolean result=true;
+	public int DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String tcpType,String ID,String Slave,String itemCode,String controlValue){
+		int result=-1;
 		try {
+			Gson gson = new Gson();
+			java.lang.reflect.Type type=null;
 			int dataSaveMode=1;
 			String columnsKey="rpcDeviceAcquisitionItemColumns";
 			int DeviceType=0;
@@ -446,14 +449,15 @@ public class RealTimeMonitoringController extends BaseController {
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
 				if(!StringManagerUtils.isNotNull(responseStr)){
-					result=false;
+					type = new TypeToken<ResultStatusData>() {}.getType();
+					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
+					result=resultStatusData.getResultStatus();
 				}
 				realTimeMonitoringService.saveDeviceControlLog(deviceId,wellName,deviceType,title,StringManagerUtils.objectToString(controlValue, dataType),user);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			result=false;
 		}
 		return result;
 	}
@@ -498,11 +502,15 @@ public class RealTimeMonitoringController extends BaseController {
 					String realDeviceType=obj[4]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-//							jsonLogin=
-							if(DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue)){
-								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
-							}else{
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue);
+							if(reslut==1){
+								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令执行成功。</font>'}";
+							}else if(reslut==0){
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令执行失败。</font>'}";
+							}else if(reslut==-1){
 								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送失败。</font>'}";
+							}else{
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送异常:"+reslut+"。</font>'}";
 							}
 						}
 					}else{
@@ -561,11 +569,15 @@ public class RealTimeMonitoringController extends BaseController {
 					String realDeviceType=obj[4]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-//							jsonLogin=
-							if(DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue)){
-								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令发送成功。</font>'}";
-							}else{
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue);
+							if(reslut==1){
+								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令执行成功。</font>'}";
+							}else if(reslut==0){
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令执行失败。</font>'}";
+							}else if(reslut==-1){
 								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送失败。</font>'}";
+							}else{
+								jsonLogin = "{success:true,flag:true,error:false,msg:'<font color=red>命令发送异常:"+reslut+"。</font>'}";
 							}
 						}
 					}else{

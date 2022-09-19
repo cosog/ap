@@ -63,7 +63,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -77,94 +77,94 @@ public class EquipmentDriverServerTask {
 		
 		
 		
-		String path="";
-		
-		
-		path=stringManagerUtils.getFilePath("test3.json","example/");
-		String onLineData=stringManagerUtils.readFile(path,"utf-8");
-		
-		path=stringManagerUtils.getFilePath("test4.json","example/");
-		String offLineData=stringManagerUtils.readFile(path,"utf-8");
-		
-		path=stringManagerUtils.getFilePath("test7.json","example/");
-		String testData=stringManagerUtils.readFile(path,"utf-8");
-		
-		String url=stringManagerUtils.getProjectUrl()+"/api/acq/ipport/group";
-		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
-		int i=0;
-		while(true){
-			if(i%2==0){
-				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-			}else{
-				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
-			}
-			i++;
-			
-//			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-//			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
-			Thread.sleep(1000*5);
-		}
-		
-//		initServerConfig();
-//		initProtocolConfig("","");
-//		initInstanceConfig(null,"");
-//		initSMSInstanceConfig(null,"");
-//		initSMSDevice(null,"");
-//		initRPCDriverAcquisitionInfoConfig(null,0,"");
-//		initPCPDriverAcquisitionInfoConfig(null,0,"");
+//		String path="";
 //		
-//		ThreadPool executor = new ThreadPool("adInit",
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
-//				TimeUnit.SECONDS, 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
-//		while (!executor.isCompletedByTaskCount()) {
-//			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
-//			Thread.sleep(1000*1);
-//	    }
-//		System.out.println("线程池任务执行完毕！");
-//		boolean sendMsg=false;
-//		exampleDataManage();
-//		do{
-//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-//			type = new TypeToken<DriverProbeResponse>() {}.getType();
-//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+//		
+//		path=stringManagerUtils.getFilePath("test3.json","example/");
+//		String onLineData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		path=stringManagerUtils.getFilePath("test4.json","example/");
+//		String offLineData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		path=stringManagerUtils.getFilePath("rpc01_01.json","example/");
+//		String testData=stringManagerUtils.readFile(path,"utf-8");
+//		
+//		String url=stringManagerUtils.getProjectUrl()+"/api/acq/id/group";
+//		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
+//		int i=0;
+//		while(true){
+////			if(i%2==0){
+////				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+////			}else{
+////				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
+////			}
+////			i++;
 //			
-//			String Ver="";
-//			if(driverProbeResponse!=null){
-//				sendMsg=false;
-//				if(!driverProbeResponse.getHttpServerInitStatus()){
-//					initServerConfig();
-//				}
-//				if(!driverProbeResponse.getProtocolInitStatus()){
-//					initProtocolConfig("","");
-//				}
-//				if(!driverProbeResponse.getInstanceInitStatus()){
-//					initInstanceConfig(null,"");
-//					initSMSInstanceConfig(null,"");
-//				}
-//				if(!driverProbeResponse.getSMSInitStatus()){
-////					initSMSDevice(null,"");
-//				}
-//				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-//					if(executor.isCompletedByTaskCount()){
-//						//清空内存
-//						AdInitMap.cleanData();
-//						
-//						initRPCDriverAcquisitionInfoConfig(null,0,"");
-//						initPCPDriverAcquisitionInfoConfig(null,0,"");
-//					}
-//				}
-//				Ver=driverProbeResponse.getVer();
-//			}else{
-//				if(!sendMsg){
-//					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-//					sendMsg=true;
-//				}
-//			}
-//			Thread.sleep(1000*1);
-//		}while(true);
+////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+//			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
+//			Thread.sleep(1000*5);
+//		}
+		
+		initServerConfig();
+		initProtocolConfig("","");
+		initInstanceConfig(null,"");
+		initSMSInstanceConfig(null,"");
+		initSMSDevice(null,"");
+		initRPCDriverAcquisitionInfoConfig(null,0,"");
+		initPCPDriverAcquisitionInfoConfig(null,0,"");
+		
+		ThreadPool executor = new ThreadPool("adInit",
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+		while (!executor.isCompletedByTaskCount()) {
+//			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+			Thread.sleep(1000*1);
+	    }
+//		System.out.println("线程池任务执行完毕！");
+		boolean sendMsg=false;
+		exampleDataManage();
+		do{
+			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+			type = new TypeToken<DriverProbeResponse>() {}.getType();
+			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+			
+			String Ver="";
+			if(driverProbeResponse!=null){
+				sendMsg=false;
+				if(!driverProbeResponse.getHttpServerInitStatus()){
+					initServerConfig();
+				}
+				if(!driverProbeResponse.getProtocolInitStatus()){
+					initProtocolConfig("","");
+				}
+				if(!driverProbeResponse.getInstanceInitStatus()){
+					initInstanceConfig(null,"");
+					initSMSInstanceConfig(null,"");
+				}
+				if(!driverProbeResponse.getSMSInitStatus()){
+//					initSMSDevice(null,"");
+				}
+				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+					if(executor.isCompletedByTaskCount()){
+						//清空内存
+						AdInitMap.cleanData();
+						
+						initRPCDriverAcquisitionInfoConfig(null,0,"");
+						initPCPDriverAcquisitionInfoConfig(null,0,"");
+					}
+				}
+				Ver=driverProbeResponse.getVer();
+			}else{
+				if(!sendMsg){
+					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+					sendMsg=true;
+				}
+			}
+			Thread.sleep(1000*1);
+		}while(true);
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
@@ -636,9 +636,6 @@ public class EquipmentDriverServerTask {
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
 		ResultSet rs = null;
-		String fiterColumnsArr[]={
-				"ID"
-		};
 		int result=0;
 		int dataSaveMode=1;
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
@@ -651,9 +648,7 @@ public class EquipmentDriverServerTask {
 		}
 		Map<String,String> acquisitionItemColumns=acquisitionItemColumnsMap.get(columnsKey);
 		List<String> acquisitionItemDataBaseColumns=new ArrayList<String>();
-		String sql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+tableName+"') "
-				//+ " and UPPER(t.COLUMN_NAME) not in('ID','WELLID','ACQTIME','COMMSTATUS','COMMTIME','COMMTIMEEFFICIENCY','COMMRANGE','RUNSTATUS','RUNTIMEEFFICIENCY','RUNTIME','RUNRANGE')  "
-				+ " order by t.COLUMN_ID";
+		String sql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+tableName+"') order by t.COLUMN_ID";
 		conn=OracleJdbcUtis.getConnection();
 		if(conn==null){
         	return -1;

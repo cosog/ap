@@ -535,6 +535,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
+		
+		String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
+		List<String> tableColumnsList=new ArrayList<String>();
+		List<?> columnList = this.findCallSql(columnSql);
+		for(int i=0;i<columnList.size();i++){
+			tableColumnsList.add(columnList.get(i).toString());
+		}
+		
 		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
@@ -559,11 +567,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
 			if(dataSaveMode==0){
-				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}else{
-				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}
@@ -839,6 +847,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		
+		String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
+		List<String> tableColumnsList=new ArrayList<String>();
+		List<?> columnList = this.findCallSql(columnSql);
+		for(int i=0;i<columnList.size();i++){
+			tableColumnsList.add(columnList.get(i).toString());
+		}
+		
 		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
@@ -863,11 +879,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
 			if(dataSaveMode==0){
-				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}else{
-				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}
@@ -1052,6 +1068,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
+		
+		String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
+		List<String> tableColumnsList=new ArrayList<String>();
+		List<?> columnList = this.findCallSql(columnSql);
+		for(int i=0;i<columnList.size();i++){
+			tableColumnsList.add(columnList.get(i).toString());
+		}
+		
 		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
@@ -1070,11 +1094,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
 			if(dataSaveMode==0){
-				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}else{
-				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}
@@ -1326,6 +1350,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+		
+		String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
+		List<String> tableColumnsList=new ArrayList<String>();
+		List<?> columnList = this.findCallSql(columnSql);
+		for(int i=0;i<columnList.size();i++){
+			tableColumnsList.add(columnList.get(i).toString());
+		}
+		
 		String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
@@ -1344,11 +1376,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String[] ddicColumns=ddic.getSql().split(",");
 		for(int i=0;i<ddicColumns.length;i++){
 			if(dataSaveMode==0){
-				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}else{
-				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false)){
+				if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
 					ddicColumnsList.add(ddicColumns[i]);
 				}
 			}
@@ -1540,6 +1572,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		result_json.append("\"totalRoot\":[");
 		info_json.append("[");
 		if(displayInstanceOwnItem!=null&&userInfo!=null){
+			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+tableName+"') order by t.COLUMN_ID";
+			List<String> tableColumnsList=new ArrayList<String>();
+			List<?> columnList = this.findCallSql(columnSql);
+			for(int i=0;i<columnList.size();i++){
+				tableColumnsList.add(columnList.get(i).toString());
+			}
+			
 			String protocolCode=displayInstanceOwnItem.getProtocol();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			
@@ -1562,7 +1601,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						for(int k=0;k<displayInstanceOwnItem.getItemList().size();k++){
 							if(displayInstanceOwnItem.getItemList().get(k).getType()==0 
 									&& displayInstanceOwnItem.getItemList().get(k).getShowLevel()>=userInfo.getRoleShowLevel()
-									&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())){
+									&& protocol.getItems().get(j).getTitle().equalsIgnoreCase(displayInstanceOwnItem.getItemList().get(k).getItemName())
+									&& StringManagerUtils.existOrNot(tableColumnsList, dataSaveMode==0?("addr"+protocol.getItems().get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(j).getTitle())), false)
+									
+									){
 								protocolItems.add(protocol.getItems().get(j));
 								break;
 							}

@@ -411,7 +411,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		int collisionCount=0;
 		int overlayCount=0;
-		String ddicName="rpcDeviceBatchAdd";
+		String ddicName="deviceInfo_RPCDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype=0 order by t.sort";
@@ -659,7 +659,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		int collisionCount=0;
 		int overlayCount=0;
-		String ddicName="pcpDeviceBatchAdd";
+		String ddicName="deviceInfo_PCPDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
 		String instanceSql="select t.name from tbl_protocolinstance t where t.devicetype=1 order by t.sort";
@@ -1004,7 +1004,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer overlayBuff = new StringBuffer();
 		int overlayCount=0;
-		String ddicName="pumpingModelManager";
+		String ddicName="pumpingDevice_PumpingModelManager";
 		String columns=service.showTableHeadersColumns(ddicName);
 		List<PumpingModelHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPumpingModel(auxiliaryDeviceHandsontableChangedData,StringManagerUtils.stringToInteger(isCheckout));
 		
@@ -1171,7 +1171,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer displayInstanceDropdownData = new StringBuffer();
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
-		String ddicName="rpcDeviceManager";
+		String ddicName="deviceInfo_RPCDeviceManager";
 		String tableName="viw_rpcdevice";
 		int protocolType=0;
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -1345,7 +1345,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer displayInstanceDropdownData = new StringBuffer();
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
-		String ddicName="pcpDeviceManager";
+		String ddicName="deviceInfo_PCPDeviceManager";
 		String tableName="viw_pcpdevice";
 		int protocolType=1;
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -1523,7 +1523,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer SMSInstanceDropdownData = new StringBuffer();
-		String ddicName="SMSDeviceManager";
+		String ddicName="SMSDevice_SMSDeviceManager";
 		String tableName="viw_smsdevice";
 		Map<String, Object> equipmentDriveMap = EquipmentDriveMap.getMapObject();
 		String wellInformationName = (String) map.get("wellInformationName");
@@ -1704,7 +1704,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String doPumpingModelShow(Map map,Page pager,String deviceType,int recordCount) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="pumpingModelManager";
+		String ddicName="pumpingDevice_PumpingModelManager";
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
@@ -1752,7 +1752,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	@SuppressWarnings("rawtypes")
 	public String getBatchAddPumpingModelTableInfo(int recordCount) {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="pumpingModelManager";
+		String ddicName="pumpingDevice_PumpingModelManager";
 		String columns=service.showTableHeadersColumns(ddicName);
 		String json = "";
 		result_json.append("{\"success\":true,\"totalCount\":"+recordCount+",\"columns\":"+columns+",\"totalRoot\":[");
@@ -2239,7 +2239,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public String exportWellInformationData(Map map,Page pager,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="rpcDeviceManager";
+		String ddicName="deviceInfo_RPCDeviceManager";
 		String wellInformationName = (String) map.get("wellInformationName");
 		int deviceType=StringManagerUtils.stringToInteger((String) map.get("deviceType"));
 		String orgId = (String) map.get("orgId");
@@ -2248,11 +2248,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
 		}
 		if(deviceType==0){
-			ddicName="rpcDeviceManager";
+			ddicName="deviceInfo_RPCDeviceManager";
 		}else if(deviceType==1){
-			ddicName="pcpDeviceManager";
+			ddicName="deviceInfo_PCPDeviceManager";
 		}else if(deviceType==2){
-			ddicName="SMSDeviceManager";
+			ddicName="SMSDevice_SMSDeviceManager";
 		}
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,alarmInstanceName,signInId,slave,"
 				+ " factorynumber,model,productiondate,deliverydate,commissioningdate,controlcabinetmodel,t.pcplength,"
@@ -2345,11 +2345,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer displayInstanceDropdownData = new StringBuffer();
 		StringBuffer alarmInstanceDropdownData = new StringBuffer();
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
-		String ddicName="rpcDeviceBatchAdd";
+		String ddicName="deviceInfo_RPCDeviceBatchAdd";
 		int protocolType=0;
 		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		if(deviceType>=200&&deviceType<300){
-			ddicName="pcpDeviceBatchAdd";
+			ddicName="deviceInfo_PCPDeviceBatchAdd";
 			protocolType=1;
 		}
 		

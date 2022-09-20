@@ -107,7 +107,7 @@ private CommonDataService service;
 			sql+=" and t.role_Name like '%" + roleName + "%' ";
 		}
 		sql+=" order by t.role_id ";
-		String columns=service.showTableHeadersColumns("roleManage");
+		String columns=service.showTableHeadersColumns("role_RoleManage");
 		List<?> list = this.findCallSql(sql);
 		List<?> currentUserLevelList = this.findCallSql(currentRoleLevel);
 		if(currentUserLevelList.size()>0){

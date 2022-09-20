@@ -342,7 +342,7 @@ public class OrgManagerController extends BaseController {
 			}
 		}
 		json = r.modifyOrgStr(json);
-		json = this.getArrayTojsonPage(json, "orgManage");
+		json = this.getArrayTojsonPage(json, "orgAndUser_OrgManage");
 		//HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -376,7 +376,7 @@ public class OrgManagerController extends BaseController {
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
 		boolean expandedAll=Config.getInstance().configFile.getAp().getOthers().getExpandedAll();
-		String columns=	service.showTableHeadersColumns("orgManage");
+		String columns=	service.showTableHeadersColumns("orgAndUser_OrgManage");
 		strBuf.append("{success:true,");
 		strBuf.append("columns:"+columns+",");
 		strBuf.append("list:[");

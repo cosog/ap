@@ -101,7 +101,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="calculateManager";
+		String ddicName="calculateManager_RPCSingleRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
@@ -258,7 +258,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="screwPumpCalculateManager";
+		String ddicName="calculateManager_PCPSingleRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
@@ -1203,7 +1203,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="totalCalculateManager";
+		String ddicName="calculateManager_RPCTotalRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		
@@ -1273,7 +1273,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sql="";
 		String finalSql="";
 		String sqlAll="";
-		String ddicName="RPMTotalCalculateManager";
+		String ddicName="calculateManager_PCPTotalRecord";
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		

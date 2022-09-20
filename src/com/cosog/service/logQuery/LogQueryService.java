@@ -31,7 +31,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 	
 	public String getDeviceOperationLogData(String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="deviceOperationLog";
+		String ddicName="logQuery_DeviceOperationLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
@@ -61,7 +61,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 	}
 	
 	public String getDeviceOperationLogExportData(String orgId,String deviceType,String deviceName,String operationType,Page pager,User user) throws IOException, SQLException{
-		String ddicName="deviceOperationLog";
+		String ddicName="logQuery_DeviceOperationLog";
 		DataDictionary ddic = null;
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		String columns = ddic.getTableHeader();
@@ -89,7 +89,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 	
 	public String getSystemLogData(String orgId,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="systemLog";
+		String ddicName="logQuery_SystemLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
@@ -115,7 +115,7 @@ public class LogQueryService<T> extends BaseService<T>  {
 	
 	public String getSystemLogExportData(String orgId,String operationType,Page pager,User user) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		String ddicName="systemLog";
+		String ddicName="logQuery_SystemLog";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);

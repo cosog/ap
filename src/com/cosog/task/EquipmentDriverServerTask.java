@@ -52,7 +52,6 @@ import redis.clients.jedis.Jedis;
 @Component("EquipmentDriverServerTask")  
 public class EquipmentDriverServerTask {
 	public static ServerSocket serverSocket=null;
-	public static boolean adStatus=false;
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
@@ -63,7 +62,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void driveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -120,10 +119,10 @@ public class EquipmentDriverServerTask {
 				TimeUnit.SECONDS, 
 				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
 		while (!executor.isCompletedByTaskCount()) {
-//			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
 			Thread.sleep(1000*1);
 	    }
-//		System.out.println("线程池任务执行完毕！");
+		System.out.println("线程池任务执行完毕！");
 		boolean sendMsg=false;
 		exampleDataManage();
 		do{
@@ -168,7 +167,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
@@ -357,7 +356,7 @@ public class EquipmentDriverServerTask {
 			Map<String,String> mappingTableRecordMap=new LinkedHashMap<String,String>();
 			String sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=0 order by t.id";
 			if(rpcDeviceAcquisitionItemColumns!=null){
-				//同步抽油机字段映射表
+				//同步抽油机井字段映射表
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
 				while(rs.next()){
@@ -401,7 +400,7 @@ public class EquipmentDriverServerTask {
 			
 			
 			if(pcpDeviceAcquisitionItemColumns!=null){
-				//同步螺杆泵字段映射表
+				//同步螺杆泵井字段映射表
 				sql="select t.name,t.mappingcolumn,t.protocoltype,t.mappingmode from tbl_datamapping t where t.protocoltype=1 order by t.id";
 				pstmt = conn.prepareStatement(sql);
 				rs=pstmt.executeQuery();
@@ -874,10 +873,10 @@ public class EquipmentDriverServerTask {
 			//同步数据库字段
 			initAcquisitionItemDataBaseColumns();
 			//同步数据字典
-			initDataDictionary("7f13446d19b4497986980fa16a750f95",0);//抽油机实时概览字典
-			initDataDictionary("cd7b24562b924d19b556de31256e22a1",0);//抽油机历史查询字典
-			initDataDictionary("e0f5f3ff8a1f46678c284fba9cc113e8",1);//螺杆泵实时概览字典
-			initDataDictionary("fb7d070a349c403b8a26d71c12af7a05",1);//螺杆泵历史查询字典
+			initDataDictionary("7f13446d19b4497986980fa16a750f95",0);//抽油机井实时概览字典
+			initDataDictionary("cd7b24562b924d19b556de31256e22a1",0);//抽油机井历史查询字典
+			initDataDictionary("e0f5f3ff8a1f46678c284fba9cc113e8",1);//螺杆泵井实时概览字典
+			initDataDictionary("fb7d070a349c403b8a26d71c12af7a05",1);//螺杆泵井历史查询字典
 		}
 	}
 	
@@ -1618,7 +1617,7 @@ public class EquipmentDriverServerTask {
 			json_buff.append("\"Port\":\""+port+"\",");
 			json_buff.append("\"ProjectName\":\""+projectName+"\"");
 			json_buff.append("}");
-			StringManagerUtils.printLog("服务始化："+json_buff.toString());
+			StringManagerUtils.printLog("服务初始化："+json_buff.toString());
 			if(initEnable){
 				StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
 			}
@@ -1673,7 +1672,9 @@ public class EquipmentDriverServerTask {
 		json_buff.append("\"ProjectName\":\""+projectName+"\"");
 		json_buff.append("}");
 		StringManagerUtils.printLog("ad_rpc服务始化："+json_buff.toString());
-		StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
+		if(initEnable){
+			StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
+		}
 	}
 	
 	public static int initWellCommStatus(){

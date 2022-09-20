@@ -350,8 +350,8 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 	var isSendMessage=Ext.getCmp('RPCRunStatusAlarmIsSendMessageComb_Id').getValue();
                	 	var alarmType=6;
                	 	
-               	 	var fileName='抽油机运行状态报警设备列表';
-               	 	var title='抽油机运行状态报警设备列表';
+               	 	var fileName='抽油机井运行状态报警设备列表';
+               	 	var title='抽油机井运行状态报警设备列表';
                	 	var columnStr=Ext.getCmp("RPCRunStatusAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
@@ -410,8 +410,8 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                     var endDate=Ext.getCmp('RPCRunStatusAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=6;
                	 	
-               	 	var fileName='抽油机'+deviceName+'运行状态报警数据';
-               	 	var title='抽油机'+deviceName+'运行状态报警数据';
+               	 	var fileName='抽油机井'+deviceName+'运行状态报警数据';
+               	 	var title='抽油机井'+deviceName+'运行状态报警数据';
                	 	var columnStr=Ext.getCmp("RPCRunStatusAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }

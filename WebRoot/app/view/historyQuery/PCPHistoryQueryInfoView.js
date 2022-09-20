@@ -130,8 +130,8 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                             	var runStatusStatValue=Ext.getCmp("PCPHistoryQueryStatSelectRunStatus_Id").getValue();
                     			var deviceTypeStatValue=Ext.getCmp("PCPHistoryQueryStatSelectDeviceType_Id").getValue();
                            	 	var deviceType=1;
-                           	 	var fileName='螺杆泵历史数据设备列表';
-                           	 	var title='螺杆泵历史数据设备列表';
+                           	 	var fileName='螺杆泵井历史数据设备列表';
+                           	 	var title='螺杆泵井历史数据设备列表';
                            	 	var columnStr=Ext.getCmp("PCPHistoryQueryWellListColumnStr_Id").getValue();
                            	 	exportHistoryQueryDeviceListExcel(orgId,deviceType,deviceName,'',commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                             }
@@ -501,8 +501,8 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         	var startDate=Ext.getCmp('PCPHistoryQueryStartDate_Id').rawValue;
                             var endDate=Ext.getCmp('PCPHistoryQueryEndDate_Id').rawValue;
                        	 	var deviceType=1;
-                       	 	var fileName='螺杆泵'+deviceName+'历史数据';
-                       	 	var title='螺杆泵'+deviceName+'历史数据';
+                       	 	var fileName='螺杆泵井'+deviceName+'历史数据';
+                       	 	var title='螺杆泵井'+deviceName+'历史数据';
                        	 	var columnStr=Ext.getCmp("PCPHistoryQueryDataColumnStr_Id").getValue();
                        	 	exportHistoryQueryDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),fileName,title,columnStr);
                         }

@@ -547,7 +547,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		String tableName="tbl_rpcacqdata_latest";
 		String deviceTableName="tbl_rpcdevice";
-		String ddicName="rpcRealTimeOverview";
+		String ddicName="realTimeMonitoring_RPCOverview";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
@@ -858,7 +858,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		String tableName="tbl_rpcacqdata_latest";
 		String deviceTableName="tbl_rpcdevice";
-		String ddicName="rpcRealTimeOverview";
+		String ddicName="realTimeMonitoring_RPCOverview";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
@@ -1082,7 +1082,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		String tableName="tbl_pcpacqdata_latest";
 		String deviceTableName="tbl_pcpdevice";
-		String ddicName="pcpRealTimeOverview";
+		String ddicName="realTimeMonitoring_PCPOverview";
 		String columnsKey="pcpDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
@@ -1363,7 +1363,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		
 		String tableName="tbl_pcpacqdata_latest";
 		String deviceTableName="tbl_pcpdevice";
-		String ddicName="pcpRealTimeOverview";
+		String ddicName="realTimeMonitoring_PCPOverview";
 		String columnsKey="pcpDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
@@ -2002,7 +2002,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String deviceTableName="tbl_rpcdevice";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		String deviceInfoKey="RPCDeviceInfo";
-		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("rpcDeviceInfo");
+		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_RPCDeviceInfo");
 		
 		List<String> heads=ddic.getHeaders();
 		List<String> fields=ddic.getFields();
@@ -2299,7 +2299,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String deviceTableName="tbl_pcpdevice";
 		String columnsKey="pcpDeviceAcquisitionItemColumns";
 		String deviceInfoKey="PCPDeviceInfo";
-		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("pcpDeviceInfo");
+		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_PCPDeviceInfo");
 		List<String> heads=ddic.getHeaders();
 		List<String> fields=ddic.getFields();
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();

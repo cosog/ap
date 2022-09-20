@@ -29,15 +29,15 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	private DataitemsInfoService dataitemsInfoService;
 	
 	public String getAlarmData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
-		String ddicName="commStatusAlarm";
+		String ddicName="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
-			ddicName="switchingValueAlarm";
+			ddicName="alarmQuery_SwitchingValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==1){
-			ddicName="enumValueAlarm";
+			ddicName="alarmQuery_EnumValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==2){
-			ddicName="numericValueAlarm";
+			ddicName="alarmQuery_NumericValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==3){
-			ddicName="commStatusAlarm";
+			ddicName="alarmQuery_CommStatusAlarm";
 		}
 		
 		String tableName="viw_rpcalarminfo_hist";
@@ -75,15 +75,15 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 	}
 	
 	public String getAlarmExportData(String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
-		String ddicName="commStatusAlarm";
+		String ddicName="alarmQuery_CommStatusAlarm";
 		if(StringManagerUtils.stringToInteger(alarmType)==0){
-			ddicName="switchingValueAlarm";
+			ddicName="alarmQuery_SwitchingValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==1){
-			ddicName="enumValueAlarm";
+			ddicName="alarmQuery_EnumValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==2){
-			ddicName="numericValueAlarm";
+			ddicName="alarmQuery_NumericValueAlarm";
 		}else if(StringManagerUtils.stringToInteger(alarmType)==3){
-			ddicName="commStatusAlarm";
+			ddicName="alarmQuery_CommStatusAlarm";
 		}
 		String tableName="viw_rpcalarminfo_hist";
 		if(StringManagerUtils.stringToInteger(deviceType)==1){

@@ -374,7 +374,7 @@ var SMSDeviceInfoHandsontableHelper = {
 //	                    }
 //	                    if (col === 6) {
 //	                        this.type = 'dropdown';
-//	                        this.source = ['抽油机', '螺杆泵'];
+//	                        this.source = ['抽油机井', '螺杆泵井'];
 //	                        this.strict = true;
 //	                        this.allowInvalid = false;
 //	                    }

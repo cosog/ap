@@ -191,7 +191,7 @@ function websocketOnMessage(evt) {
 				}
 			}
 		}
-	}else if(data.functionCode.toUpperCase()=="rpcDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的抽油机实时监控数据
+	}else if(data.functionCode.toUpperCase()=="rpcDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的抽油机井实时监控数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
 			var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 			var activeId = tabPanel.getActiveTab().id;
@@ -310,7 +310,7 @@ function websocketOnMessage(evt) {
 				}
 			}
 		}
-	}else if(data.functionCode.toUpperCase()=="rpcDeviceRealTimeMonitoringStatusData".toUpperCase()){//接收到推送的抽油机通信数据
+	}else if(data.functionCode.toUpperCase()=="rpcDeviceRealTimeMonitoringStatusData".toUpperCase()){//接收到推送的抽油机井通信数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
 			var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 			var activeId = tabPanel.getActiveTab().id;
@@ -378,7 +378,7 @@ function websocketOnMessage(evt) {
 				}
 			}
 		}
-	}else if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的螺杆泵实时监控数据
+	}else if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的螺杆泵井实时监控数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
 			var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 			var activeId = tabPanel.getActiveTab().id;
@@ -467,7 +467,7 @@ function websocketOnMessage(evt) {
 				}
 			}
 		}
-	}else if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringStatusData".toUpperCase()){//接收到推送的螺杆泵通信数据
+	}else if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringStatusData".toUpperCase()){//接收到推送的螺杆泵井通信数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
 			var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 			var activeId = tabPanel.getActiveTab().id;

@@ -267,7 +267,7 @@ public class ReportDataMamagerController extends BaseController {
 			}else{
 				productionUnit="m^3/d"; 
 			}
-	        Label title=new Label(0,0,"抽油机生产报表",wcf_title);
+	        Label title=new Label(0,0,"抽油机井生产报表",wcf_title);
 	        
 	        Label header1=new Label(0,1,"序号",wcf_head);
 	        Label header2=new Label(1,1,"井名",wcf_head);
@@ -710,7 +710,7 @@ public class ReportDataMamagerController extends BaseController {
 				productionUnit="m^3/d"; 
 			}
 	        
-	        Label title=new Label(0,0,"螺杆泵生产报表",wcf_title);
+	        Label title=new Label(0,0,"螺杆泵井生产报表",wcf_title);
 	        
 	        Label header1=new Label(0,1,"序号",wcf_head);
 	        Label header2=new Label(1,1,"井名",wcf_head);
@@ -1015,7 +1015,7 @@ public class ReportDataMamagerController extends BaseController {
 			addDate = StringManagerUtils.formatStringDate(StringManagerUtils.addDate(StringManagerUtils.stringToDate(StringManagerUtils.getCurrentTime())));
 			v.add(addDate);
 		}
-		// String ReportPumpingUnit = "采出---抽油机---日报表";
+		// String ReportPumpingUnit = "采出---抽油机井---日报表";
 		this.commonDataService.exportDataExcel(response, fileName, "采出井日报数据", null, heads, fields, orgId, "pumpUnitDayReport", v);
 		return null;
 	}

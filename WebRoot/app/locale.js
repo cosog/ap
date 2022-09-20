@@ -35,8 +35,8 @@ cosog.string.currentPage='当前页';
 cosog.string.gong='共{0}页';
 cosog.string.totalCount='总记录数';
 
-cosog.string.pumpUnit='抽油机';
-cosog.string.screwPump='螺杆泵';
+cosog.string.pumpUnit='抽油机井';
+cosog.string.screwPump='螺杆泵井';
 
 cosog.string.realtimedata='实时数据采集时间';
 

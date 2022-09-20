@@ -351,8 +351,8 @@ Ext.define('AP.view.alarmQuery.PCPEnumValueAlarmInfoView', {
                 	var isSendMessage=Ext.getCmp('PCPEnumValueAlarmIsSendMessageComb_Id').getValue();
                	 	var alarmType=1;
                	 	
-               	 	var fileName='螺杆泵枚举量报警设备列表';
-               	 	var title='螺杆泵枚举量报警设备列表';
+               	 	var fileName='螺杆泵井枚举量报警设备列表';
+               	 	var title='螺杆泵井枚举量报警设备列表';
                	 	var columnStr=Ext.getCmp("PCPEnumValueAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
@@ -411,8 +411,8 @@ Ext.define('AP.view.alarmQuery.PCPEnumValueAlarmInfoView', {
                     var endDate=Ext.getCmp('PCPEnumValueAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=1;
                	 	
-               	 	var fileName='螺杆泵'+deviceName+'枚举量报警数据';
-               	 	var title='螺杆泵'+deviceName+'枚举量报警数据';
+               	 	var fileName='螺杆泵井'+deviceName+'枚举量报警数据';
+               	 	var title='螺杆泵井'+deviceName+'枚举量报警数据';
                	 	var columnStr=Ext.getCmp("PCPEnumValueAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }

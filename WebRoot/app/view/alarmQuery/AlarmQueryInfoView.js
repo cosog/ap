@@ -15,13 +15,13 @@ Ext.define("AP.view.alarmQuery.AlarmQueryInfoView", {
         		border: false,
         		tabPosition: 'bottom',
         		items: [{
-        				title: '抽油机',
+        				title: '抽油机井',
         				id:'RPCAlarmQueryPanel_Id',
         				items: [RPCAlarmQueryInfoView],
         				layout: "fit",
         				border: false
         			},{
-        				title: '螺杆泵',
+        				title: '螺杆泵井',
         				id:'PCPAlarmQueryPanel_Id',
         				items: [PCPAlarmQueryInfoView],
         				layout: "fit",

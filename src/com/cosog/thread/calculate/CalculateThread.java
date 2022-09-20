@@ -39,7 +39,7 @@ public class CalculateThread extends Thread{
 	}
 
 	public void run(){
-		System.out.println("线程"+threadId+"开始计算"+(deviceType==0?"抽油机":"螺杆泵")+"编号"+wellNo+"井");
+		System.out.println("线程"+threadId+"开始计算"+(deviceType==0?"抽油机井":"螺杆泵井")+"编号"+wellNo+"井");
 		long startTime=new Date().getTime();
 		int count=0;
 		int totalCount=0;

@@ -599,7 +599,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 		var recordId=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[0];
                 		var wellName=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[1];
                 		var acqTime=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtRow(row)[2];
-                		var calculateType=1;//1-抽油机诊断计产 2-螺杆泵诊断计产 3-抽油机汇总计算  4-螺杆泵汇总计算 5-电参反演地面功图计算
+                		var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
                 		var url=context + '/calculateManagerController/exportCalculateRequestData?recordId='+recordId+'&wellName='+URLencode(URLencode(wellName))+'&acqTime='+acqTime+'&calculateType='+calculateType;
                     	document.location.href = url;
                 	}else{

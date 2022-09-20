@@ -107,7 +107,7 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				var item2={};
 				item2.id=2;
 				item2.title='设备类型';
-				item2.value=(data.deviceType==0?"抽油机":"螺杆泵");
+				item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
 				root.push(item2);
 				
 				var item3={};
@@ -228,7 +228,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 //	        protocolConfigInstancePropertiesHandsontableHelper.test = function (instance, td, row, col, prop, value, cellProperties) {
 //	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 //	            cellProperties.type = 'dropdown';
-//	            cellProperties.source = ['抽油机','螺杆泵'];
+//	            cellProperties.source = ['抽油机井','螺杆泵井'];
 //	            cellProperties.strict = true;
 //	            cellProperties.allowInvalid = false;
 //	        }
@@ -263,7 +263,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 	                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
 	                    	if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机','螺杆泵'];
+		                    	this.source = ['抽油机井','螺杆泵井'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
@@ -274,7 +274,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	}
 		                    	
 	                    		this.type = 'dropdown';
-	                    		if(deviceType==='抽油机'){
+	                    		if(deviceType==='抽油机井'){
 	                    			this.source = protocolConfigInstancePropertiesHandsontableHelper.rpcAcqUnit;
 	                    		}else{
 	                    			this.source = protocolConfigInstancePropertiesHandsontableHelper.pcpAcqUnit;
@@ -429,7 +429,7 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.code=selectedItem.data.code;
 			saveData.oldName=selectedItem.data.text;
 			saveData.name=propertiesData[0][2];
-			saveData.deviceType=(propertiesData[1][2]=="抽油机"?0:1);
+			saveData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
 			saveData.unitId=selectedItem.data.unitId;
 			saveData.unitName=propertiesData[2][2];
 			saveData.acqProtocolType=propertiesData[3][2];

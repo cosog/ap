@@ -498,7 +498,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					for(int i=0;i<pcpDeviceInfoList.size();i++){
-						//螺杆泵
+						//螺杆泵井
 						PCPDeviceInfo pcpDeviceInfo=pcpDeviceInfoList.get(i);
 						deviceType=pcpDeviceInfo.getDeviceType();
 						deviceId=pcpDeviceInfo.getId();
@@ -884,7 +884,7 @@ public class DriverAPIController extends BaseController{
 					}
 					
 					for(int i=0;i<pcpDeviceInfoList.size();i++){
-						//螺杆泵
+						//螺杆泵井
 						PCPDeviceInfo pcpDeviceInfo=pcpDeviceInfoList.get(i);
 						deviceType=pcpDeviceInfo.getDeviceType();
 						deviceId=pcpDeviceInfo.getId();
@@ -2085,6 +2085,9 @@ public class DriverAPIController extends BaseController{
 					if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1&&rpcCalculateResponseData.getCalculationStatus().getResultCode()!=1232){
 						int curvecount=rpcCalculateResponseData.getFESDiagram().getS().get(0).size();
 						int pointcount=rpcCalculateResponseData.getFESDiagram().getS().size();
+						if(pointcount<rpcCalculateResponseData.getFESDiagram().getF().size()){
+							pointcount=rpcCalculateResponseData.getFESDiagram().getF().size();
+						}
 						for(int i=0;i<curvecount;i++){
 							for(int j=0;j<pointcount;j++){
 								pumpFSDiagramStrBuff.append(rpcCalculateResponseData.getFESDiagram().getS().get(j).get(i)+",");//位移
@@ -2099,7 +2102,7 @@ public class DriverAPIController extends BaseController{
 							pumpFSDiagramStrBuff.deleteCharAt(pumpFSDiagramStrBuff.length() - 1);
 						}
 					}else{
-						for(int i=0;i<rpcCalculateRequestData.getFESDiagram().getS().size();i++){
+						for(int i=0;i<rpcCalculateRequestData.getFESDiagram().getS().size()&&i<rpcCalculateRequestData.getFESDiagram().getF().size();i++){
 							pumpFSDiagramStrBuff.append(rpcCalculateRequestData.getFESDiagram().getS().get(i)+",");//位移
 							pumpFSDiagramStrBuff.append(rpcCalculateRequestData.getFESDiagram().getF().get(i)+",");//载荷
 						}

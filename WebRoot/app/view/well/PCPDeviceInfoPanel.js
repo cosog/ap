@@ -1,4 +1,4 @@
-//螺杆泵
+//螺杆泵井
 var pcpDeviceInfoHandsontableHelper = null;
 var pcpProductionHandsontableHelper = null;
 Ext.define('AP.view.well.PCPDeviceInfoPanel', {
@@ -108,7 +108,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         heads = heads.substring(0, heads.length - 1);
                     }
 
-                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=201&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("螺杆泵")) + "&title=" + URLencode(URLencode("螺杆泵"));
+                    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=201&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("螺杆泵井")) + "&title=" + URLencode(URLencode("螺杆泵井"));
                     openExcelWindow(url + '?flag=true' + param);
                 }
             }, '-', {
@@ -251,7 +251,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                 	}
                 	
                 	var window = Ext.create("AP.view.well.BatchAddDeviceWindow", {
-                        title: '螺杆泵批量添加'
+                        title: '螺杆泵井批量添加'
                     });
                 	Ext.getCmp("batchAddDeviceWinOgLabel_Id").setHtml("设备将添加到【<font color=red>"+selectedOrgName+"</font>】下,请确认");
                     Ext.getCmp("batchAddDeviceType_Id").setValue(201);
@@ -279,7 +279,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
             	layout: 'border',
             	items: [{
             		region: 'center',
-            		title:'螺杆泵列表',
+            		title:'螺杆泵井列表',
                 	html: '<div class="PCPDeviceContainer" style="width:100%;height:100%;"><div class="con" id="PCPDeviceTableDiv_id"></div></div>',
                     listeners: {
                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -352,9 +352,9 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Org(val, callback,this.row, this.col,pcpDeviceInfoHandsontableHelper);}}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "liftingTypeName".toUpperCase()) {
                         if (pcpHidden) {
-                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机']}";
+                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井']}";
                         } else {
-                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机', '螺杆泵']}";
+                            columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['抽油机井', '螺杆泵井']}";
                         }
                     } else if (result.columns[i].dataIndex.toUpperCase() === "instanceName".toUpperCase()) {
                         var source = "[";
@@ -658,7 +658,7 @@ var PCPDeviceInfoHandsontableHelper = {
         			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
-        			deviceProductionData.Production.WellHeadFluidTemperature=parseFloat(productionHandsontableData[8][2]);
+        			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
         		}
         		if(isNumber(parseFloat(productionHandsontableData[9][2]))){
         			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);

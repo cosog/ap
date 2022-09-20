@@ -319,11 +319,11 @@ public class PCPProductionData {
 	{ 
 	    private float BarrelLength;//泵筒长
 	    
-	    private int BarrelSeries;//螺杆泵泵级数
+	    private int BarrelSeries;//螺杆泵井泵级数
 	    
-	    private float RotorDiameter;//螺杆泵转子直径
+	    private float RotorDiameter;//螺杆泵井转子直径
 	    
-	    private float QPR;//螺杆泵公称排量
+	    private float QPR;//螺杆泵井公称排量
 
 		public float getBarrelLength() {
 			return BarrelLength;

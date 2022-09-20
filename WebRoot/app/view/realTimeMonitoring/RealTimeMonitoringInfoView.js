@@ -120,13 +120,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                     }]
                 },
         		items: [{
-        				title: '抽油机',
+        				title: '抽油机井',
         				id:'RPCRealTimeMonitoringInfoPanel_Id',
         				items: [RPCRealTimeMonitoringInfoView],
         				layout: "fit",
         				border: false
         			},{
-        				title: '螺杆泵',
+        				title: '螺杆泵井',
         				id:'PCPRealTimeMonitoringInfoPanel_Id',
         				items: [PCPRealTimeMonitoringInfoView],
         				layout: "fit",

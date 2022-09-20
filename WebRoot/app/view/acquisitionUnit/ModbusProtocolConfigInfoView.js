@@ -340,7 +340,7 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 		var item2={};
 		item2.id=2;
 		item2.title='设备类型';
-		item2.value=(data.deviceType==0?"抽油机":"螺杆泵");
+		item2.value=(data.deviceType==0?"抽油机井":"螺杆泵井");
 		root.push(item2);
 		
 		var item3={};
@@ -415,7 +415,7 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 	                    if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
 	                    	if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机','螺杆泵'];
+		                    	this.source = ['抽油机井','螺杆泵井'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
@@ -451,7 +451,7 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 		if(selectedItem.data.classes==1){//选中的是协议
 			protocolConfigData=selectedItem.data;
 			protocolConfigData.text=propertiesData[0][2];
-			protocolConfigData.deviceType=(propertiesData[1][2]=="抽油机"?0:1);
+			protocolConfigData.deviceType=(propertiesData[1][2]=="抽油机井"?0:1);
 			protocolConfigData.sort=propertiesData[2][2];
 		}else if(selectedItem.data.classes==0 && isNotVal(selectedItem.data.children) && selectedItem.data.children.length>0){
 			protocolConfigData=selectedItem.data.children[0];

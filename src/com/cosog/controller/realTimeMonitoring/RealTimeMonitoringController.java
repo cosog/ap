@@ -233,9 +233,9 @@ public class RealTimeMonitoringController extends BaseController {
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		DataDictionary ddic = null;
-		String ddicName="rpcRealTimeOverview";
+		String ddicName="realTimeMonitoring_RPCOverview";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			ddicName="pcpRealTimeOverview";
+			ddicName="realTimeMonitoring_PCPOverview";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		heads=StringUtils.join(ddic.getHeaders(), ",");

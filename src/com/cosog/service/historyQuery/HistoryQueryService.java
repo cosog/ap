@@ -487,14 +487,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String hisTableName="tbl_rpcacqdata_hist";
 		String deviceTableName="tbl_rpcdevice";
-		String ddicName="rpcHistoryQuery";
+		String ddicName="historyQuery_RPCHistoryData";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			hisTableName="tbl_pcpacqdata_hist";
 			deviceTableName="tbl_pcpdevice";
-			ddicName="pcpHistoryQuery";
+			ddicName="historyQuery_PCPHistoryData";
 			columnsKey="pcpDeviceAcquisitionItemColumns";
 		}
 		
@@ -811,14 +811,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String hisTableName="tbl_rpcacqdata_hist";
 		String deviceTableName="tbl_rpcdevice";
-		String ddicName="rpcHistoryQuery";
+		String ddicName="historyQuery_RPCHistoryData";
 		String columnsKey="rpcDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
 		if(StringManagerUtils.stringToInteger(deviceType)==1){
 			hisTableName="tbl_pcpacqdata_hist";
 			deviceTableName="tbl_pcpdevice";
-			ddicName="pcpHistoryQuery";
+			ddicName="historyQuery_PCPHistoryData";
 			columnsKey="pcpDeviceAcquisitionItemColumns";
 		}
 		
@@ -1026,7 +1026,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String hisTableName="tbl_pcpacqdata_hist";
 		String deviceTableName="tbl_pcpdevice";
-		String ddicName="pcpHistoryQuery";
+		String ddicName="historyQuery_PCPHistoryData";
 		String columnsKey="pcpDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
@@ -1320,7 +1320,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		String hisTableName="tbl_pcpacqdata_hist";
 		String deviceTableName="tbl_pcpdevice";
-		String ddicName="pcpHistoryQuery";
+		String ddicName="historyQuery_PCPHistoryData";
 		String columnsKey="pcpDeviceAcquisitionItemColumns";
 		DataDictionary ddic = null;
 		List<String> ddicColumnsList=new ArrayList<String>();
@@ -2450,7 +2450,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
 		}
 		List<?> list=this.findCallSql(finalSql);
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("FESDiagramOverlay");
+		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay");
 		String columns = ddic.getTableHeader();
 		String[] ddicColumns=ddic.getSql().split(",");
 		dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+deviceName+"\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"columns\":"+columns+",\"totalRoot\":[");

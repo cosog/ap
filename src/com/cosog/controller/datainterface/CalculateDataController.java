@@ -215,7 +215,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveFSDiagramDailyCalculationData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
-					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
+					System.out.println("抽油机井曲线数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -223,7 +223,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("抽油机曲线数据汇总完成");
+		System.out.println("抽油机井曲线数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();
@@ -273,7 +273,7 @@ public class CalculateDataController extends BaseController{
 				if(totalAnalysisResponseData!=null&&totalAnalysisResponseData.getResultStatus()==1){
 					calculateDataService.saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,date);
 				}else{
-					System.out.println("抽油机曲线数据汇总error:"+requestDataList.get(i));
+					System.out.println("抽油机井曲线数据汇总error:"+requestDataList.get(i));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -281,7 +281,7 @@ public class CalculateDataController extends BaseController{
 			}
 		}
 		
-		System.out.println("螺杆泵转速数据汇总完成");
+		System.out.println("螺杆泵井转速数据汇总完成");
 		
 		String json ="";
 		//HttpServletResponse response = ServletActionContext.getResponse();

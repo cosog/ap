@@ -351,8 +351,8 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                 	var isSendMessage=Ext.getCmp('PCPSwitchingValueAlarmIsSendMessageComb_Id').getValue();
                	 	var alarmType=0;
                	 	
-               	 	var fileName='螺杆泵开关量报警设备列表';
-               	 	var title='螺杆泵开关量报警设备列表';
+               	 	var fileName='螺杆泵井开关量报警设备列表';
+               	 	var title='螺杆泵井开关量报警设备列表';
                	 	var columnStr=Ext.getCmp("PCPSwitchingValueAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
@@ -411,8 +411,8 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
                     var endDate=Ext.getCmp('PCPSwitchingValueAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=0;
                	 	
-               	 	var fileName='螺杆泵'+deviceName+'开关量报警数据';
-               	 	var title='螺杆泵'+deviceName+'开关量报警数据';
+               	 	var fileName='螺杆泵井'+deviceName+'开关量报警数据';
+               	 	var title='螺杆泵井'+deviceName+'开关量报警数据';
                	 	var columnStr=Ext.getCmp("PCPSwitchingValueAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,isSendMessage,alarmLevel,fileName,title,columnStr);
                 }

@@ -243,9 +243,9 @@ public class HistoryQueryController extends BaseController  {
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		DataDictionary ddic = null;
-		String ddicName="rpcHistoryQuery";
+		String ddicName="historyQuery_RPCHistoryData";
 		if(StringManagerUtils.stringToInteger(deviceType)!=0){
-			ddicName="pcpHistoryQuery";
+			ddicName="historyQuery_PCPHistoryData";
 		}
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
@@ -505,7 +505,7 @@ public class HistoryQueryController extends BaseController  {
 		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
 		
 		DataDictionary ddic = null;
-		String ddicName="FESDiagramOverlay";
+		String ddicName="historyQuery_FESDiagramOverlay";
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		heads=StringUtils.join(ddic.getHeaders(), ",");
 		fields=StringUtils.join(ddic.getFields(), ",");

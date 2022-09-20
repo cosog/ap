@@ -122,8 +122,8 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                              	 var runStatusStatValue=Ext.getCmp("PCPRealTimeMonitoringStatSelectRunStatus_Id").getValue();
                              	 var deviceTypeStatValue=Ext.getCmp("PCPRealTimeMonitoringStatSelectDeviceType_Id").getValue();
                             	 var deviceType=1;
-                            	 var fileName='螺杆泵实时监控数据';
-                            	 var title='螺杆泵实时监控数据';
+                            	 var fileName='螺杆泵井实时监控数据';
+                            	 var title='螺杆泵井实时监控数据';
                             	 var columnStr=Ext.getCmp("PCPRealTimeMonitoringColumnStr_Id").getValue();
                             	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,'',commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }

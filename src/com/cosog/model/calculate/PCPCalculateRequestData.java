@@ -22,7 +22,7 @@ public class PCPCalculateRequestData  implements Serializable {
 	private String WellName;                                              //井名
 	private int LiftingType;											  //举升类型
 	private String AcqTime;                                       //采集时间
-	private float RPM;                                                    //螺杆泵转速
+	private float RPM;                                                    //螺杆泵井转速
 	private FluidPVT FluidPVT;                                            //流体PVT物性
 	private Reservoir Reservoir;                                          //油藏物性
 	private WellboreTrajectory WellboreTrajectory;                        //井深轨迹
@@ -460,11 +460,11 @@ public class PCPCalculateRequestData  implements Serializable {
 		private static final long serialVersionUID = 1L;
 	    private float BarrelLength;//泵筒长
 	    
-	    private int BarrelSeries;//螺杆泵泵级数
+	    private int BarrelSeries;//螺杆泵井泵级数
 	    
-	    private float RotorDiameter;//螺杆泵转子直径
+	    private float RotorDiameter;//螺杆泵井转子直径
 	    
-	    private float QPR;//螺杆泵公称排量
+	    private float QPR;//螺杆泵井公称排量
 
 		public float getBarrelLength() {
 			return BarrelLength;

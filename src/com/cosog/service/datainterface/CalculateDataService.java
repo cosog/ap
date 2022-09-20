@@ -59,7 +59,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		boolean isSendMail=false;
 		StringBuffer SMSContent = new StringBuffer();
 		StringBuffer EMailContent = new StringBuffer();
-		SMSContent.append(((StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200)?"抽油机":"螺杆泵")+"设备"+wellName+"于"+acqTime+"发生报警:");
+		SMSContent.append(((StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200)?"抽油机井":"螺杆泵井")+"设备"+wellName+"于"+acqTime+"发生报警:");
 		Map<String, String> alarmInfoMap=AlarmInfoMap.getMapObject();
 		List<AcquisitionItemInfo> saveAcquisitionItemInfoList=new ArrayList<AcquisitionItemInfo>();
 		for(int i=0;i<acquisitionItemInfoList.size();i++){
@@ -151,9 +151,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 	public void sendAlarmSMS(String wellName,String deviceType,boolean isSendSMS,boolean isSendMail,String SMSContent,String EMailContent) throws SQLException{
 		String SMSUrl=Config.getInstance().configFile.getAd().getWriteSMS();
 		String deviceTableName="tbl_rpcdevice";
-		if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){//如果是抽油机
+		if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){//如果是抽油机井
 			deviceTableName="tbl_rpcdevice";
-		}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){//否则螺杆泵
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){//否则螺杆泵井
 			deviceTableName="tbl_pcpdevice";
 		}
 		

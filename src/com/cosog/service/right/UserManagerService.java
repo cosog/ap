@@ -94,7 +94,7 @@ public class UserManagerService<T> extends BaseService<T> {
 		StringBuffer sqlwhere = new StringBuffer();
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer role_json = new StringBuffer();
-		String columns=	service.showTableHeadersColumns("userMange");
+		String columns=	service.showTableHeadersColumns("orgAndUser_UserManage");
 		String userName = (String) map.get("userName");
 		String roleSql = " select t.role_id,t.role_name from tbl_role t"
 				+ " where t.role_level>(select t3.role_level from tbl_user t2,tbl_role t3 where t2.user_type=t3.role_id and t2.user_no="+user.getUserNo()+")"

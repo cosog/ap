@@ -128,8 +128,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                              	 var runStatusStatValue=Ext.getCmp("RPCRealTimeMonitoringStatSelectRunStatus_Id").getValue();
                              	 var deviceTypeStatValue=Ext.getCmp("RPCRealTimeMonitoringStatSelectDeviceType_Id").getValue();
                             	 var deviceType=0;
-                            	 var fileName='抽油机实时监控数据';
-                            	 var title='抽油机实时监控数据';
+                            	 var fileName='抽油机井实时监控数据';
+                            	 var title='抽油机井实时监控数据';
                             	 var columnStr=Ext.getCmp("RPCRealTimeMonitoringColumnStr_Id").getValue();
                             	 exportRealTimeMonitoringDataExcel(orgId,deviceType,deviceName,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,fileName,title,columnStr);
                              }

@@ -86,10 +86,9 @@ public class SystemdataInfoController extends BaseController {
 		systemdataInfoService.initDataDictionaryPutInCache();
 		// 处理乱码。
 		response.setCharacterEncoding("utf-8");
-		String data=this.getArrayTojsonPage(systemdatainfoList,"dataDictionary");
+		String data=this.getArrayTojsonPage(systemdatainfoList,"dictionary_DataDictionaryManage");
 		// 输出json数据。
 		response.getWriter().write(data);
-
 	}
 
 	/**

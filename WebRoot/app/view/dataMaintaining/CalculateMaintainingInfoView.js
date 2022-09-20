@@ -15,13 +15,13 @@ Ext.define("AP.view.dataMaintaining.CalculateMaintainingInfoView", {
         		border: false,
         		tabPosition: 'bottom',
         		items: [{
-        				title: '抽油机',
+        				title: '抽油机井',
         				id:'RPCCalculateMaintainingInfoPanel_Id',
         				items: [RPCCalculateMaintainingInfoView],
         				layout: "fit",
         				border: false
         			},{
-        				title: '螺杆泵',
+        				title: '螺杆泵井',
         				id:'PCPCalculateMaintainingInfoPanel_Id',
         				items: [PCPCalculateMaintainingInfoView],
         				layout: "fit",

@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 /**
- *  <p>描述：螺杆泵信息 实体类  tbl_pcpdevice</p>
+ *  <p>描述：螺杆泵井信息 实体类  tbl_pcpdevice</p>
  *  
  * @author zhao  2021-12-17
  *

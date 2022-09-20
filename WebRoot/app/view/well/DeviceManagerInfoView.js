@@ -15,13 +15,13 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         		border: false,
         		tabPosition: 'bottom',
         		items: [{
-        				title: '抽油机',
+        				title: '抽油机井',
         				layout: "fit",
         				id:'RPCDeviceManagerPanel',
         				border: false,
         				items: [RPCDeviceInfoPanel]
         			},{
-        				title: '螺杆泵',
+        				title: '螺杆泵井',
         				id:'PCPDeviceManagerPanel',
         				layout: "fit",
         				border: false,

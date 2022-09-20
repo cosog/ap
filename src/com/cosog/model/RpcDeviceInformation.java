@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 /**
- *  <p>描述：抽油机设备 实体类  tbl_rpcdevice</p>
+ *  <p>描述：抽油机井 实体类  tbl_rpcdevice</p>
  *  
  * @author zhao  2021-12-17
  *

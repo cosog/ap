@@ -15,13 +15,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryInfoView", {
         		border: false,
         		tabPosition: 'bottom',
         		items: [{
-        				title: '抽油机',
+        				title: '抽油机井',
         				id:'RPCHistoryQueryInfoPanel_Id',
         				items: [RPCHistoryQueryInfoView],
         				layout: "fit",
         				border: false
         			},{
-        				title: '螺杆泵',
+        				title: '螺杆泵井',
         				id:'PCPHistoryQueryInfoPanel_Id',
         				items: [PCPHistoryQueryInfoView],
         				layout: "fit",

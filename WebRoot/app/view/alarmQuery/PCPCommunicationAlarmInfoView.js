@@ -324,8 +324,8 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 	var alarmType=3;
                	 	var alarmLevel='';
                	 	
-               	 	var fileName='螺杆泵通信报警设备列表';
-               	 	var title='螺杆泵通信报警设备列表';
+               	 	var fileName='螺杆泵井通信报警设备列表';
+               	 	var title='螺杆泵井通信报警设备列表';
                	 	var columnStr=Ext.getCmp("PCPCommunicationAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
@@ -384,8 +384,8 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                	 	var alarmType=3;
                	 	var alarmLevel='';
                	 	
-               	 	var fileName='螺杆泵'+deviceName+'通信报警数据';
-               	 	var title='螺杆泵'+deviceName+'通信报警数据';
+               	 	var fileName='螺杆泵井'+deviceName+'通信报警数据';
+               	 	var title='螺杆泵井'+deviceName+'通信报警数据';
                	 	var columnStr=Ext.getCmp("PCPCommunicationAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }

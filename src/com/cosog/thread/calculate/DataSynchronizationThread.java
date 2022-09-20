@@ -140,31 +140,31 @@ public class DataSynchronizationThread implements Runnable{
 				MemoryDataManagerTask.loadPCPDeviceInfoByAlarmInstanceId(param1,"update");
 			}
 			
-			else if(sign==101){//添加抽油机
+			else if(sign==101){//添加抽油机井
 				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,condition,method);
 				if(rpcDeviceInformation.getStatus()==1){
 					EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
 				rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, rpcDeviceInformation.getDeviceType(), user);
-			}else if(sign==102){//删除抽油机
+			}else if(sign==102){//删除抽油机井
 				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadRPCDeviceInfo(deleteList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
-			}else if(sign==103){//修改抽油机
+			}else if(sign==103){//修改抽油机井
 				MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,condition,method);
 				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(initWellList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
-			}else if(sign==201){//添加螺杆泵
+			}else if(sign==201){//添加螺杆泵井
 				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,condition,method);
 				if(pcpDeviceInformation.getStatus()==1){
 					EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,condition,method);
 				}
 				pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(updateList, addList, deleteNameList, pcpDeviceInformation.getDeviceType(), user);
-			}else if(sign==202){//删除螺杆泵
+			}else if(sign==202){//删除螺杆泵井
 				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteList,condition,method);
 				MemoryDataManagerTask.loadPCPDeviceInfo(deleteList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);
-			}else if(sign==203){//修改螺杆泵
+			}else if(sign==203){//修改螺杆泵井
 				MemoryDataManagerTask.loadPCPDeviceInfo(initWellList,condition,method);
 				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(initWellList,condition,method);
 				wellInformationManagerService.getBaseDao().saveDeviceOperationLog(updateList,addList,deleteNameList,deviceType,user);

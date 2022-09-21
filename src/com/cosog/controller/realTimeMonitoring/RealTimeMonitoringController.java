@@ -448,7 +448,7 @@ public class RealTimeMonitoringController extends BaseController {
 						+ "}";
 				String responseStr="";
 				responseStr=StringManagerUtils.sendPostMethod(url, ctrlJson,"utf-8",0,0);
-				if(!StringManagerUtils.isNotNull(responseStr)){
+				if(StringManagerUtils.isNotNull(responseStr)){
 					type = new TypeToken<ResultStatusData>() {}.getType();
 					ResultStatusData resultStatusData=gson.fromJson(responseStr, type);
 					result=resultStatusData.getResultStatus();

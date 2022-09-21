@@ -154,11 +154,18 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        		}else{
     			        			hand=true;
     			        		}
+    			        		hand=false;
     			        		if(!o.data.operation){
     			        			hidden=true;
     			        		}
     			        		text="设置";
     			        		e.tdStyle ="vertical-align:middle;";
+    			        		
+    			        		var all_loading = new Ext.LoadMask({
+    	                            msg: '命令发送中，请稍后...',
+    	                            target: Ext.getBody().component
+    	                        });
+    			        		
     			        		if(resolutionMode==1&&itemMeaning.length==1){
     			        			Ext.defer(function () {
         		                        Ext.widget('button', {
@@ -171,13 +178,14 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     		                            	text: itemMeaning[0][1],
     		                            	tooltip:itemMeaning[0][1],
     		                            	handler: function () {
+    		                            		all_loading.show();
     		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
     		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     		                            		Ext.Ajax.request({
     		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
     		                                        method: "POST",
-    		                                        waitMsg: cosog.string.updatewait,
-    		                                        waitTitle: 'Please Wait...',
+//    		                                        waitMsg: cosog.string.updatewait,
+//    		                                        waitTitle: 'Please Wait...',
     		                                        params: {
     		                                        	deviceId:deviceId,
     		                                        	wellName: wellName,
@@ -186,6 +194,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     		                                            controlValue:itemMeaning[0][0]
     		                                        },
     		                                        success: function (response, action) {
+    		                                        	all_loading.hide();
     		                                        	var data = Ext.decode(response.responseText);
     		                                        	if (data.success==true && data.flag==false) {
     		                                                Ext.MessageBox.show({
@@ -204,7 +213,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     		                                            } 
     		                                        },
     		                                        failure: function () {
-    		                                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+    		                                        	all_loading.hide();
+    		                                        	Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
     		                                        }
     		                                	});   
     		                            	}
@@ -231,13 +241,14 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	text: itemMeaning[0][1],
         		                            	tooltip:itemMeaning[0][1],
         		                            	handler: function () {
+        		                            		all_loading.show();
         		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
-        		                                        waitTitle: 'Please Wait...',
+//        		                                        waitMsg: cosog.string.updatewait,
+//        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
@@ -246,6 +257,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            controlValue:itemMeaning[0][0]
         		                                        },
         		                                        success: function (response, action) {
+        		                                        	all_loading.hide();
         		                                        	var data = Ext.decode(response.responseText);
         		                                        	if (data.success==true && data.flag==false) {
         		                                                Ext.MessageBox.show({
@@ -264,7 +276,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            } 
         		                                        },
         		                                        failure: function () {
-        		                                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+        		                                        	all_loading.hide();
+        		                                        	Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
         		                                        }
         		                                	});   
         		                            	}
@@ -279,13 +292,14 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	text: itemMeaning[1][1],
         		                            	tooltip:itemMeaning[1][1],
         		                            	handler: function () {
+        		                            		all_loading.show();
         		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
-        		                                        waitTitle: 'Please Wait...',
+//        		                                        waitMsg: cosog.string.updatewait,
+//        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
@@ -294,6 +308,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            controlValue:itemMeaning[1][0]
         		                                        },
         		                                        success: function (response, action) {
+        		                                        	all_loading.hide();
         		                                        	var data = Ext.decode(response.responseText);
         		                                        	if (data.success==true && data.flag==false) {
         		                                                Ext.MessageBox.show({
@@ -312,7 +327,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            } 
         		                                        },
         		                                        failure: function () {
-        		                                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+        		                                        	all_loading.hide();
+        		                                        	Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
         		                                        }
         		                                	});   
         		                            	}
@@ -338,13 +354,14 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	text: '开',
         		                            	tooltip:'开',
         		                            	handler: function () {
+        		                            		all_loading.show();
         		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
-        		                                        waitTitle: 'Please Wait...',
+//        		                                        waitMsg: cosog.string.updatewait,
+//        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
@@ -353,6 +370,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            controlValue:1
         		                                        },
         		                                        success: function (response, action) {
+        		                                        	all_loading.hide();
         		                                        	var data = Ext.decode(response.responseText);
         		                                        	if (data.success==true && data.flag==false) {
         		                                                Ext.MessageBox.show({
@@ -371,7 +389,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            } 
         		                                        },
         		                                        failure: function () {
-        		                                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+        		                                        	all_loading.hide();
+        		                                        	Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
         		                                        }
         		                                	});   
         		                            	}
@@ -385,13 +404,14 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	text: '关',
         		                            	tooltip:'关',
         		                            	handler: function () {
+        		                            		all_loading.show();
         		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
         		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
-        		                                        waitTitle: 'Please Wait...',
+//        		                                        waitMsg: cosog.string.updatewait,
+//        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
@@ -400,6 +420,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            controlValue:0
         		                                        },
         		                                        success: function (response, action) {
+        		                                        	all_loading.hide();
         		                                        	var data = Ext.decode(response.responseText);
         		                                        	if (data.success==true && data.flag==false) {
         		                                                Ext.MessageBox.show({
@@ -418,7 +439,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                            } 
         		                                        },
         		                                        failure: function () {
-        		                                            Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
+        		                                        	all_loading.hide();
+        		                                        	Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
         		                                        }
         		                                	});   
         		                            	}
@@ -509,6 +531,37 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     		}else{
     			controlGridPanel.reconfigure(controlStore);
     		}
+    		
+    		//处理视频
+    		if(get_rawData.videoUrl!=undefined&&get_rawData.videoUrl!=""){
+        		if($("#RPCRealTimeMonitoringRightVideoPlayer")!=null){
+            		$("#RPCRealTimeMonitoringRightVideoPlayer").html('');
+            	}
+//            	Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").expand(true);
+            	Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").show();
+            	var videoUrl=get_rawData.videoUrl;
+            	var videoUrl_rtmp=""; 
+            	var videoUrl_hls=""; 
+            	if(videoUrl.indexOf("http")>=0){//hls模式
+            		videoUrl_hls=videoUrl;
+            		videoUrl_rtmp=videoUrl.replace("https","http").replace("http://hls","rtmp://rtmp").replace(".m3u8","");
+            	}else{
+            		videoUrl_hls=videoUrl.replace("rtmp://rtmp","http://hls")+".m3u8";
+            		videoUrl_rtmp=videoUrl;
+            	}
+            	
+            	var videohtml='<video id="RPCRealTimeMonitoringRightVideoPlayer" style="width:100%;height:100%;"  poster="" controls playsInline webkit-playsinline autoplay><source src="'+videoUrl_rtmp+'" type="rtmp/flv" /><source src="'+videoUrl_hls+'" type="application/x-mpegURL" /></video>';   
+            	Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").update(videohtml);
+            	if(document.getElementById("RPCRealTimeMonitoringRightVideoPlayer")!=null){
+            		var player = new EZUIPlayer('RPCRealTimeMonitoringRightVideoPlayer');
+            	}
+            }else{
+            	var videohtml=''
+                Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").update(videohtml);
+//                Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").collapse();
+                Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").hide();
+            }
+    		
         },
         beforeload: function (store, options) {
         	var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;

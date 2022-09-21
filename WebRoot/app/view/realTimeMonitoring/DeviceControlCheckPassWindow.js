@@ -91,6 +91,11 @@ Ext.define('AP.view.realTimeMonitoring.DeviceControlCheckPassWindow', {
                 handler:function () {
                 	var form = Ext.getCmp("WellControlCheckPass_form_id");
                 	if (form.getForm().isValid()) {
+                		var all_loading = new Ext.LoadMask({
+                            msg: '命令发送中，请稍后...',
+                            target: Ext.getCmp('DeviceControlCheckPassWindow_Id')
+                        });
+                    	all_loading.show();
                 		var controlValue=Ext.getCmp('DeviceControlValue_Id').getValue();
                 		var controlShowType=Ext.getCmp("DeviceControlShowType_Id").getValue();
                 		if(controlShowType==1){
@@ -99,8 +104,8 @@ Ext.define('AP.view.realTimeMonitoring.DeviceControlCheckPassWindow', {
                 		form.getForm().submit({
                             url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
                             method: "POST",
-                            waitMsg: cosog.string.updatewait,
-                            waitTitle: 'Please Wait...',
+//                            waitMsg: cosog.string.updatewait,
+//                            waitTitle: 'Please Wait...',
                             params: {
                             	deviceId:Ext.getCmp('DeviceControlDeviceId_Id').getValue(),
                             	wellName: Ext.getCmp('DeviceControlWellName_Id').getValue(),
@@ -109,6 +114,7 @@ Ext.define('AP.view.realTimeMonitoring.DeviceControlCheckPassWindow', {
                                 controlValue:controlValue
                             },
                             success: function (response, action) {
+                            	all_loading.hide();
                             	if (action.result.flag == false) {
                             		Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                                     Ext.MessageBox.show({
@@ -129,6 +135,7 @@ Ext.define('AP.view.realTimeMonitoring.DeviceControlCheckPassWindow', {
                                 } 
                             },
                             failure: function () {
+                            	all_loading.hide();
                             	Ext.getCmp("DeviceControlCheckPassWindow_Id").close();
                                 Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font>】：" + cosog.string.contactadmin + "！")
                             }

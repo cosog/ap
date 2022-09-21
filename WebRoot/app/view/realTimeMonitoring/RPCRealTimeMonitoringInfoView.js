@@ -594,12 +594,73 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                 			}]
                 		},{
                 			title:'设备控制',
-                			id: 'RPCRealTimeMonitoringRightControlPanel',
-                            border: false,
-                            layout: 'fit',
-                            autoScroll: true,
-                            scrollable: true
-                		}]
+                			border: false,
+                            layout: 'border',
+                            hideMode:'offsets',
+                            id:'RPCRealTimeMonitoringRightControlAndVideoPanel',
+                            items: [{
+                            	region: 'north',
+                            	layout: 'fit',
+                            	height: '40%',
+                            	id:'RPCRealTimeMonitoringRightVideoPanel',
+                            	collapsible: true, // 是否折叠
+                            	header: false,
+                                split: true, // 竖折叠条
+                                autoRender:true,
+                            	html: ''
+                            },{
+                            	region: 'center',
+                                height: '60%',
+                                id: 'RPCRealTimeMonitoringRightControlPanel',
+                                border: false,
+                                layout: 'fit',
+                                autoScroll: true,
+                                scrollable: true
+                            }]
+                		}],
+                		listeners: {
+                        	tabchange: function (tabPanel, newCard, oldCard,obj) {
+//                        		var selectedLength=Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection().length;
+//                        		if(newCard.id=="FSDiagramAnalysisSingleDetailsRightControlTabPanel_Id"){
+//                        			if(selectedLength>0){
+//                            			var videoUrl=Ext.getCmp("FSDiagramAnalysisSingleDetails_Id").getSelectionModel().getSelection()[0].data.videourl;
+//                                        if(videoUrl!=undefined&&videoUrl!=""){
+//                                        	if($("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer")!=null){
+//                                        		$("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer").html('');
+//                                        	}
+//                                        	var videoUrl_rtmp=""; 
+//                                        	var videoUrl_hls=""; 
+//                                        	if(videoUrl.indexOf("http")>=0){//hls模式
+//                                        		videoUrl_hls=videoUrl;
+//                                        		videoUrl_rtmp=videoUrl.replace("https","http").replace("http://hls","rtmp://rtmp").replace(".m3u8","");
+//                                        	}else{
+//                                        		videoUrl_hls=videoUrl.replace("rtmp://rtmp","http://hls")+".m3u8";
+//                                        		videoUrl_rtmp=videoUrl;
+//                                        	}
+//                                        	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").expand(true);
+//                                        	var videohtml='<video id="FSDiagramAnalysisSingleDetailsRightControlVideoPlayer" style="width:100%;height:100%;"  poster="" controls playsInline webkit-playsinline autoplay><source src="'+videoUrl_rtmp+'" type="rtmp/flv" /><source src="'+videoUrl_hls+'" type="application/x-mpegURL" /></video>';   
+//                                        	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").update(videohtml);
+//                                        	if(document.getElementById("FSDiagramAnalysisSingleDetailsRightControlVideoPlayer")!=null){
+//                                        		var player = new EZUIPlayer('FSDiagramAnalysisSingleDetailsRightControlVideoPlayer');
+//                                        	}
+//                                        }else{
+//                                        	var videohtml=''
+//                                        	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").update(videohtml);
+//                                        	Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").collapse();
+//                                        }
+//                            		}else{
+//                        				Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").removeAll();
+//                        				if($("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer")!=null){
+//                                    		$("#FSDiagramAnalysisSingleDetailsRightControlVideoPlayer").html('');
+//                                    	}
+//                        			}
+//                        			
+//                        		}else{
+//                        			var videohtml='';
+//                                    Ext.getCmp("FSDiagramAnalysisSingleDetailsRightControlVideoPanel_Id").update(videohtml);
+//                        		}
+                            }
+                        }
                     }],
                     listeners: {
                         beforeCollapse: function (panel, eOpts) {

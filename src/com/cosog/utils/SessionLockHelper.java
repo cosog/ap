@@ -51,7 +51,9 @@ public class SessionLockHelper {
 			User user=(User) entry.getValue().getAttribute("userLogin");
 			if(user!=null&&userNo==user.getUserNo()){
 				entry.getValue().invalidate();
+				entries.remove();
 				System.out.println("销毁session:"+entry.getValue().getId()+"，当前用户数:"+map.size());
+				break;
 			}
 		}
 	}

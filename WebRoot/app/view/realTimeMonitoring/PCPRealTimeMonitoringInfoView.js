@@ -355,11 +355,29 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                 			}]
                 		},{
                 			title:'设备控制',
-                			id: 'PCPRealTimeMonitoringRightControlPanel',
-                            border: false,
-                            layout: 'fit',
-                            autoScroll: true,
-                            scrollable: true
+                			border: false,
+                            layout: 'border',
+                            hideMode:'offsets',
+                            id:'PCPRealTimeMonitoringRightControlAndVideoPanel',
+                            items: [{
+                            	region: 'north',
+                            	layout: 'fit',
+                            	height: '40%',
+                            	id:'PCPRealTimeMonitoringRightVideoPanel',
+                            	collapsible: true, // 是否折叠
+                            	header: false,
+                                split: true, // 竖折叠条
+                                autoRender:true,
+                            	html: ''
+                            },{
+                            	region: 'center',
+                                height: '60%',
+                                id: 'PCPRealTimeMonitoringRightControlPanel',
+                                border: false,
+                                layout: 'fit',
+                                autoScroll: true,
+                                scrollable: true
+                            }]
                 		}]
                     }],
                     listeners: {

@@ -2283,6 +2283,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		deviceInfoDataList.append("]");
 		deviceControlList.append("]");
+		result_json.append("\"videoUrl\":\""+(deviceInfo!=null?deviceInfo.getVideoUrl():"")+"\",");
 		result_json.append("\"deviceInfoDataList\":"+deviceInfoDataList+",");
 		result_json.append("\"deviceControlList\":"+deviceControlList);
 		result_json.append("}");
@@ -2535,6 +2536,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}
 		deviceInfoDataList.append("]");
 		deviceControlList.append("]");
+		result_json.append("\"videoUrl\":\""+(deviceInfo!=null?deviceInfo.getVideoUrl():"")+"\",");
 		result_json.append("\"deviceInfoDataList\":"+deviceInfoDataList+",");
 		result_json.append("\"deviceControlList\":"+deviceControlList);
 		result_json.append("}");

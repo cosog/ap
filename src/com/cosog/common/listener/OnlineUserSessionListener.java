@@ -22,7 +22,8 @@ public class OnlineUserSessionListener implements HttpSessionListener {
         // TODO Auto-generated method stub  
     	StringManagerUtils.printLog("会话开始销毁~!");
         this.onlineCount=this.onlineCount-1;
-        SessionLockHelper.moveSession(event.getSession());
+        event.getSession().getServletContext().setAttribute("onlineCount", onlineCount);  
+//        SessionLockHelper.moveSession(event.getSession());
     }  
   
 }  

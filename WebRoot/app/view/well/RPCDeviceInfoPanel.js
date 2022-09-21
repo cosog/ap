@@ -810,7 +810,10 @@ var RPCDeviceInfoHandsontableHelper = {
         		deviceProductionData.RodString={};
         		deviceProductionData.RodString.EveryRod=[];
         		
-        		if(isNotVal(productionHandsontableData[20][2]) && isNumber(parseInt(productionHandsontableData[21][2])) && isNumber(parseInt(productionHandsontableData[22][2])) && isNumber(parseInt(productionHandsontableData[23][2]))){
+        		if(isNotVal(productionHandsontableData[20][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[21][2])) 
+        				&& (productionHandsontableData[22][2]=='' || isNumber(parseInt(productionHandsontableData[22][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[23][2]))){
         			var Rod1={};
             		if(isNotVal(productionHandsontableData[20][2])){
             			Rod1.Grade=productionHandsontableData[20][2];
@@ -827,7 +830,10 @@ var RPCDeviceInfoHandsontableHelper = {
             		deviceProductionData.RodString.EveryRod.push(Rod1);
         		}
         		
-        		if(isNotVal(productionHandsontableData[24][2]) && isNumber(parseInt(productionHandsontableData[25][2])) && isNumber(parseInt(productionHandsontableData[26][2])) && isNumber(parseInt(productionHandsontableData[27][2]))){
+        		if(isNotVal(productionHandsontableData[24][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[25][2])) 
+        				&& (productionHandsontableData[26][2]=='' || isNumber(parseInt(productionHandsontableData[26][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[27][2]))){
         			var Rod2={};
             		if(isNotVal(productionHandsontableData[24][2])){
             			Rod2.Grade=productionHandsontableData[24][2];
@@ -844,7 +850,10 @@ var RPCDeviceInfoHandsontableHelper = {
             		deviceProductionData.RodString.EveryRod.push(Rod2);
         		}
         		
-        		if(isNotVal(productionHandsontableData[28][2]) && isNumber(parseInt(productionHandsontableData[29][2])) && isNumber(parseInt(productionHandsontableData[30][2])) && isNumber(parseInt(productionHandsontableData[31][2]))){
+        		if(isNotVal(productionHandsontableData[28][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[29][2])) 
+        				&& (productionHandsontableData[30][2]=='' || isNumber(parseInt(productionHandsontableData[30][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[31][2]))){
         			var Rod3={};
             		if(isNotVal(productionHandsontableData[28][2])){
             			Rod3.Grade=productionHandsontableData[28][2];
@@ -861,7 +870,10 @@ var RPCDeviceInfoHandsontableHelper = {
             		deviceProductionData.RodString.EveryRod.push(Rod3);
         		}
         		
-        		if(isNotVal(productionHandsontableData[32][2]) && isNumber(parseInt(productionHandsontableData[33][2])) && isNumber(parseInt(productionHandsontableData[34][2])) && isNumber(parseInt(productionHandsontableData[35][2]))){
+        		if(isNotVal(productionHandsontableData[32][2]) 
+        				&& isNumber(parseInt(productionHandsontableData[33][2])) 
+        				&& (productionHandsontableData[34][2]=='' || isNumber(parseInt(productionHandsontableData[34][2])) )
+        				&& isNumber(parseInt(productionHandsontableData[35][2]))){
         			var Rod4={};
             		if(isNotVal(productionHandsontableData[32][2])){
             			Rod4.Grade=productionHandsontableData[32][2];

@@ -528,37 +528,6 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringControlAndInfoStore
     		}else{
     			controlGridPanel.reconfigure(controlStore);
     		}
-    		
-    		//处理视频
-    		if(get_rawData.videoUrl!=undefined&&get_rawData.videoUrl!=""){
-        		if($("#PCPRealTimeMonitoringRightVideoPlayer")!=null){
-            		$("#PCPRealTimeMonitoringRightVideoPlayer").html('');
-            	}
-//            	Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").expand(true);
-            	Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").show();
-            	var videoUrl=get_rawData.videoUrl;
-            	var videoUrl_rtmp=""; 
-            	var videoUrl_hls=""; 
-            	if(videoUrl.indexOf("http")>=0){//hls模式
-            		videoUrl_hls=videoUrl;
-            		videoUrl_rtmp=videoUrl.replace("https","http").replace("http://hls","rtmp://rtmp").replace(".m3u8","");
-            	}else{
-            		videoUrl_hls=videoUrl.replace("rtmp://rtmp","http://hls")+".m3u8";
-            		videoUrl_rtmp=videoUrl;
-            	}
-            	
-            	var videohtml='<video id="PCPRealTimeMonitoringRightVideoPlayer" style="width:100%;height:100%;"  poster="" controls playsInline webkit-playsinline autoplay><source src="'+videoUrl_rtmp+'" type="rtmp/flv" /><source src="'+videoUrl_hls+'" type="application/x-mpegURL" /></video>';   
-            	Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").update(videohtml);
-            	if(document.getElementById("PCPRealTimeMonitoringRightVideoPlayer")!=null){
-            		var player = new EZUIPlayer('PCPRealTimeMonitoringRightVideoPlayer');
-            	}
-            }else{
-            	var videohtml=''
-                Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").update(videohtml);
-//                Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").collapse();
-                Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").hide();
-            }
-    		
         },
         beforeload: function (store, options) {
         	var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;

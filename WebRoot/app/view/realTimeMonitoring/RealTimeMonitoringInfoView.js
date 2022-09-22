@@ -1,3 +1,4 @@
+var videoPlayr=null;
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoView', // 定义别名

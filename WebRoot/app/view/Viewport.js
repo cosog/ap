@@ -684,22 +684,26 @@ function getDeviceFESDiagramResultTotal(){
 			success:function(response) {
 				var result =  Ext.JSON.decode(response.responseText);
 				Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
-				var chart= $("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts(); 
 				
-				if(isNotVal(chart)){
-					var series=chart.series[0];
-					var pieDataStr="[";
-					var datalist=result.totalRoot;
-					for(var i=0;i<datalist.length;i++){
-						pieDataStr+="['"+datalist[i].item+"',"+datalist[i].count+"],";
+				if(isNotVal($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
+					var chart= $("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts();
+					if(isNotVal(chart)){
+						var series=chart.series[0];
+						var pieDataStr="[";
+						var datalist=result.totalRoot;
+						for(var i=0;i<datalist.length;i++){
+							pieDataStr+="['"+datalist[i].item+"',"+datalist[i].count+"],";
+						}
+						if(stringEndWith(pieDataStr,",")){
+							pieDataStr = pieDataStr.substring(0, pieDataStr.length - 1);
+						}
+						pieDataStr+="]";
+						var pieData = Ext.JSON.decode(pieDataStr);
+						series.setData(pieData);
 					}
-					if(stringEndWith(pieDataStr,",")){
-						pieDataStr = pieDataStr.substring(0, pieDataStr.length - 1);
-					}
-					pieDataStr+="]";
-					var pieData = Ext.JSON.decode(pieDataStr);
-					series.setData(pieData);
 				}
+				
+				
 			},
 			failure:function(){
 				Ext.MessageBox.alert("错误","与后台联系的时候出了问题");

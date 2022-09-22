@@ -158,18 +158,20 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         	html: '<div id="PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts().setSize($("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").offsetWidth, $("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
-                                    	var toolTip=Ext.getCmp("PCPRealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
-                                    	if(!isNotVal(toolTip)){
-                                    		Ext.create('Ext.tip.ToolTip', {
-                                                id:'PCPRealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
-                                        		target: 'PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
-                                                html: '点击饼图不同区域或标签，查看相应统计数据'
-                                            });
-                                    	}
-                                    }
+                                	if(isNotVal($("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
+                                		if ($("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+                                            $("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts().setSize($("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").offsetWidth, $("#PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").offsetHeight,true);
+                                        }else{
+                                        	var toolTip=Ext.getCmp("PCPRealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
+                                        	if(!isNotVal(toolTip)){
+                                        		Ext.create('Ext.tip.ToolTip', {
+                                                    id:'PCPRealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id',
+                                            		target: 'PCPRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id',
+                                                    html: '点击饼图不同区域或标签，查看相应统计数据'
+                                                });
+                                        	}
+                                        }
+                                	}
                                 }
                             }
                 		},{
@@ -179,14 +181,16 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         	html: '<div id="PCPRealTimeMonitoringStatGraphPanelPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts().setSize($("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").offsetWidth, $("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
-                                    	Ext.create('Ext.tip.ToolTip', {
-                                            target: 'PCPRealTimeMonitoringStatGraphPanelPieDiv_Id',
-                                            html: '点击饼图不同区域或标签，查看相应统计数据'
-                                        });
-                                    }
+                                	if(isNotVal($("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id"))){
+                                		if ($("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
+                                            $("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts().setSize($("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").offsetWidth, $("#PCPRealTimeMonitoringStatGraphPanelPieDiv_Id").offsetHeight,true);
+                                        }else{
+                                        	Ext.create('Ext.tip.ToolTip', {
+                                                target: 'PCPRealTimeMonitoringStatGraphPanelPieDiv_Id',
+                                                html: '点击饼图不同区域或标签，查看相应统计数据'
+                                            });
+                                        }
+                                	}
                                 }
                             }
                 		},{
@@ -197,14 +201,16 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         	html: '<div id="PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id" style="width:100%;height:100%;"></div>',
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                	if ($("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-                                        $("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts().setSize($("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").offsetWidth, $("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").offsetHeight,true);
-                                    }else{
-                                    	Ext.create('Ext.tip.ToolTip', {
-                                            target: 'PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id',
-                                            html: '点击饼图不同区域或标签，查看相应统计数据'
-                                        });
-                                    }
+                                	if(isNotVal($("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id"))){
+                                		if ($("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
+                                            $("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts().setSize($("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").offsetWidth, $("#PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id").offsetHeight,true);
+                                        }else{
+                                        	Ext.create('Ext.tip.ToolTip', {
+                                                target: 'PCPRealTimeMonitoringDeviceTypeStatPieDiv_Id',
+                                                html: '点击饼图不同区域或标签，查看相应统计数据'
+                                            });
+                                        }
+                                	}
                                 }
                             }
                 		}],
@@ -368,7 +374,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                             	header: false,
                                 split: true, // 竖折叠条
                                 autoRender:true,
-                            	html: ''
+                                html: '<div id="PCPRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>'
                             },{
                             	region: 'center',
                                 height: '60%',
@@ -378,7 +384,48 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                 autoScroll: true,
                                 scrollable: true
                             }]
-                		}]
+                		}],
+                		listeners: {
+                        	tabchange: function (tabPanel, newCard, oldCard,obj) {
+                        		if(newCard.id=="PCPRealTimeMonitoringRightControlAndVideoPanel"){
+                                	if(Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                                		var videoUrl  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.videoUrl;
+                                		if(videoUrl!=''){
+                                			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").show();
+                                			videoUrl='ezopen://open.ys7.com/G39444019/1.live'
+                                			var accessToken='ra.dq7uimnn8tizdx3a0d8o3uk55ui0vpsw-5mmz04uczq-1u97g1h-ebffwqyhm';
+                                            videoPlayr = new EZUIKit.EZUIKitPlayer({
+                                            	id: 'PCPRealTimeMonitoringRightVideoDiv_Id', // 视频容器ID
+                                            	accessToken: accessToken,
+                                                url: videoUrl,
+                                                template: 'standard', // simple - 极简版;standard-标准版;security - 安防版(预览回放);voice-语音版; theme-可配置主题；
+//                                              plugin: ['talk'],                       // 加载插件，talk-对讲
+//                                              width: 220,
+//                                              height: 220,
+                                            });
+//                                            var hlsDemo = new EZUIKit.HLS("PCPRealTimeMonitoringRightVideoDiv_Id","https://open.ys7.com/v3/openlive/G39444019_1_2.m3u8?expire=1687487466&id=461840962679742464&t=c076d5a5ad56090e919a6a2500b96169c20a77874cce866a87a7d65e493e6f2f&ev=100");	
+                                		}else{
+                                			if(videoPlayr!=null){
+                                				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
+                                				videoPlayr=null;
+                                			}
+                                			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").hide();
+                                		}
+                                	}else{
+                                		if(videoPlayr!=null){
+                            				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
+                            				videoPlayr=null;
+                            			}
+                                		Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").hide();
+                                	}
+                        		}else{
+                        			if(videoPlayr!=null){
+                        				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
+                        				videoPlayr=null;
+                        			}
+                        		}
+                            }
+                        }
                     }],
                     listeners: {
                         beforeCollapse: function (panel, eOpts) {

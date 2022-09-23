@@ -55,6 +55,8 @@ public class WellHandsontableChangedData {
 	    
 	    private String videoUrl="";
 	    
+	    private String videoAccessToken="";
+	    
 	    private String statusName="";
 	    
 	    private String sortNum="";
@@ -719,6 +721,14 @@ public class WellHandsontableChangedData {
 
 		public void setPeakDelay(String peakDelay) {
 			this.peakDelay = peakDelay;
+		}
+
+		public String getVideoAccessToken() {
+			return videoAccessToken;
+		}
+
+		public void setVideoAccessToken(String videoAccessToken) {
+			this.videoAccessToken = videoAccessToken;
 		}
 	    
 	}

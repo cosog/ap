@@ -166,7 +166,15 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
                                 		if ($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                            $("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").offsetHeight,true);
+                                			var panelWidth=Ext.getCmp('RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id').getWidth();
+                                    		var panelHeight=Ext.getCmp('RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id').getHeight();
+                                    		
+                                    		var divWidth=$("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").width();
+                                    		var divHeight=$("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").height();
+                                			
+                                			if(panelWidth>=divWidth || panelHeight>=divHeight){
+                                				$("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").offsetHeight,true);
+                                			}
                                         }else{
                                         	var toolTip=Ext.getCmp("RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
                                         	if(!isNotVal(toolTip)){
@@ -568,7 +576,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                 		}
                     },{
                     	region: 'east',
-                    	width: '25%',
+                    	width: '31%',
                     	xtype: 'tabpanel',
                     	id:"RPCRealTimeMonitoringRightTabPanel",
                 		activeTab: 0,
@@ -615,7 +623,24 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                             	header: false,
                                 split: true, // 竖折叠条
                                 autoRender:true,
-                                html: '<div id="RPCRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>'
+                                html: '<div id="RPCRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>',
+                                listeners: {
+                                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                		var offsetWidth=Ext.getCmp('RPCRealTimeMonitoringRightVideoPanel').getWidth();
+                                		var offsetHeight=Ext.getCmp('RPCRealTimeMonitoringRightVideoPanel').getHeight();
+                                		
+                                		var divWidth=$("#RPCRealTimeMonitoringRightVideoDiv_Id").width();
+                                		var divHeight=$("#RPCRealTimeMonitoringRightVideoDiv_Id").height();
+                                		
+                                		if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                                			if(videoPlayrHelper.playr!=null){
+                                				if(offsetWidth>=divWidth || offsetHeight>=divHeight){
+                                					createVideo(videoPlayrHelper,0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
+                                				}
+                                    		}
+                                		}
+                                	}
+                                }
 //                                html: '<video id="RPCRealTimeMonitoringRightVideoDiv_Id"  autoplay controls style="width:100%;height:100%;"></video>'
                             },{
                             	region: 'center',
@@ -631,32 +656,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                         	tabchange: function (tabPanel, newCard, oldCard,obj) {
                         		if(newCard.id=="RPCRealTimeMonitoringRightControlAndVideoPanel"){
                                 	if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                		var videoUrl  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.videoUrl;
-                                		if(videoUrl!=''){
-                                			Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").show();
-                                			videoUrl='ezopen://open.ys7.com/G39444019/1.live';
-                                			var accessToken='ra.dq7uimnn8tizdx3a0d8o3uk55ui0vpsw-5mmz04uczq-1u97g1h-ebffwqyhm';
-                                			
-//                                			videoUrl='ezopen://chent123@open.ys7.com/D50107285/1.hd.live';
-//                                			accessToken='at.c13mp9gh9wl9urs64ax898nycw8cnzc3-9dc4lf8nwp-1a6gehb-0bbufbchn';
-                                			
-                                            videoPlayr = new EZUIKit.EZUIKitPlayer({
-                                            	id: 'RPCRealTimeMonitoringRightVideoDiv_Id', // 视频容器ID
-                                            	accessToken: accessToken,
-                                                url: videoUrl,
-                                                template: 'standard' // simple - 极简版;standard-标准版;security - 安防版(预览回放);voice-语音版; theme-可配置主题；
-//                                              plugin: ['talk'],                       // 加载插件，talk-对讲
-//                                              width: 220,
-//                                              height: 220,
-                                            });
-//                                            var hlsDemo = new EZUIKit.HLS("RPCRealTimeMonitoringRightVideoDiv_Id","https://open.ys7.com/v3/openlive/G39444019_1_2.m3u8?expire=1687487466&id=461840962679742464&t=c076d5a5ad56090e919a6a2500b96169c20a77874cce866a87a7d65e493e6f2f&ev=100");	
-                                		}else{
-                                			if(videoPlayr!=null){
-                                				document.getElementById('RPCRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
-                                				videoPlayr=null;
-                                			}
-                                			Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").hide();
-                                		}
+                                		createVideo(videoPlayrHelper,0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
                                 	}else{
                                 		if(videoPlayr!=null){
                             				document.getElementById('RPCRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
@@ -665,9 +665,10 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 		Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").hide();
                                 	}
                         		}else{
-                        			if(videoPlayr!=null){
-                        				document.getElementById('RPCRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
-                        				videoPlayr=null;
+                        			if(videoPlayrHelper.playr!=null){
+                        				$("#RPCRealTimeMonitoringRightVideoDiv_Id").html('');
+                        				Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").removeAll();
+                        				videoPlayrHelper.playr=null;
                         			}
                         		}
                             }

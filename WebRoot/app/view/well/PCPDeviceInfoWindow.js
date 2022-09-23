@@ -429,6 +429,20 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 anchor: '95%',
                 msgTarget: 'side'
             },{
+         		xtype: "textfield",
+         		fieldLabel: '视频路径',
+         		id: 'pcpDeviceVideoUrl_Id',
+         		anchor: '95%',
+         		name: "pcpDeviceInformation.videoUrl",
+         		value:''
+            },{
+         		xtype: "textfield",
+         		fieldLabel: '视频访问令牌',
+         		id: 'pcpDeviceVideoAccessToken_Id',
+         		anchor: '95%',
+         		name: "pcpDeviceInformation.videoAccessToken",
+         		value:''
+            },{
             	xtype: 'fieldcontainer',
                 fieldLabel : '状态<font color=red>*</font>',
                 defaultType: 'radiofield',

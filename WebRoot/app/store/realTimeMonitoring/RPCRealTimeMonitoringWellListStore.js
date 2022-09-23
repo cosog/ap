@@ -67,28 +67,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
                     		
                     		if( Ext.getCmp("RPCRealTimeMonitoringRightTabPanel").getActiveTab().id=='RPCRealTimeMonitoringRightControlAndVideoPanel'){
-                    			if(videoPlayr!=null){
-                    				document.getElementById('RPCRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
-                    				videoPlayr=null;
-                    			}
-                    			var videoUrl  = record.data.videoUrl;
-                        		if(videoUrl!=''){
-                        			Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").show();
-                        			videoUrl='ezopen://open.ys7.com/G39444019/1.live'
-                        			var accessToken='ra.dq7uimnn8tizdx3a0d8o3uk55ui0vpsw-5mmz04uczq-1u97g1h-ebffwqyhm';
-                                    videoPlayr = new EZUIKit.EZUIKitPlayer({
-                                    	id: 'RPCRealTimeMonitoringRightVideoDiv_Id', // 视频容器ID
-                                    	accessToken: accessToken,
-                                        url: videoUrl,
-                                        template: 'standard', // simple - 极简版;standard-标准版;security - 安防版(预览回放);voice-语音版; theme-可配置主题；
-//                                      plugin: ['talk'],                       // 加载插件，talk-对讲
-//                                      width: 220,
-//                                      height: 220,
-                                    });
-//                                    var hlsDemo = new EZUIKit.HLS("RPCRealTimeMonitoringRightVideoDiv_Id","https://open.ys7.com/v3/openlive/G39444019_1_2.m3u8?expire=1687487466&id=461840962679742464&t=c076d5a5ad56090e919a6a2500b96169c20a77874cce866a87a7d65e493e6f2f&ev=100");	
-                        		}else{
-                        			Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").hide();
-                        		}
+                    			createVideo(videoPlayrHelper,0,record.data);
                     		}
                     	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {

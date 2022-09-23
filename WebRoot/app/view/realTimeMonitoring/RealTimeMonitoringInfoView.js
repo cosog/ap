@@ -1,4 +1,4 @@
-var videoPlayr=null;
+var videoPlayrHelper={};
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoView', // 定义别名
@@ -1459,3 +1459,55 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
         series: series
     });
 };
+
+function createVideo(playrHelper,deviceType,data){
+	var panelId='RPCRealTimeMonitoringRightVideoPanel';
+	var gridPanelId='RPCRealTimeMonitoringListGridPanel_Id';
+	var divId='RPCRealTimeMonitoringRightVideoDiv_Id';
+	if(deviceType==1){
+		panelId='PCPRealTimeMonitoringRightVideoPanel';
+		gridPanelId='PCPRealTimeMonitoringListGridPanel_Id';
+		divId='PCPRealTimeMonitoringRightVideoDiv_Id';
+	}
+	
+	
+	
+	var videoUrl  = data.videoUrl;
+	var videoAccessToken = data.videoAccessToken;
+	
+	if(playrHelper.playr!=null){
+//		if(playrHelper.playr.url==videoUrl 
+//				&& playrHelper.playr.accessToken==videoAccessToken 
+//				&& playrHelper.playr.width==offsetWidth 
+//				&& playrHelper.playr.height==offsetHeight){
+//			return;
+//		}
+//		playrHelper.playr.releasePlayer();
+		$("#"+playrHelper.playr.id).html('');
+//		document.getElementById(playrHelper.playr.id).innerHTML="";
+		Ext.getCmp(panelId).removeAll();
+		playrHelper.playr=null;
+	}
+	
+	
+	if(videoUrl!=''){
+		Ext.getCmp(panelId).show();
+		var offsetWidth=Ext.getCmp(panelId).getWidth();
+		var offsetHeight=Ext.getCmp(panelId).getHeight();
+		playrHelper.playr = new EZUIKit.EZUIKitPlayer({
+        	id: divId, // 视频容器ID
+        	accessToken: videoAccessToken,
+            url: videoUrl,
+            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+//            autoplay:0,
+//          plugin: ['talk'],                       // 加载插件，talk-对讲
+//            header:['capturePicture'],
+//            footer:['fullScreen'],
+            width: offsetWidth,
+            height: offsetHeight
+        });	
+	}else{
+		Ext.getCmp(panelId).hide();
+	}
+}

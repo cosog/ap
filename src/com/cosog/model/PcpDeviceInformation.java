@@ -32,6 +32,7 @@ public class PcpDeviceInformation implements java.io.Serializable {
 	private String slave;
 	private Integer peakDelay;
 	private String videoUrl;
+	private String videoAccessToken;
 	private Integer sortNum;
 	private Integer status;
 
@@ -43,7 +44,7 @@ public class PcpDeviceInformation implements java.io.Serializable {
 	/** full constructor */
 	public PcpDeviceInformation(Integer id, Integer orgId, String wellName, Integer deviceType,
 			Integer applicationScenarios, String instanceCode, String alarmInstanceCode,String displayInstanceCode, String tcpType, String signInId, String slave,
-			String videoUrl, Integer sortNum) {
+			String videoUrl,String videoAccessToken, Integer sortNum) {
 		super();
 		this.id = id;
 		this.orgId = orgId;
@@ -57,6 +58,7 @@ public class PcpDeviceInformation implements java.io.Serializable {
 		this.signInId = signInId;
 		this.slave = slave;
 		this.videoUrl = videoUrl;
+		this.videoAccessToken = videoAccessToken;
 		this.sortNum = sortNum;
 	}
 
@@ -195,5 +197,14 @@ public class PcpDeviceInformation implements java.io.Serializable {
 
 	public void setPeakDelay(Integer peakDelay) {
 		this.peakDelay = peakDelay;
+	}
+
+	@Column(name = "videoAccessToken", nullable = true, length = 400)
+	public String getVideoAccessToken() {
+		return videoAccessToken;
+	}
+
+	public void setVideoAccessToken(String videoAccessToken) {
+		this.videoAccessToken = videoAccessToken;
 	}
 }

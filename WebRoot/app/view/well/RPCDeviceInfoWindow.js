@@ -428,6 +428,20 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 anchor: '95%',
                 msgTarget: 'side'
             },{
+         		xtype: "textfield",
+         		fieldLabel: '视频路径',
+         		id: 'rpcDeviceVideoUrl_Id',
+         		anchor: '95%',
+         		name: "rpcDeviceInformation.videoUrl",
+         		value:''
+            },{
+         		xtype: "textfield",
+         		fieldLabel: '视频访问令牌',
+         		id: 'rpcDeviceVideoAccessToken_Id',
+         		anchor: '95%',
+         		name: "rpcDeviceInformation.videoAccessToken",
+         		value:''
+            },{
             	xtype: 'fieldcontainer',
                 fieldLabel : '状态<font color=red>*</font>',
                 defaultType: 'radiofield',

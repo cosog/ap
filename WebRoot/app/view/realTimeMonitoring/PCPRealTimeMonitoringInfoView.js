@@ -327,7 +327,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                 		}
                     },{
                     	region: 'east',
-                    	width: '25%',
+                    	width: '31%',
                     	xtype: 'tabpanel',
                     	id:"PCPRealTimeMonitoringRightTabPanel",
                 		activeTab: 0,
@@ -374,7 +374,25 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                             	header: false,
                                 split: true, // 竖折叠条
                                 autoRender:true,
-                                html: '<div id="PCPRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>'
+                                html: '<div id="PCPRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>',
+                                listeners: {
+                                	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                		var offsetWidth=Ext.getCmp('PCPRealTimeMonitoringRightVideoPanel').getWidth();
+                                		var offsetHeight=Ext.getCmp('PCPRealTimeMonitoringRightVideoPanel').getHeight();
+                                		
+                                		var divWidth=$("#PCPRealTimeMonitoringRightVideoDiv_Id").width();
+                                		var divHeight=$("#PCPRealTimeMonitoringRightVideoDiv_Id").height();
+                                		
+                                		if(Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                                			if(videoPlayrHelper.playr!=null){
+                                				if(offsetWidth>=divWidth || offsetHeight>=divHeight){
+                                					createVideo(videoPlayrHelper,1,Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
+                                				}
+                                    		}
+                                		}
+                                		
+                                	}
+                                }
                             },{
                             	region: 'center',
                                 height: '60%',
@@ -389,28 +407,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         	tabchange: function (tabPanel, newCard, oldCard,obj) {
                         		if(newCard.id=="PCPRealTimeMonitoringRightControlAndVideoPanel"){
                                 	if(Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                		var videoUrl  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.videoUrl;
-                                		if(videoUrl!=''){
-                                			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").show();
-                                			videoUrl='ezopen://open.ys7.com/G39444019/1.live'
-                                			var accessToken='ra.dq7uimnn8tizdx3a0d8o3uk55ui0vpsw-5mmz04uczq-1u97g1h-ebffwqyhm';
-                                            videoPlayr = new EZUIKit.EZUIKitPlayer({
-                                            	id: 'PCPRealTimeMonitoringRightVideoDiv_Id', // 视频容器ID
-                                            	accessToken: accessToken,
-                                                url: videoUrl,
-                                                template: 'standard', // simple - 极简版;standard-标准版;security - 安防版(预览回放);voice-语音版; theme-可配置主题；
-//                                              plugin: ['talk'],                       // 加载插件，talk-对讲
-//                                              width: 220,
-//                                              height: 220,
-                                            });
-//                                            var hlsDemo = new EZUIKit.HLS("PCPRealTimeMonitoringRightVideoDiv_Id","https://open.ys7.com/v3/openlive/G39444019_1_2.m3u8?expire=1687487466&id=461840962679742464&t=c076d5a5ad56090e919a6a2500b96169c20a77874cce866a87a7d65e493e6f2f&ev=100");	
-                                		}else{
-                                			if(videoPlayr!=null){
-                                				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
-                                				videoPlayr=null;
-                                			}
-                                			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").hide();
-                                		}
+                                		createVideo(videoPlayrHelper,1,Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
                                 	}else{
                                 		if(videoPlayr!=null){
                             				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
@@ -419,9 +416,10 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                 		Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").hide();
                                 	}
                         		}else{
-                        			if(videoPlayr!=null){
-                        				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
-                        				videoPlayr=null;
+                        			if(videoPlayrHelper.playr!=null){
+                        				$("#PCPRealTimeMonitoringRightVideoDiv_Id").html('');
+                        				Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").removeAll();
+                        				videoPlayrHelper.playr=null;
                         			}
                         		}
                             }

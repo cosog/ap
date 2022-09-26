@@ -285,13 +285,13 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    }
 	                    	if (visualColIndex === 2 && visualRowIndex===3) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['modbus-tcp','modbus-rtu','private-kd93','private-lq1000'];
+		                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-kd93','private-lq1000'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
 	                    	if (visualColIndex === 2 && visualRowIndex===4) {
 		                    	this.type = 'dropdown';
-		                    	this.source = ['modbus-tcp','modbus-rtu'];
+		                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }

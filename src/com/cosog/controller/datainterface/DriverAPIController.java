@@ -3499,93 +3499,93 @@ public class DriverAPIController extends BaseController{
 		return calItemList;
 	}
 	
-	@RequestMapping("/acq/uponline")
-	public String AcqUpOnlineData() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		Gson gson=new Gson();
-		StringBuffer webSocketSendData = new StringBuffer();
-		String functionCode="rpcUpOnlineData";
-		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-		StringManagerUtils.printLog("接收到ad推送uponline数据："+data);
-		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
-		AcqOnline acqOnline=gson.fromJson(data, type);
-		if(acqOnline!=null){
-			String sql="update tbl_rpcacqdata_latest t set t.upcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
-			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
-			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-			webSocketSendData.append("\"signinId\":\""+acqOnline.getID()+"\",");
-			webSocketSendData.append("\"acqTime\":\""+time+"\",");
-			webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?1:0)+"");
-			webSocketSendData.append("}");
-			if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
-				infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
-			}
-		}
-		String json = "{success:true,flag:true}";
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/acq/downonline")
-	public String AcqDownOnlineData() throws Exception {
-		ServletInputStream ss = request.getInputStream();
-		Gson gson=new Gson();
-		StringBuffer webSocketSendData = new StringBuffer();
-		String functionCode="rpcDownOnlineData";
-		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
-		StringManagerUtils.printLog("接收到ad推送downonline数据："+data);
-		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
-		AcqOnline acqOnline=gson.fromJson(data, type);
-		if(acqOnline!=null){
-			String sql="update tbl_rpcacqdata_latest t set t.downcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
-			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
-			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-			webSocketSendData.append("\"signinId\":\""+acqOnline.getID()+"\",");
-			webSocketSendData.append("\"acqTime\":\""+time+"\",");
-			webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?1:0)+"");
-			webSocketSendData.append("}");
-			if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
-				infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
-			}
-		}
-		String json = "{success:true,flag:true}";
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/acq/allDeviceRPCStatusOffline")
-	public String AllDeviceRPCStatusOffline() throws Exception {
-		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-		StringManagerUtils.printLog("ad_rpc退出："+time);
-		StringBuffer webSocketSendData = new StringBuffer();
-		String functionCode="adExitAndDeviceOffline_rpc";
-		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0 where t.upcommstatus=0 or t.downcommstatus=0";
-		int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
-		webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
-		webSocketSendData.append("\"time\":\""+time+"\"");
-		webSocketSendData.append("}");
-		if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
-			infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
-		}
-		String json = "{success:true,flag:true}";
-		response.setContentType("application/json;charset=utf-8");
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
+//	@RequestMapping("/acq/uponline")
+//	public String AcqUpOnlineData() throws Exception {
+//		ServletInputStream ss = request.getInputStream();
+//		Gson gson=new Gson();
+//		StringBuffer webSocketSendData = new StringBuffer();
+//		String functionCode="rpcUpOnlineData";
+//		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+//		StringManagerUtils.printLog("接收到ad推送uponline数据："+data);
+//		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
+//		AcqOnline acqOnline=gson.fromJson(data, type);
+//		if(acqOnline!=null){
+//			String sql="update tbl_rpcacqdata_latest t set t.upcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
+//			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
+//			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+//			webSocketSendData.append("\"signinId\":\""+acqOnline.getID()+"\",");
+//			webSocketSendData.append("\"acqTime\":\""+time+"\",");
+//			webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?1:0)+"");
+//			webSocketSendData.append("}");
+//			if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
+//				infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+//			}
+//		}
+//		String json = "{success:true,flag:true}";
+//		response.setContentType("application/json;charset=utf-8");
+//		response.setHeader("Cache-Control", "no-cache");
+//		PrintWriter pw = response.getWriter();
+//		pw.print(json);
+//		pw.flush();
+//		pw.close();
+//		return null;
+//	}
+//	
+//	@RequestMapping("/acq/downonline")
+//	public String AcqDownOnlineData() throws Exception {
+//		ServletInputStream ss = request.getInputStream();
+//		Gson gson=new Gson();
+//		StringBuffer webSocketSendData = new StringBuffer();
+//		String functionCode="rpcDownOnlineData";
+//		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//		String data=StringManagerUtils.convertStreamToString(ss,"utf-8");
+//		StringManagerUtils.printLog("接收到ad推送downonline数据："+data);
+//		java.lang.reflect.Type type = new TypeToken<AcqOnline>() {}.getType();
+//		AcqOnline acqOnline=gson.fromJson(data, type);
+//		if(acqOnline!=null){
+//			String sql="update tbl_rpcacqdata_latest t set t.downcommstatus="+(acqOnline.getStatus()?1:0)+" where t.wellid in ( select t2.id from tbl_rpcdevice t2 where t2.signinid='"+acqOnline.getID()+"' )";
+//			int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
+//			webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+//			webSocketSendData.append("\"signinId\":\""+acqOnline.getID()+"\",");
+//			webSocketSendData.append("\"acqTime\":\""+time+"\",");
+//			webSocketSendData.append("\"commStatus\":"+(acqOnline.getStatus()?1:0)+"");
+//			webSocketSendData.append("}");
+//			if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
+//				infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+//			}
+//		}
+//		String json = "{success:true,flag:true}";
+//		response.setContentType("application/json;charset=utf-8");
+//		response.setHeader("Cache-Control", "no-cache");
+//		PrintWriter pw = response.getWriter();
+//		pw.print(json);
+//		pw.flush();
+//		pw.close();
+//		return null;
+//	}
+//	
+//	@RequestMapping("/acq/allDeviceRPCStatusOffline")
+//	public String AllDeviceRPCStatusOffline() throws Exception {
+//		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+//		StringManagerUtils.printLog("ad_rpc退出："+time);
+//		StringBuffer webSocketSendData = new StringBuffer();
+//		String functionCode="adExitAndDeviceOffline_rpc";
+//		String sql="update tbl_rpcacqdata_latest t set t.upcommstatus=0,t.downcommstatus=0 where t.upcommstatus=0 or t.downcommstatus=0";
+//		int result=commonDataService.getBaseDao().updateOrDeleteBySql(sql);
+//		webSocketSendData.append("{\"functionCode\":\""+functionCode+"\",");
+//		webSocketSendData.append("\"time\":\""+time+"\"");
+//		webSocketSendData.append("}");
+//		if(StringManagerUtils.isNotNull(webSocketSendData.toString())){
+//			infoHandler().sendMessageToBy("ApWebSocketClient", webSocketSendData.toString());
+//		}
+//		String json = "{success:true,flag:true}";
+//		response.setContentType("application/json;charset=utf-8");
+//		response.setHeader("Cache-Control", "no-cache");
+//		PrintWriter pw = response.getWriter();
+//		pw.print(json);
+//		pw.flush();
+//		pw.close();
+//		return null;
+//	}
 }

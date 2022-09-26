@@ -454,10 +454,12 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(String data[], String key) {
         boolean flag = false;
-        for (String d: data) {
-            if (d.equalsIgnoreCase(key)) {
-                flag = true;
-                break;
+        if(data!=null){
+        	for (String d: data) {
+                if (d.equalsIgnoreCase(key)) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -465,16 +467,18 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(String data[], String key, boolean caseSensitive) {
         boolean flag = false;
-        for (int i = 0; i < data.length; i++) {
-            boolean match = false;
-            if (caseSensitive) {
-                match = data[i].equals(key);
-            } else {
-                match = data[i].equalsIgnoreCase(key);
-            }
-            if (match) {
-                flag = true;
-                break;
+        if(data!=null){
+        	for (int i = 0; i < data.length; i++) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = data[i].equals(key);
+                } else {
+                    match = data[i].equalsIgnoreCase(key);
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -482,16 +486,18 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(List < String > list, String key, boolean caseSensitive) {
         boolean flag = false;
-        for (int i = 0; i < list.size(); i++) {
-            boolean match = false;
-            if (caseSensitive) {
-                match = list.get(i).equals(key);
-            } else {
-                match = list.get(i).equalsIgnoreCase(key);
-            }
-            if (match) {
-                flag = true;
-                break;
+        if(list!=null){
+        	for (int i = 0; i < list.size(); i++) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = list.get(i).equals(key);
+                } else {
+                    match = list.get(i).equalsIgnoreCase(key);
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -499,16 +505,18 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(Map < String, String > map, String str, boolean caseSensitive) {
         boolean flag = false;
-        for (String key: map.keySet()) {
-            boolean match = false;
-            if (caseSensitive) {
-                match = key.equals(str);
-            } else {
-                match = key.equalsIgnoreCase(str);
-            }
-            if (match) {
-                flag = true;
-                break;
+        if(map!=null){
+        	for (String key: map.keySet()) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = key.equals(str);
+                } else {
+                    match = key.equalsIgnoreCase(str);
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -516,16 +524,18 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(Map < String, String > map, String keyStr, String valueStr, boolean caseSensitive) {
         boolean flag = false;
-        for (String key: map.keySet()) {
-            boolean match = false;
-            if (caseSensitive) {
-                match = key.equals(keyStr) && map.get(key).equals(valueStr);
-            } else {
-                match = key.equalsIgnoreCase(keyStr) && map.get(key).equalsIgnoreCase(valueStr);
-            }
-            if (match) {
-                flag = true;
-                break;
+        if(map!=null){
+            for (String key: map.keySet()) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = key.equals(keyStr) && map.get(key).equals(valueStr);
+                } else {
+                    match = key.equalsIgnoreCase(keyStr) && map.get(key).equalsIgnoreCase(valueStr);
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -533,16 +543,18 @@ public class StringManagerUtils {
 
     public static boolean existOrNotByValue(Map < String, String > map, String str, boolean caseSensitive) {
         boolean flag = false;
-        for (String key: map.keySet()) {
-            boolean match = false;
-            if (caseSensitive) {
-                match = map.get(key).equals(str);
-            } else {
-                match = map.get(key).equalsIgnoreCase(str);
-            }
-            if (match) {
-                flag = true;
-                break;
+        if(map!=null){
+        	for (String key: map.keySet()) {
+                boolean match = false;
+                if (caseSensitive) {
+                    match = map.get(key).equals(str);
+                } else {
+                    match = map.get(key).equalsIgnoreCase(str);
+                }
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -550,12 +562,14 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(Map < String, Object > map, String str) {
         boolean flag = false;
-        for (String key: map.keySet()) {
-            boolean match = false;
-            match = key.equals(str);
-            if (match) {
-                flag = true;
-                break;
+        if(map!=null){
+            for (String key: map.keySet()) {
+                boolean match = false;
+                match = key.equals(str);
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;
@@ -563,12 +577,14 @@ public class StringManagerUtils {
 
     public static boolean existOrNot(List < Integer > list, int key) {
         boolean flag = false;
-        for (int i = 0; i < list.size(); i++) {
-            boolean match = false;
-            match = list.get(i) == key;
-            if (match) {
-                flag = true;
-                break;
+        if(list!=null){
+            for (int i = 0; i < list.size(); i++) {
+                boolean match = false;
+                match = list.get(i) == key;
+                if (match) {
+                    flag = true;
+                    break;
+                }
             }
         }
         return flag;

@@ -270,7 +270,7 @@ public class ResourceMonitoringTask {
         return new WebSocketByJavax();
     }
 	
-	public static  float getTableSpaceSize() throws SQLException{  
+	public static  float getTableSpaceSize() throws SQLException{
         float result=0;
         String sql="SELECT tablespace_name,file_id,file_name,round(bytes / (1024 * 1024), 2) total_space "
         		+ " FROM dba_data_files t"

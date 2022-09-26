@@ -50,15 +50,14 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                     	},
                     	select: function(grid, record, index, eOpts) {
                     		Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").setValue(record.data.id);
-                    		var upCommStatus = record.data.upCommStatus;
-               			 	var downCommStatus = record.data.downCommStatus;
+               			 	var commStatus = record.data.commStatus;
                			 	var tabPanel = Ext.getCmp("UpstreamAndDownstreamInteractionConfigTabpanel_Id");
                			 	var activeId = tabPanel.getActiveTab().id;
                			 	if(activeId=="UpstreamAndDownstreamInteractionConfigPanel1_Id"){
-               			 		if(parseInt(downCommStatus)==0){
+               			 		if(parseInt(commStatus)==0){
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                			 			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-               			 		}else if(parseInt(downCommStatus)==1){
+               			 		}else{
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
                			 			requestConfigData();
                			 		}
@@ -66,9 +65,9 @@ Ext.define('AP.store.well.UpstreamAndDownstreamInteractionWellListStore', {
                			 		Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id").removeAll();
                			 		$("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").html('');
                			 		Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").disable();
-               			 		if(parseInt(downCommStatus)==0){
+               			 		if(parseInt(commStatus)==0){
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").disable();
-               			 		}else if(parseInt(downCommStatus)==1){
+               			 		}else{
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").enable();
                			 		}
                			 	}

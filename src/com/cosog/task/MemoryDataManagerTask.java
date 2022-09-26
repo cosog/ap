@@ -174,7 +174,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -982,7 +981,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1206,7 +1204,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1445,7 +1442,6 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}
@@ -1658,7 +1654,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}
@@ -1806,7 +1801,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1869,7 +1863,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -1977,7 +1970,6 @@ public class MemoryDataManagerTask {
 			e.printStackTrace();
 		} finally{
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
@@ -2115,7 +2107,6 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}
@@ -2219,7 +2210,6 @@ public class MemoryDataManagerTask {
 		} finally{
 			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
 			if(jedis!=null&&jedis.isConnected()){
-				
 				jedis.close();
 			}
 		}

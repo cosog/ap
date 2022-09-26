@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
+import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
@@ -85,11 +86,12 @@ public class EquipmentDriverServerTask {
 //		path=stringManagerUtils.getFilePath("test4.json","example/");
 //		String offLineData=stringManagerUtils.readFile(path,"utf-8");
 //		
-//		path=stringManagerUtils.getFilePath("rpc01_01.json","example/");
+//		path=stringManagerUtils.getFilePath("test5.json","example/");
 //		String testData=stringManagerUtils.readFile(path,"utf-8");
 //		
 //		String url=stringManagerUtils.getProjectUrl()+"/api/acq/id/group";
 //		String onlineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/online";
+//		
 //		int i=0;
 //		while(true){
 ////			if(i%2==0){
@@ -104,94 +106,62 @@ public class EquipmentDriverServerTask {
 //			Thread.sleep(1000*5);
 //		}
 		
-//		initServerConfig();
-//		initProtocolConfig("","");
-//		initInstanceConfig(null,"");
-//		initSMSInstanceConfig(null,"");
-//		initSMSDevice(null,"");
-//		initRPCDriverAcquisitionInfoConfig(null,0,"");
-//		initPCPDriverAcquisitionInfoConfig(null,0,"");
-//		
-//		ThreadPool executor = new ThreadPool("adInit",
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
-//				TimeUnit.SECONDS, 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
-//		while (!executor.isCompletedByTaskCount()) {
-//			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
-//			Thread.sleep(1000*1);
-//	    }
-//		System.out.println("线程池任务执行完毕！");
-//		boolean sendMsg=false;
-//		exampleDataManage();
-//		do{
-//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-//			type = new TypeToken<DriverProbeResponse>() {}.getType();
-//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-//			
-//			String Ver="";
-//			if(driverProbeResponse!=null){
-//				sendMsg=false;
-//				if(!driverProbeResponse.getHttpServerInitStatus()){
-//					initServerConfig();
-//				}
-//				if(!driverProbeResponse.getProtocolInitStatus()){
-//					initProtocolConfig("","");
-//				}
-//				if(!driverProbeResponse.getInstanceInitStatus()){
-//					initInstanceConfig(null,"");
-//					initSMSInstanceConfig(null,"");
-//				}
-//				if(!driverProbeResponse.getSMSInitStatus()){
-////					initSMSDevice(null,"");
-//				}
-//				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-//					if(executor.isCompletedByTaskCount()){
-//						//清空内存
-//						AdInitMap.cleanData();
-//						
-//						initRPCDriverAcquisitionInfoConfig(null,0,"");
-//						initPCPDriverAcquisitionInfoConfig(null,0,"");
-//					}
-//				}
-//				Ver=driverProbeResponse.getVer();
-//			}else{
-//				if(!sendMsg){
-//					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-//					sendMsg=true;
-//				}
-//			}
-//			Thread.sleep(1000*1);
-//		}while(true);
-	}
-	
-	@SuppressWarnings({ "static-access", "unused" })
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
-	public void adRPCDriveServerTast() throws SQLException, ParseException,InterruptedException, IOException{
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String allRPCOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceRPCStatusOffline";
-		String probeUrl_rpc=Config.getInstance().configFile.getAd_rpc().getProbe().getInit();
-		initWellRPCCommStatus();
+		initServerConfig();
+		initProtocolConfig("","");
+		initInstanceConfig(null,"");
+		initSMSInstanceConfig(null,"");
+		initSMSDevice(null,"");
+		initRPCDriverAcquisitionInfoConfig(null,0,"");
+		initPCPDriverAcquisitionInfoConfig(null,0,"");
 		
-		initRPCServerConfig();
-		boolean sendMsg_rpc=false;
+		ThreadPool executor = new ThreadPool("adInit",
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+		while (!executor.isCompletedByTaskCount()) {
+			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+			Thread.sleep(1000*1);
+	    }
+		System.out.println("线程池任务执行完毕！");
+		boolean sendMsg=false;
+		exampleDataManage();
 		do{
-			String responseData=StringManagerUtils.sendPostMethod(probeUrl_rpc, "","utf-8",0,0);
+			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
 			type = new TypeToken<DriverProbeResponse>() {}.getType();
-			DriverProbeResponse driverProbeResponse_rpc=gson.fromJson(responseData, type);
+			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
 			
-			if(driverProbeResponse_rpc!=null){
-				sendMsg_rpc=false;
-				if(!driverProbeResponse_rpc.getHttpServerInitStatus()){
-					initRPCServerConfig();
+			String Ver="";
+			if(driverProbeResponse!=null){
+				sendMsg=false;
+				if(!driverProbeResponse.getHttpServerInitStatus()){
+					initServerConfig();
 				}
+				if(!driverProbeResponse.getProtocolInitStatus()){
+					initProtocolConfig("","");
+				}
+				if(!driverProbeResponse.getInstanceInitStatus()){
+					initInstanceConfig(null,"");
+					initSMSInstanceConfig(null,"");
+				}
+				if(!driverProbeResponse.getSMSInitStatus()){
+//					initSMSDevice(null,"");
+				}
+				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+					if(executor.isCompletedByTaskCount()){
+						//清空内存
+						AdInitMap.cleanData();
+						
+						initRPCDriverAcquisitionInfoConfig(null,0,"");
+						initPCPDriverAcquisitionInfoConfig(null,0,"");
+					}
+				}
+				Ver=driverProbeResponse.getVer();
 			}else{
-				if(!sendMsg_rpc){
-					StringManagerUtils.sendPostMethod(allRPCOfflineUrl, "","utf-8",0,0);
-					sendMsg_rpc=true;
+				if(!sendMsg){
+					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+					sendMsg=true;
 				}
 			}
 			Thread.sleep(1000*1);
@@ -584,7 +554,9 @@ public class EquipmentDriverServerTask {
 	
 	public static int loadAcquisitionItemNameColumns(int deviceType){
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-		
+		if(modbusProtocolConfig==null){
+			return 0;
+		}
 		Collections.sort(modbusProtocolConfig.getProtocol());
 		
 		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
@@ -1647,31 +1619,6 @@ public class EquipmentDriverServerTask {
 		json_buff.append("\"ProjectName\":\""+projectName+"\"");
 		json_buff.append("}");
 		StringManagerUtils.printLog("服务始化："+json_buff.toString());
-		if(initEnable){
-			StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
-		}
-	}
-	
-	public static void initRPCServerConfig() throws MalformedURLException{
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String accessPath=stringManagerUtils.getProjectUrl();
-		String initUrl=Config.getInstance().configFile.getAd_rpc().getServer();
-		StringBuffer json_buff = new StringBuffer();
-		URL url = new URL(accessPath);
-		String host=url.getHost();
-		int port=url.getPort();
-		String projectName="";
-		String path = url.getPath();
-		String[] pathArr=path.split("/");
-		if(pathArr.length>=2){
-			projectName=pathArr[1];
-		}
-		json_buff.append("{");
-		json_buff.append("\"IP\":\""+host+"\",");
-		json_buff.append("\"Port\":\""+port+"\",");
-		json_buff.append("\"ProjectName\":\""+projectName+"\"");
-		json_buff.append("}");
-		StringManagerUtils.printLog("ad_rpc服务始化："+json_buff.toString());
 		if(initEnable){
 			StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
 		}

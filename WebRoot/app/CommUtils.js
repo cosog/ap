@@ -1401,25 +1401,27 @@ color16ToRgba = function(sColor,Opacity){
  	var BackgroundColor='#FFFFFF';
  	var Colorr='#000000';
  	var Opacity=1;
- 	if (alarmLevel == 0) {
- 		BackgroundColor='#'+AlarmShowStyle.Data.Normal.BackgroundColor;
- 		Colorr='#'+AlarmShowStyle.Data.Normal.Color;
- 		Opacity=AlarmShowStyle.Data.Normal.Opacity;
-	}else if (alarmLevel == 100) {
-		BackgroundColor='#'+AlarmShowStyle.Data.FirstLevel.BackgroundColor;
- 		Colorr='#'+AlarmShowStyle.Data.FirstLevel.Color;
- 		Opacity=AlarmShowStyle.Data.FirstLevel.Opacity;
-	}else if (alarmLevel == 200) {
-		BackgroundColor='#'+AlarmShowStyle.Data.SecondLevel.BackgroundColor;
- 		Colorr='#'+AlarmShowStyle.Data.SecondLevel.Color;
- 		Opacity=AlarmShowStyle.Data.SecondLevel.Opacity;
-	}else if (alarmLevel == 300) {
-		BackgroundColor='#'+AlarmShowStyle.Data.ThirdLevel.BackgroundColor;
- 		Colorr='#'+AlarmShowStyle.Data.ThirdLevel.Color;
- 		Opacity=AlarmShowStyle.Data.ThirdLevel.Opacity;
-	}
- 	var rgba=color16ToRgba(BackgroundColor,Opacity);
- 	o.style='background-color:'+rgba+';color:'+Colorr+';';
+ 	if(isNotVal(AlarmShowStyle) && AlarmShowStyle!={}){
+ 		if (alarmLevel == 0) {
+ 	 		BackgroundColor='#'+AlarmShowStyle.Data.Normal.BackgroundColor;
+ 	 		Colorr='#'+AlarmShowStyle.Data.Normal.Color;
+ 	 		Opacity=AlarmShowStyle.Data.Normal.Opacity;
+ 		}else if (alarmLevel == 100) {
+ 			BackgroundColor='#'+AlarmShowStyle.Data.FirstLevel.BackgroundColor;
+ 	 		Colorr='#'+AlarmShowStyle.Data.FirstLevel.Color;
+ 	 		Opacity=AlarmShowStyle.Data.FirstLevel.Opacity;
+ 		}else if (alarmLevel == 200) {
+ 			BackgroundColor='#'+AlarmShowStyle.Data.SecondLevel.BackgroundColor;
+ 	 		Colorr='#'+AlarmShowStyle.Data.SecondLevel.Color;
+ 	 		Opacity=AlarmShowStyle.Data.SecondLevel.Opacity;
+ 		}else if (alarmLevel == 300) {
+ 			BackgroundColor='#'+AlarmShowStyle.Data.ThirdLevel.BackgroundColor;
+ 	 		Colorr='#'+AlarmShowStyle.Data.ThirdLevel.Color;
+ 	 		Opacity=AlarmShowStyle.Data.ThirdLevel.Opacity;
+ 		}
+ 	 	var rgba=color16ToRgba(BackgroundColor,Opacity);
+ 	 	o.style='background-color:'+rgba+';color:'+Colorr+';';
+ 	}
  	if(isNotVal(tipval)){
  		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
  	}
@@ -1446,21 +1448,24 @@ color16ToRgba = function(sColor,Opacity){
 	 	if(itemCode.toUpperCase()=='offline'.toUpperCase()){
 	 		alarmLevel=100;
 	 	}
-	 	if (alarmLevel == 100) {
-	 		backgroundColor='#'+alarmShowStyle.Statistics.FirstLevel.BackgroundColor;
-	 		color='#'+alarmShowStyle.Statistics.FirstLevel.Color;
-	 		opacity=alarmShowStyle.Statistics.FirstLevel.Opacity
-		}else if (alarmLevel == 200) {
-	 		backgroundColor='#'+alarmShowStyle.Statistics.SecondLevel.BackgroundColor;
-	 		color='#'+alarmShowStyle.Statistics.SecondLevel.Color;
-	 		opacity=alarmShowStyle.Statistics.SecondLevel.Opacity
-		}else if (alarmLevel == 300) {
-	 		backgroundColor='#'+alarmShowStyle.Statistics.ThirdLevel.BackgroundColor;
-	 		color='#'+alarmShowStyle.Statistics.ThirdLevel.Color;
-	 		opacity=alarmShowStyle.Statistics.ThirdLevel.Opacity
-		}
-	 	var rgba=color16ToRgba(backgroundColor,opacity);
-	 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	 		if (alarmLevel == 100) {
+		 		backgroundColor='#'+alarmShowStyle.Statistics.FirstLevel.BackgroundColor;
+		 		color='#'+alarmShowStyle.Statistics.FirstLevel.Color;
+		 		opacity=alarmShowStyle.Statistics.FirstLevel.Opacity
+			}else if (alarmLevel == 200) {
+		 		backgroundColor='#'+alarmShowStyle.Statistics.SecondLevel.BackgroundColor;
+		 		color='#'+alarmShowStyle.Statistics.SecondLevel.Color;
+		 		opacity=alarmShowStyle.Statistics.SecondLevel.Opacity
+			}else if (alarmLevel == 300) {
+		 		backgroundColor='#'+alarmShowStyle.Statistics.ThirdLevel.BackgroundColor;
+		 		color='#'+alarmShowStyle.Statistics.ThirdLevel.Color;
+		 		opacity=alarmShowStyle.Statistics.ThirdLevel.Opacity
+			}
+		 	var rgba=color16ToRgba(backgroundColor,opacity);
+		 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	}
+	 	
 	 	if(isNotVal(tipval)){
 		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 	 	}
@@ -1474,21 +1479,23 @@ color16ToRgba = function(sColor,Opacity){
 	 	var backgroundColor='#FFFFFF';
 	 	var color='#000000';
 	 	var opacity=1;
-	 	if (commStatus == 0) {
-	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.offline.Color;
-	 		opacity=alarmShowStyle.Comm.offline.Opacity
-		}else if (commStatus == 1) {
-			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.online.Color;
-	 		opacity=alarmShowStyle.Comm.online.Opacity
-		}else if (commStatus == 2) {
-			backgroundColor='#'+alarmShowStyle.Comm.goOnline.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.goOnline.Color;
-	 		opacity=alarmShowStyle.Comm.goOnline.Opacity
-		}
-	 	var rgba=color16ToRgba(backgroundColor,opacity);
-	 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	 		if (commStatus == 0) {
+		 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.offline.Color;
+		 		opacity=alarmShowStyle.Comm.offline.Opacity
+			}else if (commStatus == 1) {
+				backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.online.Color;
+		 		opacity=alarmShowStyle.Comm.online.Opacity
+			}else if (commStatus == 2) {
+				backgroundColor='#'+alarmShowStyle.Comm.goOnline.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.goOnline.Color;
+		 		opacity=alarmShowStyle.Comm.goOnline.Opacity
+			}
+		 	var rgba=color16ToRgba(backgroundColor,opacity);
+		 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	}
 	 	if(isNotVal(tipval)){
 	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 	 	}
@@ -1502,17 +1509,19 @@ color16ToRgba = function(sColor,Opacity){
 	 	var backgroundColor='#FFFFFF';
 	 	var color='#000000';
 	 	var opacity=1;
-	 	if (commStatus == 0) {
-	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.offline.Color;
-	 		opacity=alarmShowStyle.Comm.offline.Opacity
-		}else if (commStatus == 1) {
-			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.online.Color;
-	 		opacity=alarmShowStyle.Comm.online.Opacity
-		}
-	 	var rgba=color16ToRgba(backgroundColor,opacity);
-	 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	 		if (commStatus == 0) {
+		 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.offline.Color;
+		 		opacity=alarmShowStyle.Comm.offline.Opacity
+			}else if (commStatus == 1) {
+				backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.online.Color;
+		 		opacity=alarmShowStyle.Comm.online.Opacity
+			}
+		 	var rgba=color16ToRgba(backgroundColor,opacity);
+		 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	}
 	 	if(isNotVal(tipval)){
 	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 	 	}
@@ -1526,17 +1535,19 @@ color16ToRgba = function(sColor,Opacity){
 	 	var backgroundColor='#FFFFFF';
 	 	var color='#000000';
 	 	var opacity=1;
-	 	if (commStatus == 0) {
-	 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.offline.Color;
-	 		opacity=alarmShowStyle.Comm.offline.Opacity
-		}else if (commStatus == 1) {
-			backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
-	 		color='#'+alarmShowStyle.Comm.online.Color;
-	 		opacity=alarmShowStyle.Comm.online.Opacity
-		}
-	 	var rgba=color16ToRgba(backgroundColor,opacity);
-	 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	 		if (commStatus == 0) {
+		 		backgroundColor='#'+alarmShowStyle.Comm.offline.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.offline.Color;
+		 		opacity=alarmShowStyle.Comm.offline.Opacity
+			}else if (commStatus == 1) {
+				backgroundColor='#'+alarmShowStyle.Comm.online.BackgroundColor;
+		 		color='#'+alarmShowStyle.Comm.online.Color;
+		 		opacity=alarmShowStyle.Comm.online.Opacity
+			}
+		 	var rgba=color16ToRgba(backgroundColor,opacity);
+		 	o.style='background-color:'+rgba+';color:'+color+';';
+	 	}
 	 	if(isNotVal(tipval)){
 	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 	 	}
@@ -1555,20 +1566,22 @@ color16ToRgba = function(sColor,Opacity){
 			var backgroundColor='#FFFFFF';
 		 	var color='#000000';
 		 	var opacity=1;
-		 	if (runStatus == 0) {
-		 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
-		 		color='#'+alarmShowStyle.Run.stop.Color;
-		 		opacity=alarmShowStyle.Run.stop.Opacity;
-		 		val='停抽';
-			}else if (runStatus == 1) {
-				backgroundColor='#'+alarmShowStyle.Run.run.BackgroundColor;
-		 		color='#'+alarmShowStyle.Run.run.Color;
-		 		opacity=alarmShowStyle.Run.run.Opacity;
-		 		val='运行';
-			}
-		 	tipval=val;
-		 	var rgba=color16ToRgba(backgroundColor,opacity);
-		 	o.style='background-color:'+rgba+';color:'+color+';';
+		 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+		 		if (runStatus == 0) {
+			 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
+			 		color='#'+alarmShowStyle.Run.stop.Color;
+			 		opacity=alarmShowStyle.Run.stop.Opacity;
+			 		val='停抽';
+				}else if (runStatus == 1) {
+					backgroundColor='#'+alarmShowStyle.Run.run.BackgroundColor;
+			 		color='#'+alarmShowStyle.Run.run.Color;
+			 		opacity=alarmShowStyle.Run.run.Opacity;
+			 		val='运行';
+				}
+			 	tipval=val;
+			 	var rgba=color16ToRgba(backgroundColor,opacity);
+			 	o.style='background-color:'+rgba+';color:'+color+';';
+		 	}
 		 	if(isNotVal(tipval)){
 			 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 		 	}
@@ -1581,7 +1594,8 @@ color16ToRgba = function(sColor,Opacity){
 	 	var backgroundColor='#FFFFFF';
 	 	var color='#000000';
 	 	var opacity=1;
-	 	if (alarmLevel == 0) {
+	 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	 		if (alarmLevel == 0) {
 		 		backgroundColor='#'+alarmShowStyle.Data.Normal.BackgroundColor;
 		 		color='#'+alarmShowStyle.Data.Normal.Color;
 		 		opacity=alarmShowStyle.Data.Normal.Opacity
@@ -1598,9 +1612,10 @@ color16ToRgba = function(sColor,Opacity){
 				color='#'+alarmShowStyle.Data.ThirdLevel.Color;
 				opacity=alarmShowStyle.Data.ThirdLevel.Opacity
 			}
-	 	if(alarmLevel>0){
-	 		var rgba=color16ToRgba(backgroundColor,opacity);
-		 	o.style='background-color:'+rgba+';color:'+color+';';
+	 		if(alarmLevel>0){
+	 			var rgba=color16ToRgba(backgroundColor,opacity);
+	 			o.style='background-color:'+rgba+';color:'+color+';';
+	 		}
 	 	}
 	 	if(isNotVal(tipval)){
 		 	return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
@@ -1616,45 +1631,48 @@ color16ToRgba = function(sColor,Opacity){
 	 	var alarmShowStyle=Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	 	var column=o.column.dataIndex;
 	 	var alarmLevel=0;
-	 	if(isNotVal(alarmInfo)&&alarmInfo.length>0){
-	 		for(var i=0;i<alarmInfo.length;i++){
-	 			if(column.toUpperCase()==alarmInfo[i].item.toUpperCase()){
-	 				var backgroundColor='#FFFFFF';
-	 			 	var color='#000000';
-	 			 	var opacity=1;
-	 			 	alarmLevel=alarmInfo[i].alarmLevel;
-	 			 	if (alarmLevel == 0) {
-	 			 		backgroundColor='#'+alarmShowStyle.Data.Normal.BackgroundColor;
-	 			 		color='#'+alarmShowStyle.Data.Normal.Color;
-	 			 		opacity=alarmShowStyle.Data.Normal.Opacity
-	 				}else if (alarmLevel == 100) {
-	 					backgroundColor='#'+alarmShowStyle.Data.FirstLevel.BackgroundColor;
-	 					color='#'+alarmShowStyle.Data.FirstLevel.Color;
-	 					opacity=alarmShowStyle.Data.FirstLevel.Opacity
-	 				}else if (alarmLevel == 200) {
-	 					backgroundColor='#'+alarmShowStyle.Data.SecondLevel.BackgroundColor;
-	 					color='#'+alarmShowStyle.Data.SecondLevel.Color;
-	 					opacity=alarmShowStyle.Data.SecondLevel.Opacity
-	 				}else if (alarmLevel == 300) {
-	 					backgroundColor='#'+alarmShowStyle.Data.ThirdLevel.BackgroundColor;
-	 					color='#'+alarmShowStyle.Data.ThirdLevel.Color;
-	 					opacity=alarmShowStyle.Data.ThirdLevel.Opacity
-	 				}
-	 			 	if(alarmLevel>0){
-	 			 		var rgba=color16ToRgba(backgroundColor,opacity);
-		 			 	o.style='background-color:'+rgba+';color:'+color+';';
-	 			 	}
-	 				break;
-	 			}
-	 		}
+	 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	 		if(isNotVal(alarmInfo)&&alarmInfo.length>0){
+		 		for(var i=0;i<alarmInfo.length;i++){
+		 			if(column.toUpperCase()==alarmInfo[i].item.toUpperCase()){
+		 				var backgroundColor='#FFFFFF';
+		 			 	var color='#000000';
+		 			 	var opacity=1;
+		 			 	alarmLevel=alarmInfo[i].alarmLevel;
+		 			 	if (alarmLevel == 0) {
+		 			 		backgroundColor='#'+alarmShowStyle.Data.Normal.BackgroundColor;
+		 			 		color='#'+alarmShowStyle.Data.Normal.Color;
+		 			 		opacity=alarmShowStyle.Data.Normal.Opacity
+		 				}else if (alarmLevel == 100) {
+		 					backgroundColor='#'+alarmShowStyle.Data.FirstLevel.BackgroundColor;
+		 					color='#'+alarmShowStyle.Data.FirstLevel.Color;
+		 					opacity=alarmShowStyle.Data.FirstLevel.Opacity
+		 				}else if (alarmLevel == 200) {
+		 					backgroundColor='#'+alarmShowStyle.Data.SecondLevel.BackgroundColor;
+		 					color='#'+alarmShowStyle.Data.SecondLevel.Color;
+		 					opacity=alarmShowStyle.Data.SecondLevel.Opacity
+		 				}else if (alarmLevel == 300) {
+		 					backgroundColor='#'+alarmShowStyle.Data.ThirdLevel.BackgroundColor;
+		 					color='#'+alarmShowStyle.Data.ThirdLevel.Color;
+		 					opacity=alarmShowStyle.Data.ThirdLevel.Opacity
+		 				}
+		 			 	if(alarmLevel>0){
+		 			 		var rgba=color16ToRgba(backgroundColor,opacity);
+			 			 	o.style='background-color:'+rgba+';color:'+color+';';
+		 			 	}
+		 				break;
+		 			}
+		 		}
+		 	}
+		 	if(alarmLevel==0){
+		    	var backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
+		    	var color = '#' + alarmShowStyle.Data.Normal.Color;
+		    	var opacity = alarmShowStyle.Data.Normal.Opacity;
+		    	var rgba = color16ToRgba(backgroundColor, opacity);
+	            o.style = 'background-color:' + rgba + ';color:' + color + ';';
+		    }
 	 	}
-	 	if(alarmLevel==0){
-	    	var backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
-	    	var color = '#' + alarmShowStyle.Data.Normal.Color;
-	    	var opacity = alarmShowStyle.Data.Normal.Opacity;
-	    	var rgba = color16ToRgba(backgroundColor, opacity);
-            o.style = 'background-color:' + rgba + ';color:' + color + ';';
-	    }
+	 	
 	 	if(isNotVal(tipval)){
 	 		return '<span data-qtip="'+tipval+'" data-dismissDelay=10000>'+val+'</span>';
 	 	}
@@ -1665,51 +1683,21 @@ color16ToRgba = function(sColor,Opacity){
 	    var alarmLevel=0;
 	    var alarmShowStyle = Ext.JSON.decode(Ext.getCmp("AlarmShowStyle_Id").getValue());
 	    var column = o.column.dataIndex;
-	    if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
-	        for (var i = 0; i < alarmInfo.length; i++) {
-	            if (column.toUpperCase() == alarmInfo[i].item.toUpperCase()) {
-	                if(alarmInfo[i].alarmType==2 || alarmInfo[i].alarmType==5){//数据量报警
-	                	if(val!=undefined){
-	                		var backgroundColor = '#FFFFFF';
-	    	                var color = '#000000';
-	    	                var opacity = 1;
-	    	                alarmLevel=0;
-	    	                if(parseFloat(val)>(parseFloat(alarmInfo[i].upperLimit)+parseFloat(alarmInfo[i].hystersis))
-	    	                		|| parseFloat(val)<(parseFloat(alarmInfo[i].lowerLimit)-parseFloat(alarmInfo[i].hystersis))){
-	    	                	alarmLevel = alarmInfo[i].alarmLevel;
-	    	                }
-	    	                if (alarmLevel == 0) {
-	    	                    backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
-	    	                    color = '#' + alarmShowStyle.Data.Normal.Color;
-	    	                    opacity = alarmShowStyle.Data.Normal.Opacity;
-	    	                } else if (alarmLevel == 100) {
-	    	                    backgroundColor = '#' + alarmShowStyle.Data.FirstLevel.BackgroundColor;
-	    	                    color = '#' + alarmShowStyle.Data.FirstLevel.Color;
-	    	                    opacity = alarmShowStyle.Data.FirstLevel.Opacity;
-	    	                } else if (alarmLevel == 200) {
-	    	                    backgroundColor = '#' + alarmShowStyle.Data.SecondLevel.BackgroundColor;
-	    	                    color = '#' + alarmShowStyle.Data.SecondLevel.Color;
-	    	                    opacity = alarmShowStyle.Data.SecondLevel.Opacity;
-	    	                } else if (alarmLevel == 300) {
-	    	                    backgroundColor = '#' + alarmShowStyle.Data.ThirdLevel.BackgroundColor;
-	    	                    color = '#' + alarmShowStyle.Data.ThirdLevel.Color;
-	    	                    opacity = alarmShowStyle.Data.ThirdLevel.Opacity;
-	    	                }
-	    	                if(alarmLevel>0){
-	    	 			 		var rgba=color16ToRgba(backgroundColor,opacity);
-	    		 			 	o.style='background-color:'+rgba+';color:'+color+';';
-	    	 			 	}
-	                	}
-	                	break;
-	                }else if(alarmInfo[i].alarmType==1){//枚举量报警
-	                	if(val!=undefined){
-	                		var backgroundColor = '#FFFFFF';
-	    	                var color = '#000000';
-	    	                var opacity = 1;
-	    	                alarmLevel=0;
-	    	                if(val==alarmInfo[i].alarmValue || val==alarmInfo[i].alarmValueMeaning){
-	    	                	alarmLevel = alarmInfo[i].alarmLevel;
-	    	                	if (alarmLevel == 0) {
+	    if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
+	    	if (isNotVal(alarmInfo) && alarmInfo.length > 0) {
+		        for (var i = 0; i < alarmInfo.length; i++) {
+		            if (column.toUpperCase() == alarmInfo[i].item.toUpperCase()) {
+		                if(alarmInfo[i].alarmType==2 || alarmInfo[i].alarmType==5){//数据量报警
+		                	if(val!=undefined){
+		                		var backgroundColor = '#FFFFFF';
+		    	                var color = '#000000';
+		    	                var opacity = 1;
+		    	                alarmLevel=0;
+		    	                if(parseFloat(val)>(parseFloat(alarmInfo[i].upperLimit)+parseFloat(alarmInfo[i].hystersis))
+		    	                		|| parseFloat(val)<(parseFloat(alarmInfo[i].lowerLimit)-parseFloat(alarmInfo[i].hystersis))){
+		    	                	alarmLevel = alarmInfo[i].alarmLevel;
+		    	                }
+		    	                if (alarmLevel == 0) {
 		    	                    backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
 		    	                    color = '#' + alarmShowStyle.Data.Normal.Color;
 		    	                    opacity = alarmShowStyle.Data.Normal.Opacity;
@@ -1726,23 +1714,55 @@ color16ToRgba = function(sColor,Opacity){
 		    	                    color = '#' + alarmShowStyle.Data.ThirdLevel.Color;
 		    	                    opacity = alarmShowStyle.Data.ThirdLevel.Opacity;
 		    	                }
-	    	                	if(alarmLevel>0){
-	    		 			 		var rgba=color16ToRgba(backgroundColor,opacity);
-	    			 			 	o.style='background-color:'+rgba+';color:'+color+';';
-	    		 			 	}
-		    	                break;
-	    	                }
-	                	}
-	                }
-	            }
-	        }
-	    }
-	    if(alarmLevel==0){
-	    	var backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
-	    	var color = '#' + alarmShowStyle.Data.Normal.Color;
-	    	var opacity = alarmShowStyle.Data.Normal.Opacity;
-	    	var rgba = color16ToRgba(backgroundColor, opacity);
-            o.style = 'background-color:' + rgba + ';color:' + color + ';';
+		    	                if(alarmLevel>0){
+		    	 			 		var rgba=color16ToRgba(backgroundColor,opacity);
+		    		 			 	o.style='background-color:'+rgba+';color:'+color+';';
+		    	 			 	}
+		                	}
+		                	break;
+		                }else if(alarmInfo[i].alarmType==1){//枚举量报警
+		                	if(val!=undefined){
+		                		var backgroundColor = '#FFFFFF';
+		    	                var color = '#000000';
+		    	                var opacity = 1;
+		    	                alarmLevel=0;
+		    	                if(val==alarmInfo[i].alarmValue || val==alarmInfo[i].alarmValueMeaning){
+		    	                	alarmLevel = alarmInfo[i].alarmLevel;
+		    	                	if (alarmLevel == 0) {
+			    	                    backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
+			    	                    color = '#' + alarmShowStyle.Data.Normal.Color;
+			    	                    opacity = alarmShowStyle.Data.Normal.Opacity;
+			    	                } else if (alarmLevel == 100) {
+			    	                    backgroundColor = '#' + alarmShowStyle.Data.FirstLevel.BackgroundColor;
+			    	                    color = '#' + alarmShowStyle.Data.FirstLevel.Color;
+			    	                    opacity = alarmShowStyle.Data.FirstLevel.Opacity;
+			    	                } else if (alarmLevel == 200) {
+			    	                    backgroundColor = '#' + alarmShowStyle.Data.SecondLevel.BackgroundColor;
+			    	                    color = '#' + alarmShowStyle.Data.SecondLevel.Color;
+			    	                    opacity = alarmShowStyle.Data.SecondLevel.Opacity;
+			    	                } else if (alarmLevel == 300) {
+			    	                    backgroundColor = '#' + alarmShowStyle.Data.ThirdLevel.BackgroundColor;
+			    	                    color = '#' + alarmShowStyle.Data.ThirdLevel.Color;
+			    	                    opacity = alarmShowStyle.Data.ThirdLevel.Opacity;
+			    	                }
+		    	                	if(alarmLevel>0){
+		    		 			 		var rgba=color16ToRgba(backgroundColor,opacity);
+		    			 			 	o.style='background-color:'+rgba+';color:'+color+';';
+		    		 			 	}
+			    	                break;
+		    	                }
+		                	}
+		                }
+		            }
+		        }
+		    }
+		    if(alarmLevel==0){
+		    	var backgroundColor = '#' + alarmShowStyle.Data.Normal.BackgroundColor;
+		    	var color = '#' + alarmShowStyle.Data.Normal.Color;
+		    	var opacity = alarmShowStyle.Data.Normal.Opacity;
+		    	var rgba = color16ToRgba(backgroundColor, opacity);
+	            o.style = 'background-color:' + rgba + ';color:' + color + ';';
+		    }
 	    }
 	    if (val == undefined) {
 	        val = '';

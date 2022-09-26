@@ -2512,15 +2512,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:1,children:[] },"
-				+ "{ \"header\":\"上行通信状态\",\"dataIndex\":\"upCommStatusName\",width:90,children:[] },"
-				+ "{ \"header\":\"下行通信状态\",\"dataIndex\":\"downCommStatusName\",width:90,children:[] },"
+				+ "{ \"header\":\"通信状态\",\"dataIndex\":\"commStatusName\",width:90,children:[] },"
 				+ "{ \"header\":\"注册包ID\",\"dataIndex\":\"signinId\",flex:1,children:[] },"
 				+ "{ \"header\":\"设备从地址\",\"dataIndex\":\"slave\",flex:1,children:[] }"
 				+ "]";
 		
 		String sql="select t.id,t.wellname,"
-				+ "t2.upcommstatus,decode(t2.upcommstatus,1,'在线','离线') as upCommStatusName,"
-				+ "t2.downcommstatus,decode(t2.downcommstatus,1,'在线','离线') as downCommStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.signinid,t.slave "
 				+ " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.wellid=t.id";
@@ -2542,13 +2540,12 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			Object[] obj=(Object[]) list.get(i);
 			result_json.append("{\"id\":"+obj[0]+",");
 			result_json.append("\"wellName\":\""+obj[1]+"\",");
-			result_json.append("\"upCommStatus\":"+obj[2]+",");
-			result_json.append("\"upCommStatusName\":\""+obj[3]+"\",");
-			result_json.append("\"downCommStatus\":"+obj[4]+",");
-			result_json.append("\"downCommStatusName\":\""+obj[5]+"\",");
-			result_json.append("\"acqTime\":\""+obj[6]+"\",");
-			result_json.append("\"signinId\":\""+obj[7]+"\",");
-			result_json.append("\"slave\":\""+obj[8]+"\"},");
+			result_json.append("\"commStatus\":"+obj[2]+",");
+			result_json.append("\"commStatusName\":\""+obj[3]+"\",");
+			
+			result_json.append("\"acqTime\":\""+obj[4]+"\",");
+			result_json.append("\"signinId\":\""+obj[5]+"\",");
+			result_json.append("\"slave\":\""+obj[6]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -2660,7 +2657,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json+="{ \"success\":true,\"columns\":"+columns+",";
 		result_json+="\"totalRoot\":[";
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			
 			StringBuffer requestBuff = new StringBuffer();
@@ -2720,7 +2717,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			
 			StringBuffer requestBuff = new StringBuffer();
@@ -2748,7 +2745,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		result_json.append("[");
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
 			requestBuff.append("{\"ID\":\""+signinId+"\",");

@@ -137,13 +137,11 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             		 }
                             		 var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
                             		 if(_record.length>0){
-                            			 var upCommStatus = _record[0].data.upCommStatus;
-                            			 var downCommStatus = _record[0].data.downCommStatus;
-                            			 
-                            			 if(parseInt(downCommStatus)==0){
+                            			 var commStatus = _record[0].data.commStatus;
+                            			 if(parseInt(commStatus)==0){
                             				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                             				 Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-                            			 }else if(parseInt(downCommStatus)==1){
+                            			 }else{
                             				 Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
                             				 requestConfigData();
                             			 }
@@ -335,19 +333,17 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
             		}],
             		listeners: {
             			tabchange: function (tabPanel, newCard,oldCard, obj) {
-            				var upCommStatus = 0;
-               			 	var downCommStatus = 0;
+               			 	var commStatus = 0;
             				var _record = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getSelectionModel().getSelection();
             				if(_record.length>0){
-            					upCommStatus = _record[0].data.upCommStatus;
-                   			 	downCommStatus = _record[0].data.downCommStatus;
+            					commStatus = _record[0].data.commStatus;
             				}
             				
             				if(newCard.id=="UpstreamAndDownstreamInteractionConfigPanel1_Id"){
-            					if(parseInt(downCommStatus)==0){
+            					if(parseInt(commStatus)==0){
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
                			 			Ext.getCmp('UpstreamAndDownstreamInteractionConfigDataTextArea_Id').setValue('');
-               			 		}else if(parseInt(downCommStatus)==1){
+               			 		}else{
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
                			 			requestConfigData();
                			 		}
@@ -355,9 +351,9 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
         						Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataPanel_Id").removeAll();
         						$("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").html('');
         						Ext.getCmp("UpstreamAndDownstreamInteractionExportWaterCutBtn_Id").disable();
-               			 		if(parseInt(downCommStatus)==0){
+               			 		if(parseInt(commStatus)==0){
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").disable();
-               			 		}else if(parseInt(downCommStatus)==1){
+               			 		}else{
                			 			Ext.getCmp("UpstreamAndDownstreamInteractionReadWaterCutBtn_Id").enable();
                			 		}
         					}
@@ -431,7 +427,6 @@ function createUpstreamAndDownstreamInteractionDeviceListColumn(columnInfo) {
         }
         else {
             myColumns += hidden_ + lock_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "',renderer:function(value){if(isNotVal(value)){return \"<span data-qtip=\"+(value==undefined?\"\":value)+\">\"+(value==undefined?\"\":value)+\"</span>\";}}";
-            //        	myColumns += hidden_ + lock_ + width_ + ",sortable : false,dataIndex:'" + attr.dataIndex + "'";
         }
         myColumns += "}";
         if (i < myArr.length - 1) {

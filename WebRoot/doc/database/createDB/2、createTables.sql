@@ -709,8 +709,6 @@ create table TBL_RPCACQDATA_LATEST
   wellid                         NUMBER(10),
   acqtime                        DATE,
   commstatus                     NUMBER(2) default 0,
-  upcommstatus                   NUMBER(2) default 0,
-  downcommstatus                 NUMBER(2) default 0,
   commtime                       NUMBER(8,2) default 0,
   commtimeefficiency             NUMBER(10,4) default 0,
   commrange                      CLOB,

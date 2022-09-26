@@ -640,7 +640,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String deviceId=obj[0]+"";
 			
 			RPCDeviceInfo rpcDeviceInfo=null;
-			if(jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
+			if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
 				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
 			}
 			String protocolName="";
@@ -659,11 +659,13 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
 			}
 			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-						&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
+			if(modbusProtocolConfig!=null){
+				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+					if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
+							&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+						protocol=modbusProtocolConfig.getProtocol().get(j);
+						break;
+					}
 				}
 			}
 			
@@ -1171,7 +1173,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			String deviceId=obj[0]+"";
 			
 			PCPDeviceInfo pcpDeviceInfo=null;
-			if(jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
+			if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
 				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
 			}
 			String protocolName="";
@@ -1190,13 +1192,16 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes()));
 			}
 			ModbusProtocolConfig.Protocol protocol=null;
-			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-				if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-						&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-					protocol=modbusProtocolConfig.getProtocol().get(j);
-					break;
+			if(modbusProtocolConfig!=null){
+				for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+					if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
+							&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+						protocol=modbusProtocolConfig.getProtocol().get(j);
+						break;
+					}
 				}
 			}
+			
 			
 			int commAlarmLevel=0,runAlarmLevel=0;
 			if(alarmInstanceOwnItem!=null){

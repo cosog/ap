@@ -7,8 +7,6 @@ public class ConfigFile {
     private Ac ac;
 
     private Ad ad;
-    
-    private Ad_rpc ad_rpc;
 
     public void setAp(Ap ap){
         this.ap = ap;
@@ -28,18 +26,6 @@ public class ConfigFile {
     public Ad getAd(){
         return this.ad;
     }
-	
-//	public static class Server
-//	{
-//	    private String url;
-//
-//	    public void setUrl(String url){
-//	        this.url = url;
-//	    }
-//	    public String getUrl(){
-//	        return this.url;
-//	    }
-//	}
 
 	public static class Datasource
 	{
@@ -598,6 +584,8 @@ public class ConfigFile {
 	    private String writeSMS;
 
 	    private AdProbe probe;
+	    
+	    private Ad_rpc rpc;
 
 	    public void setServer(String server){
 	        this.server = server;
@@ -671,12 +659,16 @@ public class ConfigFile {
 		public void setWriteAddr_ipPort(String writeAddr_ipPort) {
 			this.writeAddr_ipPort = writeAddr_ipPort;
 		}
+		public Ad_rpc getRpc() {
+			return rpc;
+		}
+		public void setRpc(Ad_rpc rpc) {
+			this.rpc = rpc;
+		}
 	}
 	
 	public static class Ad_rpc
 	{
-	    private String server;
-
 	    private String readTopicReq;
 
 	    private String writeTopicModel;
@@ -688,16 +680,6 @@ public class ConfigFile {
 	    private String writeTopicDog;
 	    
 	    private String writeTopicStopRpc;
-
-	    private AdProbe probe;
-
-		public String getServer() {
-			return server;
-		}
-
-		public void setServer(String server) {
-			this.server = server;
-		}
 
 		public String getReadTopicReq() {
 			return readTopicReq;
@@ -723,14 +705,6 @@ public class ConfigFile {
 			this.writeTopicConf = writeTopicConf;
 		}
 
-		public AdProbe getProbe() {
-			return probe;
-		}
-
-		public void setProbe(AdProbe probe) {
-			this.probe = probe;
-		}
-
 		public String getWriteTopicRtc() {
 			return writeTopicRtc;
 		}
@@ -754,12 +728,5 @@ public class ConfigFile {
 		public void setWriteTopicStopRpc(String writeTopicStopRpc) {
 			this.writeTopicStopRpc = writeTopicStopRpc;
 		}
-	}
-
-	public Ad_rpc getAd_rpc() {
-		return ad_rpc;
-	}
-	public void setAd_rpc(Ad_rpc ad_rpc) {
-		this.ad_rpc = ad_rpc;
 	}
 }

@@ -1521,19 +1521,19 @@ public class WellInformationManagerController extends BaseController {
 		String url="";
 		String key="Model";
 		if(StringManagerUtils.stringToInteger(type)==1){
-			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicModel();
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicModel();
 			key="Model";
 		}else if(StringManagerUtils.stringToInteger(type)==2){
-			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicConf();
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicConf();
 			key="Conf";
 		}else if(StringManagerUtils.stringToInteger(type)==3){
-			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicRtc();
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicRtc();
 			key="Time";
 		}else if(StringManagerUtils.stringToInteger(type)==4){
-			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicDog();
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicDog();
 			key="Timeout";
 		}else if(StringManagerUtils.stringToInteger(type)==5 || StringManagerUtils.stringToInteger(type)==6 || StringManagerUtils.stringToInteger(type)==7){
-			url=Config.getInstance().configFile.getAd_rpc().getWriteTopicStopRpc();
+			url=Config.getInstance().configFile.getAd().getRpc().getWriteTopicStopRpc();
 			key="Position";
 		}
 		
@@ -1614,7 +1614,7 @@ public class WellInformationManagerController extends BaseController {
 		String wellId = ParamUtils.getParameter(request, "wellId");
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");
-		String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+		String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 		String topic="";
 		if(StringManagerUtils.stringToInteger(type)==1){
 			topic="model";
@@ -1732,7 +1732,7 @@ public class WellInformationManagerController extends BaseController {
 	    List<List<Object>> sheetDataList = new ArrayList<>();
 	    sheetDataList.add(head);
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=Config.getInstance().configFile.getAd_rpc().getReadTopicReq();
+			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
 //			signinId="d1e3643c140569d4";

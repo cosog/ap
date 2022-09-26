@@ -505,7 +505,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
 		RPCDeviceInfo rpcDeviceInfo=null;
-		if(jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
+		if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
 			rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
 		}
 		String protocolName="";
@@ -1038,7 +1038,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
 		PCPDeviceInfo pcpDeviceInfo=null;
-		if(jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
+		if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
 			pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
 		}
 		String protocolName="";
@@ -1057,11 +1057,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes()));
 		}
 		ModbusProtocolConfig.Protocol protocol=null;
-		for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
-			if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
-					&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
-				protocol=modbusProtocolConfig.getProtocol().get(j);
-				break;
+		if(modbusProtocolConfig!=null){
+			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+				if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
+						&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+					protocol=modbusProtocolConfig.getProtocol().get(j);
+					break;
+				}
 			}
 		}
 		
@@ -2387,12 +2389,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
-		Jedis jedis = RedisUtil.jedisPool.getResource();
+		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
 		RPCDeviceInfo rpcDeviceInfo=null;
 		String alarmInstanceCode="";
 		try{
+			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("RPCDeviceInfo".getBytes())){
 				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 			}
@@ -2553,7 +2556,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		dynSbf.append("]");
-		dynSbf.append(",\"AlarmShowStyle\":"+new Gson().toJson(alarmShowStyle));
+		dynSbf.append(",\"AlarmShowStyle\":"+(alarmShowStyle==null?"\"\"":new Gson().toJson(alarmShowStyle)));
 		dynSbf.append("}");
 		if(jedis!=null){
 			jedis.close();

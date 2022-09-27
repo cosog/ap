@@ -56,7 +56,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -86,7 +86,7 @@ public class EquipmentDriverServerTask {
 //		path=stringManagerUtils.getFilePath("test4.json","example/");
 //		String offLineData=stringManagerUtils.readFile(path,"utf-8");
 //		
-//		path=stringManagerUtils.getFilePath("test5.json","example/");
+//		path=stringManagerUtils.getFilePath("rpc01_01.json","example/");
 //		String testData=stringManagerUtils.readFile(path,"utf-8");
 //		
 //		String url=stringManagerUtils.getProjectUrl()+"/api/acq/id/group";
@@ -94,13 +94,13 @@ public class EquipmentDriverServerTask {
 //		
 //		int i=0;
 //		while(true){
-////			if(i%2==0){
-////				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
-////			}else{
-////				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
-////			}
-////			i++;
-//			
+//			if(i%2==0){
+//				StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
+//			}else{
+//				StringManagerUtils.sendPostMethod(onlineUrl, offLineData,"utf-8",0,0);
+//			}
+//			i++;
+//			Thread.sleep(1000*5);
 ////			StringManagerUtils.sendPostMethod(onlineUrl, onLineData,"utf-8",0,0);
 //			StringManagerUtils.sendPostMethod(url, testData,"utf-8",0,0);
 //			Thread.sleep(1000*5);

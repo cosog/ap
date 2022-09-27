@@ -207,8 +207,8 @@ function websocketOnMessage(evt) {
 				var RPCRealTimeMonitoringListGrid = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(RPCRealTimeMonitoringListGrid)){
 					if( RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection().length>0){
-						var selectedlName  = RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection()[0].data.wellName;
-						if(selectedlName==data.wellName){
+						var selectedWellId  = RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection()[0].data.id;
+						if(selectedWellId==data.wellId){
 							isSelectWell=true;
 							if(RPCRealTimeMonitoringListGrid.getSelectionModel().getSelection()[0].data.commStatus==0){
 								commStatusChange=true;
@@ -219,7 +219,7 @@ function websocketOnMessage(evt) {
 					var store = RPCRealTimeMonitoringListGrid.getStore();
 					for(var i=0;i<store.getCount();i++){
 						var record=store.getAt(i);
-						if(record.data.wellName==data.wellName){
+						if(record.data.id==data.wellId){
 							record.set("commStatusName","在线");
 							record.set("commStatus",1);
 							record.set("acqTime",data.acqTime);
@@ -309,6 +309,29 @@ function websocketOnMessage(evt) {
 	        		}
 				}
 			}
+		}else if(activeId.toUpperCase()=="UpstreamAndDownstreamInteraction".toUpperCase()){
+			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
+			if(isNotVal(gridPanel)){
+				var store = gridPanel.getStore();
+				//更新概览表
+				for(var i=0;i<store.getCount();i++){
+					var record=store.getAt(i);
+					if(record.data.id==data.wellId){
+						record.set("commStatusName","在线");
+						record.set("commStatus",1);
+						record.commit();
+						var selectedWellId=parseInt( Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue() );
+						if(selectedWellId==record.data.id){//如果选中的是更新的井
+							if(parseInt(record.data.commStatus)==0){
+								Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+							}else{
+                    			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+                    		}
+						}
+						break;
+					}
+				}
+			}
 		}
 	}else if(data.functionCode.toUpperCase()=="rpcDeviceRealTimeMonitoringStatusData".toUpperCase()){//接收到推送的抽油机井通信数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
@@ -324,8 +347,8 @@ function websocketOnMessage(evt) {
 				var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
 					if( gridPanel.getSelectionModel().getSelection().length>0){
-						var selectedlName  = gridPanel.getSelectionModel().getSelection()[0].data.wellName;
-						if(selectedlName==data.wellName){
+						var selectedWellId  = gridPanel.getSelectionModel().getSelection()[0].data.id;
+						if(selectedWellId==data.wellId){
 							isSelectWell=true;
 							if(gridPanel.getSelectionModel().getSelection()[0].data.commStatus!=data.commStatus){
 								commStatusChange=true;
@@ -377,6 +400,29 @@ function websocketOnMessage(evt) {
 					}
 				}
 			}
+		}else if(activeId.toUpperCase()=="UpstreamAndDownstreamInteraction".toUpperCase()){
+			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id");
+			if(isNotVal(gridPanel)){
+				var store = gridPanel.getStore();
+				//更新概览表
+				for(var i=0;i<store.getCount();i++){
+					var record=store.getAt(i);
+					if(record.data.id==data.wellId){
+						record.set("commStatusName",data.commStatusName);
+						record.set("commStatus",data.commStatus);
+						record.commit();
+						var selectedWellId=parseInt( Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListSelectRow_Id").getValue() );
+						if(selectedWellId==record.data.id){//如果选中的是更新的井
+							if(parseInt(record.data.commStatus)==0){
+								Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").disable();
+							}else{
+                    			Ext.getCmp("UpstreamAndDownstreamInteractionSendBtn_Id").enable();
+                    		}
+						}
+						break;
+					}
+				}
+			}
 		}
 	}else if(data.functionCode.toUpperCase()=="pcpDeviceRealTimeMonitoringData".toUpperCase()){//接收到推送的螺杆泵井实时监控数据
 		if(activeId.toUpperCase()=="DeviceRealTimeMonitoring".toUpperCase()){
@@ -392,8 +438,8 @@ function websocketOnMessage(evt) {
 				var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
 					if( gridPanel.getSelectionModel().getSelection().length>0){
-						var selectedlName  = gridPanel.getSelectionModel().getSelection()[0].data.wellName;
-						if(selectedlName==data.wellName){
+						var selectedWellId  = gridPanel.getSelectionModel().getSelection()[0].data.id;
+						if(selectedWellId==data.wellId){
 							isSelectWell=true;
 							if(gridPanel.getSelectionModel().getSelection()[0].data.commStatus==0){
 								commStatusChange=true;
@@ -404,7 +450,7 @@ function websocketOnMessage(evt) {
 					var store = gridPanel.getStore();
 					for(var i=0;i<store.getCount();i++){
 						var record=store.getAt(i);
-						if(record.data.wellName==data.wellName){
+						if(record.data.id==data.wellId){
 							record.set("commStatusName","在线");
 							record.set("commStatus",1);
 							record.set("acqTime",data.acqTime);
@@ -481,8 +527,8 @@ function websocketOnMessage(evt) {
 				var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
 				if(isNotVal(gridPanel)){
 					if(gridPanel.getSelectionModel().getSelection().length>0){
-						var selectedlName  = gridPanel.getSelectionModel().getSelection()[0].data.wellName;
-						if(selectedlName==data.wellName){
+						var selectedWellId  = gridPanel.getSelectionModel().getSelection()[0].data.id;
+						if(selectedWellId==data.wellId){
 							isSelectWell=true;
 							if(gridPanel.getSelectionModel().getSelection()[0].data.commStatus!=data.commStatus){
 								commStatusChange=true;

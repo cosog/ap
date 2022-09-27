@@ -429,7 +429,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                 msgTarget: 'side'
             },{
          		xtype: "textfield",
-         		fieldLabel: '视频路径',
+         		fieldLabel: '视频监控路径',
          		id: 'rpcDeviceVideoUrl_Id',
          		anchor: '95%',
          		name: "rpcDeviceInformation.videoUrl",

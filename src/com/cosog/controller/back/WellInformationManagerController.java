@@ -156,6 +156,30 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/loadRPCDeviceComboxList")
+	public String loadRPCDeviceComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user = null;
+		HttpSession session=request.getSession();
+		user = (User) session.getAttribute("userLogin");
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		String json = this.wellInformationManagerService.loadRPCDeviceComboxList(pager,orgId, wellName,deviceType);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDeviceOrgChangeDeviceList")
 	public String getDeviceOrgChangeDeviceList() throws Exception {
 		this.pager=new Page("pageForm",request);
@@ -497,6 +521,22 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceVideoInfo")
+	public String getDeviceVideoInfo() throws IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String deviceId= ParamUtils.getParameter(request, "deviceId");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		String json = this.wellInformationManagerService.getDeviceVideoInfo(deviceId,deviceType);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDevicePumpingInfo")
 	public String getDevicePumpingInfo() throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -640,6 +680,8 @@ public class WellInformationManagerController extends BaseController {
 		String balanceInfo = ParamUtils.getParameter(request, "balanceInfo").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String deviceProductionData = ParamUtils.getParameter(request, "deviceProductionData").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		String videoUrl = ParamUtils.getParameter(request, "videoUrl");
+		String videoAccessToken = ParamUtils.getParameter(request, "videoAccessToken");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
 		String deviceTableName="tbl_rpcdevice";
@@ -665,6 +707,9 @@ public class WellInformationManagerController extends BaseController {
 			//处理抽油机详情
 			this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
 		}
+		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl,videoAccessToken);
+		
+		
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			MemoryDataManagerTask.loadRPCDeviceInfo(initWellList,0,"update");
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){

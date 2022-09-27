@@ -1,6 +1,7 @@
 //螺杆泵井
 var pcpDeviceInfoHandsontableHelper = null;
 var pcpProductionHandsontableHelper = null;
+var pcpVideoInfoHandsontableHelper = null;
 Ext.define('AP.view.well.PCPDeviceInfoPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.pcpDeviceInfoPanel',
@@ -290,19 +291,44 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     }
             	},{
             		region: 'east',
-            		width: '30%',
-            		title:'生产数据',
-                	id:'PCPProductionDataInfoPanel_Id',
-                	split: true,
+            		width: '45%',
+            		split: true,
                 	collapsible: true,
-                	html: '<div class="PCPAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPAdditionalInfoTableDiv_id"></div></div>',
-                    listeners: {
-                        resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                        	if (pcpProductionHandsontableHelper != null && pcpProductionHandsontableHelper.hot != null && pcpProductionHandsontableHelper.hot != undefined) {
-                        		pcpProductionHandsontableHelper.hot.refreshDimensions();
+                	layout: 'border',
+                	items: [{
+                		region: 'center',
+                		title:'生产数据',
+                    	id:'PCPProductionDataInfoPanel_Id',
+                    	split: true,
+                    	collapsible: true,
+                    	html: '<div class="PCPAdditionalInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPAdditionalInfoTableDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            	if (pcpProductionHandsontableHelper != null && pcpProductionHandsontableHelper.hot != null && pcpProductionHandsontableHelper.hot != undefined) {
+                            		pcpProductionHandsontableHelper.hot.refreshDimensions();
+                                }
                             }
                         }
-                    }
+                	},{
+                    	region: 'south',
+                    	height:'20%',
+                    	title:'视频配置',
+                    	id:'PCPVideoInfoPanel_Id',
+                    	split: true,
+                    	collapsible: false,
+                    	html: '<div class="PCPVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPVideoInfoTableDiv_id"></div></div>',
+                        listeners: {
+                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                            	if (pcpVideoInfoHandsontableHelper != null && pcpVideoInfoHandsontableHelper.hot != null && pcpVideoInfoHandsontableHelper.hot != undefined) {
+                            		pcpVideoInfoHandsontableHelper.hot.refreshDimensions();
+                                }
+                            }
+                        }
+                    }]
+            		
+            		
+            		
+            		
             	}]
             }],
             listeners: {
@@ -318,6 +344,12 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         	pcpProductionHandsontableHelper.hot.destroy();
                         }
                         pcpProductionHandsontableHelper = null;
+                    }
+                    if (pcpVideoInfoHandsontableHelper != null) {
+                        if (pcpVideoInfoHandsontableHelper.hot != undefined) {
+                        	pcpVideoInfoHandsontableHelper.hot.destroy();
+                        }
+                        pcpVideoInfoHandsontableHelper = null;
                     }
                 }
             }
@@ -423,10 +455,12 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
             	Ext.getCmp("PCPDeviceSelectRow_Id").setValue('');
             	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue('');
             	CreateAndLoadPCPProductionDataTable(0,'');
+            	CreateAndLoadPCPVideoInfoTable(0,'');
             }else{
             	var selectedRow=Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
             	var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(selectedRow);
             	CreateAndLoadPCPProductionDataTable(rowdata[0],rowdata[1]);
+            	CreateAndLoadPCPVideoInfoTable(rowdata[0],rowdata[1]);
             }
             Ext.getCmp("PCPDeviceTotalCount_Id").update({
                 count: result.totalCount
@@ -501,6 +535,7 @@ var PCPDeviceInfoHandsontableHelper = {
                 		Ext.getCmp("PCPDeviceSelectRow_Id").setValue('');
                     	Ext.getCmp("PCPDeviceSelectEndRow_Id").setValue('');
                     	CreateAndLoadPCPProductionDataTable(0,'');
+                    	CreateAndLoadPCPVideoInfoTable(0,'');
                 	}else{
                 		if(row<0){
                     		row=0;
@@ -528,6 +563,7 @@ var PCPDeviceInfoHandsontableHelper = {
                     		deviceName=row1[1];
                     	}
                     	CreateAndLoadPCPProductionDataTable(recordId,deviceName);
+                    	CreateAndLoadPCPVideoInfoTable(recordId,deviceName);
                 	}
                 },
                 afterDestroy: function () {
@@ -616,220 +652,237 @@ var PCPDeviceInfoHandsontableHelper = {
         }
         //保存数据
         pcpDeviceInfoHandsontableHelper.saveData = function () {
-        	var leftOrg_Name=Ext.getCmp("leftOrg_Name").getValue();
-        	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
-            //插入的数据的获取
-            pcpDeviceInfoHandsontableHelper.insertExpressCount();
-            //获取设备ID
-            var PCPDeviceSelectRow= Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
-            var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(PCPDeviceSelectRow);
-        	var deviceId=rowdata[0];
-            //生产数据
-            var deviceProductionData={};
-            if(pcpProductionHandsontableHelper!=null && pcpProductionHandsontableHelper.hot!=undefined){
-        		var productionHandsontableData=pcpProductionHandsontableHelper.hot.getData();
-        		deviceProductionData.FluidPVT={};
-        		if(isNumber(parseFloat(productionHandsontableData[0][2]))){
-        			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
-        			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
-        			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[3][2]))){
-        			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
-        		}
-        		
-        		deviceProductionData.Reservoir={};
-        		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
-        			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
-        			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
-        		}
-        		
-        		deviceProductionData.Production={};
-        		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
-        			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
-        			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
-        			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[9][2]))){
-        			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[10][2]))){
-        			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
-        			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
-        			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
-        		}
-        		
-        		deviceProductionData.Pump={};
-        		if(isNumber(parseFloat(productionHandsontableData[13][2]))){
-        			deviceProductionData.Pump.BarrelLength=parseFloat(productionHandsontableData[13][2]);
-        		}
-        		if(isNumber(parseInt(productionHandsontableData[14][2]))){
-        			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
-        			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
-        		}
-        		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
-        			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2])*0.001*0.001;
-        		}
-        		
-        		
-        		
-        		deviceProductionData.TubingString={};
-        		deviceProductionData.TubingString.EveryTubing=[];
-        		var EveryTubing={};
-        		if(isNumber(parseInt(productionHandsontableData[17][2]))){
-        			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
-        		}
-        		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
-        		
-        		deviceProductionData.CasingString={};
-        		deviceProductionData.CasingString.EveryCasing=[];
-        		var EveryCasing={};
-        		if(isNumber(parseInt(productionHandsontableData[18][2]))){
-        			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
-        		}
-        		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
-        		
-        		deviceProductionData.RodString={};
-        		deviceProductionData.RodString.EveryRod=[];
-        		
-        		if(isNotVal(productionHandsontableData[19][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[20][2])) 
-        				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[22][2]))){
-        			var Rod1={};
-            		if(isNotVal(productionHandsontableData[19][2])){
-            			Rod1.Grade=productionHandsontableData[19][2];
+        	var pcpDeviceInfoHandsontableData=pcpDeviceInfoHandsontableHelper.hot.getData();
+        	if(pcpDeviceInfoHandsontableData.length>0){
+        		var leftOrg_Name=Ext.getCmp("leftOrg_Name").getValue();
+            	var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
+                //插入的数据的获取
+                pcpDeviceInfoHandsontableHelper.insertExpressCount();
+                //获取设备ID
+                var PCPDeviceSelectRow= Ext.getCmp("PCPDeviceSelectRow_Id").getValue();
+                var rowdata = pcpDeviceInfoHandsontableHelper.hot.getDataAtRow(PCPDeviceSelectRow);
+            	var deviceId=rowdata[0];
+                //生产数据
+                var deviceProductionData={};
+                if(pcpProductionHandsontableHelper!=null && pcpProductionHandsontableHelper.hot!=undefined){
+            		var productionHandsontableData=pcpProductionHandsontableHelper.hot.getData();
+            		deviceProductionData.FluidPVT={};
+            		if(isNumber(parseFloat(productionHandsontableData[0][2]))){
+            			deviceProductionData.FluidPVT.CrudeOilDensity=parseFloat(productionHandsontableData[0][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[20][2]))){
-            			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[1][2]))){
+            			deviceProductionData.FluidPVT.WaterDensity=parseFloat(productionHandsontableData[1][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[21][2]))){
-            			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[2][2]))){
+            			deviceProductionData.FluidPVT.NaturalGasRelativeDensity=parseFloat(productionHandsontableData[2][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[22][2]))){
-            			Rod1.Length=parseInt(productionHandsontableData[22][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[3][2]))){
+            			deviceProductionData.FluidPVT.SaturationPressure=parseFloat(productionHandsontableData[3][2]);
             		}
-            		deviceProductionData.RodString.EveryRod.push(Rod1);
-        		}
-        		
-        		if(isNotVal(productionHandsontableData[23][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[24][2])) 
-        				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[26][2]))){
-        			var Rod2={};
-            		if(isNotVal(productionHandsontableData[23][2])){
-            			Rod2.Grade=productionHandsontableData[23][2];
+            		
+            		deviceProductionData.Reservoir={};
+            		if(isNumber(parseFloat(productionHandsontableData[4][2]))){
+            			deviceProductionData.Reservoir.Depth=parseFloat(productionHandsontableData[4][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[24][2]))){
-            			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[5][2]))){
+            			deviceProductionData.Reservoir.Temperature=parseFloat(productionHandsontableData[5][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[25][2]))){
-            			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
+            		
+            		deviceProductionData.Production={};
+            		if(isNumber(parseFloat(productionHandsontableData[6][2]))){
+            			deviceProductionData.Production.TubingPressure=parseFloat(productionHandsontableData[6][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[26][2]))){
-            			Rod2.Length=parseInt(productionHandsontableData[26][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[7][2]))){
+            			deviceProductionData.Production.CasingPressure=parseFloat(productionHandsontableData[7][2]);
             		}
-            		deviceProductionData.RodString.EveryRod.push(Rod2);
-        		}
-        		
-        		if(isNotVal(productionHandsontableData[27][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[28][2])) 
-        				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[30][2]))){
-        			var Rod3={};
-            		if(isNotVal(productionHandsontableData[27][2])){
-            			Rod3.Grade=productionHandsontableData[27][2];
+            		if(isNumber(parseFloat(productionHandsontableData[8][2]))){
+            			deviceProductionData.Production.WellHeadTemperature=parseFloat(productionHandsontableData[8][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[28][2]))){
-            			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[9][2]))){
+            			deviceProductionData.Production.WaterCut=parseFloat(productionHandsontableData[9][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[29][2]))){
-            			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
+            		if(isNumber(parseFloat(productionHandsontableData[10][2]))){
+            			deviceProductionData.Production.ProductionGasOilRatio=parseFloat(productionHandsontableData[10][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[30][2]))){
-            			Rod3.Length=parseInt(productionHandsontableData[30][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[11][2]))){
+            			deviceProductionData.Production.ProducingfluidLevel=parseFloat(productionHandsontableData[11][2]);
             		}
-            		deviceProductionData.RodString.EveryRod.push(Rod3);
-        		}
-        		
-        		if(isNotVal(productionHandsontableData[31][2]) 
-        				&& isNumber(parseInt(productionHandsontableData[32][2])) 
-        				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
-        				&& isNumber(parseInt(productionHandsontableData[34][2]))){
-        			var Rod4={};
-            		if(isNotVal(productionHandsontableData[31][2])){
-            			Rod4.Grade=productionHandsontableData[31][2];
+            		if(isNumber(parseFloat(productionHandsontableData[12][2]))){
+            			deviceProductionData.Production.PumpSettingDepth=parseFloat(productionHandsontableData[12][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[32][2]))){
-            			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+            		
+            		deviceProductionData.Pump={};
+            		if(isNumber(parseFloat(productionHandsontableData[13][2]))){
+            			deviceProductionData.Pump.BarrelLength=parseFloat(productionHandsontableData[13][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[33][2]))){
-            			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+            		if(isNumber(parseInt(productionHandsontableData[14][2]))){
+            			deviceProductionData.Pump.BarrelSeries=parseInt(productionHandsontableData[14][2]);
             		}
-            		if(isNumber(parseInt(productionHandsontableData[34][2]))){
-            			Rod4.Length=parseInt(productionHandsontableData[34][2]);
+            		if(isNumber(parseFloat(productionHandsontableData[15][2]))){
+            			deviceProductionData.Pump.RotorDiameter=parseFloat(productionHandsontableData[15][2])*0.001;
             		}
-            		deviceProductionData.RodString.EveryRod.push(Rod4);
-        		}
-        		deviceProductionData.ManualIntervention={};
-        		if(isNumber(parseFloat(productionHandsontableData[35][2]))){
-        			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[35][2]);
-        		}
-        		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[36][2]))))){
-        			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[36][2]);
-        		}
-        	}
-        	Ext.Ajax.request({
-                method: 'POST',
-                url: context + '/wellInformationManagerController/saveWellHandsontableData',
-                success: function (response) {
-                	rdata = Ext.JSON.decode(response.responseText);
-                    if (rdata.success) {
-                    	var saveInfo='保存成功';
-                    	if(rdata.collisionCount>0){//数据冲突
-                    		saveInfo='保存成功'+rdata.successCount+'条记录,保存失败:<font color="red">'+rdata.collisionCount+'</font>条记录';
-                    		for(var i=0;i<rdata.list.length;i++){
-                    			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
-                    		}
-                    	}
-                    	Ext.MessageBox.alert("信息", saveInfo);
-                        //保存以后重置全局容器
-                        if(rdata.successCount>0){
-                        	pcpDeviceInfoHandsontableHelper.clearContainer();
-                            CreateAndLoadPCPDeviceInfoTable();
-                        }
-                    } else {
-                        Ext.MessageBox.alert("信息", "数据保存失败");
-                    }
-                },
-                failure: function () {
-                    Ext.MessageBox.alert("信息", "请求失败");
-                    pcpDeviceInfoHandsontableHelper.clearContainer();
-                },
-                params: {
-                	deviceId: deviceId,
-                	data: JSON.stringify(pcpDeviceInfoHandsontableHelper.AllData),
-                    deviceProductionData: JSON.stringify(deviceProductionData),
-                    orgId: leftOrg_Id,
-                    deviceType: 201
+            		if(isNumber(parseFloat(productionHandsontableData[16][2]))){
+            			deviceProductionData.Pump.QPR=parseFloat(productionHandsontableData[16][2])*0.001*0.001;
+            		}
+            		
+            		
+            		
+            		deviceProductionData.TubingString={};
+            		deviceProductionData.TubingString.EveryTubing=[];
+            		var EveryTubing={};
+            		if(isNumber(parseInt(productionHandsontableData[17][2]))){
+            			EveryTubing.InsideDiameter=parseInt(productionHandsontableData[17][2])*0.001;
+            		}
+            		deviceProductionData.TubingString.EveryTubing.push(EveryTubing);
+            		
+            		deviceProductionData.CasingString={};
+            		deviceProductionData.CasingString.EveryCasing=[];
+            		var EveryCasing={};
+            		if(isNumber(parseInt(productionHandsontableData[18][2]))){
+            			EveryCasing.InsideDiameter=parseInt(productionHandsontableData[18][2])*0.001;
+            		}
+            		deviceProductionData.CasingString.EveryCasing.push(EveryCasing);
+            		
+            		deviceProductionData.RodString={};
+            		deviceProductionData.RodString.EveryRod=[];
+            		
+            		if(isNotVal(productionHandsontableData[19][2]) 
+            				&& isNumber(parseInt(productionHandsontableData[20][2])) 
+            				&& (productionHandsontableData[21][2]=='' || isNumber(parseInt(productionHandsontableData[21][2])) )
+            				&& isNumber(parseInt(productionHandsontableData[22][2]))){
+            			var Rod1={};
+                		if(isNotVal(productionHandsontableData[19][2])){
+                			Rod1.Grade=productionHandsontableData[19][2];
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[20][2]))){
+                			Rod1.OutsideDiameter=parseInt(productionHandsontableData[20][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[21][2]))){
+                			Rod1.InsideDiameter=parseInt(productionHandsontableData[21][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[22][2]))){
+                			Rod1.Length=parseInt(productionHandsontableData[22][2]);
+                		}
+                		deviceProductionData.RodString.EveryRod.push(Rod1);
+            		}
+            		
+            		if(isNotVal(productionHandsontableData[23][2]) 
+            				&& isNumber(parseInt(productionHandsontableData[24][2])) 
+            				&& (productionHandsontableData[25][2]=='' || isNumber(parseInt(productionHandsontableData[25][2])) )
+            				&& isNumber(parseInt(productionHandsontableData[26][2]))){
+            			var Rod2={};
+                		if(isNotVal(productionHandsontableData[23][2])){
+                			Rod2.Grade=productionHandsontableData[23][2];
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[24][2]))){
+                			Rod2.OutsideDiameter=parseInt(productionHandsontableData[24][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[25][2]))){
+                			Rod2.InsideDiameter=parseInt(productionHandsontableData[25][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[26][2]))){
+                			Rod2.Length=parseInt(productionHandsontableData[26][2]);
+                		}
+                		deviceProductionData.RodString.EveryRod.push(Rod2);
+            		}
+            		
+            		if(isNotVal(productionHandsontableData[27][2]) 
+            				&& isNumber(parseInt(productionHandsontableData[28][2])) 
+            				&& (productionHandsontableData[29][2]=='' || isNumber(parseInt(productionHandsontableData[29][2])) )
+            				&& isNumber(parseInt(productionHandsontableData[30][2]))){
+            			var Rod3={};
+                		if(isNotVal(productionHandsontableData[27][2])){
+                			Rod3.Grade=productionHandsontableData[27][2];
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[28][2]))){
+                			Rod3.OutsideDiameter=parseInt(productionHandsontableData[28][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[29][2]))){
+                			Rod3.InsideDiameter=parseInt(productionHandsontableData[29][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[30][2]))){
+                			Rod3.Length=parseInt(productionHandsontableData[30][2]);
+                		}
+                		deviceProductionData.RodString.EveryRod.push(Rod3);
+            		}
+            		
+            		if(isNotVal(productionHandsontableData[31][2]) 
+            				&& isNumber(parseInt(productionHandsontableData[32][2])) 
+            				&& (productionHandsontableData[33][2]=='' || isNumber(parseInt(productionHandsontableData[33][2])) )
+            				&& isNumber(parseInt(productionHandsontableData[34][2]))){
+            			var Rod4={};
+                		if(isNotVal(productionHandsontableData[31][2])){
+                			Rod4.Grade=productionHandsontableData[31][2];
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[32][2]))){
+                			Rod4.OutsideDiameter=parseInt(productionHandsontableData[32][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[33][2]))){
+                			Rod4.InsideDiameter=parseInt(productionHandsontableData[33][2])*0.001;
+                		}
+                		if(isNumber(parseInt(productionHandsontableData[34][2]))){
+                			Rod4.Length=parseInt(productionHandsontableData[34][2]);
+                		}
+                		deviceProductionData.RodString.EveryRod.push(Rod4);
+            		}
+            		deviceProductionData.ManualIntervention={};
+            		if(isNumber(parseFloat(productionHandsontableData[35][2]))){
+            			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[35][2]);
+            		}
+            		if(isNumber(parseFloat(isNumber(parseFloat(productionHandsontableData[36][2]))))){
+            			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[36][2]);
+            		}
+            	}
+                
+              //视频信息
+                var videoUrl='';
+                var videoAccessToken='';
+                if(pcpVideoInfoHandsontableHelper!=null && pcpVideoInfoHandsontableHelper.hot!=undefined){
+                	var pcpVideoInfoHandsontableData=pcpVideoInfoHandsontableHelper.hot.getData();
+                	videoUrl=pcpVideoInfoHandsontableData[0][2];
+                	videoAccessToken=pcpVideoInfoHandsontableData[1][2];
                 }
-            });
+            	Ext.Ajax.request({
+                    method: 'POST',
+                    url: context + '/wellInformationManagerController/saveWellHandsontableData',
+                    success: function (response) {
+                    	rdata = Ext.JSON.decode(response.responseText);
+                        if (rdata.success) {
+                        	var saveInfo='保存成功';
+                        	if(rdata.collisionCount>0){//数据冲突
+                        		saveInfo='保存成功'+rdata.successCount+'条记录,保存失败:<font color="red">'+rdata.collisionCount+'</font>条记录';
+                        		for(var i=0;i<rdata.list.length;i++){
+                        			saveInfo+='<br/><font color="red"> '+rdata.list[i]+'</font>';
+                        		}
+                        	}
+                        	Ext.MessageBox.alert("信息", saveInfo);
+                            //保存以后重置全局容器
+                            if(rdata.successCount>0){
+                            	pcpDeviceInfoHandsontableHelper.clearContainer();
+                                CreateAndLoadPCPDeviceInfoTable();
+                            }
+                        } else {
+                            Ext.MessageBox.alert("信息", "数据保存失败");
+                        }
+                    },
+                    failure: function () {
+                        Ext.MessageBox.alert("信息", "请求失败");
+                        pcpDeviceInfoHandsontableHelper.clearContainer();
+                    },
+                    params: {
+                    	deviceId: deviceId,
+                    	data: JSON.stringify(pcpDeviceInfoHandsontableHelper.AllData),
+                        deviceProductionData: JSON.stringify(deviceProductionData),
+                        videoUrl:videoUrl,
+                        videoAccessToken:videoAccessToken,
+                        orgId: leftOrg_Id,
+                        deviceType: 201
+                    }
+                });
+        	}else{
+        		Ext.MessageBox.alert("信息", "无记录保存！");
+            }
+        	
         }
 
         //修改井名
@@ -950,13 +1003,13 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 				pcpProductionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				pcpProductionHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
-					pcpProductionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					pcpProductionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
 					pcpProductionHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				if(result.totalRoot.length==0){
-					pcpProductionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
+					pcpProductionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
 					pcpProductionHandsontableHelper.hot.loadData(result.totalRoot);
 				}
@@ -1005,44 +1058,6 @@ var PCPProductionHandsontableHelper = {
 	                rowHeaders: true, //显示行头
 	                colHeaders: pcpProductionHandsontableHelper.colHeaders, //显示列头
 	                columnSorting: true, //允许排序
-	                contextMenu: {
-	                    items: {
-	                        "row_above": {
-	                            name: '向上插入一行',
-	                        },
-	                        "row_below": {
-	                            name: '向下插入一行',
-	                        },
-	                        "col_left": {
-	                            name: '向左插入一列',
-	                        },
-	                        "col_right": {
-	                            name: '向右插入一列',
-	                        },
-	                        "remove_row": {
-	                            name: '删除行',
-	                        },
-	                        "remove_col": {
-	                            name: '删除列',
-	                        },
-	                        "merge_cell": {
-	                            name: '合并单元格',
-	                        },
-	                        "copy": {
-	                            name: '复制',
-	                        },
-	                        "cut": {
-	                            name: '剪切',
-	                        },
-	                        "paste": {
-	                            name: '粘贴',
-	                            disabled: function () {
-	                            },
-	                            callback: function () {
-	                            }
-	                        }
-	                    }
-	                }, 
 	                sortIndicator: true,
 	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
 	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
@@ -1070,5 +1085,106 @@ var PCPProductionHandsontableHelper = {
 	            });
 	        }
 	        return pcpProductionHandsontableHelper;
+	    }
+	};
+
+function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
+	if(isNew&&pcpVideoInfoHandsontableHelper!=null){
+		if(pcpVideoInfoHandsontableHelper.hot!=undefined){
+			pcpVideoInfoHandsontableHelper.hot.destroy();
+		}
+		pcpVideoInfoHandsontableHelper=null;
+	}
+	Ext.Ajax.request({
+		method:'POST',
+		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
+		success:function(response) {
+			var result =  Ext.JSON.decode(response.responseText);
+			if(!isNotVal(deviceName)){
+				deviceName='';
+			}
+			Ext.getCmp("PCPVideoInfoPanel_Id").setTitle(deviceName+"视频配置");
+			if(pcpVideoInfoHandsontableHelper==null || pcpVideoInfoHandsontableHelper.hot==undefined){
+				pcpVideoInfoHandsontableHelper = PCPVideoInfoHandsontableHelper.createNew("PCPVideoInfoTableDiv_id");
+				var colHeaders="['序号','名称','值']";
+				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
+				pcpVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
+				pcpVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
+				if(result.totalRoot.length==0){
+					pcpVideoInfoHandsontableHelper.createTable([{},{}]);
+				}else{
+					pcpVideoInfoHandsontableHelper.createTable(result.totalRoot);
+				}
+			}else{
+				if(result.totalRoot.length==0){
+					pcpVideoInfoHandsontableHelper.hot.loadData([{},{}]);
+				}else{
+					pcpVideoInfoHandsontableHelper.hot.loadData(result.totalRoot);
+				}
+			}
+		},
+		failure:function(){
+			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+		},
+		params: {
+			deviceId:deviceId,
+			deviceType:201
+        }
+	});
+};
+
+var PCPVideoInfoHandsontableHelper = {
+	    createNew: function (divid) {
+	        var pcpVideoInfoHandsontableHelper = {};
+	        pcpVideoInfoHandsontableHelper.hot = '';
+	        pcpVideoInfoHandsontableHelper.divid = divid;
+	        pcpVideoInfoHandsontableHelper.colHeaders = [];
+	        pcpVideoInfoHandsontableHelper.columns = [];
+	        pcpVideoInfoHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(242, 242, 242)';
+	        }
+	        
+	        pcpVideoInfoHandsontableHelper.addBoldBg = function (instance, td, row, col, prop, value, cellProperties) {
+	            Handsontable.renderers.TextRenderer.apply(this, arguments);
+	            td.style.backgroundColor = 'rgb(245, 245, 245)';
+	        }
+
+	        pcpVideoInfoHandsontableHelper.createTable = function (data) {
+	            $('#' + pcpVideoInfoHandsontableHelper.divid).empty();
+	            var hotElement = document.querySelector('#' + pcpVideoInfoHandsontableHelper.divid);
+	            pcpVideoInfoHandsontableHelper.hot = new Handsontable(hotElement, {
+	            	licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+	            	data: data,
+	                hiddenColumns: {
+	                    columns: [0],
+	                    indicators: false
+	                },
+	                colWidths: [1,1,5],
+	                columns: pcpVideoInfoHandsontableHelper.columns,
+	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
+	                autoWrapRow: true,
+	                rowHeaders: true, //显示行头
+	                colHeaders: pcpVideoInfoHandsontableHelper.colHeaders, //显示列头
+	                columnSorting: true, //允许排序
+	                sortIndicator: true,
+	                manualColumnResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                manualRowResize: true, //当值为true时，允许拖动，当为false时禁止拖动
+	                filters: true,
+	                renderAllRows: true,
+	                search: true,
+	                cells: function (row, col, prop) {
+	                    var cellProperties = {};
+	                    var visualRowIndex = this.instance.toVisualRow(row);
+	                    var visualColIndex = this.instance.toVisualColumn(col);
+	                    if (visualColIndex !=2) {
+							cellProperties.readOnly = true;
+							cellProperties.renderer = pcpVideoInfoHandsontableHelper.addBoldBg;
+		                }
+	                    return cellProperties;
+	                }
+	            });
+	        }
+	        return pcpVideoInfoHandsontableHelper;
 	    }
 	};

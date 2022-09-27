@@ -651,7 +651,6 @@ begin
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
                t.tcptype=v_tcpType,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
-               t.videourl=v_videourl,t.videoaccesstoken=v_videoAccessToken,
                t.status=v_status,
                t.sortnum=v_sortNum
            Where t.id=v_recordId;
@@ -739,7 +738,6 @@ begin
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
                t.tcptype=v_tcpType,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
-               t.videourl=v_videourl,t.videoaccesstoken=v_videoAccessToken,
                t.status=v_status,
                t.sortnum=v_sortNum
            Where t.id=v_recordId;

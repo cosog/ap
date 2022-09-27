@@ -125,6 +125,65 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String loadRPCDeviceComboxList(Page pager,String orgId,String wellName,String deviceTypeStr) throws Exception {
+		//String orgIds = this.getUserOrgIds(orgId);
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer sqlCuswhere = new StringBuffer();
+		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
+		String tableName="tbl_rpcdevice";
+		if(deviceType>=200&&deviceType<300){
+			tableName="tbl_pcpdevice";
+		}else if(deviceType>=300){
+			tableName="tbl_smsdevice";
+		}
+		if(deviceType==1){
+			tableName="tbl_pcpdevice";
+		}else if(deviceType==2){
+			tableName="tbl_smsdevice";
+		}
+		String sql = " select  t.wellName as wellName,t.wellName as dm from  "+tableName+" t  ,tbl_org  g,tbl_protocolinstance t2 "
+				+ " where t.orgId=g.org_id and t.instancecode=t2.code  "
+				+ " and g.org_id in ("+ orgId + ")"
+				+ " and ( t2.acqprotocoltype ='private-rpc' or t2.ctrlprotocoltype ='private-rpc')";
+		if(StringManagerUtils.isNotNull(deviceTypeStr) && deviceType>=100 && StringManagerUtils.isNotNull(deviceTypeStr) && deviceType<300){
+			sql += " and t.deviceType ="+deviceType;
+		}
+		if (StringManagerUtils.isNotNull(wellName)) {
+			sql += " and t.wellName like '%" + wellName + "%'";
+		}
+		sql += " order by t.sortNum, t.wellName";
+		sqlCuswhere.append("select * from   ( select a.*,rownum as rn from (");
+		sqlCuswhere.append(""+sql);
+		int maxvalue=pager.getLimit()+pager.getStart();
+		sqlCuswhere.append(" ) a where  rownum <="+maxvalue+") b");
+		sqlCuswhere.append(" where rn >"+pager.getStart());
+		String finalsql=sqlCuswhere.toString();
+		try {
+			int totals=this.getTotalCountRows(sql);
+			List<?> list = this.findCallSql(finalsql);
+			result_json.append("{\"totals\":"+totals+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+			String get_key = "";
+			String get_val = "";
+			if (null != list && list.size() > 0) {
+				for (Object o : list) {
+					Object[] obj = (Object[]) o;
+					get_key = obj[0] + "";
+					get_val = (String) obj[1];
+					result_json.append("{boxkey:\"" + get_key + "\",");
+					result_json.append("boxval:\"" + get_val + "\"},");
+				}
+				if (result_json.toString().endsWith(",")) {
+					result_json.deleteCharAt(result_json.length() - 1);
+				}
+			}
+			result_json.append("]}");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result_json.toString();
+	}
+	
 	public String getDeviceOrgChangeDeviceList(Page pager,String orgId,String wellName,String deviceTypeStr) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
@@ -906,6 +965,15 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		String time=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 		String sql = "update "+tableName+" t set t.productiondata='"+deviceProductionData+"',t.productiondataupdatetime=to_date('"+time+"','yyyy-mm-dd hh24:mi:ss') where t.id="+deviceId;
+		this.getBaseDao().updateOrDeleteBySql(sql);
+	}
+	
+	public void saveVideiData(int deviceType,int deviceId,String videoUrl,String videoAccessToken) throws Exception {
+		String tableName="tbl_rpcdevice";
+		if(deviceType>=200&&deviceType<300){
+			tableName="tbl_pcpdevice";
+		}
+		String sql = "update "+tableName+" t set t.videoUrl='"+videoUrl+"',t.videoAccessToken='"+videoAccessToken+"' where t.id="+deviceId;
 		this.getBaseDao().updateOrDeleteBySql(sql);
 	}
 	
@@ -2234,6 +2302,37 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getDeviceVideoInfo(String deviceId,String deviceType) {
+		StringBuffer result_json = new StringBuffer();
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
+		String columns = "["
+				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
+				+ "{ \"header\":\"值\",\"dataIndex\":\"itemValue\",width:120 ,children:[] }"
+				+ "]";
+		String deviceTableName="tbl_rpcdevice";
+		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
+			deviceTableName="tbl_pcpdevice";
+		}
+		String sql = "select t.videourl,t.videoaccesstoken "
+				+ " from "+deviceTableName+" t "
+				+ " where t.id="+deviceId;
+		
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
+		if(list.size()>0){
+			Object[] obj = (Object[]) list.get(0);
+			result_json.append("{\"id\":1,\"itemName\":\"视频监控路径\",\"itemValue\":\""+obj[0]+"\"},");
+			result_json.append("{\"id\":2,\"itemName\":\"视频访问令牌\",\"itemValue\":\""+obj[1]+"\"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("null", "");
+	}
+	
 	public String getAcquisitionUnitList(String protocol){
 		StringBuffer result_json = new StringBuffer();
 		String unitSql="select t.unit_name from tbl_acq_unit_conf t where 1=1";
@@ -2522,7 +2621,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.signinid,t.slave "
 				+ " from "+deviceTableName+" t "
 				+ " left outer join "+tableName+" t2 on t2.wellid=t.id";
-		sql+= " where  t.orgid in ("+orgId+") ";
+		sql+= " where  t.orgid in ("+orgId+") "
+				+ " and t.instancecode in ( select t3.code from tbl_protocolinstance t3 where t3.acqprotocoltype ='private-rpc' or t3.ctrlprotocoltype ='private-rpc' )";
 		if(StringManagerUtils.isNotNull(deviceName)){
 			sql+=" and t.wellName='"+deviceName+"'";
 		}

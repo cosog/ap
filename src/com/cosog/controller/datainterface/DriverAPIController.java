@@ -2231,7 +2231,7 @@ public class DriverAPIController extends BaseController{
 							}
 							columns+= "]";
 							
-							webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"wellName\":\""+rpcDeviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+							webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"wellId\":"+rpcDeviceInfo.getId()+",\"wellName\":\""+rpcDeviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 							webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 							webSocketSendData.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
@@ -3069,7 +3069,7 @@ public class DriverAPIController extends BaseController{
 							}
 							columns+= "]";
 							
-							webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"wellName\":\""+pcpDeviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
+							webSocketSendData.append("{ \"success\":true,\"functionCode\":\""+functionCode+"\",\"wellId\":"+pcpDeviceInfo.getId()+",\"wellName\":\""+pcpDeviceInfo.getWellName()+"\",\"acqTime\":\""+acqTime+"\",\"columns\":"+columns+",");
 							webSocketSendData.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 							webSocketSendData.append("\"runAlarmLevel\":"+runAlarmLevel+",");
 							webSocketSendData.append("\"totalRoot\":[");

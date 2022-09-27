@@ -15,7 +15,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                 type: "string"
             }],
             proxy: {
-            	url: context + '/wellInformationManagerController/loadWellComboxList',
+            	url: context + '/wellInformationManagerController/loadRPCDeviceComboxList',
                 type: "ajax",
                 actionMethods: {
                     read: 'POST'

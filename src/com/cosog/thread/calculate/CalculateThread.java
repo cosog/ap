@@ -73,7 +73,7 @@ public class CalculateThread extends Thread{
 							+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 							+ " where 1=1  "
 							+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
-							+ " and t.resultstatus ==2  "
+							+ " and t.resultstatus =2  "
 							+ " and t.productiondata is not null"
 							+ " and t.fesdiagramacqtime is not null "
 							+ " and t.wellid="+wellNo+""

@@ -388,7 +388,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	title:'视频配置',
                 	id:'RPCVideoInfoPanel_Id',
                 	split: true,
-                	collapsible: false,
+                	collapsible: true,
                 	html: '<div class="RPCVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="RPCVideoInfoTableDiv_id"></div></div>',
                     listeners: {
                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -1269,7 +1269,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 			Ext.getCmp("RPCProductionDataInfoPanel_Id").setTitle(deviceName+"生产数据");
 			if(rpcProductionHandsontableHelper==null || rpcProductionHandsontableHelper.hot==undefined){
 				rpcProductionHandsontableHelper = RPCProductionHandsontableHelper.createNew("RPCAdditionalInfoTableDiv_id");
-				var colHeaders="['序号','名称','值']";
+				var colHeaders="['序号','名称','变量']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
 				rpcProductionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcProductionHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1421,7 +1421,7 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 	    			}
 	    		}
 				
-				var colHeaders="['序号','名称','值','']";
+				var colHeaders="['序号','名称','变量','']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemValue2'}]";
 				rpcPumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcPumpingInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -1520,7 +1520,7 @@ var RPCPumpingInfoHandsontableHelper = {
 	                },{
 	                	label:'名称'
 	                },{
-	                	label:'值',
+	                	label:'变量',
 	                	colspan:2
 	                }]],
 	                mergeCells: [{
@@ -1592,7 +1592,7 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 			Ext.getCmp("RPCVideoInfoPanel_Id").setTitle(deviceName+"视频配置");
 			if(rpcVideoInfoHandsontableHelper==null || rpcVideoInfoHandsontableHelper.hot==undefined){
 				rpcVideoInfoHandsontableHelper = RPCVideoInfoHandsontableHelper.createNew("RPCVideoInfoTableDiv_id");
-				var colHeaders="['序号','名称','值']";
+				var colHeaders="['序号','名称','变量']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
 				rpcVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);

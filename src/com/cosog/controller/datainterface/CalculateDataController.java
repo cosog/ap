@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,8 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.thread.calculate.CalculateThread;
+import com.cosog.thread.calculate.ThreadPool;
+import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.Config2;
@@ -81,30 +84,22 @@ public class CalculateDataController extends BaseController{
 		long startTime=0;
 		long endTime=0;
 		long allTime=0;
-		String totalDate = StringManagerUtils.getCurrentTime();
-		CalculateThread calculateThreadList[]=new CalculateThread[20];
-		for(int i=0;i<20;i++){
-			calculateThreadList[i]=null;
-		}
+//		CalculateThread calculateThreadList[]=new CalculateThread[20];
+//		for(int i=0;i<20;i++){
+//			calculateThreadList[i]=null;
+//		}
+		
+		ThreadPool executor = new ThreadPool("FESDiagramReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
 		
 		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.fesdiagramacqtime is not null";
-		String sqlAll="select count(1) from tbl_rpcacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.fesdiagramacqtime is not null";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
-		int calCount=0;
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
-			boolean isCal=false;
-			while(!isCal){
-				for(int i=0;i<calculateThreadList.length;i++){
-					if(calculateThreadList[i]==null || !(calculateThreadList[i].isAlive())){
-						calculateThreadList[i]=new CalculateThread(i,StringManagerUtils.stringToInteger(wellList.get(j)+""),0,calculateDataService);
-						calculateThreadList[i].start();
-						isCal=true;
-						break;
-					}
-				}
-			}
+			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(wellList.get(j)+""),StringManagerUtils.stringToInteger(wellList.get(j)+""),0,calculateDataService));
 		}
+		while (!executor.isCompletedByTaskCount()) {
+			Thread.sleep(1000*1);
+	    }
 		
 		endTime=new Date().getTime();
 		allTime=endTime-startTime;
@@ -131,43 +126,17 @@ public class CalculateDataController extends BaseController{
 		long startTime=0;
 		long endTime=0;
 		long allTime=0;
-		String totalDate = StringManagerUtils.getCurrentTime();
-		CalculateThread calculateThreadList[]=new CalculateThread[20];
-		for(int i=0;i<20;i++){
-			calculateThreadList[i]=null;
-		}
 		
+		ThreadPool executor = new ThreadPool("RPMReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
 		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null not null and t.rpm is not null";
-		String sqlAll="select count(1) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null not null and t.rpm is not null";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
-		int calCount=0;
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
-			boolean isCal=false;
-			while(!isCal){
-				for(int i=0;i<calculateThreadList.length;i++){
-					if(calculateThreadList[i]==null || !(calculateThreadList[i].isAlive())){
-						calculateThreadList[i]=new CalculateThread(i,StringManagerUtils.stringToInteger(wellList.get(j)+""),1,calculateDataService);
-						calculateThreadList[i].start();
-						isCal=true;
-						break;
-					}
-				}
-			}
+			executor.execute(new CalculateThread(StringManagerUtils.stringToInteger(wellList.get(j)+""),StringManagerUtils.stringToInteger(wellList.get(j)+""),1,calculateDataService));
 		}
-		
-		boolean finish=false;
-		while(!finish){
-			for(int i=0;i<calculateThreadList.length;i++){
-				if(calculateThreadList[i]!=null&&calculateThreadList[i].isAlive()){
-					finish=false;
-					break;
-				}
-				finish=true;
-			}
-			
-		}
-		
+		while (!executor.isCompletedByTaskCount()) {
+			Thread.sleep(1000*1);
+	    }
 		endTime=new Date().getTime();
 		allTime=endTime-startTime;
 		json="计算完成，共用时:"+allTime+"毫秒";

@@ -211,7 +211,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		sql+=" group by t.devicetypename,t.devicetype";
 		sql+=" order by t.devicetype";

@@ -106,7 +106,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+=" and t.devicetypename='"+deviceTypeStatValue+"'";
 			}
 			if(StringManagerUtils.isNotNull(commStatusStatValue)){
-				sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 			}
 			sql+=" group by t3.resultname,t2.resultcode "
 					+ " order by t2.resultcode";
@@ -467,7 +467,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				+ " left outer join "+tableName+" t2 on t.id=t2.wellid "
 				+ " where t.orgid in("+orgId+") ";
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		sql+=" group by t.devicetypename,t.devicetype";
 		sql+=" order by t.devicetype";
@@ -1118,9 +1118,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String sql="select t.id,t.wellname,t.videourl,t.videoAccessToken,"
 				+ "c1.itemname as devicetypename,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线') as runStatusName,"
+				+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ prodCol+""
 				+ "averageWatt,waterPower,"
@@ -1149,10 +1149,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			sql+=" and t.wellName='"+deviceName+"'";
 		}
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(runStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线')='"+runStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+runStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 			sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -1403,9 +1403,9 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		String sql="select t.id,t.wellname,t.videourl,t.videoAccessToken,"
 				+ "c1.itemname as devicetypename,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
-				+ "t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,"
+				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
-				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线') as runStatusName,"
+				+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ prodCol+""
 				+ "averageWatt,waterPower,"
@@ -1434,10 +1434,10 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			sql+=" and t.wellName='"+deviceName+"'";
 		}
 		if(StringManagerUtils.isNotNull(commStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,'在线','离线')='"+commStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(runStatusStatValue)){
-			sql+=" and decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线')='"+runStatusStatValue+"'";
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+runStatusStatValue+"'";
 		}
 		if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
 			sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
@@ -1698,7 +1698,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						
 					}
 				}
-				String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
+				String sql="select t.id,t.wellname,to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'), t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,decode(t2.commstatus,1,0,100) as commAlarmLevel ";
 				for(int j=0;j<protocolItems.size();j++){
 					String col=dataSaveMode==0?("addr"+protocolItems.get(j).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocolItems.get(j).getTitle()));
 					sql+=",t2."+col;

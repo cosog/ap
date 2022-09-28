@@ -315,7 +315,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     	title:'视频配置',
                     	id:'PCPVideoInfoPanel_Id',
                     	split: true,
-                    	collapsible: false,
+                    	collapsible: true,
                     	html: '<div class="PCPVideoInfoContainer" style="width:100%;height:100%;"><div class="con" id="PCPVideoInfoTableDiv_id"></div></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -997,7 +997,7 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 			Ext.getCmp("PCPProductionDataInfoPanel_Id").setTitle(deviceName+"生产数据");
 			if(pcpProductionHandsontableHelper==null || pcpProductionHandsontableHelper.hot==undefined){
 				pcpProductionHandsontableHelper = PCPProductionHandsontableHelper.createNew("PCPAdditionalInfoTableDiv_id");
-				var colHeaders="['序号','名称','值']";
+				var colHeaders="['序号','名称','变量']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
 				
 				pcpProductionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -1106,7 +1106,7 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 			Ext.getCmp("PCPVideoInfoPanel_Id").setTitle(deviceName+"视频配置");
 			if(pcpVideoInfoHandsontableHelper==null || pcpVideoInfoHandsontableHelper.hot==undefined){
 				pcpVideoInfoHandsontableHelper = PCPVideoInfoHandsontableHelper.createNew("PCPVideoInfoTableDiv_id");
-				var colHeaders="['序号','名称','值']";
+				var colHeaders="['序号','名称','变量']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
 				pcpVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				pcpVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);

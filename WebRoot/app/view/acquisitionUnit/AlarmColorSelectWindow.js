@@ -7,7 +7,7 @@ Ext.define("AP.view.acquisitionUnit.AlarmColorSelectWindow", {
     id: 'AlarmColorSelectWindow_Id',
     closeAction: 'destroy',
     width: 500,
-    height: 300,
+    height: 330,
     shadow: 'sides',
     resizable: false,
     collapsible: true,

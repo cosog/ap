@@ -81,6 +81,8 @@ public class ResourceMonitoringTask {
     
     private static int jedisStatus=1; 
     
+    private static String tableSpaceName="";
+    
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, ParseException, IOException{
@@ -301,15 +303,28 @@ public class ResourceMonitoringTask {
 //        		+ " WHERE a.tablespace_name = b.tablespace_name "
 //        		+ " and Upper(a.tablespace_name) like 'AP_JF_DATA%' "
 //        		+ " order by b.file_id ";
-		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
-				+ "FROM dba_data_files t "
-				+ "where  Upper(t.tablespace_name) like 'AP_JF_DATA%' "
-				+ "and t.BYTES<34359721984";
-        TableSpaceInfo tableSpaceInfo=new TableSpaceInfo();
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo();
         conn=OracleJdbcUtis.getConnection();
         if(conn==null){
         	return tableSpaceInfo;
         }
+		if(!StringManagerUtils.isNotNull(tableSpaceName)){
+			String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
+			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
+			pstmt = conn.prepareStatement(tableSpaceSql); 
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				tableSpaceName=rs.getString(1);
+				break;
+			}
+		}
+		
+		
+		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
+				+ "FROM dba_data_files t "
+				+ "where  Upper(t.tablespace_name) like '"+tableSpaceName+"%' "
+				+ "and t.BYTES<34359721984";
+        
 		pstmt = conn.prepareStatement(sql); 
 		rs=pstmt.executeQuery();
 		while(rs.next()){

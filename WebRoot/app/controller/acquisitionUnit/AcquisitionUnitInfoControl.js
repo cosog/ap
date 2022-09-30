@@ -708,7 +708,7 @@ var SaveDisplayUnitSubmitBtnForm = function () {
 
 function addModbusProtocolDisplayInstanceConfigData() {
     var window = Ext.create("AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceInfoWindow", {
-        title: '创建报警实例'
+        title: '创建显示实例'
     });
     window.show();
     Ext.getCmp("addFormModbusProtocolDisplayInstance_Id").show();

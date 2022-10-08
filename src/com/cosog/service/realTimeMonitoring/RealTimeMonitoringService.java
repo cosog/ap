@@ -1238,7 +1238,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
 			
 			result_json.append("\"averageWatt\":\""+obj[20]+"\",");
-			result_json.append("\"waterPower\":\""+obj[20]+"\",");
+			result_json.append("\"waterPower\":\""+obj[21]+"\",");
 			
 			result_json.append("\"systemEfficiency\":\""+obj[22]+"\",");
 			result_json.append("\"energyper100mlift\":\""+obj[23]+"\",");
@@ -1492,7 +1492,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[19]+"\",");
 			
 			result_json.append("\"averageWatt\":\""+obj[20]+"\",");
-			result_json.append("\"waterPower\":\""+obj[20]+"\",");
+			result_json.append("\"waterPower\":\""+obj[21]+"\",");
 			
 			result_json.append("\"systemEfficiency\":\""+obj[22]+"\",");
 			result_json.append("\"energyper100mlift\":\""+obj[23]+"\",");

@@ -36,7 +36,7 @@ PSK										   密码											缺省：1234567889
 
 State									    开关			off-失效  on-使能
 
-IP											  网卡1和网卡2设置不同网段																				
+IP											  网卡1和网卡2设置不同网段，如果已使能，并且IP为空，将DHCP自动获取																			
 
 Mask									    掩码													
 
@@ -48,7 +48,7 @@ DNS									     域名服务器	可以设置与网关一致
 
 State										开关			off-失效  on-使能
 
-IP											  网卡1和网卡2设置不同网段						
+IP											  网卡1和网卡2设置不同网段，如果已使能，并且IP为空，将DHCP自动获取						
 
 Mask									    掩码
 
@@ -100,21 +100,33 @@ Resource         						资源数据
 
 ##### Sub										   订阅
 
-### LocalModbus        本地Modbus
+### Modbus				  Modbus
+
+#### ModbusServer			ModbusServer
 
 State										 开关			off-失效  on-使能
 
-IP											   缺省：127.0.0.1
+SlaveQuantity						从地址数量，最小为1，最大为32
 
-Port										   缺省：502
+ConnQuantity						连接数量，最小为1，rtu内部连接，大于1可用于远程连接
 
-### LocalApp   			 APP
+#### TCPServer					TCPServer
 
-State										  开关			off-失效  on-使能
+State									    开关			off-失效  on-使能
 
-IP											    缺省：192.168.12.1
+ProtocolType						 协议类型  modbus-tcp或modbus-rtu 		缺省：modbus-tcp
 
-Port										    缺省：17100
+Port										 端口，默认1502
+
+#### TCPClient					TCPClient
+
+State									    开关			off-失效  on-使能
+
+ProtocolType						 协议类型  modbus-tcp或modbus-rtu 		缺省：modbus-tcp
+
+IP											 IP
+
+Port										 端口
 
 ## Terminal	        端子配置
 

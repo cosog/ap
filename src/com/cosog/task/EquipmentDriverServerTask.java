@@ -19,26 +19,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
-import com.cosog.model.drive.AcqGroup;
 import com.cosog.model.drive.InitId;
 import com.cosog.model.drive.InitInstance;
 import com.cosog.model.drive.InitProtocol;
-import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.model.drive.ModbusProtocolConfig;
-import com.cosog.thread.calculate.HttpRequstThread;
 import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AdInitMap;
 import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.Config;
-import com.cosog.utils.DataModelMap;
 import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
@@ -56,7 +51,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=true;
+	private static boolean initEnable=false;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -178,6 +173,7 @@ public class EquipmentDriverServerTask {
 			this.cycle = cycle;
 			this.wait = wait;
 		}
+		@SuppressWarnings("static-access")
 		public void run(){
 			try {
 				Thread.sleep(1000*wait);
@@ -217,6 +213,7 @@ public class EquipmentDriverServerTask {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public static void exampleDataManage(){
 		if(Config.getInstance().configFile.getAp().getOthers().getSimulateAcqEnable()){
 			try {
@@ -294,7 +291,7 @@ public class EquipmentDriverServerTask {
 		}
 	}
 	
-	@SuppressWarnings({ "static-access", "resource" })
+	@SuppressWarnings({ "resource" })
 	public static int syncDataMappingTable(){
 		Connection conn = null;   
 		PreparedStatement pstmt = null;   
@@ -673,6 +670,7 @@ public class EquipmentDriverServerTask {
 		return result;
 	}
 	
+	@SuppressWarnings("resource")
 	public static int initDataDictionary(String dataDictionaryId,int deviceType){
 		int result=0;
 		int dataSaveMode=1;
@@ -800,6 +798,7 @@ public class EquipmentDriverServerTask {
 		return result;
 	}
 	
+	@SuppressWarnings("static-access")
 	public static void initProtocolConfig(String protocolName,String method){
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
@@ -989,6 +988,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	
+	@SuppressWarnings("static-access")
 	public static int initInstanceConfig(List<String> instanceList,String method){
 		String initUrl=Config.getInstance().configFile.getAd().getInstance();
 		Gson gson = new Gson();
@@ -1119,6 +1119,7 @@ public class EquipmentDriverServerTask {
 	}
 	
 	//初始化短信实例
+	@SuppressWarnings("static-access")
 	public static int initSMSInstanceConfig(List<String> instanceList,String method){
 		String initUrl=Config.getInstance().configFile.getAd().getInstance();
 		Gson gson = new Gson();
@@ -1274,7 +1275,6 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
-	@SuppressWarnings("resource")
 	public static int initDriverAcquisitionInfoConfigByProtocolName(String protocolName,int deviceType,String method){
 		List<String> wellList=new ArrayList<String>();
 		Connection conn = null;   
@@ -1474,6 +1474,7 @@ public class EquipmentDriverServerTask {
 		return 0;
 	}
 	
+	@SuppressWarnings("static-access")
 	public static int initSMSDevice(List<String> wellList,String method){
 		String initUrl=Config.getInstance().configFile.getAd().getSMS();
 		Gson gson = new Gson();

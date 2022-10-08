@@ -3133,6 +3133,18 @@ public class StringManagerUtils {
         }
         return result.toString();
     }
+    
+    public static String joinStringArr2(String[] objarr, String sign) {
+        StringBuffer result = new StringBuffer();
+        int length = objarr != null ? objarr.length : 0;
+        for (int i = 0; objarr != null && i < length; i++) {
+            result.append("'" + objarr[i] + "'");
+            if (i < length - 1) {
+                result.append(sign);
+            }
+        }
+        return result.toString();
+    }
 
     public static String inChangeToExists(String values, String column) {
         String ids[] = values.split(",");

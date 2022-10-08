@@ -78,11 +78,6 @@ public class RealTimeMonitoringController extends BaseController {
 	@RequestMapping("/getRealTimeMonitoringFESDiagramResultStatData")
 	public String getRealTimeMonitoringFESDiagramResultStatData() throws Exception {
 		String json = "";
-		String aa=request.getServerName();
-		String bb=request.getServerPort()+"";
-		String cc=request.getServletPath();
-		String dd = request.getContextPath(); 
-		String url=realTimeMonitoringService.getProjectUrl(request);
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");

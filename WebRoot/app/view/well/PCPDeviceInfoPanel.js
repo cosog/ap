@@ -333,24 +333,6 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
             }],
             listeners: {
                 beforeclose: function (panel, eOpts) {
-                	if (pcpDeviceInfoHandsontableHelper != null) {
-                        if (pcpDeviceInfoHandsontableHelper.hot != undefined) {
-                            pcpDeviceInfoHandsontableHelper.hot.destroy();
-                        }
-                        pcpDeviceInfoHandsontableHelper = null;
-                    }
-                    if (pcpProductionHandsontableHelper != null) {
-                        if (pcpProductionHandsontableHelper.hot != undefined) {
-                        	pcpProductionHandsontableHelper.hot.destroy();
-                        }
-                        pcpProductionHandsontableHelper = null;
-                    }
-                    if (pcpVideoInfoHandsontableHelper != null) {
-                        if (pcpVideoInfoHandsontableHelper.hot != undefined) {
-                        	pcpVideoInfoHandsontableHelper.hot.destroy();
-                        }
-                        pcpVideoInfoHandsontableHelper = null;
-                    }
                 }
             }
         })

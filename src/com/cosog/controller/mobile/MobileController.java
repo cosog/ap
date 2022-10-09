@@ -61,6 +61,7 @@ public class MobileController extends BaseController{
 		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		data="{\"account\": \"admin\",\"password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			try{
@@ -115,6 +116,7 @@ public class MobileController extends BaseController{
 		String userAccount = "";;
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		data="{\"userAccount\": \"admin\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			userAccount=jsonObject.getString("userAccount");
@@ -156,7 +158,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"StatType\":1,\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
+		data="{\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -175,7 +177,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
+		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -201,7 +203,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2021-03-09\",\"EndDate\":\"2021-03-09\",\"WellName\":\"长庆现场智能油田测试井\"}";
+		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2022-10-09 00:00:00\",\"EndDate\":\"2022-10-09 18:00:00\",\"WellName\":\"rpc01\"}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -224,7 +226,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"WellName\":\"长庆现场智能油田测试井\",\"AcqTime\":\"2021-03-09 14:08:45\"}";
+		data="{\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -239,6 +241,7 @@ public class MobileController extends BaseController{
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		data="{\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -253,6 +256,7 @@ public class MobileController extends BaseController{
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		data="{\"WellName\":\"rpc01\",\"StartDate\":\"2022-10-09 17:20:15\",\"EndDate\":\"2022-10-09 18:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -271,7 +275,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"Date\":\"2021-03-09\",\"StatType\":1,\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
+		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -290,7 +294,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\":1,\"Date\":\"2021-03-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
+		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -316,8 +320,8 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-//		data="{\"LiftingType\": 1,\"WellName\":\"长庆现场智能油田测试井\",\"StartDate\": \"2021-03-01\",\"EndDate\": \"2021-03-09\",\"StatType\": 1,\"StatValue\": \"正常\",\"WellList\": [\"长庆现场智能油田测试井\",\"北京室内智能油田测试井\"]}";
-		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
+		data="{\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2022-09-01\",\"EndDate\": \"2022-10-09\",\"StatType\": 1,\"StatValue\": \"正常\"}";
+//		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");

@@ -67,8 +67,6 @@ public class MobileService<T> extends BaseService<T> {
 			}
 			if("0".equals(orgId)){
 				queryString = "SELECT {Org.*} FROM tbl_org Org   "
-//						+ " start with Org.org_id=1  "
-//						+ " connect by Org.org_parent= prior Org.org_id "
 						+ " order by Org.org_code  ";
 			}else{
 				queryString = "SELECT {Org.*} FROM tbl_org Org   "
@@ -78,8 +76,6 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}else{
 			queryString = "SELECT {Org.*} FROM tbl_org Org   "
-//					+ " start with Org.org_id=1  "
-//					+ " connect by Org.org_parent= prior Org.org_id "
 					+ " order by Org.org_code  ";
 		}
 		
@@ -140,7 +136,6 @@ public class MobileService<T> extends BaseService<T> {
 	public String getRealTimeMonitoringFESDiagramResultStatData(String wells) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		Jedis jedis = null;
-		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		String [] wellList=null;
 		if(StringManagerUtils.isNotNull(wells)){
@@ -162,7 +157,6 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		result_json.append("{ \"success\":true,");
 		
-		int totalCount=0;
 		if(jedis==null){
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="viw_rpcdevice";
@@ -207,7 +201,6 @@ public class MobileService<T> extends BaseService<T> {
 					}
 				}
 				
-				int index=1;
 				result_json.append("\"totalRoot\":[");
 				for(Integer key:totalMap.keySet()){
 					String item="无数据";
@@ -217,7 +210,6 @@ public class MobileService<T> extends BaseService<T> {
 					}
 					result_json.append("{\"Item\":\""+item+"\",");
 					result_json.append("\"Count\":"+totalMap.get(key)+"},");
-					index++;
 				}
 				
 				if(result_json.toString().endsWith(",")){
@@ -237,7 +229,6 @@ public class MobileService<T> extends BaseService<T> {
 	public String getRealTimeMonitoringCommStatusStatData(String wells,int deviceType) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		Jedis jedis = null;
-		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		String [] wellList=null;
 		if(StringManagerUtils.isNotNull(wells)){
@@ -245,11 +236,6 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("AlarmShowStyle".getBytes())){
-				MemoryDataManagerTask.initAlarmStyle();
-			}
-			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-			
 			if(deviceType==1){
 				if(!jedis.exists("RPCDeviceInfo".getBytes())){
 					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
@@ -265,11 +251,11 @@ public class MobileService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,");
-		int total=0,online=0,goOnline=0,offline=0;
+		int online=0,goOnline=0,offline=0;
 		if(jedis==null){
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="viw_rpcdevice";
-			if(deviceType==1){
+			if(deviceType==2){
 				tableName="tbl_pcpacqdata_latest";
 				deviceTableName="viw_pcpdevice";
 			}
@@ -332,7 +318,6 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		
-		total=online+goOnline+offline;
 		result_json.append("\"totalRoot\":[");
 		
 		result_json.append("{\"Item\":\"在线\",");
@@ -353,7 +338,6 @@ public class MobileService<T> extends BaseService<T> {
 	public String getRealTimeMonitoringRunStatusStatData(String wells,int deviceType) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		Jedis jedis = null;
-		AlarmShowStyle alarmShowStyle=null;
 		List<byte[]> deviceInfoByteList=null;
 		String [] wellList=null;
 		if(StringManagerUtils.isNotNull(wells)){
@@ -361,11 +345,6 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("AlarmShowStyle".getBytes())){
-				MemoryDataManagerTask.initAlarmStyle();
-			}
-			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
-			
 			if(deviceType==1){
 				if(!jedis.exists("RPCDeviceInfo".getBytes())){
 					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
@@ -381,11 +360,11 @@ public class MobileService<T> extends BaseService<T> {
 			e.printStackTrace();
 		}
 		result_json.append("{ \"success\":true,");
-		int total=0,run=0,stop=0,offline=0;
+		int run=0,stop=0,offline=0;
 		if(jedis==null){
 			String tableName="tbl_rpcacqdata_latest";
 			String deviceTableName="viw_rpcdevice";
-			if(deviceType==1){
+			if(deviceType==2){
 				tableName="tbl_pcpacqdata_latest";
 				deviceTableName="viw_pcpdevice";
 			}
@@ -455,7 +434,6 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		
-		total=run+stop+offline;
 		result_json.append("\"totalRoot\":[");
 		
 		result_json.append("{\"Item\":\"运行\",");
@@ -476,7 +454,6 @@ public class MobileService<T> extends BaseService<T> {
 	public String getOilWellRealtimeWellListData(String data,Page pager)throws Exception {
 		String json = "";
 		StringBuffer wells= new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
 		int liftingType=1;
 		int statType=1;
 		String statValue="";
@@ -526,7 +503,6 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getDeviceRealTimeOverview(String wells,int statType,String statValue) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
 		Jedis jedis=null;
 		String [] wellList=null;
 		if(StringManagerUtils.isNotNull(wells)){
@@ -558,7 +534,7 @@ public class MobileService<T> extends BaseService<T> {
 		
 		String sql="select t.id,t.wellname,t.videourl,t.videoAccessToken,"
 				+ "c1.itemname as devicetypename,"
-				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+				+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 				+ "t2.runstatus,decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
@@ -599,8 +575,10 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			StringBuffer alarmInfo = new StringBuffer();
 			String deviceId=obj[0]+"";
+			String commStatusName=obj[7]+"";
+			String runStatusName=obj[12]+"";
+			String resultcode=obj[16]+"";
 			
 			RPCDeviceInfo rpcDeviceInfo=null;
 			if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
@@ -615,11 +593,11 @@ public class MobileService<T> extends BaseService<T> {
 			int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
 			if(alarmInstanceOwnItem!=null){
 				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
-					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[7]+"")){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
 						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[12]+"")){
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
 						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(obj[16]+"")){
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultcode)){
 						resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 					}
 				}
@@ -632,13 +610,13 @@ public class MobileService<T> extends BaseService<T> {
 			result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
 			result_json.append("\"acqTime\":\""+obj[5]+"\",");
 			result_json.append("\"commStatus\":"+obj[6]+",");
-			result_json.append("\"commStatusName\":\""+obj[7]+"\",");
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
 			result_json.append("\"commTime\":\""+obj[8]+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[9]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[10])+"\",");
 			
 			result_json.append("\"runStatus\":"+obj[11]+",");
-			result_json.append("\"runStatusName\":\""+obj[12]+"\",");
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
 			result_json.append("\"runTime\":\""+obj[13]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[14]+"\",");
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[15])+"\",");
@@ -695,7 +673,6 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getPCPDeviceRealTimeOverview(String wells,int statType,String statValue) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
 		Jedis jedis=null;
 		String [] wellList=null;
 		if(StringManagerUtils.isNotNull(wells)){
@@ -713,12 +690,9 @@ public class MobileService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		
 		String tableName="tbl_pcpacqdata_latest";
 		String deviceTableName="tbl_pcpdevice";
-		
-		
 		
 		String sql="select t.id,t.wellname,t.videourl,t.videoAccessToken,"
 				+ "c1.itemname as devicetypename,"
@@ -753,9 +727,9 @@ public class MobileService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			StringBuffer alarmInfo = new StringBuffer();
 			String deviceId=obj[0]+"";
-			
+			String commStatusName=obj[7]+"";
+			String runStatusName=obj[12]+"";
 			PCPDeviceInfo pcpDeviceInfo=null;
 			if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
 				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
@@ -770,9 +744,9 @@ public class MobileService<T> extends BaseService<T> {
 			int commAlarmLevel=0,runAlarmLevel=0;
 			if(alarmInstanceOwnItem!=null){
 				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
-					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[7]+"")){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
 						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[12]+"")){
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
 						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 					}
 				}
@@ -785,13 +759,13 @@ public class MobileService<T> extends BaseService<T> {
 			result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
 			result_json.append("\"acqTime\":\""+obj[5]+"\",");
 			result_json.append("\"commStatus\":"+obj[6]+",");
-			result_json.append("\"commStatusName\":\""+obj[7]+"\",");
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
 			result_json.append("\"commTime\":\""+obj[8]+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[9]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[10])+"\",");
 			
 			result_json.append("\"runStatus\":"+obj[11]+",");
-			result_json.append("\"runStatusName\":\""+obj[12]+"\",");
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
 			result_json.append("\"runTime\":\""+obj[13]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[14]+"\",");
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[15])+"\",");
@@ -830,13 +804,12 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getOilWellHistoryData(String data,Page pager)throws Exception {
 		String json = "";
-		
 		int liftingType=1;
 		int statType=1;
 		String statValue="";
 		String wellName="";
-		String startDate=StringManagerUtils.getCurrentTime();
-		String endDate=StringManagerUtils.getCurrentTime();
+		String startDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String endDate=startDate;
 		if(StringManagerUtils.isNotNull(data)){
 			try{
 				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -910,14 +883,14 @@ public class MobileService<T> extends BaseService<T> {
 		String deviceTableName="tbl_rpcdevice";
 		
 		String sql="select t2.id,t.id as wellId,t.wellname,"
-				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+				+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
 				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
 				+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
 				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
 				+ "t2.resultcode,decode(t2.commstatus,1,decode(t2.resultcode,null,'无数据',t3.resultName),'' ) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
 				+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,"
-				+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,,"
+				+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,"
 				+ "t2.FMax,t2.FMin,t2.fullnessCoefficient,"
 				+ "t2.averageWatt,t2.polishrodPower,t2.waterPower,"
 				+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
@@ -929,11 +902,20 @@ public class MobileService<T> extends BaseService<T> {
 		sql+= " from "+deviceTableName+" t "
 				+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
 				+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
-				+ " where  t2.acqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+				+ " where  t2.fesdiagramAcqTime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss') ";
+		if(statType==1 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+		}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
+		}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+		}
+		
+		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+= "and t.wellname='"+wellName+"'";
 		}	
-		sql+= "  order by t2.acqtime desc";
+		sql+= "  order by t2.fesdiagramAcqTime desc";
 		
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
@@ -943,6 +925,9 @@ public class MobileService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			String deviceId=obj[1]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[10]+"";
+			String resultcode=obj[14]+"";
 			RPCDeviceInfo rpcDeviceInfo=null;
 			if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
 				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
@@ -956,11 +941,11 @@ public class MobileService<T> extends BaseService<T> {
 			int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
 			if(alarmInstanceOwnItem!=null){
 				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
-					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[4]+"")){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
 						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[9]+"")){
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
 						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(obj[13]+"")){
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultcode)){
 						resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 					}
 				}
@@ -971,18 +956,18 @@ public class MobileService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[2]+"\",");
 			result_json.append("\"acqTime\":\""+obj[3]+"\",");
 			result_json.append("\"commStatus\":"+obj[4]+",");
-			result_json.append("\"commStatusName\":\""+obj[5]+"\",");
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
 			result_json.append("\"commTime\":\""+obj[6]+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
 			result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 			result_json.append("\"runStatus\":"+obj[9]+",");
-			result_json.append("\"runStatusName\":\""+obj[10]+"\",");
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
 			result_json.append("\"runTime\":\""+obj[11]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[12]+"\",");
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
 			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+",");
-			result_json.append("\"resultCode\":\""+obj[14]+"\",");
+			result_json.append("\"resultCode\":\""+resultcode+"\",");
 			result_json.append("\"resultName\":\""+obj[15]+"\",");
 			result_json.append("\"optimizationSuggestion\":\""+obj[16]+"\",");
 			result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
@@ -1065,6 +1050,11 @@ public class MobileService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+= "and t.wellname='"+wellName+"'";
 		}	
+		if(statType==2 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
+		}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+		}
 		sql+= "  order by t2.acqtime desc";
 		
 		
@@ -1076,6 +1066,8 @@ public class MobileService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			String deviceId=obj[1]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[10]+"";
 			PCPDeviceInfo pcpDeviceInfo=null;
 			if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
 				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
@@ -1089,9 +1081,9 @@ public class MobileService<T> extends BaseService<T> {
 			int commAlarmLevel=0,runAlarmLevel=0;
 			if(alarmInstanceOwnItem!=null){
 				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
-					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[4]+"")){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
 						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(obj[9]+"")){
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
 						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 					}
 				}
@@ -1102,13 +1094,13 @@ public class MobileService<T> extends BaseService<T> {
 			result_json.append("\"wellName\":\""+obj[2]+"\",");
 			result_json.append("\"acqTime\":\""+obj[3]+"\",");
 			result_json.append("\"commStatus\":"+obj[4]+",");
-			result_json.append("\"commStatusName\":\""+obj[5]+"\",");
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
 			result_json.append("\"commTime\":\""+obj[6]+"\",");
 			result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
 			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
 			result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
 			result_json.append("\"runStatus\":"+obj[9]+",");
-			result_json.append("\"runStatusName\":\""+obj[10]+"\",");
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
 			result_json.append("\"runTime\":\""+obj[11]+"\",");
 			result_json.append("\"runTimeEfficiency\":\""+obj[12]+"\",");
 			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
@@ -1154,7 +1146,7 @@ public class MobileService<T> extends BaseService<T> {
 					}catch(Exception e){
 						e.printStackTrace();
 					}
-					if(liftingType!=2){
+					if(liftingType==1){
 						json=getPumpunitRealtimeWellAnalysisData(data);
 					}
 				}
@@ -1194,16 +1186,16 @@ public class MobileService<T> extends BaseService<T> {
 		}
 		
 		String sql="";
-		String hisTableName="tbl_pcpacqdata_hist";
-		String deviceTableName="tbl_pcpdevice";
+		String hisTableName="tbl_rpcacqdata_hist";
+		String deviceTableName="tbl_rpcdevice";
 		
-		sql="select t.id, t.wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+		sql="select t.id, t2.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 				+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", t3.resultName "
 				+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
 				+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
 				+ " and t2.wellName='" + wellName + "' "
-				+ " and t.acqTime = to_date('"+ acqTime +"','yyyy-MM-dd hh24:mi:ss')";
+				+ " and t.fesdiagramAcqTime = to_date('"+ acqTime +"','yyyy-MM-dd hh24:mi:ss')";
 		
 		List<?> list=this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalRoot\":[");
@@ -1273,8 +1265,8 @@ public class MobileService<T> extends BaseService<T> {
 			prodCol=" t.liquidVolumetricProduction";
 		}
 		String wellName="";
-		String startDate=StringManagerUtils.getCurrentTime();
-		String endDate=StringManagerUtils.getCurrentTime();
+		String startDate=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+		String endDate=startDate;
 		if(StringManagerUtils.isNotNull(data)){
 			try{
 				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -1300,10 +1292,10 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}
 		String sql="";
-		String hisTableName="tbl_pcpacqdata_hist";
-		String deviceTableName="tbl_pcpdevice";
+		String hisTableName="tbl_rpcacqdata_hist";
+		String deviceTableName="tbl_rpcdevice";
 		
-		sql="select t.id, t.wellName, to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
+		sql="select t.id, t2.wellName, to_char(t.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqTime, "
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 				+ " t.upperLoadline, t.lowerloadline, t.fmax, t.fmin, t.stroke, t.SPM, "+prodCol+", t3.resultName "
 				+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
@@ -1311,8 +1303,8 @@ public class MobileService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+= " and t2.wellName='" + wellName + "' ";
 		}
-		sql+= " and t.acqTime between to_date('"+ startDate +"','yyyy-MM-dd') and to_date('"+ endDate +"','yyyy-MM-dd')+1";
-		sql+=" order by t.acqTime desc";
+		sql+= " and t.fesdiagramAcqTime between to_date('"+ startDate +"','yyyy-MM-dd hh24:mi:ss') and to_date('"+ endDate +"','yyyy-MM-dd hh24:mi:ss')";
+		sql+=" order by t.fesdiagramAcqTime desc";
 		List<?> list=this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalRoot\":[");
 		
@@ -1401,8 +1393,8 @@ public class MobileService<T> extends BaseService<T> {
 						prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,"
 								+ " t.availablePlungerstrokeProd_V,t.pumpClearanceLeakProd_V,t.tvleakVolumetricProduction,t.svleakVolumetricProduction,t.gasInfluenceProd_V,";;
 					}
-					String hisTableName="tbl_pcpacqdata_hist";
-					String deviceTableName="tbl_pcpdevice";
+					String hisTableName="tbl_rpcacqdata_hist";
+					String deviceTableName="tbl_rpcdevice";
 					String sql="select t3.resultName,"
 							+ " t.wattDegreeBalance,t.iDegreeBalance,t.deltaRadius,"
 							+ prodCol
@@ -1417,7 +1409,7 @@ public class MobileService<T> extends BaseService<T> {
 							+ " t.pumpoutletp,t.pumpoutlett,t.pumpOutletGol,t.pumpoutletvisl,t.pumpoutletbo"
 							+ " from "+hisTableName+" t, "+deviceTableName+" t2,tbl_rpc_worktype t3"
 							+ " where t.wellid=t2.id and t.resultcode=t3.resultcode"
-							+ " and  t2.wellname='"+wellName+"' and t.acqtime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')"; 
+							+ " and  t2.wellname='"+wellName+"' and t.fesdiagramAcqTime=to_date('"+acqTime+"','yyyy-mm-dd hh24:mi:ss')"; 
 					List<?> list = this.findCallSql(sql);
 					result_json.append("{ \"success\":true,");
 					if(list.size()>0){
@@ -1494,8 +1486,7 @@ public class MobileService<T> extends BaseService<T> {
 	
 	public String getOilWellTotalStatisticsData(String data){
 		StringBuffer wells= new StringBuffer();
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
+		String json="{\"success\":false,\"date\":\"\",\"totalRoot\":[]}";
 		int liftingType=1;
 		int type=1;
 		String date=StringManagerUtils.getCurrentTime();
@@ -1521,7 +1512,7 @@ public class MobileService<T> extends BaseService<T> {
 			try{
 				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
 				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-					wells.append("'"+jsonArray.getString(i)+"',");
+					wells.append(""+jsonArray.getString(i)+",");
 				}
 				if(wells.toString().endsWith(",")){
 					wells.deleteCharAt(wells.length() - 1);
@@ -1529,83 +1520,172 @@ public class MobileService<T> extends BaseService<T> {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			
-			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		String sql="";
-		String tableName="viw_rpc_total_day";
-		String statType="resultName";
-		if(type==1){
-			statType="resultName";
-		}else if(type==2){
-			statType="liquidWeightProductionlevel";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("stere")){
-				statType="liquidVolumeProductionlevel";
+		
+		try{
+			if(liftingType==1 && type==1){
+				json=this.getTotalFESDiagramResultStatData(wells.toString(),date);
+			}else if(type==2){
+				json=this.getTotalCommStatusStatData(wells.toString(),liftingType,date);
+			}else if(type==3){
+				json=this.getTotalRunStatusStatData(wells.toString(),liftingType,date);
 			}
-		}else if(type==3){
-			statType="wattdegreebalanceLevel";
-		}else if(type==4){
-			statType="idegreebalanceLevel";
-		}else if(type==5){
-			statType="systemEfficiencyLevel";
-		}else if(type==6){
-			statType="surfaceSystemEfficiencyLevel";
-		}else if(type==7){
-			statType="wellDownSystemEfficiencyLevel";
-		}else if(type==8){
-			statType="todayKWattHLevel";
-		}else if(type==9){
-			statType="runStatusName";
-		}else if(type==10){
-			statType="runtimeEfficiencyLevel";
-		}else if(type==11){
-			statType="commStatusName";
-		}else if(type==12){
-			statType="commtimeefficiencyLevel";
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		if(liftingType!=2){
-			tableName="viw_rpc_total_day";
-		}else{
-			tableName="viw_pcp_total_day";
+		
+		return json;
+	}
+	
+	public String getTotalFESDiagramResultStatData(String wells,String date) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		String [] wellList=null;
+		if(StringManagerUtils.isNotNull(wells)){
+			wellList=wells.split(",");
 		}
-		sql="select "+statType+", count(1) from "+tableName+" t where calculateDate=to_date('"+date+"','yyyy-mm-dd') ";
-		if(StringManagerUtils.isNotNull(wells.toString())){
-			sql+= " and wellname in ("+wells.toString()+")";
+		result_json.append("{ \"success\":true,");
+		
+		String sql="select decode(t2.resultcode,null,'无数据',t3.resultname) as resultname,t2.resultcode,count(1) "
+				+ " from tbl_rpcdevice t "
+				+ " left outer join tbl_rpcdailycalculationdata t2 on t2.wellid=t.id "
+				+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+				+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
+		if(wellList!=null){
+			sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 		}
-		sql+=" group by rollup("+statType+")";
+		sql+= "group by t3.resultname,t2.resultcode order by t2.resultcode";
+		
 		List<?> list = this.findCallSql(sql);
-		result_json.append("{ \"success\":true,\"date\":\""+date+"\",");
 		result_json.append("\"totalRoot\":[");
-		int totalCount=0;
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			if(StringManagerUtils.isNotNull(obj[0]+"")){
-				result_json.append("{\"item\":\""+obj[0]+"\",");
-				result_json.append("\"count\":"+obj[1]+"},");
-				totalCount+=StringManagerUtils.stringToInteger(obj[1]+"");
-			}
+			result_json.append("{\"Item\":\""+obj[0]+"\",");
+			result_json.append("\"Count\":"+obj[2]+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		return result_json.toString();
+	
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getTotalCommStatusStatData(String wells,int deviceType,String date) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		
+		String [] wellList=null;
+		if(StringManagerUtils.isNotNull(wells)){
+			wellList=wells.split(",");
+		}
+		
+		result_json.append("{ \"success\":true,");
+		int online=0,goOnline=0,offline=0;
+
+		String tableName="tbl_rpcdailycalculationdata";
+		String deviceTableName="tbl_rpcdevice";
+		if(deviceType!=1){
+			tableName="tbl_pcpdailycalculationdata";
+			deviceTableName="tbl_ocodevice";
+		}
+		
+		String sql="select t2.commstatus,count(1) "
+				+ " from "+tableName+" t "
+				+ " left outer join "+deviceTableName+" t2 on t2.wellid=t.id"
+				+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
+		if(wellList!=null){
+			sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+		}
+		sql+=" group by t2.commstatus";
+		
+		List<?> list = this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.stringToInteger(obj[0]+"")==1){
+				online=StringManagerUtils.stringToInteger(obj[1]+"");
+			}else if(StringManagerUtils.stringToInteger(obj[0]+"")==2){
+				goOnline=StringManagerUtils.stringToInteger(obj[1]+"");
+			}else{
+				offline=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+		}
+	
+		
+		result_json.append("\"totalRoot\":[");
+		
+		result_json.append("{\"Item\":\"在线\",");
+		result_json.append("\"Count\":"+online+"},");
+		
+		result_json.append("{\"Item\":\"上线\",");
+		result_json.append("\"Count\":"+goOnline+"},");
+		
+		result_json.append("{\"Item\":\"离线\",");
+		result_json.append("\"Count\":"+offline+"}");
+		result_json.append("]}");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getTotalRunStatusStatData(String wells,int deviceType,String date) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		String [] wellList=null;
+		if(StringManagerUtils.isNotNull(wells)){
+			wellList=wells.split(",");
+		}
+		result_json.append("{ \"success\":true,");
+		int run=0,stop=0,offline=0;
+
+		String tableName="tbl_rpcdailycalculationdata";
+		String deviceTableName="tbl_rpcdevice";
+		if(deviceType!=1){
+			tableName="tbl_pcpdailycalculationdata";
+			deviceTableName="tbl_ocodevice";
+		}
+		
+		String sql="select decode(t2.commstatus,0,-1,t2.runstatus) as runstatus,count(1) "
+				+ " from "+tableName+" t "
+				+ " left outer join "+deviceTableName+" t2 on t2.wellid=t.id"
+				+ " where t2.caldate=to_date('"+date+"','yyyy-mm-dd') ";
+		if(wellList!=null){
+			sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+		}
+		sql+=" group by t2.commstatus,t2.runstatus";
+		
+		List<?> list = this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			if(StringManagerUtils.stringToInteger(obj[0]+"")==1){
+				run=StringManagerUtils.stringToInteger(obj[1]+"");
+			}else if(StringManagerUtils.stringToInteger(obj[0]+"")==0){
+				stop=StringManagerUtils.stringToInteger(obj[1]+"");
+			}else{
+				offline=StringManagerUtils.stringToInteger(obj[1]+"");
+			}
+		}
+		
+		result_json.append("\"totalRoot\":[");
+		
+		result_json.append("{\"Item\":\"运行\",");
+		result_json.append("\"Count\":"+run+"},");
+		
+		result_json.append("{\"Item\":\"停抽\",");
+		result_json.append("\"Count\":"+stop+"},");
+		
+		result_json.append("{\"Item\":\"离线\",");
+		result_json.append("\"Count\":"+offline+"}");
+		result_json.append("]}");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
 	public String getOilWellTotalWellListData(String data,Page pager)throws Exception {
 		StringBuffer wells= new StringBuffer();
-		String getResult="";
-		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
+		String result = "";
 		int liftingType=1;
 		String date=StringManagerUtils.getCurrentTime();
-		int type=1;
+		int statType=1;
 		String statValue="";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			
 			try{
 				liftingType=jsonObject.getInt("LiftingType");
 			}catch(Exception e){
@@ -1617,7 +1697,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			try{
-				type=jsonObject.getInt("StatType");
+				statType=jsonObject.getInt("StatType");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -1629,7 +1709,7 @@ public class MobileService<T> extends BaseService<T> {
 			try{
 				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
 				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-					wells.append("'"+jsonArray.getString(i)+"',");
+					wells.append(""+jsonArray.getString(i)+",");
 				}
 				if(wells.toString().endsWith(",")){
 					wells.deleteCharAt(wells.length() - 1);
@@ -1639,147 +1719,290 @@ public class MobileService<T> extends BaseService<T> {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			liftingType=1;
-			date=StringManagerUtils.getCurrentTime();
-			type=1;
-			statValue="";
 		}
-		String tableName="viw_rpc_total_day";
-		String typeColumnName="resultName";
-		if(type==1){
-			typeColumnName="resultName";
-		}else if(type==2){
-			typeColumnName="liquidWeightProductionlevel";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("stere")){
-				typeColumnName="liquidVolumeProductionlevel";
-			}
-		}else if(type==3){
-			typeColumnName="wattdegreebalanceLevel";
-		}else if(type==4){
-			typeColumnName="idegreebalanceLevel";
-		}else if(type==5){
-			typeColumnName="systemEfficiencyLevel";
-		}else if(type==6){
-			typeColumnName="surfaceSystemEfficiencyLevel";
-		}else if(type==7){
-			typeColumnName="wellDownSystemEfficiencyLevel";
-		}else if(type==8){
-			typeColumnName="todayKWattHLevel";
-		}else if(type==9){
-			typeColumnName="commStatusName";
-		}else if(type==10){
-			typeColumnName="commtimeefficiencyLevel";
-		}else if(type==11){
-			typeColumnName="runStatusName";
-		}else if(type==12){
-			typeColumnName="runtimeEfficiencyLevel";
-		}
-		String sql="";
-		if(liftingType!=2){
-			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
-					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
-					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
-					+ "resultName,optimizationSuggestion,"
-					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
-					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
-					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
-					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
-					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
-			tableName="viw_rpc_total_day";
+		if(liftingType==1){
+			result=this.getDeviceTotalOverview(wells.toString(), statType, statValue, date);
 		}else{
-			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
-					+ "resultName,optimizationSuggestion,"
-					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
-					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
-					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
-					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
-					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
-					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
-					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
-			tableName="viw_pcp_total_day";
+			result=this.getPCPDeviceTotalOverview(wells.toString(), statType, statValue, date);
 		}
-				
-		sql+= " from "+tableName+" t where 1=1 ";
-		if(StringManagerUtils.isNotNull(wells.toString())){
-			sql+= " and t.wellname in ("+wells.toString()+") ";
+		return result;
+	}
+	
+	public String getDeviceTotalOverview(String wells,int statType,String statValue,String date) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		Jedis jedis=null;
+		String [] wellList=null;
+		if(StringManagerUtils.isNotNull(wells)){
+			wellList=wells.split(",");
+		}
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCDeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			}
+			
+			if(!jedis.exists("RPCWorkType".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+			
+			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		
-		sql+=" and t.calculateDate=to_date('"+date+"','yyyy-mm-dd') ";
-		if(StringManagerUtils.isNotNull(statValue)){
-			sql+=" and "+typeColumnName+"='"+statValue+"'";
+		String tableName="tbl_rpcdailycalculationdata";
+		String deviceTableName="tbl_rpcdevice";
+		
+		String sql="select t2.id,t.id as wellId,t.wellName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
+				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
+				+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
+				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
+				+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
+				+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.volumeWaterCut,"
+				+ "t2.wattDegreeBalance,t2.iDegreeBalance,t2.deltaRadius,"
+				+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
+				+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
+				+ "t2.systemEfficiency*100 as systemEfficiency,"
+				+ "t2.energyper100mlift,t2.todayKWattH,"
+				+ "t2.pumpEff*100 as pumpEff";
+		sql+= " from "+deviceTableName+" t "
+				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+				+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+				+ " where  t2.caldate= to_date('"+date+"','yyyy-mm-dd') ";
+		if(wellList!=null){
+			sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
 		}
-		sql+=" order by t.sortnum, t.wellName";
+		if(statType==1 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+		}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
+		}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+		}
+		sql+=" order by t.sortnum,t.wellname";
+		
+		
+		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalCount\":"+totals+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			if(StringManagerUtils.isNotNull(obj[0]+"")){
-				result_json.append("{\"id\":"+obj[0]+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
-				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
-				result_json.append("\"acquisitionDate\":\""+obj[3]+"\",");
-				result_json.append("\"extendedDays\":"+obj[4]+",");
-				
-				result_json.append("\"resultName\":\""+obj[5]+"\",");
-				result_json.append("\"optimizationSuggestion\":\""+obj[6]+"\",");
-				
-				result_json.append("\"commStatus\":\""+obj[7]+"\",");
-				result_json.append("\"commTime\":"+obj[5]+",");
-				result_json.append("\"commTimeEfficiency\":"+obj[9]+",");
-				result_json.append("\"commRange\":\""+obj[10]+"\",");
-				
-				result_json.append("\"runStatus\":\""+obj[11]+"\",");
-				result_json.append("\"runTime\":"+obj[12]+",");
-				result_json.append("\"runTimeEfficiency\":"+obj[13]+",");
-				result_json.append("\"runRange\":\""+obj[14]+"\",");
-				
-				result_json.append("\"liquidWeightProduction\":"+obj[15]+",");
-				result_json.append("\"oilWeightProduction\":"+obj[16]+",");
-				result_json.append("\"waterWeightProduction\":"+obj[17]+",");
-				result_json.append("\"weightWaterCut\":"+obj[18]+",");
-				
-				result_json.append("\"liquidVolumetricProduction\":"+obj[19]+",");
-				result_json.append("\"oilVolumetricProduction\":"+obj[20]+",");
-				result_json.append("\"waterVolumetricProduction\":"+obj[21]+",");
-				result_json.append("\"volumeWaterCut\":"+obj[22]+",");
-				
-				result_json.append("\"wattDegreeBalanceName\":\""+obj[23]+"\",");
-				result_json.append("\"wattDegreeBalance\":"+obj[24]+",");
-				result_json.append("\"iDegreeBalanceName\":\""+obj[25]+"\",");
-				result_json.append("\"iDegreeBalance\":"+obj[26]+",");
-				result_json.append("\"deltaRadius\":"+obj[27]+",");
-				
-				result_json.append("\"systemEfficiency\":"+obj[28]+",");
-				result_json.append("\"surfaceSystemEfficiency\":"+obj[29]+",");
-				result_json.append("\"welldownSystemEfficiency\":"+obj[30]+",");
-				result_json.append("\"energyPer100mLift\":"+obj[31]+",");
-				result_json.append("\"todayKWattH\":"+obj[32]+",");
-				
-				result_json.append("\"resultAlarmLevel\":"+obj[33]+",");
-				result_json.append("\"commAlarmLevel\":"+obj[34]+",");
-				result_json.append("\"runAlarmLevel\":"+obj[35]+",");
-				result_json.append("\"iDegreeBalanceAlarmLevel\":"+obj[36]+",");
-				result_json.append("\"wattDegreeBalanceAlarmLevel\":"+obj[37]+"},");
+			String deviceId=obj[1]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[9]+"";
+			String resultcode=obj[13]+"";
+			
+			
+			RPCDeviceInfo rpcDeviceInfo=null;
+			if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
+				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
 			}
+			
+			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
+				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+			}
+			
+			int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+			if(alarmInstanceOwnItem!=null){
+				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
+						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
+						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultcode)){
+						resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}
+				}
+			}
+			
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"caldate\":\""+obj[3]+"\",");
+			result_json.append("\"extendedDays\":\""+obj[4]+"\",");
+			
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
+			result_json.append("\"commTime\":\""+obj[6]+"\",");
+			result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
+			
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+			result_json.append("\"runTime\":\""+obj[10]+"\",");
+			result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+			result_json.append("\"resultName\":\""+obj[14]+"\",");
+			result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+			
+			result_json.append("\"liquidWeightProduction\":\""+obj[16]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[17]+"\",");
+			result_json.append("\"waterWeightProduction\":\""+obj[18]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[19]+"\",");
+			
+			result_json.append("\"liquidVolumetricProduction\":\""+obj[20]+"\",");
+			result_json.append("\"oilVolumetricProduction\":\""+obj[21]+"\",");
+			result_json.append("\"waterVolumetricProduction\":\""+obj[22]+"\",");
+			result_json.append("\"volumeWaterCut\":\""+obj[23]+"\",");
+			
+			result_json.append("\"iDegreeBalance\":\""+obj[24]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[25]+"\",");
+			result_json.append("\"deltaradius\":\""+obj[26]+"\",");
+			
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[28]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[29]+"\",");
+			result_json.append("\"energyper100mlift\":\""+obj[30]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[31]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[32]+"\",");
+
+			result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
+			result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
+			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		return result_json.toString();
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getPCPDeviceTotalOverview(String wells,int statType,String statValue,String date) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		Jedis jedis=null;
+		String [] wellList=null;
+		if(StringManagerUtils.isNotNull(wells)){
+			wellList=wells.split(",");
+		}
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("PCPDeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+			}
+			
+			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		String tableName="tbl_pcpdailycalculationdata";
+		String deviceTableName="tbl_pcpdevice";
+		
+		String sql="select t2.id,t.id as wellId,t.wellname,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
+				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
+				+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
+				+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
+				+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+				+ "t2.systemEfficiency*100 as systemEfficiency,"
+				+ "t2.todayKWattH,"
+				+ "t2.pumpEff*100 as pumpEff";
+		sql+= " from "+deviceTableName+" t "
+				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+				+ " where  t2.caldate= to_date('"+date+"','yyyy-mm-dd') ";
+		if(wellList!=null){
+			sql+=" and t.wellname in ( "+StringManagerUtils.joinStringArr2(wellList, ",")+" )";
+		}
+		if(statType==2 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
+		}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+		}
+		sql+=" order by t.sortnum,t.wellname";
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			String deviceId=obj[1]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[9]+"";
+			
+			PCPDeviceInfo pcpDeviceInfo=null;
+			if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
+				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
+			}
+			
+			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+			if(jedis!=null&&pcpDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes())){
+				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes()));
+			}
+			
+			
+			int commAlarmLevel=0,runAlarmLevel=0;
+			if(alarmInstanceOwnItem!=null){
+				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
+						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
+						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}
+				}
+			}
+			
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"caldate\":\""+obj[3]+"\",");
+			result_json.append("\"extendedDays\":\""+obj[4]+"\",");
+			
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
+			result_json.append("\"commTime\":\""+obj[6]+"\",");
+			result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
+			
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+			result_json.append("\"runTime\":\""+obj[10]+"\",");
+			result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+			
+			result_json.append("\"liquidWeightProduction\":\""+obj[13]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[14]+"\",");
+			result_json.append("\"waterWeightProduction\":\""+obj[15]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[16]+"\",");
+			
+			result_json.append("\"liquidVolumetricProduction\":\""+obj[17]+"\",");
+			result_json.append("\"oilVolumetricProduction\":\""+obj[18]+"\",");
+			result_json.append("\"waterVolumetricProduction\":\""+obj[19]+"\",");
+			result_json.append("\"volumeWaterCut\":\""+obj[20]+"\",");
+			
+			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[22]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[23]+"\",");
+
+			result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
+			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
 	public String getOilWellTotalHistoryData(String data,Page pager)throws Exception {
-		StringBuffer wells= new StringBuffer();
-		String getResult="";
-		StringBuffer result_json = new StringBuffer();
+		String result = "";
 		ConfigFile configFile=Config.getInstance().configFile;
 		int liftingType=1;
 		String startDate=StringManagerUtils.getCurrentTime();
 		String endDate=StringManagerUtils.getCurrentTime();
 		String wellName="";
-		int type=1;
+		int statType=1;
 		String statValue="";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
@@ -1805,7 +2028,7 @@ public class MobileService<T> extends BaseService<T> {
 				e.printStackTrace();
 			}
 			try{
-				type=jsonObject.getInt("StatType");
+				statType=jsonObject.getInt("StatType");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -1814,153 +2037,272 @@ public class MobileService<T> extends BaseService<T> {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			try{
-				JSONArray jsonArray = jsonObject.getJSONArray("WellList");
-				for(int i=0;jsonArray!=null&&i<jsonArray.size();i++){
-					wells.append("'"+jsonArray.getString(i)+"',");
-				}
-				if(wells.toString().endsWith(",")){
-					wells.deleteCharAt(wells.length() - 1);
-				}
-			}catch(Exception e){
-				e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		if(liftingType==1){
+			result=this.getDeviceTotalHistory(wellName.toString(), statType, statValue, startDate,endDate);
+		}else{
+			result=this.getPCPDeviceTotalHistory(wellName.toString(), statType, statValue, startDate,endDate);
+		}
+		return result;
+	}
+	
+	public String getDeviceTotalHistory(String wellName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCDeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			}
+			
+			if(!jedis.exists("RPCWorkType".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+			
+			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			liftingType=1;
-			startDate=StringManagerUtils.getCurrentTime();
-			endDate=StringManagerUtils.getCurrentTime();
-			wellName="";
-			type=1;
-			statValue="";
-		}
-		String tableName="viw_rpc_total_day";
-		String typeColumnName="resultName";
-		if(type==1){
-			typeColumnName="resultName";
-		}else if(type==2){
-			typeColumnName="liquidWeightProductionlevel";
-			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("stere")){
-				typeColumnName="liquidVolumeProductionlevel";
-			}
-		}else if(type==3){
-			typeColumnName="wattdegreebalanceLevel";
-		}else if(type==4){
-			typeColumnName="idegreebalanceLevel";
-		}else if(type==5){
-			typeColumnName="systemEfficiencyLevel";
-		}else if(type==6){
-			typeColumnName="surfaceSystemEfficiencyLevel";
-		}else if(type==7){
-			typeColumnName="wellDownSystemEfficiencyLevel";
-		}else if(type==8){
-			typeColumnName="todayKWattHLevel";
-		}else if(type==9){
-			typeColumnName="commStatusName";
-		}else if(type==10){
-			typeColumnName="commtimeefficiencyLevel";
-		}else if(type==11){
-			typeColumnName="runStatusName";
-		}else if(type==12){
-			typeColumnName="runtimeEfficiencyLevel";
-		}
-		String sql="";
-		if(liftingType!=2){
-			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
-					+ "resultName,optimizationSuggestion,"
-					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
-					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
-					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
-					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
-					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
-					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
-					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
-			tableName="viw_rpc_total_day";
-		}else{
-			sql= "select id,wellName,to_char(calculateDate,'yyyy-mm-dd') as calculateDate,to_char(acquisitionDate,'yyyy-mm-dd') as acquisitionDate,ExtendedDays,"
-					+ "resultName,optimizationSuggestion,"
-					+ "commStatusName,commTime,commTimeEfficiency,commRange,"
-					+ "runStatusName,runTime,runTimeEfficiency,runRange,"
-					+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
-					+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
-					+ "wattDegreeBalanceLevel,wattDegreeBalance,iDegreeBalanceLevel,iDegreeBalance,deltaRadius,"
-					+ "systemEfficiency,surfaceSystemEfficiency,welldownSystemEfficiency,energyPer100mLift,todayKWattH ,"
-					+ "resultAlarmLevel,commAlarmLevel,runAlarmLevel,iDegreeBalanceAlarmLevel,wattDegreeBalanceAlarmLevel  ";
-			tableName="viw_pcp_total_day";
-		}
-				
-		sql+= " from "+tableName+" t where 1=1 ";
-		if(StringManagerUtils.isNotNull(wells.toString())){
-			sql+= " and t.wellname in ("+wells.toString()+") ";
 		}
 		
-		if(StringManagerUtils.isNotNull(statValue)){
-			sql+=" and "+typeColumnName+"='"+statValue+"'";
-		}
-		sql+=" and to_date(to_char(t.calculateDate,'yyyy-mm-dd'),'yyyy-mm-dd') between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd') ";
+		String tableName="tbl_rpcdailycalculationdata";
+		String deviceTableName="tbl_rpcdevice";
+		
+		String sql="select t2.id,t.id as wellId,t.wellName,to_char(t2.caldate,'yyyy-mm-dd') as caldate,t2.ExtendedDays,"
+				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
+				+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
+				+ "t2.resultcode,decode(t2.resultcode,null,'无数据',t3.resultName) as resultName,t3.optimizationSuggestion as optimizationSuggestion,"
+				+ "t2.liquidWeightProduction,t2.oilWeightProduction,t2.waterWeightProduction,t2.weightWaterCut,"
+				+ "t2.liquidVolumetricProduction,t2.oilVolumetricProduction,t2.waterVolumetricProduction,t2.volumeWaterCut,"
+				+ "t2.wattDegreeBalance,t2.iDegreeBalance,t2.deltaRadius,"
+				+ "t2.surfaceSystemEfficiency*100 as surfaceSystemEfficiency,"
+				+ "t2.welldownSystemEfficiency*100 as welldownSystemEfficiency,"
+				+ "t2.systemEfficiency*100 as systemEfficiency,"
+				+ "t2.energyper100mlift,t2.todayKWattH,"
+				+ "t2.pumpEff*100 as pumpEff";
+		sql+= " from "+deviceTableName+" t "
+				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+				+ " left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode "
+				+ " where  t2.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
 		if(StringManagerUtils.isNotNull(wellName)){
-			sql+= " and  t.wellName='"+wellName+"' ";
+			sql+= "and t.wellname='"+wellName+"'";
 		}
-		sql+= " order by t.calculateDate desc";
+		if(statType==1 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+statValue+"'";
+		}else if(statType==2 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
+		}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+		}
+		sql+=" order by t2.caldate,t.sortnum,t.wellname";
 		
+		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalCount\":"+totals+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
-			if(StringManagerUtils.isNotNull(obj[0]+"")){
-				result_json.append("{\"id\":"+obj[0]+",");
-				result_json.append("\"wellName\":\""+obj[1]+"\",");
-				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
-				result_json.append("\"acquisitionDate\":\""+obj[3]+"\",");
-				result_json.append("\"extendedDays\":"+obj[4]+",");
-				
-				result_json.append("\"resultName\":\""+obj[5]+"\",");
-				result_json.append("\"optimizationSuggestion\":\""+obj[6]+"\",");
-				
-				result_json.append("\"commStatus\":\""+obj[7]+"\",");
-				result_json.append("\"commTime\":"+obj[5]+",");
-				result_json.append("\"commTimeEfficiency\":"+obj[9]+",");
-				result_json.append("\"commRange\":\""+obj[10]+"\",");
-				
-				result_json.append("\"runStatus\":\""+obj[11]+"\",");
-				result_json.append("\"runTime\":"+obj[12]+",");
-				result_json.append("\"runTimeEfficiency\":"+obj[13]+",");
-				result_json.append("\"runRange\":\""+obj[14]+"\",");
-				
-				result_json.append("\"liquidWeightProduction\":"+obj[15]+",");
-				result_json.append("\"oilWeightProduction\":"+obj[16]+",");
-				result_json.append("\"waterWeightProduction\":"+obj[17]+",");
-				result_json.append("\"weightWaterCut\":"+obj[18]+",");
-				
-				result_json.append("\"liquidVolumetricProduction\":"+obj[19]+",");
-				result_json.append("\"oilVolumetricProduction\":"+obj[20]+",");
-				result_json.append("\"waterVolumetricProduction\":"+obj[21]+",");
-				result_json.append("\"volumeWaterCut\":"+obj[22]+",");
-				
-				result_json.append("\"wattDegreeBalanceName\":\""+obj[23]+"\",");
-				result_json.append("\"wattDegreeBalance\":"+obj[24]+",");
-				result_json.append("\"iDegreeBalanceName\":\""+obj[25]+"\",");
-				result_json.append("\"iDegreeBalance\":"+obj[26]+",");
-				result_json.append("\"deltaRadius\":"+obj[27]+",");
-				
-				result_json.append("\"systemEfficiency\":"+obj[28]+",");
-				result_json.append("\"surfaceSystemEfficiency\":"+obj[29]+",");
-				result_json.append("\"welldownSystemEfficiency\":"+obj[30]+",");
-				result_json.append("\"energyPer100mLift\":"+obj[31]+",");
-				result_json.append("\"todayKWattH\":"+obj[32]+",");
-				
-				result_json.append("\"resultAlarmLevel\":"+obj[33]+",");
-				result_json.append("\"commAlarmLevel\":"+obj[34]+",");
-				result_json.append("\"runAlarmLevel\":"+obj[35]+",");
-				result_json.append("\"iDegreeBalanceAlarmLevel\":"+obj[36]+",");
-				result_json.append("\"wattDegreeBalanceAlarmLevel\":"+obj[37]+"},");
+			String deviceId=obj[1]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[9]+"";
+			String resultcode=obj[13]+"";
+			
+			
+			RPCDeviceInfo rpcDeviceInfo=null;
+			if(jedis!=null&&jedis.hexists("RPCDeviceInfo".getBytes(), deviceId.getBytes())){
+				rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("RPCDeviceInfo".getBytes(), deviceId.getBytes()));
 			}
+			
+			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+			if(jedis!=null&&rpcDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes())){
+				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), rpcDeviceInfo.getAlarmInstanceCode().getBytes()));
+			}
+			
+			int commAlarmLevel=0,resultAlarmLevel=0,runAlarmLevel=0;
+			if(alarmInstanceOwnItem!=null){
+				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
+						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
+						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultcode)){
+						resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}
+				}
+			}
+			
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"caldate\":\""+obj[3]+"\",");
+			result_json.append("\"extendedDays\":\""+obj[4]+"\",");
+			
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
+			result_json.append("\"commTime\":\""+obj[6]+"\",");
+			result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
+			
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+			result_json.append("\"runTime\":\""+obj[10]+"\",");
+			result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+			result_json.append("\"resultName\":\""+obj[14]+"\",");
+			result_json.append("\"optimizationSuggestion\":\""+obj[15]+"\",");
+			
+			result_json.append("\"liquidWeightProduction\":\""+obj[16]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[17]+"\",");
+			result_json.append("\"waterWeightProduction\":\""+obj[18]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[19]+"\",");
+			
+			result_json.append("\"liquidVolumetricProduction\":\""+obj[20]+"\",");
+			result_json.append("\"oilVolumetricProduction\":\""+obj[21]+"\",");
+			result_json.append("\"waterVolumetricProduction\":\""+obj[22]+"\",");
+			result_json.append("\"volumeWaterCut\":\""+obj[23]+"\",");
+			
+			result_json.append("\"iDegreeBalance\":\""+obj[24]+"\",");
+			result_json.append("\"wattDegreeBalance\":\""+obj[25]+"\",");
+			result_json.append("\"deltaradius\":\""+obj[26]+"\",");
+			
+			result_json.append("\"surfaceSystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"welldownSystemEfficiency\":\""+obj[28]+"\",");
+			result_json.append("\"systemEfficiency\":\""+obj[29]+"\",");
+			result_json.append("\"energyper100mlift\":\""+obj[30]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[31]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[32]+"\",");
+
+			result_json.append("\"resultAlarmLevel\":"+resultAlarmLevel+",");
+			result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
+			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		return result_json.toString();
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getPCPDeviceTotalHistory(String wellName,int statType,String statValue,String startDate,String endDate) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("PCPDeviceInfo".getBytes())){
+				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+			}
+			
+			if(!jedis.exists("AlarmInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadAlarmInstanceOwnItemById("","update");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		String tableName="tbl_pcpdailycalculationdata";
+		String deviceTableName="tbl_pcpdevice";
+		
+		String sql="select t2.id,t.id as wellId,t.wellname,to_char(caldate,'yyyy-mm-dd') as caldate,extendedDays,"
+				+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+				+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
+				+ "decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽')) as runStatusName,"
+				+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
+				+ "liquidWeightProduction,oilWeightProduction,waterWeightProduction,weightWaterCut,"
+				+ "liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,volumeWaterCut,"
+				+ "t2.systemEfficiency*100 as systemEfficiency,"
+				+ "t2.todayKWattH,"
+				+ "t2.pumpEff*100 as pumpEff";
+		sql+= " from "+deviceTableName+" t "
+				+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+				+ " where  t2.caldate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+		if(StringManagerUtils.isNotNull(wellName)){
+			sql+= "and t.wellname='"+wellName+"'";
+		}
+		if(statType==2 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+statValue+"'";
+		}else if(statType==3 && StringManagerUtils.isNotNull(statValue)){
+			sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+statValue+"'";
+		}
+		sql+=" order by t2.caldate,t.sortnum,t.wellname";
+		
+		int totals=this.getTotalCountRows(sql);
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{ \"success\":true,");
+		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"totalRoot\":[");
+		for(int i=0;i<list.size();i++){
+			Object[] obj=(Object[]) list.get(i);
+			String deviceId=obj[1]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[9]+"";
+			
+			PCPDeviceInfo pcpDeviceInfo=null;
+			if(jedis!=null&&jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
+				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
+			}
+			
+			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
+			if(jedis!=null&&pcpDeviceInfo!=null&&jedis.hexists("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes())){
+				alarmInstanceOwnItem=(AlarmInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AlarmInstanceOwnItem".getBytes(), pcpDeviceInfo.getAlarmInstanceCode().getBytes()));
+			}
+			
+			
+			int commAlarmLevel=0,runAlarmLevel=0;
+			if(alarmInstanceOwnItem!=null){
+				for(int j=0;j<alarmInstanceOwnItem.itemList.size();j++){
+					if(alarmInstanceOwnItem.getItemList().get(j).getType()==3 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(commStatusName)){
+						commAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}else if(alarmInstanceOwnItem.getItemList().get(j).getType()==6 && alarmInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(runStatusName)){
+						runAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
+					}
+				}
+			}
+			
+			result_json.append("{\"id\":"+obj[0]+",");
+			result_json.append("\"wellName\":\""+obj[2]+"\",");
+			result_json.append("\"caldate\":\""+obj[3]+"\",");
+			result_json.append("\"extendedDays\":\""+obj[4]+"\",");
+			
+			result_json.append("\"commStatusName\":\""+commStatusName+"\",");
+			result_json.append("\"commTime\":\""+obj[6]+"\",");
+			result_json.append("\"commTimeEfficiency\":\""+obj[7]+"\",");
+			result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
+			
+			result_json.append("\"runStatusName\":\""+runStatusName+"\",");
+			result_json.append("\"runTime\":\""+obj[10]+"\",");
+			result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+			result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+			
+			result_json.append("\"liquidWeightProduction\":\""+obj[13]+"\",");
+			result_json.append("\"oilWeightProduction\":\""+obj[14]+"\",");
+			result_json.append("\"waterWeightProduction\":\""+obj[15]+"\",");
+			result_json.append("\"weightWaterCut\":\""+obj[16]+"\",");
+			
+			result_json.append("\"liquidVolumetricProduction\":\""+obj[17]+"\",");
+			result_json.append("\"oilVolumetricProduction\":\""+obj[18]+"\",");
+			result_json.append("\"waterVolumetricProduction\":\""+obj[19]+"\",");
+			result_json.append("\"volumeWaterCut\":\""+obj[20]+"\",");
+			
+			result_json.append("\"systemEfficiency\":\""+obj[21]+"\",");
+			result_json.append("\"todayKWattH\":\""+obj[22]+"\",");
+			result_json.append("\"pumpEff\":\""+obj[23]+"\",");
+
+			result_json.append("\"commAlarmLevel\":"+commAlarmLevel+",");
+			result_json.append("\"runAlarmLevel\":"+runAlarmLevel+"},");
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 }

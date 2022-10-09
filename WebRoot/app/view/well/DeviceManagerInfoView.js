@@ -64,6 +64,12 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					}
         					rpcPumpingInfoHandsontableHelper=null;
         				}
+        				if (rpcVideoInfoHandsontableHelper != null) {
+                            if (rpcVideoInfoHandsontableHelper.hot != undefined) {
+                            	rpcVideoInfoHandsontableHelper.hot.destroy();
+                            }
+                            rpcVideoInfoHandsontableHelper = null;
+                        }
         				
         				
         				if(pcpDeviceInfoHandsontableHelper!=null){
@@ -78,6 +84,12 @@ Ext.define("AP.view.well.DeviceManagerInfoView", {
         					}
         					pcpProductionHandsontableHelper=null;
         				}
+        				if (pcpVideoInfoHandsontableHelper != null) {
+                            if (pcpVideoInfoHandsontableHelper.hot != undefined) {
+                            	pcpVideoInfoHandsontableHelper.hot.destroy();
+                            }
+                            pcpVideoInfoHandsontableHelper = null;
+                        }
         			},
         			afterrender: function ( panel, eOpts) {}
         		}

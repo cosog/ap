@@ -401,36 +401,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
             }],
             listeners: {
                 beforeclose: function (panel, eOpts) {
-                	if (rpcDeviceInfoHandsontableHelper != null) {
-                        if (rpcDeviceInfoHandsontableHelper.hot != undefined) {
-                            rpcDeviceInfoHandsontableHelper.hot.destroy();
-                        }
-                        rpcDeviceInfoHandsontableHelper = null;
-                    }
-                    if (rpcPumpingModelHandsontableHelper != null) {
-                        if (rpcPumpingModelHandsontableHelper.hot != undefined) {
-                        	rpcPumpingModelHandsontableHelper.hot.destroy();
-                        }
-                        rpcPumpingModelHandsontableHelper = null;
-                    }
-                    if (rpcProductionHandsontableHelper != null) {
-                        if (rpcProductionHandsontableHelper.hot != undefined) {
-                        	rpcProductionHandsontableHelper.hot.destroy();
-                        }
-                        rpcProductionHandsontableHelper = null;
-                    }
-                    if (rpcPumpingInfoHandsontableHelper != null) {
-                        if (rpcPumpingInfoHandsontableHelper.hot != undefined) {
-                        	rpcPumpingInfoHandsontableHelper.hot.destroy();
-                        }
-                        rpcPumpingInfoHandsontableHelper = null;
-                    }
-                    if (rpcVideoInfoHandsontableHelper != null) {
-                        if (rpcVideoInfoHandsontableHelper.hot != undefined) {
-                        	rpcVideoInfoHandsontableHelper.hot.destroy();
-                        }
-                        rpcVideoInfoHandsontableHelper = null;
-                    }
+                	
                 }
             }
         })

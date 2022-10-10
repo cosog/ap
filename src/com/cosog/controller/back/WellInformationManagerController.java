@@ -1826,7 +1826,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/getHelpDocHtml")
 	public String getHelpDocHtml() throws Exception {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String path=stringManagerUtils.getFilePath("ad_rpcConfigHelp.md","doc/");
+		String path=stringManagerUtils.getFilePath("RTUConfig.md","doc/");
 		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
 		String fileContent=html.toString();
 		response.setContentType("application/json;charset=utf-8");

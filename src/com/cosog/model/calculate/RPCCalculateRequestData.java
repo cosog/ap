@@ -704,6 +704,8 @@ public class RPCCalculateRequestData implements Serializable {
 	public static class Production implements Serializable {
 		private static final long serialVersionUID = 1L;
 	    private float WaterCut;
+	    
+	    private float WeightWaterCut;
 
 	    private float ProductionGasOilRatio;
 
@@ -766,6 +768,12 @@ public class RPCCalculateRequestData implements Serializable {
 		}
 		public void setLevelCorrectValue(float levelCorrectValue) {
 			LevelCorrectValue = levelCorrectValue;
+		}
+		public float getWeightWaterCut() {
+			return WeightWaterCut;
+		}
+		public void setWeightWaterCut(float weightWaterCut) {
+			WeightWaterCut = weightWaterCut;
 		}
 	}
 	

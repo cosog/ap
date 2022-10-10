@@ -635,6 +635,8 @@ public class PCPCalculateRequestData  implements Serializable {
 	public static class Production implements Serializable {
 		private static final long serialVersionUID = 1L;
 	    private float WaterCut;//体积含水率
+	    
+	    private float WeightWaterCut;//重量含水率
 
 	    private float ProductionGasOilRatio;//生产气油比
 
@@ -698,6 +700,12 @@ public class PCPCalculateRequestData  implements Serializable {
 	    public float getPumpSettingDepth(){
 	        return this.PumpSettingDepth;
 	    }
+		public float getWeightWaterCut() {
+			return WeightWaterCut;
+		}
+		public void setWeightWaterCut(float weightWaterCut) {
+			WeightWaterCut = weightWaterCut;
+		}
 	}
 
 	

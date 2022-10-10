@@ -61,16 +61,16 @@ public class MobileController extends BaseController{
 		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"account\": \"admin\",\"password\": \"123456\"}";
+//		data="{\"Account\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			try{
-				account=jsonObject.getString("account");
+				account=jsonObject.getString("Account");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-				password=jsonObject.getString("password");
+				password=jsonObject.getString("Password");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -81,17 +81,17 @@ public class MobileController extends BaseController{
 		HttpSession session=request.getSession();
 		String result="";
 		if (!StringManagerUtils.isNotNull(account)) {
-			result="{\"success\":false,\"msg\":\"用户名不能为空\"}";
+			result="{\"Success\":false,\"Msg\":\"用户名不能为空\"}";
 		} else if (!StringManagerUtils.isNotNull(password)) {
-			result="{\"success\":false,\"msg\":\"用户密码不能为空\"}";
+			result="{\"Success\":false,\"Msg\":\"用户密码不能为空\"}";
 		} else {
 			User user = this.userManagerService.doLogin(account, StringManagerUtils.stringToMD5(password));
 			if (user != null&&user.getUserEnable()==1) {
-				result="{\"success\":true,\"msg\":\"登录成功\"}";
+				result="{\"Success\":true,\"Msg\":\"登录成功\"}";
 			}else if(user != null && user.getUserEnable()!=1){
-				result="{\"success\":false,\"msg\":\"用户" + account + "已被禁用 !\"}";
+				result="{\"Success\":false,\"Msg\":\"用户" + account + "已被禁用 !\"}";
 			} else {
-				result="{\"success\":false,\"msg\":\"账号或密码错误\"}";
+				result="{\"Success\":false,\"Msg\":\"账号或密码错误\"}";
 			}
 		}
 		response.setContentType("application/json;charset=utf-8");
@@ -113,22 +113,22 @@ public class MobileController extends BaseController{
 	@RequestMapping("/getOrganizationData")
 	public String getOrganizationData() throws Exception {
 		String json = "";
-		String userAccount = "";;
+		String UserAccount = "";;
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"userAccount\": \"admin\"}";
+//		data="{\"UserAccount\": \"admin\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			userAccount=jsonObject.getString("userAccount");
+			UserAccount=jsonObject.getString("UserAccount");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, userAccount);
+		List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, UserAccount);
 		StringBuffer strBuf = new StringBuffer();
 		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
 		for (Org org : list) {
 			if (!r.hasParent(list, org)) {
-				json = r.recursionMObileOrgTree(list, org);
+				json = r.recursionMobileOrgTree(list, org);
 			}
 		}
 		json = json.replaceAll(",]", "]");
@@ -158,7 +158,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"StatType\":3,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"StatType\":2,\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		String json = mobileService.getPumpingRealtimeStatisticsDataByWellList(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -177,7 +177,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellRealtimeWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -203,7 +203,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2022-10-09 00:00:00\",\"EndDate\":\"2022-10-09 18:00:00\",\"WellName\":\"rpc01\"}";
+//		data="{\"LiftingType\":1,\"StatType\":1,\"StatValue\":\"正常\",\"StartDate\":\"2022-10-09 00:00:00\",\"EndDate\":\"2022-10-09 18:00:00\",\"WellName\":\"rpc01\"}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellHistoryData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -226,7 +226,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
+//		data="{\"LiftingType\":1,\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.getOilWellAnalysisData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -241,7 +241,7 @@ public class MobileController extends BaseController{
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
+//		data="{\"WellName\":\"rpc01\",\"AcqTime\":\"2022-9-30 18:51:49\"}";
 		String json = this.mobileService.singleFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -256,7 +256,7 @@ public class MobileController extends BaseController{
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-		data="{\"WellName\":\"rpc01\",\"StartDate\":\"2022-10-09 17:20:15\",\"EndDate\":\"2022-10-09 18:00:00\"}";
+//		data="{\"WellName\":\"rpc01\",\"StartDate\":\"2022-10-09 17:20:15\",\"EndDate\":\"2022-10-09 18:00:00\"}";
 		String json = this.mobileService.historyFESDiagramData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -275,7 +275,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"Date\":\"2022-10-10\",\"StatType\":1,\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		String json = mobileService.getOilWellTotalStatisticsData(data);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -294,7 +294,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
+//		data="{\"LiftingType\":1,\"Date\":\"2022-10-09\",\"StatType\":1,\"StatValue\":\"正常\",\"WellList\":[\"rpc01\",\"rpc02\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalWellListData(data,pager);
 		response.setContentType("application/json;charset=utf-8");
@@ -320,7 +320,7 @@ public class MobileController extends BaseController{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
 //		data="{}";
-		data="{\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2022-09-01\",\"EndDate\": \"2022-10-09\",\"StatType\": 1,\"StatValue\": \"正常\"}";
+//		data="{\"LiftingType\": 1,\"WellName\":\"rpc01\",\"StartDate\": \"2022-10-08\",\"EndDate\": \"2022-10-09\",\"StatType\": 1,\"StatValue\": \"正常\"}";
 //		data="{\"LiftingType\": 1,\"StartDate\": \"2021-01-27\",\"EndDate\": \"2021-04-27\",\"StatType\": 1}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellTotalHistoryData(data,pager);

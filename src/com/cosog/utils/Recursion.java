@@ -89,25 +89,25 @@ public class Recursion {
 	}
 	
 	
-	public String recursionMObileOrgTree(List list, Org node) {
+	public String recursionMobileOrgTree(List list, Org node) {
 
 		String data = "";
 		if (hasChild(list, node)) {
 			// returnStr.append("{ \"orgId:\"");
 			// returnStr.append(node.getOrgId());
-			returnStr.append("{\"text\":\"" + node.getOrgName() + "\",");
-			returnStr.append("\"orgId\":\"" + node.getOrgId() + "\",");
-			returnStr.append("\"children\":[");
+			returnStr.append("{\"Text\":\"" + node.getOrgName() + "\",");
+			returnStr.append("\"OrgId\":\"" + node.getOrgId() + "\",");
+			returnStr.append("\"Children\":[");
 			List childList = getChildList(list, node);
 			Iterator it = childList.iterator();
 			while (it.hasNext()) {
 				Org n = (Org) it.next();
-				recursionMObileOrgTree(list, n);
+				recursionMobileOrgTree(list, n);
 			}
 			returnStr.append("]},");
 		} else {
-			returnStr.append("{\"orgId\":\""+node.getOrgId()+"\",");
-			returnStr.append("\"text\":\""+node.getOrgName()+"\"},");
+			returnStr.append("{\"OrgId\":\""+node.getOrgId()+"\",");
+			returnStr.append("\"Text\":\""+node.getOrgName()+"\"},");
 		}
 		data = returnStr.toString();
 		return data;

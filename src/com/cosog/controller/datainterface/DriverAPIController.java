@@ -1705,6 +1705,7 @@ public class DriverAPIController extends BaseController{
 							responseResultData.getProduction().setOilWeightProduction(rpcCalculateResponseData.getProduction().getOilWeightProduction());
 							responseResultData.getProduction().setWaterWeightProduction(rpcCalculateResponseData.getProduction().getWaterWeightProduction());
 							responseResultData.getProduction().setWaterCut(rpcCalculateResponseData.getProduction().getWaterCut());
+							responseResultData.getProduction().setWeightWaterCut(rpcCalculateRequestData.getProduction().getWeightWaterCut());
 						}
 						
 						if(rpcCalculateResponseData.getSystemEfficiency()!=null){
@@ -2730,6 +2731,36 @@ public class DriverAPIController extends BaseController{
 				if(isAcqRPM){
 					pcpCalculateResponseData=CalculateUtils.rpmCalculate(gson.toJson(pcpCalculateRequestData));
 					if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1){
+						PCPCalculateResponseData responseResultData =new PCPCalculateResponseData(); 
+						responseResultData.init();
+						
+						responseResultData.setWellName(pcpCalculateResponseData.getWellName());
+						responseResultData.getCalculationStatus().setResultCode(pcpCalculateResponseData.getCalculationStatus().getResultCode());
+						
+						if(pcpCalculateResponseData.getProduction()!=null){
+							responseResultData.getProduction().setTheoreticalProduction(pcpCalculateResponseData.getProduction().getTheoreticalProduction());
+							responseResultData.getProduction().setLiquidVolumetricProduction(pcpCalculateResponseData.getProduction().getLiquidVolumetricProduction());
+							responseResultData.getProduction().setOilVolumetricProduction(pcpCalculateResponseData.getProduction().getOilVolumetricProduction());
+							responseResultData.getProduction().setWaterVolumetricProduction(pcpCalculateResponseData.getProduction().getWaterVolumetricProduction());
+							responseResultData.getProduction().setLiquidWeightProduction(pcpCalculateResponseData.getProduction().getLiquidWeightProduction());
+							responseResultData.getProduction().setOilWeightProduction(pcpCalculateResponseData.getProduction().getOilWeightProduction());
+							responseResultData.getProduction().setWaterWeightProduction(pcpCalculateResponseData.getProduction().getWaterWeightProduction());
+							responseResultData.getProduction().setWaterCut(pcpCalculateResponseData.getProduction().getWaterCut());
+							responseResultData.getProduction().setWeightWaterCut(pcpCalculateResponseData.getProduction().getWeightWaterCut());
+						}
+						
+						if(pcpCalculateResponseData.getSystemEfficiency()!=null){
+							responseResultData.getSystemEfficiency().setSystemEfficiency(pcpCalculateResponseData.getSystemEfficiency().getSystemEfficiency());
+							responseResultData.getSystemEfficiency().setEnergyPer100mLift(pcpCalculateResponseData.getSystemEfficiency().getEnergyPer100mLift());
+						}
+						
+						if(pcpCalculateResponseData.getPumpEfficiency()!=null){
+							responseResultData.getPumpEfficiency().setPumpEff1(pcpCalculateResponseData.getPumpEfficiency().getPumpEff1());
+							responseResultData.getPumpEfficiency().setPumpEff2(pcpCalculateResponseData.getPumpEfficiency().getPumpEff2());
+							responseResultData.getPumpEfficiency().setPumpEff(pcpCalculateResponseData.getPumpEfficiency().getPumpEff());
+						}
+						
+						
 						//删除非当天采集的转速数据
 						if(deviceTodayData!=null){
 							Iterator<PCPCalculateResponseData> it = deviceTodayData.getPCPCalculateList().iterator();
@@ -2740,13 +2771,13 @@ public class DriverAPIController extends BaseController{
 									it.remove();
 								}
 							}
-							deviceTodayData.getPCPCalculateList().add(pcpCalculateResponseData);
+							deviceTodayData.getPCPCalculateList().add(responseResultData);
 						}else{
 							deviceTodayData=new PCPDeviceTodayData();
 							deviceTodayData.setId(pcpDeviceInfo.getId());
 							deviceTodayData.setPCPCalculateList(new ArrayList<PCPCalculateResponseData>());
 							deviceTodayData.setAcquisitionItemInfoList(new ArrayList<AcquisitionItemInfo>());
-							deviceTodayData.getPCPCalculateList().add(pcpCalculateResponseData);
+							deviceTodayData.getPCPCalculateList().add(responseResultData);
 						}
 					}
 				}
@@ -2828,7 +2859,7 @@ public class DriverAPIController extends BaseController{
 					calItemResolutionDataList.add(new ProtocolItemResolutionData("日用电量","日用电量",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"",energyCalculateResponseData.getCurrent().getToday().getKWattH()+"","","todayKWattH","","","","",1));
 				}
 				
-				//同时进行了时率计算和功图计算，则进行功图汇总计算
+				//同时进行了时率计算和转速计算，则进行转速汇总计算
 				if(pcpCalculateResponseData!=null&&pcpCalculateResponseData.getCalculationStatus().getResultStatus()==1&&timeEffResponseData!=null && timeEffResponseData.getResultStatus()==1 && deviceTodayData!=null){
 					//排序
 					Collections.sort(deviceTodayData.getPCPCalculateList());

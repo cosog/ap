@@ -118,6 +118,8 @@ public class CalculateManagerHandsontableChangedData {
 	    private String rodLength4="0";
 	    
 	    private String anchoringStateName="未锚定";
+	    
+	    private String manualInterventionResult="不干预";
 
 	    private String netGrossRatio="1";
 	    
@@ -499,6 +501,22 @@ public class CalculateManagerHandsontableChangedData {
 
 		public void setNetGrossValue(String netGrossValue) {
 			this.netGrossValue = netGrossValue;
+		}
+
+		public String getManualInterventionResult() {
+			return manualInterventionResult;
+		}
+
+		public void setManualInterventionResult(String manualInterventionResult) {
+			this.manualInterventionResult = manualInterventionResult;
+		}
+
+		public String getQpr() {
+			return qpr;
+		}
+
+		public void setQpr(String qpr) {
+			this.qpr = qpr;
 		}
 	}
 }

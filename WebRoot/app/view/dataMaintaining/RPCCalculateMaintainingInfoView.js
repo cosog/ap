@@ -738,11 +738,17 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['杆式泵', '管式泵']";
         	}else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['1', '2','3', '4','5']";
-        	}
-//        	else if(result.columns[i].dataIndex.toUpperCase()==="pumpGrade".toUpperCase()){
-//        		columns+=",type:'numeric',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_PumpGrade(val, callback,this.row, this.col,rpcFESDiagramCalculateMaintainingHandsontableHelper);}";
-//        	}
-        	else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
+        	}else if (result.columns[i].dataIndex.toUpperCase() === "manualInterventionResult".toUpperCase()) {
+                var source = "[";
+                for (var j = 0; j < result.resultNameList.length; j++) {
+                    source += "\'" + result.resultNameList[j] + "\'";
+                    if (j < result.resultNameList.length - 1) {
+                        source += ",";
+                    }
+                }
+                source += "]";
+                columns+=",type:'dropdown',strict:true,allowInvalid:false,source:" + source + "";
+            }else if(result.columns[i].dataIndex.toUpperCase()==="rodGrade1".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade2".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade3".toUpperCase() || result.columns[i].dataIndex.toUpperCase()==="rodGrade4".toUpperCase()){
         		columns+=",type:'dropdown',strict:true,allowInvalid:false,source:['','A','B','C','D','K','KD','HL','HY'], validator: function(val, callback){return handsontableDataCheck_RodGrade(val, callback,this.row, this.col,rpcFESDiagramCalculateMaintainingHandsontableHelper);}";
         	}else{
     			columns+=",type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcFESDiagramCalculateMaintainingHandsontableHelper);}";

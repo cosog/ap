@@ -723,6 +723,7 @@ var RPCDeviceInfoHandsontableHelper = {
             	
                 //生产数据
                 var deviceProductionData={};
+                var manualInterventionResultName='不干预';
                 if(rpcProductionHandsontableHelper!=null && rpcProductionHandsontableHelper.hot!=undefined){
             		var productionHandsontableData=rpcProductionHandsontableHelper.hot.getData();
             		deviceProductionData.FluidPVT={};
@@ -900,11 +901,12 @@ var RPCDeviceInfoHandsontableHelper = {
             		
             		
             		deviceProductionData.ManualIntervention={};
-            		if(isNumber(parseFloat(productionHandsontableData[36][2]))){
-            			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[36][2]);
-            		}
+            		manualInterventionResultName=productionHandsontableData[36][2];
             		if(isNumber(parseFloat(productionHandsontableData[37][2]))){
-            			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[37][2]);
+            			deviceProductionData.ManualIntervention.NetGrossRatio=parseFloat(productionHandsontableData[37][2]);
+            		}
+            		if(isNumber(parseFloat(productionHandsontableData[38][2]))){
+            			deviceProductionData.ManualIntervention.NetGrossValue=parseFloat(productionHandsontableData[38][2]);
             		}
             	}
                 
@@ -980,6 +982,7 @@ var RPCDeviceInfoHandsontableHelper = {
                     	stroke: stroke,
                     	balanceInfo: JSON.stringify(balanceInfo),
                         deviceProductionData: JSON.stringify(deviceProductionData),
+                        manualInterventionResultName: manualInterventionResultName,
                         videoUrl:videoUrl,
                         videoAccessToken:videoAccessToken,
                         orgId: leftOrg_Id,
@@ -1240,6 +1243,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 			Ext.getCmp("RPCProductionDataInfoPanel_Id").setTitle(deviceName+"生产数据");
 			if(rpcProductionHandsontableHelper==null || rpcProductionHandsontableHelper.hot==undefined){
 				rpcProductionHandsontableHelper = RPCProductionHandsontableHelper.createNew("RPCAdditionalInfoTableDiv_id");
+				rpcProductionHandsontableHelper.resultList = result.resultNameList;
 				var colHeaders="['序号','名称','变量']";
 				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
 				rpcProductionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
@@ -1250,6 +1254,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 					rpcProductionHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
+				rpcProductionHandsontableHelper.resultList = result.resultNameList;
 				if(result.totalRoot.length==0){
 					rpcProductionHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
@@ -1274,6 +1279,7 @@ var RPCProductionHandsontableHelper = {
 	        rpcProductionHandsontableHelper.divid = divid;
 	        rpcProductionHandsontableHelper.colHeaders = [];
 	        rpcProductionHandsontableHelper.columns = [];
+	        rpcProductionHandsontableHelper.resultList = [];
 	        rpcProductionHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
@@ -1349,6 +1355,13 @@ var RPCProductionHandsontableHelper = {
 	                    if (visualColIndex === 2 && (visualRowIndex===20 || visualRowIndex===24||visualRowIndex===28||visualRowIndex===32)) {
 	                    	this.type = 'dropdown';
 	                    	this.source = ['A','B','C','K','D','KD','HL','HY'];
+	                    	this.strict = true;
+	                    	this.allowInvalid = false;
+	                    }
+	                    
+	                    if (visualColIndex === 2 && visualRowIndex===36) {
+	                    	this.type = 'dropdown';
+	                    	this.source = rpcProductionHandsontableHelper.resultList;
 	                    	this.strict = true;
 	                    	this.allowInvalid = false;
 	                    }

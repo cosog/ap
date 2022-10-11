@@ -494,6 +494,8 @@ public class PCPProductionData {
 	public static class Production
 	{
 	    private float WaterCut;//体积含水率
+	    
+	    private float WeightWaterCut;//重量含水率
 
 	    private float ProductionGasOilRatio;//生产气油比
 
@@ -557,6 +559,12 @@ public class PCPProductionData {
 	    public float getPumpSettingDepth(){
 	        return this.PumpSettingDepth;
 	    }
+		public float getWeightWaterCut() {
+			return WeightWaterCut;
+		}
+		public void setWeightWaterCut(float weightWaterCut) {
+			WeightWaterCut = weightWaterCut;
+		}
 	}
 
 	

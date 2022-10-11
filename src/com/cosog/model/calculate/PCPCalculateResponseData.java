@@ -333,6 +333,8 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 		private static final long serialVersionUID = 1L;
 		
 	    private float WaterCut;
+	    
+	    private float WeightWaterCut;
 
 	    private float ProductionGasOilRatio;
 
@@ -627,6 +629,12 @@ public  class PCPCalculateResponseData implements Serializable , Comparable<PCPC
 		}
 		public void setBackPressure(float backPressure) {
 			BackPressure = backPressure;
+		}
+		public float getWeightWaterCut() {
+			return WeightWaterCut;
+		}
+		public void setWeightWaterCut(float weightWaterCut) {
+			WeightWaterCut = weightWaterCut;
 		}
 	}
 

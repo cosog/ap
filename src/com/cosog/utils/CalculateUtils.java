@@ -199,7 +199,7 @@ public class CalculateUtils {
 				liquidWeightProductionList.add(responseData.getProduction().getLiquidWeightProduction());
 				oilWeightProductionList.add(responseData.getProduction().getOilWeightProduction());
 				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
-//				weightWaterCutList.add(responseData.getProduction().getWaterCut());
+				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
 				
 				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
 				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
@@ -315,7 +315,7 @@ public class CalculateUtils {
 				liquidWeightProductionList.add(responseData.getProduction().getLiquidWeightProduction());
 				oilWeightProductionList.add(responseData.getProduction().getOilWeightProduction());
 				waterWeightProductionList.add(responseData.getProduction().getWaterWeightProduction());
-//				weightWaterCutList.add(responseData.getProduction().getWaterCut());
+				weightWaterCutList.add(responseData.getProduction().getWeightWaterCut());
 				
 				pumpEffList.add(responseData.getPumpEfficiency().getPumpEff());
 				pumpEff1List.add(responseData.getPumpEfficiency().getPumpEff1());
@@ -385,4 +385,13 @@ public class CalculateUtils {
         }
         return result;
     }
+	
+	public static float volumeWaterCutToWeightWaterCut(float volumeWaterCut,float crudeOilDensity,float waterDensity){
+		float weightWaterCut=0;
+		if(crudeOilDensity!=0 || waterDensity!=0){
+			weightWaterCut=100*waterDensity*volumeWaterCut/( waterDensity*volumeWaterCut+(100-volumeWaterCut)*crudeOilDensity );
+			weightWaterCut = Math.round(weightWaterCut * 100) / 100f;
+		}
+		return weightWaterCut;
+	}
 }

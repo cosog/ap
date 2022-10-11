@@ -28,6 +28,7 @@ import com.cosog.model.RPCDeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
+import com.cosog.model.WorkType;
 import com.cosog.model.calculate.AlarmInstanceOwnItem;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
@@ -1998,8 +1999,18 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public String getDeviceProductionDataInfo(String deviceId,String deviceType) {
 		StringBuffer result_json = new StringBuffer();
+		StringBuffer resultNameBuff = new StringBuffer();
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCWorkType".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
@@ -2009,17 +2020,24 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 			deviceTableName="tbl_pcpdevice";
 		}
+		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
 		String sql = "select t.productiondata,to_char(t.productiondataupdatetime,'yyyy-mm-dd hh24:mi:ss') "
 				+ " from "+deviceTableName+" t "
 				+ " where t.id="+deviceId;
 		
 		List<?> list = this.findCallSql(sql);
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
+		resultNameBuff.append("[");
 		if(list.size()>0){
 			Object[] obj = (Object[]) list.get(0);
 			String productionData=obj[0]+"";
 			String updateTime=obj[1]+"";
 			if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){
+				resultNameBuff.append("\"不干预\"");
+				List<?> resultList = this.findCallSql(resultSql);
+				for(int i=0;i<resultList.size();i++){
+					resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
+				}
 				type = new TypeToken<RPCProductionData>() {}.getType();
 				RPCProductionData rpcProductionData=gson.fromJson(productionData, type);
 				if(rpcProductionData!=null){
@@ -2114,8 +2132,23 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\""+rodInsideDiameter4+"\"},");
 					result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\""+rodLength4+"\"},");
 					
-					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
-					result_json.append("{\"id\":38,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
+					
+					String manualInterventionName="不干预";
+					if(rpcProductionData.getManualIntervention()!=null && rpcProductionData.getManualIntervention().getCode()>0){
+						if(jedis!=null && jedis.hexists("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes())){
+							WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes()));
+							manualInterventionName=workType.getResultName();
+						}else{
+							String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
+							List<?> resultNameList = this.findCallSql(resultNameSql);
+							if(resultNameList.size()>0){
+								manualInterventionName=resultNameList.get(0).toString();
+							}
+						}
+					}
+					result_json.append("{\"id\":37,\"itemName\":\"工况干预\",\"itemValue\":\""+manualInterventionName+"\"},");
+					result_json.append("{\"id\":38,\"itemName\":\"净毛比(小数)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossRatio():"")+"\"},");
+					result_json.append("{\"id\":39,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\""+(rpcProductionData.getManualIntervention()!=null?rpcProductionData.getManualIntervention().getNetGrossValue():"")+"\"},");
 				}else{
 					result_json.append("{\"id\":1,\"itemName\":\"原油密度(g/cm^3)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":2,\"itemName\":\"水密度(g/cm^3)\",\"itemValue\":\"\"},");
@@ -2163,10 +2196,11 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					result_json.append("{\"id\":35,\"itemName\":\"四级杆内径(mm)\",\"itemValue\":\"\"},");
 					result_json.append("{\"id\":36,\"itemName\":\"四级杆长度(m)\",\"itemValue\":\"\"},");
 					
-					result_json.append("{\"id\":37,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
-					result_json.append("{\"id\":38,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":37,\"itemName\":\"工况干预\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":38,\"itemName\":\"净毛比(小数)\",\"itemValue\":\"\"},");
+					result_json.append("{\"id\":39,\"itemName\":\"净毛值(m^3/d)\",\"itemValue\":\"\"},");
 				}
-				result_json.append("{\"id\":39,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
+				result_json.append("{\"id\":40,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 			}else if(StringManagerUtils.stringToInteger(deviceType)>=200 && StringManagerUtils.stringToInteger(deviceType)<300){
 				type = new TypeToken<PCPProductionData>() {}.getType();
 				PCPProductionData pcpProductionData=gson.fromJson(productionData, type);
@@ -2298,7 +2332,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				result_json.append("{\"id\":38,\"itemName\":\"更新时间\",\"itemValue\":\""+updateTime+"\"}");
 			}
 		}
-		result_json.append("]}");
+		result_json.append("]");
+		resultNameBuff.append("]");
+		result_json.append(",\"resultNameList\":"+resultNameBuff);
+		result_json.append("}");
+		if(jedis!=null&&jedis.isConnected()){
+			jedis.close();
+		}
 		return result_json.toString().replaceAll("null", "");
 	}
 	

@@ -497,6 +497,8 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 		private static final long serialVersionUID = 1L;
 		
 	    private float WaterCut;
+	    
+	    private float WeightWaterCut;
 
 	    private float ProductionGasOilRatio;
 
@@ -791,6 +793,12 @@ public class RPCCalculateResponseData implements Serializable, Comparable<RPCCal
 		}
 		public void setLevelCorrectValue(float levelCorrectValue) {
 			LevelCorrectValue = levelCorrectValue;
+		}
+		public float getWeightWaterCut() {
+			return WeightWaterCut;
+		}
+		public void setWeightWaterCut(float weightWaterCut) {
+			WeightWaterCut = weightWaterCut;
 		}
 	}
 

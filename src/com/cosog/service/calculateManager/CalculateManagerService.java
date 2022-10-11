@@ -16,8 +16,10 @@ import org.springframework.stereotype.Component;
 
 import com.cosog.dao.BaseDao;
 import com.cosog.model.AlarmShowStyle;
+import com.cosog.model.WorkType;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
+import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.calculate.TotalAnalysisResponseData;
 import com.cosog.model.calculate.RPCCalculateRequestData.EveryCasing;
@@ -32,11 +34,14 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.service.datainterface.CalculateDataService;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
+import com.cosog.utils.RedisUtil;
+import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -45,6 +50,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
+import redis.clients.jedis.Jedis;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.engine.jdbc.SerializableBlobProxy;
@@ -103,7 +109,19 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String sqlAll="";
 		String ddicName="calculateManager_RPCSingleRecord";
 		StringBuffer result_json = new StringBuffer();
+		StringBuffer resultNameBuff = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
+		
+		Jedis jedis=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("RPCWorkType".getBytes())){
+				MemoryDataManagerTask.loadRPCWorkType();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		
 		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
 		columns = ddic.getTableHeader();
@@ -137,12 +155,22 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		sql+=" order by t.fesdiagramacqtime desc";
 		int maxvalue=pager.getLimit()+pager.getStart();
 		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+		
+		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
+		resultNameBuff.append("[\"不干预\"");
+		List<?> resultList = this.findCallSql(resultSql);
+		for(int i=0;i<resultList.size();i++){
+			resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
+		}
+		resultNameBuff.append("]");
+		
 		List<?> list = this.findCallSql(finalSql);
 		
 		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
 		result_json.append("\"start_date\":\""+startDate+"\",");
 		result_json.append("\"end_date\":\""+endDate+"\",");
 		result_json.append("\"totalCount\":"+totals+",");
+		result_json.append("\"resultNameList\":"+resultNameBuff+",");
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -225,6 +253,22 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				}
 				
 				if(rpcProductionData.getManualIntervention()!=null){
+					String manualInterventionResultName="";
+					if(rpcProductionData.getManualIntervention().getCode()==0){
+						manualInterventionResultName="不干预";
+					}else{
+						if(jedis!=null && jedis.hexists("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes())){
+							WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes()));
+							manualInterventionResultName=workType.getResultName();
+						}else{
+							String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
+							List<?> resultNameList = this.findCallSql(resultNameSql);
+							if(resultNameList.size()>0){
+								manualInterventionResultName=resultNameList.get(0).toString();
+							}
+						}
+					}
+					result_json.append("\"manualInterventionResult\":\""+manualInterventionResultName+"\",");
 					result_json.append("\"netGrossRatio\":\""+rpcProductionData.getManualIntervention().getNetGrossRatio()+"\",");
 					result_json.append("\"netGrossValue\":\""+rpcProductionData.getManualIntervention().getNetGrossValue()+"\",");
 				}
@@ -243,9 +287,10 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			result_json = result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		
-//		String getResult = this.findCustomPageBySqlEntity(sql,finalSql, columns, 20 + "", pager);
 		String json=result_json.toString().replaceAll("null", "");
+		if(jedis!=null&&jedis.isConnected()){
+			jedis.close();
+		}
 		return json;
 	}
 	
@@ -666,6 +711,16 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
+			Jedis jedis=null;
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+					MemoryDataManagerTask.loadRPCWorkType();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
 			for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
 				StringBuffer productionDataBuff = new StringBuffer();
 				
@@ -708,6 +763,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				production.setProducingfluidLevel(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel()));
 				production.setPumpSettingDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
 				
+				float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
+				production.setWeightWaterCut(weightWaterCut);
 				
 				String pumpType="";
 				String barrelType="";
@@ -765,6 +822,22 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					rodString.getEveryRod().add(everyRod);
 				}
 				
+				String manualInterventionResultName=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResult();
+				int manualInterventionResultCode=0;
+				if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+					if(jedis!=null && jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
+						WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
+						manualInterventionResultCode=workType.getResultCode();
+					}else{
+						String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+						List<?> resultList = this.findCallSql(resultNameSql);
+						if(resultList.size()>0){
+							manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+						}
+					}
+				}
+				manualIntervention.setCode(manualInterventionResultCode);
+				
 				manualIntervention.setNetGrossRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
 				manualIntervention.setNetGrossValue(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
 				
@@ -782,6 +855,9 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				String updateSql="update tbl_rpcacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
 				
 				this.getBaseDao().updateOrDeleteBySql(updateSql);
+			}
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
 			}
 		}
 	}
@@ -831,6 +907,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
 				production.setProducingfluidLevel(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel()));
 				production.setPumpSettingDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
+				float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
+				production.setWeightWaterCut(weightWaterCut);
 				
 				pump.setBarrelLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()));
 				pump.setBarrelSeries(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries()));

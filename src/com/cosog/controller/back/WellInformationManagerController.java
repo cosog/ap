@@ -41,6 +41,9 @@ import com.cosog.model.RPCDeviceAddInfo;
 import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
+import com.cosog.model.WorkType;
+import com.cosog.model.calculate.PCPProductionData;
+import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.drive.RPCInteractionResponseData;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.AuxiliaryDeviceConfig;
@@ -53,6 +56,7 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitThreadPoolConfig;
+import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
@@ -61,6 +65,8 @@ import com.cosog.utils.MarkdownEntity;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
 import com.cosog.utils.ParamUtils;
+import com.cosog.utils.RedisUtil;
+import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
@@ -73,6 +79,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import redis.clients.jedis.Jedis;
 
 @Controller
 @RequestMapping("/wellInformationManagerController")
@@ -679,6 +686,7 @@ public class WellInformationManagerController extends BaseController {
 		String stroke = ParamUtils.getParameter(request, "stroke");
 		String balanceInfo = ParamUtils.getParameter(request, "balanceInfo").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String deviceProductionData = ParamUtils.getParameter(request, "deviceProductionData").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String manualInterventionResultName = ParamUtils.getParameter(request, "manualInterventionResultName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String videoUrl = ParamUtils.getParameter(request, "videoUrl");
 		String videoAccessToken = ParamUtils.getParameter(request, "videoAccessToken");
@@ -700,7 +708,74 @@ public class WellInformationManagerController extends BaseController {
 		List<String> initWellList=new ArrayList<String>();
 		initWellList.add(deviceId+"");
 		//处理生产数据
-		this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionData);
+		
+		String deviceProductionDataSaveStr=deviceProductionData;
+		
+		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+			type = new TypeToken<RPCProductionData>() {}.getType();
+			RPCProductionData rpcProductionData=gson.fromJson(deviceProductionData, type);
+			if(rpcProductionData!=null){
+				if(rpcProductionData.getProduction()!=null && rpcProductionData.getFluidPVT()!=null){
+					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(rpcProductionData.getProduction().getWaterCut(), rpcProductionData.getFluidPVT().getCrudeOilDensity(), rpcProductionData.getFluidPVT().getWaterDensity());
+					rpcProductionData.getProduction().setWeightWaterCut(weightWaterCut);
+				}
+				if(rpcProductionData.getManualIntervention()!=null){
+					int manualInterventionResultCode=0;
+					Jedis jedis=null;
+					try{
+						jedis = RedisUtil.jedisPool.getResource();
+						if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+							MemoryDataManagerTask.loadRPCWorkType();
+						}
+						if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+							if(jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
+								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
+								manualInterventionResultCode=workType.getResultCode();
+							}
+						}
+					}catch(Exception e){
+						String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+						List<?> resultList = this.wellInformationManagerService.findCallSql(resultNameSql);
+						if(resultList.size()>0){
+							manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+						}
+					}finally{
+						if(jedis!=null&&jedis.isConnected()){
+							jedis.close();
+						}
+					}
+					rpcProductionData.getManualIntervention().setCode(manualInterventionResultCode);
+					
+					
+					if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+						String sql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+						List<?> resultList = this.wellInformationManagerService.findCallSql(sql);
+						if(resultList.size()>0){
+							int manualInterventionCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+							rpcProductionData.getManualIntervention().setCode(manualInterventionCode);
+						}
+					}else{
+						rpcProductionData.getManualIntervention().setCode(0);
+					}
+				}
+				deviceProductionDataSaveStr=gson.toJson(rpcProductionData);
+			}
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+			type = new TypeToken<PCPProductionData>() {}.getType();
+			PCPProductionData productionData=gson.fromJson(deviceProductionData, type);
+			if(productionData!=null){
+				if(productionData.getProduction()!=null && productionData.getFluidPVT()!=null){
+					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(productionData.getProduction().getWaterCut(), productionData.getFluidPVT().getCrudeOilDensity(), productionData.getFluidPVT().getWaterDensity());
+					productionData.getProduction().setWeightWaterCut(weightWaterCut);
+				}
+				deviceProductionDataSaveStr=gson.toJson(productionData);
+			}
+		}
+		
+		
+		
+		
+		this.wellInformationManagerService.saveProductionData(StringManagerUtils.stringToInteger(deviceType),deviceId,deviceProductionDataSaveStr);
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			//处理抽油机型号
 			this.wellInformationManagerService.saveRPCPumpingModel(deviceId,pumpingModelId);

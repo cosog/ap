@@ -565,6 +565,8 @@ public class RPCProductionData {
 	public static class Production
 	{
 	    private float WaterCut;
+	    
+	    private float WeightWaterCut;
 
 	    private float ProductionGasOilRatio;
 
@@ -627,6 +629,12 @@ public class RPCProductionData {
 		}
 		public void setLevelCorrectValue(float levelCorrectValue) {
 			LevelCorrectValue = levelCorrectValue;
+		}
+		public float getWeightWaterCut() {
+			return WeightWaterCut;
+		}
+		public void setWeightWaterCut(float weightWaterCut) {
+			WeightWaterCut = weightWaterCut;
 		}
 	}
 

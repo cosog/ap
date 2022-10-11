@@ -1857,7 +1857,10 @@ public class MemoryDataManagerTask {
 				workType.setOptimizationSuggestion(rs.getString(5));
 				workType.setRemark(rs.getString(6));
 				String key=workType.getResultCode()+"";
+				String keyByName=workType.getResultName()+"";
+				
 				jedis.hset("RPCWorkType".getBytes(), key.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
+				jedis.hset("RPCWorkTypeByName".getBytes(), keyByName.getBytes(), SerializeObjectUnils.serialize(workType));//哈希(Hash)
 			}
 		}catch (SQLException e) {
 			e.printStackTrace();

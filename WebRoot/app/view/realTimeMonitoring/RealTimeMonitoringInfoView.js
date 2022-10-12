@@ -1470,8 +1470,6 @@ function createVideo(playrHelper,deviceType,data){
 		divId='PCPRealTimeMonitoringRightVideoDiv_Id';
 	}
 	
-	
-	
 	var videoUrl  = data.videoUrl;
 	var videoAccessToken = data.videoAccessToken;
 	
@@ -1484,14 +1482,20 @@ function createVideo(playrHelper,deviceType,data){
 //		}
 //		playrHelper.playr.releasePlayer();
 		$("#"+playrHelper.playr.id).html('');
-//		document.getElementById(playrHelper.playr.id).innerHTML="";
-		Ext.getCmp(panelId).removeAll();
+//		$("#"+panelId).html('');
+//		$("#"+panelId).html('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
+//		Ext.getCmp(panelId).removeAll();
+		
+		Ext.getCmp(panelId).setHtml('');
 		playrHelper.playr=null;
 	}
 	
 	
 	if(videoUrl!=''){
-		Ext.getCmp(panelId).show();
+		if(Ext.getCmp(panelId).isHidden() ){
+			Ext.getCmp(panelId).show();
+			Ext.getCmp(panelId).setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
+		}
 		var offsetWidth=Ext.getCmp(panelId).getWidth();
 		var offsetHeight=Ext.getCmp(panelId).getHeight();
 		playrHelper.playr = new EZUIKit.EZUIKitPlayer({
@@ -1508,6 +1512,8 @@ function createVideo(playrHelper,deviceType,data){
             height: offsetHeight
         });	
 	}else{
-		Ext.getCmp(panelId).hide();
+		if(!Ext.getCmp(panelId).isHidden() ){
+			Ext.getCmp(panelId).hide();
+		}
 	}
 }

@@ -33763,6 +33763,9 @@ var fragmentYUVShader = ['precision highp float;', 'varying highp vec2 textureCo
     }
 
     var canvas = this.canvasElement;
+    if(canvas==null){
+    	return;
+    }
     this.nWindowWidth = canvas.width;
     this.nWindowHeight = canvas.height;
     var nWindowWidth = this.nWindowWidth;

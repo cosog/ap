@@ -394,4 +394,13 @@ public class CalculateUtils {
 		}
 		return weightWaterCut;
 	}
+	
+	public static float weightWaterCutToVolumeWaterCut(float weightWaterCut,float crudeOilDensity,float waterDensity){
+		float volumeWaterCut=0;
+		if(crudeOilDensity!=0 || waterDensity!=0){
+			volumeWaterCut=100*crudeOilDensity*weightWaterCut/(crudeOilDensity*weightWaterCut+(100-weightWaterCut)*waterDensity );
+			volumeWaterCut = Math.round(volumeWaterCut * 100) / 100f;
+		}
+		return volumeWaterCut;
+	}
 }

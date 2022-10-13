@@ -4423,3 +4423,36 @@ function timestamp2Str (timestamp) {
 
     return year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second+'.'+millisecond;
 }
+
+function getBrowserType(){
+	const explorer = window.navigator.userAgent;
+	if(explorer.indexOf("MSIE")>=0){
+		return 1;//IE
+	}else if(explorer.indexOf("Firefox")>=0){
+		return 2;//Firefox
+	}else if(explorer.indexOf("Chrome")>=0){
+		return 3;//Chrome
+	}else if(explorer.indexOf("Opera")>=0){
+		return 4;//Opera
+	}else if(explorer.indexOf("Safair")>=0){
+		return 5;//Safair
+	}else{
+		return 6;
+	}
+}
+
+function getBrowserType2(){
+	if(window.ActiveXObject){
+		return 1;//IE
+	}else if(document.getBoxObjectFor){
+		return 2;//Firefox
+	}else if(document.MessageEvent && !document.getBoxObjectFor){
+		return 3;//Chrome
+	}else if(window.opera){
+		return 4;//Opera
+	}else if(window.openDatabase){
+		return 5;//safair
+	}else{
+		return 6;
+	}
+}

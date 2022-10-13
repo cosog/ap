@@ -377,14 +377,13 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                 html: '<div id="PCPRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>',
                                 listeners: {
                                 	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                		var offsetWidth=Ext.getCmp('PCPRealTimeMonitoringRightVideoPanel').getWidth();
-                                		var offsetHeight=Ext.getCmp('PCPRealTimeMonitoringRightVideoPanel').getHeight();
-                                		
-                                		var divWidth=$("#PCPRealTimeMonitoringRightVideoDiv_Id").width();
-                                		var divHeight=$("#PCPRealTimeMonitoringRightVideoDiv_Id").height();
-                                		
                                 		if(Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 			if(videoPlayrHelper.playr!=null){
+                                				var offsetWidth=Ext.getCmp('PCPRealTimeMonitoringRightVideoPanel').getWidth();
+                                        		var offsetHeight=Ext.getCmp('PCPRealTimeMonitoringRightVideoPanel').getHeight();
+                                        		
+                                        		var divWidth=$("#PCPRealTimeMonitoringRightVideoDiv_Id").width();
+                                        		var divHeight=$("#PCPRealTimeMonitoringRightVideoDiv_Id").height();
                                 				if(offsetWidth>=divWidth || offsetHeight>=divHeight){
                                 					createVideo(videoPlayrHelper,1,Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
                                 				}
@@ -409,16 +408,18 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                 	if(Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 		createVideo(videoPlayrHelper,1,Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
                                 	}else{
-                                		if(videoPlayr!=null){
-                            				document.getElementById('PCPRealTimeMonitoringRightVideoDiv_Id').innerHTML="";
-                            				videoPlayr=null;
-                            			}
-                                		Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").hide();
+                                		var videoPanel=Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel");
+                                		if(videoPlayrHelper.playr!=null){
+                                			$("#"+videoPlayrHelper.playr.id).html('');
+                                			videoPanel.setHtml('');
+                                			videoPlayrHelper.playr=null;
+                                		}
+                                		videoPanel.hide();
                                 	}
                         		}else{
                         			if(videoPlayrHelper.playr!=null){
-                        				$("#PCPRealTimeMonitoringRightVideoDiv_Id").html('');
-                        				Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").removeAll();
+                        				$("#"+videoPlayrHelper.playr.id).html('');
+                        				Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel").setHtml('');
                         				videoPlayrHelper.playr=null;
                         			}
                         		}

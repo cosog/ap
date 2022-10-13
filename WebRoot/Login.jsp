@@ -237,17 +237,10 @@
                         	  <span  id= "login_loginInfo"></span>
                         </li>
                     </ul>
-                    <div class="hidden-sm">
-
-                    </div>
+                    <div class="hidden-sm"></div>
                 </div>
             </div>
             <div class="page-login-main animation-fade">
-            <!--  
-            	<div class="alert alert-danger alert-dismissible" role="alert">
-					用户名或密码错误！
-            	</div>
-            	-->
                 <div class="vertical-align">
                     <div class="vertical-align-middle">
                         <div class="visible-xs text-center">

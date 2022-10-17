@@ -291,9 +291,10 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     }
             	},{
             		region: 'east',
-            		width: '45%',
+            		width: '50%',
             		split: true,
                 	collapsible: true,
+                	header:false,
                 	layout: 'border',
                 	items: [{
                 		region: 'center',
@@ -311,7 +312,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         }
                 	},{
                     	region: 'south',
-                    	height:'20%',
+                    	height:'25%',
                     	title:'视频配置',
                     	id:'PCPVideoInfoPanel_Id',
                     	split: true,
@@ -819,11 +820,19 @@ var PCPDeviceInfoHandsontableHelper = {
               //视频信息
                 var videoUrl='';
                 var videoAccessToken='';
+                var videoUrl1='';
+                var videoAccessToken1='';
+                var videoUrl2='';
+                var videoAccessToken2='';
                 if(pcpVideoInfoHandsontableHelper!=null && pcpVideoInfoHandsontableHelper.hot!=undefined){
                 	var pcpVideoInfoHandsontableData=pcpVideoInfoHandsontableHelper.hot.getData();
-                	videoUrl=pcpVideoInfoHandsontableData[0][2];
-                	videoAccessToken=pcpVideoInfoHandsontableData[1][2];
+                	videoUrl1=pcpVideoInfoHandsontableData[0][2];
+                	videoAccessToken1=pcpVideoInfoHandsontableData[1][2];
+                	videoUrl2=pcpVideoInfoHandsontableData[2][2];
+                	videoAccessToken2=pcpVideoInfoHandsontableData[3][2];
                 }
+                videoUrl=videoUrl1+';'+videoUrl2;
+                videoAccessToken=videoAccessToken1+';'+videoAccessToken2;
             	Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -1093,13 +1102,13 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 				pcpVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				pcpVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
-					pcpVideoInfoHandsontableHelper.createTable([{},{}]);
+					pcpVideoInfoHandsontableHelper.createTable([{},{},{},{}]);
 				}else{
 					pcpVideoInfoHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				if(result.totalRoot.length==0){
-					pcpVideoInfoHandsontableHelper.hot.loadData([{},{}]);
+					pcpVideoInfoHandsontableHelper.hot.loadData([{},{},{},{}]);
 				}else{
 					pcpVideoInfoHandsontableHelper.hot.loadData(result.totalRoot);
 				}

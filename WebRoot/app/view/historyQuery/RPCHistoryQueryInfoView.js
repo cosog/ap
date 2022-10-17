@@ -166,8 +166,8 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#RPCHistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#RPCHistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCHistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCHistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("RPCHistoryQueryFESdiagramResultStatGraphPanelPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("RPCHistoryQueryFESdiagramResultStatGraphPanelPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -187,8 +187,8 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#RPCHistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#RPCHistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCHistoryQueryRunStatusStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCHistoryQueryRunStatusStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("RPCHistoryQueryRunStatusStatGraphPanelPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("RPCHistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -208,8 +208,8 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#RPCHistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#RPCHistoryQueryStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCHistoryQueryStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCHistoryQueryStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("RPCHistoryQueryStatGraphPanelPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("RPCHistoryQueryStatGraphPanelPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -230,8 +230,8 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#RPCHistoryQueryDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-                                        $("#RPCHistoryQueryDeviceTypeStatPieDiv_Id").highcharts().setSize($("#RPCHistoryQueryDeviceTypeStatPieDiv_Id").offsetWidth, $("#RPCHistoryQueryDeviceTypeStatPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("RPCHistoryQueryDeviceTypeStatPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("RPCHistoryQueryDeviceTypeStatPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -690,7 +690,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                     listeners: {
                                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             if ($("#RPCHistoryQueryOverlayDiv_Id").highcharts() != undefined && $("#RPCHistoryQueryOverlayDiv_Id").highcharts() != null) {
-                                                $("#RPCHistoryQueryOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                            	highchartsResize("RPCHistoryQueryOverlayDiv_Id");
                                             }
                                         }
                                     }
@@ -705,7 +705,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                     listeners: {
                                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             if ($("#RPCHistoryQueryPowerOverlayDiv_Id").highcharts() != undefined && $("#RPCHistoryQueryPowerOverlayDiv_Id").highcharts() != null) {
-                                                $("#RPCHistoryQueryPowerOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                            	highchartsResize("RPCHistoryQueryPowerOverlayDiv_Id");
                                             }
                                         }
                                     }
@@ -720,7 +720,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                     listeners: {
                                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             if ($("#RPCHistoryQueryCurrentOverlayDiv_Id").highcharts() != undefined && $("#RPCHistoryQueryCurrentOverlayDiv_Id").highcharts() != null) {
-                                                $("#RPCHistoryQueryCurrentOverlayDiv_Id").highcharts().setSize(adjWidth, adjHeight, true);
+                                            	highchartsResize("RPCHistoryQueryCurrentOverlayDiv_Id");
                                             }
                                         }
                                     }
@@ -757,7 +757,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
     		        					for(var i=0;i<containerChildren.length;i++){
     		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
     		        						if(isNotVal(chart)){
-    		        							chart.setSize($("#"+containerChildren[i].id).offsetWidth, $("#"+containerChildren[i].id).offsetHeight, true);
+    		        							highchartsResize(containerChildren[i].id);
     		        						}
     		        					}
     		        				}
@@ -807,7 +807,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                     if ($("#rpcHistoryQueryCurveDiv_Id").highcharts() != undefined) {
-                                        $("#rpcHistoryQueryCurveDiv_Id").highcharts().setSize($("#rpcHistoryQueryCurveDiv_Id").offsetWidth, $("#rpcHistoryQueryCurveDiv_Id").offsetHeight, true);
+                                    	highchartsResize("rpcHistoryQueryCurveDiv_Id");
                                     }
                                 }
                             }

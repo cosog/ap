@@ -289,14 +289,6 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			Ext.create('AP.store.orgAndUser.OrgInfoStore');
 		}
 	}
-//	else if(module_Code == "RoleManagement"){
-//		var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
-//		if (isNotVal(gridPanel)) {
-//			gridPanel.getStore().load();
-//		}else{
-//			Ext.create('AP.store.role.RoleInfoStore');
-//		}
-//	}
 	else if(module_Code == "WellInformation"){
 		var tabPanel = Ext.getCmp("DeviceManagerTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
@@ -601,8 +593,22 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 	            }
 			}
 		}
-	}else {
-		return false;
 	}
+	if(module_Code != "DeviceRealTimeMonitoring"){
+		if(videoPlayrHelper.playr1!=null){
+			videoPlayrHelper.playr1.stop();
+//			$("#"+videoPlayrHelper.playr1.id).html('');
+//			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel1").setHtml('');
+//			videoPlayrHelper.playr1=null;
+		}
+		if(videoPlayrHelper.playr2!=null){
+			videoPlayrHelper.playr2.stop();
+//			$("#"+videoPlayrHelper.playr2.id).html('');
+//			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel2").setHtml('');
+//			videoPlayrHelper.playr2=null;
+		}
+	}
+	
+	return false;
 	
 }

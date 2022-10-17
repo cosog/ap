@@ -384,7 +384,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	}]
                 },{
                 	region: 'south',
-                	height:'20%',
+                	height:'25%',
                 	title:'视频配置',
                 	id:'RPCVideoInfoPanel_Id',
                 	split: true,
@@ -943,12 +943,19 @@ var RPCDeviceInfoHandsontableHelper = {
                 //视频信息
                 var videoUrl='';
                 var videoAccessToken='';
+                var videoUrl1='';
+                var videoAccessToken1='';
+                var videoUrl2='';
+                var videoAccessToken2='';
                 if(rpcVideoInfoHandsontableHelper!=null && rpcVideoInfoHandsontableHelper.hot!=undefined){
                 	var rpcVideoInfoHandsontableData=rpcVideoInfoHandsontableHelper.hot.getData();
-                	videoUrl=rpcVideoInfoHandsontableData[0][2];
-                	videoAccessToken=rpcVideoInfoHandsontableData[1][2];
+                	videoUrl1=rpcVideoInfoHandsontableData[0][2];
+                	videoAccessToken1=rpcVideoInfoHandsontableData[1][2];
+                	videoUrl2=rpcVideoInfoHandsontableData[2][2];
+                	videoAccessToken2=rpcVideoInfoHandsontableData[3][2];
                 }
-                
+                videoUrl=videoUrl1+';'+videoUrl2;
+                videoAccessToken=videoAccessToken1+';'+videoAccessToken2;
             	Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -1581,13 +1588,13 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 				rpcVideoInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcVideoInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
-					rpcVideoInfoHandsontableHelper.createTable([{},{}]);
+					rpcVideoInfoHandsontableHelper.createTable([{},{},{},{}]);
 				}else{
 					rpcVideoInfoHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				if(result.totalRoot.length==0){
-					rpcVideoInfoHandsontableHelper.hot.loadData([{},{}]);
+					rpcVideoInfoHandsontableHelper.hot.loadData([{},{},{},{}]);
 				}else{
 					rpcVideoInfoHandsontableHelper.hot.loadData(result.totalRoot);
 				}

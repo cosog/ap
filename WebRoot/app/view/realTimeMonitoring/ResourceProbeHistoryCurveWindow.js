@@ -56,7 +56,7 @@ Ext.define("AP.view.realTimeMonitoring.ResourceProbeHistoryCurveWindow", {
             listeners: {
                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                     if ($("#ResourceProbeHistoryCurveDiv_Id").highcharts() != undefined) {
-                        $("#ResourceProbeHistoryCurveDiv_Id").highcharts().setSize($("#ResourceProbeHistoryCurveDiv_Id").offsetWidth, $("#ResourceProbeHistoryCurveDiv_Id").offsetHeight, true);
+                    	highchartsResize("ResourceProbeHistoryCurveDiv_Id");
                     }else{
                     	Ext.create("AP.store.realTimeMonitoring.ResourceProbeHistoryCurveStore");
                     }

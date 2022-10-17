@@ -154,8 +154,8 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#PCPHistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#PCPHistoryQueryRunStatusStatGraphPanelPieDiv_Id").highcharts().setSize($("#PCPHistoryQueryRunStatusStatGraphPanelPieDiv_Id").offsetWidth, $("#PCPHistoryQueryRunStatusStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("PCPHistoryQueryRunStatusStatGraphPanelPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("PCPHistoryQueryRunStatusStatGraphPanelPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -175,8 +175,8 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#PCPHistoryQueryStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                        $("#PCPHistoryQueryStatGraphPanelPieDiv_Id").highcharts().setSize($("#PCPHistoryQueryStatGraphPanelPieDiv_Id").offsetWidth, $("#PCPHistoryQueryStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("PCPHistoryQueryStatGraphPanelPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("PCPHistoryQueryStatGraphPanelPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -197,8 +197,8 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         	listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if ($("#PCPHistoryQueryDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-                                        $("#PCPHistoryQueryDeviceTypeStatPieDiv_Id").highcharts().setSize($("#PCPHistoryQueryDeviceTypeStatPieDiv_Id").offsetWidth, $("#PCPHistoryQueryDeviceTypeStatPieDiv_Id").offsetHeight,true);
-                                    }else{
+                                		highchartsResize("PCPHistoryQueryDeviceTypeStatPieDiv_Id");
+                                	}else{
                                     	var toolTip=Ext.getCmp("PCPHistoryQueryDeviceTypeStatPieToolTip_Id");
                                     	if(!isNotVal(toolTip)){
                                     		Ext.create('Ext.tip.ToolTip', {
@@ -520,7 +520,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 if ($("#pcpHistoryQueryCurveDiv_Id").highcharts() != undefined) {
-                                    $("#pcpHistoryQueryCurveDiv_Id").highcharts().setSize($("#pcpHistoryQueryCurveDiv_Id").offsetWidth, $("#pcpHistoryQueryCurveDiv_Id").offsetHeight, true);
+                                	highchartsResize("pcpHistoryQueryCurveDiv_Id");
                                 }
                             }
                         }

@@ -319,7 +319,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                     if ($("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").highcharts() != undefined) {
-                                        $("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").highcharts().setSize($("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").offsetWidth, $("#UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id").offsetHeight, true);
+                                    	highchartsResize("UpstreamAndDownstreamInteractionWaterCutRawDataCurveDiv_Id");
                                     }
                                 }
                             }

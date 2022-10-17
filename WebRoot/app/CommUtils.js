@@ -4434,8 +4434,8 @@ function getBrowserType(){
 		return 3;//Chrome
 	}else if(explorer.indexOf("Opera")>=0){
 		return 4;//Opera
-	}else if(explorer.indexOf("Safair")>=0){
-		return 5;//Safair
+	}else if(explorer.indexOf("Safari")>=0){
+		return 5;//Safari
 	}else{
 		return 6;
 	}
@@ -4454,5 +4454,21 @@ function getBrowserType2(){
 		return 5;//safair
 	}else{
 		return 6;
+	}
+}
+
+function isBrowserFullScreen(){
+	return document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+}
+
+function highchartsResize(divId){
+	if(isNotVal($("#"+divId))){
+		var charts=$("#"+divId).highcharts();
+		if(charts!=undefined){
+			var isFullScreen = isBrowserFullScreen();
+			if(!isFullScreen){
+				charts.setSize($("#"+divId).offsetWidth, $("#"+divId).offsetHeight,true);
+			}
+		}
 	}
 }

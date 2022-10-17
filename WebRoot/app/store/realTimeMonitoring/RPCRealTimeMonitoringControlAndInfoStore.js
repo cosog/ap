@@ -112,7 +112,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
 			        }
 			    }
 			});
-    		
+//    		Ext.getCmp("RPCRealTimeMonitoringRightControlPanel").removeAll();
     		var controlGridPanel=Ext.getCmp("RPCRealTimeMonitoringControlDataGridPanel_Id");
     		if(!isNotVal(controlGridPanel)){
     			controlGridPanel=Ext.create('Ext.grid.Panel', {
@@ -140,6 +140,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        	width:93,
     			        	renderer :function(value,e,o){
     			        		var id = e.record.id;
+//    			        		console.log("id:"+id);
     			        		var item=o.data.item;
     			        		var itemcode=o.data.itemcode;
     			        		var isControl=o.data.isControl;
@@ -183,8 +184,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     		                            		Ext.Ajax.request({
     		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
     		                                        method: "POST",
-//    		                                        waitMsg: cosog.string.updatewait,
-//    		                                        waitTitle: 'Please Wait...',
     		                                        params: {
     		                                        	deviceId:deviceId,
     		                                        	wellName: wellName,

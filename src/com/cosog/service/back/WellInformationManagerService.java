@@ -2363,8 +2363,38 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("{\"success\":true,\"totalCount\":2,\"columns\":"+columns+",\"totalRoot\":[");
 		if(list.size()>0){
 			Object[] obj = (Object[]) list.get(0);
-			result_json.append("{\"id\":1,\"itemName\":\"视频监控路径\",\"itemValue\":\""+obj[0]+"\"},");
-			result_json.append("{\"id\":2,\"itemName\":\"视频访问令牌\",\"itemValue\":\""+obj[1]+"\"},");
+			String videoUrl=obj[0]==null?"":obj[0].toString();
+			String videoAccessToken=obj[1]==null?"":obj[1].toString();
+			
+			String videoUrl1="",videoUrl2="";
+			String videoAccessToken1="",videoAccessToken2="";
+			
+			
+			
+			if(StringManagerUtils.isNotNull(videoUrl)){
+				String[] videoUrlArr=videoUrl.split(";");
+				if(videoUrlArr.length>0){
+					videoUrl1=videoUrlArr[0];
+					if(videoUrlArr.length>1){
+						videoUrl2=videoUrlArr[1];
+					}
+				}
+			}
+			if(StringManagerUtils.isNotNull(videoAccessToken)){
+				String[] videoAccessTokenArr=videoAccessToken.split(";");
+				if(videoAccessTokenArr.length>0){
+					videoAccessToken1=videoAccessTokenArr[0];
+					if(videoAccessTokenArr.length>1){
+						videoAccessToken2=videoAccessTokenArr[1];
+					}
+				}
+			}
+			
+			
+			result_json.append("{\"id\":1,\"itemName\":\"视频监控路径1\",\"itemValue\":\""+videoUrl1+"\"},");
+			result_json.append("{\"id\":2,\"itemName\":\"视频访问令牌1\",\"itemValue\":\""+videoAccessToken1+"\"},");
+			result_json.append("{\"id\":3,\"itemName\":\"视频监控路径2\",\"itemValue\":\""+videoUrl2+"\"},");
+			result_json.append("{\"id\":4,\"itemName\":\"视频访问令牌2\",\"itemValue\":\""+videoAccessToken2+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);

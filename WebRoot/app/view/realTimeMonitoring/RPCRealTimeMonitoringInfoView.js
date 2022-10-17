@@ -166,15 +166,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id"))){
                                 		if ($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                			var panelWidth=Ext.getCmp('RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id').getWidth();
-                                    		var panelHeight=Ext.getCmp('RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id').getHeight();
-                                    		
-                                    		var divWidth=$("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").width();
-                                    		var divHeight=$("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").height();
-                                			
-                                			if(panelWidth>=divWidth || panelHeight>=divHeight){
-                                				$("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                			}
+                                			highchartsResize("RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieDiv_Id");
                                         }else{
                                         	var toolTip=Ext.getCmp("RPCRealTimeMonitoringFESdiagramResultStatGraphPanelPieToolTip_Id");
                                         	if(!isNotVal(toolTip)){
@@ -197,8 +189,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id"))){
                                 		if ($("#RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                            $("#RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                        }else{
+                                			highchartsResize("RPCRealTimeMonitoringRunStatusStatGraphPanelPieDiv_Id");
+                                		}else{
                                         	var toolTip=Ext.getCmp("RPCRealTimeMonitoringRunStatusStatGraphPanelPieToolTip_Id");
                                         	if(!isNotVal(toolTip)){
                                         		Ext.create('Ext.tip.ToolTip', {
@@ -220,8 +212,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#RPCRealTimeMonitoringStatGraphPanelPieDiv_Id"))){
                                 		if ($("#RPCRealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts() != undefined) {
-                                            $("#RPCRealTimeMonitoringStatGraphPanelPieDiv_Id").highcharts().setSize($("#RPCRealTimeMonitoringStatGraphPanelPieDiv_Id").offsetWidth, $("#RPCRealTimeMonitoringStatGraphPanelPieDiv_Id").offsetHeight,true);
-                                        }else{
+                                			highchartsResize("RPCRealTimeMonitoringStatGraphPanelPieDiv_Id");
+                                		}else{
                                         	var toolTip=Ext.getCmp("RPCRealTimeMonitoringStatGraphPanelPieToolTip_Id");
                                         	if(!isNotVal(toolTip)){
                                         		Ext.create('Ext.tip.ToolTip', {
@@ -244,8 +236,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 	if(isNotVal($("#RPCRealTimeMonitoringStatGraphPanelPieDiv_Id"))){
                                 		if ($("#RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts() != undefined) {
-                                            $("#RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id").highcharts().setSize($("#RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id").offsetWidth, $("#RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id").offsetHeight,true);
-                                        }else{
+                                			highchartsResize("RPCRealTimeMonitoringDeviceTypeStatPieDiv_Id");
+                                		}else{
                                         	var toolTip=Ext.getCmp("RPCRealTimeMonitoringDeviceTypeStatPieToolTip_Id");
                                         	if(!isNotVal(toolTip)){
                                         		Ext.create('Ext.tip.ToolTip', {
@@ -329,8 +321,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv1_id");
+                                            	}
                                             }
                                         }
                             	    },{
@@ -343,8 +335,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv2_id");
+                                            	}
                                             }
                                         }
                             	    }]
@@ -367,8 +359,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv3_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv3_id");
+                                            	}
                                             }
                                         }
                             	    },{
@@ -381,8 +373,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleWellboreDetailsDiv4_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleWellboreDetailsDiv4_id");
+                                            	}
                                             }
                                         }
                             	    }]
@@ -420,8 +412,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv1_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv1_id");
+                                            	}
                                             }
                                         }
                             	    },{
@@ -435,8 +427,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv2_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv2_id");
+                                            	}
                                             }
                                         }
                             	    }]
@@ -460,8 +452,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv3_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv3_id");
+                                            	}
                                             }
                                         }
                             	    },{
@@ -475,8 +467,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                         listeners: {
                                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                             	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts()!=undefined){
-                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv4_id").offsetHeight,true);
-                                        		}
+                                            		highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv4_id");
+                                            	}
                                             }
                                         }
                             	    }]
@@ -501,7 +493,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
 //                                        listeners: {
 //                                            resize: function (abstractcomponent, adjWidth, adjHeight, options) {
 //                                            	if($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts()!=undefined){
-//                                        			$("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").highcharts().setSize($("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").offsetWidth, $("#FSDiagramAnalysisSingleSurfaceDetailsDiv5_id").offsetHeight,true);
+//                                        			highchartsResize("FSDiagramAnalysisSingleSurfaceDetailsDiv5_id");
 //                                        		}
 //                                            }
 //                                        }
@@ -528,7 +520,7 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
             		        					for(var i=0;i<containerChildren.length;i++){
             		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
             		        						if(isNotVal(chart)){
-            		        							chart.setSize($("#"+containerChildren[i].id).offsetWidth, $("#"+containerChildren[i].id).offsetHeight, true);
+            		        							highchartsResize(containerChildren[i].id);
             		        						}
             		        					}
             		        				}
@@ -617,37 +609,60 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                             items: [{
                             	region: 'north',
                             	layout: 'fit',
-                            	height: '40%',
-                            	id:'RPCRealTimeMonitoringRightVideoPanel',
+                            	height: 220,
+                            	id:'RPCRealTimeMonitoringRightVideoPanel1',
                             	collapsible: true, // 是否折叠
                             	header: false,
                                 split: true, // 竖折叠条
                                 autoRender:true,
-                                html: '<div id="RPCRealTimeMonitoringRightVideoDiv_Id" style="width:100%;height:100%;"></div>',
+                                html: '<div id="RPCRealTimeMonitoringRightVideoDiv1_Id" style="width:100%;height:100%;"></div>',
                                 listeners: {
                                 	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 		if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                			if(videoPlayrHelper.playr!=null){
-                                				var browserType=getBrowserType();
-                                        		var offsetWidth=Ext.getCmp('RPCRealTimeMonitoringRightVideoPanel').getWidth();
-                                        		var offsetHeight=Ext.getCmp('RPCRealTimeMonitoringRightVideoPanel').getHeight();
-                                        		var divWidth=$("#RPCRealTimeMonitoringRightVideoDiv_Id").width();
-                                        		var divHeight=$("#RPCRealTimeMonitoringRightVideoDiv_Id").height();
-                                				if(offsetWidth>=divWidth || offsetHeight>=divHeight){
-                                					createVideo(videoPlayrHelper,0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
-                                				}
+                                			if(videoPlayrHelper.playr1!=null){
+                                        		var isFullScreen = isBrowserFullScreen();
+                                        		if(!isFullScreen){
+                                    				var recordData=Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
+                                        			createVideo(videoPlayrHelper,0,recordData,1);
+                                    			}
                                     		}
                                 		}
                                 	}
                                 }
                             },{
                             	region: 'center',
-                                height: '60%',
-                                id: 'RPCRealTimeMonitoringRightControlPanel',
-                                border: false,
-                                layout: 'fit',
-                                autoScroll: true,
-                                scrollable: true
+                            	layout: 'border',
+                            	items: [{
+                            		region: 'north',
+                                	layout: 'fit',
+                                	height: 220,
+                                	id:'RPCRealTimeMonitoringRightVideoPanel2',
+                                	collapsible: true, // 是否折叠
+                                	header: false,
+                                    split: true, // 竖折叠条
+                                    autoRender:true,
+                                    html: '<div id="RPCRealTimeMonitoringRightVideoDiv2_Id" style="width:100%;height:100%;"></div>',
+                                    listeners: {
+                                    	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    		if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                                    			if(videoPlayrHelper.playr2!=null){
+                                            		var isFullScreen = isBrowserFullScreen();
+                                            		if(!isFullScreen){
+                                        				var recordData=Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
+                                            			createVideo(videoPlayrHelper,0,recordData,2);
+                                        			}
+                                        		}
+                                    		}
+                                    	}
+                                    }
+                            	},{
+                            		region: 'center',
+                                    id: 'RPCRealTimeMonitoringRightControlPanel',
+                                    border: false,
+                                    layout: 'fit',
+                                    autoScroll: true,
+                                    scrollable: true
+                            	}]
                             }]
                 		}],
                 		listeners: {
@@ -656,19 +671,35 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 	if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 		createVideo(videoPlayrHelper,0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
                                 	}else{
-                                		var videoPanel=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel");
-                                		if(videoPlayrHelper.playr!=null){
-                                			$("#"+videoPlayrHelper.playr.id).html('');
-                                			videoPanel.setHtml('');
-                                			videoPlayrHelper.playr=null;
+                                		var videoPanel1=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel1");
+                                		var videoPanel2=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel2");
+                                		if(videoPlayrHelper.playr1!=null){
+                                			videoPlayrHelper.playr1.stop();
+                                			$("#"+videoPlayrHelper.playr1.id).html('');
+                                			videoPanel1.setHtml('');
+                                			videoPlayrHelper.playr1=null;
                                 		}
-                                		videoPanel.hide();
+                                		if(videoPlayrHelper.playr2!=null){
+                                			videoPlayrHelper.playr2.stop();
+                                			$("#"+videoPlayrHelper.playr2.id).html('');
+                                			videoPanel2.setHtml('');
+                                			videoPlayrHelper.playr2=null;
+                                		}
+                                		videoPanel1.hide();
+                                		videoPanel2.hide();
                                 	}
                         		}else{
-                        			if(videoPlayrHelper.playr!=null){
-                        				$("#"+videoPlayrHelper.playr.id).html('');
-                        				Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel").setHtml('');
-                        				videoPlayrHelper.playr=null;
+                        			if(videoPlayrHelper.playr1!=null){
+                        				videoPlayrHelper.playr1.stop();
+                        				$("#"+videoPlayrHelper.playr1.id).html('');
+                        				Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel1").setHtml('');
+                        				videoPlayrHelper.playr1=null;
+                        			}
+                        			if(videoPlayrHelper.playr2!=null){
+                        				videoPlayrHelper.playr2.stop();
+                        				$("#"+videoPlayrHelper.playr2.id).html('');
+                        				Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel2").setHtml('');
+                        				videoPlayrHelper.playr2=null;
                         			}
                         		}
                             }

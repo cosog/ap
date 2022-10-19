@@ -17,6 +17,9 @@ ap:
          password: CANDRMRCDLKHUKQX
          smtpHost: smtp.126.com
          smtpPort: 465
+   video:
+      appKey: 14f8cafea45b4dfea4c0f8fbb724e86d
+      secret: 12f4b1bf467322db5fdc0c87113961cb
    others:
       cache: false
       language: zh_CN

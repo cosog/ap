@@ -1761,6 +1761,83 @@ public class StringManagerUtils {
         return "";
     }
 
+    public static String sendPostMethod2(String url, String param, String encoding, int connectTimeout, int readTimeout) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        HttpURLConnection conn = null;
+        OutputStreamWriter os = null;
+        InputStreamReader is = null;
+        String result = "";
+        if (!StringManagerUtils.isNotNull(encoding)) {
+            encoding = "utf-8";
+        }
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            conn = (HttpURLConnection) realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            //超时设置
+            if (connectTimeout > 0) {
+                conn.setConnectTimeout(1000 * connectTimeout); //连接主机超时设置
+            }
+            if (readTimeout > 0) {
+                conn.setReadTimeout(1000 * readTimeout); //从主机读取数据超时设置
+            }
+            os = new OutputStreamWriter(conn.getOutputStream(), encoding);
+            out = new PrintWriter(os);
+            out.print(param);
+            out.flush();
+
+            // 定义BufferedReader输入流来读取URL的响应
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                is = new InputStreamReader(conn.getInputStream(), encoding); in = new BufferedReader(is);
+                String line;
+                while ((line = in .readLine()) != null) {
+                    result += line;
+                }
+                return result;
+            } else if (conn.getResponseCode() >= 400) {
+                String errorInfo = "";
+                is = new InputStreamReader(conn.getInputStream(), encoding); in = new BufferedReader(is);
+                String line;
+                while ((line = in .readLine()) != null) {
+                    errorInfo += line;
+                }
+                StringManagerUtils.printLog("错误信息：" + errorInfo);
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            StringManagerUtils.printLog("发送 POST 请求出现异常！" + e);
+            StringManagerUtils.printLog("url:" + url + ",param:" + param);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
+                if ( in != null) {
+                    in .close();
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return "";
+    }
+    
     public static Boolean checkHttpConnection(String url) {
         HttpURLConnection conn = null;
         Boolean result = false;

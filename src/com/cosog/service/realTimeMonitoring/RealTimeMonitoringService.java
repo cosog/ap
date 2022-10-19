@@ -19,6 +19,7 @@ import org.hibernate.engine.jdbc.SerializableClobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.CommStatus;
 import com.cosog.model.User;
@@ -3252,5 +3253,40 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 	        dataSbf.append("polishrodA:\"\""); 
 		}
 		return dataSbf.toString().replaceAll("null", "");
+	}
+	
+	public String getUIKitAccessToken() throws SQLException, IOException{
+		StringBuffer dataSbf = new StringBuffer();
+		Jedis jedis=null;
+		AccessToken accessToken=null;
+		boolean success=false;
+		String accessTokenStr="";
+		long expireTime=0;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("UIKitAccessToken".getBytes())){
+				MemoryDataManagerTask.loadUIKitAccessToken();
+			}else{
+				accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.get("UIKitAccessToken".getBytes()));
+				if(accessToken!=null&&"200".equalsIgnoreCase(accessToken.getCode())){
+					long now=new Date().getTime();
+					if(now>accessToken.getData().getExpireTime()){
+						MemoryDataManagerTask.loadUIKitAccessToken();
+					}
+				}
+			}
+			accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.get("UIKitAccessToken".getBytes()));
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(accessToken!=null&&"200".equalsIgnoreCase(accessToken.getCode())){
+			success=true;
+			accessTokenStr=accessToken.getData().getAccessToken();
+			expireTime=accessToken.getData().getExpireTime();
+		}
+		dataSbf.append("{\"success\":"+success+",\"accessToken\":\""+accessTokenStr+"\",\"expireTime\":"+expireTime+"}");
+		return dataSbf.toString();
 	}
 }

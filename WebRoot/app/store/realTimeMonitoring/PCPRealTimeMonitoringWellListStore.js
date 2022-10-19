@@ -62,11 +62,11 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     		}else if(activeId=="PCPRealTimeMonitoringTableTabPanel_Id"){
                         		CreatePCPDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType);
                     		}
-                    		Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringControlAndInfoStore');
                     		
                     		if( Ext.getCmp("PCPRealTimeMonitoringRightTabPanel").getActiveTab().id=='PCPRealTimeMonitoringRightControlAndVideoPanel'){
                     			createVideo(videoPlayrHelper,1,record.data);
                     		}
+                    		Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringControlAndInfoStore');
                     	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     		gotoDeviceHistory(record.data.wellName,1);

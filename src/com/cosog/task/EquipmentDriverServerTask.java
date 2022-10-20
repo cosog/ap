@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cosog.model.AccessToken;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitId;
@@ -69,10 +70,6 @@ public class EquipmentDriverServerTask {
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
-		
-		
-		
-//		String path="";
 //		
 //		
 //		path=stringManagerUtils.getFilePath("test3.json","example/");

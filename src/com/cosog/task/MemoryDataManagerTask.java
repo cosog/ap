@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.cosog.model.AccessToken;
 import com.cosog.model.AlarmShowStyle;
 import com.cosog.model.DataMapping;
 import com.cosog.model.WorkType;
@@ -42,6 +43,7 @@ import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCDeviceTodayData;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.calculate.UserInfo;
+import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.OracleJdbcUtis;
@@ -2216,6 +2218,58 @@ public class MemoryDataManagerTask {
 				jedis.close();
 			}
 		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void loadUIKitAccessToken(){
+		String appKey=Config.getInstance().configFile.getAp().getVideo().getAppKey()+"aa";
+		String appSecret=Config.getInstance().configFile.getAp().getVideo().getSecret();
+		String url="https://open.ys7.com/api/lapp/token/get";
+		String requestData="{\"appKey\":\""+appKey+"\",\"appSecret\":\""+appSecret+"\"}";
+		String responseData=StringManagerUtils.sendPostMethod(url+"?appKey="+appKey+"&appSecret="+appSecret, requestData,"utf-8",0,0);
+		Gson gson = new Gson();
+		java.lang.reflect.Type type = new TypeToken<AccessToken>() {}.getType();
+		AccessToken accessToken=gson.fromJson(responseData, type);
+		
+		Jedis jedis=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			jedis.set("UIKitAccessToken".getBytes(), SerializeObjectUnils.serialize(accessToken));
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	
+	public static AccessToken getUIKitAccessToken(){
+		Jedis jedis=null;
+		AccessToken accessToken=null;
+		try {
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists("UIKitAccessToken".getBytes())){
+				loadUIKitAccessToken();
+			}else{
+				accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.get("UIKitAccessToken".getBytes()));
+				if(accessToken!=null&&"200".equalsIgnoreCase(accessToken.getCode())){
+					long now=new Date().getTime();
+					if(now>accessToken.getData().getExpireTime()){
+						loadUIKitAccessToken();
+					}
+				}
+			}
+			accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.get("UIKitAccessToken".getBytes()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return accessToken;
 	}
 	
 	public static class CalItem implements Serializable {

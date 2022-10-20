@@ -64,11 +64,10 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     		}else{
         						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
         					}
-                    		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
-                    		
                     		if( Ext.getCmp("RPCRealTimeMonitoringRightTabPanel").getActiveTab().id=='RPCRealTimeMonitoringRightControlAndVideoPanel'){
-                    			createVideo(videoPlayrHelper,0,record.data);
+                    			createVideo(0,record.data);
                     		}
+                    		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
                     	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     		gotoDeviceHistory(record.data.wellName,0);

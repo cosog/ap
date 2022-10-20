@@ -537,7 +537,7 @@ public class MobileService<T> extends BaseService<T> {
 		String deviceTableName="tbl_rpcdevice";
 		
 		
-		String sql="select t.id,t.wellname,t.videourl,t.videoAccessToken,"
+		String sql="select t.id,t.wellname,"
 				+ "c1.itemname as devicetypename,"
 				+ "to_char(t2.fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
@@ -581,9 +581,9 @@ public class MobileService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			String deviceId=obj[0]+"";
-			String commStatusName=obj[7]+"";
-			String runStatusName=obj[12]+"";
-			String resultcode=obj[16]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[10]+"";
+			String resultcode=obj[14]+"";
 			String weightWaterCut="";
 			String volumeWaterCut="";
 			String productionData=obj[obj.length-1].toString();
@@ -619,48 +619,46 @@ public class MobileService<T> extends BaseService<T> {
 			
 			result_json.append("{\"Id\":"+deviceId+",");
 			result_json.append("\"WellName\":\""+obj[1]+"\",");
-			result_json.append("\"VideoUrl\":\""+obj[2]+"\",");
-			result_json.append("\"VideoAccessToken\":\""+obj[3]+"\",");
-			result_json.append("\"DeviceTypeName\":\""+obj[4]+"\",");
-			result_json.append("\"AcqTime\":\""+obj[5]+"\",");
-			result_json.append("\"CommStatus\":"+obj[6]+",");
+			result_json.append("\"DeviceTypeName\":\""+obj[2]+"\",");
+			result_json.append("\"AcqTime\":\""+obj[3]+"\",");
+			result_json.append("\"CommStatus\":"+obj[4]+",");
 			result_json.append("\"CommStatusName\":\""+commStatusName+"\",");
-			result_json.append("\"CommTime\":\""+obj[8]+"\",");
-			result_json.append("\"CommTimeEfficiency\":\""+obj[9]+"\",");
-			result_json.append("\"CommRange\":\""+StringManagerUtils.CLOBObjectToString(obj[10])+"\",");
+			result_json.append("\"CommTime\":\""+obj[6]+"\",");
+			result_json.append("\"CommTimeEfficiency\":\""+obj[7]+"\",");
+			result_json.append("\"CommRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
 			
-			result_json.append("\"RunStatus\":"+obj[11]+",");
+			result_json.append("\"RunStatus\":"+obj[9]+",");
 			result_json.append("\"RunStatusName\":\""+runStatusName+"\",");
-			result_json.append("\"RunTime\":\""+obj[13]+"\",");
-			result_json.append("\"RunTimeEfficiency\":\""+obj[14]+"\",");
-			result_json.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(obj[15])+"\",");
-			result_json.append("\"ResultCode\":\""+obj[16]+"\",");
-			result_json.append("\"ResultName\":\""+obj[17]+"\",");
-			result_json.append("\"OptimizationSuggestion\":\""+obj[18]+"\",");
+			result_json.append("\"RunTime\":\""+obj[11]+"\",");
+			result_json.append("\"RunTimeEfficiency\":\""+obj[12]+"\",");
+			result_json.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
+			result_json.append("\"ResultCode\":\""+obj[14]+"\",");
+			result_json.append("\"ResultName\":\""+obj[15]+"\",");
+			result_json.append("\"OptimizationSuggestion\":\""+obj[16]+"\",");
 			
-			result_json.append("\"LiquidWeightProduction\":\""+obj[19]+"\",");
-			result_json.append("\"OilWeightProduction\":\""+obj[20]+"\",");
-			result_json.append("\"WaterWeightProduction\":\""+obj[21]+"\",");
+			result_json.append("\"LiquidWeightProduction\":\""+obj[17]+"\",");
+			result_json.append("\"OilWeightProduction\":\""+obj[18]+"\",");
+			result_json.append("\"WaterWeightProduction\":\""+obj[19]+"\",");
 			result_json.append("\"WeightWaterCut\":\""+weightWaterCut+"\",");
-			result_json.append("\"LiquidWeightProduction_L\":\""+obj[22]+"\",");
+			result_json.append("\"LiquidWeightProduction_L\":\""+obj[20]+"\",");
 			
-			result_json.append("\"LiquidVolumetricProduction\":\""+obj[23]+"\",");
-			result_json.append("\"OilVolumetricProduction\":\""+obj[24]+"\",");
-			result_json.append("\"WaterVolumetricProduction\":\""+obj[25]+"\",");
+			result_json.append("\"LiquidVolumetricProduction\":\""+obj[21]+"\",");
+			result_json.append("\"OilVolumetricProduction\":\""+obj[22]+"\",");
+			result_json.append("\"WaterVolumetricProduction\":\""+obj[23]+"\",");
 			result_json.append("\"VolumeWaterCut\":\""+volumeWaterCut+"\",");
-			result_json.append("\"LiquidVolumetricProduction_L\":\""+obj[26]+"\",");
+			result_json.append("\"LiquidVolumetricProduction_L\":\""+obj[24]+"\",");
 			
-			result_json.append("\"SurfaceSystemEfficiency\":\""+obj[27]+"\",");
-			result_json.append("\"WelldownSystemEfficiency\":\""+obj[28]+"\",");
-			result_json.append("\"SystemEfficiency\":\""+obj[29]+"\",");
-			result_json.append("\"Energyper100mlift\":\""+obj[30]+"\",");
-			result_json.append("\"PumpEff\":\""+obj[31]+"\",");
+			result_json.append("\"SurfaceSystemEfficiency\":\""+obj[25]+"\",");
+			result_json.append("\"WelldownSystemEfficiency\":\""+obj[26]+"\",");
+			result_json.append("\"SystemEfficiency\":\""+obj[27]+"\",");
+			result_json.append("\"Energyper100mlift\":\""+obj[28]+"\",");
+			result_json.append("\"PumpEff\":\""+obj[29]+"\",");
 			
-			result_json.append("\"IDegreeBalance\":\""+obj[32]+"\",");
-			result_json.append("\"WattDegreeBalance\":\""+obj[33]+"\",");
-			result_json.append("\"Deltaradius\":\""+obj[34]+"\",");
+			result_json.append("\"IDegreeBalance\":\""+obj[30]+"\",");
+			result_json.append("\"WattDegreeBalance\":\""+obj[31]+"\",");
+			result_json.append("\"Deltaradius\":\""+obj[32]+"\",");
 			
-			result_json.append("\"TodayKWattH\":\""+obj[35]+"\",");
+			result_json.append("\"TodayKWattH\":\""+obj[33]+"\",");
 			
 
 			result_json.append("\"ResultAlarmLevel\":"+resultAlarmLevel+",");
@@ -702,7 +700,7 @@ public class MobileService<T> extends BaseService<T> {
 		String tableName="tbl_pcpacqdata_latest";
 		String deviceTableName="tbl_pcpdevice";
 		
-		String sql="select t.id,t.wellname,t.videourl,t.videoAccessToken,"
+		String sql="select t.id,t.wellname,"
 				+ "c1.itemname as devicetypename,"
 				+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
 				+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
@@ -736,8 +734,8 @@ public class MobileService<T> extends BaseService<T> {
 		for(int i=0;i<list.size();i++){
 			Object[] obj=(Object[]) list.get(i);
 			String deviceId=obj[0]+"";
-			String commStatusName=obj[7]+"";
-			String runStatusName=obj[12]+"";
+			String commStatusName=obj[5]+"";
+			String runStatusName=obj[10]+"";
 			
 			String weightWaterCut="";
 			String volumeWaterCut="";
@@ -773,39 +771,38 @@ public class MobileService<T> extends BaseService<T> {
 			
 			result_json.append("{\"Id\":"+deviceId+",");
 			result_json.append("\"WellName\":\""+obj[1]+"\",");
-			result_json.append("\"VideoUrl\":\""+obj[2]+"\",");
-			result_json.append("\"VideoAccessToken\":\""+obj[3]+"\",");
-			result_json.append("\"DeviceTypeName\":\""+obj[4]+"\",");
-			result_json.append("\"AcqTime\":\""+obj[5]+"\",");
-			result_json.append("\"CommStatus\":"+obj[6]+",");
+			
+			result_json.append("\"DeviceTypeName\":\""+obj[2]+"\",");
+			result_json.append("\"AcqTime\":\""+obj[3]+"\",");
+			result_json.append("\"CommStatus\":"+obj[4]+",");
 			result_json.append("\"CommStatusName\":\""+commStatusName+"\",");
-			result_json.append("\"CommTime\":\""+obj[8]+"\",");
-			result_json.append("\"CommTimeEfficiency\":\""+obj[9]+"\",");
-			result_json.append("\"CommRange\":\""+StringManagerUtils.CLOBObjectToString(obj[10])+"\",");
+			result_json.append("\"CommTime\":\""+obj[5]+"\",");
+			result_json.append("\"CommTimeEfficiency\":\""+obj[7]+"\",");
+			result_json.append("\"CommRange\":\""+StringManagerUtils.CLOBObjectToString(obj[8])+"\",");
 			
-			result_json.append("\"RunStatus\":"+obj[11]+",");
+			result_json.append("\"RunStatus\":"+obj[9]+",");
 			result_json.append("\"RunStatusName\":\""+runStatusName+"\",");
-			result_json.append("\"RunTime\":\""+obj[13]+"\",");
-			result_json.append("\"RunTimeEfficiency\":\""+obj[14]+"\",");
-			result_json.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(obj[15])+"\",");
+			result_json.append("\"RunTime\":\""+obj[11]+"\",");
+			result_json.append("\"RunTimeEfficiency\":\""+obj[12]+"\",");
+			result_json.append("\"RunRange\":\""+StringManagerUtils.CLOBObjectToString(obj[13])+"\",");
 			
-			result_json.append("\"LiquidWeightProduction\":\""+obj[16]+"\",");
-			result_json.append("\"OilWeightProduction\":\""+obj[17]+"\",");
-			result_json.append("\"WaterWeightProduction\":\""+obj[18]+"\",");
+			result_json.append("\"LiquidWeightProduction\":\""+obj[14]+"\",");
+			result_json.append("\"OilWeightProduction\":\""+obj[15]+"\",");
+			result_json.append("\"WaterWeightProduction\":\""+obj[16]+"\",");
 			result_json.append("\"WeightWaterCut\":\""+weightWaterCut+"\",");
-			result_json.append("\"LiquidWeightProduction_L\":\""+obj[19]+"\",");
+			result_json.append("\"LiquidWeightProduction_L\":\""+obj[17]+"\",");
 			
-			result_json.append("\"LiquidVolumetricProduction\":\""+obj[20]+"\",");
-			result_json.append("\"OilVolumetricProduction\":\""+obj[21]+"\",");
-			result_json.append("\"WaterVolumetricProduction\":\""+obj[22]+"\",");
+			result_json.append("\"LiquidVolumetricProduction\":\""+obj[18]+"\",");
+			result_json.append("\"OilVolumetricProduction\":\""+obj[19]+"\",");
+			result_json.append("\"WaterVolumetricProduction\":\""+obj[20]+"\",");
 			result_json.append("\"VolumeWaterCut\":\""+volumeWaterCut+"\",");
-			result_json.append("\"LiquidVolumetricProduction_L\":\""+obj[23]+"\",");
+			result_json.append("\"LiquidVolumetricProduction_L\":\""+obj[21]+"\",");
 			
-			result_json.append("\"SystemEfficiency\":\""+obj[24]+"\",");
-			result_json.append("\"Energyper100mlift\":\""+obj[25]+"\",");
-			result_json.append("\"PumpEff\":\""+obj[26]+"\",");
+			result_json.append("\"SystemEfficiency\":\""+obj[22]+"\",");
+			result_json.append("\"Energyper100mlift\":\""+obj[23]+"\",");
+			result_json.append("\"PumpEff\":\""+obj[24]+"\",");
 			
-			result_json.append("\"TodayKWattH\":\""+obj[27]+"\",");
+			result_json.append("\"TodayKWattH\":\""+obj[25]+"\",");
 			
 			result_json.append("\"CommAlarmLevel\":"+commAlarmLevel+",");
 			result_json.append("\"RunAlarmLevel\":"+runAlarmLevel+"},");

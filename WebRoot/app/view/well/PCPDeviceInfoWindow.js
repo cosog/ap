@@ -430,17 +430,17 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 msgTarget: 'side'
             },{
          		xtype: "textfield",
-         		fieldLabel: '视频监控路径',
-         		id: 'pcpDeviceVideoUrl_Id',
+         		fieldLabel: '视频监控路径1',
+         		id: 'pcpDeviceVideoUrl1_Id',
          		anchor: '95%',
-         		name: "pcpDeviceInformation.videoUrl",
+         		name: "pcpDeviceInformation.videoUrl1",
          		value:''
             },{
          		xtype: "textfield",
-         		fieldLabel: '视频访问令牌',
-         		id: 'pcpDeviceVideoAccessToken_Id',
+         		fieldLabel: '视频监控路径2',
+         		id: 'pcpDeviceVideoUrl2_Id',
          		anchor: '95%',
-         		name: "pcpDeviceInformation.videoAccessToken",
+         		name: "pcpDeviceInformation.videoUrl2",
          		value:''
             },{
             	xtype: 'fieldcontainer',

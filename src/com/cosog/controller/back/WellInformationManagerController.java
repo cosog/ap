@@ -689,7 +689,6 @@ public class WellInformationManagerController extends BaseController {
 		String manualInterventionResultName = ParamUtils.getParameter(request, "manualInterventionResultName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String videoUrl = ParamUtils.getParameter(request, "videoUrl");
-		String videoAccessToken = ParamUtils.getParameter(request, "videoAccessToken");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
 		String deviceTableName="tbl_rpcdevice";
@@ -782,7 +781,7 @@ public class WellInformationManagerController extends BaseController {
 			//处理抽油机详情
 			this.wellInformationManagerService.saveRPCPumpingInfo(deviceId,stroke,balanceInfo);
 		}
-		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl,videoAccessToken);
+		this.wellInformationManagerService.saveVideiData(StringManagerUtils.stringToInteger(deviceType),deviceId,videoUrl);
 		
 		
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
@@ -1365,6 +1364,9 @@ public class WellInformationManagerController extends BaseController {
 			if(rpcDeviceInformation.getOrgId()==null){
 				rpcDeviceInformation.setOrgId(user.getUserOrgid());
 			}
+			String videoUrl1 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl1");
+			String videoUrl2 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl2");
+			rpcDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
 			this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
 			List<String> wells=new ArrayList<String>();
 			wells.add(rpcDeviceInformation.getWellName());
@@ -1414,6 +1416,9 @@ public class WellInformationManagerController extends BaseController {
 		HttpSession session=request.getSession();
 		try {
 			User user = (User) session.getAttribute("userLogin");
+			String videoUrl1 = ParamUtils.getParameter(request, "pcpDeviceInformation.videoUrl1");
+			String videoUrl2 = ParamUtils.getParameter(request, "pcpDeviceInformation.videoUrl2");
+			pcpDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
 			this.pcpDeviceManagerService.doPCPDeviceAdd(pcpDeviceInformation);
 			
 			List<String> wells=new ArrayList<String>();

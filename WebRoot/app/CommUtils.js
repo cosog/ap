@@ -4466,7 +4466,8 @@ function highchartsResize(divId){
 		var charts=$("#"+divId).highcharts();
 		if(charts!=undefined){
 			var isFullScreen = isBrowserFullScreen();
-			if(!isFullScreen){
+			var browserType=getBrowserType();
+			if(browserType==5||(!isFullScreen)){
 				charts.setSize($("#"+divId).offsetWidth, $("#"+divId).offsetHeight,true);
 			}
 		}

@@ -163,6 +163,29 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class Video{
+		
+		private String appKey;
+		
+		private String secret;
+
+		public String getAppKey() {
+			return appKey;
+		}
+
+		public void setAppKey(String appKey) {
+			this.appKey = appKey;
+		}
+
+		public String getSecret() {
+			return secret;
+		}
+
+		public void setSecret(String secret) {
+			this.secret = secret;
+		}
+	}
+	
 	public static class Others
 	{
 	    private boolean cache;
@@ -281,22 +304,16 @@ public class ConfigFile {
 	
 	public static class Ap
 	{
-//	    private Server server;
-
 	    private Datasource datasource;
 
 	    private Oem oem;
 
 	    private Email email;
+	    
+	    private Video video;
 
 	    private Others others;
 
-//	    public void setServer(Server server){
-//	        this.server = server;
-//	    }
-//	    public Server getServer(){
-//	        return this.server;
-//	    }
 	    public void setDatasource(Datasource datasource){
 	        this.datasource = datasource;
 	    }
@@ -321,6 +338,12 @@ public class ConfigFile {
 	    public Others getOthers(){
 	        return this.others;
 	    }
+		public Video getVideo() {
+			return video;
+		}
+		public void setVideo(Video video) {
+			this.video = video;
+		}
 	}
 	
 	public static class AcProbe

@@ -1,4 +1,6 @@
-var videoPlayrHelper={};
+var videoPlayrHelper={rpc:{},pcp:{}};
+var accessTokenInfo=null;
+var demoAccessTokenInfo=null;
 Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
     extend: 'Ext.panel.Panel',
     alias: 'widget.realTimeMonitoringInfoView', // 定义别名
@@ -138,6 +140,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
         					Ext.getCmp("bottomTab_Id").setValue(newCard.id); 
         					if(newCard.id=="RPCRealTimeMonitoringInfoPanel_Id"){
+        						if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
+                    				videoPlayrHelper.pcp.player1.stop();
+                    			}
+                    			if(videoPlayrHelper.pcp.player2!=null && videoPlayrHelper.pcp.player2.pluginStatus.state.play){
+                    				videoPlayrHelper.pcp.player2.stop();
+                    			}
+                    			
         						var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
         						if(statTabActiveId=="RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
         							loadAndInitFESdiagramResultStat(true);
@@ -158,6 +167,13 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
         							Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
         						}
         					}else if(newCard.id=="PCPRealTimeMonitoringInfoPanel_Id"){
+        						if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+                    				videoPlayrHelper.rpc.player1.stop();
+                    			}
+                    			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+                    				videoPlayrHelper.rpc.player2.stop();
+                    			}
+                    			
         						var statTabActiveId = Ext.getCmp("PCPRealTimeMonitoringStatTabPanel").getActiveTab().id;
         						if(statTabActiveId=="PCPRealTimeMonitoringStatGraphPanel_Id"){
         							loadAndInitCommStatusStat(true);
@@ -1460,34 +1476,389 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
     });
 };
 
-function createVideo(playrHelper,deviceType,data,videoNo){
+//function createVideo(playrHelper,deviceType,data,videoNo){
+//	var panelId1='RPCRealTimeMonitoringRightVideoPanel1';
+//	var otherPanelId1='PCPRealTimeMonitoringRightVideoPanel1';
+//	var divId1='RPCRealTimeMonitoringRightVideoDiv1_Id';
+//	
+//	var panelId2='RPCRealTimeMonitoringRightVideoPanel2';
+//	var otherPanelId2='PCPRealTimeMonitoringRightVideoPanel2';
+//	var divId2='RPCRealTimeMonitoringRightVideoDiv2_Id';
+//	
+//	var gridPanelId='RPCRealTimeMonitoringListGridPanel_Id';
+//	if(deviceType==1){
+//		panelId1='PCPRealTimeMonitoringRightVideoPanel1';
+//		otherPanelId1='RPCRealTimeMonitoringRightVideoPanel1';
+//		divId1='PCPRealTimeMonitoringRightVideoDiv1_Id';
+//		
+//		panelId2='PCPRealTimeMonitoringRightVideoPanel2';
+//		otherPanelId2='RPCRealTimeMonitoringRightVideoPanel2';
+//		divId2='PCPRealTimeMonitoringRightVideoDiv2_Id';
+//		
+//		gridPanelId='PCPRealTimeMonitoringListGridPanel_Id';
+//	}
+//	
+//	var videoUrl  = data.videoUrl;
+//	var videoAccessToken = data.videoAccessToken;
+//	
+//	var videoUrl1="",videoUrl2="";
+//	var videoAccessToken1="",videoAccessToken2="";
+//	
+//	if(isNotVal(videoUrl)){
+//		var videoUrlArr=videoUrl.split(";");
+//		if(videoUrlArr.length>0){
+//			videoUrl1=videoUrlArr[0];
+//			if(videoUrlArr.length>1){
+//				videoUrl2=videoUrlArr[1];
+//			}
+//		}
+//	}
+//	if(isNotVal(videoAccessToken)){
+//		var videoAccessTokenArr=videoAccessToken.split(";");
+//		if(videoAccessTokenArr.length>0){
+//			videoAccessToken1=videoAccessTokenArr[0];
+//			if(videoAccessTokenArr.length>1){
+//				videoAccessToken2=videoAccessTokenArr[1];
+//			}
+//		}
+//	}
+//	
+//	var videoPanel1=Ext.getCmp(panelId1);
+//	var otherVideoPanel1=Ext.getCmp(otherPanelId1);
+//	
+//	var videoPanel2=Ext.getCmp(panelId2);
+//	var otherVideoPanel2=Ext.getCmp(otherPanelId2);
+//	
+//	if( (videoNo==undefined||videoNo==1) && playrHelper.playr1!=null){
+//		playrHelper.playr1.stop();
+//		$("#"+playrHelper.playr1.id).html('');
+//		videoPanel1.setHtml('');
+//		if(isNotVal(otherVideoPanel1)){
+//			otherVideoPanel1.setHtml('');
+//		}
+//		
+//		playrHelper.playr1=null;
+//	}
+//	
+//	if( (videoNo==undefined||videoNo==2) && playrHelper.playr2!=null){
+//		playrHelper.playr2.stop();
+//		$("#"+playrHelper.playr2.id).html('');
+//		videoPanel2.setHtml('');
+//		if(isNotVal(otherVideoPanel2)){
+//			otherVideoPanel2.setHtml('');
+//		}
+//		
+//		playrHelper.playr2=null;
+//	}
+//	
+//	if(videoNo==undefined||videoNo==1){
+//		if(videoUrl1!=''&&videoUrl1!='null'){
+//			if(videoPanel1.isHidden() ){
+//				videoPanel1.show();
+//			}
+//			videoPanel1.setHtml('<div id="'+divId1+'" style="width:100%;height:100%;"></div>');
+//			var offsetWidth=videoPanel1.getWidth();
+//			var offsetHeight=videoPanel1.getHeight();
+//			
+//			var divWidth=$("#"+divId1).width();
+//			var divHeight=$("#"+divId1).height();
+//			
+//			var videoWidth=offsetWidth;
+//			var videoHeight=offsetHeight;
+//			
+//			if(divWidth>offsetWidth && divHeight>offsetHeight){
+//				videoWidth=divWidth;
+//				videoHeight=divHeight;
+//			}
+//			
+//			playrHelper.playr1 = new EZUIKit.EZUIKitPlayer({
+//	        	id: divId1, // 视频容器ID
+//	        	accessToken: videoAccessToken1,
+//	            url: videoUrl1,
+//	            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+//	            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+////	            autoplay:0,
+////	          plugin: ['talk'],                       // 加载插件，talk-对讲
+////	            header:['capturePicture'],
+////	            footer:['fullScreen'],
+//	            width: videoWidth,
+//	            height: videoHeight
+//	        });	
+//		}else{
+//			if(!videoPanel1.isHidden() ){
+//				videoPanel1.hide();
+//			}
+//		}
+//	}
+//	
+//	if(videoNo==undefined||videoNo==2){
+//		if(videoUrl2!=''&&videoUrl2!='null'){
+//			if(videoPanel2.isHidden() ){
+//				videoPanel2.show();
+//			}
+//			videoPanel2.setHtml('<div id="'+divId2+'" style="width:100%;height:100%;"></div>');
+//			var offsetWidth=videoPanel2.getWidth();
+//			var offsetHeight=videoPanel2.getHeight();
+//			
+//			var divWidth=$("#"+divId2).width();
+//			var divHeight=$("#"+divId2).height();
+//			
+//			var videoWidth=offsetWidth;
+//			var videoHeight=offsetHeight;
+//			
+//			if(divWidth>offsetWidth && divHeight>offsetHeight){
+//				videoWidth=divWidth;
+//				videoHeight=divHeight;
+//			}
+//			
+//			playrHelper.playr2 = new EZUIKit.EZUIKitPlayer({
+//	        	id: divId2, // 视频容器ID
+//	        	accessToken: videoAccessToken2,
+//	            url: videoUrl2,
+//	            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+//	            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+////	            autoplay:0,
+////	          plugin: ['talk'],                       // 加载插件，talk-对讲
+////	            header:['capturePicture'],
+////	            footer:['fullScreen'],
+//	            width: videoWidth,
+//	            height: videoHeight
+//	        });	
+//		}else{
+//			if(!videoPanel2.isHidden() ){
+//				videoPanel2.hide();
+//			}
+//		}
+//	}
+//}
+function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
+	var videoPanel=Ext.getCmp(panelId);
+	if(videoUrl!='' && videoUrl!='null'){
+		if(videoPanel.isHidden() ){
+			videoPanel.show();
+		}
+		if(deviceType==0 && videoNo==1){
+			if(videoPlayrHelper.rpc.player1!=null){
+				if(videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+					videoPlayrHelper.rpc.player1.stop()
+					.then(()=>{
+						if(videoPlayrHelper.rpc.player1.accessToken==accessToken){
+							videoPlayrHelper.rpc.player1.play(videoUrl);
+						}else{
+							videoPlayrHelper.rpc.player1.play({url:videoUrl,accessToken: accessToken});
+						}
+					});
+				}else{
+					if(videoPlayrHelper.rpc.player1.accessToken==accessToken){
+						videoPlayrHelper.rpc.player1.play(videoUrl);
+					}else{
+						videoPlayrHelper.rpc.player1.play({url:videoUrl,accessToken: accessToken});
+					}
+				}
+			}else{
+				var videoWidth=$("#"+divId).width();
+				var videoHeight=$("#"+divId).height();
+				videoPlayrHelper.rpc.player1 = new EZUIKit.EZUIKitPlayer({
+		        	id: divId, // 视频容器ID
+		        	accessToken: accessToken,
+		            url: videoUrl,
+		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+		            width: videoWidth,
+		            height: videoHeight
+		        });
+			}
+		}else if(deviceType==0 && videoNo==2){
+			if(videoPlayrHelper.rpc.player2!=null){
+				if(videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+					videoPlayrHelper.rpc.player2.stop()
+					.then(()=>{
+						if(videoPlayrHelper.rpc.player2.accessToken==accessToken){
+							videoPlayrHelper.rpc.player2.play(videoUrl);
+						}else{
+							videoPlayrHelper.rpc.player2.play({url:videoUrl,accessToken: accessToken});
+						}
+					});
+				}else{
+					if(videoPlayrHelper.rpc.player2.accessToken==accessToken){
+						videoPlayrHelper.rpc.player2.play(videoUrl);
+					}else{
+						videoPlayrHelper.rpc.player2.play({url:videoUrl,accessToken: accessToken});
+					}
+				}
+			}else{
+				var videoWidth=$("#"+divId).width();
+				var videoHeight=$("#"+divId).height();
+				videoPlayrHelper.rpc.player2 = new EZUIKit.EZUIKitPlayer({
+		        	id: divId, // 视频容器ID
+		        	accessToken: accessToken,
+		            url: videoUrl,
+		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+		            width: videoWidth,
+		            height: videoHeight
+		        });
+			}
+		}else if(deviceType==1 && videoNo==1){
+			if(videoPlayrHelper.pcp.player1!=null){
+				if(videoPlayrHelper.pcp.player1.pluginStatus.state.play){
+					videoPlayrHelper.pcp.player1.stop()
+					.then(()=>{
+						if(videoPlayrHelper.pcp.player1.accessToken==accessToken){
+							videoPlayrHelper.pcp.player1.play(videoUrl);
+						}else{
+							videoPlayrHelper.pcp.player1.play({url:videoUrl,accessToken: accessToken});
+						}
+					});
+				}else{
+					if(videoPlayrHelper.pcp.player1.accessToken==accessToken){
+						videoPlayrHelper.pcp.player1.play(videoUrl);
+					}else{
+						videoPlayrHelper.pcp.player1.play({url:videoUrl,accessToken: accessToken});
+					}
+				}
+			}else{
+				var videoWidth=$("#"+divId).width();
+				var videoHeight=$("#"+divId).height();
+				videoPlayrHelper.pcp.player1 = new EZUIKit.EZUIKitPlayer({
+		        	id: divId, // 视频容器ID
+		        	accessToken: accessToken,
+		            url: videoUrl,
+		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+		            width: videoWidth,
+		            height: videoHeight
+		        });
+			}
+		}else if(deviceType==1 && videoNo==2){
+			if(videoPlayrHelper.pcp.player2!=null){
+				if(videoPlayrHelper.pcp.player2.pluginStatus.state.play){
+					videoPlayrHelper.pcp.player2.stop()
+					.then(()=>{
+						if(videoPlayrHelper.pcp.player2.accessToken==accessToken){
+							videoPlayrHelper.pcp.player2.play(videoUrl);
+						}else{
+							videoPlayrHelper.pcp.player2.play({url:videoUrl,accessToken: accessToken});
+						}
+					});
+				}else{
+					if(videoPlayrHelper.pcp.player2.accessToken==accessToken){
+						videoPlayrHelper.pcp.player2.play(videoUrl);
+					}else{
+						videoPlayrHelper.pcp.player2.play({url:videoUrl,accessToken: accessToken});
+					}
+				}
+			}else{
+				var videoWidth=$("#"+divId).width();
+				var videoHeight=$("#"+divId).height();
+				videoPlayrHelper.pcp.player2 = new EZUIKit.EZUIKitPlayer({
+		        	id: divId, // 视频容器ID
+		        	accessToken: accessToken,
+		            url: videoUrl,
+		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
+		            width: videoWidth,
+		            height: videoHeight
+		        });
+			}
+		}
+	}else{
+		if(deviceType==0 && videoNo==1){
+			if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+				videoPlayrHelper.rpc.player1.stop();
+			}
+			if(!videoPanel.isHidden() ){
+				videoPanel.hide();
+			}
+		}else if(deviceType==0 && videoNo==2){
+			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+				videoPlayrHelper.rpc.player2.stop();
+			}
+			if(!videoPanel.isHidden() ){
+				videoPanel.hide();
+			}
+		}else if(deviceType==1 && videoNo==1){
+			if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
+				videoPlayrHelper.pcp.player1.stop();
+			}
+			if(!videoPanel.isHidden() ){
+				videoPanel.hide();
+			}
+		}else if(deviceType==1 && videoNo==2){
+			if(videoPlayrHelper.pcp.player2!=null && videoPlayrHelper.pcp.player2.pluginStatus.state.play){
+				videoPlayrHelper.pcp.player2.stop();
+			}
+			if(!videoPanel.isHidden() ){
+				videoPanel.hide();
+			}
+		}
+	}
+
+}
+
+function initVideo(panelId,divId,videoUrl,deviceType,videoNo){
+	var now=new Date().getTime();
+	var accessToken='';
+	if(videoUrl=='ezopen://open.ys7.com/G39444019/1.live'){
+		if(demoAccessTokenInfo==null || (demoAccessTokenInfo.code!='200') || now>demoAccessTokenInfo.data.expireTime){
+			fetch('https://open.ys7.com/jssdk/ezopen/demo/token')
+	        .then(response => response.json())
+	        .then(res => {
+	        	demoAccessTokenInfo = res;
+	        	if(demoAccessTokenInfo.code=='200'){
+	        		accessToken=demoAccessTokenInfo.data.accessToken;
+	        	}
+	        	showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+	        });
+		}else{
+			if(demoAccessTokenInfo.code=='200'){
+        		accessToken=demoAccessTokenInfo.data.accessToken;
+        	}
+			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+		}
+	}else{
+		if(accessTokenInfo==null || (!accessTokenInfo.success) || now>accessTokenInfo.expireTime){
+			Ext.Ajax.request({
+				method:'POST',
+				url:context + '/realTimeMonitoringController/getUIKitAccessToken',
+				success:function(response) {
+					accessTokenInfo = Ext.JSON.decode(response.responseText);
+					if(accessTokenInfo.success){
+						accessToken=accessTokenInfo.accessToken;
+					}
+					showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+				},
+				failure:function(){
+					Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
+				}
+			});
+		}else{
+			if(accessTokenInfo.success){
+				accessToken=accessTokenInfo.accessToken;
+			}
+			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+		}
+	}
+}
+
+function createVideo(deviceType,data,videoNo){
 	var panelId1='RPCRealTimeMonitoringRightVideoPanel1';
-	var otherPanelId1='PCPRealTimeMonitoringRightVideoPanel1';
 	var divId1='RPCRealTimeMonitoringRightVideoDiv1_Id';
 	
 	var panelId2='RPCRealTimeMonitoringRightVideoPanel2';
-	var otherPanelId2='PCPRealTimeMonitoringRightVideoPanel2';
 	var divId2='RPCRealTimeMonitoringRightVideoDiv2_Id';
 	
-	var gridPanelId='RPCRealTimeMonitoringListGridPanel_Id';
 	if(deviceType==1){
 		panelId1='PCPRealTimeMonitoringRightVideoPanel1';
-		otherPanelId1='RPCRealTimeMonitoringRightVideoPanel1';
 		divId1='PCPRealTimeMonitoringRightVideoDiv1_Id';
 		
 		panelId2='PCPRealTimeMonitoringRightVideoPanel2';
-		otherPanelId2='RPCRealTimeMonitoringRightVideoPanel2';
 		divId2='PCPRealTimeMonitoringRightVideoDiv2_Id';
-		
-		gridPanelId='PCPRealTimeMonitoringListGridPanel_Id';
 	}
 	
 	var videoUrl  = data.videoUrl;
-	var videoAccessToken = data.videoAccessToken;
-	
+	var url="";
 	var videoUrl1="",videoUrl2="";
-	var videoAccessToken1="",videoAccessToken2="";
-	
 	if(isNotVal(videoUrl)){
 		var videoUrlArr=videoUrl.split(";");
 		if(videoUrlArr.length>0){
@@ -1497,121 +1868,12 @@ function createVideo(playrHelper,deviceType,data,videoNo){
 			}
 		}
 	}
-	if(isNotVal(videoAccessToken)){
-		var videoAccessTokenArr=videoAccessToken.split(";");
-		if(videoAccessTokenArr.length>0){
-			videoAccessToken1=videoAccessTokenArr[0];
-			if(videoAccessTokenArr.length>1){
-				videoAccessToken2=videoAccessTokenArr[1];
-			}
-		}
-	}
-	
-	var videoPanel1=Ext.getCmp(panelId1);
-	var otherVideoPanel1=Ext.getCmp(otherPanelId1);
-	
-	var videoPanel2=Ext.getCmp(panelId2);
-	var otherVideoPanel2=Ext.getCmp(otherPanelId2);
-	
-	if( (videoNo==undefined||videoNo==1) && playrHelper.playr1!=null){
-		playrHelper.playr1.stop();
-		$("#"+playrHelper.playr1.id).html('');
-		videoPanel1.setHtml('');
-		if(isNotVal(otherVideoPanel1)){
-			otherVideoPanel1.setHtml('');
-		}
-		
-		playrHelper.playr1=null;
-	}
-	
-	if( (videoNo==undefined||videoNo==2) && playrHelper.playr2!=null){
-		playrHelper.playr2.stop();
-		$("#"+playrHelper.playr2.id).html('');
-		videoPanel2.setHtml('');
-		if(isNotVal(otherVideoPanel2)){
-			otherVideoPanel2.setHtml('');
-		}
-		
-		playrHelper.playr2=null;
-	}
-	
-	if(videoNo==undefined||videoNo==1){
-		if(videoUrl1!=''&&videoUrl1!='null'){
-			if(videoPanel1.isHidden() ){
-				videoPanel1.show();
-			}
-			videoPanel1.setHtml('<div id="'+divId1+'" style="width:100%;height:100%;"></div>');
-			var offsetWidth=videoPanel1.getWidth();
-			var offsetHeight=videoPanel1.getHeight();
-			
-			var divWidth=$("#"+divId1).width();
-			var divHeight=$("#"+divId1).height();
-			
-			var videoWidth=offsetWidth;
-			var videoHeight=offsetHeight;
-			
-			if(divWidth>offsetWidth && divHeight>offsetHeight){
-				videoWidth=divWidth;
-				videoHeight=divHeight;
-			}
-			
-			playrHelper.playr1 = new EZUIKit.EZUIKitPlayer({
-	        	id: divId1, // 视频容器ID
-	        	accessToken: videoAccessToken1,
-	            url: videoUrl1,
-	            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
-	            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
-//	            autoplay:0,
-//	          plugin: ['talk'],                       // 加载插件，talk-对讲
-//	            header:['capturePicture'],
-//	            footer:['fullScreen'],
-	            width: videoWidth,
-	            height: videoHeight
-	        });	
-		}else{
-			if(!videoPanel1.isHidden() ){
-				videoPanel1.hide();
-			}
-		}
-	}
-	
-	if(videoNo==undefined||videoNo==2){
-		if(videoUrl2!=''&&videoUrl2!='null'){
-			if(videoPanel2.isHidden() ){
-				videoPanel2.show();
-			}
-			videoPanel2.setHtml('<div id="'+divId2+'" style="width:100%;height:100%;"></div>');
-			var offsetWidth=videoPanel2.getWidth();
-			var offsetHeight=videoPanel2.getHeight();
-			
-			var divWidth=$("#"+divId2).width();
-			var divHeight=$("#"+divId2).height();
-			
-			var videoWidth=offsetWidth;
-			var videoHeight=offsetHeight;
-			
-			if(divWidth>offsetWidth && divHeight>offsetHeight){
-				videoWidth=divWidth;
-				videoHeight=divHeight;
-			}
-			
-			playrHelper.playr2 = new EZUIKit.EZUIKitPlayer({
-	        	id: divId2, // 视频容器ID
-	        	accessToken: videoAccessToken2,
-	            url: videoUrl2,
-	            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
-	            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
-//	            autoplay:0,
-//	          plugin: ['talk'],                       // 加载插件，talk-对讲
-//	            header:['capturePicture'],
-//	            footer:['fullScreen'],
-	            width: videoWidth,
-	            height: videoHeight
-	        });	
-		}else{
-			if(!videoPanel2.isHidden() ){
-				videoPanel2.hide();
-			}
-		}
+	if(videoNo==1){
+		initVideo(panelId1,divId1,videoUrl1,deviceType,1);
+	}else if(videoNo==2){
+		initVideo(panelId2,divId2,videoUrl2,deviceType,2);
+	}else{
+		initVideo(panelId1,divId1,videoUrl1,deviceType,1);
+		initVideo(panelId2,divId2,videoUrl2,deviceType,2);
 	}
 }

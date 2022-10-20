@@ -819,20 +819,14 @@ var PCPDeviceInfoHandsontableHelper = {
                 
               //视频信息
                 var videoUrl='';
-                var videoAccessToken='';
                 var videoUrl1='';
-                var videoAccessToken1='';
                 var videoUrl2='';
-                var videoAccessToken2='';
                 if(pcpVideoInfoHandsontableHelper!=null && pcpVideoInfoHandsontableHelper.hot!=undefined){
                 	var pcpVideoInfoHandsontableData=pcpVideoInfoHandsontableHelper.hot.getData();
                 	videoUrl1=pcpVideoInfoHandsontableData[0][2];
-                	videoAccessToken1=pcpVideoInfoHandsontableData[1][2];
-                	videoUrl2=pcpVideoInfoHandsontableData[2][2];
-                	videoAccessToken2=pcpVideoInfoHandsontableData[3][2];
+                	videoUrl2=pcpVideoInfoHandsontableData[1][2];
                 }
                 videoUrl=videoUrl1+';'+videoUrl2;
-                videoAccessToken=videoAccessToken1+';'+videoAccessToken2;
             	Ext.Ajax.request({
                     method: 'POST',
                     url: context + '/wellInformationManagerController/saveWellHandsontableData',
@@ -865,7 +859,6 @@ var PCPDeviceInfoHandsontableHelper = {
                     	data: JSON.stringify(pcpDeviceInfoHandsontableHelper.AllData),
                         deviceProductionData: JSON.stringify(deviceProductionData),
                         videoUrl:videoUrl,
-                        videoAccessToken:videoAccessToken,
                         orgId: leftOrg_Id,
                         deviceType: 201
                     }

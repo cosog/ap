@@ -65,7 +65,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
         						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
         					}
                     		if( Ext.getCmp("RPCRealTimeMonitoringRightTabPanel").getActiveTab().id=='RPCRealTimeMonitoringRightControlAndVideoPanel'){
-                    			createVideo(videoPlayrHelper,0,record.data);
+                    			createVideo(0,record.data);
                     		}
                     		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
                     	},

@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -70,10 +70,6 @@ public class EquipmentDriverServerTask {
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
-		
-		AccessToken accessToken=MemoryDataManagerTask.getUIKitAccessToken();
-		accessToken=MemoryDataManagerTask.getUIKitAccessToken();
-		String path="";
 //		
 //		
 //		path=stringManagerUtils.getFilePath("test3.json","example/");
@@ -102,66 +98,66 @@ public class EquipmentDriverServerTask {
 //			Thread.sleep(1000*5);
 //		}
 		
-//		initServerConfig();
-//		initProtocolConfig("","");
-//		initInstanceConfig(null,"");
-//		initSMSInstanceConfig(null,"");
-//		initSMSDevice(null,"");
-//		initRPCDriverAcquisitionInfoConfig(null,0,"");
-//		initPCPDriverAcquisitionInfoConfig(null,0,"");
-//		
-//		ThreadPool executor = new ThreadPool("adInit",
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
-//				TimeUnit.SECONDS, 
-//				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
-//		while (!executor.isCompletedByTaskCount()) {
-//			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
-//			Thread.sleep(1000*1);
-//	    }
-//		System.out.println("线程池任务执行完毕！");
-//		boolean sendMsg=false;
-//		exampleDataManage();
-//		do{
-//			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
-//			type = new TypeToken<DriverProbeResponse>() {}.getType();
-//			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
-//			
-//			String Ver="";
-//			if(driverProbeResponse!=null){
-//				sendMsg=false;
-//				if(!driverProbeResponse.getHttpServerInitStatus()){
-//					initServerConfig();
-//				}
-//				if(!driverProbeResponse.getProtocolInitStatus()){
-//					initProtocolConfig("","");
-//				}
-//				if(!driverProbeResponse.getInstanceInitStatus()){
-//					initInstanceConfig(null,"");
-//					initSMSInstanceConfig(null,"");
-//				}
-//				if(!driverProbeResponse.getSMSInitStatus()){
-////					initSMSDevice(null,"");
-//				}
-//				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
-//					if(executor.isCompletedByTaskCount()){
-//						//清空内存
-//						AdInitMap.cleanData();
-//						
-//						initRPCDriverAcquisitionInfoConfig(null,0,"");
-//						initPCPDriverAcquisitionInfoConfig(null,0,"");
-//					}
-//				}
-//				Ver=driverProbeResponse.getVer();
-//			}else{
-//				if(!sendMsg){
-//					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
-//					sendMsg=true;
-//				}
-//			}
-//			Thread.sleep(1000*1);
-//		}while(true);
+		initServerConfig();
+		initProtocolConfig("","");
+		initInstanceConfig(null,"");
+		initSMSInstanceConfig(null,"");
+		initSMSDevice(null,"");
+		initRPCDriverAcquisitionInfoConfig(null,0,"");
+		initPCPDriverAcquisitionInfoConfig(null,0,"");
+		
+		ThreadPool executor = new ThreadPool("adInit",
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+				TimeUnit.SECONDS, 
+				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+		while (!executor.isCompletedByTaskCount()) {
+			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
+			Thread.sleep(1000*1);
+	    }
+		System.out.println("线程池任务执行完毕！");
+		boolean sendMsg=false;
+		exampleDataManage();
+		do{
+			String responseData=StringManagerUtils.sendPostMethod(probeUrl, "","utf-8",0,0);
+			type = new TypeToken<DriverProbeResponse>() {}.getType();
+			DriverProbeResponse driverProbeResponse=gson.fromJson(responseData, type);
+			
+			String Ver="";
+			if(driverProbeResponse!=null){
+				sendMsg=false;
+				if(!driverProbeResponse.getHttpServerInitStatus()){
+					initServerConfig();
+				}
+				if(!driverProbeResponse.getProtocolInitStatus()){
+					initProtocolConfig("","");
+				}
+				if(!driverProbeResponse.getInstanceInitStatus()){
+					initInstanceConfig(null,"");
+					initSMSInstanceConfig(null,"");
+				}
+				if(!driverProbeResponse.getSMSInitStatus()){
+//					initSMSDevice(null,"");
+				}
+				if(!( driverProbeResponse.getIDInitStatus() || driverProbeResponse.getIPPortInitStatus() )){
+					if(executor.isCompletedByTaskCount()){
+						//清空内存
+						AdInitMap.cleanData();
+						
+						initRPCDriverAcquisitionInfoConfig(null,0,"");
+						initPCPDriverAcquisitionInfoConfig(null,0,"");
+					}
+				}
+				Ver=driverProbeResponse.getVer();
+			}else{
+				if(!sendMsg){
+					StringManagerUtils.sendPostMethod(allOfflineUrl, "","utf-8",0,0);
+					sendMsg=true;
+				}
+			}
+			Thread.sleep(1000*1);
+		}while(true);
 	}
 	
 	public static class ExampleDataManageThread extends Thread{

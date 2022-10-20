@@ -53,9 +53,9 @@ public class WellHandsontableChangedData {
 	    
 	    private String peakDelay="";
 	    
-	    private String videoUrl="";
+	    private String videoUrl1="";
 	    
-	    private String videoAccessToken="";
+	    private String videoUrl2="";
 	    
 	    private String statusName="";
 	    
@@ -193,14 +193,6 @@ public class WellHandsontableChangedData {
 
 		public void setWellName(String wellName) {
 			this.wellName = wellName;
-		}
-
-		public String getVideoUrl() {
-			return videoUrl;
-		}
-
-		public void setVideoUrl(String videoUrl) {
-			this.videoUrl = videoUrl;
 		}
 
 		public String getSortNum() {
@@ -723,12 +715,20 @@ public class WellHandsontableChangedData {
 			this.peakDelay = peakDelay;
 		}
 
-		public String getVideoAccessToken() {
-			return videoAccessToken;
+		public String getVideoUrl1() {
+			return videoUrl1;
 		}
 
-		public void setVideoAccessToken(String videoAccessToken) {
-			this.videoAccessToken = videoAccessToken;
+		public void setVideoUrl1(String videoUrl1) {
+			this.videoUrl1 = videoUrl1;
+		}
+
+		public String getVideoUrl2() {
+			return videoUrl2;
+		}
+
+		public void setVideoUrl2(String videoUrl2) {
+			this.videoUrl2 = videoUrl2;
 		}
 	    
 	}

@@ -595,17 +595,17 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		}
 	}
 	if(module_Code != "DeviceRealTimeMonitoring"){
-		if(videoPlayrHelper.playr1!=null){
-			videoPlayrHelper.playr1.stop();
-//			$("#"+videoPlayrHelper.playr1.id).html('');
-//			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel1").setHtml('');
-//			videoPlayrHelper.playr1=null;
+		if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+			videoPlayrHelper.rpc.player1.stop();
 		}
-		if(videoPlayrHelper.playr2!=null){
-			videoPlayrHelper.playr2.stop();
-//			$("#"+videoPlayrHelper.playr2.id).html('');
-//			Ext.getCmp("PCPRealTimeMonitoringRightVideoPanel2").setHtml('');
-//			videoPlayrHelper.playr2=null;
+		if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+			videoPlayrHelper.rpc.player2.stop();
+		}
+		if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
+			videoPlayrHelper.pcp.player1.stop();
+		}
+		if(videoPlayrHelper.pcp.player2!=null && videoPlayrHelper.pcp.player2.pluginStatus.state.play){
+			videoPlayrHelper.pcp.player2.stop();
 		}
 	}
 	

@@ -64,7 +64,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     		}
                     		
                     		if( Ext.getCmp("PCPRealTimeMonitoringRightTabPanel").getActiveTab().id=='PCPRealTimeMonitoringRightControlAndVideoPanel'){
-                    			createVideo(videoPlayrHelper,1,record.data);
+                    			createVideo(1,record.data);
                     		}
                     		Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringControlAndInfoStore');
                     	},

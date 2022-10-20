@@ -619,11 +619,11 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 listeners: {
                                 	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                 		if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                			if(videoPlayrHelper.playr1!=null){
+                                			if(videoPlayrHelper.rpc.player1!=null){
                                         		var isFullScreen = isBrowserFullScreen();
                                         		if(!isFullScreen){
                                     				var recordData=Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
-                                        			createVideo(videoPlayrHelper,0,recordData,1);
+                                        			createVideo(0,recordData,1);
                                     			}
                                     		}
                                 		}
@@ -645,11 +645,11 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                     listeners: {
                                     	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
                                     		if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                    			if(videoPlayrHelper.playr2!=null){
+                                    			if(videoPlayrHelper.rpc.player2!=null){
                                             		var isFullScreen = isBrowserFullScreen();
                                             		if(!isFullScreen){
                                         				var recordData=Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
-                                            			createVideo(videoPlayrHelper,0,recordData,2);
+                                            			createVideo(0,recordData,2);
                                         			}
                                         		}
                                     		}
@@ -669,37 +669,25 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                         	tabchange: function (tabPanel, newCard, oldCard,obj) {
                         		if(newCard.id=="RPCRealTimeMonitoringRightControlAndVideoPanel"){
                                 	if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
-                                		createVideo(videoPlayrHelper,0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
+                                		createVideo(0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
                                 	}else{
                                 		var videoPanel1=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel1");
                                 		var videoPanel2=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel2");
-                                		if(videoPlayrHelper.playr1!=null){
-                                			videoPlayrHelper.playr1.stop();
-                                			$("#"+videoPlayrHelper.playr1.id).html('');
-                                			videoPanel1.setHtml('');
-                                			videoPlayrHelper.playr1=null;
+                                		if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+                                			videoPlayrHelper.rpc.player1.stop();
                                 		}
-                                		if(videoPlayrHelper.playr2!=null){
-                                			videoPlayrHelper.playr2.stop();
-                                			$("#"+videoPlayrHelper.playr2.id).html('');
-                                			videoPanel2.setHtml('');
-                                			videoPlayrHelper.playr2=null;
+                                		if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+                                			videoPlayrHelper.rpc.player2.stop();
                                 		}
                                 		videoPanel1.hide();
                                 		videoPanel2.hide();
                                 	}
                         		}else{
-                        			if(videoPlayrHelper.playr1!=null){
-                        				videoPlayrHelper.playr1.stop();
-                        				$("#"+videoPlayrHelper.playr1.id).html('');
-                        				Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel1").setHtml('');
-                        				videoPlayrHelper.playr1=null;
+                        			if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+                        				videoPlayrHelper.rpc.player1.stop();
                         			}
-                        			if(videoPlayrHelper.playr2!=null){
-                        				videoPlayrHelper.playr2.stop();
-                        				$("#"+videoPlayrHelper.playr2.id).html('');
-                        				Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel2").setHtml('');
-                        				videoPlayrHelper.playr2=null;
+                        			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+                        				videoPlayrHelper.rpc.player2.stop();
                         			}
                         		}
                             }

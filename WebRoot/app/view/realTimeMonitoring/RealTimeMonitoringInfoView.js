@@ -1631,13 +1631,25 @@ function initDeviceRealtimeMonitoringStockChartFn(series, tickInterval, divId, t
 //		}
 //	}
 //}
-function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
+function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 	var videoPanel=Ext.getCmp(panelId);
 	if(videoUrl!='' && videoUrl!='null'){
 		if(videoPanel.isHidden() ){
 			videoPanel.show();
 		}
 		if(deviceType==0 && videoNo==1){
+			if(isNew){
+				if(videoPlayrHelper.rpc.player1!=null){
+					if(videoPlayrHelper.rpc.player1.pluginStatus.state.play){
+						videoPlayrHelper.rpc.player1.stop();
+					}
+					$("#"+videoPlayrHelper.rpc.player1.id).html('');
+					videoPanel.setHtml('');
+					videoPlayrHelper.rpc.player1=null;
+				}
+			}
+			
+			
 			if(videoPlayrHelper.rpc.player1!=null){
 				if(videoPlayrHelper.rpc.player1.pluginStatus.state.play){
 					videoPlayrHelper.rpc.player1.stop()
@@ -1656,6 +1668,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 					}
 				}
 			}else{
+				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
 				var videoWidth=$("#"+divId).width();
 				var videoHeight=$("#"+divId).height();
 				videoPlayrHelper.rpc.player1 = new EZUIKit.EZUIKitPlayer({
@@ -1669,6 +1682,16 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 		        });
 			}
 		}else if(deviceType==0 && videoNo==2){
+			if(isNew){
+				if(videoPlayrHelper.rpc.player2!=null){
+					if(videoPlayrHelper.rpc.player2.pluginStatus.state.play){
+						videoPlayrHelper.rpc.player2.stop();
+					}
+					$("#"+videoPlayrHelper.rpc.player2.id).html('');
+					videoPanel.setHtml('');
+					videoPlayrHelper.rpc.player2=null;
+				}
+			}
 			if(videoPlayrHelper.rpc.player2!=null){
 				if(videoPlayrHelper.rpc.player2.pluginStatus.state.play){
 					videoPlayrHelper.rpc.player2.stop()
@@ -1687,6 +1710,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 					}
 				}
 			}else{
+				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
 				var videoWidth=$("#"+divId).width();
 				var videoHeight=$("#"+divId).height();
 				videoPlayrHelper.rpc.player2 = new EZUIKit.EZUIKitPlayer({
@@ -1700,6 +1724,16 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 		        });
 			}
 		}else if(deviceType==1 && videoNo==1){
+			if(isNew){
+				if(videoPlayrHelper.pcp.player1!=null){
+					if(videoPlayrHelper.pcp.player1.pluginStatus.state.play){
+						videoPlayrHelper.pcp.player1.stop();
+					}
+					$("#"+videoPlayrHelper.pcp.player1.id).html('');
+					videoPanel.setHtml('');
+					videoPlayrHelper.pcp.player1=null;
+				}
+			}
 			if(videoPlayrHelper.pcp.player1!=null){
 				if(videoPlayrHelper.pcp.player1.pluginStatus.state.play){
 					videoPlayrHelper.pcp.player1.stop()
@@ -1718,6 +1752,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 					}
 				}
 			}else{
+				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
 				var videoWidth=$("#"+divId).width();
 				var videoHeight=$("#"+divId).height();
 				videoPlayrHelper.pcp.player1 = new EZUIKit.EZUIKitPlayer({
@@ -1731,6 +1766,16 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 		        });
 			}
 		}else if(deviceType==1 && videoNo==2){
+			if(isNew){
+				if(videoPlayrHelper.pcp.player2!=null){
+					if(videoPlayrHelper.pcp.player2.pluginStatus.state.play){
+						videoPlayrHelper.pcp.player2.stop();
+					}
+					$("#"+videoPlayrHelper.pcp.player2.id).html('');
+					videoPanel.setHtml('');
+					videoPlayrHelper.pcp.player2=null;
+				}
+			}
 			if(videoPlayrHelper.pcp.player2!=null){
 				if(videoPlayrHelper.pcp.player2.pluginStatus.state.play){
 					videoPlayrHelper.pcp.player2.stop()
@@ -1749,6 +1794,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 					}
 				}
 			}else{
+				videoPanel.setHtml('<div id="'+divId+'" style="width:100%;height:100%;"></div>');
 				var videoWidth=$("#"+divId).width();
 				var videoHeight=$("#"+divId).height();
 				videoPlayrHelper.pcp.player2 = new EZUIKit.EZUIKitPlayer({
@@ -1796,7 +1842,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo){
 
 }
 
-function initVideo(panelId,divId,videoUrl,deviceType,videoNo){
+function initVideo(panelId,divId,videoUrl,deviceType,videoNo,isNew){
 	var now=new Date().getTime();
 	var accessToken='';
 	if(videoUrl=='ezopen://open.ys7.com/G39444019/1.live'){
@@ -1808,13 +1854,13 @@ function initVideo(panelId,divId,videoUrl,deviceType,videoNo){
 	        	if(demoAccessTokenInfo.code=='200'){
 	        		accessToken=demoAccessTokenInfo.data.accessToken;
 	        	}
-	        	showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+	        	showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 	        });
 		}else{
 			if(demoAccessTokenInfo.code=='200'){
         		accessToken=demoAccessTokenInfo.data.accessToken;
         	}
-			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 		}
 	}else{
 		if(accessTokenInfo==null || (!accessTokenInfo.success) || now>accessTokenInfo.expireTime){
@@ -1826,7 +1872,7 @@ function initVideo(panelId,divId,videoUrl,deviceType,videoNo){
 					if(accessTokenInfo.success){
 						accessToken=accessTokenInfo.accessToken;
 					}
-					showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+					showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 				},
 				failure:function(){
 					Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1836,12 +1882,12 @@ function initVideo(panelId,divId,videoUrl,deviceType,videoNo){
 			if(accessTokenInfo.success){
 				accessToken=accessTokenInfo.accessToken;
 			}
-			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo);
+			showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew);
 		}
 	}
 }
 
-function createVideo(deviceType,data,videoNo){
+function createVideo(deviceType,data,videoNo,isNew){
 	var panelId1='RPCRealTimeMonitoringRightVideoPanel1';
 	var divId1='RPCRealTimeMonitoringRightVideoDiv1_Id';
 	
@@ -1869,11 +1915,11 @@ function createVideo(deviceType,data,videoNo){
 		}
 	}
 	if(videoNo==1){
-		initVideo(panelId1,divId1,videoUrl1,deviceType,1);
+		initVideo(panelId1,divId1,videoUrl1,deviceType,1,isNew);
 	}else if(videoNo==2){
-		initVideo(panelId2,divId2,videoUrl2,deviceType,2);
+		initVideo(panelId2,divId2,videoUrl2,deviceType,2,isNew);
 	}else{
-		initVideo(panelId1,divId1,videoUrl1,deviceType,1);
-		initVideo(panelId2,divId2,videoUrl2,deviceType,2);
+		initVideo(panelId1,divId1,videoUrl1,deviceType,1,isNew);
+		initVideo(panelId2,divId2,videoUrl2,deviceType,2,isNew);
 	}
 }

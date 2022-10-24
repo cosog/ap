@@ -1,11 +1,11 @@
-Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore', {
+Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceControlStore', {
     extend: 'Ext.data.Store',
-    alias: 'widget.rpcRealTimeMonitoringControlAndInfoStore',
+    alias: 'widget.PCPRealTimeMonitoringDeviceControlStore',
     autoLoad: true,
     pageSize: 10000,
     proxy: {
         type: 'ajax',
-        url: context + '/realTimeMonitoringController/getDeviceControlandInfoData',
+        url: context + '/realTimeMonitoringController/getDeviceControlData',
         actionMethods: {
             read: 'POST'
         },
@@ -21,106 +21,15 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         	var get_rawData = store.proxy.reader.rawData;
         	var isControl=get_rawData.isControl;
         	var commStatus=get_rawData.commStatus;
-        	var deviceInfoDataList=get_rawData.deviceInfoDataList;
-        	var auxiliaryDeviceList=get_rawData.auxiliaryDeviceList;
-        	var deviceControlList=get_rawData.deviceControlList;
-        	
-        	//设备信息
-        	var deviceInfoDataStr="{\"items\":[";
-        	for(var i=0;i<deviceInfoDataList.length;i++){
-        		deviceInfoDataStr+="{\"item\":\""+deviceInfoDataList[i].name+"\",\"value\":\""+deviceInfoDataList[i].value+"\"},";
-        	}
-        	if(stringEndWith(deviceInfoDataStr,",")){
-        		deviceInfoDataStr = deviceInfoDataStr.substring(0, deviceInfoDataStr.length - 1);
-    		}
-        	deviceInfoDataStr+="]}";
-        	
-        	var deviceInfoStoreData=Ext.JSON.decode(deviceInfoDataStr);
-        	var deviceInfoStore=Ext.create('Ext.data.Store', {
-			    fields:['item', 'itemCode','value'],
-			    data:deviceInfoStoreData,
-			    proxy: {
-			        type: 'memory',
-			        reader: {
-			            type: 'json',
-			            root: 'items'
-			        }
-			    }
-			});
-        	var deviceInfoGridPanel=Ext.getCmp("RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id");
-    		if(!isNotVal(deviceInfoGridPanel)){
-    			deviceInfoGridPanel=Ext.create('Ext.grid.Panel', {
-    				id:'RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id',
-//    				title:'附加信息',
-    				border: false,
-    				columnLines: true,
-    				forceFit: false,
-    				store: deviceInfoStore,
-    			    columns: [
-    			    	{ 
-    			        	header: '名称',  
-    			        	dataIndex: 'item',
-    			        	align:'left',
-    			        	flex:1,
-    			        	renderer:function(value){
-    			        		if(isNotVal(value)){
-        			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
-    			        		}
-    			        	}
-    			        },
-    			        { 
-    			        	header: '变量', 
-    			        	dataIndex: 'value',
-    			        	align:'center',
-    			        	flex:1,
-    			        	renderer:function(value){
-    			        		if(isNotVal(value)){
-        			        		return "<span data-qtip=\""+(value==undefined?"":value)+"\">"+(value==undefined?"":value)+"</span>";
-    			        		}
-    			        	}
-    			        }
-    			    ]
-    			});
-    			Ext.getCmp("RPCRealTimeMonitoringRightDeviceInfoPanel").add(deviceInfoGridPanel);
-    		}else{
-    			deviceInfoGridPanel.reconfigure(deviceInfoStore);
-    		}
     		
-        	//控制
-        	var controlDataStr="{\"items\":[";
-        	for(var i=0;i<deviceControlList.length;i++){
-        		controlDataStr+="{\"item\":\""+deviceControlList[i].title+"\",\"itemcode\":\""+deviceControlList[i].name
-        		+"\",\"resolutionMode\":"+deviceControlList[i].resolutionMode
-        		+",\"itemMeaning\":"+deviceControlList[i].itemMeaning
-        		+",\"value\":\""+deviceControlList[i].value+"\",\"operation\":true,\"isControl\":"+isControl+",\"showType\":1,\"commStatus\":"+commStatus+"},";
-        	}
-        	if(stringEndWith(controlDataStr,",")){
-    			controlDataStr = controlDataStr.substring(0, controlDataStr.length - 1);
-    		}
-    		controlDataStr+="]}";
-        	
-    		var controlStoreData=Ext.JSON.decode(controlDataStr);
-    		
-    		var controlStore=Ext.create('Ext.data.Store', {
-			    fields:['item','value','operation'],
-			    data:controlStoreData,
-			    proxy: {
-			        type: 'memory',
-			        reader: {
-			            type: 'json',
-			            root: 'items'
-			        }
-			    }
-			});
-//    		Ext.getCmp("RPCRealTimeMonitoringRightControlPanel").removeAll();
-    		var controlGridPanel=Ext.getCmp("RPCRealTimeMonitoringControlDataGridPanel_Id");
+    		var controlGridPanel=Ext.getCmp("PCPRealTimeMonitoringControlDataGridPanel_Id");
     		if(!isNotVal(controlGridPanel)){
     			controlGridPanel=Ext.create('Ext.grid.Panel', {
-    				id:'RPCRealTimeMonitoringControlDataGridPanel_Id',
+    				id:'PCPRealTimeMonitoringControlDataGridPanel_Id',
     				border: false,
     				columnLines: true,
     				forceFit: false,
-    				store: controlStore,
+    				store: store,
     			    columns: [{ 
     			        	header: '操作项',  
     			        	dataIndex: 'item',
@@ -140,7 +49,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        	width:93,
     			        	renderer :function(value,e,o){
     			        		var id = e.record.id;
-//    			        		console.log("id:"+id);
     			        		var item=o.data.item;
     			        		var itemcode=o.data.itemcode;
     			        		var isControl=o.data.isControl;
@@ -160,12 +68,10 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        		}
     			        		text="设置";
     			        		e.tdStyle ="vertical-align:middle;";
-    			        		
     			        		var all_loading = new Ext.LoadMask({
     	                            msg: '命令发送中，请稍后...',
     	                            target: Ext.getBody().component
     	                        });
-    			        		
     			        		if(resolutionMode==1&&itemMeaning.length==1){
     			        			Ext.defer(function () {
         		                        Ext.widget('button', {
@@ -179,15 +85,17 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     		                            	tooltip:itemMeaning[0][1],
     		                            	handler: function () {
     		                            		all_loading.show();
-    		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-    		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+    		                            		var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+    		                            		var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
     		                            		Ext.Ajax.request({
     		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
     		                                        method: "POST",
+    		                                        waitMsg: cosog.string.updatewait,
+    		                                        waitTitle: 'Please Wait...',
     		                                        params: {
     		                                        	deviceId:deviceId,
     		                                        	wellName: wellName,
-    		                                        	deviceType: 0,
+    		                                        	deviceType: 1,
     		                                            controlType:itemcode,
     		                                            controlValue:itemMeaning[0][0]
     		                                        },
@@ -240,17 +148,17 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	tooltip:itemMeaning[0][1],
         		                            	handler: function () {
         		                            		all_loading.show();
-        		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		                            		var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		                            		var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-//        		                                        waitMsg: cosog.string.updatewait,
-//        		                                        waitTitle: 'Please Wait...',
+        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
-        		                                        	deviceType: 0,
+        		                                        	deviceType: 1,
         		                                            controlType:itemcode,
         		                                            controlValue:itemMeaning[0][0]
         		                                        },
@@ -291,17 +199,17 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	tooltip:itemMeaning[1][1],
         		                            	handler: function () {
         		                            		all_loading.show();
-        		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		                            		var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		                            		var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-//        		                                        waitMsg: cosog.string.updatewait,
-//        		                                        waitTitle: 'Please Wait...',
+        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
-        		                                        	deviceType: 0,
+        		                                        	deviceType: 1,
         		                                            controlType:itemcode,
         		                                            controlValue:itemMeaning[1][0]
         		                                        },
@@ -353,17 +261,17 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	tooltip:'开',
         		                            	handler: function () {
         		                            		all_loading.show();
-        		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		                            		var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		                            		var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-//        		                                        waitMsg: cosog.string.updatewait,
-//        		                                        waitTitle: 'Please Wait...',
+        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
-        		                                        	deviceType: 0,
+        		                                        	deviceType: 1,
         		                                            controlType:itemcode,
         		                                            controlValue:1
         		                                        },
@@ -403,19 +311,19 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            	tooltip:'关',
         		                            	handler: function () {
         		                            		all_loading.show();
-        		                            		var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        		                            		var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		                            		var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		                            		var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-//        		                                        waitMsg: cosog.string.updatewait,
-//        		                                        waitTitle: 'Please Wait...',
+        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
         		                                        	wellName: wellName,
-        		                                        	deviceType: 0,
+        		                                        	deviceType: 1,
         		                                            controlType:itemcode,
-        		                                            controlValue:0
+        		                                            controlValue:2
         		                                        },
         		                                        success: function (response, action) {
         		                                        	all_loading.hide();
@@ -452,7 +360,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                            height: 25,
         		                            width: 38,
         		                            text: text,
-        		                            tooltip:text,
+        		                            tooltip: text,
         		                            disabled:hand,
         		                            hidden:hidden,
         		                            handler: function () {
@@ -473,11 +381,11 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
         		                                         var DeviceControlCheckPassWindow = Ext.create("AP.view.realTimeMonitoring.DeviceControlCheckPassWindow", {
         		                                             title: '控制'
         		                                         });
-        		                                     	 var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        		                                     	 var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        		                                     	 var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        		                                     	 var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         		                                     	 Ext.getCmp("DeviceControlWellName_Id").setValue(wellName);
         		                                     	 Ext.getCmp("DeviceControlDeviceId_Id").setValue(deviceId);
-        		                                     	 Ext.getCmp("DeviceControlDeviceType_Id").setValue(0);
+        		                                     	 Ext.getCmp("DeviceControlDeviceType_Id").setValue(1);
         		                                         
         		                                     	 Ext.getCmp("DeviceControlType_Id").setValue(o.data.itemcode);
         		                                         Ext.getCmp("DeviceControlShowType_Id").setValue(resolutionMode);
@@ -525,18 +433,16 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore
     			        }
     			    ]
     			});
-    			Ext.getCmp("RPCRealTimeMonitoringRightControlPanel").add(controlGridPanel);
-    		}else{
-    			controlGridPanel.reconfigure(controlStore);
+    			Ext.getCmp("PCPRealTimeMonitoringRightControlPanel").add(controlGridPanel);
     		}
         },
         beforeload: function (store, options) {
-        	var wellName  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-        	var deviceId  = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	var wellName  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var deviceId  = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
         	var new_params = {
         			deviceId:deviceId,
         			wellName: wellName,
-        			deviceType:0
+        			deviceType:1
                 };
            Ext.apply(store.proxy.extraParams, new_params);
         },

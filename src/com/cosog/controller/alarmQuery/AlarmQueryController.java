@@ -102,6 +102,7 @@ public class AlarmQueryController extends BaseController{
 	@RequestMapping("/exportAlarmData")
 	public String exportAlarmData() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -149,7 +150,7 @@ public class AlarmQueryController extends BaseController{
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;
@@ -188,6 +189,7 @@ public class AlarmQueryController extends BaseController{
 	@RequestMapping("/exportAlarmOverviewData")
 	public String exportAlarmOverviewData() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
@@ -214,7 +216,7 @@ public class AlarmQueryController extends BaseController{
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;

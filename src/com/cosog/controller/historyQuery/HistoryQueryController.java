@@ -137,6 +137,7 @@ public class HistoryQueryController extends BaseController  {
 	@RequestMapping("/exportHistoryQueryDeviceListExcel")
 	public String exportHistoryQueryDeviceListExcel() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -165,7 +166,7 @@ public class HistoryQueryController extends BaseController  {
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;
@@ -230,6 +231,7 @@ public class HistoryQueryController extends BaseController  {
 	@RequestMapping("/exportHistoryQueryDataExcel")
 	public String exportHistoryQueryDataExcel() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -292,7 +294,7 @@ public class HistoryQueryController extends BaseController  {
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;
@@ -492,6 +494,7 @@ public class HistoryQueryController extends BaseController  {
 	@RequestMapping("/exportHistoryQueryFESDiagramOverlayDataExcel")
 	public String exportHistoryQueryFESDiagramOverlayDataExcel() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -542,7 +545,7 @@ public class HistoryQueryController extends BaseController  {
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;

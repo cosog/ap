@@ -94,6 +94,7 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/exportDeviceOperationLogExcelData")
 	public String exportDeviceOperationLogExcelData() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -138,7 +139,7 @@ public class LogQueryController extends BaseController{
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;
@@ -190,6 +191,7 @@ public class LogQueryController extends BaseController{
 	@RequestMapping("/exportSystemLogExcelData")
 	public String exportSystemLogExcelData() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		operationType = ParamUtils.getParameter(request, "operationType");
@@ -230,7 +232,7 @@ public class LogQueryController extends BaseController{
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;
@@ -296,15 +298,10 @@ public class LogQueryController extends BaseController{
 	public void setTotals(int totals) {
 		this.totals = totals;
 	}
-
-
 	public String getOperationType() {
 		return operationType;
 	}
-
-
 	public void setOperationType(String operationType) {
 		this.operationType = operationType;
 	}
-	
 }

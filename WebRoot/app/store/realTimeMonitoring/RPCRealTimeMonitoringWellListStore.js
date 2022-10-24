@@ -66,8 +66,25 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
         					}
                     		if( Ext.getCmp("RPCRealTimeMonitoringRightTabPanel").getActiveTab().id=='RPCRealTimeMonitoringRightControlAndVideoPanel'){
                     			createVideo(0,record.data);
+                    			var controlGridPanel=Ext.getCmp("RPCRealTimeMonitoringControlDataGridPanel_Id");
+                    			if(isNotVal(controlGridPanel)){
+                    				controlGridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore');
+                    			}
+                    		}else{
+                    			var deviceInfoGridPanel=Ext.getCmp("RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id");
+                    			if(isNotVal(deviceInfoGridPanel)){
+                    				deviceInfoGridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore');
+                    			}
                     		}
-                    		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
+                    		
+                    		
+                    		
+                    		
+//                    		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
                     	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     		gotoDeviceHistory(record.data.wellName,0);

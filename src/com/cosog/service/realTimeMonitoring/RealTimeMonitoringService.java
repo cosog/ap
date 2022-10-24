@@ -2063,15 +2063,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-//		String protocolItemsSql="select t.wellname,t3.protocol, "
-//				+ " listagg(t4.itemname, ',') within group(order by t4.unitid,t4.sort,t4.id,t4.bitindex ) key,"
-//				+ " listagg(decode(t4.sort,null,9999,t4.sort), ',') within group(order by t4.unitid,t4.sort,t4.id,t4.bitindex ) sort "
-//				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-//				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=2 "
-//				+ " and t.id="+deviceId
-//				+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no="+user.getUserNo()+" )"
-//				+ " group by t.wellname,t3.protocol";
-//		List<?> itemsList = this.findCallSql(protocolItemsSql);
 		int isControl=(userInfo!=null?userInfo.getRoleFlag():0);
 		
 		List<String> controlItems=new ArrayList<String>();
@@ -2287,7 +2278,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		List<?> list = this.findCallSql(sql);
 		if(list.size()>0){
 			if(controlColumns.size()>0){
-//				Object[] obj=(Object[]) list.get(0);
 				result_json.append("\"commStatus\":\""+list.get(0)+"\",");
 				for(int i=0;i<controlColumns.size();i++){
 					deviceControlList.append("{\"title\":\""+controlItems.get(i)+"\",\"name\":\""+controlColumns.get(i)+"\",\"resolutionMode\":"+controlItemResolutionMode.get(i)+",\"value\":\"\",\"itemMeaning\":\""+controlItemMeaningList.get(i)+"\"},");
@@ -2311,6 +2301,326 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public String getRPCDeviceInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String deviceInfoKey="RPCDeviceInfo";
+		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_RPCDeviceInfo");
+		
+		List<String> heads=ddic.getHeaders();
+		List<String> fields=ddic.getFields();
+		
+		Jedis jedis=null;
+		RPCDeviceInfo deviceInfo=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(deviceInfoKey.getBytes())){
+				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			}
+			byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
+			Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
+			if (obj instanceof RPCDeviceInfo) {
+				deviceInfo=(RPCDeviceInfo)obj;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		StringBuffer deviceInfoDataList=new StringBuffer();
+		deviceInfoDataList.append("[");
+		
+		//设备信息
+		for(int i=0;i<fields.size();i++){
+			if("manufacturer".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getManufacturer():"")+"\"},");
+			}else if("model".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getModel():"")+"\"},");
+			}else if("stroke".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getStroke():"")+"\"},");
+			}else if("crankRotationDirection".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?("Clockwise".equalsIgnoreCase(deviceInfo.getPumpingUnit().getCrankRotationDirection())?"顺时针":"逆时针"):"")+"\"},");
+			}else if("offsetAngleOfCrank".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getOffsetAngleOfCrank():"")+"\"},");
+			}else if("crankGravityRadius".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getCrankGravityRadius():"")+"\"},");
+			}else if("singleCrankWeight".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getSingleCrankWeight():"")+"\"},");
+			}else if("singleCrankPinWeight".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getSingleCrankPinWeight():"")+"\"},");
+			}else if("structuralUnbalance".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null?deviceInfo.getPumpingUnit().getStructuralUnbalance():"")+"\"},");
+			}else if("balance".equalsIgnoreCase(fields.get(i))){
+				if(deviceInfo!=null&&deviceInfo.getPumpingUnit()!=null&&deviceInfo.getPumpingUnit().getBalance()!=null&&deviceInfo.getPumpingUnit().getBalance().getEveryBalance()!=null&&deviceInfo.getPumpingUnit().getBalance().getEveryBalance().size()>0){
+					for(int j=0;j<deviceInfo.getPumpingUnit().getBalance().getEveryBalance().size();j++){
+						deviceInfoDataList.append("{\"item\":\"平衡块"+(j+1)+"位置重量\","+ "\"value\":\""+(deviceInfo.getPumpingUnit().getBalance().getEveryBalance().get(j).getPosition()+","+deviceInfo.getPumpingUnit().getBalance().getEveryBalance().get(j).getWeight())+"\"},");
+					}
+				}else{
+					deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\"\"},");
+				}
+			}else if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+			}else if("waterDensity".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getWaterDensity():"")+"\"},");
+			}else if("naturalGasRelativeDensity".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
+			}else if("saturationPressure".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getSaturationPressure():"")+"\"},");
+			}else if("reservoirDepth".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getReservoir()!=null?deviceInfo.getReservoir().getDepth():"")+"\"},");
+			}else if("reservoirTemperature".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getReservoir()!=null?deviceInfo.getReservoir().getTemperature():"")+"\"},");
+			}else if("tubingPressure".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getTubingPressure():"")+"\"},");
+			}else if("casingPressure".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getCasingPressure():"")+"\"},");
+			}else if("wellHeadTemperature".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWellHeadTemperature():"")+"\"},");
+			}else if("waterCut".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWaterCut():"")+"\"},");
+			}else if("productionGasOilRatio".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProductionGasOilRatio():"")+"\"},");
+			}else if("producingfluidLevel".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProducingfluidLevel():"")+"\"},");
+			}else if("pumpSettingDepth".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getPumpSettingDepth():"")+"\"},");
+			}else if("pumpType".equalsIgnoreCase(fields.get(i))){
+				String pumpType="";
+				if(deviceInfo!=null&&deviceInfo.getPump()!=null&&deviceInfo.getPump().getPumpType()!=null){
+					if("R".equalsIgnoreCase(deviceInfo.getPump().getPumpType())){
+						pumpType="杆式泵";
+					}else if("T".equalsIgnoreCase(deviceInfo.getPump().getPumpType())){
+						pumpType="管式泵";
+					}
+				}
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+pumpType+"\"},");
+			}else if("barrelType".equalsIgnoreCase(fields.get(i))){
+				String barrelType="";
+				if(deviceInfo!=null&&deviceInfo.getPump()!=null&&deviceInfo.getPump().getBarrelType()!=null){
+					if("L".equalsIgnoreCase(deviceInfo.getPump().getBarrelType())){
+						barrelType="组合泵";
+					}else if("H".equalsIgnoreCase(deviceInfo.getPump().getBarrelType())){
+						barrelType="整筒泵";
+					}
+				}
+				deviceInfoDataList.append("{\"item\":\"泵筒类型\","+ "\"value\":\""+barrelType+"\"},");
+			}else if("pumpGrade".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getPumpGrade():"")+"\"},");
+			}else if("pumpBoreDiameter".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getPumpBoreDiameter()*1000:"")+"\"},");
+			}else if("plungerLength".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getPlungerLength():"")+"\"},");
+			}else if("tubingStringInsideDiameter".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getTubingString()!=null&&deviceInfo.getTubingString().getEveryTubing()!=null&&deviceInfo.getTubingString().getEveryTubing().size()>0?deviceInfo.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000:"")+"\"},");
+			}else if("casingStringInsideDiameter".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getCasingString()!=null&&deviceInfo.getCasingString().getEveryCasing()!=null&&deviceInfo.getCasingString().getEveryCasing().size()>0?deviceInfo.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000:"")+"\"},");
+			}else if("rodString".equalsIgnoreCase(fields.get(i))){
+				String rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
+				String rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
+				String rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="";
+				String rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="";
+				if(deviceInfo!=null&&deviceInfo.getRodString()!=null&&deviceInfo.getRodString().getEveryRod()!=null&&deviceInfo.getRodString().getEveryRod().size()>0){
+					if(deviceInfo.getRodString().getEveryRod().size()>0){
+						rodGrade1=deviceInfo.getRodString().getEveryRod().get(0).getGrade();
+						rodOutsideDiameter1=deviceInfo.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
+						rodInsideDiameter1=deviceInfo.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+						rodLength1=deviceInfo.getRodString().getEveryRod().get(0).getLength()+"";
+					}
+					if(deviceInfo.getRodString().getEveryRod().size()>1){
+						rodGrade2=deviceInfo.getRodString().getEveryRod().get(1).getGrade();
+						rodOutsideDiameter2=deviceInfo.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
+						rodInsideDiameter2=deviceInfo.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+						rodLength2=deviceInfo.getRodString().getEveryRod().get(1).getLength()+"";
+					}
+					if(deviceInfo.getRodString().getEveryRod().size()>2){
+						rodGrade3=deviceInfo.getRodString().getEveryRod().get(2).getGrade();
+						rodOutsideDiameter3=deviceInfo.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
+						rodInsideDiameter3=deviceInfo.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+						rodLength3=deviceInfo.getRodString().getEveryRod().get(2).getLength()+"";
+					}
+					if(deviceInfo.getRodString().getEveryRod().size()>3){
+						rodGrade4=deviceInfo.getRodString().getEveryRod().get(3).getGrade();
+						rodOutsideDiameter4=deviceInfo.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
+						rodInsideDiameter4=deviceInfo.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+						rodLength4=deviceInfo.getRodString().getEveryRod().get(3).getLength()+"";
+					}
+				}
+				
+				deviceInfoDataList.append("{\"item\":\"一级杆级别\",\"value\":\""+rodGrade1+"\"},");
+				deviceInfoDataList.append("{\"item\":\"一级杆外径(mm)\",\"value\":\""+rodOutsideDiameter1+"\"},");
+				deviceInfoDataList.append("{\"item\":\"一级杆内径(mm)\",\"value\":\""+rodInsideDiameter1+"\"},");
+				deviceInfoDataList.append("{\"item\":\"一级杆长度(m)\",\"value\":\""+rodLength1+"\"},");
+				
+				deviceInfoDataList.append("{\"item\":\"二级杆级别\",\"value\":\""+rodGrade2+"\"},");
+				deviceInfoDataList.append("{\"item\":\"二级杆外径(mm)\",\"value\":\""+rodOutsideDiameter2+"\"},");
+				deviceInfoDataList.append("{\"item\":\"二级杆内径(mm)\",\"value\":\""+rodInsideDiameter2+"\"},");
+				deviceInfoDataList.append("{\"item\":\"二级杆长度(m)\",\"value\":\""+rodLength2+"\"},");
+				
+				deviceInfoDataList.append("{\"item\":\"三级杆级别\",\"value\":\""+rodGrade3+"\"},");
+				deviceInfoDataList.append("{\"item\":\"三级杆外径(mm)\",\"value\":\""+rodOutsideDiameter3+"\"},");
+				deviceInfoDataList.append("{\"item\":\"三级杆内径(mm)\",\"value\":\""+rodInsideDiameter3+"\"},");
+				deviceInfoDataList.append("{\"item\":\"三级杆长度(m)\",\"value\":\""+rodLength3+"\"},");
+				
+				deviceInfoDataList.append("{\"item\":\"四级杆级别\",\"value\":\""+rodGrade4+"\"},");
+				deviceInfoDataList.append("{\"item\":\"四级杆外径(mm)\",\"value\":\""+rodOutsideDiameter4+"\"},");
+				deviceInfoDataList.append("{\"item\":\"四级杆内径(mm)\",\"value\":\""+rodInsideDiameter4+"\"},");
+			}
+			
+		}
+		
+		if(deviceInfoDataList.toString().endsWith(",")){
+			deviceInfoDataList.deleteCharAt(deviceInfoDataList.length() - 1);
+		}
+		deviceInfoDataList.append("]");
+		result_json.append("{\"success\":true,\"totalRoot\":"+deviceInfoDataList+"}");
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getRPCDeviceControlData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		int dataSaveMode=1;
+		String deviceTableName="tbl_rpcdevice";
+		String columnsKey="rpcDeviceAcquisitionItemColumns";
+		String deviceInfoKey="RPCDeviceInfo";
+		
+		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+		}
+		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		
+		Jedis jedis=null;
+		RPCDeviceInfo deviceInfo=null;
+		UserInfo userInfo=null;
+		DisplayInstanceOwnItem displayInstanceOwnItem=null;
+		String protocolCode="";
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(deviceInfoKey.getBytes())){
+				MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+			}
+			byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
+			Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
+			if (obj instanceof RPCDeviceInfo) {
+				deviceInfo=(RPCDeviceInfo)obj;
+			}
+
+			if(!jedis.exists("UserInfo".getBytes())){
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
+			}
+			userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (user.getUserNo()+"").getBytes()));
+			
+			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
+			}
+			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
+				displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
+				protocolCode=displayInstanceOwnItem.getProtocol();
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		int isControl=(userInfo!=null?userInfo.getRoleFlag():0);
+		
+		List<String> controlItems=new ArrayList<String>();
+		List<String> controlColumns=new ArrayList<String>();
+		List<Integer> controlItemResolutionMode=new ArrayList<Integer>();
+		List<String> controlItemMeaningList=new ArrayList<String>();
+		StringBuffer deviceControlList=new StringBuffer();
+		deviceControlList.append("[");
+		
+		if(displayInstanceOwnItem!=null){
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
+							if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+								for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+									if(displayInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
+										if("rw".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())
+												||"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
+											String title=modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle();
+											if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
+												title+="("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")";
+											}
+											controlItems.add(title);
+											String col=dataSaveMode==0?("ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
+											controlColumns.add(col);
+											controlItemResolutionMode.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode());
+											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode()==2){//数据量
+												controlItemMeaningList.add("[]");
+											}else if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode()==1){//枚举量
+												if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
+													StringBuffer itemMeaning_buff = new StringBuffer();
+													itemMeaning_buff.append("[");
+													for(int n=0;n<modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size();n++){
+														itemMeaning_buff.append("["+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().get(n).getValue()+",'"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().get(n).getMeaning()+"'],");
+													}
+													if(itemMeaning_buff.toString().endsWith(",")){
+														itemMeaning_buff.deleteCharAt(itemMeaning_buff.length() - 1);
+													}
+													itemMeaning_buff.append("]");
+													controlItemMeaningList.add(itemMeaning_buff.toString());
+												}else{
+													controlItemMeaningList.add("[]");
+												}
+											}else{
+												controlItemMeaningList.add("[['true','开'],['false','关']]");
+											}
+										}
+										break;
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		String tableName="tbl_rpcacqdata_latest";
+		String sql="select t2.commStatus ";
+		if(StringManagerUtils.stringToInteger(deviceType)>0){
+			tableName="tbl_pcpacqdata_latest";
+		}
+		sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+		result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
+		int commStatus=0;
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0){
+			result_json.append("\"commStatus\":\""+list.get(0)+"\",");
+			commStatus=StringManagerUtils.stringToInteger(list.get(0)+"");
+		}
+		
+		if(controlColumns.size()>0){
+			for(int i=0;i<controlColumns.size();i++){
+				deviceControlList.append("{\"item\":\""+controlItems.get(i)+"\","
+						+ "\"itemcode\":\""+controlColumns.get(i)+"\","
+						+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","
+						+ "\"value\":\"\","
+						+ "\"operation\":"+true+","
+						+ "\"isControl\":"+isControl+","
+						+ "\"showType\":1,"
+						+ "\"commStatus\":"+commStatus+","
+						+ "\"itemMeaning\":"+controlItemMeaningList.get(i)+"},");
+			}
+			if(deviceControlList.toString().endsWith(",")){
+				deviceControlList.deleteCharAt(deviceControlList.length() - 1);
+			}
+		}
+		
+		deviceControlList.append("]");
+		
+		result_json.append("\"totalRoot\":"+deviceControlList);
+		result_json.append("}");
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
 	
 	public String getPCPDeviceControlandInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
 		StringBuffer result_json = new StringBuffer();
@@ -2360,15 +2670,6 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		String protocolItemsSql="select t.wellname,t3.protocol, "
-				+ " listagg(t4.itemname, ',') within group(order by t4.unitid,t4.sort,t4.id,t4.bitindex ) key,"
-				+ " listagg(decode(t4.sort,null,9999,t4.sort), ',') within group(order by t4.unitid,t4.sort,t4.id,t4.bitindex ) sort "
-				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=2 "
-				+ " and t.id="+deviceId
-				+ " and decode(t4.showlevel,null,9999,t4.showlevel)>=( select r.showlevel from tbl_role r,tbl_user u where u.user_type=r.role_id and u.user_no="+user.getUserNo()+" )"
-				+ " group by t.wellname,t3.protocol";
-		List<?> itemsList = this.findCallSql(protocolItemsSql);
 		int isControl=userInfo!=null?userInfo.getRoleFlag():0;
 		
 		List<String> controlItems=new ArrayList<String>();
@@ -2557,6 +2858,285 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		result_json.append("\"videoUrl\":\""+(deviceInfo!=null?deviceInfo.getVideoUrl():"")+"\",");
 		result_json.append("\"deviceInfoDataList\":"+deviceInfoDataList+",");
 		result_json.append("\"deviceControlList\":"+deviceControlList);
+		result_json.append("}");
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getPCPDeviceInfoData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String deviceInfoKey="PCPDeviceInfo";
+		DataDictionary ddic=dataitemsInfoService.findTableSqlWhereByListFaceId("realTimeMonitoring_PCPDeviceInfo");
+		List<String> heads=ddic.getHeaders();
+		List<String> fields=ddic.getFields();
+		
+		Jedis jedis=null;
+		PCPDeviceInfo deviceInfo=null;
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(deviceInfoKey.getBytes())){
+				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+				
+			}
+			byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
+			Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
+			if (obj instanceof PCPDeviceInfo) {
+				deviceInfo=(PCPDeviceInfo)obj;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		StringBuffer deviceInfoDataList=new StringBuffer();
+		deviceInfoDataList.append("[");
+		//设备信息
+		for(int i=0;i<fields.size();i++){
+			if("crudeOilDensity".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getCrudeOilDensity():"")+"\"},");
+			}else if("waterDensity".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getWaterDensity():"")+"\"},");
+			}else if("naturalGasRelativeDensity".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getNaturalGasRelativeDensity():"")+"\"},");
+			}else if("saturationPressure".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getFluidPVT()!=null?deviceInfo.getFluidPVT().getSaturationPressure():"")+"\"},");
+			}else if("reservoirDepth".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getReservoir()!=null?deviceInfo.getReservoir().getDepth():"")+"\"},");
+			}else if("reservoirTemperature".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getReservoir()!=null?deviceInfo.getReservoir().getTemperature():"")+"\"},");
+			}else if("tubingPressure".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getTubingPressure():"")+"\"},");
+			}else if("casingPressure".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getCasingPressure():"")+"\"},");
+			}else if("wellHeadTemperature".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWellHeadTemperature():"")+"\"},");
+			}else if("waterCut".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getWaterCut():"")+"\"},");
+			}else if("productionGasOilRatio".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProductionGasOilRatio():"")+"\"},");
+			}else if("producingfluidLevel".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getProducingfluidLevel():"")+"\"},");
+			}else if("pumpSettingDepth".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getProduction()!=null?deviceInfo.getProduction().getPumpSettingDepth():"")+"\"},");
+			}else if("barrelLength".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getBarrelLength():"")+"\"},");
+			}else if("barrelSeries".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getBarrelSeries():"")+"\"},");
+			}else if("rotorDiameter".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getRotorDiameter():"")+"\"},");
+			}else if("QPR".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getPump()!=null?deviceInfo.getPump().getQPR():"")+"\"},");
+			}else if("tubingStringInsideDiameter".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getTubingString()!=null&&deviceInfo.getTubingString().getEveryTubing()!=null&&deviceInfo.getTubingString().getEveryTubing().size()>0?deviceInfo.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000:"")+"\"},");
+			}else if("casingStringInsideDiameter".equalsIgnoreCase(fields.get(i))){
+				deviceInfoDataList.append("{\"item\":\""+heads.get(i)+"\","+ "\"value\":\""+(deviceInfo!=null&&deviceInfo.getCasingString()!=null&&deviceInfo.getCasingString().getEveryCasing()!=null&&deviceInfo.getCasingString().getEveryCasing().size()>0?deviceInfo.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000:"")+"\"},");
+			}else if("rodString".equalsIgnoreCase(fields.get(i))){
+				String rodGrade1="",rodOutsideDiameter1="",rodInsideDiameter1="",rodLength1="";
+				String rodGrade2="",rodOutsideDiameter2="",rodInsideDiameter2="",rodLength2="";
+				String rodGrade3="",rodOutsideDiameter3="",rodInsideDiameter3="",rodLength3="";
+				String rodGrade4="",rodOutsideDiameter4="",rodInsideDiameter4="",rodLength4="";
+				if(deviceInfo!=null&&deviceInfo.getRodString()!=null&&deviceInfo.getRodString().getEveryRod()!=null&&deviceInfo.getRodString().getEveryRod().size()>0){
+					if(deviceInfo.getRodString().getEveryRod().size()>0){
+						rodGrade1=deviceInfo.getRodString().getEveryRod().get(0).getGrade();
+						rodOutsideDiameter1=deviceInfo.getRodString().getEveryRod().get(0).getOutsideDiameter()*1000+"";
+						rodInsideDiameter1=deviceInfo.getRodString().getEveryRod().get(0).getInsideDiameter()*1000+"";
+						rodLength1=deviceInfo.getRodString().getEveryRod().get(0).getLength()+"";
+					}
+					if(deviceInfo.getRodString().getEveryRod().size()>1){
+						rodGrade2=deviceInfo.getRodString().getEveryRod().get(1).getGrade();
+						rodOutsideDiameter2=deviceInfo.getRodString().getEveryRod().get(1).getOutsideDiameter()*1000+"";
+						rodInsideDiameter2=deviceInfo.getRodString().getEveryRod().get(1).getInsideDiameter()*1000+"";
+						rodLength2=deviceInfo.getRodString().getEveryRod().get(1).getLength()+"";
+					}
+					if(deviceInfo.getRodString().getEveryRod().size()>2){
+						rodGrade3=deviceInfo.getRodString().getEveryRod().get(2).getGrade();
+						rodOutsideDiameter3=deviceInfo.getRodString().getEveryRod().get(2).getOutsideDiameter()*1000+"";
+						rodInsideDiameter3=deviceInfo.getRodString().getEveryRod().get(2).getInsideDiameter()*1000+"";
+						rodLength3=deviceInfo.getRodString().getEveryRod().get(2).getLength()+"";
+					}
+					if(deviceInfo.getRodString().getEveryRod().size()>3){
+						rodGrade4=deviceInfo.getRodString().getEveryRod().get(3).getGrade();
+						rodOutsideDiameter4=deviceInfo.getRodString().getEveryRod().get(3).getOutsideDiameter()*1000+"";
+						rodInsideDiameter4=deviceInfo.getRodString().getEveryRod().get(3).getInsideDiameter()*1000+"";
+						rodLength4=deviceInfo.getRodString().getEveryRod().get(3).getLength()+"";
+					}
+				}
+				
+				deviceInfoDataList.append("{\"item\":\"一级杆级别\",\"value\":\""+rodGrade1+"\"},");
+				deviceInfoDataList.append("{\"item\":\"一级杆外径(mm)\",\"value\":\""+rodOutsideDiameter1+"\"},");
+				deviceInfoDataList.append("{\"item\":\"一级杆内径(mm)\",\"value\":\""+rodInsideDiameter1+"\"},");
+				deviceInfoDataList.append("{\"item\":\"一级杆长度(m)\",\"value\":\""+rodLength1+"\"},");
+				
+				deviceInfoDataList.append("{\"item\":\"二级杆级别\",\"value\":\""+rodGrade2+"\"},");
+				deviceInfoDataList.append("{\"item\":\"二级杆外径(mm)\",\"value\":\""+rodOutsideDiameter2+"\"},");
+				deviceInfoDataList.append("{\"item\":\"二级杆内径(mm)\",\"value\":\""+rodInsideDiameter2+"\"},");
+				deviceInfoDataList.append("{\"item\":\"二级杆长度(m)\",\"value\":\""+rodLength2+"\"},");
+				
+				deviceInfoDataList.append("{\"item\":\"三级杆级别\",\"value\":\""+rodGrade3+"\"},");
+				deviceInfoDataList.append("{\"item\":\"三级杆外径(mm)\",\"value\":\""+rodOutsideDiameter3+"\"},");
+				deviceInfoDataList.append("{\"item\":\"三级杆内径(mm)\",\"value\":\""+rodInsideDiameter3+"\"},");
+				deviceInfoDataList.append("{\"item\":\"三级杆长度(m)\",\"value\":\""+rodLength3+"\"},");
+				
+				deviceInfoDataList.append("{\"item\":\"四级杆级别\",\"value\":\""+rodGrade4+"\"},");
+				deviceInfoDataList.append("{\"item\":\"四级杆外径(mm)\",\"value\":\""+rodOutsideDiameter4+"\"},");
+				deviceInfoDataList.append("{\"item\":\"四级杆内径(mm)\",\"value\":\""+rodInsideDiameter4+"\"},");
+			}
+			
+		}
+		
+		if(deviceInfoDataList.toString().endsWith(",")){
+			deviceInfoDataList.deleteCharAt(deviceInfoDataList.length() - 1);
+		}
+		
+		deviceInfoDataList.append("]");
+		
+		result_json.append("{\"success\":true,\"totalRoot\":"+deviceInfoDataList+"}");
+		if(jedis!=null){
+			jedis.close();
+		}
+		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public String getPCPDeviceControlData(String deviceId,String wellName,String deviceType,User user)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		int dataSaveMode=1;
+		String deviceTableName="tbl_pcpdevice";
+		String columnsKey="pcpDeviceAcquisitionItemColumns";
+		String deviceInfoKey="PCPDeviceInfo";
+		Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+		if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+			EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+		}
+		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+		
+		Jedis jedis=null;
+		PCPDeviceInfo deviceInfo=null;
+		UserInfo userInfo=null;
+
+		DisplayInstanceOwnItem displayInstanceOwnItem=null;
+		String protocolCode="";
+		try{
+			jedis = RedisUtil.jedisPool.getResource();
+			if(!jedis.exists(deviceInfoKey.getBytes())){
+				MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+				
+			}
+			byte[] dviceInfoByte =jedis.hget(deviceInfoKey.getBytes(),deviceId.getBytes());
+			Object obj =SerializeObjectUnils.unserizlize(dviceInfoByte);
+			if (obj instanceof PCPDeviceInfo) {
+				deviceInfo=(PCPDeviceInfo)obj;
+			}
+
+			if(!jedis.exists("UserInfo".getBytes())){
+				MemoryDataManagerTask.loadUserInfo(null,0,"update");
+			}
+			userInfo=(UserInfo) SerializeObjectUnils.unserizlize(jedis.hget("UserInfo".getBytes(), (user.getUserNo()+"").getBytes()));
+			
+			if(!jedis.exists("DisplayInstanceOwnItem".getBytes())){
+				MemoryDataManagerTask.loadDisplayInstanceOwnItemById("","update");
+			}
+			if(jedis!=null&&deviceInfo!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes())){
+				displayInstanceOwnItem=(DisplayInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("DisplayInstanceOwnItem".getBytes(), deviceInfo.getDisplayInstanceCode().getBytes()));
+				protocolCode=displayInstanceOwnItem.getProtocol();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		int isControl=userInfo!=null?userInfo.getRoleFlag():0;
+		
+		List<String> controlItems=new ArrayList<String>();
+		List<String> controlColumns=new ArrayList<String>();
+		List<Integer> controlItemResolutionMode=new ArrayList<Integer>();
+		List<String> controlItemMeaningList=new ArrayList<String>();
+		StringBuffer deviceControlList=new StringBuffer();
+		deviceControlList.append("[");
+		
+		if(displayInstanceOwnItem!=null){
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
+				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+					if(protocolCode.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getCode())){
+						for(int j=0;j<displayInstanceOwnItem.getItemList().size();j++){
+							if(displayInstanceOwnItem.getItemList().get(j).getType()==2&&displayInstanceOwnItem.getItemList().get(j).getShowLevel()>=userInfo.getRoleShowLevel()){
+								for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+									if(displayInstanceOwnItem.getItemList().get(j).getItemName().equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
+										if("rw".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())
+												||"w".equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
+											String title=modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle();
+											if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
+												title+="("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")";
+											}
+											controlItems.add(title);
+											String col=dataSaveMode==0?("ADDR"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
+											controlColumns.add(col);
+											controlItemResolutionMode.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode());
+											if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode()==2){//数据量
+												controlItemMeaningList.add("[]");
+											}else if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getResolutionMode()==1){//枚举量
+												if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning()!=null && modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size()>0){
+													StringBuffer itemMeaning_buff = new StringBuffer();
+													itemMeaning_buff.append("[");
+													for(int n=0;n<modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().size();n++){
+														itemMeaning_buff.append("["+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().get(n).getValue()+",'"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getMeaning().get(n).getMeaning()+"'],");
+													}
+													if(itemMeaning_buff.toString().endsWith(",")){
+														itemMeaning_buff.deleteCharAt(itemMeaning_buff.length() - 1);
+													}
+													itemMeaning_buff.append("]");
+													controlItemMeaningList.add(itemMeaning_buff.toString());
+												}else{
+													controlItemMeaningList.add("[]");
+												}
+											}else{
+												controlItemMeaningList.add("[['true','开'],['false','关']]");
+											}
+										}
+										break;
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		String tableName="tbl_rpcacqdata_latest";
+		String sql="select t2.commStatus ";
+		if(StringManagerUtils.stringToInteger(deviceType)>0){
+			tableName="tbl_pcpacqdata_latest";
+		}
+		sql+= " from "+deviceTableName+" t,"+tableName+" t2 where t.id=t2.wellid and t.id="+deviceId;
+		
+		result_json.append("{ \"success\":true,\"isControl\":"+isControl+",");
+		int commStatus=0;
+		List<?> list = this.findCallSql(sql);
+		if(list.size()>0){
+			result_json.append("\"commStatus\":\""+list.get(0)+"\",");
+			commStatus=StringManagerUtils.stringToInteger(list.get(0)+"");
+		}
+		
+		if(controlColumns.size()>0){
+			for(int i=0;i<controlColumns.size();i++){
+				deviceControlList.append("{\"item\":\""+controlItems.get(i)+"\","
+						+ "\"itemcode\":\""+controlColumns.get(i)+"\","
+						+ "\"resolutionMode\":"+controlItemResolutionMode.get(i)+","
+						+ "\"value\":\"\","
+						+ "\"operation\":"+true+","
+						+ "\"isControl\":"+isControl+","
+						+ "\"showType\":1,"
+						+ "\"commStatus\":"+commStatus+","
+						+ "\"itemMeaning\":"+controlItemMeaningList.get(i)+"},");
+			}
+			if(deviceControlList.toString().endsWith(",")){
+				deviceControlList.deleteCharAt(deviceControlList.length() - 1);
+			}
+		}
+		
+		deviceControlList.append("]");
+		
+		result_json.append("\"totalRoot\":"+deviceControlList);
 		result_json.append("}");
 		if(jedis!=null){
 			jedis.close();

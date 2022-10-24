@@ -382,7 +382,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                         		var isFullScreen = isBrowserFullScreen();
                                         		if(!isFullScreen){
                                     				var recordData=Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
-                                        			createVideo(1,recordData,1);
+                                        			createVideo(1,recordData,1,true);
                                     			}
                                     		}
                                 		}
@@ -408,7 +408,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                             		var isFullScreen = isBrowserFullScreen();
                                             		if(!isFullScreen){
                                         				var recordData=Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data;
-                                            			createVideo(1,recordData,2);
+                                            			createVideo(1,recordData,2,true);
                                         			}
                                         		}
                                     		}
@@ -441,12 +441,26 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                                 		videoPanel1.hide();
                                 		videoPanel2.hide();
                                 	}
+                                	
+                                	var controlGridPanel=Ext.getCmp("PCPRealTimeMonitoringControlDataGridPanel_Id");
+                        			if(isNotVal(controlGridPanel)){
+                        				controlGridPanel.getStore().load();
+                        			}else{
+                        				Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceControlStore');
+                        			}
                         		}else{
                         			if(videoPlayrHelper.pcp.player1!=null && videoPlayrHelper.pcp.player1.pluginStatus.state.play){
                         				videoPlayrHelper.pcp.player1.stop();
                         			}
                         			if(videoPlayrHelper.pcp.player2!=null && videoPlayrHelper.pcp.player2.pluginStatus.state.play){
                         				videoPlayrHelper.pcp.player2.stop();
+                        			}
+                        			
+                        			var deviceInfoGridPanel=Ext.getCmp("PCPRealTimeMonitoringDeviceInfoDataGridPanel_Id");
+                        			if(isNotVal(deviceInfoGridPanel)){
+                        				deviceInfoGridPanel.getStore().load();
+                        			}else{
+                        				Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceInfoStore');
                         			}
                         		}
                             }

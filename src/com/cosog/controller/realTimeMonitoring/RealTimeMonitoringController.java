@@ -217,6 +217,7 @@ public class RealTimeMonitoringController extends BaseController {
 	@RequestMapping("/exportDeviceRealTimeOverviewDataExcel")
 	public String exportDeviceRealTimeOverviewDataExcel() throws Exception {
 		String json = "";
+		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -252,16 +253,11 @@ public class RealTimeMonitoringController extends BaseController {
 		}else{
 			json = realTimeMonitoringService.getPCPDeviceRealTimeOverviewExportData(orgId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
 		}
-		
-		
-		
 		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		//HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("application/json;charset="
-				+ Constants.ENCODING_UTF8);
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result);
 		pw.flush();
 		pw.close();
 		return null;
@@ -304,7 +300,54 @@ public class RealTimeMonitoringController extends BaseController {
 		}else{
 			json = realTimeMonitoringService.getRPCDeviceControlandInfoData(deviceId,wellName,deviceType,user);
 		}
-		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceInfoData")
+	public String getDeviceInfoData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceId=ParamUtils.getParameter(request, "deviceId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			json = realTimeMonitoringService.getPCPDeviceInfoData(deviceId,wellName,deviceType,user);
+		}else{
+			json = realTimeMonitoringService.getRPCDeviceInfoData(deviceId,wellName,deviceType,user);
+		}
+		response.setContentType("application/json;charset="
+				+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getDeviceControlData")
+	public String getDeviceControlData() throws Exception {
+		String json = "";
+		HttpSession session=request.getSession();
+		User user = (User) session.getAttribute("userLogin");
+		String deviceId=ParamUtils.getParameter(request, "deviceId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		this.pager = new Page("pagerForm", request);
+		if(StringManagerUtils.stringToInteger(deviceType)==1){
+			json = realTimeMonitoringService.getPCPDeviceControlData(deviceId,wellName,deviceType,user);
+		}else{
+			json = realTimeMonitoringService.getRPCDeviceControlData(deviceId,wellName,deviceType,user);
+		}
 		response.setContentType("application/json;charset="
 				+ Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");

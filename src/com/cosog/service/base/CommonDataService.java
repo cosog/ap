@@ -1951,7 +1951,10 @@ public class CommonDataService extends BaseService {
 		OutputStream os=null;
 		WritableWorkbook wbook=null;
 		try{
-		//生成excel文件
+			//生成excel文件
+			JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+data+"}");//解析数据
+			JSONArray jsonArray = jsonObject.getJSONArray("data");
+			int wsheetCount=jsonArray.size()/65534+1;
 			os = response.getOutputStream();//
 			response.reset();
 			response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
@@ -1979,12 +1982,109 @@ public class CommonDataService extends BaseService {
 				Label excelTitle = new Label(i, 1, heads[i], titleWritableFormat);
 				wsheet.addCell(excelTitle);
 			}
-			JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+data+"}");//解析数据
-			JSONArray jsonArray = jsonObject.getJSONArray("data");
+			
 			int count = 0;
 			for (int i=0;i<jsonArray.size();i++) {
+				if(i<65536-2){
+					JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
+					count++;
+					for (int j = 0; j < columns.length; j++) {
+						Label excelTitle=null;
+						if (columns[j].equalsIgnoreCase("id") || columns[j].equalsIgnoreCase("jlbh")) {
+							wsheet.setColumnView(j, 10);
+							excelTitle = new Label(j, count+1, count + "", titleWritableFormat);
+						}else {
+							if(columns[j].equalsIgnoreCase("jssj")||columns[j].equalsIgnoreCase("cjsj")||columns[j].equalsIgnoreCase("gtcjsj")
+									||columns[j].toLowerCase().indexOf("time")>0
+									||columns[j].toLowerCase().indexOf("date")>0){
+								wsheet.setColumnView(j, 30);
+							}else{
+								wsheet.setColumnView(j, 16);
+							}
+							if(everydata.has(columns[j])){
+								excelTitle = new Label(j, count+1,everydata.getString(columns[j]),titleWritableFormat);
+							}else{
+								excelTitle = new Label(j, count+1,"",titleWritableFormat);
+							}
+						}
+						wsheet.addCell(excelTitle);
+					}
+				
+				}
+			}
+			wbook.write();
+			wbook.close();
+			os.close();
+			wbook=null;
+			os=null;
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		} finally{
+			try {
+				if(os!=null){
+					os.close();
+				}
+				if(wbook!=null){
+					wbook.close();
+				}
+			} catch (IOException | WriteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean exportGridPanelData2(HttpServletResponse response,String fileName,String title,String head,String field,String data) {
+		OutputStream os=null;
+		WritableWorkbook wbook=null;
+		try{
+			//生成excel文件
+			int limit=65534;
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			JSONObject jsonObject = JSONObject.fromObject("{\"data\":"+data+"}");//解析数据
+			JSONArray jsonArray = jsonObject.getJSONArray("data");
+			int wsheetCount=jsonArray.size()/limit+1;
+			List<WritableSheet> wsheetList=new ArrayList<>();
+			os = response.getOutputStream();//
+			response.reset();
+			response.setContentType("application/vnd.ms-excel");// 设置生成的文件类型
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss") + ".xls";
+			response.setHeader("Content-disposition", "attachment; filename=" + new String(fileName.getBytes("gb2312"), "ISO8859-1"));//
+			Vector<File> files = new Vector<File>();
+			wbook = Workbook.createWorkbook(os);
+			
+			WritableFont wfont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+			WritableCellFormat wcfFC = new WritableCellFormat(wfont);
+			wcfFC.setBackground(Colour.WHITE);
+			
+			wfont = new jxl.write.WritableFont(WritableFont.ARIAL, 6, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+			wcfFC = new WritableCellFormat(wfont);
+			WritableFont font1 = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, false, jxl.format.UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);// 定义字体
+			WritableCellFormat titleWritableFormat = new WritableCellFormat(font1);// 定义格式化对象
+			titleWritableFormat.setAlignment(Alignment.CENTRE);// 水平居中显示
+			// wsheet.setRowView(1,30);// 设置行高
+			titleWritableFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // 设置边框线
+			for(int i=0;i<wsheetCount;i++){
+				if(i>0){
+					title=title+(i+1);
+				}
+				WritableSheet wsheet = wbook.createSheet(title, i);
+				wsheet.addCell(new Label(heads.length / 2, 0, title, wcfFC));
+				for (int j = 0; j < heads.length; j++) {
+					wsheet.setColumnView(j, 15);// 设置列宽
+					Label excelTitle = new Label(j, 1, heads[j], titleWritableFormat);
+					wsheet.addCell(excelTitle);
+				}
+				wsheetList.add(wsheet);
+			}
+			
+			for (int i=0;i<jsonArray.size();i++) {
+				int page=i/limit;
+				WritableSheet wsheet=wsheetList.get(page);
 				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-				count++;
+				int count=i%limit+1;
 				for (int j = 0; j < columns.length; j++) {
 					Label excelTitle=null;
 					if (columns[j].equalsIgnoreCase("id") || columns[j].equalsIgnoreCase("jlbh")) {
@@ -1992,8 +2092,8 @@ public class CommonDataService extends BaseService {
 						excelTitle = new Label(j, count+1, count + "", titleWritableFormat);
 					}else {
 						if(columns[j].equalsIgnoreCase("jssj")||columns[j].equalsIgnoreCase("cjsj")||columns[j].equalsIgnoreCase("gtcjsj")
-								||columns[j].indexOf("time")>0||columns[j].indexOf("Time")>0
-								||columns[j].indexOf("date")>0||columns[j].indexOf("Date")>0){
+								||columns[j].toLowerCase().indexOf("time")>0
+								||columns[j].toLowerCase().indexOf("date")>0){
 							wsheet.setColumnView(j, 30);
 						}else{
 							wsheet.setColumnView(j, 16);
@@ -2030,7 +2130,6 @@ public class CommonDataService extends BaseService {
 		}
 	}
 	
-	
 	public boolean exportGridPanelDataWhithOutTime(HttpServletResponse response,String fileName,String title,String head,String field,String data) {
 		try{
 		//生成excel文件
@@ -2065,28 +2164,30 @@ public class CommonDataService extends BaseService {
 			JSONArray jsonArray = jsonObject.getJSONArray("data");
 			int count = 0;
 			for (int i=0;i<jsonArray.size();i++) {
-				JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
-				count++;
-				for (int j = 0; j < columns.length; j++) {
-					Label excelTitle=null;
-					if (columns[j].equalsIgnoreCase("id") || columns[j].equalsIgnoreCase("jlbh")) {
-						wsheet.setColumnView(j, 10);
-						excelTitle = new Label(j, count, count + "", titleWritableFormat);
-					}else {
-						if(columns[j].equalsIgnoreCase("jssj")||columns[j].equalsIgnoreCase("cjsj")||columns[j].equalsIgnoreCase("gtcjsj")
-								||columns[j].indexOf("time")>0||columns[j].indexOf("date")>0||columns[j].indexOf("Date")>0){
-							wsheet.setColumnView(j, 30);
-						}else{
-							wsheet.setColumnView(j, 16);
+				if(i<65536-2){
+					JSONObject everydata = JSONObject.fromObject(jsonArray.getString(i));
+					count++;
+					for (int j = 0; j < columns.length; j++) {
+						Label excelTitle=null;
+						if (columns[j].equalsIgnoreCase("id") || columns[j].equalsIgnoreCase("jlbh")) {
+							wsheet.setColumnView(j, 10);
+							excelTitle = new Label(j, count, count + "", titleWritableFormat);
+						}else {
+							if(columns[j].equalsIgnoreCase("jssj")||columns[j].equalsIgnoreCase("cjsj")||columns[j].equalsIgnoreCase("gtcjsj")
+									||columns[j].indexOf("time")>0||columns[j].indexOf("date")>0||columns[j].indexOf("Date")>0){
+								wsheet.setColumnView(j, 30);
+							}else{
+								wsheet.setColumnView(j, 16);
+							}
+							if(everydata.has(columns[j])){
+								excelTitle = new Label(j, count,everydata.getString(columns[j]),titleWritableFormat);
+							}else{
+								excelTitle = new Label(j, count,"",titleWritableFormat);
+							}
+							
 						}
-						if(everydata.has(columns[j])){
-							excelTitle = new Label(j, count,everydata.getString(columns[j]),titleWritableFormat);
-						}else{
-							excelTitle = new Label(j, count,"",titleWritableFormat);
-						}
-						
+						wsheet.addCell(excelTitle);
 					}
-					wsheet.addCell(excelTitle);
 				}
 			}
 			wbook.write();

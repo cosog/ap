@@ -2222,7 +2222,7 @@ public class MemoryDataManagerTask {
 	
 	@SuppressWarnings("static-access")
 	public static void loadUIKitAccessToken(){
-		String appKey=Config.getInstance().configFile.getAp().getVideo().getAppKey()+"aa";
+		String appKey=Config.getInstance().configFile.getAp().getVideo().getAppKey();
 		String appSecret=Config.getInstance().configFile.getAp().getVideo().getSecret();
 		String url="https://open.ys7.com/api/lapp/token/get";
 		String requestData="{\"appKey\":\""+appKey+"\",\"appSecret\":\""+appSecret+"\"}";

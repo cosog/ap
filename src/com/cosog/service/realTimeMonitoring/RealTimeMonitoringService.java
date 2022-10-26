@@ -3854,6 +3854,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 					if(now>accessToken.getData().getExpireTime()){
 						MemoryDataManagerTask.loadUIKitAccessToken();
 					}
+				}else{
+					MemoryDataManagerTask.loadUIKitAccessToken();
 				}
 			}
 			accessToken=(AccessToken)SerializeObjectUnils.unserizlize(jedis.get("UIKitAccessToken".getBytes()));

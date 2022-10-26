@@ -60,6 +60,8 @@ public class ModbusProtocolConfig implements Serializable{
 	    private String StoreDataType;
 	    
 	    private String IFDataType;
+	    
+	    private int Prec;
 
 	    private int Quantity;
 
@@ -163,6 +165,12 @@ public class ModbusProtocolConfig implements Serializable{
 		@Override
 		public int compareTo(Items item) {     //重写Comparable接口的compareTo方法
 			return this.Addr-item.getAddr();   // 根据地址升序排列，降序修改相减顺序即可
+		}
+		public int getPrec() {
+			return Prec;
+		}
+		public void setPrec(int prec) {
+			Prec = prec;
 		}
 	}
 	

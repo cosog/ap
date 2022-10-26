@@ -17,6 +17,8 @@ public class InitProtocol {
     
     private List<String> IFDataType;
     
+    private List<Integer> Prec;
+    
     private List<String> RWType;
     
     private List<Float> Ratio;
@@ -33,6 +35,7 @@ public class InitProtocol {
     	this.Quantity=new ArrayList<Integer>();
     	this.StoreDataType=new ArrayList<String>();
     	this.IFDataType=new ArrayList<String>();
+    	this.Prec=new ArrayList<Integer>();
     	this.RWType=new ArrayList<String>();
     	this.Ratio=new ArrayList<Float>();
     	this.AcqMode=new ArrayList<String>();
@@ -41,6 +44,7 @@ public class InitProtocol {
     		this.Quantity.add(protocolConfig.getItems().get(i).getQuantity());
     		this.StoreDataType.add(protocolConfig.getItems().get(i).getStoreDataType());
     		this.IFDataType.add(protocolConfig.getItems().get(i).getIFDataType());
+    		this.Prec.add(protocolConfig.getItems().get(i).getPrec());
     		this.RWType.add(protocolConfig.getItems().get(i).getRWType());
     		this.Ratio.add(protocolConfig.getItems().get(i).getRatio());
     		this.AcqMode.add(protocolConfig.getItems().get(i).getAcqMode());
@@ -117,6 +121,14 @@ public class InitProtocol {
 
 	public void setMethod(String method) {
 		Method = method;
+	}
+
+	public List<Integer> getPrec() {
+		return Prec;
+	}
+
+	public void setPrec(List<Integer> prec) {
+		Prec = prec;
 	}
 	
 }

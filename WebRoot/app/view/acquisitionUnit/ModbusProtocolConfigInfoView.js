@@ -139,15 +139,16 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolConfigAddrMappingItemsHandsontableHelper==null || protocolConfigAddrMappingItemsHandsontableHelper.hot==undefined){
 				protocolConfigAddrMappingItemsHandsontableHelper = ProtocolConfigAddrMappingItemsHandsontableHelper.createNew("ModbusProtocolAddrMappingItemsConfigTableInfoDiv_id");
-				var colHeaders="['序号','名称','地址','存储数据数量','存储数据类型','接口数据类型','读写类型','单位','换算比例','解析模式','采集模式']";
+				var colHeaders="['序号','名称','地址','存储数据数量','存储数据类型','接口数据类型','小数位数','换算比例','读写类型','单位','解析模式','采集模式']";
 				var columns="[{data:'id'},{data:'title'},"
 					 	+"{data:'addr',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}},"
 						+"{data:'quantity',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
 						+"{data:'storeDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bit','byte','int16','uint16','float32','bcd']}," 
 						+"{data:'IFDataType',type:'dropdown',strict:true,allowInvalid:false,source:['bool','int','float32','float64','string']}," 
+						+"{data:'prec',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
+						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
 						+"{data:'RWType',type:'dropdown',strict:true,allowInvalid:false,source:['只读', '只写', '读写']}," 
 						+"{data:'unit'}," 
-						+"{data:'ratio',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num(val, callback,this.row, this.col,protocolConfigAddrMappingItemsHandsontableHelper);}}," 
 						+"{data:'resolutionMode',type:'dropdown',strict:true,allowInvalid:false,source:['开关量', '枚举量','数据量']}," 
 						+"{data:'acqMode',type:'dropdown',strict:true,allowInvalid:false,source:['主动上传', '被动响应']}" 
 						+"]";
@@ -223,7 +224,7 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	        	protocolConfigAddrMappingItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,130,80,80,80,80,80,80,80,80,80],
+	        		colWidths: [50,130,80,80,80,80,80,80,80,80,80,80],
 	                columns:protocolConfigAddrMappingItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,
@@ -280,8 +281,13 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if (visualColIndex ==0) {
 							cellProperties.readOnly = true;
-//							cellProperties.renderer = protocolConfigAddrMappingItemsHandsontableHelper.addBoldBg;
+		                }else if(visualColIndex==6 && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
+		                	var IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
+		                	if(IFDataType.toUpperCase().indexOf('FLOAT')<0){
+		                		cellProperties.readOnly = true;
+		                	}
 		                }
+	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {
@@ -474,11 +480,12 @@ function SaveModbusProtocolAddrMappingConfigTreeData(){
 						item.Quantity=parseInt(driverConfigItemsData[i][3]);
 						item.StoreDataType=driverConfigItemsData[i][4];
 						item.IFDataType=driverConfigItemsData[i][5];
-						item.RWType=driverConfigItemsData[i][6];
-						item.Unit=driverConfigItemsData[i][7];
-						item.Ratio=parseFloat(driverConfigItemsData[i][8]);
-						item.ResolutionMode=driverConfigItemsData[i][9];
-						item.AcqMode=driverConfigItemsData[i][10];
+						item.Prec=item.IFDataType.toLowerCase().indexOf('float')>=0?(driverConfigItemsData[i][6]==''?0:driverConfigItemsData[i][6]):0;
+						item.Ratio=parseFloat(driverConfigItemsData[i][7]);
+						item.RWType=driverConfigItemsData[i][8];
+						item.Unit=driverConfigItemsData[i][9];
+						item.ResolutionMode=driverConfigItemsData[i][10];
+						item.AcqMode=driverConfigItemsData[i][11];
 						if(i==AddrMappingItemsSelectRow){
 							item.Meaning=[];
 							var itemsMeaningData=protocolAddrMappingItemsMeaningConfigHandsontableHelper.hot.getData();

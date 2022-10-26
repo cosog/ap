@@ -1590,7 +1590,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 									modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
 									modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setStoreDataType(modbusDriverSaveData.getDataConfig().get(j).getStoreDataType());
 									modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
-									
+									modbusProtocolConfig.getProtocol().get(i).getItems().get(k).setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
 									//如果读写模式改变
 									if(!RWType.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getRWType())){
 										delItemList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
@@ -1624,6 +1624,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 								item.setRatio(modbusDriverSaveData.getDataConfig().get(j).getRatio());
 								item.setStoreDataType(modbusDriverSaveData.getDataConfig().get(j).getStoreDataType());
 								item.setIFDataType(modbusDriverSaveData.getDataConfig().get(j).getIFDataType());
+								item.setPrec(modbusDriverSaveData.getDataConfig().get(j).getIFDataType().toLowerCase().indexOf("float")>=0?modbusDriverSaveData.getDataConfig().get(j).getPrec():0);
 								item.setRWType(RWType);
 								item.setResolutionMode(resolutionMode);
 								item.setAcqMode(acqMode);

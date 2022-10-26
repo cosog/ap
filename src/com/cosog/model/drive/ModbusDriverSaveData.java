@@ -116,6 +116,8 @@ public class ModbusDriverSaveData {
 	    
 	    private String IFDataType="";
 	    
+	    private int Prec=0;
+	    
 	    private String Unit="";
 
 	    private float Ratio=1;
@@ -227,6 +229,14 @@ public class ModbusDriverSaveData {
 		@Override
 		public int compareTo(DataConfig dataConfig) {     //重写Comparable接口的compareTo方法
 			return this.Addr-dataConfig.getAddr();   // 根据地址升序排列，降序修改相减顺序即可
+		}
+
+		public int getPrec() {
+			return Prec;
+		}
+
+		public void setPrec(int prec) {
+			Prec = prec;
 		}
 	}
 	public String getProtocolCode() {

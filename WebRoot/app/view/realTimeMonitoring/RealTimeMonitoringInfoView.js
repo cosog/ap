@@ -1676,6 +1676,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		        	accessToken: accessToken,
 		            url: videoUrl,
 		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            plugin: ['talk'],                       // 加载插件，talk-对讲
 		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
 		            width: videoWidth,
 		            height: videoHeight
@@ -1718,6 +1719,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		        	accessToken: accessToken,
 		            url: videoUrl,
 		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            plugin: ['talk'],                       // 加载插件，talk-对讲
 		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
 		            width: videoWidth,
 		            height: videoHeight
@@ -1760,6 +1762,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		        	accessToken: accessToken,
 		            url: videoUrl,
 		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            plugin: ['talk'],                       // 加载插件，talk-对讲
 		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
 		            width: videoWidth,
 		            height: videoHeight
@@ -1802,6 +1805,7 @@ function showVideo(panelId,divId,videoUrl,accessToken,deviceType,videoNo,isNew){
 		        	accessToken: accessToken,
 		            url: videoUrl,
 		            template: 'mobileLive', // pcLive -PC直播全量版;simple - PC直播极简版;standard-PC直播标准版;security - PC直播安防版(预览回放);voice-PC直播语音版; theme-可配置主题；mobileLive-H5直播全量版 
+		            plugin: ['talk'],                       // 加载插件，talk-对讲
 		            audio:0, //是否默认开启声音 1：打开（默认） 0：关闭
 		            width: videoWidth,
 		            height: videoHeight

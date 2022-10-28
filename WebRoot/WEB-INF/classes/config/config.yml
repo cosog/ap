@@ -32,6 +32,7 @@ ap:
       pcpHidden: false
       showLogo: true
       printLog: true
+      exportLimit: 10000
       simulateAcqEnable: true
       sendCycle: 600
       timeDifference: 60

@@ -209,6 +209,8 @@ public class ConfigFile {
 	    private boolean showLogo;
 
 	    private boolean printLog;
+	    
+	    private int exportLimit;
 
 	    private boolean simulateAcqEnable;
 	    
@@ -299,6 +301,12 @@ public class ConfigFile {
 		}
 		public void setSendCycle(int sendCycle) {
 			this.sendCycle = sendCycle;
+		}
+		public int getExportLimit() {
+			return exportLimit;
+		}
+		public void setExportLimit(int exportLimit) {
+			this.exportLimit = exportLimit;
 		}
 	}
 	

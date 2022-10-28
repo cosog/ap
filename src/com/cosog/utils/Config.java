@@ -14,6 +14,9 @@ public class Config {
 			Yaml yaml = new Yaml(new Constructor(ConfigFile.class));
 			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/config.yml");
 			configFile = yaml.load(inputStream);
+			if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){
+				configFile.getAp().getOthers().setExportLimit(65534);
+			}
 		}
 		return instance;
 	}

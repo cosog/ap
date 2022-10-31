@@ -1712,10 +1712,10 @@ public class EquipmentDriverServerTask {
 			
 		}catch(Exception e){
 			e.printStackTrace();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
-		if(jedis!=null){
-			jedis.close();
-		}
-		
 	}
 }

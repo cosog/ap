@@ -84,9 +84,10 @@ public class MemoryDataManagerTask {
 			loadTodayRPMData(null,0);
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		if(jedis!=null && jedis.isConnected() ){
-			jedis.close();
+		}finally{
+			if(jedis!=null && jedis.isConnected() ){
+				jedis.close();
+			}
 		}
 	}
 	

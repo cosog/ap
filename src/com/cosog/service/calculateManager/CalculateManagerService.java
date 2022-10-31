@@ -114,184 +114,186 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		
 		Jedis jedis=null;
 		try{
-			jedis = RedisUtil.jedisPool.getResource();
-			if(!jedis.exists("RPCWorkType".getBytes())){
-				MemoryDataManagerTask.loadRPCWorkType();
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				if(!jedis.exists("RPCWorkType".getBytes())){
+					MemoryDataManagerTask.loadRPCWorkType();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		
-		ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
-		columns = ddic.getTableHeader();
-		
-		String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
-		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-			prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
-		}
-		
-		sql="select t.id,t.wellId,t.wellName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
-			+ "decode(t.resultStatus,-1,'无效功图',1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
-			+ "t.resultName,"
-			+ prodCol
-			+ "t.productiondata"
-			+ " from viw_rpc_calculatemain t "
-			+ " where t.orgid in("+orgId+") "
-			+ " and t.resultStatus<>-1"
-			+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
-		if(StringManagerUtils.isNotNull(wellName)){
-			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
-		}
-		if(StringManagerUtils.isNotNull(calculateSign)){
-			if("0".equals(calculateSign)){
-				sql+=" and  t.resultstatus in(0,2) ";
-			}else{
-				sql+=" and  t.resultstatus = " + calculateSign + " ";
-			}
-		}
-		int totals=this.getTotalCountRows(sql);
-		
-		sql+=" order by t.fesdiagramacqtime desc";
-		int maxvalue=pager.getLimit()+pager.getStart();
-		finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
-		
-		String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
-		resultNameBuff.append("[\"不干预\"");
-		List<?> resultList = this.findCallSql(resultSql);
-		for(int i=0;i<resultList.size();i++){
-			resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
-		}
-		resultNameBuff.append("]");
-		
-		List<?> list = this.findCallSql(finalSql);
-		
-		result_json.append("{ \"success\":true,\"columns\":"+columns+",");
-		result_json.append("\"start_date\":\""+startDate+"\",");
-		result_json.append("\"end_date\":\""+endDate+"\",");
-		result_json.append("\"totalCount\":"+totals+",");
-		result_json.append("\"resultNameList\":"+resultNameBuff+",");
-		result_json.append("\"totalRoot\":[");
-		for(int i=0;i<list.size();i++){
-			Object[] obj = (Object[]) list.get(i);
-			String productionData=obj[8].toString();
-			type = new TypeToken<RPCCalculateRequestData>() {}.getType();
-			RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			columns = ddic.getTableHeader();
 			
-			result_json.append("{\"id\":\""+obj[0]+"\",");
-			result_json.append("\"wellId\":\""+obj[1]+"\",");
-			result_json.append("\"wellName\":\""+obj[2]+"\",");
-			result_json.append("\"acqTime\":\""+obj[3]+"\",");
-			result_json.append("\"resultStatus\":\""+obj[4]+"\",");
-			result_json.append("\"resultName\":\""+obj[5]+"\",");
-			
+			String prodCol=" t.liquidVolumetricProduction,t.oilVolumetricProduction,";
 			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
-				result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
-				result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
-			}else{
-				result_json.append("\"liquidVolumetricProduction\":\""+obj[6]+"\",");
-				result_json.append("\"oilVolumetricProduction\":\""+obj[7]+"\",");
+				prodCol=" t.liquidWeightProduction,t.oilWeightProduction,";
 			}
 			
-			if(rpcProductionData!=null){
-				if(rpcProductionData.getFluidPVT()!=null){
-					result_json.append("\"crudeoilDensity\":\""+rpcProductionData.getFluidPVT().getCrudeOilDensity()+"\",");
-					result_json.append("\"waterDensity\":\""+rpcProductionData.getFluidPVT().getWaterDensity()+"\",");
-					result_json.append("\"naturalGasRelativeDensity\":\""+rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"\",");
-					result_json.append("\"saturationPressure\":\""+rpcProductionData.getFluidPVT().getSaturationPressure()+"\",");
+			sql="select t.id,t.wellId,t.wellName,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ "decode(t.resultStatus,-1,'无效功图',1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
+				+ "t.resultName,"
+				+ prodCol
+				+ "t.productiondata"
+				+ " from viw_rpc_calculatemain t "
+				+ " where t.orgid in("+orgId+") "
+				+ " and t.resultStatus<>-1"
+				+ " and t.fesdiagramacqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
+			if(StringManagerUtils.isNotNull(wellName)){
+				sql+=" and  t.wellName = '" + wellName.trim() + "' ";
+			}
+			if(StringManagerUtils.isNotNull(calculateSign)){
+				if("0".equals(calculateSign)){
+					sql+=" and  t.resultstatus in(0,2) ";
+				}else{
+					sql+=" and  t.resultstatus = " + calculateSign + " ";
 				}
-				if(rpcProductionData.getReservoir()!=null){
-					result_json.append("\"reservoirDepth\":\""+rpcProductionData.getReservoir().getDepth()+"\",");
-					result_json.append("\"reservoirTemperature\":\""+rpcProductionData.getReservoir().getTemperature()+"\",");
-				}
-				if(rpcProductionData.getProduction()!=null){
-					result_json.append("\"tubingPressure\":\""+rpcProductionData.getProduction().getTubingPressure()+"\",");
-					result_json.append("\"casingPressure\":\""+rpcProductionData.getProduction().getCasingPressure()+"\",");
-					result_json.append("\"wellHeadFluidTemperature\":\""+rpcProductionData.getProduction().getWellHeadTemperature()+"\",");
-					result_json.append("\"weightWaterCut\":\""+rpcProductionData.getProduction().getWaterCut()+"\",");
-					result_json.append("\"productionGasOilRatio\":\""+rpcProductionData.getProduction().getProductionGasOilRatio()+"\",");
-					result_json.append("\"producingFluidLevel\":\""+rpcProductionData.getProduction().getProducingfluidLevel()+"\",");
-					result_json.append("\"pumpSettingDepth\":\""+rpcProductionData.getProduction().getPumpSettingDepth()+"\",");
-				}
-				if(rpcProductionData.getPump()!=null){
-					String pumpType="";
-					String barrelType="";
-					if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getPumpType()!=null){
-						if("R".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
-							pumpType="杆式泵";
-						}else if("T".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
-							pumpType="管式泵";
-						}
-					}
-					if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
-						if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
-							barrelType="组合泵";
-						}else if("H".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
-							barrelType="整筒泵";
-						}
-					}
-					result_json.append("\"pumpTypeName\":\""+pumpType+"\",");
-					result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
-					result_json.append("\"pumpGrade\":\""+rpcProductionData.getPump().getPumpGrade()+"\",");
-					result_json.append("\"pumpboreDiameter\":\""+rpcProductionData.getPump().getPumpBoreDiameter()*1000+"\",");
-					result_json.append("\"plungerLength\":\""+rpcProductionData.getPump().getPlungerLength()+"\",");
-				}
-				if(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0){
-					result_json.append("\"tubingStringInsideDiameter\":\""+rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"\",");
-				}
-				if(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0){
-					result_json.append("\"casingStringInsideDiameter\":\""+rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"\",");
+			}
+			int totals=this.getTotalCountRows(sql);
+			
+			sql+=" order by t.fesdiagramacqtime desc";
+			int maxvalue=pager.getLimit()+pager.getStart();
+			finalSql="select * from   ( select a.*,rownum as rn from ("+sql+" ) a where  rownum <="+maxvalue+") b where rn >"+pager.getStart();
+			
+			String resultSql="select t.resultname from tbl_rpc_worktype t order by t.resultcode";
+			resultNameBuff.append("[\"不干预\"");
+			List<?> resultList = this.findCallSql(resultSql);
+			for(int i=0;i<resultList.size();i++){
+				resultNameBuff.append(",\""+resultList.get(i).toString()+"\"");
+			}
+			resultNameBuff.append("]");
+			
+			List<?> list = this.findCallSql(finalSql);
+			
+			result_json.append("{ \"success\":true,\"columns\":"+columns+",");
+			result_json.append("\"start_date\":\""+startDate+"\",");
+			result_json.append("\"end_date\":\""+endDate+"\",");
+			result_json.append("\"totalCount\":"+totals+",");
+			result_json.append("\"resultNameList\":"+resultNameBuff+",");
+			result_json.append("\"totalRoot\":[");
+			for(int i=0;i<list.size();i++){
+				Object[] obj = (Object[]) list.get(i);
+				String productionData=obj[8].toString();
+				type = new TypeToken<RPCCalculateRequestData>() {}.getType();
+				RPCCalculateRequestData rpcProductionData=gson.fromJson(productionData, type);
+				
+				result_json.append("{\"id\":\""+obj[0]+"\",");
+				result_json.append("\"wellId\":\""+obj[1]+"\",");
+				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"acqTime\":\""+obj[3]+"\",");
+				result_json.append("\"resultStatus\":\""+obj[4]+"\",");
+				result_json.append("\"resultName\":\""+obj[5]+"\",");
+				
+				if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+					result_json.append("\"liquidWeightProduction\":\""+obj[6]+"\",");
+					result_json.append("\"oilWeightProduction\":\""+obj[7]+"\",");
+				}else{
+					result_json.append("\"liquidVolumetricProduction\":\""+obj[6]+"\",");
+					result_json.append("\"oilVolumetricProduction\":\""+obj[7]+"\",");
 				}
 				
-				if(rpcProductionData.getRodString()!=null && rpcProductionData.getRodString().getEveryRod()!=null){
-					for(int j=0;j<rpcProductionData.getRodString().getEveryRod().size();j++){
-						result_json.append("\"rodGrade"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getGrade()+"\",");
-						result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getOutsideDiameter()*1000+"\",");
-						result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getInsideDiameter()*1000+"\",");
-						result_json.append("\"rodLength"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getLength()+"\",");
+				if(rpcProductionData!=null){
+					if(rpcProductionData.getFluidPVT()!=null){
+						result_json.append("\"crudeoilDensity\":\""+rpcProductionData.getFluidPVT().getCrudeOilDensity()+"\",");
+						result_json.append("\"waterDensity\":\""+rpcProductionData.getFluidPVT().getWaterDensity()+"\",");
+						result_json.append("\"naturalGasRelativeDensity\":\""+rpcProductionData.getFluidPVT().getNaturalGasRelativeDensity()+"\",");
+						result_json.append("\"saturationPressure\":\""+rpcProductionData.getFluidPVT().getSaturationPressure()+"\",");
 					}
-				}
-				
-				if(rpcProductionData.getManualIntervention()!=null){
-					String manualInterventionResultName="";
-					if(rpcProductionData.getManualIntervention().getCode()==0){
-						manualInterventionResultName="不干预";
-					}else{
-						if(jedis!=null && jedis.hexists("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes())){
-							WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes()));
-							manualInterventionResultName=workType.getResultName();
-						}else{
-							String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
-							List<?> resultNameList = this.findCallSql(resultNameSql);
-							if(resultNameList.size()>0){
-								manualInterventionResultName=resultNameList.get(0).toString();
+					if(rpcProductionData.getReservoir()!=null){
+						result_json.append("\"reservoirDepth\":\""+rpcProductionData.getReservoir().getDepth()+"\",");
+						result_json.append("\"reservoirTemperature\":\""+rpcProductionData.getReservoir().getTemperature()+"\",");
+					}
+					if(rpcProductionData.getProduction()!=null){
+						result_json.append("\"tubingPressure\":\""+rpcProductionData.getProduction().getTubingPressure()+"\",");
+						result_json.append("\"casingPressure\":\""+rpcProductionData.getProduction().getCasingPressure()+"\",");
+						result_json.append("\"wellHeadFluidTemperature\":\""+rpcProductionData.getProduction().getWellHeadTemperature()+"\",");
+						result_json.append("\"weightWaterCut\":\""+rpcProductionData.getProduction().getWaterCut()+"\",");
+						result_json.append("\"productionGasOilRatio\":\""+rpcProductionData.getProduction().getProductionGasOilRatio()+"\",");
+						result_json.append("\"producingFluidLevel\":\""+rpcProductionData.getProduction().getProducingfluidLevel()+"\",");
+						result_json.append("\"pumpSettingDepth\":\""+rpcProductionData.getProduction().getPumpSettingDepth()+"\",");
+					}
+					if(rpcProductionData.getPump()!=null){
+						String pumpType="";
+						String barrelType="";
+						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getPumpType()!=null){
+							if("R".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
+								pumpType="杆式泵";
+							}else if("T".equalsIgnoreCase(rpcProductionData.getPump().getPumpType())){
+								pumpType="管式泵";
 							}
 						}
+						if(rpcProductionData.getPump()!=null&&rpcProductionData.getPump().getBarrelType()!=null){
+							if("L".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
+								barrelType="组合泵";
+							}else if("H".equalsIgnoreCase(rpcProductionData.getPump().getBarrelType())){
+								barrelType="整筒泵";
+							}
+						}
+						result_json.append("\"pumpTypeName\":\""+pumpType+"\",");
+						result_json.append("\"barrelTypeName\":\""+barrelType+"\",");
+						result_json.append("\"pumpGrade\":\""+rpcProductionData.getPump().getPumpGrade()+"\",");
+						result_json.append("\"pumpboreDiameter\":\""+rpcProductionData.getPump().getPumpBoreDiameter()*1000+"\",");
+						result_json.append("\"plungerLength\":\""+rpcProductionData.getPump().getPlungerLength()+"\",");
 					}
-					result_json.append("\"manualInterventionResult\":\""+manualInterventionResultName+"\",");
-					result_json.append("\"netGrossRatio\":\""+rpcProductionData.getManualIntervention().getNetGrossRatio()+"\",");
-					result_json.append("\"netGrossValue\":\""+rpcProductionData.getManualIntervention().getNetGrossValue()+"\",");
+					if(rpcProductionData.getTubingString()!=null&&rpcProductionData.getTubingString().getEveryTubing()!=null&&rpcProductionData.getTubingString().getEveryTubing().size()>0){
+						result_json.append("\"tubingStringInsideDiameter\":\""+rpcProductionData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"\",");
+					}
+					if(rpcProductionData.getCasingString()!=null&&rpcProductionData.getCasingString().getEveryCasing()!=null&&rpcProductionData.getCasingString().getEveryCasing().size()>0){
+						result_json.append("\"casingStringInsideDiameter\":\""+rpcProductionData.getCasingString().getEveryCasing().get(0).getInsideDiameter()*1000+"\",");
+					}
+					
+					if(rpcProductionData.getRodString()!=null && rpcProductionData.getRodString().getEveryRod()!=null){
+						for(int j=0;j<rpcProductionData.getRodString().getEveryRod().size();j++){
+							result_json.append("\"rodGrade"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getGrade()+"\",");
+							result_json.append("\"rodOutsideDiameter"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getOutsideDiameter()*1000+"\",");
+							result_json.append("\"rodInsideDiameter"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getInsideDiameter()*1000+"\",");
+							result_json.append("\"rodLength"+(j+1)+"\":\""+rpcProductionData.getRodString().getEveryRod().get(j).getLength()+"\",");
+						}
+					}
+					
+					if(rpcProductionData.getManualIntervention()!=null){
+						String manualInterventionResultName="";
+						if(rpcProductionData.getManualIntervention().getCode()==0){
+							manualInterventionResultName="不干预";
+						}else{
+							if(jedis!=null && jedis.hexists("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes())){
+								WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkType".getBytes(), (rpcProductionData.getManualIntervention().getCode()+"").getBytes()));
+								manualInterventionResultName=workType.getResultName();
+							}else{
+								String resultNameSql="select t.resultname from tbl_rpc_worktype t where t.resultcode="+rpcProductionData.getManualIntervention().getCode();
+								List<?> resultNameList = this.findCallSql(resultNameSql);
+								if(resultNameList.size()>0){
+									manualInterventionResultName=resultNameList.get(0).toString();
+								}
+							}
+						}
+						result_json.append("\"manualInterventionResult\":\""+manualInterventionResultName+"\",");
+						result_json.append("\"netGrossRatio\":\""+rpcProductionData.getManualIntervention().getNetGrossRatio()+"\",");
+						result_json.append("\"netGrossValue\":\""+rpcProductionData.getManualIntervention().getNetGrossValue()+"\",");
+					}
+				}else{
+					
 				}
-			}else{
+				
+				if(result_json.toString().endsWith(",")){
+					result_json = result_json.deleteCharAt(result_json.length() - 1);
+				}
+				result_json.append("},");
+				
 				
 			}
-			
 			if(result_json.toString().endsWith(",")){
 				result_json = result_json.deleteCharAt(result_json.length() - 1);
 			}
-			result_json.append("},");
-			
-			
+			result_json.append("]}");
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(jedis!=null&&jedis.isConnected()){
+				jedis.close();
+			}
 		}
-		if(result_json.toString().endsWith(",")){
-			result_json = result_json.deleteCharAt(result_json.length() - 1);
-		}
-		result_json.append("]}");
-		String json=result_json.toString().replaceAll("null", "");
-		if(jedis!=null&&jedis.isConnected()){
-			jedis.close();
-		}
-		return json;
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	public String getRPMCalculateResultData(String orgId, String wellName, Page pager,String deviceType,String startDate,String endDate,String calculateSign,String calculateType)
@@ -713,151 +715,155 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		if(calculateManagerHandsontableChangedData.getUpdatelist()!=null){
 			Jedis jedis=null;
 			try{
-				jedis = RedisUtil.jedisPool.getResource();
-				if(!jedis.exists("RPCWorkTypeByName".getBytes())){
-					MemoryDataManagerTask.loadRPCWorkType();
+				try{
+					jedis = RedisUtil.jedisPool.getResource();
+					if(!jedis.exists("RPCWorkTypeByName".getBytes())){
+						MemoryDataManagerTask.loadRPCWorkType();
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
+					StringBuffer productionDataBuff = new StringBuffer();
+					
+					RPCCalculateRequestData.FluidPVT fluidPVT=new RPCCalculateRequestData.FluidPVT();
+					RPCCalculateRequestData.Reservoir reservoir=new RPCCalculateRequestData.Reservoir();
+					
+					RPCCalculateRequestData.TubingString tubingString=new RPCCalculateRequestData.TubingString();
+					tubingString.setEveryTubing(new ArrayList<RPCCalculateRequestData.EveryTubing>());
+					tubingString.getEveryTubing().add(new RPCCalculateRequestData.EveryTubing());
+					
+					RPCCalculateRequestData.CasingString  casingString=new RPCCalculateRequestData.CasingString();
+					casingString.setEveryCasing(new ArrayList<RPCCalculateRequestData.EveryCasing>());
+					casingString.getEveryCasing().add(new RPCCalculateRequestData.EveryCasing());
+					
+					RPCCalculateRequestData.RodString rodString=new RPCCalculateRequestData.RodString();
+					rodString.setEveryRod(new ArrayList<RPCCalculateRequestData.EveryRod>());
+					
+					RPCCalculateRequestData.Production production=new RPCCalculateRequestData.Production();
+					
+					RPCCalculateRequestData.Pump pump =new RPCCalculateRequestData.Pump();
+					
+					RPCCalculateRequestData.ManualIntervention manualIntervention=new RPCCalculateRequestData.ManualIntervention();
+					
+					fluidPVT.setCrudeOilDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity()));
+					fluidPVT.setWaterDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
+					fluidPVT.setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
+					fluidPVT.setSaturationPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
+					
+					reservoir.setDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
+					reservoir.setTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
+					
+					tubingString.getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
+					casingString.getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
+					
+					production.setTubingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
+					production.setCasingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
+					production.setWellHeadTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature()));
+					production.setWaterCut(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut()));
+					production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+					production.setProducingfluidLevel(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel()));
+					production.setPumpSettingDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
+					
+					float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
+					production.setWeightWaterCut(weightWaterCut);
+					
+					String pumpType="";
+					String barrelType="";
+					if("杆式泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
+						pumpType="R";
+					}else if("管式泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
+						pumpType="T";
+					}
+					if("组合泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
+						barrelType="L";
+					}else if("整筒泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
+						barrelType="H";
+					}
+					
+					pump.setPumpType(pumpType);
+					pump.setBarrelType(barrelType);
+					pump.setPumpGrade(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
+					pump.setPumpBoreDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter())*0.001));
+					pump.setPlungerLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()));
+					
+					
+					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
+						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
+						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
+						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
+						everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
+						rodString.getEveryRod().add(everyRod);
+					}
+					
+					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
+						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
+						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
+						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
+						everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
+						rodString.getEveryRod().add(everyRod);
+					}
+					
+					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
+						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
+						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
+						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
+						everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
+						rodString.getEveryRod().add(everyRod);
+					}
+					
+					if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
+						RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+						everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
+						everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
+						everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
+						everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
+						rodString.getEveryRod().add(everyRod);
+					}
+					
+					String manualInterventionResultName=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResult();
+					int manualInterventionResultCode=0;
+					if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
+						if(jedis!=null && jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
+							WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
+							manualInterventionResultCode=workType.getResultCode();
+						}else{
+							String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
+							List<?> resultList = this.findCallSql(resultNameSql);
+							if(resultList.size()>0){
+								manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
+							}
+						}
+					}
+					manualIntervention.setCode(manualInterventionResultCode);
+					
+					manualIntervention.setNetGrossRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
+					manualIntervention.setNetGrossValue(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
+					
+					productionDataBuff.append("{");
+					productionDataBuff.append("\"FluidPVT\":"+(fluidPVT!=null?gson.toJson(fluidPVT):"{}")+",");
+					productionDataBuff.append("\"Reservoir\":"+(reservoir!=null?gson.toJson(reservoir):"{}")+",");
+					productionDataBuff.append("\"RodString\":"+(rodString!=null?gson.toJson(rodString):"{}")+",");
+					productionDataBuff.append("\"TubingString\":"+(tubingString!=null?gson.toJson(tubingString):"{}")+",");
+					productionDataBuff.append("\"CasingString\":"+(casingString!=null?gson.toJson(casingString):"{}")+",");
+					productionDataBuff.append("\"Pump\":"+(pump!=null?gson.toJson(pump):"{}")+",");
+					productionDataBuff.append("\"Production\":"+(production!=null?gson.toJson(production):"{}")+",");
+					productionDataBuff.append("\"ManualIntervention\":"+(manualIntervention!=null?gson.toJson(manualIntervention):"{}"));
+					productionDataBuff.append("}");
+					
+					String updateSql="update tbl_rpcacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
+					
+					this.getBaseDao().updateOrDeleteBySql(updateSql);
 				}
 			}catch(Exception e){
 				e.printStackTrace();
-			}
-			
-			for(int i=0;i<calculateManagerHandsontableChangedData.getUpdatelist().size();i++){
-				StringBuffer productionDataBuff = new StringBuffer();
-				
-				RPCCalculateRequestData.FluidPVT fluidPVT=new RPCCalculateRequestData.FluidPVT();
-				RPCCalculateRequestData.Reservoir reservoir=new RPCCalculateRequestData.Reservoir();
-				
-				RPCCalculateRequestData.TubingString tubingString=new RPCCalculateRequestData.TubingString();
-				tubingString.setEveryTubing(new ArrayList<RPCCalculateRequestData.EveryTubing>());
-				tubingString.getEveryTubing().add(new RPCCalculateRequestData.EveryTubing());
-				
-				RPCCalculateRequestData.CasingString  casingString=new RPCCalculateRequestData.CasingString();
-				casingString.setEveryCasing(new ArrayList<RPCCalculateRequestData.EveryCasing>());
-				casingString.getEveryCasing().add(new RPCCalculateRequestData.EveryCasing());
-				
-				RPCCalculateRequestData.RodString rodString=new RPCCalculateRequestData.RodString();
-				rodString.setEveryRod(new ArrayList<RPCCalculateRequestData.EveryRod>());
-				
-				RPCCalculateRequestData.Production production=new RPCCalculateRequestData.Production();
-				
-				RPCCalculateRequestData.Pump pump =new RPCCalculateRequestData.Pump();
-				
-				RPCCalculateRequestData.ManualIntervention manualIntervention=new RPCCalculateRequestData.ManualIntervention();
-				
-				fluidPVT.setCrudeOilDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCrudeoilDensity()));
-				fluidPVT.setWaterDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
-				fluidPVT.setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
-				fluidPVT.setSaturationPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
-				
-				reservoir.setDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
-				reservoir.setTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
-				
-				tubingString.getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
-				casingString.getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
-				
-				production.setTubingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
-				production.setCasingPressure(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
-				production.setWellHeadTemperature(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWellHeadFluidTemperature()));
-				production.setWaterCut(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getWeightWaterCut()));
-				production.setProductionGasOilRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
-				production.setProducingfluidLevel(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getProducingFluidLevel()));
-				production.setPumpSettingDepth(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
-				
-				float weightWaterCut=CalculateUtils.volumeWaterCutToWeightWaterCut(production.getWaterCut(), fluidPVT.getCrudeOilDensity(), fluidPVT.getWaterDensity());
-				production.setWeightWaterCut(weightWaterCut);
-				
-				String pumpType="";
-				String barrelType="";
-				if("杆式泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
-					pumpType="R";
-				}else if("管式泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpTypeName())){
-					pumpType="T";
+			}finally{
+				if(jedis!=null&&jedis.isConnected()){
+					jedis.close();
 				}
-				if("组合泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
-					barrelType="L";
-				}else if("整筒泵".equalsIgnoreCase(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelTypeName())){
-					barrelType="H";
-				}
-				
-				pump.setPumpType(pumpType);
-				pump.setBarrelType(barrelType);
-				pump.setPumpGrade(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
-				pump.setPumpBoreDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPumpboreDiameter())*0.001));
-				pump.setPlungerLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()));
-				
-				
-				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
-					RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
-					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
-					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
-					everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
-					rodString.getEveryRod().add(everyRod);
-				}
-				
-				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2())>0){
-					RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
-					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
-					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
-					everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
-					rodString.getEveryRod().add(everyRod);
-				}
-				
-				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3())>0){
-					RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
-					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
-					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
-					everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
-					rodString.getEveryRod().add(everyRod);
-				}
-				
-				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4())>0){
-					RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-					everyRod.setGrade(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
-					everyRod.setInsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
-					everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
-					everyRod.setLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
-					rodString.getEveryRod().add(everyRod);
-				}
-				
-				String manualInterventionResultName=calculateManagerHandsontableChangedData.getUpdatelist().get(i).getManualInterventionResult();
-				int manualInterventionResultCode=0;
-				if(!"不干预".equalsIgnoreCase(manualInterventionResultName)){
-					if(jedis!=null && jedis.hexists("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes())){
-						WorkType workType=(WorkType) SerializeObjectUnils.unserizlize(jedis.hget("RPCWorkTypeByName".getBytes(), (manualInterventionResultName).getBytes()));
-						manualInterventionResultCode=workType.getResultCode();
-					}else{
-						String resultNameSql="select t.resultcode from tbl_rpc_worktype t where t.resultname='"+manualInterventionResultName+"'";
-						List<?> resultList = this.findCallSql(resultNameSql);
-						if(resultList.size()>0){
-							manualInterventionResultCode=StringManagerUtils.stringToInteger(resultList.get(0).toString());
-						}
-					}
-				}
-				manualIntervention.setCode(manualInterventionResultCode);
-				
-				manualIntervention.setNetGrossRatio(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
-				manualIntervention.setNetGrossValue(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
-				
-				productionDataBuff.append("{");
-				productionDataBuff.append("\"FluidPVT\":"+(fluidPVT!=null?gson.toJson(fluidPVT):"{}")+",");
-				productionDataBuff.append("\"Reservoir\":"+(reservoir!=null?gson.toJson(reservoir):"{}")+",");
-				productionDataBuff.append("\"RodString\":"+(rodString!=null?gson.toJson(rodString):"{}")+",");
-				productionDataBuff.append("\"TubingString\":"+(tubingString!=null?gson.toJson(tubingString):"{}")+",");
-				productionDataBuff.append("\"CasingString\":"+(casingString!=null?gson.toJson(casingString):"{}")+",");
-				productionDataBuff.append("\"Pump\":"+(pump!=null?gson.toJson(pump):"{}")+",");
-				productionDataBuff.append("\"Production\":"+(production!=null?gson.toJson(production):"{}")+",");
-				productionDataBuff.append("\"ManualIntervention\":"+(manualIntervention!=null?gson.toJson(manualIntervention):"{}"));
-				productionDataBuff.append("}");
-				
-				String updateSql="update tbl_rpcacqdata_hist t set t.resultstatus=2,t.productiondata='"+productionDataBuff.toString()+"' where t.id="+calculateManagerHandsontableChangedData.getUpdatelist().get(i).getId();
-				
-				this.getBaseDao().updateOrDeleteBySql(updateSql);
-			}
-			if(jedis!=null&&jedis.isConnected()){
-				jedis.close();
 			}
 		}
 	}

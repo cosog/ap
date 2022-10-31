@@ -112,21 +112,22 @@ public class AlarmSetManagerService<T> extends BaseService<T> {
 	public String getAlarmLevelColor(){
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
+		String json="{}";
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists("AlarmShowStyle".getBytes())){
 				MemoryDataManagerTask.initAlarmStyle();
 			}
 			alarmShowStyle=(AlarmShowStyle) SerializeObjectUnils.unserizlize(jedis.get("AlarmShowStyle".getBytes()));
+			if(alarmShowStyle!=null){
+				json=new Gson().toJson(alarmShowStyle);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		String json="{}";
-		if(alarmShowStyle!=null){
-			json=new Gson().toJson(alarmShowStyle);
-		}
-		if(jedis!=null){
-			jedis.close();
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
 		}
 		return json;
 	}

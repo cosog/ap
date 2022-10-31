@@ -1859,15 +1859,9 @@ public class WellInformationManagerController extends BaseController {
 			String url=Config.getInstance().configFile.getAd().getRpc().getReadTopicReq();
 			String topic="rawwatercut";
 			StringBuffer requestBuff = new StringBuffer();
-//			signinId="d1e3643c140569d4";
 			requestBuff.append("{\"ID\":\""+signinId+"\",");
 			requestBuff.append("\"Topic\":\""+topic+"\"}");
 			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
-			
-//			String path="";
-//			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//			path=stringManagerUtils.getFilePath("test7.json","example/");
-//			responseData=stringManagerUtils.readFile(path,"utf-8");
 			
 			Gson gson = new Gson();
 			java.lang.reflect.Type type=null;

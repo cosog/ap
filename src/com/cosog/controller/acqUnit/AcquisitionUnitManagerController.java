@@ -261,9 +261,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 					jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
 				}catch(Exception e){
 					e.printStackTrace();
-				}
-				if(jedis!=null){
-					jedis.close();
+				}finally{
+					if(jedis!=null){
+						jedis.close();
+					}
 				}
 				
 				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
@@ -1698,9 +1699,10 @@ public class AcquisitionUnitManagerController extends BaseController {
 				jedis.set("modbusProtocolConfig".getBytes(), SerializeObjectUnils.serialize(modbusProtocolConfig));
 			}catch(Exception e){
 				e.printStackTrace();
-			}
-			if(jedis!=null){
-				jedis.close();
+			}finally{
+				if(jedis!=null){
+					jedis.close();
+				}
 			}
 			if(StringManagerUtils.isNotNull(modbusDriverSaveData.getProtocolName())){
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();

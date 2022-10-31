@@ -702,6 +702,70 @@ public class ExcelUtils {
     public static void export(HttpServletResponse response, String fileName, List<List<Object>> sheetDataList, Map<Integer, List<String>> selectMap) {
         export(response, fileName, fileName, sheetDataList, selectMap);
     }
+    
+    private static void export(HttpServletResponse response,String fileName,String sheetName,String head,String field,List<Object> record){
+    	String heads[]=head.split(",");
+		String columns[]=field.split(",");
+    	
+    	SXSSFWorkbook book = new SXSSFWorkbook();
+    	Sheet sheet = book.createSheet(sheetName);
+    	Drawing<?> patriarch = sheet.createDrawingPatriarch();
+    	 // 设置标题背景色（灰色）
+        CellStyle titleStyle = book.createCellStyle();
+        titleStyle.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.index);
+        titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        titleStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+        titleStyle.setBorderBottom(BorderStyle.THIN); //下边框
+        titleStyle.setBorderLeft(BorderStyle.THIN); //左边框
+        titleStyle.setBorderRight(BorderStyle.THIN); //右边框
+        titleStyle.setBorderTop(BorderStyle.THIN); //上边框
+    	// 设置表头背景色（灰色）
+        CellStyle headStyle = book.createCellStyle();
+        headStyle.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.index);
+        headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headStyle.setAlignment(HorizontalAlignment.CENTER);
+        headStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+        headStyle.setBorderBottom(BorderStyle.THIN); //下边框
+        headStyle.setBorderLeft(BorderStyle.THIN); //左边框
+        headStyle.setBorderRight(BorderStyle.THIN); //右边框
+        headStyle.setBorderTop(BorderStyle.THIN); //上边框
+        // 设置表身背景色（默认色）
+        CellStyle rowStyle = book.createCellStyle();
+        rowStyle.setAlignment(HorizontalAlignment.CENTER);
+        rowStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        rowStyle.setBorderBottom(BorderStyle.THIN); //下边框
+        rowStyle.setBorderLeft(BorderStyle.THIN); //左边框
+        rowStyle.setBorderRight(BorderStyle.THIN); //右边框
+        rowStyle.setBorderTop(BorderStyle.THIN); //上边框
+        // 设置表格列宽度（默认为15个字节）
+        sheet.setDefaultColumnWidth(15);
+     // 创建合并算法数组
+        int rowLength = record.size()+2;
+        int columnLength = heads.length;
+        int[][] mergeArray = new int[rowLength][columnLength];
+        for (int i = 0; i < rowLength; i++) {
+        	Row row = sheet.createRow(i);
+        	List<Object> rowList=null;
+        	if(i==0){
+        		rowList=new ArrayList<>();
+        		for(int j=0;j<columnLength;j++){
+        			if(j==columnLength/2){
+        				rowList.add(fileName);
+        			}else{
+        				rowList.add("column_merge");
+        			}
+        		}
+        	}else if(i==1){
+        		rowList=Arrays.asList(heads);
+        	}else{
+        		rowList=(List<Object>) record.get(i-2);
+        	}
+        	
+        }
+        
+       
+    }
  
     private static void export(HttpServletResponse response, File file, String fileName,
                                Map<String, List<List<Object>>> sheetMap, Map<Integer, List<String>> selectMap) {

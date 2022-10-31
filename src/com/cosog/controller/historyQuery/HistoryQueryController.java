@@ -230,8 +230,7 @@ public class HistoryQueryController extends BaseController  {
 	
 	@RequestMapping("/exportHistoryQueryDataExcel")
 	public String exportHistoryQueryDataExcel() throws Exception {
-		String json = "";
-		String result="{\"success\":true}";
+		String json="{\"success\":true,\"flag\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -285,18 +284,21 @@ public class HistoryQueryController extends BaseController  {
 		pager.setEnd_date(endDate);
 		
 		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			json = historyQueryService.getDeviceHistoryExportData(orgId,deviceId,deviceName,deviceType,pager);
+			boolean bool = historyQueryService.exportDeviceHistoryData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
+			if(!bool){
+				json="{\"success\":true,\"flag\":false}";
+			}
 		}else{
-			json = historyQueryService.getPCPDeviceHistoryExportData(orgId,deviceId,deviceName,deviceType,pager);
+//			json = historyQueryService.getPCPDeviceHistoryExportData(orgId,deviceId,deviceName,deviceType,pager);
 		}
 		
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+//		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
+//		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+//		response.setHeader("Cache-Control", "no-cache");
+//		PrintWriter pw = response.getWriter();
+//		pw.print(json);
+//		pw.flush();
+//		pw.close();
 		return null;
 	}
 	

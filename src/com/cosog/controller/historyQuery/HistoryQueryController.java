@@ -136,8 +136,6 @@ public class HistoryQueryController extends BaseController  {
 	
 	@RequestMapping("/exportHistoryQueryDeviceListExcel")
 	public String exportHistoryQueryDeviceListExcel() throws Exception {
-		String json = "";
-		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -161,14 +159,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 		}
 		
-		json = historyQueryService.getHistoryQueryDeviceListExportData(orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+		boolean bool = historyQueryService.exportHistoryQueryDeviceListData(response,fileName,title, heads, fields,orgId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,pager);
 		return null;
 	}
 	
@@ -231,6 +222,7 @@ public class HistoryQueryController extends BaseController  {
 	@RequestMapping("/exportHistoryQueryDataExcel")
 	public String exportHistoryQueryDataExcel() throws Exception {
 		String json="{\"success\":true,\"flag\":true}";
+		boolean bool=false;
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -284,15 +276,15 @@ public class HistoryQueryController extends BaseController  {
 		pager.setEnd_date(endDate);
 		
 		if(StringManagerUtils.stringToInteger(deviceType)==0){
-			boolean bool = historyQueryService.exportDeviceHistoryData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
-			if(!bool){
-				json="{\"success\":true,\"flag\":false}";
-			}
+			bool = historyQueryService.exportDeviceHistoryData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
+			
 		}else{
-//			json = historyQueryService.getPCPDeviceHistoryExportData(orgId,deviceId,deviceName,deviceType,pager);
+			bool = historyQueryService.exportPCPDeviceHistoryData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,deviceType,pager);
+		}
+		if(!bool){
+			json="{\"success\":true,\"flag\":false}";
 		}
 		
-//		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
 //		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
 //		response.setHeader("Cache-Control", "no-cache");
 //		PrintWriter pw = response.getWriter();
@@ -495,8 +487,7 @@ public class HistoryQueryController extends BaseController  {
 	
 	@RequestMapping("/exportHistoryQueryFESDiagramOverlayDataExcel")
 	public String exportHistoryQueryFESDiagramOverlayDataExcel() throws Exception {
-		String json = "";
-		String result="{\"success\":true}";
+		boolean bool=false;
 		orgId = ParamUtils.getParameter(request, "orgId");
 		String deviceName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "deviceName"),"utf-8");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -541,15 +532,7 @@ public class HistoryQueryController extends BaseController  {
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
 		
-		json = historyQueryService.getFESDiagramOverlayExportData(orgId,deviceId,deviceName,pager);
-		
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+		bool = historyQueryService.exportFESDiagramOverlayData(response,fileName,title, heads, fields,orgId,deviceId,deviceName,pager);
 		return null;
 	}
 	

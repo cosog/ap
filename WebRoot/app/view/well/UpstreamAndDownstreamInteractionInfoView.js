@@ -239,48 +239,7 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                             		signinId = _record[0].data.signinId;
                             		slave = _record[0].data.slave;
                             	}
-                                var url = context + '/wellInformationManagerController/exportWaterCutRawData2';
-                                
-//                                var columnStr=Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataColumnStr_Id").getValue();
-//                                var columns_ = Ext.JSON.decode(columnStr);
-//                                
-//                                Ext.Array.each(columns_, function (name, index, countriesItSelf) {
-//                                    var column = columns_[index];
-//                                    if (index > 0 && !column.hidden) {
-//                                    	if(column.locked){
-//                                    		lockedfields += column.dataIndex + ",";
-//                                    		lockedheads += column.text + ",";
-//                                    	}else{
-//                                    		unlockedfields += column.dataIndex + ",";
-//                                    		unlockedheads += column.text + ",";
-//                                    	}
-//                                        
-//                                    }
-//                                });
-//                                if (isNotVal(lockedfields)) {
-//                                	lockedfields = lockedfields.substring(0, lockedfields.length - 1);
-//                                	lockedheads = lockedheads.substring(0, lockedheads.length - 1);
-//                                }
-//                                if (isNotVal(unlockedfields)) {
-//                                	unlockedfields = unlockedfields.substring(0, unlockedfields.length - 1);
-//                                	unlockedheads = unlockedheads.substring(0, unlockedheads.length - 1);
-//                                }
-//                                fields = "id";
-//                                if(isNotVal(lockedfields)){
-//                                	fields+=","+lockedfields;
-//                                }
-//                                if(isNotVal(unlockedfields)){
-//                                	fields+=","+unlockedfields;
-//                                }
-//                                
-//                                heads = "序号";
-//                                if(isNotVal(lockedheads)){
-//                                	heads+=","+lockedheads;
-//                                }
-//                                if(isNotVal(unlockedheads)){
-//                                	heads+=","+unlockedheads;
-//                                }
-
+                                var url = context + '/wellInformationManagerController/exportWaterCutRawData';
                                 var param = "&fields=" + fields 
                                 + "&heads=" + URLencode(URLencode(heads)) 
                                 + "&signinId=" + signinId 

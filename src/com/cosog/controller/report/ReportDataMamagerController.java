@@ -139,8 +139,8 @@ public class ReportDataMamagerController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/exportRPCDailyReportData")
-	public String exportRPCDailyReportData() throws Exception {
+	@RequestMapping("/exportRPCDailyReportData2")
+	public String exportRPCDailyReportData2() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		orgId = ParamUtils.getParameter(request, "orgId");
@@ -584,13 +584,64 @@ public class ReportDataMamagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/exportRPCDailyReportData")
+	public String exportRPCDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String tableName="tbl_rpcdailycalculationdata";
+		if (!StringUtils.isNotBlank(orgId)) {
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			if(StringManagerUtils.isNotNull(wellName)){
+				sql+= " and t.wellname='"+wellName+"' ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=endDate;
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=endDate;
+		}
+		this.pager = new Page("pagerForm", request);
+		pager.setJssj(calculateDate);
+		
+		String fileName = "抽油机井";
+		String title = "抽油机井生产报表";
+        if(StringManagerUtils.isNotNull(wellName)){
+        	fileName+=wellName;
+        }
+        fileName+="生产报表-"+startDate;
+        if(!startDate.equalsIgnoreCase(endDate)){
+        	fileName+="~"+endDate;
+        }
+		boolean bool = reportDataManagerService.exportRPCDailyReportData(response,fileName,title,pager, orgId,wellName,startDate,endDate);
+		return null;
+	}
+	
 	/** <p>描述：导出采出井日报表json数据方法</p>
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/exportPCPDailyReportData")
-	public String exportPCPDailyReportData() throws Exception {
+	@RequestMapping("/exportPCPDailyReportData2")
+	public String exportPCPDailyReportData2() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
 		String wellName = ParamUtils.getParameter(request, "wellName");
@@ -957,6 +1008,60 @@ public class ReportDataMamagerController extends BaseController {
 	        // TODO: handle exception  
 	        e.printStackTrace();  
 	    }
+		return null;
+	}
+	
+	@RequestMapping("/exportPCPDailyReportData")
+	public String exportPCPDailyReportData() throws Exception {
+		log.debug("reportOutputWell enter==");
+		Vector<String> v = new Vector<String>();
+		String wellName = ParamUtils.getParameter(request, "wellName");
+		String startDate = ParamUtils.getParameter(request, "startDate");
+		String endDate= ParamUtils.getParameter(request, "endDate");
+		String tableName="tbl_pcpdailycalculationdata";
+		if (!StringUtils.isNotBlank(orgId)) {
+			HttpSession session=request.getSession();
+			User user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		
+		if (!StringManagerUtils.isNotNull(endDate)) {
+			String sql = " select * from (select  to_char(t.calDate,'yyyy-mm-dd') from "+tableName+" t where1=1";
+			if(StringManagerUtils.isNotNull(wellName)){
+				sql+= " and t.wellname='"+wellName+"' ";
+			}	
+			sql+= "order by calDate desc) where rownum=1 ";
+			List<?> list = this.commonDataService.findCallSql(sql);
+			if (list.size() > 0 && list.get(0)!=null ) {
+				endDate = list.get(0).toString();
+			} else {
+				endDate = StringManagerUtils.getCurrentTime();
+			}
+			if(!StringManagerUtils.isNotNull(startDate)){
+				startDate=endDate;
+			}
+		}
+		if(!StringManagerUtils.isNotNull(startDate)){
+			startDate=endDate;
+		}
+		
+		String json = "";
+		this.pager = new Page("pagerForm", request);
+		pager.setJssj(calculateDate);
+		
+		String fileName = "螺杆泵井";
+		String title = "螺杆泵井生产报表";
+        if(StringManagerUtils.isNotNull(wellName)){
+        	fileName+=wellName;
+        }
+        fileName+="生产报表-"+startDate;
+        if(!startDate.equalsIgnoreCase(endDate)){
+        	fileName+="~"+endDate;
+        }
+		
+		boolean bool = reportDataManagerService.exportPCPDailyReportData(response,fileName,title,pager, orgId, wellName, startDate,endDate);
 		return null;
 	}
 	

@@ -441,6 +441,91 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
+	public boolean exportHistoryQueryDeviceListData(HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,
+			String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			String deviceTableName="tbl_rpcdevice";
+			String tableName="tbl_rpcacqdata_latest";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				tableName="tbl_pcpacqdata_latest";
+				deviceTableName="tbl_pcpdevice";
+			}
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String sql="select t.id,t.wellname,t2.commstatus,"
+					+ "decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss'),c1.itemname as devicetypename ";
+			sql+= " from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
+			if(StringManagerUtils.stringToInteger(deviceType)==0){
+				sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
+			}
+			
+			sql+= " where  t.orgid in ("+orgId+") ";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and t.wellName='"+deviceName+"'";
+			}
+			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(commStatusStatValue)){
+				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(runStatusStatValue)){
+				sql+=" and decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'离线')='"+runStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
+				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
+			}
+			sql+=" order by t.sortnum,t.wellname";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list = this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{\"id\":"+(i+1)+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"commStatus\":"+obj[2]+",");
+				result_json.append("\"commStatusName\":\""+obj[3]+"\",");
+				result_json.append("\"acqTime\":\""+obj[4]+"\",");
+				result_json.append("\"deviceTypeName\":\""+obj[5]+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	public String getDeviceHistoryData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -999,7 +1084,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	}
 	
 	public boolean exportDeviceHistoryData(HttpServletResponse response,String fileName,String title,String head,String field,
-			String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
+			String orgId,String deviceId,String deviceName,String deviceType,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int dataSaveMode=1;
@@ -1032,6 +1117,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
 			String columns[]=field.split(",");
@@ -1134,10 +1220,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " where  t.orgid in ("+orgId+") "
 					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
 					+ "  order by t2.acqtime desc";
-			List<?> list = this.findCallSql(sql);
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list = this.findCallSql(finalSql);
 			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
 			for(int i=0;i<list.size();i++){
-				Object[] obj=(Object[]) list.get(i);
+				obj=(Object[]) list.get(i);
 				result_json = new StringBuffer();
 				record = new ArrayList<>();
 				result_json.append("{\"id\":"+(i+1)+",");
@@ -1205,8 +1294,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					result_json.append(",\""+ddicColumnsList.get(j).replaceAll(" ", "")+"\":\""+value+"\"");
 				}
 				result_json.append("}");
-				
-				JSONObject jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
 				for (int j = 0; j < columns.length; j++) {
 					if(jsonObject.has(columns[j])){
 						record.add(jsonObject.getString(columns[j]));
@@ -1216,7 +1304,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				}
 				sheetDataList.add(record);
 			}
-			
 			ExcelUtils.export(response,fileName,title, sheetDataList);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1230,7 +1317,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return true;
 	}
 	
-	public String getPCPDeviceHistoryData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
+	public String getPCPDeviceHistoryData(String orgId,String deviceId,String deviceName,String deviceType,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int dataSaveMode=1;
@@ -1538,7 +1625,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
-	public String getPCPDeviceHistoryExportData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
+	public String getPCPDeviceHistoryExportData(String orgId,String deviceId,String deviceName,String deviceType,Page pager){
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		int dataSaveMode=1;
@@ -1654,7 +1741,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			result_json.append("[");
 			for(int i=0;i<list.size();i++){
 				Object[] obj=(Object[]) list.get(i);
-				result_json.append("{\"id\":"+obj[0]+",");
+				result_json.append("{\"id\":"+(i+1)+",");
 				result_json.append("\"deviceId\":\""+deviceId+"\",");
 				result_json.append("\"wellName\":\""+obj[1]+"\",");
 				result_json.append("\"acqTime\":\""+obj[2]+"\",");
@@ -1722,6 +1809,211 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 		}
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public boolean exportPCPDeviceHistoryData(HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws IOException, SQLException{
+		StringBuffer result_json = new StringBuffer();
+		ConfigFile configFile=Config.getInstance().configFile;
+		int dataSaveMode=1;
+		Jedis jedis=null;
+		try{
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+				if(!jedis.exists("RPCDeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				}
+				if(!jedis.exists("AlarmShowStyle".getBytes())){
+					MemoryDataManagerTask.initAlarmStyle();
+				}
+				
+				if(!jedis.exists("RPCWorkType".getBytes())){
+					MemoryDataManagerTask.loadRPCWorkType();
+				}
+				
+				if(!jedis.exists("rpcCalItemList".getBytes())){
+					MemoryDataManagerTask.loadRPCCalculateItem();
+				}
+				
+				if(!jedis.exists("UserInfo".getBytes())){
+					MemoryDataManagerTask.loadUserInfo(null,0,"update");
+				}
+				
+				if(!jedis.exists("AcqInstanceOwnItem".getBytes())){
+					MemoryDataManagerTask.loadAcqInstanceOwnItemById("","update");
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+			
+			String hisTableName="tbl_pcpacqdata_hist";
+			String deviceTableName="tbl_pcpdevice";
+			String ddicName="historyQuery_PCPHistoryData";
+			String columnsKey="pcpDeviceAcquisitionItemColumns";
+			DataDictionary ddic = null;
+			List<String> ddicColumnsList=new ArrayList<String>();
+			
+			Map<String, Map<String,String>> acquisitionItemColumnsMap=AcquisitionItemColumnsMap.getMapObject();
+			if(acquisitionItemColumnsMap==null||acquisitionItemColumnsMap.size()==0||acquisitionItemColumnsMap.get(columnsKey)==null){
+				EquipmentDriverServerTask.loadAcquisitionItemColumns(StringManagerUtils.stringToInteger(deviceType));
+			}
+			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
+			
+			PCPDeviceInfo pcpDeviceInfo=null;
+			if(jedis.hexists("PCPDeviceInfo".getBytes(), deviceId.getBytes())){
+				pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget("PCPDeviceInfo".getBytes(), deviceId.getBytes()));
+			}
+			String protocolName="";
+			AcqInstanceOwnItem acqInstanceOwnItem=null;
+			if(jedis!=null&&pcpDeviceInfo!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), pcpDeviceInfo.getInstanceCode().getBytes())){
+				acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), pcpDeviceInfo.getInstanceCode().getBytes()));
+				protocolName=acqInstanceOwnItem.getProtocol();
+			}
+			ModbusProtocolConfig.Protocol protocol=null;
+			for(int j=0;j<modbusProtocolConfig.getProtocol().size();j++){
+				if(modbusProtocolConfig.getProtocol().get(j).getDeviceType()==StringManagerUtils.stringToInteger(deviceType) 
+						&& protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(j).getName())){
+					protocol=modbusProtocolConfig.getProtocol().get(j);
+					break;
+				}
+			}
+			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId(ddicName);
+			
+			String columnSql="select t.COLUMN_NAME from user_tab_cols t where t.TABLE_NAME=UPPER('"+hisTableName+"') order by t.COLUMN_ID";
+			List<String> tableColumnsList=new ArrayList<String>();
+			List<?> columnList = this.findCallSql(columnSql);
+			for(int i=0;i<columnList.size();i++){
+				tableColumnsList.add(columnList.get(i).toString());
+			}
+			
+			String prodCol="liquidVolumetricProduction,oilVolumetricProduction,waterVolumetricProduction,liquidVolumetricProduction_L,";
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+				prodCol="liquidWeightProduction,oilWeightProduction,waterWeightProduction,liquidWeightProduction_L,";
+			}
+			String sql="select t2.id,t.wellname,"
+					+ "to_char(t2.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,"
+					+ "t2.commstatus,decode(t2.commstatus,1,'在线',2,'上线','离线') as commStatusName,"
+					+ "t2.commtime,t2.commtimeefficiency,t2.commrange,"
+					+ "t2.runstatus,decode(t2.commstatus,1,decode(t2.runstatus,1,'运行','停抽'),'') as runStatusName,"
+					+ "t2.runtime,t2.runtimeefficiency,t2.runrange,"
+					+ prodCol+""
+					+ "averageWatt,waterPower,"
+					+ "systemEfficiency*100 as systemEfficiency,energyper100mlift,pumpEff*100 as pumpEff,"
+					+ "todayKWattH";
+			
+			String[] ddicColumns=ddic.getSql().split(",");
+			for(int i=0;i<ddicColumns.length;i++){
+				if(dataSaveMode==0){
+					if(StringManagerUtils.existOrNot(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
+						ddicColumnsList.add(ddicColumns[i]);
+					}
+				}else{
+					if(StringManagerUtils.existOrNotByValue(loadedAcquisitionItemColumnsMap, ddicColumns[i],false) && StringManagerUtils.existOrNot(tableColumnsList, ddicColumns[i],false)){
+						ddicColumnsList.add(ddicColumns[i]);
+					}
+				}
+			}
+			for(int i=0;i<ddicColumnsList.size();i++){
+				sql+=",t2."+ddicColumnsList.get(i);
+			}
+			
+			sql+= " from "+deviceTableName+" t "
+					+ " left outer join "+hisTableName+" t2 on t2.wellid=t.id"
+					+ " where  t.orgid in ("+orgId+") "
+					+ " and t2.acqTime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') and t.id="+deviceId+""
+					+ "  order by t2.acqtime desc";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list = this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{\"id\":"+obj[0]+",");
+				result_json.append("\"deviceId\":\""+deviceId+"\",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"acqTime\":\""+obj[2]+"\",");
+				result_json.append("\"commStatus\":"+obj[3]+",");
+				result_json.append("\"commStatusName\":\""+obj[4]+"\",");
+				result_json.append("\"commTime\":\""+obj[5]+"\",");
+				result_json.append("\"commTimeEfficiency\":\""+obj[6]+"\",");
+				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+				result_json.append("\"runStatus\":"+obj[8]+",");
+				result_json.append("\"runStatusName\":\""+obj[9]+"\",");
+				result_json.append("\"runTime\":\""+obj[10]+"\",");
+				result_json.append("\"runTimeEfficiency\":\""+obj[11]+"\",");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[12])+"\",");
+				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[13]+"\",");
+				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[14]+"\",");
+				result_json.append("\""+prodCol.split(",")[2]+"\":\""+obj[15]+"\",");
+				result_json.append("\""+prodCol.split(",")[3]+"\":\""+obj[16]+"\",");
+				
+				result_json.append("\"averageWatt\":\""+obj[17]+"\",");
+				result_json.append("\"waterPower\":\""+obj[18]+"\",");
+				
+				result_json.append("\"systemEfficiency\":\""+obj[19]+"\",");
+				result_json.append("\"energyper100mlift\":\""+obj[20]+"\",");
+				result_json.append("\"pumpEff\":\""+obj[21]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[22]+"\"");
+				
+				for(int j=0;j<ddicColumnsList.size();j++){
+					String rawValue=obj[23+j]+"";
+					String value=rawValue;
+					if(protocol!=null){
+						for(int k=0;k<protocol.getItems().size();k++){
+							String col=dataSaveMode==0?("addr"+protocol.getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(protocol.getItems().get(k).getTitle()));
+							if(col.equalsIgnoreCase(ddicColumnsList.get(j))){
+								if(protocol.getItems().get(k).getMeaning()!=null && protocol.getItems().get(k).getMeaning().size()>0){
+									for(int l=0;l<protocol.getItems().get(k).getMeaning().size();l++){
+										if(value.equals(protocol.getItems().get(k).getMeaning().get(l).getValue()+"") || StringManagerUtils.stringToFloat(value)==protocol.getItems().get(k).getMeaning().get(l).getValue()){
+											value=protocol.getItems().get(k).getMeaning().get(l).getMeaning();
+											break;
+										}
+									}
+								}
+								break;
+							}
+						}
+					}
+					result_json.append(",\""+ddicColumnsList.get(j).replaceAll(" ", "")+"\":\""+value+"\"");
+				}
+				result_json.append("}");
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+		}
+		return true;
 	}
 	
 	public String getDeviceHistoryDetailsData(String deviceId,String deviceName,String deviceType,String recordId,int userNo){
@@ -2878,5 +3170,80 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		dynSbf.append("]");
 		return dynSbf.toString().replaceAll("null", "");
+	}
+	
+	public boolean exportFESDiagramOverlayData(HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceId,String deviceName,Page pager){
+		try{
+			StringBuffer result_json = new StringBuffer();
+			ConfigFile configFile=Config.getInstance().configFile;
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String prodCol="liquidVolumetricProduction,liquidVolumetricProduction_L";
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+				prodCol="liquidWeightProduction,liquidWeightProduction_L";
+			}
+			
+			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
+					+ " t.resultcode,t2.resultname,"
+					+ " t.stroke,t.spm,"
+					+ " t.fmax,t.fmin,"
+					+ prodCol+", "
+					+ " t.iDegreeBalance,t.wattDegreeBalance"
+					+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
+					+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
+					+ " and t.wellid="+deviceId+" "
+					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " order by t.fesdiagramacqtime desc";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{ \"id\":\"" + (i+1) + "\",");
+				result_json.append("\"wellName\":\"" + obj[1] + "\",");
+				result_json.append("\"acqTime\":\"" + obj[2] + "\",");
+				result_json.append("\"resultCode\":\""+obj[3]+"\",");
+				result_json.append("\"resultName\":\""+obj[4]+"\",");
+				result_json.append("\"stroke\":\""+obj[5]+"\",");
+				result_json.append("\"spm\":\""+obj[6]+"\",");
+				result_json.append("\"fmax\":\""+obj[7]+"\",");
+				result_json.append("\"fmin\":\""+obj[8]+"\",");
+				result_json.append("\""+prodCol.split(",")[0]+"\":\""+obj[9]+"\",");
+				result_json.append("\""+prodCol.split(",")[1]+"\":\""+obj[10]+"\",");
+				result_json.append("\"iDegreeBalance\":\"" + obj[11] + "\",");
+				result_json.append("\"wattDegreeBalance\":\"" + obj[12] + "\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,14 @@ import com.cosog.service.base.BaseService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.service.data.DataitemsInfoService;
 import com.cosog.task.EquipmentDriverServerTask;
+import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
+
+import net.sf.json.JSONObject;
 
 @Service("alarmQueryService")
 public class AlarmQueryService<T> extends BaseService<T>  {
@@ -114,6 +120,101 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		
 		String getResult = this.findExportDataBySqlEntity(sql,sql, columns, 20 + "", pager);
 		return getResult.replaceAll("\"null\"", "\"\"");
+	}
+	
+	public boolean exportAlarmData(HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceType,String deviceId,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager){
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			String tableName="viw_rpcalarminfo_hist";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				tableName="viw_pcpalarminfo_hist";
+			}
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String sql="select t.id,t.wellid,t.wellname,t.devicetype,t.deviceTypeName,to_char(t.alarmtime,'yyyy-mm-dd hh24:mi:ss') as alarmtime,"
+					+ " t.itemname,t.alarmtype,t.alarmTypeName,t.alarmvalue,t.alarminfo,t.alarmlimit,t.hystersis,"
+					+ " t.alarmlevel,t.alarmLevelName,"
+					+ " t.issendmessage,t.issendmail,"
+					+ " t.recoverytime,t.orgid "
+					+ " from "+tableName+" t where t.orgid in ("+orgId+") "
+					+ " and t.alarmtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss')";
+			if(StringManagerUtils.isNotNull(deviceId)){
+				sql+=" and t.wellid="+deviceId;
+			}
+			if(StringManagerUtils.isNotNull(alarmType)){
+				if(StringManagerUtils.stringToInteger(alarmType)==2){
+					sql+=" and t.alarmType=2 or t.alarmType=5";
+				}else {
+					sql+=" and t.alarmType="+alarmType;
+				}
+			}
+			if(StringManagerUtils.isNotNull(alarmLevel)){
+				sql+=" and t.alarmLevel="+alarmLevel;
+			}
+			if(StringManagerUtils.isNotNull(isSendMessage)){
+				sql+=" and t.isSendMessage="+isSendMessage;
+			}
+			sql+=" order by t.alarmtime desc";
+			
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{\"id\":\""+(i+1)+"\",");
+				result_json.append("\"wellId\":\""+obj[1]+"\",");
+				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"deviceType\":\""+obj[3]+"\",");
+				result_json.append("\"deviceTypeName\":\""+obj[4]+"\",");
+				result_json.append("\"alarmTime\":\""+obj[5]+"\",");
+				result_json.append("\"itemName\":\""+obj[6]+"\",");
+				result_json.append("\"alarmType\":\""+obj[7]+"\",");
+				result_json.append("\"alarmTypeName\":\""+obj[8]+"\",");
+				result_json.append("\"alarmValue\":\""+obj[9]+"\",");
+				result_json.append("\"alarmInfo\":\""+obj[10]+"\",");
+				result_json.append("\"alarmLimit\":\""+obj[11]+"\",");
+				result_json.append("\"hystersis\":\""+obj[12]+"\",");
+				result_json.append("\"alarmLevel\":\""+obj[13]+"\",");
+				result_json.append("\"alarmLevelName\":\""+obj[14]+"\",");
+				result_json.append("\"isSendMessage\":\""+obj[15]+"\",");
+				result_json.append("\"isSendMail\":\""+obj[16]+"\",");
+				result_json.append("\"recoveryTime\":\""+obj[17]+"\",");
+				result_json.append("\"orgId\":\""+obj[18]+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+		
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String getAlarmOverviewData(String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager) throws IOException, SQLException{
@@ -221,5 +322,82 @@ public class AlarmQueryService<T> extends BaseService<T>  {
 		}
 		result_json.append("]");
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public boolean exportAlarmOverviewData(HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceType,String deviceName,String alarmType,String alarmLevel,String isSendMessage,Page pager){
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			String tableName="viw_rpcalarminfo_latest";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				tableName="viw_pcpalarminfo_latest";
+			}
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+		    
+			String sql="select v.wellid,v.wellname,v.devicetypename,v.alarmtype,v.alarmtime from "
+					+ " (select t.orgid,t.wellid,t.wellname,c1.itemname as devicetypename,t.alarmtype,max(t.alarmtime) as alarmtime "
+					+ " from "+tableName+" t,tbl_code c1 "
+					+ " where c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue";
+			if(StringManagerUtils.isNotNull(alarmLevel)){
+				sql+=" and t.alarmLevel="+alarmLevel+"";
+			}
+			if(StringManagerUtils.isNotNull(isSendMessage)){
+				sql+=" and t.isSendMessage="+isSendMessage+"";
+			}
+			sql+= " group by t.orgid,t.wellid,t.wellname,c1.itemname,t.alarmtype) v "
+					+ " where v.orgid in("+orgId+") ";
+			
+			if(StringManagerUtils.stringToInteger(alarmType)==2){
+				sql+=" and v.alarmType=2 or v.alarmType=5";
+			}else {
+				sql+= " and v.alarmtype="+alarmType;
+			}
+			
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and v.wellName='"+deviceName+"'";
+			}
+			sql+=" order by v.alarmtime desc";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{\"id\":"+(i+1)+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"deviceTypeName\":\""+obj[2]+"\",");
+				result_json.append("\"alarmType\":\""+obj[3]+"\",");
+				result_json.append("\"alarmTime\":\""+obj[4]+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }

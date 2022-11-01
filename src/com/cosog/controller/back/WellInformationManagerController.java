@@ -485,14 +485,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.getPumpingModelExportData(map, pager,deviceType,recordCount);
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
+		boolean bool = this.wellInformationManagerService.exportPumpingModelData(response,fileName,title, heads, fields,map, pager,deviceType,recordCount);
 		return null;
 	}
 	
@@ -575,6 +568,7 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/exportWellInformationData")
 	public String exportWellInformationData() throws Exception {
+		boolean bool=false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
@@ -610,17 +604,13 @@ public class WellInformationManagerController extends BaseController {
 		map.put("orgId", orgId);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
-		String json="[]";
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
-			json = this.wellInformationManagerService.getRPCDeviceInfoExportData(map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportRPCDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			json = this.wellInformationManagerService.getPipeDeviceInfoExportData(map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportPipeDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
-			json = this.wellInformationManagerService.getSMSDeviceInfoExportData(map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}
-		
-		
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
 		return null;
 	}
 
@@ -1808,42 +1798,6 @@ public class WellInformationManagerController extends BaseController {
 	
 	@RequestMapping("/exportWaterCutRawData")
 	public String exportWaterCutRawData() throws IOException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
-		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
-		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
-		int offset = (intPage - 1) * pageSize + 1;
-		String signinId = ParamUtils.getParameter(request, "signinId");
-		String slave = ParamUtils.getParameter(request, "slave");
-		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
-		String fields = ParamUtils.getParameter(request, "fields");
-		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
-		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
-		map.put(PagingConstants.PAGE_NO, intPage);
-		map.put(PagingConstants.PAGE_SIZE, pageSize);
-		map.put(PagingConstants.OFFSET, offset);
-		map.put("deviceType", deviceType);
-		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
-		this.pager = new Page("pagerForm", request);
-		String json;
-		try {
-			json = this.wellInformationManagerService.getWaterCutRawDataExport(signinId,slave);
-		} catch (SQLException e) {
-			json="[]";
-			e.printStackTrace();
-		}
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(json);
-		pw.flush();
-		pw.close();
-		return null;
-	}
-	
-	@RequestMapping("/exportWaterCutRawData2")
-	public String exportWaterCutRawData2() throws IOException {
 		String json="";
 		String signinId = ParamUtils.getParameter(request, "signinId");
 		String slave = ParamUtils.getParameter(request, "slave");

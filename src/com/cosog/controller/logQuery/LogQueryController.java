@@ -93,8 +93,6 @@ public class LogQueryController extends BaseController{
 	
 	@RequestMapping("/exportDeviceOperationLogExcelData")
 	public String exportDeviceOperationLogExcelData() throws Exception {
-		String json = "";
-		String result="{\"success\":true}";
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -134,14 +132,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getDeviceOperationLogExportData(orgId,deviceType,deviceName,operationType,pager,user);
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+		boolean bool = logQueryService.exportDeviceOperationLogData(response,fileName,title, heads, fields,orgId,deviceType,deviceName,operationType,pager,user);
 		return null;
 	}
 	
@@ -190,8 +181,6 @@ public class LogQueryController extends BaseController{
 	
 	@RequestMapping("/exportSystemLogExcelData")
 	public String exportSystemLogExcelData() throws Exception {
-		String json = "";
-		String result="{\"success\":true}";
 		HttpSession session=request.getSession();
 		orgId = ParamUtils.getParameter(request, "orgId");
 		operationType = ParamUtils.getParameter(request, "operationType");
@@ -227,14 +216,7 @@ public class LogQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = logQueryService.getSystemLogExportData(orgId,operationType,pager,user);
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+		boolean bool = logQueryService.exportSystemLogData(response,fileName,title, heads, fields,orgId,operationType,pager,user);
 		return null;
 	}
 	

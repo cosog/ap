@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletResponse;
+
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,9 +59,11 @@ import com.cosog.utils.RedisUtil;
 import com.cosog.utils.SerializeObjectUnils;
 import com.cosog.utils.StringManagerUtils;
 import com.cosog.utils.LicenseMap.License;
+import com.cosog.utils.excel.ExcelUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.sf.json.JSONObject;
 import oracle.sql.CLOB;
 import redis.clients.jedis.Jedis;
 
@@ -1421,6 +1426,87 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
+	public boolean exportRPCDeviceInfoData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			String tableName="viw_rpcdevice";
+			String wellInformationName = (String) map.get("wellInformationName");
+			int deviceType=StringManagerUtils.stringToInteger((String) map.get("deviceType"));
+			String orgId = (String) map.get("orgId");
+			String WellInformation_Str = "";
+			if (StringManagerUtils.isNotNull(wellInformationName)) {
+				WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
+			}
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+					+ " tcptype,signInId,slave,t.peakdelay,"
+					+ " videoUrl,"
+					+ " sortNum,status,statusName,allpath"
+					+ " from "+tableName+" t where 1=1"
+					+ WellInformation_Str;
+			sql+= " and t.orgid in ("+orgId+" )";
+			sql+= " and t.devicetype="+deviceType;
+			sql+= " order by t.sortnum,t.wellname ";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{\"id\":\""+(i+1)+"\",");
+				result_json.append("\"orgName\":\""+obj[1]+"\",");
+				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"applicationScenariosName\":\""+obj[3]+"\",");
+				result_json.append("\"instanceName\":\""+obj[4]+"\",");
+				result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
+				result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
+				result_json.append("\"tcpType\":\""+obj[7]+"\",");
+				result_json.append("\"signInId\":\""+obj[8]+"\",");
+				result_json.append("\"slave\":\""+obj[9]+"\",");
+				result_json.append("\"peakDelay\":\""+obj[10]+"\",");
+				result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+				result_json.append("\"status\":\""+obj[13]+"\",");
+				result_json.append("\"statusName\":\""+obj[14]+"\",");
+				result_json.append("\"allPath\":\""+obj[15]+"\",");
+				result_json.append("\"sortNum\":\""+obj[12]+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+		
+		
+		
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public String getPCPDeviceInfoList(Map map,Page pager,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
@@ -1604,6 +1690,85 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
+	public boolean exportPipeDeviceInfoData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			String tableName="viw_pcpdevice";
+			String wellInformationName = (String) map.get("wellInformationName");
+			int deviceType=StringManagerUtils.stringToInteger((String) map.get("deviceType"));
+			String orgId = (String) map.get("orgId");
+			String WellInformation_Str = "";
+			if (StringManagerUtils.isNotNull(wellInformationName)) {
+				WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
+			}
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
+					+ " tcptype,signInId,slave,t.peakdelay,"
+					+ " videoUrl,"
+					+ " sortNum,status,statusName,allpath"
+					+ " from "+tableName+" t where 1=1"
+					+ WellInformation_Str;
+			sql+= " and t.orgid in ("+orgId+" )  ";		
+			
+			sql+= " and t.devicetype="+deviceType;
+			sql+= " order by t.sortnum,t.wellname ";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{ \"id\":\"" + (i+1) + "\",");
+				result_json.append("\"orgName\":\""+obj[1]+"\",");
+				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"applicationScenariosName\":\""+obj[3]+"\",");
+				result_json.append("\"instanceName\":\""+obj[4]+"\",");
+				result_json.append("\"displayInstanceName\":\""+obj[5]+"\",");
+				result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
+				result_json.append("\"tcpType\":\""+obj[7]+"\",");
+				result_json.append("\"signInId\":\""+obj[8]+"\",");
+				result_json.append("\"slave\":\""+obj[9]+"\",");
+				result_json.append("\"peakDelay\":\""+obj[10]+"\",");
+				result_json.append("\"videoUrl\":\""+obj[11]+"\",");
+				result_json.append("\"status\":\""+obj[13]+"\",");
+				result_json.append("\"statusName\":\""+obj[14]+"\",");
+				result_json.append("\"allPath\":\""+obj[15]+"\",");
+				result_json.append("\"sortNum\":\""+obj[12]+"\"}");
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+		
+		
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public String getSMSDeviceInfoList(Map map,Page pager,int recordCount) {
 		StringBuffer result_json = new StringBuffer();
@@ -1711,6 +1876,68 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		json=result_json.toString().replaceAll("null", "");
 		return json;
+	}
+	
+	public boolean exportSMSDeviceInfoData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,int recordCount) {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			String tableName="viw_smsdevice";
+			String wellInformationName = (String) map.get("wellInformationName");
+			String orgId = (String) map.get("orgId");
+			String WellInformation_Str = "";
+			if (StringManagerUtils.isNotNull(wellInformationName)) {
+				WellInformation_Str = " and t.wellname like '%" + wellInformationName+ "%'";
+			}
+			
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String sql = "select id,orgName,wellName,instanceName,signInId,sortNum"
+					+ " from "+tableName+" t where 1=1"
+					+ WellInformation_Str;
+			sql+= " and t.orgid in ("+orgId+" )  ";		
+			
+			sql+= " order by t.sortnum,t.wellname ";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{ \"id\":\"" + (i+1) + "\",");
+				result_json.append("\"orgName\":\""+obj[1]+"\",");
+				result_json.append("\"wellName\":\""+obj[2]+"\",");
+				result_json.append("\"instanceName\":\""+obj[3]+"\",");
+				result_json.append("\"signInId\":\""+obj[4]+"\",");
+				result_json.append("\"sortNum\":\""+obj[5]+"\"}");
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -1885,6 +2112,62 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		result_json.append("]");
 		json=result_json.toString().replaceAll("null", "");
 		return json;
+	}
+	
+	public boolean exportPumpingModelData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,String deviceType,int recordCount) {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+			String heads[]=head.split(",");
+			String columns[]=field.split(",");
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
+					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,t.balanceweight "
+					+ " from tbl_pumpingmodel t"
+					+ " order by t.id,t.manufacturer,t.model";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				result_json.append("{ \"id\":\"" + (i+1) + "\",");
+				result_json.append("\"manufacturer\":\""+obj[1]+"\",");
+				result_json.append("\"model\":\""+obj[2]+"\",");
+				result_json.append("\"stroke\":\""+obj[3]+"\",");
+				result_json.append("\"crankRotationDirection\":\""+obj[4]+"\",");
+				result_json.append("\"offsetAngleOfCrank\":\""+obj[5]+"\",");
+				result_json.append("\"crankGravityRadius\":\""+obj[6]+"\",");
+				result_json.append("\"singleCrankWeight\":\""+obj[7]+"\",");
+				result_json.append("\"singleCrankPinWeight\":\""+obj[8]+"\",");
+				result_json.append("\"structuralUnbalance\":\""+obj[9]+"\",");
+				result_json.append("\"balanceWeight\":\""+obj[10]+"\"}");
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String getRPCPumpingModelList(String deviceId,String deviceType) {

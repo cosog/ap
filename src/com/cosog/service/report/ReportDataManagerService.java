@@ -1,6 +1,23 @@
 package com.cosog.service.report;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import com.cosog.service.base.BaseService;
@@ -8,6 +25,9 @@ import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.Page;
 import com.cosog.utils.StringManagerUtils;
+import com.cosog.utils.excel.ExcelUtils;
+
+import net.sf.json.JSONObject;
 
 @Service("reportProductionWellService")
 public class ReportDataManagerService<T> extends BaseService<T> {
@@ -350,6 +370,282 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		return result_json.toString().replaceAll("null", "");
 	}
 	
+	public boolean exportRPCDailyReportData(HttpServletResponse response,String fileName,String title,
+			Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			ConfigFile configFile=Config.getInstance().configFile;
+			int maxvalue=configFile.getAp().getOthers().getExportLimit();
+			String productionUnit="t/d"; 
+	        if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+	        	productionUnit="t/d"; 
+			}else{
+				productionUnit="m^3/d"; 
+			}
+			String sql="select t.id, t.wellName,to_char(t.caldate,'yyyy-mm-dd') as calDate,"
+					+ " t.commTime,t.commRange, t.commTimeEfficiency,"
+					+ " t.runTime,t.runRange, t.runTimeEfficiency,"
+					+ " t.resultName,t.optimizationSuggestion,";
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+				sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
+			}else{
+				sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
+			}
+			sql+= " t.fullnesscoEfficient,"
+				+ " t.wattDegreeBalance,t.iDegreeBalance,t.deltaRadius,"
+				+ " t.systemEfficiency,t.surfaceSystemEfficiency,t.welldownSystemEfficiency,t.energyPer100mLift,"
+				+ " t.todayKWattH,"
+				+ " remark"
+				+ " from viw_rpcdailycalculationdata t "
+				+ " where t.org_id in ("+orgId+") "
+				+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+			if(StringManagerUtils.isNotNull(wellName)){
+				sql+=" and  t.wellName='"+wellName+"'";
+			}
+			sql+=" order by t.sortNum, t.wellName,t.calDate";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			
+			List<List<Object>> sheetDataList = new ArrayList<>();
+			List<Object> titleRow = new ArrayList<>();
+			List<Object> headerRow1 = new ArrayList<>();
+			List<Object> headerRow2 = new ArrayList<>();
+			for(int i=0;i<25;i++){
+				if(i==0){
+					titleRow.add(title);
+				}else{
+					titleRow.add(ExcelUtils.COLUMN_MERGE);
+				}
+			}
+			headerRow1.add("序号");
+			headerRow1.add("井名");
+			headerRow1.add("日期");
+			headerRow1.add("通信");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("时率");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("工况");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("产量");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("平衡");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("效率");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("日用电量(kW·h)");
+			headerRow1.add("备注");
+			
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add("在线时间(h)");
+			headerRow2.add("在线区间");
+			headerRow2.add("在线时率(小数)");
+			headerRow2.add("运行时间(h)");
+			headerRow2.add("运行区间");
+			headerRow2.add("运行时率(小数)");
+			headerRow2.add("功图工况");
+			headerRow2.add("优化建议");
+			headerRow2.add("产液量("+productionUnit+")");
+			headerRow2.add("产油量("+productionUnit+")");
+			headerRow2.add("产水量("+productionUnit+")");
+			headerRow2.add("含水率(%)");
+			headerRow2.add("充满系数(小数)");
+			headerRow2.add("功率平衡度(%)");
+			headerRow2.add("电流平衡度(%)");
+			headerRow2.add("移动距离(cm)");
+			headerRow2.add("系统效率(%)");
+			headerRow2.add("地面效率(%)");
+			headerRow2.add("井下效率(%)");
+			headerRow2.add("吨液百米耗电量(kW·h/100·t)");
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			
+			sheetDataList.add(titleRow);
+			sheetDataList.add(headerRow1);
+			sheetDataList.add(headerRow2);
+			
+			List<?> list = this.findCallSql(finalSql);
+			Object[] obj=null;
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			float sumCommTime=0,sumRunTime=0,sumLiquidProduction=0,sumOilProduction=0,sumWaterProduction=0;
+	        int commTimeRecords=0,runTimeRecords=0,liquidProductionRecords=0,oilProductionRecords=0,waterProductionRecords=0;
+	        float averageCommTime=0,averageRunTime=0,averageLiquidProduction=0,averageOilProduction=0,averageWaterProduction=0;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				record = new ArrayList<>();
+				result_json = new StringBuffer();
+				result_json.append("{\"id\":"+(i+1)+",");
+	    	    result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
+				result_json.append("\"commTime\":\""+obj[3]+"\",");
+				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
+				result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
+				result_json.append("\"runTime\":\""+obj[6]+"\",");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+				result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
+				result_json.append("\"resultName\":\""+obj[9]+"\",");
+				result_json.append("\"optimizationSuggestion\":\""+obj[10]+"\",");
+				result_json.append("\"liquidProduction\":\""+obj[11]+"\",");
+				result_json.append("\"oilProduction\":\""+obj[12]+"\",");
+				result_json.append("\"waterProduction\":\""+obj[13]+"\",");
+				result_json.append("\"waterCut\":\""+obj[14]+"\",");
+				result_json.append("\"fullnesscoEfficient\":\""+obj[15]+"\",");
+				result_json.append("\"wattDegreeBalance\":\""+obj[16]+"\",");
+				result_json.append("\"iDegreeBalance\":\""+obj[17]+"\",");
+				result_json.append("\"deltaRadius\":\""+obj[18]+"\",");
+				result_json.append("\"systemEfficiency\":\""+obj[19]+"\",");
+				result_json.append("\"surfaceSystemEfficiency\":\""+obj[20]+"\",");
+				result_json.append("\"welldownSystemEfficiency\":\""+obj[21]+"\",");
+				result_json.append("\"energyPer100mLift\":\""+obj[22]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[23]+"\",");
+				result_json.append("\"remark\":\""+obj[24]+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				record.add(jsonObject.getString("id"));
+				record.add(jsonObject.getString("wellName"));
+				record.add(jsonObject.getString("calculateDate"));
+				record.add(jsonObject.getString("commTime"));
+				record.add(jsonObject.getString("commRange"));
+				record.add(jsonObject.getString("commTimeEfficiency"));
+				record.add(jsonObject.getString("runTime"));
+				record.add(jsonObject.getString("runRange"));
+				record.add(jsonObject.getString("runTimeEfficiency"));
+				record.add(jsonObject.getString("resultName"));
+				record.add(jsonObject.getString("optimizationSuggestion"));
+				record.add(jsonObject.getString("liquidProduction"));
+				record.add(jsonObject.getString("oilProduction"));
+				record.add(jsonObject.getString("waterProduction"));
+				record.add(jsonObject.getString("waterCut"));
+				record.add(jsonObject.getString("fullnesscoEfficient"));
+				record.add(jsonObject.getString("wattDegreeBalance"));
+				record.add(jsonObject.getString("iDegreeBalance"));
+				record.add(jsonObject.getString("deltaRadius"));
+				record.add(jsonObject.getString("systemEfficiency"));
+				record.add(jsonObject.getString("surfaceSystemEfficiency"));
+				record.add(jsonObject.getString("welldownSystemEfficiency"));
+				record.add(jsonObject.getString("energyPer100mLift"));
+				record.add(jsonObject.getString("todayKWattH"));
+				record.add(jsonObject.getString("remark"));
+				
+				sheetDataList.add(record);
+				
+				sumCommTime+=StringManagerUtils.stringToFloat(jsonObject.getString("commTime"));
+     		   	sumRunTime+=StringManagerUtils.stringToFloat(jsonObject.getString("runTime"));
+     		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("liquidProduction"));
+     		   	sumOilProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("oilProduction"));
+     		   	sumWaterProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("waterProduction"));
+         	   
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("commTime"))>0){
+         		   commTimeRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("runTime"))>0){
+         		   runTimeRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("liquidProduction"))>0){
+         		   liquidProductionRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("oilProduction"))>0){
+         		   oilProductionRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("waterProduction"))>0){
+         		   waterProductionRecords+=1;
+     		   	}
+			}
+			
+			sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
+ 		   	sumRunTime=StringManagerUtils.stringToFloat(sumRunTime+"",2);
+ 		   	sumLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction+"",2);
+ 		   	sumOilProduction=StringManagerUtils.stringToFloat(sumOilProduction+"",2);
+ 		   	sumWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction+"",2);
+ 		   	if(commTimeRecords>0){
+			   averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
+ 		   	}
+ 		   	if(runTimeRecords>0){
+			   averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
+ 		   	}
+ 		   	if(liquidProductionRecords>0){
+			   averageLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction/liquidProductionRecords+"",2);
+ 		   	}
+ 		   	if(oilProductionRecords>0){
+			   averageOilProduction=StringManagerUtils.stringToFloat(sumOilProduction/oilProductionRecords+"",2);
+ 		   	}
+ 		   	if(waterProductionRecords>0){
+			   averageWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction/waterProductionRecords+"",2);
+ 		   	}
+ 		   	
+ 		   	record = new ArrayList<>();
+ 		   	record.add("合计");
+			record.add("");
+			record.add("");
+			record.add(sumCommTime);
+			record.add("");
+			record.add("");
+			record.add(sumRunTime);
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add(sumLiquidProduction);
+			record.add(sumOilProduction);
+			record.add(sumWaterProduction);
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			sheetDataList.add(record);
+			
+			record = new ArrayList<>();
+ 		   	record.add("平均");
+			record.add("");
+			record.add("");
+			record.add(averageCommTime);
+			record.add("");
+			record.add("");
+			record.add(averageRunTime);
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add(averageLiquidProduction);
+			record.add(averageOilProduction);
+			record.add(averageWaterProduction);
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			sheetDataList.add(record);
+			
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	public String showPCPDailyReportData(Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
@@ -371,7 +667,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName";
+		sql+=" order by t.sortNum, t.wellName,t.calDate";
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(sql);
 		
@@ -556,7 +852,7 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName='"+wellName+"'";
 		}
-		sql+=" order by t.sortNum, t.wellName";
+		sql+=" order by t.sortNum, t.wellName,t.calDate";
 		List<?> list = this.findCallSql(sql);
 		
 		result_json.append("[");
@@ -588,6 +884,240 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 		}
 		result_json.append("]");
 		return result_json.toString().replaceAll("null", "");
+	}
+	
+	public boolean exportPCPDailyReportData(HttpServletResponse response,String fileName,String title,
+			Page pager, String orgId,String wellName,String startDate,String endDate)throws Exception {
+		try{
+			StringBuffer result_json = new StringBuffer();
+			ConfigFile configFile=Config.getInstance().configFile;
+			int maxvalue=configFile.getAp().getOthers().getExportLimit();
+			String productionUnit="t/d"; 
+	        if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+	        	productionUnit="t/d"; 
+			}else{
+				productionUnit="m^3/d"; 
+			}
+	        String sql="select t.id, t.wellName,to_char(t.calDate,'yyyy-mm-dd') as calDate,"
+					+ " t.commTime,t.commRange, t.commTimeEfficiency,"
+					+ " t.runTime,t.runRange, t.runTimeEfficiency,";
+			if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
+				sql+=" t.liquidWeightProduction,t.oilWeightProduction,t.waterWeightProduction,t.weightWaterCut,";
+			}else{
+				sql+=" t.liquidVolumetricProduction,t.oilVolumetricProduction,t.waterVolumetricProduction,t.volumeWaterCut,";
+			}
+			sql+= " t.rpm,"
+					+ " t.systemEfficiency,t.energyPer100mLift,"
+					+ " t.todayKWattH,"
+					+ " remark"
+					+ " from viw_pcpdailycalculationdata t "
+					+ " where t.org_id in ("+orgId+") "
+					+ " and t.calDate between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')";
+			if(StringManagerUtils.isNotNull(wellName)){
+				sql+=" and  t.wellName='"+wellName+"'";
+			}
+			sql+=" order by t.sortNum, t.wellName,t.calDate";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			
+			List<List<Object>> sheetDataList = new ArrayList<>();
+			List<Object> titleRow = new ArrayList<>();
+			List<Object> headerRow1 = new ArrayList<>();
+			List<Object> headerRow2 = new ArrayList<>();
+			for(int i=0;i<18;i++){
+				if(i==0){
+					titleRow.add(title);
+				}else{
+					titleRow.add(ExcelUtils.COLUMN_MERGE);
+				}
+			}
+			headerRow1.add("序号");
+			headerRow1.add("井名");
+			headerRow1.add("日期");
+			headerRow1.add("通信");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("时率");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("产量");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("效率");
+			headerRow1.add(ExcelUtils.COLUMN_MERGE);
+			headerRow1.add("日用电量(kW·h)");
+			headerRow1.add("备注");
+			
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add("在线时间(h)");
+			headerRow2.add("在线区间");
+			headerRow2.add("在线时率(小数)");
+			headerRow2.add("运行时间(h)");
+			headerRow2.add("运行区间");
+			headerRow2.add("运行时率(小数)");
+			headerRow2.add("产液量("+productionUnit+")");
+			headerRow2.add("产油量("+productionUnit+")");
+			headerRow2.add("产水量("+productionUnit+")");
+			headerRow2.add("含水率(%)");
+			headerRow2.add("转速(r/min)");
+			headerRow2.add("系统效率(%)");
+			headerRow2.add("吨液百米耗电量(kW·h/100·t)");
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			headerRow2.add(ExcelUtils.ROW_MERGE);
+			
+			sheetDataList.add(titleRow);
+			sheetDataList.add(headerRow1);
+			sheetDataList.add(headerRow2);
+			
+			List<?> list = this.findCallSql(finalSql);
+			Object[] obj=null;
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			float sumCommTime=0,sumRunTime=0,sumLiquidProduction=0,sumOilProduction=0,sumWaterProduction=0;
+	        int commTimeRecords=0,runTimeRecords=0,liquidProductionRecords=0,oilProductionRecords=0,waterProductionRecords=0;
+	        float averageCommTime=0,averageRunTime=0,averageLiquidProduction=0,averageOilProduction=0,averageWaterProduction=0;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				record = new ArrayList<>();
+				result_json = new StringBuffer();
+				result_json.append("{\"id\":"+(i+1)+",");
+				result_json.append("\"wellName\":\""+obj[1]+"\",");
+				result_json.append("\"calculateDate\":\""+obj[2]+"\",");
+				result_json.append("\"commTime\":\""+obj[3]+"\",");
+				result_json.append("\"commRange\":\""+StringManagerUtils.CLOBObjectToString(obj[4])+"\",");
+				result_json.append("\"commTimeEfficiency\":\""+obj[5]+"\",");
+				result_json.append("\"runTime\":\""+obj[6]+"\",");
+				result_json.append("\"runRange\":\""+StringManagerUtils.CLOBObjectToString(obj[7])+"\",");
+				result_json.append("\"runTimeEfficiency\":\""+obj[8]+"\",");
+			
+				result_json.append("\"liquidProduction\":\""+obj[9]+"\",");
+				result_json.append("\"oilProduction\":\""+obj[10]+"\",");
+				result_json.append("\"waterProduction\":\""+obj[11]+"\",");
+				result_json.append("\"waterCut\":\""+obj[12]+"\",");
+				result_json.append("\"rpm\":\""+obj[13]+"\",");
+				
+				result_json.append("\"systemEfficiency\":\""+obj[14]+"\",");
+				result_json.append("\"energyPer100mLift\":\""+obj[15]+"\",");
+				result_json.append("\"todayKWattH\":\""+obj[16]+"\",");
+				result_json.append("\"remark\":\""+obj[17]+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				record.add(jsonObject.getString("id"));
+				record.add(jsonObject.getString("wellName"));
+				record.add(jsonObject.getString("calculateDate"));
+				record.add(jsonObject.getString("commTime"));
+				record.add(jsonObject.getString("commRange"));
+				record.add(jsonObject.getString("commTimeEfficiency"));
+				record.add(jsonObject.getString("runTime"));
+				record.add(jsonObject.getString("runRange"));
+				record.add(jsonObject.getString("runTimeEfficiency"));
+				record.add(jsonObject.getString("liquidProduction"));
+				record.add(jsonObject.getString("oilProduction"));
+				record.add(jsonObject.getString("waterProduction"));
+				record.add(jsonObject.getString("waterCut"));
+				record.add(jsonObject.getString("rpm"));
+				record.add(jsonObject.getString("systemEfficiency"));
+				record.add(jsonObject.getString("energyPer100mLift"));
+				record.add(jsonObject.getString("todayKWattH"));
+				record.add(jsonObject.getString("remark"));
+				
+				sheetDataList.add(record);
+				
+				sumCommTime+=StringManagerUtils.stringToFloat(jsonObject.getString("commTime"));
+     		   	sumRunTime+=StringManagerUtils.stringToFloat(jsonObject.getString("runTime"));
+     		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("liquidProduction"));
+     		   	sumOilProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("oilProduction"));
+     		   	sumWaterProduction+=StringManagerUtils.stringToFloat(jsonObject.getString("waterProduction"));
+         	   
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("commTime"))>0){
+         		   commTimeRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("runTime"))>0){
+         		   runTimeRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("liquidProduction"))>0){
+         		   liquidProductionRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("oilProduction"))>0){
+         		   oilProductionRecords+=1;
+     		   	}
+     		   	if(StringManagerUtils.stringToFloat(jsonObject.getString("waterProduction"))>0){
+         		   waterProductionRecords+=1;
+     		   	}
+			}
+			
+			sumCommTime=StringManagerUtils.stringToFloat(sumCommTime+"",2);
+ 		   	sumRunTime=StringManagerUtils.stringToFloat(sumRunTime+"",2);
+ 		   	sumLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction+"",2);
+ 		   	sumOilProduction=StringManagerUtils.stringToFloat(sumOilProduction+"",2);
+ 		   	sumWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction+"",2);
+ 		   	if(commTimeRecords>0){
+			   averageCommTime=StringManagerUtils.stringToFloat(sumCommTime/commTimeRecords+"",2);
+ 		   	}
+ 		   	if(runTimeRecords>0){
+			   averageRunTime=StringManagerUtils.stringToFloat(sumRunTime/runTimeRecords+"",2);
+ 		   	}
+ 		   	if(liquidProductionRecords>0){
+			   averageLiquidProduction=StringManagerUtils.stringToFloat(sumLiquidProduction/liquidProductionRecords+"",2);
+ 		   	}
+ 		   	if(oilProductionRecords>0){
+			   averageOilProduction=StringManagerUtils.stringToFloat(sumOilProduction/oilProductionRecords+"",2);
+ 		   	}
+ 		   	if(waterProductionRecords>0){
+			   averageWaterProduction=StringManagerUtils.stringToFloat(sumWaterProduction/waterProductionRecords+"",2);
+ 		   	}
+ 		   	
+ 		   	record = new ArrayList<>();
+ 		   	record.add("合计");
+			record.add("");
+			record.add("");
+			record.add(sumCommTime);
+			record.add("");
+			record.add("");
+			record.add(sumRunTime);
+			record.add("");
+			record.add("");
+			record.add(sumLiquidProduction);
+			record.add(sumOilProduction);
+			record.add(sumWaterProduction);
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			sheetDataList.add(record);
+			
+			record = new ArrayList<>();
+ 		   	record.add("平均");
+			record.add("");
+			record.add("");
+			record.add(averageCommTime);
+			record.add("");
+			record.add("");
+			record.add(averageRunTime);
+			record.add("");
+			record.add("");
+			record.add(averageLiquidProduction);
+			record.add(averageOilProduction);
+			record.add(averageWaterProduction);
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			record.add("");
+			sheetDataList.add(record);
+			
+			ExcelUtils.exportDataWithTitleAndHead(response, fileName, title, sheetDataList, null, null);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String getWellList(String orgId,String wellName,String deviceType){

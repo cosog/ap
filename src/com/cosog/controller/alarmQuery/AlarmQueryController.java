@@ -101,8 +101,6 @@ public class AlarmQueryController extends BaseController{
 	
 	@RequestMapping("/exportAlarmData")
 	public String exportAlarmData() throws Exception {
-		String json = "";
-		String result="{\"success\":true}";
 		orgId = ParamUtils.getParameter(request, "orgId");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		String deviceId = ParamUtils.getParameter(request, "deviceId");
@@ -145,14 +143,7 @@ public class AlarmQueryController extends BaseController{
 		}
 		pager.setStart_date(startDate);
 		pager.setEnd_date(endDate);
-		json = alarmQueryService.getAlarmExportData(orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager);
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+		boolean bool = alarmQueryService.exportAlarmData(response,fileName,title, heads, fields,orgId,deviceType,deviceId,deviceName,alarmType,alarmLevel,isSendMessage,pager);
 		return null;
 	}
 	
@@ -211,14 +202,7 @@ public class AlarmQueryController extends BaseController{
 				orgId=user.getUserorgids();
 			}
 		}
-		json = alarmQueryService.getAlarmOverviewExportData(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager);
-		this.service.exportGridPanelData(response,fileName,title, heads, fields,json);
-		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
-		response.setHeader("Cache-Control", "no-cache");
-		PrintWriter pw = response.getWriter();
-		pw.print(result);
-		pw.flush();
-		pw.close();
+		boolean bool = alarmQueryService.exportAlarmOverviewData(response,fileName,title, heads, fields,orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,pager);
 		return null;
 	}
 	

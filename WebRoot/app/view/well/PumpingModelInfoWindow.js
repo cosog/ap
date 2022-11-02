@@ -24,6 +24,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             defaultType: 'textfield',
             items: [{
                 fieldLabel: '厂家<font color=red>*</font>',
+                labelWidth: 120,
                 id: 'pumpingManufacturer_Id',
                 allowBlank: false,
                 anchor: '95%',
@@ -61,6 +62,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             },{
                 xtype: "textfield",
                 fieldLabel: '型号<font color=red>*</font>',
+                labelWidth: 120,
                 allowBlank: false,
                 id: 'pumpingModel_Id',
                 anchor: '95%',
@@ -99,6 +101,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: '冲程(m)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingStroke_Id',
          		allowBlank: false,
          		anchor: '95%',
@@ -107,6 +110,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
             	xtype : "combobox",
 				fieldLabel : '曲柄旋转方向<font color=red>*</font>',
+				labelWidth: 120,
 				id : 'pumpingCrankRotationDirectionComb_Id',
 				anchor : '95%',
 				triggerAction : 'all',
@@ -138,6 +142,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: '曲柄偏置角(°)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingOffsetAngleOfCrank_Id',
          		allowBlank: false,
          		anchor: '95%',
@@ -146,6 +151,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: '曲柄重心半径(m)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingCrankGravityRadius_Id',
          		allowBlank: false,
          		anchor: '95%',
@@ -154,6 +160,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: '单块曲柄重量(kN)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingSingleCrankWeight_Id',
          		allowBlank: false,
          		anchor: '95%',
@@ -162,6 +169,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: '单块曲柄销重量(kN)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingSingleCrankPinWeight_Id',
          		allowBlank: false,
          		anchor: '95%',
@@ -170,6 +178,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             },{
          		xtype: "textfield",
          		fieldLabel: '结构不平衡重(kN)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingStructuralUnbalance_Id',
          		allowBlank: false,
          		anchor: '95%',
@@ -178,6 +187,7 @@ Ext.define("AP.view.well.PumpingModelInfoWindow", {
             }, {
          		xtype: "textfield",
          		fieldLabel: '平衡块重量(kN)<font color=red>*</font>',
+         		labelWidth: 120,
          		id: 'pumpingBalanceWeight_Id',
          		allowBlank: false,
          		anchor: '95%',

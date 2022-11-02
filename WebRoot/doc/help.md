@@ -271,19 +271,23 @@ smtpPort：邮箱SMTP端口，以实际为准。
 
 3、是否显示图标
 
-![](../images/helpdoc/PNG/eab908ff834f3c4eba176d5055041288.png)
+![](../images/helpdoc/PNG/8207d5519aa64b2aaccd6f63d2c7dde8.png)
 
 软件界面是否显示图标(如中石油、中石化等单位logo)，false-不显示；true-显示。
 
 4、是否打印日志
 
-![](../images/helpdoc/PNG/a9d770820ac423bfc30a0e9d9c0ce5bc.png)
+![](../images/helpdoc/PNG/c8d1f5d1977e9ea2b09aef8a6dee0bfa.png)
 
 是否打印日志，false-不打印（非调试模式推荐使用）；true-打印。
 
-5、是否发送模拟数据，用于演示
+5、导出数据上限
 
-![](../images/helpdoc/PNG/e17d78cd9e5d07d1575150b0f3034b55.png)
+![](../images/helpdoc/PNG/7f7172b69a266138b4c9a3ebfe11836f.png)
+
+6、是否发送模拟数据，用于演示
+
+![](../images/helpdoc/PNG/99056d45b6a16becf0e37da3cd25a337.png)
 
 simulateAcqEnable：false-不发送；true-发送；
 
@@ -1124,7 +1128,7 @@ ad -ver 打印版本信息
 
 #### <h4><a name="2.8.3.1单元列表"></a>2.8.3.1 单元列表</h4>
 
-第一层节点：设备类型，抽油机设备或螺杆泵设备
+第一层节点：设备类型，抽油机井或螺杆泵井
 
 第二层节点：协议；
 
@@ -1711,7 +1715,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 抽油机井和螺杆泵井维护。相比于螺杆泵井，抽油机井多了抽油机机型的选择和平衡块信息的配置，其他操作基本相同。
 
-![](../images/helpdoc/PNG/2b8f8352f075b5bf483110d11eb1add8.png)
+![](../images/helpdoc/PNG/d2c746fde1ba0426149495e464777f0e.png)
 
 图2-108井名信息
 
@@ -1742,7 +1746,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 排序编号：设备显示顺序。
 
-2、生产配置：录入设备生产数据；
+2、生产数据配置：录入设备生产数据；
 
 特别说明：净毛比与净毛值
 
@@ -1765,9 +1769,9 @@ y-标定后产量，净毛比默认为1，净毛值默认为0，则不进行标�
 
 图2-111抽油机平衡块信息配置
 
-5、视频配置：配置视频监控路径和视频访问令牌。
+5、视频配置：配置视频监控路径，每口井可配置两个视频。
 
-![](../images/helpdoc/PNG/6e12f1cd3f4fd5812bb01f7a94f48b02.png)
+![](../images/helpdoc/PNG/9ddc8b540b65ce2e002b6edc7472f670.png)
 
 图2-112视频配置
 
@@ -1775,7 +1779,7 @@ y-标定后产量，净毛比默认为1，净毛值默认为0，则不进行标�
 
 点击“添加设备”按钮，将在选中的单位下添加设备，如没有选中单位，则在第一个单位下添加，同一单位下不能添加同名设备。
 
-![](../images/helpdoc/PNG/3b11480baf1613b5dad1346d824ea654.png)
+![](../images/helpdoc/PNG/543eb3d716a113e965f8e028a500cc11.png)
 
 图2-113添加抽油机设备
 
@@ -1824,7 +1828,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 已有数据继续保存的话，覆盖同名设备的信息，不会添加设备。
 
-![](../images/helpdoc/PNG/448a6ca48e6fc2e4d22ce574c69890df.png)
+![](../images/helpdoc/PNG/82fc4938adf5089e06e793cc8e1d9778.png)
 
 图2-116批量添加抽油机设备-异常数据处理
 
@@ -1850,7 +1854,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 点击“添加设备”按钮，打开添加窗口，不能添加设备厂家、型号全部相同的设备。
 
-![](../images/helpdoc/PNG/ff92eace3ab4bad827f7ce2caea13de2.png)
+![](../images/helpdoc/PNG/0b735ba7793286455440f710f3eb5428.png)
 
 图2-119添加抽油机型号
 

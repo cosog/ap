@@ -84,7 +84,7 @@ public class ResourceMonitoringTask {
     private static String tableSpaceName="";
     
 	@SuppressWarnings("static-access")
-//	@Scheduled(cron = "0/1 * * * * ?")
+	@Scheduled(cron = "0/1 * * * * ?")
 	public void checkAndSendResourceMonitoring() throws SQLException, ParseException, IOException{
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();

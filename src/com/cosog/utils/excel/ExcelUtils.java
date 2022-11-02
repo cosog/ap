@@ -1145,9 +1145,17 @@ public class ExcelUtils {
     }
  
     private static boolean isNumeric(String str) {
-        if (Objects.nonNull(str) && "0.0".equals(str)) {
+        int cnt=0;
+    	if (Objects.nonNull(str) && "0.0".equals(str)) {
             return true;
         }
+        if(Objects.nonNull(str) && str.contains(".")){
+        	cnt=str.length()-str.replaceAll("\\.", "").length();
+        	if(cnt>1 || str.startsWith(".")){
+        		return false;
+        	}
+        }
+        str=str.replaceAll("\\.", "");
         for (int i = str.length(); --i >= 0; ) {
             if (!Character.isDigit(str.charAt(i))) {
                 return false;

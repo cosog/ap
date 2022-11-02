@@ -2489,6 +2489,7 @@ public class DriverAPIController extends BaseController{
 					
 					
 					pcpCalculateRequestData.setWellName(pcpDeviceInfo.getWellName());
+					pcpCalculateRequestData.setAcqTime(acqTime);
 					pcpCalculateRequestData.setFluidPVT(pcpDeviceInfo.getFluidPVT());
 					pcpCalculateRequestData.setReservoir(pcpDeviceInfo.getReservoir());
 					pcpCalculateRequestData.setRodString(pcpDeviceInfo.getRodString());
@@ -2746,6 +2747,8 @@ public class DriverAPIController extends BaseController{
 							responseResultData.init();
 							
 							responseResultData.setWellName(pcpCalculateResponseData.getWellName());
+							responseResultData.setAcqTime(pcpCalculateResponseData.getAcqTime());
+							responseResultData.setRPM(pcpCalculateResponseData.getRPM());
 							responseResultData.getCalculationStatus().setResultCode(pcpCalculateResponseData.getCalculationStatus().getResultCode());
 							
 							if(pcpCalculateResponseData.getProduction()!=null){

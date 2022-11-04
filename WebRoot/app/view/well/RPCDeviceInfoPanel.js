@@ -1251,6 +1251,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 				if(result.totalRoot.length==0){
 					rpcProductionHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
+					rpcProductionHandsontableHelper.pumpGrade=result.totalRoot[14].itemValue;
 					rpcProductionHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
@@ -1280,6 +1281,7 @@ var RPCProductionHandsontableHelper = {
 	        rpcProductionHandsontableHelper.colHeaders = [];
 	        rpcProductionHandsontableHelper.columns = [];
 	        rpcProductionHandsontableHelper.resultList = [];
+	        rpcProductionHandsontableHelper.pumpGrade = '';
 	        rpcProductionHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	            Handsontable.renderers.TextRenderer.apply(this, arguments);
 	            td.style.backgroundColor = 'rgb(242, 242, 242)';
@@ -1341,6 +1343,8 @@ var RPCProductionHandsontableHelper = {
 	                    	var barrelType='';
 	                    	if(isNotVal(rpcProductionHandsontableHelper.hot)){
 	                    		barrelType=rpcProductionHandsontableHelper.hot.getDataAtCell(14,2);
+	                    	}else{
+	                    		barrelType=rpcProductionHandsontableHelper.pumpGrade;
 	                    	}
 	                    	var pumpGradeList=['1','2','3','4','5'];
 	                    	if(barrelType==='组合泵'){

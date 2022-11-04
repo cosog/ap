@@ -892,7 +892,7 @@ public class ExcelUtils {
 		rowStyle.setBorderTop(BorderStyle.THIN); //上边框
 		// 设置表格列宽度（默认为15个字节）
 		sheet.setDefaultColumnWidth(15);
-		sheet.setColumnWidth(7, 0);
+		sheet.setColumnWidth(0, 256*7+184);//列宽7 宽度的单位是字符数的256分之一
 		// 创建合并算法数组
 		int rowLength = sheetDataList.size();
 		int columnLength = sheetDataList.get(0).size();

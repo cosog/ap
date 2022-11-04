@@ -70,7 +70,7 @@ public class WebSocketByJavax {
     @OnError
     public void onError(Session session, Throwable error) throws IOException{
         logger.debug("用户id为：{}的连接发送错误",this.userId);
-        error.printStackTrace();
+//        error.printStackTrace();
         if(this.session!=null && this.session.isOpen()){
         	this.session.close();
         }

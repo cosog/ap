@@ -155,14 +155,18 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 				protocolConfigAddrMappingItemsHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				protocolConfigAddrMappingItemsHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
+					protocolConfigAddrMappingItemsHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 					protocolConfigAddrMappingItemsHandsontableHelper.createTable([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
+					protocolConfigAddrMappingItemsHandsontableHelper.Data=result.totalRoot;
 					protocolConfigAddrMappingItemsHandsontableHelper.createTable(result.totalRoot);
 				}
 			}else{
 				if(result.totalRoot.length==0){
+					protocolConfigAddrMappingItemsHandsontableHelper.Data=[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}];
 					protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]);
 				}else{
+					protocolConfigAddrMappingItemsHandsontableHelper.Data=result.totalRoot;
 					protocolConfigAddrMappingItemsHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
@@ -207,6 +211,7 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	        protocolConfigAddrMappingItemsHandsontableHelper.colHeaders=[];
 	        protocolConfigAddrMappingItemsHandsontableHelper.columns=[];
 	        protocolConfigAddrMappingItemsHandsontableHelper.AllData=[];
+	        protocolConfigAddrMappingItemsHandsontableHelper.Data=[];
 	        
 	        protocolConfigAddrMappingItemsHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
 	             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -281,13 +286,21 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	                    var visualColIndex = this.instance.toVisualColumn(col);
 	                    if (visualColIndex ==0) {
 							cellProperties.readOnly = true;
-		                }else if(visualColIndex==6 && protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
-		                	var IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
+		                }else if(visualColIndex==6){
+		                	var IFDataType='';
+		                	if(protocolConfigAddrMappingItemsHandsontableHelper.hot!=undefined){
+		                		IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.hot.getDataAtCell(visualRowIndex,visualColIndex-1);
+		                	}else{
+		                		if(protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType!=undefined   ){
+		                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
+		                		}
+		                	}
 		                	if(IFDataType.toUpperCase().indexOf('FLOAT')<0){
 		                		cellProperties.readOnly = true;
+		                	}else{
+		                		cellProperties.readOnly = false;
 		                	}
 		                }
-	                    
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row, column, row2, column2, selectionLayerLevel) {

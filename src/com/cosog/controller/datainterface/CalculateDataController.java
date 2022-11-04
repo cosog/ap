@@ -156,7 +156,6 @@ public class CalculateDataController extends BaseController{
 		return null;
 	}
 	
-	@SuppressWarnings("static-access")
 	@RequestMapping("/FESDiagramDailyCalculation")
 	public String FESDiagramDailyCalculation() throws ParseException, SQLException, IOException{
 		String tatalDate=ParamUtils.getParameter(request, "date");
@@ -224,13 +223,7 @@ public class CalculateDataController extends BaseController{
 		}else{
 			date=tatalDate;
 		}
-		
-		if(StringManagerUtils.isNotNull(endAcqTime) && StringManagerUtils.isNotNull(wellId)){
-//			requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId,endAcqTime);
-		}else{
-			requestDataList=calculateDataService.getRPMDailyCalculationRequestData(tatalDate,wellId);
-		}
-		
+		requestDataList=calculateDataService.getRPMDailyCalculationRequestData(tatalDate,wellId);
 		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
 				Gson gson = new Gson();

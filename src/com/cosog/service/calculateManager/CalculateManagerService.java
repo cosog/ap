@@ -1439,7 +1439,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
 						+ " where t.wellid=t2.id "
 						+ " and t.id="+recordId;
-				String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh:mi:ss'),t.resultcode,"
+				String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 						+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 						+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 						+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
@@ -1530,7 +1530,12 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(obj[11]+""));
 						oilWeightProductionList.add(StringManagerUtils.stringToFloat(obj[12]+""));
 						waterWeightProductionList.add(StringManagerUtils.stringToFloat(obj[13]+""));
-//						weightWaterCutList.add(responseData.getProduction().getLiquidVolumetricProduction());
+						
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+						}else{
+							weightWaterCutList.add(0.0f);
+						}
 						
 						pumpEffList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(obj[16]+""));
@@ -1569,7 +1574,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 					dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 					dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//					dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+					dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 					dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
 					dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
 					dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
@@ -1615,7 +1620,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						+ " where t.wellid=t2.id "
 						+ " and t.id="+recordId;
 				String rpmSql="select "
-						+ "to_char(t.acqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+						+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 						+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 						+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 						+ "t.productiondata,"
@@ -1684,7 +1689,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(obj[6]+""));
 						oilWeightProductionList.add(StringManagerUtils.stringToFloat(obj[7]+""));
 						waterWeightProductionList.add(StringManagerUtils.stringToFloat(obj[8]+""));
-//						weightWaterCutList.add(responseData.getProduction().getLiquidVolumetricProduction());
+						if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
+							weightWaterCutList.add(pcpProductionData.getProduction().getWeightWaterCut());
+						}else{
+							weightWaterCutList.add(0.0f);
+						}
 						
 						pumpEffList.add(StringManagerUtils.stringToFloat(obj[10]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(obj[11]+""));
@@ -1715,7 +1724,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 					dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 					dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//					dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+					dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 					dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
 					dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 					dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");
@@ -1753,7 +1762,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " from tbl_rpcdailycalculationdata t,tbl_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.id="+recordId;
-		String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh:mi:ss'),t.resultcode,"
+		String fesDiagramSql="select to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
@@ -1844,7 +1853,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				liquidWeightProductionList.add(StringManagerUtils.stringToFloat(obj[11]+""));
 				oilWeightProductionList.add(StringManagerUtils.stringToFloat(obj[12]+""));
 				waterWeightProductionList.add(StringManagerUtils.stringToFloat(obj[13]+""));
-//				weightWaterCutList.add(responseData.getProduction().getLiquidVolumetricProduction());
+				if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+					weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+				}else{
+					weightWaterCutList.add(0.0f);
+				}
 				
 				pumpEffList.add(StringManagerUtils.stringToFloat(obj[15]+""));
 				pumpEff1List.add(StringManagerUtils.stringToFloat(obj[16]+""));
@@ -1883,7 +1896,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 			dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 			dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 			dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
 			dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
 			dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
@@ -1915,7 +1928,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				+ " from tbl_pcpdailycalculationdata t,pcp_rpcdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.id="+recordId;
-		String fesDiagramSql="select to_char(t.acqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+		String fesDiagramSql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 				+ "t.productiondata,"
@@ -1984,7 +1997,11 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				liquidWeightProductionList.add(StringManagerUtils.stringToFloat(obj[6]+""));
 				oilWeightProductionList.add(StringManagerUtils.stringToFloat(obj[7]+""));
 				waterWeightProductionList.add(StringManagerUtils.stringToFloat(obj[8]+""));
-//				weightWaterCutList.add(responseData.getProduction().getLiquidVolumetricProduction());
+				if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
+					weightWaterCutList.add(pcpProductionData.getProduction().getWeightWaterCut());
+				}else{
+					weightWaterCutList.add(0.0f);
+				}
 				
 				pumpEffList.add(StringManagerUtils.stringToFloat(obj[10]+""));
 				pumpEff1List.add(StringManagerUtils.stringToFloat(obj[11]+""));
@@ -2015,7 +2032,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 			dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 			dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+			dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 			dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
 			dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 			dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");

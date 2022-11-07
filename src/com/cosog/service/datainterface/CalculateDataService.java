@@ -322,7 +322,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		StringBuffer dataSbf=null;
 		List<String> requestDataList=new ArrayList<String>();
 		String sql="select t.id,t.wellname from tbl_rpcdevice t ";
-		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh:mi:ss'),t.resultcode,"
+		String fesDiagramSql="select t2.id, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 				+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
@@ -627,7 +627,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 		List<String> requestDataList=new ArrayList<String>();
 		String sql="select t.id,t.wellname from tbl_pcpdevice t ";
 		String fesDiagramSql="select t2.id, "
-				+ "to_char(t.acqtime,'yyyy-mm-dd hh:mi:ss'),t.rpm,"
+				+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
 				+ "t.theoreticalproduction,t.liquidvolumetricproduction,t.oilvolumetricproduction,t.watervolumetricproduction,"
 				+ "t.liquidweightproduction,t.oilweightproduction,t.waterweightproduction,"
 				+ "t.productiondata,"
@@ -688,7 +688,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 						Object[] statusObj=(Object[]) statusList.get(j);
 						if(deviceId.equals(statusObj[0].toString())){
 							
-							if(statusObj[3]!=null&&StringManagerUtils.stringToInteger(statusObj[3]+"")==1){
+							if(statusObj[3]!=null&&StringManagerUtils.stringToInteger(statusObj[3]+"")>=1){
 								commStatus=true;
 							}
 							if(statusObj[7]!=null&&StringManagerUtils.stringToInteger(statusObj[7]+"")==1){
@@ -730,6 +730,9 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}";
 							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 							timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
+							
+							System.out.println("螺杆泵跨天汇总通信请求数据："+commTotalRequestData);
+							System.out.println("螺杆泵跨天汇总运行请求数据："+runTotalRequestData);
 							break;
 						}
 					}
@@ -878,6 +881,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public void saveRPMTotalCalculateData(TotalAnalysisResponseData totalAnalysisResponseData,TotalAnalysisRequestData totalAnalysisRequestData,String tatalDate) throws SQLException, ParseException{
-		this.getBaseDao().saveFESDiagramTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
+		this.getBaseDao().saveRPMTotalCalculateData(totalAnalysisResponseData,totalAnalysisRequestData,tatalDate);
 	}
 }

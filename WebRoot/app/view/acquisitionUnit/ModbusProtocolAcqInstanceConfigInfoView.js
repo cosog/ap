@@ -38,15 +38,16 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     layout: "border",
                     border: true,
                     header: false,
-                    collapsible: true,
+//                    collapsible: true,
                     split: true,
                     collapseDirection: 'left',
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
+                    	layout: 'fit',
                     	title:'采控实例列表',
 //                    	autoScroll:true,
-                        scrollable: true,
+//                        scrollable: true,
                     	id:"ModbusProtocolInstanceConfigPanel_Id"
                     },{
                     	region: 'south',

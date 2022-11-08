@@ -2864,7 +2864,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int limit = pager.getLimit();
 		int start = pager.getStart();
 		int maxvalue = limit + start;
-		String allsql="",sql="";
+		String allsql="",sql="",totalSql="";
 		allsql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss') as acqTime,"
 				+ " t.stroke,t.spm,"
 				+ " t.fmax,t.fmin,t.position_curve,t.load_curve,"
@@ -2875,13 +2875,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-				+ " and t.wellid="+deviceId+" "
-				+ " order by t.fesdiagramacqtime desc";
+				+ " and t.wellid="+deviceId+" ";
+		totalSql=allsql;
+		allsql+= " order by t.fesdiagramacqtime desc";
 		
 		
 		sql="select b.* from (select a.*,rownum as rn from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn > "+ start +"";
-		int totals = getTotalCountRows(allsql);//获取总记录数
+		long time1=System.nanoTime()/1000;
+		int totals = getTotalCountRows(totalSql);//获取总记录数
+		long time2=System.nanoTime()/1000;
+		System.out.println("查询功图平铺图形总数耗时:"+(time2-time1));
 		List<?> list=this.findCallSql(sql);
+		long time3=System.nanoTime()/1000;
+		System.out.println("查询功图平铺图形分页数据耗时:"+(time3-time2));
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
@@ -2930,6 +2936,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			dynSbf.deleteCharAt(dynSbf.length() - 1);
 		}
 		dynSbf.append("]}");
+		long time4=System.nanoTime()/1000;
+		System.out.println("形成功图平铺json据耗时:"+(time4-time3));
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	

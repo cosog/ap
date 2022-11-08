@@ -66,15 +66,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     layout: "border",
                     border: true,
                     header: false,
-                    collapsible: true,
                     split: true,
                     collapseDirection: 'left',
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
                     	title:'报警单元配置',
-//                    	autoScroll:true,
-                        scrollable: true,
+                    	layout: 'fit',
                     	id:"ModbusProtocolAlarmUnitConfigPanel_Id"
                     },{
                     	region: 'south',

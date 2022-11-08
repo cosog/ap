@@ -55,15 +55,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     layout: "border",
                     border: true,
                     header: false,
-                    collapsible: true,
                     split: true,
                     collapseDirection: 'left',
                     hideMode:'offsets',
                     items: [{
                     	region: 'center',
                     	title:'协议配置',
-//                    	autoScroll:true,
-                        scrollable: true,
+                    	layout: 'fit',
                     	id:"ModbusProtocolAddrMappingConfigPanel_Id"
                     },{
                     	region: 'south',

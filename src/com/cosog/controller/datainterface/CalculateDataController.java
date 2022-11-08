@@ -171,7 +171,6 @@ public class CalculateDataController extends BaseController{
 		}
 		
 		requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
-		
 		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
 			try {
 				Gson gson = new Gson();
@@ -224,7 +223,7 @@ public class CalculateDataController extends BaseController{
 			date=tatalDate;
 		}
 		requestDataList=calculateDataService.getRPMDailyCalculationRequestData(tatalDate,wellId);
-		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
+		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){
 			try {
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();

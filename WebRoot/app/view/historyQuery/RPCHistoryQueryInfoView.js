@@ -770,17 +770,19 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                         var RPCHistoryDiagramTabPanel = Ext.getCmp("RPCHistoryDiagramTabPanel");
                                         var hRatio = RPCHistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
                                         if (hRatio > 0.5) {
-                                            if (diagramPage < 2) {
-                                                diagramPage++;
-                                                loadSurfaceCardList(diagramPage);
-                                            } else {
-                                                var divCount = $("#surfaceCardContainer div ").size();
-                                                var count = (diagramPage - 1) * defaultGraghSize * 3;
-                                                if (divCount > count) {
-                                                    diagramPage++;
-                                                    loadSurfaceCardList(diagramPage);
-                                                }
-                                            }
+//                                            if (diagramPage < 2) {
+//                                                diagramPage++;
+//                                                loadSurfaceCardList(diagramPage);
+//                                            } else {
+//                                                var divCount = $("#surfaceCardContainer div ").size();
+//                                                var count = (diagramPage - 1) * defaultGraghSize * 3;
+//                                                if (divCount > count) {
+//                                                    diagramPage++;
+//                                                    loadSurfaceCardList(diagramPage);
+//                                                }
+//                                            }
+                                            diagramPage++;
+                                            loadSurfaceCardList(diagramPage);
                                         }
                                     }
                                 }, this);

@@ -172,7 +172,6 @@ public class CalculateDataController extends BaseController{
 		
 		requestDataList=calculateDataService.getFSDiagramDailyCalculationRequestData(tatalDate,wellId);
 		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
-			System.out.println("抽油机井曲线数据汇总请求数据:"+requestDataList.get(i));
 			try {
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();
@@ -224,8 +223,7 @@ public class CalculateDataController extends BaseController{
 			date=tatalDate;
 		}
 		requestDataList=calculateDataService.getRPMDailyCalculationRequestData(tatalDate,wellId);
-		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){//TotalCalculateResponseData
-			System.out.println("螺杆泵井转速数据汇总请求数据:"+requestDataList.get(i));
+		for(int i=0;requestDataList!=null&&i<requestDataList.size();i++){
 			try {
 				Gson gson = new Gson();
 				java.lang.reflect.Type typeRequest = new TypeToken<TotalAnalysisRequestData>() {}.getType();

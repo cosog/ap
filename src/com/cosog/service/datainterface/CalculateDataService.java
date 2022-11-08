@@ -730,9 +730,6 @@ public class CalculateDataService<T> extends BaseService<T> {
 									+ "}";
 							commResponseData=CalculateUtils.commCalculate(commTotalRequestData);
 							timeEffResponseData=CalculateUtils.runCalculate(runTotalRequestData);
-							
-							System.out.println("螺杆泵跨天汇总通信请求数据："+commTotalRequestData);
-							System.out.println("螺杆泵跨天汇总运行请求数据："+runTotalRequestData);
 							break;
 						}
 					}

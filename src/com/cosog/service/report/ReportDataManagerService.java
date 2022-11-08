@@ -723,9 +723,9 @@ public class ReportDataManagerService<T> extends BaseService<T> {
 			
 			sumCommTime+=StringManagerUtils.stringToFloat(obj[3]+"");
  		   	sumRunTime+=StringManagerUtils.stringToFloat(obj[6]+"");
- 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[11]+"");
- 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[12]+"");
- 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[13]+"");
+ 		   	sumLiquidProduction+=StringManagerUtils.stringToFloat(obj[9]+"");
+ 		   	sumOilProduction+=StringManagerUtils.stringToFloat(obj[10]+"");
+ 		   	sumWaterProduction+=StringManagerUtils.stringToFloat(obj[11]+"");
  		   	
  		   	if(StringManagerUtils.stringToFloat(obj[3]+"")>0){
  		   		commTimeRecords+=1;
@@ -733,13 +733,13 @@ public class ReportDataManagerService<T> extends BaseService<T> {
  		   	if(StringManagerUtils.stringToFloat(obj[6]+"")>0){
  		   		runTimeRecords+=1;
  		   	}
- 		   	if(StringManagerUtils.stringToFloat(obj[11]+"")>0){
+ 		   	if(StringManagerUtils.stringToFloat(obj[9]+"")>0){
  		   		liquidProductionRecords+=1;
  		   	}
- 		   	if(StringManagerUtils.stringToFloat(obj[12]+"")>0){
+ 		   	if(StringManagerUtils.stringToFloat(obj[10]+"")>0){
  		   		oilProductionRecords+=1;
  		   	}
- 		   	if(StringManagerUtils.stringToFloat(obj[13]+"")>0){
+ 		   	if(StringManagerUtils.stringToFloat(obj[11]+"")>0){
  		   		waterProductionRecords+=1;
  		   	}
 			

@@ -652,6 +652,91 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         hidden: true
                     }],
             		items: [{
+            			title: '趋势曲线',
+            			id:"RPCHistoryDataTabPanel",
+                        autoScroll: true,
+                        split: true,
+                        collapsible: true,
+                        layout: 'border',
+                        border: false,
+                        items: [{
+                        	region: 'north',
+                        	height: '50%',
+                        	title: '历史曲线',
+                        	layout: 'fit',
+                        	header: false,
+                        	border: true,
+                        	split: true,
+                            collapsible: true,
+                            html: '<div id="rpcHistoryQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
+                            listeners: {
+                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                                    if ($("#rpcHistoryQueryCurveDiv_Id").highcharts() != undefined) {
+                                    	highchartsResize("rpcHistoryQueryCurveDiv_Id");
+                                    }
+                                }
+                            }
+                        },{
+                        	region: 'center',
+                        	title: '历史数据',
+                        	header: false,
+                        	id: "RPCHistoryQueryDataInfoPanel_Id",
+                        	layout: 'fit',
+                        	border: true
+                        }]
+            		},{
+            			title: '图形平铺',
+            			id:"RPCHistoryDiagramTabPanel",
+            			border: false,
+                        layout: "fit",
+                        autoScroll: true,
+                        html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
+                        listeners: {
+                        	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+//                        		var GridPanel = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id");
+//                        		if(isNotVal(GridPanel)){
+//                        			loadSurfaceCardList(1);
+//                        		}
+
+                            	var container=$('#surfaceCardContainer');
+    		        			if(container!=undefined && container.length>0){
+    		        				var containerChildren=container[0].children;
+    		        				if(containerChildren!=undefined && containerChildren.length>0){
+    		        					for(var i=0;i<containerChildren.length;i++){
+    		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
+    		        						if(isNotVal(chart)){
+    		        							highchartsResize(containerChildren[i].id);
+    		        						}
+    		        					}
+    		        				}
+    		        			}
+                            },
+                            render: function (p, o, i, c) {
+                                p.body.on('scroll', function () {
+                                    var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
+                                    if (diagramPage < totalPages) {
+                                        var RPCHistoryDiagramTabPanel = Ext.getCmp("RPCHistoryDiagramTabPanel");
+                                        var hRatio = RPCHistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
+                                        if (hRatio > 0.5) {
+//                                            if (diagramPage < 2) {
+//                                                diagramPage++;
+//                                                loadSurfaceCardList(diagramPage);
+//                                            } else {
+//                                                var divCount = $("#surfaceCardContainer div ").size();
+//                                                var count = (diagramPage - 1) * defaultGraghSize * 3;
+//                                                if (divCount > count) {
+//                                                    diagramPage++;
+//                                                    loadSurfaceCardList(diagramPage);
+//                                                }
+//                                            }
+                                            diagramPage++;
+                                            loadSurfaceCardList(diagramPage);
+                                        }
+                                    }
+                                }, this);
+                            }
+                        }
+            		},{
             			title: '图形叠加',
             			id:"RPCHistoryDiagramOverlayTabPanel",
             			layout: 'border',
@@ -736,91 +821,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                              layout: 'fit',
                              id: 'RPCHistoryQueryFSdiagramOverlayTable_Id'
                          }]
-            		},{
-            			title: '图形平铺',
-            			id:"RPCHistoryDiagramTabPanel",
-            			border: false,
-                        layout: "fit",
-                        autoScroll: true,
-                        html: '<div id="surfaceCardContainer" class="hbox" style="width:100%;height:100%;"></div>',
-                        listeners: {
-                        	resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-//                        		var GridPanel = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id");
-//                        		if(isNotVal(GridPanel)){
-//                        			loadSurfaceCardList(1);
-//                        		}
-
-                            	var container=$('#surfaceCardContainer');
-    		        			if(container!=undefined && container.length>0){
-    		        				var containerChildren=container[0].children;
-    		        				if(containerChildren!=undefined && containerChildren.length>0){
-    		        					for(var i=0;i<containerChildren.length;i++){
-    		        						var chart = $("#"+containerChildren[i].id).highcharts(); 
-    		        						if(isNotVal(chart)){
-    		        							highchartsResize(containerChildren[i].id);
-    		        						}
-    		        					}
-    		        				}
-    		        			}
-                            },
-                            render: function (p, o, i, c) {
-                                p.body.on('scroll', function () {
-                                    var totalPages = Ext.getCmp("SurfaceCardTotalPages_Id").getValue(); // 总页数
-                                    if (diagramPage < totalPages) {
-                                        var RPCHistoryDiagramTabPanel = Ext.getCmp("RPCHistoryDiagramTabPanel");
-                                        var hRatio = RPCHistoryDiagramTabPanel.getScrollY() / Ext.get("surfaceCardContainer").dom.clientHeight; // 滚动条所在高度与内容高度的比值
-                                        if (hRatio > 0.5) {
-//                                            if (diagramPage < 2) {
-//                                                diagramPage++;
-//                                                loadSurfaceCardList(diagramPage);
-//                                            } else {
-//                                                var divCount = $("#surfaceCardContainer div ").size();
-//                                                var count = (diagramPage - 1) * defaultGraghSize * 3;
-//                                                if (divCount > count) {
-//                                                    diagramPage++;
-//                                                    loadSurfaceCardList(diagramPage);
-//                                                }
-//                                            }
-                                            diagramPage++;
-                                            loadSurfaceCardList(diagramPage);
-                                        }
-                                    }
-                                }, this);
-                            }
-                        }
-            		},{
-            			title: '趋势曲线',
-            			id:"RPCHistoryDataTabPanel",
-                        autoScroll: true,
-                        split: true,
-                        collapsible: true,
-                        layout: 'border',
-                        border: false,
-                        items: [{
-                        	region: 'north',
-                        	height: '50%',
-                        	title: '历史曲线',
-                        	layout: 'fit',
-                        	header: false,
-                        	border: true,
-                        	split: true,
-                            collapsible: true,
-                            html: '<div id="rpcHistoryQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
-                            listeners: {
-                                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                                    if ($("#rpcHistoryQueryCurveDiv_Id").highcharts() != undefined) {
-                                    	highchartsResize("rpcHistoryQueryCurveDiv_Id");
-                                    }
-                                }
-                            }
-                        },{
-                        	region: 'center',
-                        	title: '历史数据',
-                        	header: false,
-                        	id: "RPCHistoryQueryDataInfoPanel_Id",
-                        	layout: 'fit',
-                        	border: true
-                        }]
             		}],
             		listeners: {
         				tabchange: function (tabPanel, newCard,oldCard, obj) {
@@ -862,7 +862,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
 
 loadSurfaceCardList = function (page) {
 	diagramPage=page;
-	var defaultGraghSize=60;
     Ext.getCmp("RPCHistoryDiagramTabPanel").mask(cosog.string.loading); // 数据加载中，请稍后
     var start = (page - 1) * defaultGraghSize;
     page=page;

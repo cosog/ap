@@ -30,10 +30,14 @@
 <script> 
  var user_ = "${userLogin.userNo}";
  var oem = ${configFile}.ap.oem;
- 
  var productionUnit = ${configFile}.ap.others.productionUnit;
  var pcpHidden = ${configFile}.ap.others.pcpHidden;
  var showLogo = ${configFile}.ap.others.showLogo;
+ 
+ var defaultComboxSize=${configFile}.ap.others.defaultComboxSize;
+ var defaultGraghSize=${configFile}.ap.others.defaultGraghSize;
+ 
+ 
  var userAccount="${userLogin.userId}";
  if (user_ == null || "" == (user_)) {
 	 window.location.href = "../login/toLogin";
@@ -110,8 +114,7 @@
 					pic_url = "${userLogin.picUrl}";//动态监测功图查询时，需要的图形URL地址
 					//默认前台分页数据量
 					defaultPageSize = "${userLogin.pageSize}";
-					defaultComboxSize="${userLogin.defaultComboxSize}";
-					defaultGraghSize="${userLogin.defaultGraghSize}";
+					
 					_clientWidth = document.body.clientWidth;
 					
 					// MsgTip.msg('消息', '设置10秒后自动隐藏',true,2000);

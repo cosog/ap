@@ -110,10 +110,13 @@ Ext.define('AP.view.alarmQuery.RPCSwitchingValueAlarmInfoView', {
 						Ext.getCmp("RPCSwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
-            },'-',{
+            },
+//            '-',
+            {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
 				id : 'RPCSwitchingValueAlarmIsSendMessageComb_Id',
+				hidden: true,
 				labelWidth: 80,
                 width: 160,
                 labelAlign: 'left',

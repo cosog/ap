@@ -110,10 +110,13 @@ Ext.define('AP.view.alarmQuery.RPCEnumValueAlarmInfoView', {
 						Ext.getCmp("RPCEnumValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
-            },'-',{
+            },
+//            '-',
+            {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
 				id : 'RPCEnumValueAlarmIsSendMessageComb_Id',
+				hidden: true,
 				labelWidth: 80,
                 width: 160,
                 labelAlign: 'left',

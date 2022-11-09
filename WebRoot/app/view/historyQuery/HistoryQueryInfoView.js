@@ -428,12 +428,17 @@ function deviceHistoryQueryCurve(deviceType){
 		        }else if(allPositive){
 		        	minValue=0;
 		        }
-		        if(JSON.stringify(graphicSet) != "{}"&&isNotVal(graphicSet.History) && graphicSet.History.length>i ){
-			    	if(isNotVal(graphicSet.History[i].yAxisMaxValue)){
-			    		maxValue=parseFloat(graphicSet.History[i].yAxisMaxValue);
-			    	}
-			    	if(isNotVal(graphicSet.History[i].yAxisMinValue)){
-			    		minValue=parseFloat(graphicSet.History[i].yAxisMinValue);
+		        if(JSON.stringify(graphicSet) != "{}" && isNotVal(graphicSet.History) ){
+			    	for(var j=0;j<graphicSet.History.length;j++){
+			    		if(graphicSet.History[j].itemCode!=undefined && graphicSet.History[j].itemCode.toUpperCase()==result.curveItemCodes[i].toUpperCase()){
+			    			if(isNotVal(graphicSet.History[j].yAxisMaxValue)){
+					    		maxValue=parseFloat(graphicSet.History[j].yAxisMaxValue);
+					    	}
+					    	if(isNotVal(graphicSet.History[j].yAxisMinValue)){
+					    		minValue=parseFloat(graphicSet.History[j].yAxisMinValue);
+					    	}
+					    	break;
+			    		}
 			    	}
 			    }
 		        

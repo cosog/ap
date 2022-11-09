@@ -109,10 +109,13 @@ Ext.define('AP.view.alarmQuery.RPCNumericValueAlarmInfoView', {
 						Ext.getCmp("RPCNumericValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
-            },'-',{
+            },
+//            '-',
+            {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
 				id : 'RPCNumericValueAlarmIsSendMessageComb_Id',
+				hidden: true,
 				labelWidth: 80,
                 width: 160,
                 labelAlign: 'left',

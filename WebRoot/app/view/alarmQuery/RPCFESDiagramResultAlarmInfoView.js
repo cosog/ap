@@ -109,11 +109,13 @@ Ext.define('AP.view.alarmQuery.RPCFESDiagramResultAlarmInfoView', {
 						Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
-            },'-',{
+            },
+//            '-',
+            {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
 				id : 'RPCFESDiagramResultAlarmIsSendMessageComb_Id',
-				hidden: false,
+				hidden: true,
 				labelWidth: 80,
                 width: 160,
                 labelAlign: 'left',

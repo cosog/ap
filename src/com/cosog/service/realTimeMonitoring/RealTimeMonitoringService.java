@@ -7,6 +7,7 @@ import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -3845,6 +3846,18 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 			List<String> itemColumnList=new ArrayList<String>();
 			List<String> curveColorList=new ArrayList<String>();
 			if(displayInstanceOwnItem!=null){
+				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
+					@Override
+					public int compare(DisplayInstanceOwnItem.DisplayItem item1,DisplayInstanceOwnItem.DisplayItem item2){
+						int diff=item1.getRealtimeCurve()-item2.getRealtimeCurve();
+						if(diff>0){
+							return 1;
+						}else if(diff<0){
+							return -1;
+						}
+						return 0;
+					}
+				});
 				String protocolName=displayInstanceOwnItem.getProtocol();
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){

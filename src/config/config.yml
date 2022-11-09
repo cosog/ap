@@ -27,7 +27,7 @@ ap:
       syncOrAsync: false
       expandedAll: true
       defaultComboxSize: 10000
-      defaultGraghSize: 60
+      defaultGraghSize: 30
       productionUnit: stere #产量单位 stere-立方米 ton-吨
       pcpHidden: false
       showLogo: true

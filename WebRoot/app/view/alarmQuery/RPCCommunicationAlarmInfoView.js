@@ -82,7 +82,9 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
-            },deviceCombo,'-',{
+            },deviceCombo,
+//            '-',
+            {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
 				id : 'RPCCommunicationAlarmIsSendMessageComb_Id',

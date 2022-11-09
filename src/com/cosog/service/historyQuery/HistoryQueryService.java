@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2499,6 +2500,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String getHistoryQueryCurveData(String deviceId,String deviceName,String deviceType,String startDate,String endDate,int userNo)throws Exception {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
+		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveColorBuff = new StringBuffer();
 		Jedis jedis=null;
 		UserInfo userInfo=null;
@@ -2580,6 +2582,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			List<?> graphicSetList = this.findCallSql(graphicSetSql);
 			
 			if(displayInstanceOwnItem!=null){
+				Collections.sort(displayInstanceOwnItem.getItemList(),new Comparator<DisplayInstanceOwnItem.DisplayItem>(){
+					@Override
+					public int compare(DisplayInstanceOwnItem.DisplayItem item1,DisplayInstanceOwnItem.DisplayItem item2){
+						int diff=item1.getHistoryCurve()-item2.getHistoryCurve();
+						if(diff>0){
+							return 1;
+						}else if(diff<0){
+							return -1;
+						}
+						return 0;
+					}
+				});
+				
 				String protocolName=displayInstanceOwnItem.getProtocol();
 				ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 				if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
@@ -2689,6 +2704,15 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			itemsBuff.append("]");
 			
+			itemsCodeBuff.append("[");
+			for(int i=0;i<itemColumnList.size();i++){
+				itemsCodeBuff.append("\""+itemColumnList.get(i)+"\",");
+			}
+			if (itemsCodeBuff.toString().endsWith(",")) {
+				itemsCodeBuff.deleteCharAt(itemsCodeBuff.length() - 1);
+			}
+			itemsCodeBuff.append("]");
+			
 			curveColorBuff.append("[");
 			for(int i=0;i<curveColorList.size();i++){
 				curveColorBuff.append("\""+curveColorList.get(i)+"\",");
@@ -2698,7 +2722,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			}
 			curveColorBuff.append("]");
 			
-			result_json.append("{\"deviceName\":\""+deviceName+"\",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"curveItems\":"+itemsBuff+",\"curveColors\":"+curveColorBuff+",\"graphicSet\":"+graphicSet+",\"list\":[");
+			result_json.append("{\"deviceName\":\""+deviceName+"\","
+					+ "\"startDate\":\""+startDate+"\","
+					+ "\"endDate\":\""+endDate+"\","
+					+ "\"curveItems\":"+itemsBuff+","
+					+ "\"curveItemCodes\":"+itemsCodeBuff+","
+					+ "\"curveColors\":"+curveColorBuff+","
+					+ "\"graphicSet\":"+graphicSet+","
+					+ "\"list\":[");
 			if(itemColumnList.size()>0){
 				String columns="";
 				for(int i=0;i<itemColumnList.size();i++){
@@ -2763,12 +2794,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 		
-		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 where t.instancecode=t2.code and t2.unitid=t3.id"
+		String protocolSql="select upper(t3.protocol) from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 				+ " and  t.id="+deviceId;
-		String graphicSetSql="select t.graphicstyle from tbl_rpcdevicegraphicset t where t.wellid="+deviceId;
-		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurvecolor "
+		String graphicSetSql="select t.graphicstyle from "+graphicSetTableName+" t where t.wellid="+deviceId;
+		String curveItemsSql="select t4.itemname,t4.bitindex,t4.historycurvecolor,t4.itemcode,t4.type "
 				+ " from "+deviceTableName+" t,tbl_protocoldisplayinstance t2,tbl_display_unit_conf t3,tbl_display_items2unit_conf t4 "
-				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type=0 "
+				+ " where t.displayinstancecode=t2.code and t2.displayunitid=t3.id and t3.id=t4.unitid and t4.type<>2 "
 				+ " and t.id="+deviceId+" and t4.historycurve>=0 "
 				+ " order by t4.historycurve,t4.sort,t4.id";
 		List<?> protocolList = this.findCallSql(protocolSql);
@@ -2779,36 +2811,36 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String dataType="";
 		GraphicSetData graphicSetData=null;
 		int resolutionMode=0;
-		List<String> itemNameList=new ArrayList<String>();
-		List<String> itemColumnList=new ArrayList<String>();
-		List<String> curveColorList=new ArrayList<String>();
-		if(protocolList.size()>0){
-			protocolName=protocolList.get(0)+"";
-			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-						for(int j=0;j<curveItemList.size();j++){
-							Object[] itemObj=(Object[]) curveItemList.get(j);
-							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemObj[0]+"")){
-									String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
-									itemColumnList.add(col);
-									if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-										itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-									}else{
-										itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-									}
-									curveColorList.add((itemObj[2]+"").replaceAll("null", ""));
-									break;
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
+//		List<String> itemNameList=new ArrayList<String>();
+//		List<String> itemColumnList=new ArrayList<String>();
+//		List<String> curveColorList=new ArrayList<String>();
+//		if(protocolList.size()>0){
+//			protocolName=protocolList.get(0)+"";
+//			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
+//			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
+//				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
+//					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
+//						for(int j=0;j<curveItemList.size();j++){
+//							Object[] itemObj=(Object[]) curveItemList.get(j);
+//							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
+//								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemObj[0]+"")){
+//									String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
+////									itemColumnList.add(col);
+//									if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
+//										itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
+//									}else{
+//										itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
+//									}
+////									curveColorList.add((itemObj[2]+"").replaceAll("null", ""));
+//									break;
+//								}
+//							}
+//						}
+//						break;
+//					}
+//				}
+//			}
+//		}
 		
 		if(graphicSetList.size()>0){
 			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
@@ -2816,9 +2848,10 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			graphicSetData=gson.fromJson(graphicSet, type);
 		}
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+itemNameList.size()+",\"totalRoot\":[");
-		for(int i=0;i<itemNameList.size();i++){
-			result_json.append("{\"curveName\":\"" + itemNameList.get(i) + "\",");
+		result_json.append("{\"success\":true,\"totalCount\":"+curveItemList.size()+",\"totalRoot\":[");
+		for(int i=0;i<curveItemList.size();i++){
+			Object[] itemObj=(Object[]) curveItemList.get(i);
+			result_json.append("{\"curveName\":\"" + itemObj[0] + "\",\"itemCode\":\"" + itemObj[3] + "\",\"itemType\":\"" + itemObj[4] + "\",");
 			if(graphicSetData!=null && graphicSetData.getHistory()!=null && graphicSetData.getHistory().size()>i){
 				result_json.append("\"yAxisMaxValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMaxValue() + "\",");
 				result_json.append("\"yAxisMinValue\":\"" + graphicSetData.getHistory().get(i).getyAxisMinValue() + "\"},");

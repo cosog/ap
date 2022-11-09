@@ -64,6 +64,8 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 		var graphicInfo={};
                 		graphicInfo.yAxisMaxValue=isNotVal(curveSetData[index][1])?curveSetData[index][1]:"";
                 		graphicInfo.yAxisMinValue=isNotVal(curveSetData[index][2])?curveSetData[index][2]:"";
+                		graphicInfo.itemCode=curveSetData[index][3];
+                		graphicInfo.itemType=curveSetData[index][4];
                 		
                 		graphicSetData.History.push(graphicInfo);
                 	});
@@ -146,11 +148,13 @@ function CreateDeviceHistoryCurveSetTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceHistoryCurveSetHandsontableHelper==null || deviceHistoryCurveSetHandsontableHelper.hot==undefined){
 				deviceHistoryCurveSetHandsontableHelper = DeviceHistoryCurveSetHandsontableHelper.createNew("HistoryCurveSetTableDiv_Id");
-				var colHeaders="['曲线','Y轴最大值','Y轴最小值']";
+				var colHeaders="['曲线','Y轴最大值','Y轴最小值','','']";
 				var columns="[" 
 						+"{data:'curveName'}," 
 						+"{data:'yAxisMaxValue'}," 
-						+"{data:'yAxisMinValue'}"
+						+"{data:'yAxisMinValue'},"
+						+"{data:'itemCode'},"
+						+"{data:'itemType'}"
 						+"]";
 				deviceHistoryCurveSetHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				deviceHistoryCurveSetHandsontableHelper.columns=Ext.JSON.decode(columns);
@@ -168,41 +172,6 @@ function CreateDeviceHistoryCurveSetTable(){
 			deviceType:deviceType
         }
 	});
-	
-	
-	
-//	var chart = $("#"+divId).highcharts();
-//	
-//	
-//	
-//	var curveSetData=[];
-//	if(isNotVal(chart)){
-////		Ext.getCmp("HistoryCurveSetWindow_Id").setHeight((chart.yAxis.length+3)*26);
-//		for(var i=0;i<chart.yAxis.length;i++){
-//			var curve={};
-//			curve.curveName=chart.yAxis[i].series[0].name;
-//			curve.yAxisMaxValue=chart.yAxis[i].max;
-//			curve.yAxisMinValue=chart.yAxis[i].min;
-//			curve.yAxisPosition=chart.yAxis[i].opposite?'右':'左';
-//			curveSetData.push(curve);
-//		}
-//	}
-//	
-//	if(deviceHistoryCurveSetHandsontableHelper==null || deviceHistoryCurveSetHandsontableHelper.hot==undefined){
-//		deviceHistoryCurveSetHandsontableHelper = DeviceHistoryCurveSetHandsontableHelper.createNew("HistoryCurveSetTableDiv_Id");
-//		var colHeaders="['曲线','Y轴最大值','Y轴最小值','Y轴位置']";
-//		var columns="[" 
-//				+"{data:'curveName'}," 
-//				+"{data:'yAxisMaxValue'}," 
-//				+"{data:'yAxisMinValue'},"
-//				+"{data:'yAxisPosition',type:'dropdown',strict:true,allowInvalid:false,source:['左','右']}" 
-//				+"]";
-//		deviceHistoryCurveSetHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
-//		deviceHistoryCurveSetHandsontableHelper.columns=Ext.JSON.decode(columns);
-//		deviceHistoryCurveSetHandsontableHelper.createTable(curveSetData);
-//	}else{
-//		deviceHistoryCurveSetHandsontableHelper.hot.loadData(curveSetData);
-//	}
 };
 
 var DeviceHistoryCurveSetHandsontableHelper = {
@@ -240,6 +209,10 @@ var DeviceHistoryCurveSetHandsontableHelper = {
 	        	deviceHistoryCurveSetHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
+	        		hiddenColumns: {
+	                    columns: [3,4],
+	                    indicators: false
+	                },
 	                columns:deviceHistoryCurveSetHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                rowHeaders: true,//显示行头

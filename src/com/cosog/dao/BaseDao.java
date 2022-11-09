@@ -764,6 +764,12 @@ public class BaseDao extends HibernateDaoSupport {
 				}
 			}
 		}
+		
+		if(allsql.split("order").length==2 && allsql.lastIndexOf("order")>allsql.lastIndexOf(")")){
+			allsql=allsql.split("order")[0];
+		}
+		
+		
 		Integer rows =0;
 		SQLQuery query = getSessionFactory().getCurrentSession().createSQLQuery(allsql);
 		StringManagerUtils.printLog(allsql);

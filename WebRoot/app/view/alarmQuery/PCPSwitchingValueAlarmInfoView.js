@@ -110,10 +110,13 @@ Ext.define('AP.view.alarmQuery.PCPSwitchingValueAlarmInfoView', {
 						Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}
-            },'-',{
+            },
+//            '-',
+            {
             	xtype : "combobox",
 				fieldLabel : '是否发送短信',
 				id : 'PCPSwitchingValueAlarmIsSendMessageComb_Id',
+				hidden: true,
 				labelWidth: 80,
                 width: 160,
                 labelAlign: 'left',

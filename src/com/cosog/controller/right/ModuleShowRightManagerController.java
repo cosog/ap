@@ -56,9 +56,9 @@ public class ModuleShowRightManagerController extends BaseController implements 
 			String roleId = ParamUtils.getParameter(request, "roleId");
 			String moduleId[] = StringManagerUtils.split(moduleIds, ",");
 			//String oldModuleId[] = StringManagerUtils.split(oldModuleIds, ",");
-			if (moduleId.length > 0 && roleId != null) {
+			if (roleId != null) {
 				this.moduleService.deleteCurrentModuleByRoleCode(roleId);
-				if (matrixCodes != "" || matrixCodes != null) {
+				if (moduleId.length > 0 && matrixCodes != "" && matrixCodes != null) {
 					String module_matrix[] = matrixCodes.split("\\|");
 					for (int i = 0; i < module_matrix.length; i++) {
 						String module_[] = module_matrix[i].split("\\:");

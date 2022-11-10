@@ -961,87 +961,97 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_update_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
-							status=0;
-							disableWellIdList.add(wellHandsontableChangedData.getUpdatelist().get(i).getId());
-						}
-						cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
-						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
-						
-						cs.setInt(12, status);
-						
-						cs.setString(13, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.registerOutParameter(14, Types.INTEGER);
-						cs.registerOutParameter(15,Types.VARCHAR);
-						cs.executeUpdate();
-						
-						int saveSign=cs.getInt(14);
-						String saveResultStr=cs.getString(15);
-						wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-						wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-						collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+							int status=1;
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
+								status=0;
+								disableWellIdList.add(wellHandsontableChangedData.getUpdatelist().get(i).getId());
 							}
-							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, deviceType+"");
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
+							
+							cs.setInt(12, status);
+							
+							cs.setString(13, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.registerOutParameter(14, Types.INTEGER);
+							cs.registerOutParameter(15,Types.VARCHAR);
+							cs.executeUpdate();
+							
+							int saveSign=cs.getInt(14);
+							String saveResultStr=cs.getString(15);
+							wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+							wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
+							if(saveSign==0||saveSign==1){//保存成功
+								if(saveSign==0){//添加
+									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+								}else if(saveSign==1){//更新
+									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+								}
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
-							status=0;
-							disableWellIdList.add(wellHandsontableChangedData.getInsertlist().get(i).getId());
-						}
-						cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
-						cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
-						
-						cs.setInt(12, status);
-						
-						cs.setString(13, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.registerOutParameter(14, Types.INTEGER);
-						cs.registerOutParameter(15,Types.VARCHAR);
-						cs.executeUpdate();
-						
-						int saveSign=cs.getInt(14);
-						String saveResultStr=cs.getString(15);
-						wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-						wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-						collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+							int status=1;
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+								status=0;
+								disableWellIdList.add(wellHandsontableChangedData.getInsertlist().get(i).getId());
 							}
-							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
+							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, deviceType+"");
+							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
+							
+							cs.setInt(12, status);
+							
+							cs.setString(13, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.registerOutParameter(14, Types.INTEGER);
+							cs.registerOutParameter(15,Types.VARCHAR);
+							cs.executeUpdate();
+							
+							int saveSign=cs.getInt(14);
+							String saveResultStr=cs.getString(15);
+							wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+							wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
+							if(saveSign==0||saveSign==1){//保存成功
+								if(saveSign==0){//添加
+									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}else if(saveSign==1){//更新
+									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}
+								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
@@ -1148,172 +1158,26 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
-							status=0;
-						}
-						String pumpType="",barrelType="",crankRotationDirection="";
-						if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
-		        			pumpType="R";
-		        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
-		        			pumpType="T";
-		        		}
-		        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
-		        			barrelType="L";
-		        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
-		        			barrelType="H";
-		        		}
-		        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
-		        			crankRotationDirection="Clockwise";
-		        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
-		        			crankRotationDirection="Anticlockwise";
-		        		}
-		        		
-					
-						RPCCalculateRequestData productionData=new RPCCalculateRequestData();
-						RPCCalculateRequestData.Balance balance=new RPCCalculateRequestData.Balance();
-						productionData.init();
-						productionData.setFESDiagram(null);
-						productionData.setPumpingUnit(null);
-						balance.setEveryBalance(new ArrayList<EveryBalance>());
-						
-						productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()));
-						productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
-						productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
-						productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
-						
-						productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
-						productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
-						
-						productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
-						productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
-						productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWellHeadTemperature()));
-						productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
-						productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
-						productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));
-						productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
-						
-						productionData.getPump().setPumpType(pumpType);
-						productionData.getPump().setBarrelType(barrelType);
-						productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
-						productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter())*0.001));
-						productionData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()));
-						
-						productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
-						productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
-						
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())>0){
-							RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())>0){
-							RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())>0){
-							RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())>0){
-							RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						
-						productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
-						productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
-						
-						String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
-						String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
-						for(int j=0;j<balanceWeight.length;j++){
-							if(StringManagerUtils.isNotNull(balanceWeight[j])){
-								RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
-								everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[j]));
-								if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[j])){
-									everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[j]));
-								}
-								balance.getEveryBalance().add(everyBalance);
-							}
-						}
-						
-						cs.setString(1, orgId);
-						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
-						cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
-						cs.setInt(13, status);
-						cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.setString(15, new Gson().toJson(productionData));
-						cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getManufacturer().replaceAll(" ", ""));
-						cs.setString(17, wellHandsontableChangedData.getUpdatelist().get(i).getModel().replaceAll(" ", ""));
-						cs.setString(18, wellHandsontableChangedData.getUpdatelist().get(i).getStroke().replaceAll(" ", ""));
-						cs.setString(19, new Gson().toJson(balance));
-						cs.setInt(20, StringManagerUtils.stringToInteger(isCheckout));
-						cs.registerOutParameter(21, Types.INTEGER);
-						cs.registerOutParameter(22,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(21);
-						String saveResultStr=cs.getString(22);
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-							}
-							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						}else{//保存失败，数据冲突或者超出限制
-							wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-							wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
-						}
-					}
-				}
-			}
-			if(wellHandsontableChangedData.getInsertlist()!=null){
-				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
 							int status=1;
-							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
 								status=0;
 							}
 							String pumpType="",barrelType="",crankRotationDirection="";
-							if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
+							if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
 			        			pumpType="R";
-			        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
+			        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
 			        			pumpType="T";
 			        		}
-			        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
+			        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
 			        			barrelType="L";
-			        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
+			        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
 			        			barrelType="H";
 			        		}
-			        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
+			        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
 			        			crankRotationDirection="Clockwise";
-			        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
+			        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
 			        			crankRotationDirection="Anticlockwise";
 			        		}
 			        		
@@ -1325,97 +1189,98 @@ public class BaseDao extends HibernateDaoSupport {
 							productionData.setPumpingUnit(null);
 							balance.setEveryBalance(new ArrayList<EveryBalance>());
 							
-							productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()));
-							productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterDensity()));
-							productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNaturalGasRelativeDensity()));
-							productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getSaturationPressure()));
+							productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()));
+							productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
+							productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
+							productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
 							
-							productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirDepth()));
-							productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirTemperature()));
+							productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
+							productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
 							
-							productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getTubingPressure()));
-							productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCasingPressure()));
-							productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWellHeadTemperature()));
-							productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
-							productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
-							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
-							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
+							productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
+							productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
+							productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWellHeadTemperature()));
+							productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
+							productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));
+							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
 							
 							productionData.getPump().setPumpType(pumpType);
 							productionData.getPump().setBarrelType(barrelType);
-							productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpGrade()));
-							productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter())*0.001));
-							productionData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPlungerLength()));
+							productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpGrade()));
+							productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPumpBoreDiameter())*0.001));
+							productionData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPlungerLength()));
 							
-							productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter())*0.001));
-							productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001));
+							productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
+							productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
 							
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())>0){
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())>0){
 								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade1());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter1())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength1()));
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
 								productionData.getRodString().getEveryRod().add(everyRod);
 							}
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())>0){
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())>0){
 								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade2());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter2())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength2()));
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
 								productionData.getRodString().getEveryRod().add(everyRod);
 							}
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())>0){
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())>0){
 								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade3());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter3())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength3()));
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
 								productionData.getRodString().getEveryRod().add(everyRod);
 							}
-							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())>0){
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())>0){
 								RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
-								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade4());
-								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())*0.001));
-								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4())*0.001));
-								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength4()));
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
 								productionData.getRodString().getEveryRod().add(everyRod);
 							}
 							
-							productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()));
+							productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
+							productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
 							
-							String[] balanceWeight=wellHandsontableChangedData.getInsertlist().get(i).getBalanceWeight().split(",");
-							String[] balancePosition=wellHandsontableChangedData.getInsertlist().get(i).getBalancePosition().split(",");
+							String[] balanceWeight=wellHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight().split(",");
+							String[] balancePosition=wellHandsontableChangedData.getUpdatelist().get(i).getBalancePosition().split(",");
 							for(int j=0;j<balanceWeight.length;j++){
-								if(StringManagerUtils.isNotNull(balanceWeight[i])){
+								if(StringManagerUtils.isNotNull(balanceWeight[j])){
 									RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
-									everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[i]));
-									if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[i])){
-										everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[i]));
+									everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[j]));
+									if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[j])){
+										everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[j]));
 									}
 									balance.getEveryBalance().add(everyBalance);
 								}
 							}
 							
 							cs.setString(1, orgId);
-							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
 							cs.setString(3, deviceType+"");
-							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
-							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
-							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
-							cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
+							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
 							cs.setInt(13, status);
-							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
 							cs.setString(15, new Gson().toJson(productionData));
-							cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getManufacturer().replaceAll(" ", ""));
-							cs.setString(17, wellHandsontableChangedData.getInsertlist().get(i).getModel().replaceAll(" ", ""));
-							cs.setString(18, wellHandsontableChangedData.getInsertlist().get(i).getStroke().replaceAll(" ", ""));
+							cs.setString(16, wellHandsontableChangedData.getUpdatelist().get(i).getManufacturer().replaceAll(" ", ""));
+							cs.setString(17, wellHandsontableChangedData.getUpdatelist().get(i).getModel().replaceAll(" ", ""));
+							cs.setString(18, wellHandsontableChangedData.getUpdatelist().get(i).getStroke().replaceAll(" ", ""));
 							cs.setString(19, new Gson().toJson(balance));
 							cs.setInt(20, StringManagerUtils.stringToInteger(isCheckout));
 							cs.registerOutParameter(21, Types.INTEGER);
@@ -1425,17 +1290,172 @@ public class BaseDao extends HibernateDaoSupport {
 							String saveResultStr=cs.getString(22);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
-									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
 								}else if(saveSign==1){//更新
-									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
 								}
-								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
 							}else{//保存失败，数据冲突或者超出限制
-								wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-								wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-								collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
+								wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+								collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
 							}
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						continue;
+					}
+				}
+			}
+			if(wellHandsontableChangedData.getInsertlist()!=null){
+				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+								int status=1;
+								if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+									status=0;
+								}
+								String pumpType="",barrelType="",crankRotationDirection="";
+								if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
+				        			pumpType="R";
+				        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
+				        			pumpType="T";
+				        		}
+				        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
+				        			barrelType="L";
+				        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
+				        			barrelType="H";
+				        		}
+				        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
+				        			crankRotationDirection="Clockwise";
+				        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
+				        			crankRotationDirection="Anticlockwise";
+				        		}
+				        		
+							
+								RPCCalculateRequestData productionData=new RPCCalculateRequestData();
+								RPCCalculateRequestData.Balance balance=new RPCCalculateRequestData.Balance();
+								productionData.init();
+								productionData.setFESDiagram(null);
+								productionData.setPumpingUnit(null);
+								balance.setEveryBalance(new ArrayList<EveryBalance>());
+								
+								productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()));
+								productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterDensity()));
+								productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNaturalGasRelativeDensity()));
+								productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getSaturationPressure()));
+								
+								productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirDepth()));
+								productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirTemperature()));
+								
+								productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getTubingPressure()));
+								productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCasingPressure()));
+								productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWellHeadTemperature()));
+								productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
+								productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
+								productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
+								productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
+								
+								productionData.getPump().setPumpType(pumpType);
+								productionData.getPump().setBarrelType(barrelType);
+								productionData.getPump().setPumpGrade(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpGrade()));
+								productionData.getPump().setPumpBoreDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPumpBoreDiameter())*0.001));
+								productionData.getPump().setPlungerLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPlungerLength()));
+								
+								productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter())*0.001));
+								productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001));
+								
+								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())>0){
+									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade1());
+									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())*0.001));
+									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter1())*0.001));
+									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength1()));
+									productionData.getRodString().getEveryRod().add(everyRod);
+								}
+								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())>0){
+									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade2());
+									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())*0.001));
+									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter2())*0.001));
+									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength2()));
+									productionData.getRodString().getEveryRod().add(everyRod);
+								}
+								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())>0){
+									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade3());
+									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())*0.001));
+									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter3())*0.001));
+									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength3()));
+									productionData.getRodString().getEveryRod().add(everyRod);
+								}
+								if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())>0){
+									RPCCalculateRequestData.EveryRod everyRod=new RPCCalculateRequestData.EveryRod();
+									everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade4());
+									everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())*0.001));
+									everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4())*0.001));
+									everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength4()));
+									productionData.getRodString().getEveryRod().add(everyRod);
+								}
+								
+								productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()));
+								
+								String[] balanceWeight=wellHandsontableChangedData.getInsertlist().get(i).getBalanceWeight().split(",");
+								String[] balancePosition=wellHandsontableChangedData.getInsertlist().get(i).getBalancePosition().split(",");
+								for(int j=0;j<balanceWeight.length;j++){
+									if(StringManagerUtils.isNotNull(balanceWeight[i])){
+										RPCCalculateRequestData.EveryBalance everyBalance=new RPCCalculateRequestData.EveryBalance();
+										everyBalance.setWeight(StringManagerUtils.stringToFloat(balanceWeight[i]));
+										if(balancePosition.length>j&&StringManagerUtils.isNotNull(balancePosition[i])){
+											everyBalance.setPosition(StringManagerUtils.stringToFloat(balancePosition[i]));
+										}
+										balance.getEveryBalance().add(everyBalance);
+									}
+								}
+								
+								cs.setString(1, orgId);
+								cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								cs.setString(3, deviceType+"");
+								cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+								cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
+								cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+								cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+								cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+								cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+								cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
+								cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
+								cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
+								cs.setInt(13, status);
+								cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+								cs.setString(15, new Gson().toJson(productionData));
+								cs.setString(16, wellHandsontableChangedData.getInsertlist().get(i).getManufacturer().replaceAll(" ", ""));
+								cs.setString(17, wellHandsontableChangedData.getInsertlist().get(i).getModel().replaceAll(" ", ""));
+								cs.setString(18, wellHandsontableChangedData.getInsertlist().get(i).getStroke().replaceAll(" ", ""));
+								cs.setString(19, new Gson().toJson(balance));
+								cs.setInt(20, StringManagerUtils.stringToInteger(isCheckout));
+								cs.registerOutParameter(21, Types.INTEGER);
+								cs.registerOutParameter(22,Types.VARCHAR);
+								cs.executeUpdate();
+								int saveSign=cs.getInt(21);
+								String saveResultStr=cs.getString(22);
+								if(saveSign==0||saveSign==1){//保存成功
+									if(saveSign==0){//添加
+										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+									}else if(saveSign==1){//更新
+										updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+									}
+									initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}else{//保存失败，数据冲突或者超出限制
+									wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+									wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+									collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
+								}
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
@@ -1545,87 +1565,97 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_update_pcpdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
-							status=0;
-							disableWellIdList.add(wellHandsontableChangedData.getUpdatelist().get(i).getId());
-						}
-						cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
-						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
-						
-						cs.setInt(12, status);
-						
-						cs.setString(13, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.registerOutParameter(14, Types.INTEGER);
-						cs.registerOutParameter(15,Types.VARCHAR);
-						cs.executeUpdate();
-						
-						int saveSign=cs.getInt(14);
-						String saveResultStr=cs.getString(15);
-						wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-						wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-						collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+							int status=1;
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
+								status=0;
+								disableWellIdList.add(wellHandsontableChangedData.getUpdatelist().get(i).getId());
 							}
-							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, deviceType+"");
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
+							
+							cs.setInt(12, status);
+							
+							cs.setString(13, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.registerOutParameter(14, Types.INTEGER);
+							cs.registerOutParameter(15,Types.VARCHAR);
+							cs.executeUpdate();
+							
+							int saveSign=cs.getInt(14);
+							String saveResultStr=cs.getString(15);
+							wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+							wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
+							if(saveSign==0||saveSign==1){//保存成功
+								if(saveSign==0){//添加
+									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+								}else if(saveSign==1){//更新
+									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+								}
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
-							status=0;
-							disableWellIdList.add(wellHandsontableChangedData.getInsertlist().get(i).getId());
-						}
-						cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
-						cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
-						
-						cs.setInt(12, status);
-						
-						cs.setString(13, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.registerOutParameter(14, Types.INTEGER);
-						cs.registerOutParameter(15,Types.VARCHAR);
-						cs.executeUpdate();
-						
-						int saveSign=cs.getInt(14);
-						String saveResultStr=cs.getString(15);
-						wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-						wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-						collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+							int status=1;
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+								status=0;
+								disableWellIdList.add(wellHandsontableChangedData.getInsertlist().get(i).getId());
 							}
-							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
+							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, deviceType+"");
+							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
+							
+							cs.setInt(12, status);
+							
+							cs.setString(13, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.registerOutParameter(14, Types.INTEGER);
+							cs.registerOutParameter(15,Types.VARCHAR);
+							cs.executeUpdate();
+							
+							int saveSign=cs.getInt(14);
+							String saveResultStr=cs.getString(15);
+							wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+							wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
+							if(saveSign==0||saveSign==1){//保存成功
+								if(saveSign==0){//添加
+									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}else if(saveSign==1){//更新
+									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}
+								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
@@ -1735,248 +1765,258 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_pcpdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
-							status=0;
-						}
-						String pumpType="",barrelType="",crankRotationDirection="";
-						if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
-		        			pumpType="R";
-		        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
-		        			pumpType="T";
-		        		}
-		        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
-		        			barrelType="L";
-		        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
-		        			barrelType="H";
-		        		}
-		        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
-		        			crankRotationDirection="Clockwise";
-		        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
-		        			crankRotationDirection="Anticlockwise";
-		        		}
-		        		
-					
-						PCPCalculateRequestData productionData=new PCPCalculateRequestData();
-						productionData.init();
-						
-						productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()));
-						productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
-						productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
-						productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
-						
-						productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
-						productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
-						
-						productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
-						productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
-						productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWellHeadTemperature()));
-						productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
-						productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
-						productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));
-						productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
-						
-						productionData.getPump().setBarrelLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()));
-						productionData.getPump().setBarrelSeries(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries()));
-						productionData.getPump().setRotorDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRotorDiameter())*0.001));
-						productionData.getPump().setQPR((float) (StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getQPR())*0.001*0.001));
-						
-						productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
-						productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
-						
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						
-						productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
-						productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
-						
-						cs.setString(1, orgId);
-						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
-						cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
-						cs.setInt(13, status);
-						cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.setString(15, new Gson().toJson(productionData));
-						cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
-						cs.registerOutParameter(17, Types.INTEGER);
-						cs.registerOutParameter(18,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(17);
-						String saveResultStr=cs.getString(18);
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+							int status=1;
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getStatusName())){
+								status=0;
 							}
-							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						}else{//保存失败，数据冲突或者超出限制
-							wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-							wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-							collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
+							String pumpType="",barrelType="",crankRotationDirection="";
+							if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
+			        			pumpType="R";
+			        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getPumpType())){
+			        			pumpType="T";
+			        		}
+			        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
+			        			barrelType="L";
+			        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelType())){
+			        			barrelType="H";
+			        		}
+			        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
+			        			crankRotationDirection="Clockwise";
+			        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())){
+			        			crankRotationDirection="Anticlockwise";
+			        		}
+			        		
+						
+							PCPCalculateRequestData productionData=new PCPCalculateRequestData();
+							productionData.init();
+							
+							productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCrudeOilDensity()));
+							productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterDensity()));
+							productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNaturalGasRelativeDensity()));
+							productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getSaturationPressure()));
+							
+							productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirDepth()));
+							productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getReservoirTemperature()));
+							
+							productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getTubingPressure()));
+							productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getCasingPressure()));
+							productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWellHeadTemperature()));
+							productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getWaterCut()));
+							productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProductionGasOilRatio()));
+							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getProducingfluidLevel()));
+							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getPumpSettingDepth()));
+							
+							productionData.getPump().setBarrelLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()));
+							productionData.getPump().setBarrelSeries(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries()));
+							productionData.getPump().setRotorDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRotorDiameter())*0.001));
+							productionData.getPump().setQPR((float) (StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getQPR())*0.001*0.001));
+							
+							productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getTubingStringInsideDiameter())*0.001));
+							productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getCasingStringInsideDiameter())*0.001));
+							
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade1());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter1())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter1())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength1()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade2());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter2())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter2())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength2()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade3());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter3())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter3())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength3()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getUpdatelist().get(i).getRodGrade4());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodOutsideDiameter4())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getRodInsideDiameter4())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getRodLength4()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							
+							productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossRatio()));
+							productionData.getManualIntervention().setNetGrossValue(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getUpdatelist().get(i).getNetGrossValue()));
+							
+							cs.setString(1, orgId);
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, deviceType+"");
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
+							cs.setString(12, wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getUpdatelist().get(i).getVideoUrl2().replaceAll(" ", ""));
+							cs.setInt(13, status);
+							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(15, new Gson().toJson(productionData));
+							cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
+							cs.registerOutParameter(17, Types.INTEGER);
+							cs.registerOutParameter(18,Types.VARCHAR);
+							cs.executeUpdate();
+							int saveSign=cs.getInt(17);
+							String saveResultStr=cs.getString(18);
+							if(saveSign==0||saveSign==1){//保存成功
+								if(saveSign==0){//添加
+									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+								}else if(saveSign==1){//更新
+									updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+								}
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							}else{//保存失败，数据冲突或者超出限制
+								wellHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+								wellHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+								collisionList.add(wellHandsontableChangedData.getUpdatelist().get(i));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						int status=1;
-						if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
-							status=0;
-						}
-						String pumpType="",barrelType="",crankRotationDirection="";
-						if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
-		        			pumpType="R";
-		        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
-		        			pumpType="T";
-		        		}
-		        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
-		        			barrelType="L";
-		        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
-		        			barrelType="H";
-		        		}
-		        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
-		        			crankRotationDirection="Clockwise";
-		        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
-		        			crankRotationDirection="Anticlockwise";
-		        		}
-		        		
-					
-						PCPCalculateRequestData productionData=new PCPCalculateRequestData();
-						productionData.init();
-						
-						productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()));
-						productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterDensity()));
-						productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNaturalGasRelativeDensity()));
-						productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getSaturationPressure()));
-						
-						productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirDepth()));
-						productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirTemperature()));
-						
-						productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getTubingPressure()));
-						productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCasingPressure()));
-						productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWellHeadTemperature()));
-						productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
-						productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
-						productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
-						productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
-						
-						productionData.getPump().setBarrelLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getBarrelLength()));
-						productionData.getPump().setBarrelSeries(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getBarrelSeries()));
-						productionData.getPump().setRotorDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRotorDiameter())*0.001));
-						productionData.getPump().setQPR((float) (StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getQPR())));
-						
-						productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter())*0.001));
-						productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001));
-						
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade1());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter1())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength1()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade2());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter2())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength2()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade3());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter3())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength3()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())>0){
-							PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
-							everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade4());
-							everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())*0.001));
-							everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4())*0.001));
-							everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength4()));
-							productionData.getRodString().getEveryRod().add(everyRod);
-						}
-						
-						productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()));
-						
-						cs.setString(1, orgId);
-						cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, deviceType+"");
-						cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
-						cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
-						cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-						cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
-						cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
-						cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
-						cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
-						cs.setInt(13, status);
-						cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.setString(15, new Gson().toJson(productionData));
-						cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
-						cs.registerOutParameter(17, Types.INTEGER);
-						cs.registerOutParameter(18,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(17);
-						String saveResultStr=cs.getString(18);
-						if(saveSign==0||saveSign==1){//保存成功
-							if(saveSign==0){//添加
-								addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-							}else if(saveSign==1){//更新
-								updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+							int status=1;
+							if("失效".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getStatusName())){
+								status=0;
 							}
-							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-						}else{//保存失败，数据冲突或者超出限制
-							wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-							wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-							collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
+							String pumpType="",barrelType="",crankRotationDirection="";
+							if("杆式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
+			        			pumpType="R";
+			        		}else if("管式泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getPumpType())){
+			        			pumpType="T";
+			        		}
+			        		if("组合泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
+			        			barrelType="L";
+			        		}else if("整筒泵".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getBarrelType())){
+			        			barrelType="H";
+			        		}
+			        		if("顺时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
+			        			crankRotationDirection="Clockwise";
+			        		}else if("逆时针".equalsIgnoreCase(wellHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())){
+			        			crankRotationDirection="Anticlockwise";
+			        		}
+			        		
+						
+							PCPCalculateRequestData productionData=new PCPCalculateRequestData();
+							productionData.init();
+							
+							productionData.getFluidPVT().setCrudeOilDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCrudeOilDensity()));
+							productionData.getFluidPVT().setWaterDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterDensity()));
+							productionData.getFluidPVT().setNaturalGasRelativeDensity(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNaturalGasRelativeDensity()));
+							productionData.getFluidPVT().setSaturationPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getSaturationPressure()));
+							
+							productionData.getReservoir().setDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirDepth()));
+							productionData.getReservoir().setTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getReservoirTemperature()));
+							
+							productionData.getProduction().setTubingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getTubingPressure()));
+							productionData.getProduction().setCasingPressure(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getCasingPressure()));
+							productionData.getProduction().setWellHeadTemperature(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWellHeadTemperature()));
+							productionData.getProduction().setWaterCut(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getWaterCut()));
+							productionData.getProduction().setProductionGasOilRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProductionGasOilRatio()));
+							productionData.getProduction().setProducingfluidLevel(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getProducingfluidLevel()));
+							productionData.getProduction().setPumpSettingDepth(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getPumpSettingDepth()));
+							
+							productionData.getPump().setBarrelLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getBarrelLength()));
+							productionData.getPump().setBarrelSeries(StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getBarrelSeries()));
+							productionData.getPump().setRotorDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRotorDiameter())*0.001));
+							productionData.getPump().setQPR((float) (StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getQPR())));
+							
+							productionData.getTubingString().getEveryTubing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getTubingStringInsideDiameter())*0.001));
+							productionData.getCasingString().getEveryCasing().get(0).setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getCasingStringInsideDiameter())*0.001));
+							
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade1());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter1())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter1())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength1()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade2());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter2())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter2())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength2()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade3());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter3())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter3())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength3()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							if(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())>0){
+								PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();
+								everyRod.setGrade(wellHandsontableChangedData.getInsertlist().get(i).getRodGrade4());
+								everyRod.setOutsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodOutsideDiameter4())*0.001));
+								everyRod.setInsideDiameter((float) (StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getRodInsideDiameter4())*0.001));
+								everyRod.setLength(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getRodLength4()));
+								productionData.getRodString().getEveryRod().add(everyRod);
+							}
+							
+							productionData.getManualIntervention().setNetGrossRatio(StringManagerUtils.stringToFloat(wellHandsontableChangedData.getInsertlist().get(i).getNetGrossRatio()));
+							
+							cs.setString(1, orgId);
+							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, deviceType+"");
+							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getApplicationScenariosName().replaceAll(" ", ""));
+							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
+							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
+							cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
+							cs.setString(12, wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl1().replaceAll(" ", "")+";"+wellHandsontableChangedData.getInsertlist().get(i).getVideoUrl2().replaceAll(" ", ""));
+							cs.setInt(13, status);
+							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.setString(15, new Gson().toJson(productionData));
+							cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
+							cs.registerOutParameter(17, Types.INTEGER);
+							cs.registerOutParameter(18,Types.VARCHAR);
+							cs.executeUpdate();
+							int saveSign=cs.getInt(17);
+							String saveResultStr=cs.getString(18);
+							if(saveSign==0||saveSign==1){//保存成功
+								if(saveSign==0){//添加
+									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}else if(saveSign==1){//更新
+									updateWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+								}
+								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							}else{//保存失败，数据冲突或者超出限制
+								wellHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+								wellHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+								collisionList.add(wellHandsontableChangedData.getInsertlist().get(i));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
@@ -2077,39 +2117,49 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_update_smsdevice(?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
-						cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
-						cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll("：", ":"));
-						cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.executeUpdate();
-						updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
-						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""))
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", ""))
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", "")) 
-								){
-							initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName())){
+							cs.setString(1, wellHandsontableChangedData.getUpdatelist().get(i).getId());
+							cs.setString(2, wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(4, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll("：", ":"));
+							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.executeUpdate();
+							updateWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""))
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", ""))
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", "")) 
+									){
+								initWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
 			if(wellHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
-						cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
-						cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-						cs.setString(3, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
-						cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
-						cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
-						cs.executeUpdate();
-						addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
-						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""))
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "")) 
-								&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", "")) 
-								){
-							initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+					try{
+						if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName())){
+							cs.setString(1, wellHandsontableChangedData.getInsertlist().get(i).getId());
+							cs.setString(2, wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							cs.setString(3, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
+							cs.setString(4, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
+							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
+							cs.executeUpdate();
+							addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							if(StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""))
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "")) 
+									&&StringManagerUtils.isNotNull(wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", "")) 
+									){
+								initWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
@@ -2167,55 +2217,66 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_update_pumpingmodel(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(pumpingModelHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<pumpingModelHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer())){
-						cs.setString(1, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId());
-						cs.setString(2, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
-						cs.setString(3, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getModel());
-						cs.setString(4, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStroke());
-						cs.setString(5, "顺时针".equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
-						cs.setString(6, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
-						cs.setString(7, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
-						cs.setString(8, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
-						cs.setString(9, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankPinWeight());
-						cs.setString(10, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStructuralUnbalance());
-						cs.setString(11, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight());
-						cs.registerOutParameter(12, Types.INTEGER);
-						cs.registerOutParameter(13,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(12);
-						String saveResultStr=cs.getString(13);
-						pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-						pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-						collisionList.add(pumpingModelHandsontableChangedData.getUpdatelist().get(i));
-						if(saveSign==1){
-							MemoryDataManagerTask.loadRPCDeviceInfoByPumpingId(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId(),"update");
+					try{
+						if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer())){
+							cs.setString(1, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId());
+							cs.setString(2, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
+							cs.setString(3, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getModel());
+							cs.setString(4, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStroke());
+							cs.setString(5, "顺时针".equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(6, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
+							cs.setString(7, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
+							cs.setString(8, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
+							cs.setString(9, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankPinWeight());
+							cs.setString(10, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStructuralUnbalance());
+							cs.setString(11, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight());
+							cs.registerOutParameter(12, Types.INTEGER);
+							cs.registerOutParameter(13,Types.VARCHAR);
+							cs.executeUpdate();
+							int saveSign=cs.getInt(12);
+							String saveResultStr=cs.getString(13);
+							pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+							pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(pumpingModelHandsontableChangedData.getUpdatelist().get(i));
+							if(saveSign==1){
+								MemoryDataManagerTask.loadRPCDeviceInfoByPumpingId(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getId(),"update");
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
 			if(pumpingModelHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<pumpingModelHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer())){
-						cs.setString(1, pumpingModelHandsontableChangedData.getInsertlist().get(i).getId());
-						cs.setString(2, pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer());
-						cs.setString(3, pumpingModelHandsontableChangedData.getInsertlist().get(i).getModel());
-						cs.setString(4, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStroke());
-						cs.setString(5, "顺时针".equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
-						cs.setString(6, pumpingModelHandsontableChangedData.getInsertlist().get(i).getOffsetAngleOfCrank());
-						cs.setString(7, pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankGravityRadius());
-						cs.setString(8, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankWeight());
-						cs.setString(9, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankPinWeight());
-						cs.setString(10, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStructuralUnbalance());
-						cs.setString(11, pumpingModelHandsontableChangedData.getInsertlist().get(i).getBalanceWeight());
-						cs.registerOutParameter(12, Types.INTEGER);
-						cs.registerOutParameter(13,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(12);
-						String saveResultStr=cs.getString(13);
-						pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-						pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-						collisionList.add(pumpingModelHandsontableChangedData.getInsertlist().get(i));
+					try{
+						if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer())){
+							cs.setString(1, pumpingModelHandsontableChangedData.getInsertlist().get(i).getId());
+							cs.setString(2, pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer());
+							cs.setString(3, pumpingModelHandsontableChangedData.getInsertlist().get(i).getModel());
+							cs.setString(4, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStroke());
+							cs.setString(5, "顺时针".equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(6, pumpingModelHandsontableChangedData.getInsertlist().get(i).getOffsetAngleOfCrank());
+							cs.setString(7, pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankGravityRadius());
+							cs.setString(8, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankWeight());
+							cs.setString(9, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankPinWeight());
+							cs.setString(10, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStructuralUnbalance());
+							cs.setString(11, pumpingModelHandsontableChangedData.getInsertlist().get(i).getBalanceWeight());
+							cs.registerOutParameter(12, Types.INTEGER);
+							cs.registerOutParameter(13,Types.VARCHAR);
+							cs.executeUpdate();
+							int saveSign=cs.getInt(12);
+							String saveResultStr=cs.getString(13);
+							pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+							pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+							collisionList.add(pumpingModelHandsontableChangedData.getInsertlist().get(i));
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
+					
 				}
 			}
 			if(pumpingModelHandsontableChangedData.getDelidslist()!=null){
@@ -2253,55 +2314,65 @@ public class BaseDao extends HibernateDaoSupport {
 			cs = conn.prepareCall("{call prd_save_pumpingmodel(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(pumpingModelHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<pumpingModelHandsontableChangedData.getUpdatelist().size();i++){
-					if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer())){
-						cs.setString(1, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
-						cs.setString(2, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getModel());
-						cs.setString(3, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStroke());
-						cs.setString(4, "顺时针".equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
-						cs.setString(5, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
-						cs.setString(6, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
-						cs.setString(7, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
-						cs.setString(8, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankPinWeight());
-						cs.setString(9, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStructuralUnbalance());
-						cs.setString(10, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight());
-						cs.setInt(11, isCheckout);
-						cs.registerOutParameter(12, Types.INTEGER);
-						cs.registerOutParameter(13,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(12);
-						String saveResultStr=cs.getString(13);
-						if(saveSign!=0&&saveSign!=1){
-							pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
-							pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
-							collisionList.add(pumpingModelHandsontableChangedData.getUpdatelist().get(i));
+					try{
+						if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer())){
+							cs.setString(1, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getManufacturer());
+							cs.setString(2, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getModel());
+							cs.setString(3, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStroke());
+							cs.setString(4, "顺时针".equals(pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(5, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getOffsetAngleOfCrank());
+							cs.setString(6, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getCrankGravityRadius());
+							cs.setString(7, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankWeight());
+							cs.setString(8, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getSingleCrankPinWeight());
+							cs.setString(9, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getStructuralUnbalance());
+							cs.setString(10, pumpingModelHandsontableChangedData.getUpdatelist().get(i).getBalanceWeight());
+							cs.setInt(11, isCheckout);
+							cs.registerOutParameter(12, Types.INTEGER);
+							cs.registerOutParameter(13,Types.VARCHAR);
+							cs.executeUpdate();
+							int saveSign=cs.getInt(12);
+							String saveResultStr=cs.getString(13);
+							if(saveSign!=0&&saveSign!=1){
+								pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveSign(saveSign);
+								pumpingModelHandsontableChangedData.getUpdatelist().get(i).setSaveStr(saveResultStr);
+								collisionList.add(pumpingModelHandsontableChangedData.getUpdatelist().get(i));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}
 			if(pumpingModelHandsontableChangedData.getInsertlist()!=null){
 				for(int i=0;i<pumpingModelHandsontableChangedData.getInsertlist().size();i++){
-					if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer())){
-						cs.setString(1, pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer());
-						cs.setString(2, pumpingModelHandsontableChangedData.getInsertlist().get(i).getModel());
-						cs.setString(3, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStroke());
-						cs.setString(4, "顺时针".equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
-						cs.setString(5, pumpingModelHandsontableChangedData.getInsertlist().get(i).getOffsetAngleOfCrank());
-						cs.setString(6, pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankGravityRadius());
-						cs.setString(7, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankWeight());
-						cs.setString(8, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankPinWeight());
-						cs.setString(9, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStructuralUnbalance());
-						cs.setString(10, pumpingModelHandsontableChangedData.getInsertlist().get(i).getBalanceWeight());
-						cs.setInt(11, isCheckout);
-						cs.registerOutParameter(12, Types.INTEGER);
-						cs.registerOutParameter(13,Types.VARCHAR);
-						cs.executeUpdate();
-						int saveSign=cs.getInt(12);
-						String saveResultStr=cs.getString(13);
-						if(saveSign!=0&&saveSign!=1){
-							pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
-							pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
-							collisionList.add(pumpingModelHandsontableChangedData.getInsertlist().get(i));
+					try{
+						if(StringManagerUtils.isNotNull(pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer())){
+							cs.setString(1, pumpingModelHandsontableChangedData.getInsertlist().get(i).getManufacturer());
+							cs.setString(2, pumpingModelHandsontableChangedData.getInsertlist().get(i).getModel());
+							cs.setString(3, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStroke());
+							cs.setString(4, "顺时针".equals(pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankRotationDirection())?"Clockwise":"Anticlockwise");
+							cs.setString(5, pumpingModelHandsontableChangedData.getInsertlist().get(i).getOffsetAngleOfCrank());
+							cs.setString(6, pumpingModelHandsontableChangedData.getInsertlist().get(i).getCrankGravityRadius());
+							cs.setString(7, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankWeight());
+							cs.setString(8, pumpingModelHandsontableChangedData.getInsertlist().get(i).getSingleCrankPinWeight());
+							cs.setString(9, pumpingModelHandsontableChangedData.getInsertlist().get(i).getStructuralUnbalance());
+							cs.setString(10, pumpingModelHandsontableChangedData.getInsertlist().get(i).getBalanceWeight());
+							cs.setInt(11, isCheckout);
+							cs.registerOutParameter(12, Types.INTEGER);
+							cs.registerOutParameter(13,Types.VARCHAR);
+							cs.executeUpdate();
+							int saveSign=cs.getInt(12);
+							String saveResultStr=cs.getString(13);
+							if(saveSign!=0&&saveSign!=1){
+								pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveSign(saveSign);
+								pumpingModelHandsontableChangedData.getInsertlist().get(i).setSaveStr(saveResultStr);
+								collisionList.add(pumpingModelHandsontableChangedData.getInsertlist().get(i));
+							}
 						}
+					}catch(Exception e){
+						e.printStackTrace();
+						continue;
 					}
 				}
 			}

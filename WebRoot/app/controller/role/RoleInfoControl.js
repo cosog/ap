@@ -240,62 +240,65 @@ var grantRolePermission = function () {//授予角色模块权限
         Ext.Msg.alert(cosog.string.ts, cosog.string.pleaseChooseRole);
         return false
     }
-    if (_record.length > 0) {
-        Ext.Array.each(_record, function (name, index, countriesItSelf) {
-            var md_ids = _record[index].get('mdId')
-            addjson.push(md_ids);
-            var matrix_value = "";
-            /*for (var i = 0; i < 3; i++) {
-						var matrix_ = Ext.getDom(md_ids + "&" + i);
-						if (matrix_.checked) {
-							matrix_value += "1,";
-						} else {
-							matrix_value += "0,";
-						}
+//    if (_record.length > 0) {} else {
+//        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + cosog.string.chooseGrantModule + '！</font>');
+//    }
+    
 
-					}*/
-            matrix_value = '0,0,0,';
-            if (matrix_value != "" || matrix_value != null) {
-                matrix_value = matrix_value.substring(0, matrix_value.length - 1);
+    Ext.Array.each(_record, function (name, index, countriesItSelf) {
+        var md_ids = _record[index].get('mdId')
+        addjson.push(md_ids);
+        var matrix_value = "";
+        /*for (var i = 0; i < 3; i++) {
+					var matrix_ = Ext.getDom(md_ids + "&" + i);
+					if (matrix_.checked) {
+						matrix_value += "1,";
+					} else {
+						matrix_value += "0,";
+					}
+
+				}*/
+        matrix_value = '0,0,0,';
+        if (matrix_value != "" || matrix_value != null) {
+            matrix_value = matrix_value.substring(0, matrix_value.length - 1);
+        }
+        matrixData += md_ids + ":" + matrix_value + "|";
+
+    });
+
+    matrixData = matrixData.substring(0, matrixData.length - 1);
+    var addparamsId = "" + addjson.join(",");
+    var matrixCodes_ = "" + matrixData;
+
+    // AJAX提交方式
+    Ext.Ajax.request({
+        url: addUrl,
+        method: "POST",
+        // 提交参数
+        params: {
+            paramsId: addparamsId,
+            oldModuleIds: RightOldModuleIds_Id,
+            roleId: roleId,
+            matrixCodes: matrixCodes_
+        },
+        success: function (response) {
+            var result = Ext.JSON.decode(response.responseText);
+            if (result.msg == true) {
+                Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "" + cosog.string.jgModule + "。");
             }
-            matrixData += md_ids + ":" + matrix_value + "|";
-
-        });
-
-        matrixData = matrixData.substring(0, matrixData.length - 1);
-        var addparamsId = "" + addjson.join(",");
-        var matrixCodes_ = "" + matrixData;
-
-        // AJAX提交方式
-        Ext.Ajax.request({
-            url: addUrl,
-            method: "POST",
-            // 提交参数
-            params: {
-                paramsId: addparamsId,
-                oldModuleIds: RightOldModuleIds_Id,
-                roleId: roleId,
-                matrixCodes: matrixCodes_
-            },
-            success: function (response) {
-                var result = Ext.JSON.decode(response.responseText);
-                if (result.msg == true) {
-                    Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucGrant + "</font>】" + _record.length + "" + cosog.string.jgModule + "。");
-                }
-                if (result.msg == false) {
-                    Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
-                }
-                // 刷新Grid
-                Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
-            },
-            failure: function () {
-                Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+            if (result.msg == false) {
+                Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
             }
-        });
+            // 刷新Grid
+            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
+        },
+        failure: function () {
+            Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");
+        }
+    });
 
-    } else {
-        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + cosog.string.chooseGrantModule + '！</font>');
-    }
+
+    
     return false;
 }
 

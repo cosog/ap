@@ -101,6 +101,8 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
             	
             	$("#pcpRealTimeMonitoringCurveContainer").html('');
             	$("#PCPRealTimeMonitoringInfoDataTableInfoContainer").html('');
+            	
+            	clearVideo(1);
             	Ext.getCmp("PCPRealTimeMonitoringRightControlPanel").removeAll();
             	Ext.getCmp("PCPRealTimeMonitoringRightDeviceInfoPanel").removeAll();
             	Ext.getCmp("PCPRealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();

@@ -552,17 +552,15 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
             				tabchange: function (tabPanel, newCard,oldCard, obj) {
             					var selectRow= Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
             					var gridPanel=Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
-            					if(newCard.id=="RPCRealTimeMonitoringCurveTabPanel_Id"){
-            						if(isNotVal(gridPanel)&&selectRow>=0){
+            					if(isNotVal(gridPanel)&&selectRow>=0){
+            						if(newCard.id=="RPCRealTimeMonitoringCurveTabPanel_Id"){
             							deviceRealtimeMonitoringCurve(0);
-            						}
-            					}else if(newCard.id=="RPCRealTimeMonitoringTableTabPanel_Id"){
-                            		if(isNotVal(gridPanel)&&selectRow>=0){
-                            			var selectedItem=gridPanel.getStore().getAt(selectRow);
-                            			CreateRPCDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.wellName,0)
-                            		}
-            					}else{
-            						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
+                					}else if(newCard.id=="RPCRealTimeMonitoringTableTabPanel_Id"){
+                						var selectedItem=gridPanel.getStore().getAt(selectRow);
+                            			CreateRPCDeviceRealTimeMonitoringDataTable(selectedItem.data.id,selectedItem.data.wellName,0);
+                					}else{
+                						Ext.create('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore');
+                					}
             					}
             				}
                 		}
@@ -672,6 +670,12 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                         		if(newCard.id=="RPCRealTimeMonitoringRightControlAndVideoPanel"){
                                 	if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
                                 		createVideo(0,Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection()[0].data);
+                                		var controlGridPanel=Ext.getCmp("RPCRealTimeMonitoringControlDataGridPanel_Id");
+                            			if(isNotVal(controlGridPanel)){
+                            				controlGridPanel.getStore().load();
+                            			}else{
+                            				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore');
+                            			}
                                 	}else{
                                 		var videoPanel1=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel1");
                                 		var videoPanel2=Ext.getCmp("RPCRealTimeMonitoringRightVideoPanel2");
@@ -683,15 +687,8 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                                 		}
                                 		videoPanel1.hide();
                                 		videoPanel2.hide();
+                                		Ext.getCmp("RPCRealTimeMonitoringRightControlPanel").removeAll();
                                 	}
-                                	
-                                	var controlGridPanel=Ext.getCmp("RPCRealTimeMonitoringControlDataGridPanel_Id");
-                        			if(isNotVal(controlGridPanel)){
-                        				controlGridPanel.getStore().load();
-                        			}else{
-                        				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceControlStore');
-                        			}
-                                	
                         		}else{
                         			if(videoPlayrHelper.rpc.player1!=null && videoPlayrHelper.rpc.player1.pluginStatus.state.play){
                         				videoPlayrHelper.rpc.player1.stop();
@@ -699,12 +696,16 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                         			if(videoPlayrHelper.rpc.player2!=null && videoPlayrHelper.rpc.player2.pluginStatus.state.play){
                         				videoPlayrHelper.rpc.player2.stop();
                         			}
-                        			
-                        			var deviceInfoGridPanel=Ext.getCmp("RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id");
-                        			if(isNotVal(deviceInfoGridPanel)){
-                        				deviceInfoGridPanel.getStore().load();
+                        			if(Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id").getSelectionModel().getSelection().length>0){
+                        				var deviceInfoGridPanel=Ext.getCmp("RPCRealTimeMonitoringDeviceInfoDataGridPanel_Id");
+                            			if(isNotVal(deviceInfoGridPanel)){
+                            				deviceInfoGridPanel.getStore().load();
+                            			}else{
+                            				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore');
+                            			}
                         			}else{
-                        				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore');
+                        				Ext.getCmp("RPCRealTimeMonitoringRightDeviceInfoPanel").removeAll();
+                                    	Ext.getCmp("RPCRealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();
                         			}
                         		}
                             }

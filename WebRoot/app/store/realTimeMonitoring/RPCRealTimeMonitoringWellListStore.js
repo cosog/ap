@@ -80,11 +80,6 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringDeviceInfoStore');
                     			}
                     		}
-                    		
-                    		
-                    		
-                    		
-//                    		Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringControlAndInfoStore');
                     	},
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     		gotoDeviceHistory(record.data.wellName,0);
@@ -118,6 +113,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
             	$("#rpcRealTimeMonitoringCurveContainer").html('');
             	$("#RPCRealTimeMonitoringInfoDataTableInfoContainer").html('');
             	
+            	clearVideo(0);
             	Ext.getCmp("RPCRealTimeMonitoringRightControlPanel").removeAll();
             	Ext.getCmp("RPCRealTimeMonitoringRightDeviceInfoPanel").removeAll();
             	Ext.getCmp("RPCRealTimeMonitoringRightAuxiliaryDeviceInfoPanel").removeAll();

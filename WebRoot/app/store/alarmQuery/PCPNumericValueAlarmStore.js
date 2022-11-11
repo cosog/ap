@@ -74,8 +74,12 @@ Ext.define('AP.store.alarmQuery.PCPNumericValueAlarmStore', {
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=1;
-        	var deviceId  = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-        	var deviceName  = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var deviceName='';
+        	var deviceId=0;
+        	if(Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName=Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+            	deviceId=  Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	}
         	var alarmLevel=Ext.getCmp('PCPNumericValueAlarmLevelComb_Id').getValue();
         	var isSendMessage=Ext.getCmp('PCPNumericValueAlarmIsSendMessageComb_Id').getValue();
         	var startDate=Ext.getCmp('PCPNumericValueAlarmQueryStartDate_Id').rawValue;

@@ -51,7 +51,7 @@ Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore', {
             				if(selected.length>0){
             					var gridPanel = Ext.getCmp("PCPRunStatusAlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
+                					gridPanel.getStore().loadPage(1);
                 				}else{
                 					Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmStore');
                 				}
@@ -71,7 +71,9 @@ Ext.define('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore', {
             }else{
             	var gridPanel = Ext.getCmp("PCPRunStatusAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
-                	Ext.getCmp("PCPRunStatusAlarmDetailsPanel_Id").remove(gridPanel);
+                	gridPanel.getStore().loadPage(1);
+                }else{
+                	Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmStore');
                 }
             }
         },

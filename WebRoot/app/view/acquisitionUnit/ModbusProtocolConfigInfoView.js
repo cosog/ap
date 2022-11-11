@@ -227,7 +227,7 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 	        	protocolConfigAddrMappingItemsHandsontableHelper.hot = new Handsontable(hotElement, {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 	        		data: data,
-	        		colWidths: [50,130,80,80,80,80,80,80,80,80,80,80],
+	        		colWidths: [50,130,80,90,90,90,80,80,80,80,80,80],
 	                columns:protocolConfigAddrMappingItemsHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                autoWrapRow: true,

@@ -515,7 +515,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         iconCls: 'export',
 //                        pressed: true,
                         id:'RPCHistoryDiagramOverlayExportBtn_Id',
-                        hidden:false,
+                        hidden:true,
                         handler: function (v, o) {
                         	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;
@@ -580,7 +580,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         iconCls: 'export',
 //                        pressed: true,
                         id:'RPCHistoryDataExportBtn_Id',
-                        hidden:true,
+                        hidden:false,
                         handler: function (v, o) {
                         	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;
                         	var r2 = /^[1-5]?\d([\/-][1-5]?\d)?$/;

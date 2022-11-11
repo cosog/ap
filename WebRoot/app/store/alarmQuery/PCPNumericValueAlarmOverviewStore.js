@@ -51,7 +51,7 @@ Ext.define('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore', {
             				if(selected.length>0){
             					var gridPanel = Ext.getCmp("PCPNumericValueAlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
+                					gridPanel.getStore().loadPage(1);
                 				}else{
                 					Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmStore');
                 				}
@@ -71,7 +71,9 @@ Ext.define('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore', {
             }else{
             	var gridPanel = Ext.getCmp("PCPNumericValueAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
-                	Ext.getCmp("PCPNumericValueAlarmDetailsPanel_Id").remove(gridPanel);
+                	gridPanel.getStore().loadPage(1);
+                }else{
+                	Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmStore');
                 }
             }
         },

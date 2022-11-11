@@ -84,14 +84,10 @@ public class CalculateDataController extends BaseController{
 		long startTime=0;
 		long endTime=0;
 		long allTime=0;
-//		CalculateThread calculateThreadList[]=new CalculateThread[20];
-//		for(int i=0;i<20;i++){
-//			calculateThreadList[i]=null;
-//		}
 		
 		ThreadPool executor = new ThreadPool("FESDiagramReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
 		
-		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.fesdiagramacqtime is not null";
+		String wellListSql="select distinct(wellid) from tbl_rpcacqdata_hist t where t.productiondata is not null and t.fesdiagramacqtime is not null and resultstatus =2";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){
@@ -128,7 +124,7 @@ public class CalculateDataController extends BaseController{
 		long allTime=0;
 		
 		ThreadPool executor = new ThreadPool("RPMReCalculate",20, 25, 5,TimeUnit.SECONDS,0);
-		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null not null and t.rpm is not null";
+		String wellListSql="select distinct(wellid) from tbl_pcpacqdata_hist t where t.productiondata is not null and t.rpm is not null and resultstatus =2";
 		List<?> wellList = calculateDataService.findCallSql(wellListSql);
 		startTime=new Date().getTime();
 		for(int j=0;j<wellList.size();j++){

@@ -50,10 +50,10 @@ public class CalculateThread extends Thread{
 			String acqDateSql="select distinct(to_char(t.fesdiagramacqtime,'yyyy-mm-dd')) as acqdate"
 					+ " from tbl_rpcacqdata_hist t "
 					+ " where 1=1  "
-					+ " and t.resultstatus =2 "
 					+ " and t.productiondata is not null"
 					+ " and t.fesdiagramacqtime is not null "
 					+ " and t.wellid="+wellNo+""
+					+ " and t.resultstatus =2 "
 					+ " order by acqdate";
 			List<?> acqDateList = calculateDataService.findCallSql(acqDateSql);
 			for(int i=0;i<acqDateList.size();i++){
@@ -73,10 +73,10 @@ public class CalculateThread extends Thread{
 							+ " left outer join tbl_pumpingmodel t3 on t3.id=t.pumpingmodelid"
 							+ " where 1=1  "
 							+ " and t.fesdiagramacqtime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
-							+ " and t.resultstatus =2  "
 							+ " and t.productiondata is not null"
 							+ " and t.fesdiagramacqtime is not null "
 							+ " and t.wellid="+wellNo+""
+							+ " and t.resultstatus =2  "
 							+ " order by t.fesdiagramacqTime ";
 					String fesDiagramSql="select t2.id as wellid, to_char(t.fesdiagramacqtime,'yyyy-mm-dd hh24:mi:ss'),t.resultcode,"
 							+ "t.stroke,t.spm,t.fmax,t.fmin,t.fullnesscoefficient,"
@@ -209,18 +209,20 @@ public class CalculateThread extends Thread{
 						liquidVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[9]+""));
 						oilVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[10]+""));
 						waterVolumetricProductionList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
-						
 						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
 							volumeWaterCutList.add(rpcProductionData.getProduction().getWaterCut());
 						}else{
 							volumeWaterCutList.add(0.0f);
 						}
 						
-						
 						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
 						oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[13]+""));
 						waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[14]+""));
-//						weightWaterCutList.add(responseData.getProduction().getLiquidVolumetricProduction());
+						if(rpcProductionData!=null&&rpcProductionData.getProduction()!=null){
+							weightWaterCutList.add(rpcProductionData.getProduction().getWeightWaterCut());
+						}else{
+							weightWaterCutList.add(0.0f);
+						}
 						
 						pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[16]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[17]+""));
@@ -262,7 +264,7 @@ public class CalculateThread extends Thread{
 							dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 							dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 							dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//							dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+							dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 							dataSbf.append("\"SurfaceSystemEfficiency\":["+StringUtils.join(surfaceSystemEfficiencyList, ",")+"],");
 							dataSbf.append("\"WellDownSystemEfficiency\":["+StringUtils.join(wellDownSystemEfficiencyList, ",")+"],");
 							dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
@@ -323,8 +325,9 @@ public class CalculateThread extends Thread{
 			String acqDateSql="select distinct(to_char(t.acqtime,'yyyy-mm-dd')) as acqdate"
 					+ " from tbl_pcpacqdata_hist t "
 					+ " where 1=1  "
-					+ " and t.resultstatus =2 and t.productiondata is not null and t.rpm is not null "
+					+ " and t.productiondata is not null and t.rpm is not null "
 					+ " and t.wellid="+wellNo+""
+					+ " and t.resultstatus =2 "
 					+ " order by acqdate";
 			List<?> acqDateList = calculateDataService.findCallSql(acqDateSql);
 			for(int i=0;i<acqDateList.size();i++){
@@ -332,14 +335,15 @@ public class CalculateThread extends Thread{
 					String acqDate=acqDateList.get(i).toString();
 					String minAcqTime="";
 					String sql="select t2.wellname,to_char(t.acqTime,'yyyy-mm-dd hh24:mi:ss'),"
-							+ " t.rpm,t.productiondata"
+							+ " t.rpm,t.productiondata,"
 							+ " t.id"
 							+ " from tbl_pcpacqdata_hist t"
 							+ " left outer join tbl_pcpdevice t2 on t.wellid=t2.id"
 							+ " where 1=1  "
 							+ " and t.acqTime between to_date('"+acqDate+"','yyyy-mm-dd') and to_date('"+acqDate+"','yyyy-mm-dd')+1 "
-							+ " and t.resultstatus =2 and t.productiondata is not null and t.rpm is not null "
+							+ " and t.productiondata is not null and t.rpm is not null "
 							+ " and t.wellid="+wellNo+""
+							+ " and t.resultstatus =2 "
 							+ " order by t.acqTime ";
 					String singleRecordSql="select t2.id as wellId, "
 							+ "to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"
@@ -461,7 +465,11 @@ public class CalculateThread extends Thread{
 						liquidWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[7]+""));
 						oilWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[8]+""));
 						waterWeightProductionList.add(StringManagerUtils.stringToFloat(resuleObj[9]+""));
-//						weightWaterCutList.add(responseData.getProduction().getLiquidVolumetricProduction());
+						if(pcpProductionData!=null&&pcpProductionData.getProduction()!=null){
+							weightWaterCutList.add(pcpProductionData.getProduction().getWeightWaterCut());
+						}else{
+							weightWaterCutList.add(0.0f);
+						}
 						
 						pumpEffList.add(StringManagerUtils.stringToFloat(resuleObj[11]+""));
 						pumpEff1List.add(StringManagerUtils.stringToFloat(resuleObj[12]+""));
@@ -495,7 +503,7 @@ public class CalculateThread extends Thread{
 							dataSbf.append("\"LiquidWeightProduction\":["+StringUtils.join(liquidWeightProductionList, ",")+"],");
 							dataSbf.append("\"OilWeightProduction\":["+StringUtils.join(oilWeightProductionList, ",")+"],");
 							dataSbf.append("\"WaterWeightProduction\":["+StringUtils.join(waterWeightProductionList, ",")+"],");
-//							dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
+							dataSbf.append("\"WeightWaterCut\":["+StringUtils.join(weightWaterCutList, ",")+"],");
 							dataSbf.append("\"SystemEfficiency\":["+StringUtils.join(systemEfficiencyList, ",")+"],");
 							dataSbf.append("\"EnergyPer100mLift\":["+StringUtils.join(energyPer100mLiftList, ",")+"],");
 							dataSbf.append("\"PumpEff\":["+StringUtils.join(pumpEffList, ",")+"],");

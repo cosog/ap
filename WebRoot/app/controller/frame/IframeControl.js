@@ -449,42 +449,42 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			if(secondActiveId=="RPCFESDiagramResultAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="RPCRunStatusAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="RPCCommunicationAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="RPCNumericValueAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("RPCNumericValueAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="RPCEnumValueAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("RPCEnumValueAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.RPCEnumValueAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="RPCSwitchingValueAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore');
 				}
@@ -495,28 +495,35 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			if(secondActiveId=="PCPCommunicationAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore');
+				}
+			}else if(secondActiveId=="PCPRunStatusAlarmInfoPanel_Id"){
+				var gridPanel = Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id");
+				if (isNotVal(gridPanel)) {
+					gridPanel.getStore().loadPage(1);
+				}else{
+					Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="PCPNumericValueAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="PCPEnumValueAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore');
 				}
 			}else if(secondActiveId=="PCPSwitchingValueAlarmInfoPanel_Id"){
 				var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id");
 				if (isNotVal(gridPanel)) {
-					gridPanel.getStore().load();
+					gridPanel.getStore().loadPage(1);
 				}else{
 					Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore');
 				}

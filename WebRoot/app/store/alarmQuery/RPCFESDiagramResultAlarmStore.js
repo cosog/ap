@@ -74,8 +74,13 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmStore', {
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=0;
-        	var deviceId  = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-        	var deviceName  = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var deviceName='';
+        	var deviceId=0;
+        	if(Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName=Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+            	deviceId=  Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	}
+        	
         	var alarmLevel=Ext.getCmp('RPCFESDiagramResultAlarmLevelComb_Id').getValue();
         	var isSendMessage=Ext.getCmp('RPCFESDiagramResultAlarmIsSendMessageComb_Id').getValue();
         	var startDate=Ext.getCmp('RPCFESDiagramResultAlarmQueryStartDate_Id').rawValue;

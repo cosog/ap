@@ -378,8 +378,12 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
                 	}
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var deviceType=0;
-                	var deviceName=Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
-                	var deviceId=  Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	var deviceName='';
+                	var deviceId=0;
+                	if(Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+                		deviceName=Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	deviceId=  Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	}
                 	var isSendMessage=Ext.getCmp('RPCCommunicationAlarmIsSendMessageComb_Id').getValue();
                 	var startDate=Ext.getCmp('RPCCommunicationAlarmQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('RPCCommunicationAlarmQueryEndDate_Id').rawValue;

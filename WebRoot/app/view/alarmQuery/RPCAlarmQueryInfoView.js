@@ -61,42 +61,42 @@ Ext.define("AP.view.alarmQuery.RPCAlarmQueryInfoView", {
         				if(newCard.id=="RPCFESDiagramResultAlarmInfoPanel_Id"){
         					var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id");
         					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
+        						gridPanel.getStore().loadPage(1);
         					}else{
         						Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore');
         					}
         				}else if(newCard.id=="RPCRunStatusAlarmInfoPanel_Id"){
         					var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
         					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
+        						gridPanel.getStore().loadPage(1);
         					}else{
         						Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
         					}
         				}else if(newCard.id=="RPCCommunicationAlarmInfoPanel_Id"){
         					var gridPanel = Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id");
         					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
+        						gridPanel.getStore().loadPage(1);
         					}else{
         						Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore');
         					}
         				}else if(newCard.id=="RPCNumericValueAlarmInfoPanel_Id"){
         					var gridPanel = Ext.getCmp("RPCNumericValueAlarmOverviewGridPanel_Id");
         					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
+        						gridPanel.getStore().loadPage(1);
         					}else{
         						Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore');
         					}
         				}else if(newCard.id=="RPCEnumValueAlarmInfoPanel_Id"){
         					var gridPanel = Ext.getCmp("RPCEnumValueAlarmOverviewGridPanel_Id");
         					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
+        						gridPanel.getStore().loadPage(1);
         					}else{
         						Ext.create('AP.store.alarmQuery.RPCEnumValueAlarmOverviewStore');
         					}
         				}else if(newCard.id=="RPCSwitchingValueAlarmInfoPanel_Id"){
         					var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmOverviewGridPanel_Id");
         					if (isNotVal(gridPanel)) {
-        						gridPanel.getStore().load();
+        						gridPanel.getStore().loadPage(1);
         					}else{
         						Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore');
         					}

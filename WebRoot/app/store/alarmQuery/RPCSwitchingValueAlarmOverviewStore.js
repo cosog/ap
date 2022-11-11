@@ -51,7 +51,7 @@ Ext.define('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore', {
             				if(selected.length>0){
             					var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
+                					gridPanel.getStore().loadPage(1);
                 				}else{
                 					Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmStore');
                 				}
@@ -71,7 +71,9 @@ Ext.define('AP.store.alarmQuery.RPCSwitchingValueAlarmOverviewStore', {
             }else{
             	var gridPanel = Ext.getCmp("RPCSwitchingValueAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
-                	Ext.getCmp("RPCSwitchingValueAlarmDetailsPanel_Id").remove(gridPanel);
+                	gridPanel.getStore().loadPage(1);
+                }else{
+                	Ext.create('AP.store.alarmQuery.RPCSwitchingValueAlarmStore');
                 }
             }
         },

@@ -51,7 +51,7 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
             				if(selected.length>0){
             					var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
+                					gridPanel.getStore().loadPage(1);
                 				}else{
                 					Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmStore');
                 				}
@@ -71,7 +71,9 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
             }else{
             	var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
-                	Ext.getCmp("RPCFESDiagramResultAlarmDetailsPanel_Id").remove(gridPanel);
+                	gridPanel.getStore().loadPage(1);
+                }else{
+                	Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmStore');
                 }
             }
         },

@@ -54,35 +54,35 @@ Ext.define("AP.view.alarmQuery.PCPAlarmQueryInfoView", {
         					if(newCard.id=="PCPRunStatusAlarmInfoPanel_Id"){
         						var gridPanel = Ext.getCmp("PCPRunStatusAlarmOverviewGridPanel_Id");
         						if (isNotVal(gridPanel)) {
-        							gridPanel.getStore().load();
+        							gridPanel.getStore().loadPage(1);
         						}else{
         							Ext.create('AP.store.alarmQuery.PCPRunStatusAlarmOverviewStore');
         						}
         					}else if(newCard.id=="PCPCommunicationAlarmInfoPanel_Id"){
         						var gridPanel = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id");
         						if (isNotVal(gridPanel)) {
-        							gridPanel.getStore().load();
+        							gridPanel.getStore().loadPage(1);
         						}else{
         							Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore');
         						}
         					}else if(newCard.id=="PCPNumericValueAlarmInfoPanel_Id"){
         						var gridPanel = Ext.getCmp("PCPNumericValueAlarmOverviewGridPanel_Id");
         						if (isNotVal(gridPanel)) {
-        							gridPanel.getStore().load();
+        							gridPanel.getStore().loadPage(1);
         						}else{
         							Ext.create('AP.store.alarmQuery.PCPNumericValueAlarmOverviewStore');
         						}
         					}else if(newCard.id=="PCPEnumValueAlarmInfoPanel_Id"){
         						var gridPanel = Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id");
         						if (isNotVal(gridPanel)) {
-        							gridPanel.getStore().load();
+        							gridPanel.getStore().loadPage(1);
         						}else{
         							Ext.create('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore');
         						}
         					}else if(newCard.id=="PCPSwitchingValueAlarmInfoPanel_Id"){
         						var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id");
         						if (isNotVal(gridPanel)) {
-        							gridPanel.getStore().load();
+        							gridPanel.getStore().loadPage(1);
         						}else{
         							Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore');
         						}

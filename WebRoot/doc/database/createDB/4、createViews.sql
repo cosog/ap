@@ -260,6 +260,7 @@ well.id as wellid,well.wellName,
 t.acqtime,t.resultstatus,
 t.liquidWeightProduction,t.oilWeightProduction,
 t.liquidVolumetricProduction,t.oilVolumetricProduction,
+t.rpm,
 t.productiondata,
 well.orgid
 from tbl_pcpacqdata_hist t

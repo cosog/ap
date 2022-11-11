@@ -51,7 +51,7 @@ Ext.define('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore', {
             				if(selected.length>0){
             					var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
+                					gridPanel.getStore().loadPage(1);
                 				}else{
                 					Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmStore');
                 				}
@@ -71,7 +71,9 @@ Ext.define('AP.store.alarmQuery.PCPSwitchingValueAlarmOverviewStore', {
             }else{
             	var gridPanel = Ext.getCmp("PCPSwitchingValueAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
-                	Ext.getCmp("PCPSwitchingValueAlarmDetailsPanel_Id").remove(gridPanel);
+                	gridPanel.getStore().loadPage(1);
+                }else{
+                	Ext.create('AP.store.alarmQuery.PCPSwitchingValueAlarmStore');
                 }
             }
         },

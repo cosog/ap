@@ -1683,9 +1683,9 @@ public class AcquisitionUnitManagerController extends BaseController {
 							String delDisplayItemSql="delete from tbl_display_items2unit_conf t "
 									+ "where t.type<>1 "
 									+ "and t.unitid in ( select t2.id from tbl_display_unit_conf t2 ,tbl_acq_unit_conf t3 where t2.acqunitid=t3.id and t3.protocol='"+modbusDriverSaveData.getProtocolName()+"'  )"
-									+ " and t4.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
+									+ " and t.itemname in ("+StringManagerUtils.joinStringArr2(delItemList, ",")+")";
 							service.updateSql(delSql);
-							service.updateSql(delSql);
+							service.updateSql(delDisplayItemSql);
 						}
 						Collections.sort(modbusProtocolConfig.getProtocol().get(i).getItems());
 						break;

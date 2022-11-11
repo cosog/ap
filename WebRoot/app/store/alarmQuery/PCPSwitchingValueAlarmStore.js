@@ -74,8 +74,12 @@ Ext.define('AP.store.alarmQuery.PCPSwitchingValueAlarmStore', {
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=1;
-        	var deviceId  = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-        	var deviceName  = Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+        	var deviceName='';
+        	var deviceId=0;
+        	if(Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+        		deviceName=Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+            	deviceId=  Ext.getCmp("PCPSwitchingValueAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+        	}
         	var alarmLevel=Ext.getCmp('PCPSwitchingValueAlarmLevelComb_Id').getValue();
         	var isSendMessage=Ext.getCmp('PCPSwitchingValueAlarmIsSendMessageComb_Id').getValue();
         	var startDate=Ext.getCmp('PCPSwitchingValueAlarmQueryStartDate_Id').rawValue;

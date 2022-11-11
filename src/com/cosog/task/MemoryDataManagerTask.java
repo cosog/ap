@@ -64,7 +64,7 @@ public class MemoryDataManagerTask {
 		return instance;
 	}
 	
-//	@Scheduled(fixedRate = 1000*60*60*24*365*100)
+	@Scheduled(fixedRate = 1000*60*60*24*365*100)
 	public static void loadMemoryData(){
 		Jedis jedis=null;
 		try{

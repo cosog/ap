@@ -284,7 +284,7 @@ insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMAR
 values (1105, 'TXBJQJYS', '00ff00', '1', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
-values (1105, '1123', 'f09614', '2', null, null, null);
+values (1123, 'TXBJQJYS', 'f09614', '2', null, null, null);
 
 insert into TBL_CODE (ID, ITEMCODE, ITEMNAME, ITEMVALUE, TABLECODE, STATE, REMARK)
 values (1062, 'TXBJYS', '6c6262', '0', null, null, null);

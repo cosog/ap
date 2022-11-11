@@ -378,8 +378,12 @@ Ext.define('AP.view.alarmQuery.PCPCommunicationAlarmInfoView', {
                 	}
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var deviceType=1;
-                	var deviceId  =   Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
-                	var deviceName  = Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                	var deviceName='';
+                	var deviceId=0;
+                	if(Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+                		deviceName=Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	deviceId=  Ext.getCmp("PCPCommunicationAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	}
                 	var isSendMessage=Ext.getCmp('PCPCommunicationAlarmIsSendMessageComb_Id').getValue();
                 	var startDate=Ext.getCmp('PCPCommunicationAlarmQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('PCPCommunicationAlarmQueryEndDate_Id').rawValue;

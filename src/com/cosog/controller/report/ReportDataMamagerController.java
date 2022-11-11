@@ -644,6 +644,7 @@ public class ReportDataMamagerController extends BaseController {
 	public String exportPCPDailyReportData2() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");
@@ -1015,6 +1016,7 @@ public class ReportDataMamagerController extends BaseController {
 	public String exportPCPDailyReportData() throws Exception {
 		log.debug("reportOutputWell enter==");
 		Vector<String> v = new Vector<String>();
+		orgId = ParamUtils.getParameter(request, "orgId");
 		String wellName = ParamUtils.getParameter(request, "wellName");
 		String startDate = ParamUtils.getParameter(request, "startDate");
 		String endDate= ParamUtils.getParameter(request, "endDate");

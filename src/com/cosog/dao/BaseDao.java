@@ -4083,7 +4083,7 @@ public class BaseDao extends HibernateDaoSupport {
 					+ "?,"
 					+ "?,?,?,?,"
 					+ "?,?,?,?,"
-					+ "?,?,?"
+					+ "?,?,?,"
 					+ "?,?"
 					+ ")}");
 			cs.setInt(1,StringManagerUtils.stringToInteger(recordId));

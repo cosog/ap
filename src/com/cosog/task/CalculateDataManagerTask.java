@@ -21,9 +21,10 @@ public class CalculateDataManagerTask {
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
 			String sql="select count(1) from tbl_rpcacqdata_hist t "
-					+ " where resultstatus =2 "
+					+ " where 1=1"
 					+ " and t.productiondata is not null "
-					+ " and t.fesdiagramacqtime is not null ";
+					+ " and t.fesdiagramacqtime is not null "
+					+ " and resultstatus =2 ";
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
 			String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/getBatchCalculateTime";
 			String result="无未计算数据";
@@ -39,7 +40,7 @@ public class CalculateDataManagerTask {
 	public void checkAndSendPCPCalculateRequset() throws SQLException, UnsupportedEncodingException, ParseException{
 		//判断AC程序是否启动
 		if(ResourceMonitoringTask.getAcRunStatus()==1){
-			String sql="select count(1) from tbl_pcpacqdata_hist t where resultstatus =2 and t.productiondata is not null and t.rpm is not null";
+			String sql="select count(1) from tbl_pcpacqdata_hist t where  t.productiondata is not null and t.rpm is not null and resultstatus =2";
 			StringManagerUtils stringManagerUtils=new StringManagerUtils();
 			String url=stringManagerUtils.getProjectUrl()+"/calculateDataController/getPCPBatchCalculateTime";
 			String result="无未计算数据";

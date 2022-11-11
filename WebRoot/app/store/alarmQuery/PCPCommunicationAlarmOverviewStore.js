@@ -51,7 +51,7 @@ Ext.define('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore', {
             				if(selected.length>0){
             					var gridPanel = Ext.getCmp("PCPCommunicationAlarmGridPanel_Id");
                 				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().load();
+                					gridPanel.getStore().loadPage(1);
                 				}else{
                 					Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmStore');
                 				}
@@ -71,7 +71,9 @@ Ext.define('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore', {
             }else{
             	var gridPanel = Ext.getCmp("PCPCommunicationAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
-                	Ext.getCmp("PCPCommunicationAlarmDetailsPanel_Id").remove(gridPanel);
+                	gridPanel.getStore().loadPage(1);
+                }else{
+                	Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmStore');
                 }
             }
         },

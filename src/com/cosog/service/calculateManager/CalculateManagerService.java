@@ -320,6 +320,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		sql="select t.id,t.wellId,t.wellName,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),"
 			+ "decode(t.resultStatus,1,'计算成功',0,'未计算',2,'未计算','计算失败'),"
 			+ prodCol
+			+ "t.rpm,"
 			+ "t.productiondata"
 			+ " from viw_pcp_calculatemain t where t.orgid in("+orgId+") "
 			+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')";
@@ -347,7 +348,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		result_json.append("\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-			String productionData=obj[7].toString();
+			String productionData=obj[8].toString();
 			type = new TypeToken<PCPCalculateRequestData>() {}.getType();
 			PCPCalculateRequestData calculateRequestData=gson.fromJson(productionData, type);
 			
@@ -364,7 +365,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				result_json.append("\"liquidVolumetricProduction\":\""+obj[5]+"\",");
 				result_json.append("\"oilVolumetricProduction\":\""+obj[6]+"\",");
 			}
-			
+			result_json.append("\"rpm\":\""+obj[7]+"\",");
 			if(calculateRequestData!=null){
 				if(calculateRequestData.getFluidPVT()!=null){
 					result_json.append("\"crudeoilDensity\":\""+calculateRequestData.getFluidPVT().getCrudeOilDensity()+"\",");
@@ -1616,7 +1617,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				String wellName=calInfoArr[i].split(",")[2];
 				String calDate=calInfoArr[i].split(",")[3];
 				String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-						+ " from tbl_pcpdailycalculationdata t,pcp_rpcdevice t2 "
+						+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
 						+ " where t.wellid=t2.id "
 						+ " and t.id="+recordId;
 				String rpmSql="select "
@@ -1925,7 +1926,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		StringBuffer dataSbf= new StringBuffer();
 		String sql="select t.commstatus,t.commtime,t.commtimeefficiency,t.commrange,t.runstatus,t.runtime,t.runtimeefficiency,t.runrange "
-				+ " from tbl_pcpdailycalculationdata t,pcp_rpcdevice t2 "
+				+ " from tbl_pcpdailycalculationdata t,tbl_pcpdevice t2 "
 				+ " where t.wellid=t2.id "
 				+ " and t.id="+recordId;
 		String fesDiagramSql="select to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss'),t.rpm,"

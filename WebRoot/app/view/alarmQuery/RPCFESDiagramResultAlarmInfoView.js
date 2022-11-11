@@ -353,8 +353,8 @@ Ext.define('AP.view.alarmQuery.RPCFESDiagramResultAlarmInfoView', {
                 	var isSendMessage=Ext.getCmp('RPCFESDiagramResultAlarmIsSendMessageComb_Id').getValue();
                 	var alarmType=4;
                	 	
-               	 	var fileName='抽油机井报警设备列表';
-               	 	var title='抽油机井报警设备列表';
+               	 	var fileName='抽油机井工况诊断报警设备列表';
+               	 	var title='抽油机井工况诊断报警设备列表';
                	 	var columnStr=Ext.getCmp("RPCFESDiagramResultAlarmOverviewColumnStr_Id").getValue();
                	 	exportAlarmOverviewDataExcel(orgId,deviceType,deviceName,alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }
@@ -405,16 +405,20 @@ Ext.define('AP.view.alarmQuery.RPCFESDiagramResultAlarmInfoView', {
                 	}
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
                 	var deviceType=0;
-                	var deviceName=Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                	var deviceName='';
+                	var deviceId=0;
+                	if(Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection().length>0){
+                		deviceName=Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.wellName;
+                    	deviceId=  Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
+                	}
                 	var alarmLevel=Ext.getCmp('RPCFESDiagramResultAlarmLevelComb_Id').getValue();
-                	var deviceId=  Ext.getCmp("RPCFESDiagramResultAlarmOverviewGridPanel_Id").getSelectionModel().getSelection()[0].data.id;
                 	var isSendMessage=Ext.getCmp('RPCFESDiagramResultAlarmIsSendMessageComb_Id').getValue();
                 	var startDate=Ext.getCmp('RPCFESDiagramResultAlarmQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('RPCFESDiagramResultAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=4;
                	 	
-               	 	var fileName='抽油机井'+deviceName+'工况报警数据';
-               	 	var title='抽油机井'+deviceName+'工况报警数据';
+               	 	var fileName='抽油机井'+deviceName+'工况诊断报警数据';
+               	 	var title='抽油机井'+deviceName+'工况诊断报警数据';
                	 	var columnStr=Ext.getCmp("RPCFESDiagramResultAlarmDetailsColumnStr_Id").getValue();
                	 	exportAlarmDataExcel(orgId,deviceType,deviceId,deviceName,getDateAndTime(startDate,startTime_Hour,startTime_Minute,startTime_Second),getDateAndTime(endDate,endTime_Hour,endTime_Minute,endTime_Second),alarmType,alarmLevel,isSendMessage,fileName,title,columnStr);
                 }

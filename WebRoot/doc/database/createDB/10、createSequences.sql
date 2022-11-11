@@ -217,7 +217,7 @@ cache 20;
 create sequence SEQ_PROTOCOLINSTANCE
 minvalue 0
 maxvalue 9999999999999999999999999
-start with 3
+start with 4
 increment by 1
 cache 20;
 /

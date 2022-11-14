@@ -139,7 +139,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,c
 			}
 			if(protocolDisplayUnitAcqItemsConfigHandsontableHelper==null || protocolDisplayUnitAcqItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitAcqItemsConfigHandsontableHelper = ProtocolDisplayUnitAcqItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','实时曲线顺序','实时曲线颜色','历史曲线','历史曲线颜色']";
+				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','实时曲线顺序','实时曲线颜色','历史曲线顺序','历史曲线颜色']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 
@@ -291,7 +291,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 			if(protocolDisplayUnitCalItemsConfigHandsontableHelper==null || protocolDisplayUnitCalItemsConfigHandsontableHelper.hot==undefined){
 				protocolDisplayUnitCalItemsConfigHandsontableHelper = ProtocolDisplayUnitCalItemsConfigHandsontableHelper.createNew("ModbusProtocolDisplayUnitCalItemsConfigTableInfoDiv_id");
-				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','实时曲线顺序','实时曲线颜色','历史曲线','历史曲线颜色','']";
+				var colHeaders="['','序号','名称','单位','显示级别','显示顺序','实时曲线顺序','实时曲线颜色','历史曲线顺序','历史曲线颜色','']";
 				var columns="[" 
 						+"{data:'checked',type:'checkbox'}," 
 						+"{data:'id'}," 

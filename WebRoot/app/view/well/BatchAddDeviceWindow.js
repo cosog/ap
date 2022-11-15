@@ -321,7 +321,11 @@ var BatchAddDeviceHandsontableHelper = {
                 	}
                 	rdata = Ext.JSON.decode(response.responseText);
                 	if (rdata.success&&rdata.collisionCount==0&&rdata.overlayCount==0) {
-                    	Ext.MessageBox.alert("信息", "保存成功");
+                    	if(rdata.overCount>0){
+                    		Ext.MessageBox.alert("信息", "<font color=red>"+rdata.overCount+"</font>口井超限，保存失败");
+                    	}else{
+                    		Ext.MessageBox.alert("信息", "保存成功");
+                    	}
                         //保存以后重置全局容器
                         batchAddDeviceHandsontableHelper.clearContainer();
                     }else if(rdata.success&&(rdata.collisionCount>0 || rdata.overlayCount>0)){
@@ -344,6 +348,22 @@ var BatchAddDeviceHandsontableHelper = {
                         if(rdata.overlayCount>0){
                         	CreateAndLoadBatchAddDeviceOverlayDataTable(rdata);
                         }
+                        
+                        var collisionInfo="冲突井数：<font color=red>"+rdata.collisionCount+"</font> ";
+                        var overlayInfo="覆盖井数：<font color=red>"+rdata.overlayCount+"</font> ";
+                        var overInfo="超限井数：<font color=red>"+rdata.overCount+"</font>";
+                        
+                        var info="";
+                        if(rdata.collisionCount>0){
+                        	info+=collisionInfo;
+                        }
+                        if(rdata.overlayCount>0){
+                        	info+=overlayInfo;
+                        }
+                        if(rdata.overCount>0){
+                        	info+=overInfo;
+                        }
+                        Ext.MessageBox.alert("信息", info);
                     } else {
                         Ext.MessageBox.alert("信息", "数据保存失败");
                     }

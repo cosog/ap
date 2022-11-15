@@ -74,18 +74,26 @@ public class CalculateDataManagerTask {
 		String result=StringManagerUtils.sendPostMethod(url, "","utf-8",0,0);
 	}
 	
-	public static  int getCount(String sql) throws SQLException{  
+	public static  int getCount(String sql){  
         int result=0;
-        Connection conn=OracleJdbcUtis.getConnection();
-        if(conn==null){
-        	return -1;
+        Connection conn=null;
+		PreparedStatement pstmt = null; 
+        ResultSet rs=null;
+        try{
+        	conn=OracleJdbcUtis.getConnection();
+            if(conn==null){
+            	return -1;
+            }
+            pstmt = conn.prepareStatement(sql); 
+            rs=pstmt.executeQuery();
+    		while(rs.next()){
+    			result=rs.getInt(1);
+    		}
+        }catch(Exception e){
+        	e.printStackTrace();
+        }finally{
+        	OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         }
-        PreparedStatement pstmt = conn.prepareStatement(sql); 
-        ResultSet rs=pstmt.executeQuery();
-		while(rs.next()){
-			result=rs.getInt(1);
-		}
-		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return result;
     }
 }

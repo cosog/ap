@@ -480,6 +480,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		int collisionCount=0;
 		int overlayCount=0;
+		int overCount=0;
 		String ddicName="deviceInfo_RPCDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddRPCDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
@@ -678,6 +679,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		        	overlayBuff.append("\"balancePosition\":\""+list.get(i).getBalancePosition()+"\",");
 					
 					overlayBuff.append("\"dataInfo\":\""+list.get(i).getSaveStr()+"\"},");
+				}else if(list.get(i).getSaveSign()==-66){//井数许可超限
+					overCount+=1;
 				}
 			}
 			if (collisionBuff.toString().endsWith(",")) {
@@ -689,12 +692,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		collisionBuff.append("]");
 		overlayBuff.append("]");
-		result_json.append("{\"success\":true,\"collisionCount\":"+collisionCount+",\"overlayCount\":"+overlayCount+","
+		result_json.append("{\"success\":true,"
+				+ "\"collisionCount\":"+collisionCount+","
+				+ "\"overlayCount\":"+overlayCount+","
+				+ "\"overCount\":"+overCount+","
 				+ "\"instanceDropdownData\":"+instanceDropdownData.toString()+","
 				+ "\"displayInstanceDropdownData\":"+displayInstanceDropdownData.toString()+","
 				+ "\"alarmInstanceDropdownData\":"+alarmInstanceDropdownData.toString()+","
 				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+","
-				+ "\"columns\":"+columns+",\"collisionList\":"+collisionBuff+",\"overlayList\":"+overlayBuff+"}");
+				+ "\"columns\":"+columns+","
+				+ "\"collisionList\":"+collisionBuff+","
+				+ "\"overlayList\":"+overlayBuff+"}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	
@@ -732,6 +740,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		StringBuffer applicationScenariosDropdownData = new StringBuffer();
 		int collisionCount=0;
 		int overlayCount=0;
+		int overCount=0;
 		String ddicName="deviceInfo_PCPDeviceBatchAdd";
 		String columns=service.showTableHeadersColumns(ddicName);
 		List<WellHandsontableChangedData.Updatelist> list=getBaseDao().batchAddPCPDevice(wellInformationManagerService,wellHandsontableChangedData,orgId,deviceType,isCheckout,user);
@@ -909,6 +918,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"netGrossValue\":\""+list.get(i).getNetGrossValue()+"\",");
 		        	
 					overlayBuff.append("\"dataInfo\":\""+list.get(i).getSaveStr()+"\"},");
+				}else if(list.get(i).getSaveSign()==-66){//井数许可超限
+					overCount+=1;
 				}
 			}
 			if (collisionBuff.toString().endsWith(",")) {
@@ -920,13 +931,17 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		collisionBuff.append("]");
 		overlayBuff.append("]");
-		result_json.append("{\"success\":true,\"collisionCount\":"+collisionCount+",\"overlayCount\":"+overlayCount+","
+		result_json.append("{\"success\":true,"
+				+ "\"collisionCount\":"+collisionCount+","
+				+ "\"overlayCount\":"+overlayCount+","
+				+ "\"overCount\":"+overCount+","
 				+ "\"instanceDropdownData\":"+instanceDropdownData.toString()+","
 				+ "\"displayInstanceDropdownData\":"+displayInstanceDropdownData.toString()+","
 				+ "\"alarmInstanceDropdownData\":"+alarmInstanceDropdownData.toString()+","
 				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+","
-				+ "\"columns\":"+columns+",\"collisionList\":"+collisionBuff+",\"overlayList\":"+overlayBuff+"}");
-		
+				+ "\"columns\":"+columns+","
+				+ "\"collisionList\":"+collisionBuff+","
+				+ "\"overlayList\":"+overlayBuff+"}");
 		return result_json.toString().replaceAll("null", "");
 	}
 	

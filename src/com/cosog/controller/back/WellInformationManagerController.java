@@ -42,6 +42,7 @@ import com.cosog.model.RpcDeviceInformation;
 import com.cosog.model.SmsDeviceInformation;
 import com.cosog.model.User;
 import com.cosog.model.WorkType;
+import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.PCPProductionData;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.drive.RPCInteractionResponseData;
@@ -53,6 +54,7 @@ import com.cosog.service.back.WellInformationManagerService;
 import com.cosog.service.base.CommonDataService;
 import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
+import com.cosog.task.ResourceMonitoringTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitThreadPoolConfig;
@@ -1347,7 +1349,6 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/doRPCDeviceAdd")
 	public String doRPCDeviceAdd(@ModelAttribute RpcDeviceInformation rpcDeviceInformation) throws IOException {
 		String result = "";
-		PrintWriter out = response.getWriter();
 		HttpSession session=request.getSession();
 		try {
 			User user = (User) session.getAttribute("userLogin");
@@ -1357,99 +1358,107 @@ public class WellInformationManagerController extends BaseController {
 			String videoUrl1 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl1");
 			String videoUrl2 = ParamUtils.getParameter(request, "rpcDeviceInformation.videoUrl2");
 			rpcDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
-			this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
-			List<String> wells=new ArrayList<String>();
-			wells.add(rpcDeviceInformation.getWellName());
 			
-			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-			dataSynchronizationThread.setSign(101);
-			dataSynchronizationThread.setDeviceType(0);
-			dataSynchronizationThread.setInitWellList(wells);
-			dataSynchronizationThread.setUpdateList(null);
-			dataSynchronizationThread.setAddList(wells);
-			dataSynchronizationThread.setDeleteList(null);
-			dataSynchronizationThread.setCondition(1);
-			dataSynchronizationThread.setMethod("update");
-			dataSynchronizationThread.setRpcDeviceInformation(rpcDeviceInformation);
-			dataSynchronizationThread.setUser(user);
-			dataSynchronizationThread.setRpcDeviceManagerService(rpcDeviceManagerService);
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
-					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
-			executor.execute(dataSynchronizationThread);
-//			MemoryDataManagerTask.loadRPCDeviceInfo(wells,1,"update");
-//			List<String> addWellList=new ArrayList<String>();
-//			addWellList.add(rpcDeviceInformation.getWellName());
-//			if(rpcDeviceInformation.getStatus()==1){
-//				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(addWellList,1,"update");
-//			}
-//			rpcDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, rpcDeviceInformation.getDeviceType(), user);
-			result = "{success:true,msg:true,resultCode:1}";
-			
-			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			out.print(result);
+			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
+			int license=0;
+			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+			if(acStatusProbeResonanceData!=null){
+				license=acStatusProbeResonanceData.getLicenseNumber();
+			}
+			if(deviceAmount<license){
+				this.rpcDeviceManagerService.doRPCDeviceAdd(rpcDeviceInformation);
+				List<String> wells=new ArrayList<String>();
+				wells.add(rpcDeviceInformation.getWellName());
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(101);
+				dataSynchronizationThread.setDeviceType(0);
+				dataSynchronizationThread.setInitWellList(wells);
+				dataSynchronizationThread.setUpdateList(null);
+				dataSynchronizationThread.setAddList(wells);
+				dataSynchronizationThread.setDeleteList(null);
+				dataSynchronizationThread.setCondition(1);
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.setRpcDeviceInformation(rpcDeviceInformation);
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setRpcDeviceManagerService(rpcDeviceManagerService);
+				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+				executor.execute(dataSynchronizationThread);
+				result = "{success:true,msg:true,resultCode:1}";
+			}else{
+				result = "{success:true,msg:true,resultCode:-66}";
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result = "{success:false,msg:false}";
-			out.print(result);
 		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 	
 	@RequestMapping("/doPCPDeviceAdd")
 	public String doPCPDeviceAdd(@ModelAttribute PcpDeviceInformation pcpDeviceInformation) throws IOException {
 		String result = "";
-		PrintWriter out = response.getWriter();
 		HttpSession session=request.getSession();
 		try {
 			User user = (User) session.getAttribute("userLogin");
 			String videoUrl1 = ParamUtils.getParameter(request, "pcpDeviceInformation.videoUrl1");
 			String videoUrl2 = ParamUtils.getParameter(request, "pcpDeviceInformation.videoUrl2");
 			pcpDeviceInformation.setVideoUrl(videoUrl1+";"+videoUrl2);
-			this.pcpDeviceManagerService.doPCPDeviceAdd(pcpDeviceInformation);
-			
-			List<String> wells=new ArrayList<String>();
-			wells.add(pcpDeviceInformation.getWellName());
-//			MemoryDataManagerTask.loadPCPDeviceInfo(wells,1,"update");
-//			
-//			List<String> addWellList=new ArrayList<String>();
-//			addWellList.add(pcpDeviceInformation.getWellName());
-//			if(pcpDeviceInformation.getStatus()==1){
-//				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(addWellList,1,"update");
-//			}
-//			pcpDeviceManagerService.getBaseDao().saveDeviceOperationLog(null, addWellList, null, pcpDeviceInformation.getDeviceType(), user);
-			
-			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
-			dataSynchronizationThread.setSign(201);
-			dataSynchronizationThread.setDeviceType(1);
-			dataSynchronizationThread.setInitWellList(wells);
-			dataSynchronizationThread.setUpdateList(null);
-			dataSynchronizationThread.setAddList(wells);
-			dataSynchronizationThread.setDeleteList(null);
-			dataSynchronizationThread.setCondition(1);
-			dataSynchronizationThread.setMethod("update");
-			dataSynchronizationThread.setPcpDeviceInformation(pcpDeviceInformation);
-			dataSynchronizationThread.setUser(user);
-			dataSynchronizationThread.setPcpDeviceManagerService(pcpDeviceManagerService);
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
-					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
-			executor.execute(dataSynchronizationThread);
-			
-			result = "{success:true,msg:true,resultCode:1}";
-			response.setCharacterEncoding(Constants.ENCODING_UTF8);
-			out.print(result);
+			int deviceAmount=ResourceMonitoringTask.getDeviceAmount();
+			int license=0;
+			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+			if(acStatusProbeResonanceData!=null){
+				license=acStatusProbeResonanceData.getLicenseNumber();
+			}
+			if(deviceAmount<license){
+				this.pcpDeviceManagerService.doPCPDeviceAdd(pcpDeviceInformation);
+				
+				List<String> wells=new ArrayList<String>();
+				wells.add(pcpDeviceInformation.getWellName());
+				
+				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
+				dataSynchronizationThread.setSign(201);
+				dataSynchronizationThread.setDeviceType(1);
+				dataSynchronizationThread.setInitWellList(wells);
+				dataSynchronizationThread.setUpdateList(null);
+				dataSynchronizationThread.setAddList(wells);
+				dataSynchronizationThread.setDeleteList(null);
+				dataSynchronizationThread.setCondition(1);
+				dataSynchronizationThread.setMethod("update");
+				dataSynchronizationThread.setPcpDeviceInformation(pcpDeviceInformation);
+				dataSynchronizationThread.setUser(user);
+				dataSynchronizationThread.setPcpDeviceManagerService(pcpDeviceManagerService);
+				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+						TimeUnit.SECONDS, 
+						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+				executor.execute(dataSynchronizationThread);
+				
+				result = "{success:true,msg:true,resultCode:1}";
+			}else{
+				result = "{success:true,msg:true,resultCode:-66}";
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			result = "{success:false,msg:false}";
-			out.print(result);
 		}
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(result);
+		pw.flush();
+		pw.close();
 		return null;
 	}
 	

@@ -61,6 +61,7 @@ import com.cosog.model.DisplayUnit;
 import com.cosog.model.KeyParameter;
 import com.cosog.model.Org;
 import com.cosog.model.User;
+import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPCalculateResponseData;
@@ -95,6 +96,7 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AdInitThreadPoolConfig;
+import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.LicenseMap;
@@ -1152,10 +1154,14 @@ public class BaseDao extends HibernateDaoSupport {
 		List<String> deleteWellList=new ArrayList<String>();
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
-		
+		int license=0;
+		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+		if(acStatusProbeResonanceData!=null){
+			license=acStatusProbeResonanceData.getLicenseNumber();
+		}
 //		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		try {
-			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_rpcdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
@@ -1283,11 +1289,12 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(18, wellHandsontableChangedData.getUpdatelist().get(i).getStroke().replaceAll(" ", ""));
 							cs.setString(19, new Gson().toJson(balance));
 							cs.setInt(20, StringManagerUtils.stringToInteger(isCheckout));
-							cs.registerOutParameter(21, Types.INTEGER);
-							cs.registerOutParameter(22,Types.VARCHAR);
+							cs.setInt(21, license);
+							cs.registerOutParameter(22, Types.INTEGER);
+							cs.registerOutParameter(23,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(21);
-							String saveResultStr=cs.getString(22);
+							int saveSign=cs.getInt(22);
+							String saveResultStr=cs.getString(23);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
@@ -1434,11 +1441,12 @@ public class BaseDao extends HibernateDaoSupport {
 								cs.setString(18, wellHandsontableChangedData.getInsertlist().get(i).getStroke().replaceAll(" ", ""));
 								cs.setString(19, new Gson().toJson(balance));
 								cs.setInt(20, StringManagerUtils.stringToInteger(isCheckout));
-								cs.registerOutParameter(21, Types.INTEGER);
-								cs.registerOutParameter(22,Types.VARCHAR);
+								cs.setInt(21, license);
+								cs.registerOutParameter(22, Types.INTEGER);
+								cs.registerOutParameter(23,Types.VARCHAR);
 								cs.executeUpdate();
-								int saveSign=cs.getInt(21);
-								String saveResultStr=cs.getString(22);
+								int saveSign=cs.getInt(22);
+								String saveResultStr=cs.getString(23);
 								if(saveSign==0||saveSign==1){//保存成功
 									if(saveSign==0){//添加
 										addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));
@@ -1759,10 +1767,14 @@ public class BaseDao extends HibernateDaoSupport {
 		List<String> deleteWellNameList=new ArrayList<String>();
 		List<String> disableWellIdList=new ArrayList<String>();
 		List<WellHandsontableChangedData.Updatelist> collisionList=new ArrayList<WellHandsontableChangedData.Updatelist>();
-		
+		int license=0;
+		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+		if(acStatusProbeResonanceData!=null){
+			license=acStatusProbeResonanceData.getLicenseNumber();
+		}
 //		License license=LicenseMap.getMapObject().get(LicenseMap.SN);
 		try {
-			cs = conn.prepareCall("{call prd_save_pcpdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+			cs = conn.prepareCall("{call prd_save_pcpdevice(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 			if(wellHandsontableChangedData.getUpdatelist()!=null){
 				for(int i=0;i<wellHandsontableChangedData.getUpdatelist().size();i++){
 					try{
@@ -1868,11 +1880,12 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(14, wellHandsontableChangedData.getUpdatelist().get(i).getSortNum().replaceAll(" ", ""));
 							cs.setString(15, new Gson().toJson(productionData));
 							cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
-							cs.registerOutParameter(17, Types.INTEGER);
-							cs.registerOutParameter(18,Types.VARCHAR);
+							cs.setInt(17, license);
+							cs.registerOutParameter(18, Types.INTEGER);
+							cs.registerOutParameter(19,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(17);
-							String saveResultStr=cs.getString(18);
+							int saveSign=cs.getInt(18);
+							String saveResultStr=cs.getString(19);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									addWellList.add(wellHandsontableChangedData.getUpdatelist().get(i).getWellName().replaceAll(" ", ""));
@@ -1996,11 +2009,12 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(14, wellHandsontableChangedData.getInsertlist().get(i).getSortNum().replaceAll(" ", ""));
 							cs.setString(15, new Gson().toJson(productionData));
 							cs.setInt(16, StringManagerUtils.stringToInteger(isCheckout));
-							cs.registerOutParameter(17, Types.INTEGER);
-							cs.registerOutParameter(18,Types.VARCHAR);
+							cs.setInt(17, license);
+							cs.registerOutParameter(18, Types.INTEGER);
+							cs.registerOutParameter(19,Types.VARCHAR);
 							cs.executeUpdate();
-							int saveSign=cs.getInt(17);
-							String saveResultStr=cs.getString(18);
+							int saveSign=cs.getInt(18);
+							String saveResultStr=cs.getString(19);
 							if(saveSign==0||saveSign==1){//保存成功
 								if(saveSign==0){//添加
 									addWellList.add(wellHandsontableChangedData.getInsertlist().get(i).getWellName().replaceAll(" ", ""));

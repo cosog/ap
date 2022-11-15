@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -32,6 +33,8 @@ import com.cosog.model.calculate.AppRunStatusProbeResonanceData;
 import com.cosog.model.calculate.CPUProbeResponseData;
 import com.cosog.model.calculate.CommResponseData;
 import com.cosog.model.calculate.MemoryProbeResponseData;
+import com.cosog.model.calculate.PCPDeviceInfo;
+import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.drive.InitializedDeviceInfo;
 import com.cosog.model.drive.KafkaConfig;
 import com.cosog.task.EquipmentDriverServerTask.DriverProbeResponse;
@@ -69,7 +72,7 @@ public class ResourceMonitoringTask {
     private static int adRunStatus=0;
     private static String adVersion="";
     private static int adLicense=0;
-    private static boolean adLicenseSign=false;
+    private static boolean licenseSign=false;
 	
     private static String cpuUsedPercent="";
     private static String cpuUsedPercentValue="";
@@ -85,7 +88,7 @@ public class ResourceMonitoringTask {
     
 	@SuppressWarnings("static-access")
 	@Scheduled(cron = "0/1 * * * * ?")
-	public void checkAndSendResourceMonitoring() throws SQLException, ParseException, IOException{
+	public void checkAndSendResourceMonitoring(){
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		String probeMemUrl=Config.getInstance().configFile.getAd().getProbe().getMem();
 		String probeCPUUrl=Config.getInstance().configFile.getAd().getProbe().getCpu();
@@ -93,27 +96,21 @@ public class ResourceMonitoringTask {
 		String adAllOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
 		String adStatusUrl=Config.getInstance().configFile.getAd().getProbe().getApp();
 		
+		Gson gson = new Gson();
+		java.lang.reflect.Type type=null;
 		
-		deviceAmount=getDeviceAmount();
+		try{
+			deviceAmount=getDeviceAmount();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
-//		acRunStatus=0;
-//		acVersion="";
-//		acLicense=0;
-//		
-//		adRunStatus=0;
-//		adVersion="";
-//		adLicense=0;
-//		adLicenseSign=false;
-//		
-//		cpuUsedPercent="";
-//		cpuUsedPercentValue="";
-//		cpuUsedPercentAlarmLevel=0;
-//		
-//		memUsedPercent="";
-//		memUsedPercentValue="";
-//		memUsedPercentAlarmLevel=0;
-		
-		TableSpaceInfo tableSpaceInfo= getTableSpaceInfo();
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0,0);
+		try{
+			tableSpaceInfo= getTableSpaceInfo();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
 		Jedis jedis=null;
 		try{
@@ -130,117 +127,139 @@ public class ResourceMonitoringTask {
 			}
 		}
 		
-		Gson gson = new Gson();
-		java.lang.reflect.Type type=null;
-		
 		//ac状态检测
-		AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
-		if(acStatusProbeResonanceData!=null){
-			acRunStatus=1;
-			acVersion=acStatusProbeResonanceData.getVer();
-			acLicense=acStatusProbeResonanceData.getLicenseNumber();
+		try{
+			AppRunStatusProbeResonanceData acStatusProbeResonanceData=CalculateUtils.appProbe("");
+			if(acStatusProbeResonanceData!=null){
+				acRunStatus=1;
+				acVersion=acStatusProbeResonanceData.getVer();
+				acLicense=acStatusProbeResonanceData.getLicenseNumber();
+			}else{
+				acRunStatus=0;
+				acVersion="";
+				acLicense=0;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		if(acLicense>0&&deviceAmount>acLicense){
+			licenseSign=true;
 		}else{
-			acRunStatus=0;
-			acVersion="";
-			acLicense=0;
+			licenseSign=false;
 		}
 		
 		//ad状态检测
-		String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
-		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
-		AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
-		if(adStatusProbeResonanceData!=null){
-			adRunStatus=1;
-			adVersion=adStatusProbeResonanceData.getVer();
-			adLicense=adStatusProbeResonanceData.getLicenseNumber();
-			if(adLicense>0&&deviceAmount>adLicense){
-				adLicenseSign=true;
-			}
-			
-			
-			String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",0,0);
-			String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",0,0);
-			type = new TypeToken<CPUProbeResponseData>() {}.getType();
-			CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
-			type = new TypeToken<MemoryProbeResponseData>() {}.getType();
-			MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
-			if(cpuProbeResponseData!=null){
+		try{
+			String adStatusProbeResponseDataStr=StringManagerUtils.sendPostMethod(adStatusUrl, "","utf-8",0,0);
+			type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
+			AppRunStatusProbeResonanceData adStatusProbeResonanceData=gson.fromJson(adStatusProbeResponseDataStr, type);
+			if(adStatusProbeResonanceData!=null){
+				adRunStatus=1;
+				adVersion=adStatusProbeResonanceData.getVer();
+				adLicense=adStatusProbeResonanceData.getLicenseNumber();
+				
+				String CPUProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeCPUUrl, "","utf-8",0,0);
+				String MemoryProbeResponseDataStr=StringManagerUtils.sendPostMethod(probeMemUrl, "","utf-8",0,0);
+				type = new TypeToken<CPUProbeResponseData>() {}.getType();
+				CPUProbeResponseData cpuProbeResponseData=gson.fromJson(CPUProbeResponseDataStr, type);
+				type = new TypeToken<MemoryProbeResponseData>() {}.getType();
+				MemoryProbeResponseData memoryProbeResponseData=gson.fromJson(MemoryProbeResponseDataStr, type);
+				if(cpuProbeResponseData!=null){
+					cpuUsedPercent="";
+					cpuUsedPercentValue="";
+					cpuUsedPercentAlarmLevel=0;
+					
+					for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
+						if(cpuProbeResponseData.getPercent().get(i)>=60 && cpuProbeResponseData.getPercent().get(i)<80 && cpuUsedPercentAlarmLevel<1){
+							cpuUsedPercentAlarmLevel=1;
+						}else if(cpuProbeResponseData.getPercent().get(i)>=80 && cpuUsedPercentAlarmLevel<2){
+							cpuUsedPercentAlarmLevel=2;
+						}
+						
+						cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
+						cpuUsedPercentValue+=cpuProbeResponseData.getPercent().get(i);
+						if(i<cpuProbeResponseData.getPercent().size()-1){
+							cpuUsedPercent+=";";
+							cpuUsedPercentValue+=";";
+						}
+					}
+				}else{
+					cpuUsedPercent="";
+					cpuUsedPercentValue="";
+					cpuUsedPercentAlarmLevel=0;
+				}
+				if(memoryProbeResponseData!=null){
+					memUsedPercent="";
+					memUsedPercentValue="";
+					memUsedPercentAlarmLevel=0;
+					if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
+						memUsedPercentAlarmLevel=1;
+					}else if(memoryProbeResponseData.getUsedPercent()>=80){
+						memUsedPercentAlarmLevel=2;
+					}
+					memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
+					memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
+				}else{
+					memUsedPercent="";
+					memUsedPercentValue="";
+					memUsedPercentAlarmLevel=0;
+				}
+			}else{
+				adRunStatus=0;
+				adVersion="";
+				adLicense=0;
+				
 				cpuUsedPercent="";
 				cpuUsedPercentValue="";
 				cpuUsedPercentAlarmLevel=0;
 				
-				for(int i=0;i<cpuProbeResponseData.getPercent().size();i++){
-					if(cpuProbeResponseData.getPercent().get(i)>=60 && cpuProbeResponseData.getPercent().get(i)<80 && cpuUsedPercentAlarmLevel<1){
-						cpuUsedPercentAlarmLevel=1;
-					}else if(cpuProbeResponseData.getPercent().get(i)>=80 && cpuUsedPercentAlarmLevel<2){
-						cpuUsedPercentAlarmLevel=2;
-					}
-					
-					cpuUsedPercent+=cpuProbeResponseData.getPercent().get(i)+"%";
-					cpuUsedPercentValue+=cpuProbeResponseData.getPercent().get(i);
-					if(i<cpuProbeResponseData.getPercent().size()-1){
-						cpuUsedPercent+=";";
-						cpuUsedPercentValue+=";";
-					}
-				}
-			}else{
-				cpuUsedPercent="";
-				cpuUsedPercentValue="";
-				cpuUsedPercentAlarmLevel=0;
-			}
-			if(memoryProbeResponseData!=null){
-				memUsedPercent="";
-				memUsedPercentValue="";
-				memUsedPercentAlarmLevel=0;
-				if(memoryProbeResponseData.getUsedPercent()>=60 && memoryProbeResponseData.getUsedPercent()<80){
-					memUsedPercentAlarmLevel=1;
-				}else if(memoryProbeResponseData.getUsedPercent()>=80){
-					memUsedPercentAlarmLevel=2;
-				}
-				memUsedPercent=memoryProbeResponseData.getUsedPercent()+"%";
-				memUsedPercentValue=memoryProbeResponseData.getUsedPercent()+"";
-			}else{
 				memUsedPercent="";
 				memUsedPercentValue="";
 				memUsedPercentAlarmLevel=0;
 			}
-		}else{
-			adRunStatus=0;
-			adVersion="";
-			adLicense=0;
-			adLicenseSign=false;
-			
-			cpuUsedPercent="";
-			cpuUsedPercentValue="";
-			cpuUsedPercentAlarmLevel=0;
-			
-			memUsedPercent="";
-			memUsedPercentValue="";
-			memUsedPercentAlarmLevel=0;
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		
-		conn=OracleJdbcUtis.getConnection();
-		if(conn!=null){
-			cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?)}");
-			cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
-			cs.setInt(2, acRunStatus);
-			cs.setString(3, acVersion);
-			cs.setInt(4, adRunStatus);
-			cs.setString(5, adVersion);
-			cs.setString(6, cpuUsedPercentValue);
-			cs.setString(7, memUsedPercentValue);
-			cs.setFloat(8, tableSpaceInfo.getUsedPercent());
-			cs.setInt(9, jedisStatus);
-			cs.executeUpdate();
+		try{
+			conn=OracleJdbcUtis.getConnection();
+			if(conn!=null){
+				cs = conn.prepareCall("{call prd_save_resourcemonitoring(?,?,?,?,?,?,?,?,?)}");
+				cs.setString(1, StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+				cs.setInt(2, acRunStatus);
+				cs.setString(3, acVersion);
+				cs.setInt(4, adRunStatus);
+				cs.setString(5, adVersion);
+				cs.setString(6, cpuUsedPercentValue);
+				cs.setString(7, memUsedPercentValue);
+				cs.setFloat(8, tableSpaceInfo.getUsedPercent());
+				cs.setInt(9, jedisStatus);
+				cs.executeUpdate();
+				if(cs!=null){
+					cs.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
 			if(cs!=null){
-				cs.close();
+				try {
+					cs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 			if(conn!=null){
-				conn.close();
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		
-//		adLicenseSign=new Random().nextBoolean();
 		
 		String sendData="{"
 				+ "\"functionCode\":\"ResourceMonitoringData\","
@@ -255,9 +274,9 @@ public class ResourceMonitoringTask {
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+","
-				+ "\"adLicenseSign\":"+adLicenseSign+","
+				+ "\"licenseSign\":"+licenseSign+","
 				+ "\"deviceAmount\":"+deviceAmount+","
-				+ "\"adLicense\":"+adLicense+","
+				+ "\"license\":"+acLicense+","
 				+ "\"jedisStatus\":\""+jedisStatus+"\""
 				+ "}";
 		try {
@@ -290,63 +309,54 @@ public class ResourceMonitoringTask {
         return result;
     }
 	
-	public static  TableSpaceInfo getTableSpaceInfo() throws SQLException{
-//        String sql="SELECT a.tablespace_name,"
-//        		+ "round(total / (1024 * 1024), 2) total,"
-//        		+ "round(free / (1024 * 1024), 2) free,"
-//        		+ "round((total - free) / (1024 * 1024), 2) used,"
-//        		+ " round((total - free) / total, 4) * 100 usedpercent,"
-//        		+ " round((total - free) / (1024*1024*1024*32), 4) * 100 usedpercent2 "
-//        		+ " FROM  "
-//        		+ " (SELECT tablespace_name, SUM(bytes) free FROM dba_free_space GROUP BY tablespace_name) a,  "
-//        		+ " (SELECT file_id,tablespace_name, SUM(bytes) total FROM dba_data_files GROUP BY file_id,tablespace_name) b   "
-//        		+ " WHERE a.tablespace_name = b.tablespace_name "
-//        		+ " and Upper(a.tablespace_name) like 'AP_JF_DATA%' "
-//        		+ " order by b.file_id ";
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo();
-        conn=OracleJdbcUtis.getConnection();
-        if(conn==null){
-        	return tableSpaceInfo;
+	public static  TableSpaceInfo getTableSpaceInfo(){
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0,0);
+        try{
+        	conn=OracleJdbcUtis.getConnection();
+            if(conn==null){
+            	return tableSpaceInfo;
+            }
+    		if(!StringManagerUtils.isNotNull(tableSpaceName)){
+    			String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
+    			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
+    			pstmt = conn.prepareStatement(tableSpaceSql); 
+    			rs=pstmt.executeQuery();
+    			while(rs.next()){
+    				tableSpaceName=rs.getString(1);
+    				break;
+    			}
+    		}
+    		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
+    				+ "FROM dba_data_files t "
+    				+ "where  Upper(t.tablespace_name) like '"+tableSpaceName+"%' "
+    				+ "and t.BYTES<34359721984";
+            
+    		pstmt = conn.prepareStatement(sql); 
+    		rs=pstmt.executeQuery();
+    		while(rs.next()){
+    			tableSpaceInfo.setTableSpaceName(tableSpaceName);
+    			tableSpaceInfo.setUsed(rs.getFloat(1));
+    			tableSpaceInfo.setTotal(rs.getFloat(2));
+    			tableSpaceInfo.setFree(rs.getFloat(2)-rs.getFloat(1));
+    			tableSpaceInfo.setUsedPercent(rs.getFloat(3));
+    			
+    			if(tableSpaceInfo.getUsedPercent()>=60 && tableSpaceInfo.getUsedPercent()<80){
+    				tableSpaceInfo.setAlarmLevel(1);
+    			}else if(tableSpaceInfo.getUsedPercent()>=80){
+    				tableSpaceInfo.setAlarmLevel(2);
+    			}else{
+    				tableSpaceInfo.setAlarmLevel(0);
+    			}
+    		}
+        }catch(Exception e){
+        	e.printStackTrace();
+        }finally{
+        	OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         }
-		if(!StringManagerUtils.isNotNull(tableSpaceName)){
-			String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
-			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
-			pstmt = conn.prepareStatement(tableSpaceSql); 
-			rs=pstmt.executeQuery();
-			while(rs.next()){
-				tableSpaceName=rs.getString(1);
-				break;
-			}
-		}
-		
-		
-		String sql="SELECT  round(SUM(bytes)/(1024*1024),2) as used,count(1)*32*1024 as totol, round(SUM(bytes)*100/(count(1)*32*1024*1024*1024),2) as usedpercent "
-				+ "FROM dba_data_files t "
-				+ "where  Upper(t.tablespace_name) like '"+tableSpaceName+"%' "
-				+ "and t.BYTES<34359721984";
-        
-		pstmt = conn.prepareStatement(sql); 
-		rs=pstmt.executeQuery();
-		while(rs.next()){
-			tableSpaceInfo.setTableSpaceName("AP_JF_DATA");
-			tableSpaceInfo.setUsed(rs.getFloat(1));
-			tableSpaceInfo.setTotal(rs.getFloat(2));
-			tableSpaceInfo.setFree(rs.getFloat(2)-rs.getFloat(1));
-			tableSpaceInfo.setUsedPercent(rs.getFloat(3));
-			
-			if(tableSpaceInfo.getUsedPercent()>=60 && tableSpaceInfo.getUsedPercent()<80){
-				tableSpaceInfo.setAlarmLevel(1);
-			}else if(tableSpaceInfo.getUsedPercent()>=80){
-				tableSpaceInfo.setAlarmLevel(2);
-			}else{
-				tableSpaceInfo.setAlarmLevel(0);
-			}
-		}
-		OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
         return tableSpaceInfo;
     }
 	
-	public static  int getDeviceAmount() throws IOException, SQLException{
+	public static  int getDeviceAmount2() throws IOException, SQLException{
 		int deviceAmount=0;
 		Map<String, Object> dataModelMap = DataModelMap.getMapObject();
 		Map<Integer,InitializedDeviceInfo> initializedDeviceList=(Map<Integer,InitializedDeviceInfo>) dataModelMap.get("InitializedDeviceList");
@@ -356,8 +366,62 @@ public class ResourceMonitoringTask {
 		return deviceAmount;
 	}
 	
+	@SuppressWarnings("resource")
+	public static  int getDeviceAmount() throws IOException, SQLException{
+		int deviceAmount=0;
+		Jedis jedis=null;
+		Connection conn=null;
+		PreparedStatement pstmt = null; 
+        ResultSet rs=null;
+		try {
+			try{
+				jedis = RedisUtil.jedisPool.getResource();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			if(jedis!=null){
+				if(!jedis.exists("RPCDeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
+				}
+				if(!jedis.exists("PCPDeviceInfo".getBytes())){
+					MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
+				}
+				List<byte[]> rpcDeviceInfoByteList =jedis.hvals("RPCDeviceInfo".getBytes());
+				List<byte[]> pcpDeviceInfoByteList =jedis.hvals("PCPDeviceInfo".getBytes());
+				deviceAmount=(rpcDeviceInfoByteList!=null?rpcDeviceInfoByteList.size():0)+(pcpDeviceInfoByteList!=null?pcpDeviceInfoByteList.size():0 );
+			}else{
+				conn=OracleJdbcUtis.getConnection();
+		        if(conn!=null){
+		        	String sql="select count(1) from tbl_rpcdevice t";
+		        	pstmt = conn.prepareStatement(sql); 
+		            rs=pstmt.executeQuery();
+		    		while(rs.next()){
+		    			deviceAmount=rs.getInt(1);
+		    		}
+		    		
+		    		sql="select count(1) from tbl_pcpdevice t";
+		        	pstmt = conn.prepareStatement(sql); 
+		            rs=pstmt.executeQuery();
+		    		while(rs.next()){
+		    			deviceAmount+=rs.getInt(1);
+		    		}
+		        }
+		        
+			}
+			
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally{
+			if(jedis!=null){
+				jedis.close();
+			}
+			OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);
+		}
+		return deviceAmount;
+	}
+	
 	public static class TableSpaceInfo{
-		public String tableSpaceName;
+		public String tableSpaceName="";
 		public float total=0;
 		public float free=0;
 		public float used=0;
@@ -461,12 +525,12 @@ public class ResourceMonitoringTask {
 		ResourceMonitoringTask.adLicense = adLicense;
 	}
 
-	public static boolean isAdLicenseSign() {
-		return adLicenseSign;
+	public static boolean isLicenseSign() {
+		return licenseSign;
 	}
 
-	public static void setAdLicenseSign(boolean adLicenseSign) {
-		ResourceMonitoringTask.adLicenseSign = adLicenseSign;
+	public static void setLicenseSign(boolean licenseSign) {
+		ResourceMonitoringTask.licenseSign = licenseSign;
 	}
 
 	public static String getCpuUsedPercent() {

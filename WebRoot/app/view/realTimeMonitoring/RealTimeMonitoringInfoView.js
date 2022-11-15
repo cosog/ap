@@ -92,12 +92,6 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         }
                 	},{
                 		xtype: 'button',
-                        id:"adLicenseStatusProbeLabel_id",
-                        text: 'License超限:',
-                        hidden: true,
-                        handler: function (v, o) {}
-                	},{
-                		xtype: 'button',
                         id:"acRunStatusProbeLabel_id",
                         text: 'ac',
 //                        width: 100,
@@ -110,6 +104,12 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         	});
                         	ResourceProbeHistoryCurveWindow.show();
                         }
+                	},{
+                		xtype: 'button',
+                        id:"adLicenseStatusProbeLabel_id",
+                        text: 'License超限:',
+                        hidden: true,
+                        handler: function (v, o) {}
                 	},{
                         id: 'ResourceMonitoringCurveItem_Id',
                         xtype: 'textfield',

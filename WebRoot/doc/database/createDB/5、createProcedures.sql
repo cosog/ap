@@ -152,6 +152,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpcdevice (
                                                     v_stroke  in NUMBER,
                                                     v_balanceinfo in varchar2,
                                                     v_isCheckout in NUMBER,
+                                                    v_license in NUMBER,
                                                     v_result out NUMBER,
                                                     v_resultstr out varchar2) as
   wellcount number :=0;
@@ -159,10 +160,16 @@ CREATE OR REPLACE PROCEDURE prd_save_rpcdevice (
   othercount number :=0;
   otherrpccount number :=0;
   otherpcpcount number :=0;
+  rpcTotalCount number :=0;
+  pcpTotalCount number :=0;
+  totalCount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
   select count(1) into wellcount from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
+  select count(1) into rpcTotalCount from tbl_rpcdevice t;
+  select count(1) into pcpTotalCount from tbl_pcpdevice t;
+  totalCount :=rpcTotalCount+pcpTotalCount;
   if v_isCheckout=0 then
     if wellcount>0 then
       select t.id into wellId from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
@@ -217,7 +224,6 @@ begin
         v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
         p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
       end if;
-
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
         select count(1) into otherrpccount from tbl_rpcdevice t
@@ -228,20 +234,26 @@ begin
         and t.signinid is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
-          insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
-          values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
-          commit;
-          update tbl_rpcdevice t
-          set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-              t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-              t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-              t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-              t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model)
-          Where t.wellName=v_wellName and t.orgid=v_orgId;
-          commit;
-          v_result:=0;
-          v_resultstr := '添加成功';
-          p_msg := '添加成功';
+          if totalCount<v_license then
+            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
+            commit;
+            update tbl_rpcdevice t
+            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
+                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
+                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
+                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
+                t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model)
+            Where t.wellName=v_wellName and t.orgid=v_orgId;
+            commit;
+            v_result:=0;
+            v_resultstr := '添加成功';
+            p_msg := '添加成功';
+          else
+            v_result:=-66;
+            v_resultstr := '井数许可超限';
+            p_msg := '井数许可超限';
+          end if;
         else
           if otherrpccount>0 then
              select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
@@ -279,20 +291,26 @@ begin
         and t.signinid is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
-          insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
-          values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
-          commit;
-          update tbl_rpcdevice t
-          set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-              t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
-              t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
-              t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-              t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model)
-          Where t.wellName=v_wellName and t.orgid=v_orgId;
-          commit;
-          v_result:=0;
-          v_resultstr := '添加成功';
-          p_msg := '添加成功';
+          if totalCount<v_license then
+            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
+            commit;
+            update tbl_rpcdevice t
+            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
+                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
+                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
+                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
+                t.pumpingmodelid=(select t2.id from tbl_pumpingmodel t2 where t2.manufacturer=v_manufacturer and t2.model=v_model)
+            Where t.wellName=v_wellName and t.orgid=v_orgId;
+            commit;
+            v_result:=0;
+            v_resultstr := '添加成功';
+            p_msg := '添加成功';
+          else
+            v_result:=-66;
+            v_resultstr := '井数许可超限';
+            p_msg := '井数许可超限';
+          end if;
         else
           if otherrpccount>0 then
              select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
@@ -340,6 +358,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcpdevice (
                                                     v_sortNum  in NUMBER,
                                                     v_productionData in varchar2,
                                                     v_isCheckout in NUMBER,
+                                                    v_license in NUMBER,
                                                     v_result out NUMBER,
                                                     v_resultstr out varchar2) as
   wellcount number :=0;
@@ -347,10 +366,16 @@ CREATE OR REPLACE PROCEDURE prd_save_pcpdevice (
   othercount number :=0;
   otherrpccount number :=0;
   otherpcpcount number :=0;
+  rpcTotalCount number :=0;
+  pcpTotalCount number :=0;
+  totalCount number :=0;
   otherDeviceAllPath varchar2(3000) := '';
   p_msg varchar2(3000) := 'error';
 begin
   select count(1) into wellcount from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
+  select count(1) into rpcTotalCount from tbl_rpcdevice t;
+  select count(1) into pcpTotalCount from tbl_pcpdevice t;
+  totalCount :=rpcTotalCount+pcpTotalCount;
   if v_isCheckout=0 then
     if wellcount>0 then
       select t.id into wellId from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
@@ -409,19 +434,25 @@ begin
         where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
-          insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata)
-          values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
-          commit;
-          update tbl_pcpdevice t
-          set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-            t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
-            t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
-            t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1)
-          Where t.wellName=v_wellName and t.orgid=v_orgId;
-          commit;
-          v_result:=0;
-          v_resultstr := '添加成功';
-          p_msg := '添加成功';
+          if totalCount<v_license then
+            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
+            commit;
+            update tbl_pcpdevice t
+            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
+                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
+                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
+                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1)
+            Where t.wellName=v_wellName and t.orgid=v_orgId;
+            commit;
+            v_result:=0;
+            v_resultstr := '添加成功';
+            p_msg := '添加成功';
+          else
+            v_result:=-66;
+            v_resultstr := '井数许可超限';
+            p_msg := '井数许可超限';
+          end if;
         else
           if otherpcpcount>0 then
              select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
@@ -457,19 +488,25 @@ begin
         where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
-          insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata)
-          values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
-          commit;
-          update tbl_pcpdevice t
-          set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
-            t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
-            t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
-            t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1)
-          Where t.wellName=v_wellName and t.orgid=v_orgId;
-          commit;
-          v_result:=0;
-          v_resultstr := '添加成功';
-          p_msg := '添加成功';
+          if totalCount<v_license then
+            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
+            commit;
+            update tbl_pcpdevice t
+            set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
+                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
+                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
+                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1)
+            Where t.wellName=v_wellName and t.orgid=v_orgId;
+            commit;
+            v_result:=0;
+            v_resultstr := '添加成功';
+            p_msg := '添加成功';
+          else 
+            v_result:=-66;
+            v_resultstr := '井数许可超限';
+            p_msg := '井数许可超限';
+          end if;
         else
           if otherpcpcount>0 then
              select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path

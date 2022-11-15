@@ -622,8 +622,8 @@ function websocketOnMessage(evt) {
 			}
 			
 			
-			if(data.adLicenseSign){
-				Ext.getCmp("adLicenseStatusProbeLabel_id").setText("<font color=#DC2828 >License超限:"+data.deviceAmount+"/"+data.adLicense+"</font>");
+			if(data.licenseSign){
+				Ext.getCmp("adLicenseStatusProbeLabel_id").setText("<font color=#DC2828 >License超限:"+data.deviceAmount+"/"+data.license+"</font>");
 				Ext.getCmp("adLicenseStatusProbeLabel_id").show();
 			}else{
 				Ext.getCmp("adLicenseStatusProbeLabel_id").setText("");

@@ -673,14 +673,14 @@ public class WellInformationManagerController extends BaseController {
 		String json ="{success:true}";
 		User user = (User) session.getAttribute("userLogin");
 		int deviceId = StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "deviceId"));
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
+		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String pumpingModelId = ParamUtils.getParameter(request, "pumpingModelId");
 		String stroke = ParamUtils.getParameter(request, "stroke");
 		String balanceInfo = ParamUtils.getParameter(request, "balanceInfo").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String deviceProductionData = ParamUtils.getParameter(request, "deviceProductionData").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
 		String manualInterventionResultName = ParamUtils.getParameter(request, "manualInterventionResultName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
-		String videoUrl = ParamUtils.getParameter(request, "videoUrl");
+		String videoUrl = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "videoUrl"));
 		deviceType = ParamUtils.getParameter(request, "deviceType");
 		Gson gson = new Gson();
 		String deviceTableName="tbl_rpcdevice";
@@ -797,7 +797,7 @@ public class WellInformationManagerController extends BaseController {
 	public String batchAddDevice() throws Exception {
 		HttpSession session=request.getSession();
 		User user = (User) session.getAttribute("userLogin");
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll("null", "");
+		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String orgId = ParamUtils.getParameter(request, "orgId");
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		deviceType = ParamUtils.getParameter(request, "deviceType");
@@ -1294,7 +1294,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/savePumpingModelHandsontableData")
 	public String savePumpingModelHandsontableData() throws Exception {
 		HttpSession session=request.getSession();
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String selectedRecordId = ParamUtils.getParameter(request, "selectedRecordId");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<PumpingModelHandsontableChangedData>() {}.getType();
@@ -1314,7 +1314,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/savePumpingPRTFData")
 	public String savePumpingPRTFData() throws Exception {
 		HttpSession session=request.getSession();
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String recordId = ParamUtils.getParameter(request, "recordId");
 		String json=this.wellInformationManagerService.savePumpingPRTFData(recordId,data);
 		response.setContentType("application/json;charset=utf-8");
@@ -1330,7 +1330,7 @@ public class WellInformationManagerController extends BaseController {
 	@RequestMapping("/batchAddPumpingModel")
 	public String batchAddPumpingModel() throws Exception {
 		HttpSession session=request.getSession();
-		String data = ParamUtils.getParameter(request, "data").replaceAll("&nbsp;", "").replaceAll(" ", "").replaceAll("null", "");
+		String data = StringManagerUtils.delSpace(ParamUtils.getParameter(request, "data"));
 		String isCheckout = ParamUtils.getParameter(request, "isCheckout");
 		Gson gson = new Gson();
 		java.lang.reflect.Type type = new TypeToken<PumpingModelHandsontableChangedData>() {}.getType();

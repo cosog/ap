@@ -3734,4 +3734,8 @@ public class StringManagerUtils {
         String webApp = stringManagerUtils.getProjectName();
         return networkProtocol + "://" + ip + ":" + port + "/" + webApp;
     }
+    
+    public static String delSpace(String s){
+    	return s.replaceAll("\\s*", "").replaceAll("\r\n", "\n").replaceAll("\n", "\r").replaceAll("\r", "").replaceAll("&nbsp;", "").replaceAll("null", "").replaceAll("　", "").replaceAll(" ", "");
+    }
 }

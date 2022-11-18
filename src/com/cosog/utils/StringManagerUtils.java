@@ -1900,6 +1900,14 @@ public class StringManagerUtils {
         String fileContent = "";
         try {
             File f = new File(path);
+            if(!f.exists()){
+            	if(path.startsWith("/")){
+            		path=path.substring(1);
+    			}else{
+    				path="/"+path;
+    			}
+            	f = new File(path);
+            }
             if (f.isFile() && f.exists()) {
                 FileInputStream fs = new FileInputStream(f);
                 InputStreamReader read = new InputStreamReader(fs, encode);
@@ -2378,9 +2386,9 @@ public class StringManagerUtils {
         if (path.startsWith("zip")) { // 当class文件在war中时，此时返回zip:D:/...这样的路径
             path = path.substring(4);
         } else if (path.startsWith("file")) { // 当class文件在class文件中时，此时返回file:/D:/...这样的路径
-            path = path.substring(6);
+            path = path.substring(5);
         } else if (path.startsWith("jar")) { // 当class文件在jar文件里面时，此时返回jar:file:/D:/...这样的路径
-            path = path.substring(10);
+            path = path.substring(9);
         }
         try {
             path = URLDecoder.decode(path, "UTF-8");
@@ -3737,5 +3745,19 @@ public class StringManagerUtils {
     
     public static String delSpace(String s){
     	return s.replaceAll("\\s*", "").replaceAll("\r\n", "\n").replaceAll("\n", "\r").replaceAll("\r", "").replaceAll("&nbsp;", "").replaceAll("null", "").replaceAll("　", "").replaceAll(" ", "");
+    }
+    
+    public static String getRequesrUrl(String ip,int port,String srcUrl){
+    	String url="";
+    	String networkProtocol = "http";
+    	if(srcUrl.startsWith("http")){
+    		url=srcUrl;
+    	}else{
+    		if(srcUrl.startsWith("/")){
+    			srcUrl=srcUrl.substring(1);
+    		}
+    		url=networkProtocol + "://" + ip + ":" + port + "/" + srcUrl;
+    	}
+    	return url;
     }
 }

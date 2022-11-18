@@ -47,19 +47,5 @@
         <property name="maxUploadSize" value="102400000000000"></property>  
         <property name="maxInMemorySize" value="40960"></property>  
     </bean>
-    
-    <bean id="redisUtil" class="com.cosog.utils.RedisUtil">
-        <!-- 初始化类 -->
-        <property name="addr"><value>127.0.0.1</value></property>
-        <!-- 访问地址，默认本地 -->
-        <property name="port"><value>6379</value></property>
-        <!-- 端口号 -->
-        <property name="auth"><value>master</value></property>
-        <property name="maxIdle"><value>200</value></property>
-        <property name="maxActive"><value>1024</value></property>
-        <property name="maxWait"><value>10000</value></property>
-        <property name="timeOut"><value>10000</value></property>
-        <property name="testOnBorrow"><value>true</value></property>
-    </bean>
 </beans>
 <!--</xml-body>-->

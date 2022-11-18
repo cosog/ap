@@ -35,6 +35,7 @@ import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AdInitMap;
 import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.Config;
+import com.cosog.utils.ConfigFile;
 import com.cosog.utils.JDBCUtil;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.RedisUtil;
@@ -66,7 +67,7 @@ public class EquipmentDriverServerTask {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		
 		String allOfflineUrl=stringManagerUtils.getProjectUrl()+"/api/acq/allDeviceOffline";
-		String probeUrl=Config.getInstance().configFile.getAd().getProbe().getInit();
+		String probeUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getProbe().getInit());
 		
 		initWellCommStatus();
 		MemoryDataManagerTask.loadMemoryData();
@@ -173,7 +174,7 @@ public class EquipmentDriverServerTask {
 		@SuppressWarnings("static-access")
 		public void run(){
 			try {
-				Thread.sleep(1000*wait);
+				Thread.currentThread().sleep(1000*wait);
 				StringManagerUtils stringManagerUtils=new StringManagerUtils();
 				String url=stringManagerUtils.getProjectUrl()+"/api/acq/group";
 				
@@ -722,11 +723,15 @@ public class EquipmentDriverServerTask {
 			rs=pstmt.executeQuery();
 			int maxSortNum=1;
 			while(rs.next()){
+				int sort=rs.getInt(4);
 				if((!StringManagerUtils.databaseColumnFiter(rs.getString(3))) && rs.getString(3).toUpperCase().startsWith("C_")){
 					dataDictionaryItemsId.add(rs.getString(1));
 					dataDictionaryItemsName.add(rs.getString(2));
 					dataDictionaryItems.add(rs.getString(3));
-					dataDictionaryItemsSortList.add(rs.getInt(4));
+					dataDictionaryItemsSortList.add(sort);
+				}
+				if(sort>maxSortNum){
+					maxSortNum=sort;
 				}
 			}
 			
@@ -746,14 +751,6 @@ public class EquipmentDriverServerTask {
 				pstmt = conn.prepareStatement(delDataDict);
 				pstmt.executeUpdate();
 				StringManagerUtils.printLog("删除协议中不存在的字典项:"+delItemIds.toString());
-			}
-			for(int i=0;i<dataDictionaryItemsSortList.size();i++){
-				if(dataDictionaryItemsSortList.get(i)>maxSortNum){
-					maxSortNum=dataDictionaryItemsSortList.get(i);
-				}
-			}
-			if(maxSortNum<5){
-				maxSortNum=5;
 			}
 			
 			//如数字典中不存在，添加字典项
@@ -800,7 +797,7 @@ public class EquipmentDriverServerTask {
 		if(!StringManagerUtils.isNotNull(method)){
 			method="update";
 		}
-		String initUrl=Config.getInstance().configFile.getAd().getProtocol();
+		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getProtocol());
 		Gson gson = new Gson();
 		ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 		InitProtocol initProtocol=null;
@@ -987,7 +984,7 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("static-access")
 	public static int initInstanceConfig(List<String> instanceList,String method){
-		String initUrl=Config.getInstance().configFile.getAd().getInstance();
+		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getInstance());
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
@@ -1118,7 +1115,7 @@ public class EquipmentDriverServerTask {
 	//初始化短信实例
 	@SuppressWarnings("static-access")
 	public static int initSMSInstanceConfig(List<String> instanceList,String method){
-		String initUrl=Config.getInstance().configFile.getAd().getInstance();
+		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getInstance());
 		Gson gson = new Gson();
 		int result=0;
 		String instances=StringManagerUtils.joinStringArr2(instanceList, ",");
@@ -1473,7 +1470,7 @@ public class EquipmentDriverServerTask {
 	
 	@SuppressWarnings("static-access")
 	public static int initSMSDevice(List<String> wellList,String method){
-		String initUrl=Config.getInstance().configFile.getAd().getSMS();
+		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getSMS());
 		Gson gson = new Gson();
 		int result=0;
 		String wellName=StringManagerUtils.joinStringArr2(wellList, ",");
@@ -1573,52 +1570,28 @@ public class EquipmentDriverServerTask {
 	}
 	
 	public static void initServerConfig() throws MalformedURLException{
-		String initUrl=Config.getInstance().configFile.getAd().getServer();
+		String initUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getInit().getServer().getUrl());
 		StringBuffer json_buff = new StringBuffer();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		try {
-			String host = StringManagerUtils.getLocalIPAddress();
-//			host = "127.0.0.1";
-			int port=StringManagerUtils.getHttpPort();
-			String projectName=stringManagerUtils.getProjectName();
-			
-			json_buff.append("{");
-			json_buff.append("\"IP\":\""+host+"\",");
-			json_buff.append("\"Port\":\""+port+"\",");
-			json_buff.append("\"ProjectName\":\""+projectName+"\"");
-			json_buff.append("}");
-			StringManagerUtils.printLog("服务初始化："+json_buff.toString());
-			if(initEnable){
-				StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
+//			String host = StringManagerUtils.getLocalIPAddress();
+////			host = "127.0.0.1";
+//			int port=StringManagerUtils.getHttpPort();
+//			String projectName=stringManagerUtils.getProjectName();
+			ConfigFile.Ad_ServerInitContent[] content=Config.getInstance().configFile.getAd().getInit().getServer().getContent();
+			for(int i=0;i<content.length;i++){
+				json_buff.append("{");
+				json_buff.append("\"IP\":\""+content[i].getIp()+"\",");
+				json_buff.append("\"Port\":\""+content[i].getPort()+"\",");
+				json_buff.append("\"ProjectName\":\""+content[i].getProjectName()+"\"");
+				json_buff.append("}");
+				StringManagerUtils.printLog("服务初始化："+json_buff.toString());
+				if(initEnable){
+					StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
+				}
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	public static void initServerConfig2() throws MalformedURLException{
-		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String accessPath=stringManagerUtils.getProjectUrl();
-		String initUrl=Config.getInstance().configFile.getAd().getServer();
-		StringBuffer json_buff = new StringBuffer();
-		URL url = new URL(accessPath);
-		String host=url.getHost();
-		int port=url.getPort();
-		String projectName="";
-		String path = url.getPath();
-		String[] pathArr=path.split("/");
-		if(pathArr.length>=2){
-			projectName=pathArr[1];
-		}
-		json_buff.append("{");
-		json_buff.append("\"IP\":\""+host+"\",");
-		json_buff.append("\"Port\":\""+port+"\",");
-		json_buff.append("\"ProjectName\":\""+projectName+"\"");
-		json_buff.append("}");
-		StringManagerUtils.printLog("服务始化："+json_buff.toString());
-		if(initEnable){
-			StringManagerUtils.sendPostMethod(initUrl,json_buff.toString(),"utf-8",0,0);
 		}
 	}
 	

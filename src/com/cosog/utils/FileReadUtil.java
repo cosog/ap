@@ -53,27 +53,33 @@ public class FileReadUtil {
     }
 
 
-    public static InputStream getStreamByFileName(String fileName) throws IOException {
+    public static InputStream getStreamByFileName(String fileName) {
         if (fileName == null) {
             throw new IllegalArgumentException("fileName should not be null!");
         }
-        Path path = Paths.get(fileName);
-        return Files.newInputStream(path);
-
-//        if (fileName.startsWith("http")) {
-//            // 网络地址
-//            return HttpUtil.downFile(fileName);
-//        } else if (BasicFileUtil.isAbsFile(fileName)) {
-//            // 绝对路径
-//            Path path = Paths.get(fileName);
-//            return Files.newInputStream(path);
-//        } else if (fileName.startsWith("~")) {
-//            // 用户目录下的绝对路径文件
-//            fileName = BasicFileUtil.parseHomeDir2AbsDir(fileName);
-//            return Files.newInputStream(Paths.get(fileName));
-//        } else { // 相对路径
-//            return FileReadUtil.class.getClassLoader().getResourceAsStream(fileName);
-//        }
+        InputStream is=null;
+        Path path=null;
+        try {
+        	try {
+        		path = Paths.get(fileName);
+        	} catch (Exception e) {
+    			if(fileName.startsWith("/")){
+    				fileName=fileName.substring(1);
+    			}else{
+    				fileName="/"+fileName;
+    			}
+    			try {
+    				path = Paths.get(fileName);
+            	} catch (Exception e2) {
+            		throw new IllegalArgumentException("file not be find!");
+            	}
+    		}
+        	is= Files.newInputStream(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return is;
     }
 
     /**

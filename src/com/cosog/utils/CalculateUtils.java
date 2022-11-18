@@ -24,26 +24,29 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class CalculateUtils {
-	private final static String[] commUrl=Config.getInstance().configFile.getAc().getCommunication();
-	private final static String[] runUrl=Config.getInstance().configFile.getAc().getRun();
-	private final static String[] energyUrl=Config.getInstance().configFile.getAc().getEnergy();
+	private final static String ip=Config.getInstance().configFile.getAc().getIp();
+	private final static int port=Config.getInstance().configFile.getAc().getPort();
 	
-	private final static String[] FESDiagramUrl=Config.getInstance().configFile.getAc().getFESDiagram();
-	private final static String[] rpmUrl=Config.getInstance().configFile.getAc().getPcpProduction();
+	private final static String commUrl=Config.getInstance().configFile.getAc().getCommunication();
+	private final static String runUrl=Config.getInstance().configFile.getAc().getRun();
+	private final static String energyUrl=Config.getInstance().configFile.getAc().getEnergy();
 	
-	private final static String[] totalUrl=Config.getInstance().configFile.getAc().getTotalCalculation().getWell();
+	private final static String FESDiagramUrl=Config.getInstance().configFile.getAc().getFESDiagram();
+	private final static String rpmUrl=Config.getInstance().configFile.getAc().getRPM();
 	
-	private final static String[] appProbe=Config.getInstance().configFile.getAc().getProbe().getApp();
-	private final static String[] memProbe=Config.getInstance().configFile.getAc().getProbe().getMem();
-	private final static String[] diskProbe=Config.getInstance().configFile.getAc().getProbe().getDisk();
-	private final static String[] hostProbe=Config.getInstance().configFile.getAc().getProbe().getHost();
-	private final static String[] cpuProbe=Config.getInstance().configFile.getAc().getProbe().getCpu();
+	private final static String totalUrl=Config.getInstance().configFile.getAc().getTotalCalculation();
+	
+	private final static String appProbe=Config.getInstance().configFile.getAc().getProbe().getApp();
+	private final static String memProbe=Config.getInstance().configFile.getAc().getProbe().getMem();
+	private final static String diskProbe=Config.getInstance().configFile.getAc().getProbe().getDisk();
+	private final static String hostProbe=Config.getInstance().configFile.getAc().getProbe().getHost();
+	private final static String cpuProbe=Config.getInstance().configFile.getAc().getProbe().getCpu();
 	
 	
 	public static CommResponseData commCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(commUrl[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, commUrl), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<CommResponseData>() {}.getType();
 		CommResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -52,7 +55,7 @@ public class CalculateUtils {
 	public static TimeEffResponseData runCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(runUrl[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, runUrl), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TimeEffResponseData>() {}.getType();
 		TimeEffResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -61,7 +64,7 @@ public class CalculateUtils {
 	public static EnergyCalculateResponseData energyCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(energyUrl[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, energyUrl), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<EnergyCalculateResponseData>() {}.getType();
 		EnergyCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -70,7 +73,7 @@ public class CalculateUtils {
 	public static RPCCalculateResponseData fesDiagramCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(FESDiagramUrl[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, FESDiagramUrl), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<RPCCalculateResponseData>() {}.getType();
 		RPCCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -79,7 +82,7 @@ public class CalculateUtils {
 	public static PCPCalculateResponseData rpmCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(rpmUrl[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, rpmUrl), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<PCPCalculateResponseData>() {}.getType();
 		PCPCalculateResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -88,7 +91,7 @@ public class CalculateUtils {
 	public static TotalAnalysisResponseData totalCalculate(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(totalUrl[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, totalUrl), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<TotalAnalysisResponseData>() {}.getType();
 		TotalAnalysisResponseData responseData=gson.fromJson(responseDataStr, type);
 //		System.out.println("汇总请求数据:"+requestDataStr);
@@ -99,7 +102,7 @@ public class CalculateUtils {
 	public static AppRunStatusProbeResonanceData appProbe(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(appProbe[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, appProbe), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<AppRunStatusProbeResonanceData>() {}.getType();
 		AppRunStatusProbeResonanceData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -108,7 +111,7 @@ public class CalculateUtils {
 	public static MemoryProbeResponseData memProbe(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(memProbe[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, memProbe), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<MemoryProbeResponseData>() {}.getType();
 		MemoryProbeResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -117,7 +120,7 @@ public class CalculateUtils {
 	public static DiskProbeResponseData diskProbe(String requestDataStr){
 		Gson gson=new Gson();
 		java.lang.reflect.Type type=null;
-		String responseDataStr=StringManagerUtils.sendPostMethod(diskProbe[0], requestDataStr,"utf-8",0,0);
+		String responseDataStr=StringManagerUtils.sendPostMethod(StringManagerUtils.getRequesrUrl(ip, port, diskProbe), requestDataStr,"utf-8",0,0);
 		type = new TypeToken<DiskProbeResponseData>() {}.getType();
 		DiskProbeResponseData responseData=gson.fromJson(responseDataStr, type);
 		return responseData;
@@ -371,7 +374,7 @@ public class CalculateUtils {
                     break;
                 } else {
                     String[] tempArr = wellRunRimeArr[i].split("-");
-                    dynSbf.append("{\"startTime\":\"" + tempArr[0] + "\",\"endTime\":\"" + tempArr[1] + "\"}");
+                    dynSbf.append("{\"startTime\":\"" + tempArr + "\",\"endTime\":\"" + tempArr[1] + "\"}");
                 }
 
                 if (i < wellRunRimeArr.length - 1) {

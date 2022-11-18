@@ -149,7 +149,7 @@ public class CalculateDataService<T> extends BaseService<T> {
 	}
 	
 	public void sendAlarmSMS(String wellName,String deviceType,boolean isSendSMS,boolean isSendMail,String SMSContent,String EMailContent) throws SQLException{
-		String SMSUrl=Config.getInstance().configFile.getAd().getWriteSMS();
+		String SMSUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getWriteSMS());
 		String deviceTableName="tbl_rpcdevice";
 		if(StringManagerUtils.stringToInteger(deviceType)>=100 && StringManagerUtils.stringToInteger(deviceType)<200){//如果是抽油机井
 			deviceTableName="tbl_rpcdevice";

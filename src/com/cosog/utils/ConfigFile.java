@@ -71,6 +71,65 @@ public class ConfigFile {
 	    }
 	}
 	
+	public static class RedisConfig{
+		private String addr;
+		
+		private int port;
+		
+		private String password;
+		
+		private int maxActive;
+		
+		private int maxIdle;
+		
+		private int maxWait;
+		
+		private int timeOut;
+		
+		public String getAddr() {
+			return addr;
+		}
+		public void setAddr(String addr) {
+			this.addr = addr;
+		}
+		public int getPort() {
+			return port;
+		}
+		public void setPort(int port) {
+			this.port = port;
+		}
+		public String getPassword() {
+			return password;
+		}
+		public void setPassword(String password) {
+			this.password = password;
+		}
+		public int getMaxActive() {
+			return maxActive;
+		}
+		public void setMaxActive(int maxActive) {
+			this.maxActive = maxActive;
+		}
+		public int getMaxIdle() {
+			return maxIdle;
+		}
+		public void setMaxIdle(int maxIdle) {
+			this.maxIdle = maxIdle;
+		}
+		public int getMaxWait() {
+			return maxWait;
+		}
+		public void setMaxWait(int maxWait) {
+			this.maxWait = maxWait;
+		}
+		public int getTimeOut() {
+			return timeOut;
+		}
+		public void setTimeOut(int timeOut) {
+			this.timeOut = timeOut;
+		}
+	}
+	
 	public static class Oem
 	{
 	    private String title;
@@ -313,6 +372,8 @@ public class ConfigFile {
 	public static class Ap
 	{
 	    private Datasource datasource;
+	    
+	    private RedisConfig redis;
 
 	    private Oem oem;
 
@@ -352,48 +413,54 @@ public class ConfigFile {
 		public void setVideo(Video video) {
 			this.video = video;
 		}
+		public RedisConfig getRedis() {
+			return redis;
+		}
+		public void setRedis(RedisConfig redis) {
+			this.redis = redis;
+		}
 	}
 	
 	public static class AcProbe
 	{
-	    private String[] app;
+	    private String app;
 
-	    private String[] mem;
+	    private String mem;
 
-	    private String[] disk;
+	    private String disk;
 
-	    private String[] host;
+	    private String host;
 
-	    private String[] cpu;
+	    private String cpu;
 
-	    public void setApp(String[] app){
+	    public void setApp(String app){
 	        this.app = app;
 	    }
-	    public String[] getApp(){
+	    public String getApp(){
 	        return this.app;
 	    }
-	    public void setMem(String[] mem){
+	    public void setMem(String mem){
 	        this.mem = mem;
 	    }
-	    public String[] getMem(){
+	    public String getMem(){
 	        return this.mem;
 	    }
-	    public void setDisk(String[] disk){
+	    public void setDisk(String disk){
 	        this.disk = disk;
 	    }
-	    public String[] getDisk(){
+	    public String getDisk(){
 	        return this.disk;
 	    }
-	    public void setHost(String[] host){
+	    public void setHost(String host){
 	        this.host = host;
 	    }
-	    public String[] getHost(){
+	    public String getHost(){
 	        return this.host;
 	    }
-	    public void setCpu(String[] cpu){
+	    public void setCpu(String cpu){
 	        this.cpu = cpu;
 	    }
-	    public String[] getCpu(){
+	    public String getCpu(){
 	        return this.cpu;
 	    }
 	}
@@ -418,69 +485,25 @@ public class ConfigFile {
 	    }
 	}
 	
-	public static class ESDiagram
-	{
-	    private Inversion inversion;
-
-	    public void setInversion(Inversion inversion){
-	        this.inversion = inversion;
-	    }
-	    public Inversion getInversion(){
-	        return this.inversion;
-	    }
-	}
-	
-	public static class TotalCalculation
-	{
-	    private String[] well;
-
-	    public void setWell(String[] well){
-	        this.well = well;
-	    }
-	    public String[] getWell(){
-	        return this.well;
-	    }
-	}
-	
-	public static class Plugin
-	{
-	    private String[] wellboreTrajectory;
-
-	    private String[] fa2fs;
-
-	    public void setWellboreTrajectory(String[] wellboreTrajectory){
-	        this.wellboreTrajectory = wellboreTrajectory;
-	    }
-	    public String[] getWellboreTrajectory(){
-	        return this.wellboreTrajectory;
-	    }
-	    public void setFa2fs(String[] fa2fs){
-	        this.fa2fs = fa2fs;
-	    }
-	    public String[] getFa2fs(){
-	        return this.fa2fs;
-	    }
-	}
-	
 	public static class Ac
 	{
-	    private AcProbe probe;
+		private String ip;
+		
+		private int port;
+		
+		private AcProbe probe;
 
-	    private String[] FESDiagram;
+	    private String FESDiagram;
 
-	    private ESDiagram ESDiagram;
+	    private String RPM;
 
-	    private String[] pcpProduction;
+	    private String communication;
 
-	    private String[] communication;
+	    private String run;
 
-	    private String[] run;
+	    private String energy;
 
-	    private String[] energy;
-
-	    private TotalCalculation totalCalculation;
-
-	    private Plugin plugin;
+	    private String totalCalculation;
 
 	    public void setProbe(AcProbe probe){
 	        this.probe = probe;
@@ -488,54 +511,54 @@ public class ConfigFile {
 	    public AcProbe getProbe(){
 	        return this.probe;
 	    }
-	    public void setFESDiagram(String[] FESDiagram){
+	    public void setFESDiagram(String FESDiagram){
 	        this.FESDiagram = FESDiagram;
 	    }
-	    public String[] getFESDiagram(){
+	    public String getFESDiagram(){
 	        return this.FESDiagram;
 	    }
-	    public void setESDiagram(ESDiagram ESDiagram){
-	        this.ESDiagram = ESDiagram;
-	    }
-	    public ESDiagram getESDiagram(){
-	        return this.ESDiagram;
-	    }
-	    public void setPcpProduction(String[] pcpProduction){
-	        this.pcpProduction = pcpProduction;
-	    }
-	    public String[] getPcpProduction(){
-	        return this.pcpProduction;
-	    }
-	    public void setCommunication(String[] communication){
+	    public void setCommunication(String communication){
 	        this.communication = communication;
 	    }
-	    public String[] getCommunication(){
+	    public String getCommunication(){
 	        return this.communication;
 	    }
-	    public void setRun(String[] run){
+	    public void setRun(String run){
 	        this.run = run;
 	    }
-	    public String[] getRun(){
+	    public String getRun(){
 	        return this.run;
 	    }
-	    public void setEnergy(String[] energy){
+	    public void setEnergy(String energy){
 	        this.energy = energy;
 	    }
-	    public String[] getEnergy(){
+	    public String getEnergy(){
 	        return this.energy;
 	    }
-	    public void setTotalCalculation(TotalCalculation totalCalculation){
-	        this.totalCalculation = totalCalculation;
-	    }
-	    public TotalCalculation getTotalCalculation(){
-	        return this.totalCalculation;
-	    }
-	    public void setPlugin(Plugin plugin){
-	        this.plugin = plugin;
-	    }
-	    public Plugin getPlugin(){
-	        return this.plugin;
-	    }
+		public String getRPM() {
+			return RPM;
+		}
+		public void setRPM(String rPM) {
+			RPM = rPM;
+		}
+		public String getIp() {
+			return ip;
+		}
+		public void setIp(String ip) {
+			this.ip = ip;
+		}
+		public int getPort() {
+			return port;
+		}
+		public void setPort(int port) {
+			this.port = port;
+		}
+		public String getTotalCalculation() {
+			return totalCalculation;
+		}
+		public void setTotalCalculation(String totalCalculation) {
+			this.totalCalculation = totalCalculation;
+		}
 	}
 	
 	public static class AdProbe
@@ -592,109 +615,222 @@ public class ConfigFile {
 	
 	public static class Ad
 	{
-	    private String server;
+		private String ip;
+		
+		private int port;
+		
+		private Ad_Init init;
 
-	    private String protocol;
-
-	    private String instance;
-
-	    private String id;
-	    
-	    private String ipPort;
-
-	    private String SMS;
-
-	    private String readAddr;
-	    
-	    private String readAddr_ipPort;
-
-	    private String writeAddr;
-	    
-	    private String writeAddr_ipPort;
-
-	    private String writeSMS;
+	    private Ad_rw rw;
 
 	    private AdProbe probe;
 	    
 	    private Ad_rpc rpc;
-
-	    public void setServer(String server){
-	        this.server = server;
-	    }
-	    public String getServer(){
-	        return this.server;
-	    }
-	    public void setProtocol(String protocol){
-	        this.protocol = protocol;
-	    }
-	    public String getProtocol(){
-	        return this.protocol;
-	    }
-	    public void setInstance(String instance){
-	        this.instance = instance;
-	    }
-	    public String getInstance(){
-	        return this.instance;
-	    }
-	    public void setId(String id){
-	        this.id = id;
-	    }
-	    public String getId(){
-	        return this.id;
-	    }
-	    public void setSMS(String SMS){
-	        this.SMS = SMS;
-	    }
-	    public String getSMS(){
-	        return this.SMS;
-	    }
-	    public void setReadAddr(String readAddr){
-	        this.readAddr = readAddr;
-	    }
-	    public String getReadAddr(){
-	        return this.readAddr;
-	    }
-	    public void setWriteAddr(String writeAddr){
-	        this.writeAddr = writeAddr;
-	    }
-	    public String getWriteAddr(){
-	        return this.writeAddr;
-	    }
-	    public void setWriteSMS(String writeSMS){
-	        this.writeSMS = writeSMS;
-	    }
-	    public String getWriteSMS(){
-	        return this.writeSMS;
-	    }
+	    
 	    public void setProbe(AdProbe probe){
 	        this.probe = probe;
 	    }
 	    public AdProbe getProbe(){
 	        return this.probe;
 	    }
-		public String getIpPort() {
-			return ipPort;
-		}
-		public void setIpPort(String ipPort) {
-			this.ipPort = ipPort;
-		}
-		public String getReadAddr_ipPort() {
-			return readAddr_ipPort;
-		}
-		public void setReadAddr_ipPort(String readAddr_ipPort) {
-			this.readAddr_ipPort = readAddr_ipPort;
-		}
-		public String getWriteAddr_ipPort() {
-			return writeAddr_ipPort;
-		}
-		public void setWriteAddr_ipPort(String writeAddr_ipPort) {
-			this.writeAddr_ipPort = writeAddr_ipPort;
-		}
 		public Ad_rpc getRpc() {
 			return rpc;
 		}
 		public void setRpc(Ad_rpc rpc) {
 			this.rpc = rpc;
+		}
+		public Ad_rw getRw() {
+			return rw;
+		}
+		public void setRw(Ad_rw rw) {
+			this.rw = rw;
+		}
+		public Ad_Init getInit() {
+			return init;
+		}
+		public void setInit(Ad_Init init) {
+			this.init = init;
+		}
+		public String getIp() {
+			return ip;
+		}
+		public void setIp(String ip) {
+			this.ip = ip;
+		}
+		public int getPort() {
+			return port;
+		}
+		public void setPort(int port) {
+			this.port = port;
+		}
+	}
+	
+	public static class Ad_ServerInitContent{
+		private String ip;
+		
+		private int port;
+		
+		private String projectName;
+
+		public String getIp() {
+			return ip;
+		}
+
+		public void setIp(String ip) {
+			this.ip = ip;
+		}
+
+		public int getPort() {
+			return port;
+		}
+
+		public void setPort(int port) {
+			this.port = port;
+		}
+
+		public String getProjectName() {
+			return projectName;
+		}
+
+		public void setProjectName(String projectName) {
+			this.projectName = projectName;
+		}
+	}
+	
+	public static class Ad_InitServer{
+		private String url;
+		
+		private Ad_ServerInitContent[] content;
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public Ad_ServerInitContent[] getContent() {
+			return content;
+		}
+
+		public void setContent(Ad_ServerInitContent[] content) {
+			this.content = content;
+		}
+		
+	}
+	
+	public static class Ad_Init{
+		private Ad_InitServer server;
+		
+		private String protocol;
+		
+		private String instance;
+		
+		private String id;
+		
+		private String ipPort;
+		
+		private String SMS;
+
+		public Ad_InitServer getServer() {
+			return server;
+		}
+
+		public void setServer(Ad_InitServer server) {
+			this.server = server;
+		}
+
+		public String getProtocol() {
+			return protocol;
+		}
+
+		public void setProtocol(String protocol) {
+			this.protocol = protocol;
+		}
+
+		public String getInstance() {
+			return instance;
+		}
+
+		public void setInstance(String instance) {
+			this.instance = instance;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getIpPort() {
+			return ipPort;
+		}
+
+		public void setIpPort(String ipPort) {
+			this.ipPort = ipPort;
+		}
+
+		public String getSMS() {
+			return SMS;
+		}
+
+		public void setSMS(String sMS) {
+			SMS = sMS;
+		}
+	}
+	
+	public static class Ad_rw{
+		private String readAddr;
+		
+		private String readAddr_ipPort;
+		
+		private String writeAddr;
+		
+		private String writeAddr_ipPort;
+		
+		private String writeSMS;
+
+		public String getReadAddr() {
+			return readAddr;
+		}
+
+		public void setReadAddr(String readAddr) {
+			this.readAddr = readAddr;
+		}
+
+		public String getReadAddr_ipPort() {
+			return readAddr_ipPort;
+		}
+
+		public void setReadAddr_ipPort(String readAddr_ipPort) {
+			this.readAddr_ipPort = readAddr_ipPort;
+		}
+
+		public String getWriteAddr() {
+			return writeAddr;
+		}
+
+		public void setWriteAddr(String writeAddr) {
+			this.writeAddr = writeAddr;
+		}
+
+		public String getWriteAddr_ipPort() {
+			return writeAddr_ipPort;
+		}
+
+		public void setWriteAddr_ipPort(String writeAddr_ipPort) {
+			this.writeAddr_ipPort = writeAddr_ipPort;
+		}
+
+		public String getWriteSMS() {
+			return writeSMS;
+		}
+
+		public void setWriteSMS(String writeSMS) {
+			this.writeSMS = writeSMS;
 		}
 	}
 	

@@ -16,25 +16,25 @@ public class RedisUtil implements Serializable{
     private static final long serialVersionUID = -1149678082569464779L;
 
     //Redis服务器IP
-    private static String addr="127.0.0.1";
+    private static String addr=Config.getInstance().configFile.getAp().getRedis().getAddr();
     
     //Redis的端口号
-    private static int port=6379;
+    private static int port=Config.getInstance().configFile.getAp().getRedis().getPort();
     
     //访问密码
-    private static String auth="master";
+    private static String auth=Config.getInstance().configFile.getAp().getRedis().getPassword();
     
     //可用连接实例的最大数目，默认值为8；
     //如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
-    private static int maxActive=1024;
+    private static int maxActive=Config.getInstance().configFile.getAp().getRedis().getMaxActive();
     
     //控制一个pool最多有多少个状态为idle(空闲的)的jedis实例，默认值也是8。
-    private static int maxIdle=200;
+    private static int maxIdle=Config.getInstance().configFile.getAp().getRedis().getMaxIdle();
     
     //等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException；
-    private static int maxWait=10000;
+    private static int maxWait=Config.getInstance().configFile.getAp().getRedis().getMaxWait();
     
-    private static int timeOut=10000;
+    private static int timeOut=Config.getInstance().configFile.getAp().getRedis().getTimeOut();
     
     //在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
     private static boolean testOnBorrow=true;
@@ -64,7 +64,12 @@ public class RedisUtil implements Serializable{
         config.setMaxIdle(maxIdle); 
         config.setMaxWaitMillis(maxWait); 
         config.setTestOnBorrow(testOnBorrow);
-        jedisPool = new JedisPool(config, addr, port);
+        if(StringManagerUtils.isNotNull(auth)){
+        	jedisPool = new JedisPool(config, addr, port,timeOut,auth);
+        }else{
+        	jedisPool = new JedisPool(config, addr, port,timeOut);
+        }
+        
     }
     private static  void initialShardedPool() 
     { 
@@ -76,7 +81,11 @@ public class RedisUtil implements Serializable{
         config.setTestOnBorrow(testOnBorrow);
         // slave链接 
         List<JedisShardInfo> shards = new ArrayList<JedisShardInfo>(); 
-        shards.add(new JedisShardInfo(addr, port, auth)); 
+        JedisShardInfo jedisShardInfo=new JedisShardInfo(addr, port,timeOut);
+        if(StringManagerUtils.isNotNull(auth)){
+        	jedisShardInfo.setPassword(auth);
+        }
+        shards.add(jedisShardInfo); 
 
         // 构造池 
         shardedJedisPool = new ShardedJedisPool(config, shards); 
@@ -87,7 +96,7 @@ public class RedisUtil implements Serializable{
         initialPool(); 
         initialShardedPool();
         try {
-              shardedJedis = shardedJedisPool.getResource(); 
+        	shardedJedis = shardedJedisPool.getResource(); 
         } catch (Exception e) {
             System.out.println("连接shardedJedisPool失败!");
         }

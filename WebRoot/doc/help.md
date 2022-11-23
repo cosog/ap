@@ -14,15 +14,9 @@
 
 >   [1.3 系统配置](#1.3系统配置)
 
->   [1.4 界面配置](#1.4界面配置)
+>   [1.4 操作流程](#1.4操作流程)
 
->   >   [1.4.1 登录界面](#1.4.1登录界面)
-
->   >   [1.4.2 主界面](#1.4.2主界面)
-
->   [1.5 操作流程](#1.5操作流程)
-
->   [1.6 工况说明](#1.6工况说明)
+>   [1.5 工况说明](#1.5工况说明)
 
 [第2章 应用介绍](#第2章应用介绍)
 
@@ -130,103 +124,37 @@
 
 >   >   [2.11.2 字典配置](#2.11.2字典配置)
 
+[第3章 常见问题](#第3章常见问题)
+
+>   [3.1 端口配置](#3.1端口配置)
+
+>   [3.2 OEM配置](#3.2OEM配置)
+
+>   >   [3.2.1 登录界面](#3.2.1登录界面)
+
+>   >   [3.2.2 主界面](#3.2.2主界面)
+
+>   [3.3 视频账号配置](#3.3视频账号配置)
+
+>   [3.4 邮件发送账号配置](#3.4邮件发送账号配置)
+
+>   [3.5 其他配置](#3.5其他配置)
+
+>   [3.6 oracle常见问题](#3.6oracle常见问题)
+
 ## <h1><a name="第1章系统介绍"></a>第1章 系统介绍</h1>  
 
-## <h2><a name="1.1环境要求"></a>1.1 环境要求</h2>
+## <h2><a name="1.1运行环境"></a>1.1 运行环境</h2>
 
-**CPU**：2核及以上
-
-**内存**：8G及以上
-
-**硬盘**：1T及以上
-
-**操作系统**：建议Windows server 2012 64位及以上（推荐：Windows server 2019）
-
-**JDK**：8.0 64位
-
-官网下载地址：
-
-https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html
-
-**Tomcat**：9.0 64位
-
-官网下载地址：
-
-<https://tomcat.apache.org/download-90.cgi>
-
-Oracle**数据库**：Oracle19c 64位
-
-官网下载地址：
-
-<https://www.oracle.com/database/technologies/oracle19c-windows-downloads.html>
-
-Redis：5.0 64位
-
-官网下载地址：
-
-https://redis.io/download/
+jdk8、tomcat9、oracle、redis
 
 ## <h2><a name="1.2系统安装"></a>1.2 系统安装</h2>
 
-1、正确安装并配置jdk、tomcat（端口设为16100）、oracle数据库（Oracle19c需创建插拔数据库，安装时即可创建，实例名使用orclpdb）、Redis。
+1、正确安装并配置jdk8、tomcat9、oracle、redis。
 
-2、关闭oracle监听日志
+2、创建数据库
 
-随着系统的运行，oracle的日志文件会越来越大，当达到4G时，会影响到数据库的正常运行，可以选择关闭oracle日志文件的生成，操作方法如下。
-
-运行“cmd”，打开命令窗口，依次执行以下命令进行关闭oracle日志操作：
-
-1）lsnrctl
-
-2）set log_status off
-
-3）save_config
-
-4）show log_status
-
-![](../images/helpdoc/PNG/1ddd3ebcef28e66a22327ee0f124a801.png)
-
-3、关闭oracle审计功能
-
-随着系统的运行，因AUD\$数据越来越大，导致SYSTEM表空间增大，当达到32G时会影响到数据库的正常运行，必须扩展SYSTEM表空间文件，可以选择关闭oracle审计功能，操作方法如下。
-
-1）运行sqlplus，以管理员身份登录sys用户
-
-![](../images/helpdoc/PNG/327a48ea35ab12cb571fe433b837a624.png)
-
-![](../images/helpdoc/PNG/d69528806745c137c137185e4b9c3541.png)
-
-2）执行“truncate table aud\$;”截断数据
-
-![](../images/helpdoc/PNG/67606c59f70a35f79c4326a0001f9a82.png)
-
-3）执行“alter system set audit_trail=NONE
-scope=spfile;”修改spfile文件，关闭审计功能。
-
-![](../images/helpdoc/PNG/6d3d6a537e1c20ede60e3a6666b26b35.png)
-
-4）重启数据库：执行“shutdown
-immediate;”关闭oracle例程后，执行“startup”启动数据库。
-
-![](../images/helpdoc/PNG/8c876091da0da46ad25a67612aea9868.png)
-
-4、tomcat相关配置
-
-设置http首部长度最大值：
-
-当http请求时，尝试向响应头写入的数据比缓冲区中可用的空间（默认4k）大时，会导致异常情况，可修改TOMCAT中的conf文件夹下的server.xml文件，设置maxHttpHeaderSize和maxHttpPostSize。
-
-![](../images/helpdoc/PNG/8402213ed5a89bb9bd6b0dcf710c1d47.png)
-
-5、创建数据库
-
-1）启动插拔数据库orclpdb
-
-如果插拔数据库未启动，则需先启动，
-
-![](../images/helpdoc/PNG/68c9e80c7d6841dfcf104fc91b91586a.png)
-
-2）打开《数据库》文件夹下《createDB》文件夹，打开1、createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息
+1）打开《数据库》文件夹下《createDB》文件夹，打开1、createSpaceAndUser.sql文件，按照实际情况修改其中表空间及用户的信息
 
 ![](../images/helpdoc/PNG/8aee9edd5ca2bf4186004bbdf4a8b018.png)
 
@@ -238,18 +166,21 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。
 
 2.  自建的用户名/密码@数据库实例名
 
-6、软件部署：打开
-“1、软件”目录，将《ad.exe》程序拷贝到服务器中（路径自定义），将《ac.exe》程序拷贝到服务器中（路径自定义）；将《ap.rar》解压到tomcat安装目录\\webapps文件夹下。
+3、软件部署：
 
-7、端口开放
+1）ac程序和ad程序部署
 
-云服务器(如阿里云安全组规则中)需要开放端口；如果本机启动了防火墙，还需要在防火墙中将端口设为例外。
+打开“1、软件”目录，将ac程序和ad程序拷贝到服务器中（路径自定义）；
 
-**必开放端口**，如有改变按实际情况执行：
+2）ap程序部署
 
-1）16100：平台web访问端口；
+对于windows系统：将《ap.rar》解压到tomcat安装目录\\webapps文件夹下；
 
-2）19100：驱动程序主站端口，用于设备连接。
+对于linux系统：将《ap.war》拷贝到tomcat安装目录\\webapps文件夹下。
+
+4、端口开放
+
+见3.1端口配置章节。
 
 ## <h2><a name="1.3系统配置"></a>1.3 系统配置</h2>
 
@@ -257,175 +188,43 @@ immediate;”关闭oracle例程后，执行“startup”启动数据库。
 
 1、数据库连接配置
 
-![](../images/helpdoc/PNG/effdf74c0bbde8cd7aa9472cb5204478.png)
+![](../images/helpdoc/PNG/cff31c83d441d29b65432dd6fcd9f986.png)
 
 一般只需修改IP、端口、数据库实例名、用户名、密码即可。
 
 注意：对于oracle12c及以上版本，端口后是”/”，而不是”:”，如jdbc:oracle:thin:@127.0.0.1:1521/orcl
 
-2、邮件发送账号配置
+2、redis配置
 
-![](../images/helpdoc/PNG/8b798b6e460f74782e31088af5996a3b.png)
+![](../images/helpdoc/PNG/3021513016090be31386cd877d2d9c3e.png)
 
-发送邮件的账号需要开启SMTP服务，并记录开通后生成的授权码或者独立密码。
+一般只需配置IP、端口、密码，如无密码则password配置为空字符串。
 
-account：邮箱账号；
+3、AC程序配置，只需将IP修改为AC程序所在服务器IP即可。
 
-password：邮箱授权码或独立密码；
+![](../images/helpdoc/PNG/f5d59400a188cc34dde7bfa968197d1a.png)
 
-smtpHost：邮箱服务器地址，不同服务器地址不同；
+4、AD驱动程序配置
 
-smtpPort：邮箱SMTP端口，以实际为准。
+1）将IP修改为驱动程序所在服务器IP
 
-3、是否显示图标
+2）目标服务器配置
 
-![](../images/helpdoc/PNG/8207d5519aa64b2aaccd6f63d2c7dde8.png)
+目标服务器接收AD推送的数据，配置IP、端口和项目名称。
 
-软件界面是否显示图标(如中石油、中石化等单位logo)，false-不显示；true-显示。
+![](../images/helpdoc/PNG/0fbce54c0411636aa1f4a09b6f8ffd60.png)
 
-4、是否打印日志
+5、配置完成后，启动ad驱动程序，启动ac计算程序，启动redis，启动oracle服务，启动tomcat。全部启动后，打开浏览器，访问并登录软件，按照1.4节说明进行操作；
 
-![](../images/helpdoc/PNG/c8d1f5d1977e9ea2b09aef8a6dee0bfa.png)
+6、OEM配置
 
-是否打印日志，false-不打印（非调试模式推荐使用）；true-打印。
+如需修改软件名称、界面风格，请参考3.2OEM配置章节。
 
-5、导出数据上限
+7、其他配置
 
-![](../images/helpdoc/PNG/7f7172b69a266138b4c9a3ebfe11836f.png)
+见3.2、3.3、3.4章节。
 
-6、是否发送模拟数据，用于演示
-
-![](../images/helpdoc/PNG/99056d45b6a16becf0e37da3cd25a337.png)
-
-simulateAcqEnable：false-不发送；true-发送；
-
-sendCycle：模拟数据发送周期，单位：秒；
-
-timeDifference：模拟数据井之间发送间隔，单位：秒。
-
-6、AC程序路径配置，只需将IP修改为AC程序所在服务器IP即可。
-
-![](../images/helpdoc/PNG/80fd860eab2314bf90a09a3073dbb90c.png)
-
-7、驱动程序路径配置，只需将IP修改为驱动程序所在服务器IP即可。
-
-![](../images/helpdoc/PNG/e7efdecd85a954ecfed34f1984e59563.png)
-
-8、配置完成后，启动ad驱动程序，启动ac计算程序，启动redis，启动oracle服务，启动tomcat。全部启动后，打开浏览器，访问并登录软件，按照1.5节说明进行操作；如需修改软件名称、界面风格，请参考1.4节。
-
-**ad驱动程序命令行说明**：
-
-ad 不带参数执行，默认输出打印信息到屏幕；
-
-ad -o stdout 输出打印信息到屏幕；
-
-ad -o file输出打印信息到文件，同目录下生成ad.log
-
-ad -o file+stdout 输出打印信息到屏幕和文件，同目录下生成ad.log
-
-ad -o close 关闭打印信息
-
-ad -h 打印命令格式信息
-
-ad -ver 打印版本信息
-
-## <h2><a name="1.4界面配置"></a>1.4 界面配置</h2>
-
-先停止tomcat（如果正在运行），配置完成后再启动。如果配置未生效，需要清理浏览器缓存。
-
-### <h3><a name="1.4.1登录界面"></a>1.4.1 登录界面</h3>
-
-![](../images/helpdoc/PNG/3d45ee656bbc36f677e48690cfbba942.png)
-
-1、软件名称配置
-
-同步修改tomcat安装目录\\webapps\\ap\\WEB-INF\\config\\config.yml和tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件
-
-![](../images/helpdoc/PNG/89b07f818844f785254bf067aea552a6.png)
-
-2、软件简介配置
-
-同步修改tomcat安装目录\\webapps\\ap\\WEB-INF\\config\\config.yml和tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件
-
-![](../images/helpdoc/PNG/a9df584081b0738e54a62f24a3dc6c9c.png)
-
-3、背景图片
-
-替换tomcat安装目录\\webapps\\ap\\images路径下“login.jpg”图片，图片分辨率1920\*1000。修改后如未生效，需要清理浏览器缓存。
-
-### <h3><a name="1.4.2主界面"></a>1.4.2 主界面</h3>
-
-![](../images/helpdoc/PNG/bd354aedc4af3152a859e47115181cbc.png)
-
-1、banner背景色
-
-背景为从左到右渐变，修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件：
-
-![](../images/helpdoc/PNG/20fd2b56a3799adca072231c4e54e560.png)
-
-修改后如未生效，需要清理浏览器缓存。
-
-（1）底部边框
-
-图中：2px-宽度，solid-线型为实线，\#FBC02D-边框颜色金色
-
-（2）背景色
-
-图中配置效果为从左到右渐变，\#006093-左侧颜色，\#0079A8-中间颜色，\#018AB9-右侧颜色。
-
-2、图标：
-
-（1）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“logo.jpg”图片，图片分辨率956\*921；
-
-（2）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“favicon.ico”图片，图片分辨率16\*16。
-
-如不显示图标，参考“1.3系统配置”内容进行配置。
-
-3、软件名称
-
-修改名称：见1.4.1节软件名称配置部分；
-
-修改名称样式：修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
-
-![](../images/helpdoc/PNG/0a06e340aa355e99a04cc7323f91e788.png)
-
-（1）字体颜色；
-
-（2）bold-加粗，23px/50%-字体大小/行高，微软雅黑-字体；
-
-（3）距左侧距离，如果图标大小改变，则需要修改此处；
-
-（4）字体阴影，图中配置效果为：水平1px，竖直1px，模糊距离0px，阴影颜色白色。
-
-4、帮助按钮样式
-
-修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
-
-![](../images/helpdoc/PNG/5e79e64d2a66c6d0e614b5045a12ad29.png)
-
-（1）图标：替换tomcat安装目录\\webapps\\ap\\images路径下“help.svg”图片；
-
-（2）距右侧距离；
-
-（3）字体颜色-白色；
-
-（4）字体：bold-加粗，13px/50%-字体大小/行高，微软雅黑-字体
-
-5、退出按钮样式
-
-修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
-
-![](../images/helpdoc/PNG/b92858dcc1ba507874c898867cc3b5b4.png)
-
-（1）图标：替换tomcat安装目录\\webapps\\ap\\images路径下“exit.svg”图片；
-
-（2）距右侧距离；
-
-（3）字体颜色-白色；
-
-（4）字体：bold-加粗，13px/50%-字体大小/行高，微软雅黑-字体
-
-## <h2><a name="1.5操作流程"></a>1.5 操作流程</h2>
+## <h2><a name="1.5操作流程"></a>1.4 操作流程</h2>
 
 系统部署完成后需要根据使用者实际情况进行数据配置，流程如下：
 
@@ -439,7 +238,7 @@ ad -ver 打印版本信息
 
 5、“设备管理”模块录入设备信息，**详情查看2.10节**；
 
-## <h2><a name="1.6工况说明"></a>1.6 工况说明</h2>
+## <h2><a name="1.5工况说明"></a>1.5 工况说明</h2>
 
 表1-1 功图工况表
 
@@ -1997,3 +1796,180 @@ Server模式则配置IP端口，格式为“IP:端口”；
 ![](../images/helpdoc/PNG/09a0cde6bd5e842981b7519ec52ae93c.png)
 
 图2-133字典数据项配置
+
+# <h1><a name="第3章常见问题"></a>第3章 常见问题</h1>
+
+## <h2><a name="3.1端口配置"></a>3.1 端口配置</h2>
+
+| **序号** | **端口**       | **说明**                                                           | **必须开放** |
+|----------|----------------|--------------------------------------------------------------------|--------------|
+| 1        | tomcat访问端口 | toncat访问端口，以实际为准                                         | 是           |
+| 2        | 19100          | AD驱动程序主站端口，用于设备连接                                   | 是           |
+| 3        | 18100          | AC程序访问端口。如向其他服务器开放AC程序，则需开放此端口           | 否           |
+| 4        | 19200          | AD驱动程序上位机访问端口。如向其他服务器开放AD程序，则需开放此端口 | 否           |
+| 5        | 19500          | AD驱动程序RPC协议上行端口，如采用RPC协议，则需开放此端口           | 否           |
+| 6        | 19600          | AD驱动程序RPC协议下行行端口，如采用RPC协议，则需开放此端口         | 否           |
+| 7        | 1521           | oracle数据库端口。如数据库允许其他服务器连接，则需开放此端口       | 否           |
+| 8        | 6379           | redis缓存数据库端口。如redis允许其他服务器连接，则需开放此端口     | 否           |
+
+## <h2><a name="3.2OEM配置"></a>3.2 OEM配置</h2>
+
+先停止tomcat（如果正在运行），配置完成后再启动。如果配置未生效，需要清理浏览器缓存。
+
+### <h3><a name="3.2.1登录界面"></a>3.2.1 登录界面</h3>
+
+![](../images/helpdoc/PNG/3d45ee656bbc36f677e48690cfbba942.png)
+
+1、软件名称及简介
+
+同步修改tomcat安装目录\\webapps\\ap\\WEB-INF\\config\\config.yml和tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件中oem部分中的title和profile。
+
+2、背景图片
+
+替换tomcat安装目录\\webapps\\ap\\images路径下“login.jpg”图片，图片分辨率1920\*1000。修改后如未生效，需要清理浏览器缓存。
+
+### <h3><a name="3.2.2主界面"></a>3.2.2 主界面</h3>
+
+![](../images/helpdoc/PNG/bd354aedc4af3152a859e47115181cbc.png)
+
+1、banner背景色
+
+背景为从左到右渐变，修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件：
+
+![](../images/helpdoc/PNG/20fd2b56a3799adca072231c4e54e560.png)
+
+修改后如未生效，需要清理浏览器缓存。
+
+（1）底部边框
+
+图中：2px-宽度，solid-线型为实线，\#FBC02D-边框颜色金色
+
+（2）背景色
+
+图中配置效果为从左到右渐变，\#006093-左侧颜色，\#0079A8-中间颜色，\#018AB9-右侧颜色。
+
+2、图标：
+
+（1）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“logo.jpg”图片，图片分辨率956\*921；
+
+（2）替换tomcat安装目录\\webapps\\ap\\images\\logo路径下“favicon.ico”图片，图片分辨率16\*16。
+
+如不显示图标，参考“1.3系统配置”内容进行配置。
+
+3、软件名称
+
+修改名称：见1.4.1节软件名称配置部分；
+
+修改名称样式：修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
+
+![](../images/helpdoc/PNG/0a06e340aa355e99a04cc7323f91e788.png)
+
+（1）字体颜色；
+
+（2）bold-加粗，23px/50%-字体大小/行高，微软雅黑-字体；
+
+（3）距左侧距离，如果图标大小改变，则需要修改此处；
+
+（4）字体阴影，图中配置效果为：水平1px，竖直1px，模糊距离0px，阴影颜色白色。
+
+4、帮助按钮样式
+
+修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
+
+![](../images/helpdoc/PNG/5e79e64d2a66c6d0e614b5045a12ad29.png)
+
+（1）图标：替换tomcat安装目录\\webapps\\ap\\images路径下“help.svg”图片；
+
+（2）距右侧距离；
+
+（3）字体颜色-白色；
+
+（4）字体：bold-加粗，13px/50%-字体大小/行高，微软雅黑-字体
+
+5、退出按钮样式
+
+修改tomcat安装目录\\webapps\\ap\\styles\\banner.css文件，修改后如未生效，需要清理浏览器缓存。
+
+![](../images/helpdoc/PNG/b92858dcc1ba507874c898867cc3b5b4.png)
+
+（1）图标：替换tomcat安装目录\\webapps\\ap\\images路径下“exit.svg”图片；
+
+（2）距右侧距离；
+
+（3）字体颜色-白色；
+
+（4）字体：bold-加粗，13px/50%-字体大小/行高，微软雅黑-字体
+
+## <h2><a name="3.3视频账号配置"></a>3.3 视频账号配置</h2>
+
+目前支持萤石云视频接入，需配置萤石云相关账号的appKey及secret（登录萤石云查看）。
+
+![](../images/helpdoc/PNG/9a275e5da613c17118b37192dd2171e9.png)
+
+## <h2><a name="3.4邮件发送账号配置"></a>3.4 邮件发送账号配置</h2>
+
+如需发送邮件（如报警邮件），则需要配置邮件发送账号。
+
+![](../images/helpdoc/PNG/4e5bcf573fbf5d849e6021c6bcf6c571.png)
+
+发送邮件的账号需要开启SMTP服务，并记录开通后生成的授权码或者独立密码。
+
+account：邮箱账号；
+
+password：邮箱授权码或独立密码；
+
+smtpHost：邮箱服务器地址，不同服务器地址不同；
+
+smtpPort：邮箱SMTP端口，以实际为准。
+
+## <h2><a name="3.5其他配置"></a>3.5 其他配置</h2>
+
+软件的一些其他配置，先停止tomcat（如果正在运行），配置完成后再启动。
+
+3其他配置
+
+软件的一些其他配置，见下图
+
+![](../images/helpdoc/PNG/80995b33fff75832b25be58f1b89eff3.png)
+
+## <h2><a name="3.6oracle常见问题"></a>3.6 oracle常见问题</h2>
+
+1、关闭oracle监听日志
+
+随着系统的运行，oracle的日志文件会越来越大，当达到4G时，会影响到数据库的正常运行，可以选择关闭oracle日志文件的生成，操作方法如下。
+
+运行“cmd”，打开命令窗口，依次执行以下命令进行关闭oracle日志操作：
+
+1）lsnrctl
+
+2）set log_status off
+
+3）save_config
+
+4）show log_status
+
+![](../images/helpdoc/PNG/1ddd3ebcef28e66a22327ee0f124a801.png)
+
+2、关闭oracle审计功能
+
+随着系统的运行，因AUD\$数据越来越大，导致SYSTEM表空间增大，当达到32G时会影响到数据库的正常运行，必须扩展SYSTEM表空间文件，可以选择关闭oracle审计功能，操作方法如下。
+
+1）运行sqlplus，以管理员身份登录sys用户
+
+![](../images/helpdoc/PNG/327a48ea35ab12cb571fe433b837a624.png)
+
+![](../images/helpdoc/PNG/d69528806745c137c137185e4b9c3541.png)
+
+2）执行“truncate table aud\$;”截断数据
+
+![](../images/helpdoc/PNG/67606c59f70a35f79c4326a0001f9a82.png)
+
+3）执行“alter system set audit_trail=NONE
+scope=spfile;”修改spfile文件，关闭审计功能。
+
+![](../images/helpdoc/PNG/6d3d6a537e1c20ede60e3a6666b26b35.png)
+
+4）重启数据库：执行“shutdown
+immediate;”关闭oracle例程后，执行“startup”启动数据库。
+
+![](../images/helpdoc/PNG/8c876091da0da46ad25a67612aea9868.png)

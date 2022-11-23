@@ -2502,6 +2502,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer itemsCodeBuff = new StringBuffer();
 		StringBuffer curveColorBuff = new StringBuffer();
+		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
 		Jedis jedis=null;
 		UserInfo userInfo=null;
 		Set<byte[]>calItemSet=null;
@@ -2741,7 +2742,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 						+ " and t.acqtime between to_date('"+startDate+"','yyyy-mm-dd hh24:mi:ss')  and to_date('"+endDate+"','yyyy-mm-dd hh24:mi:ss')"
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
-				int rarefy=total/500+1;
+				int rarefy=total/vacuateThreshold+1;
 				sql+= " order by t.acqtime";
 				
 				String finalSql=sql;
@@ -2893,6 +2894,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 	public String querySurfaceCard(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws SQLException, IOException {
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
+		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
 		int intPage = pager.getPage();
 		int limit = pager.getLimit();
 		int start = pager.getStart();
@@ -2909,18 +2911,28 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				+ " where  1=1 "
 				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 				+ " and t.wellid="+deviceId+" ";
-		totalSql=allsql;
-		allsql+= " order by t.fesdiagramacqtime desc";
+		totalSql="select count(1) from tbl_rpcacqdata_hist t"
+				+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+				+ " left outer join tbl_rpc_worktype t2 on t.resultcode=t2.resultcode"
+				+ " where  1=1 "
+				+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+				+ " and t.wellid="+deviceId+" ";
 		
-		
-		sql="select b.* from (select a.*,rownum as rn from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn > "+ start +"";
-		long time1=System.nanoTime()/1000;
 		int totals = getTotalCountRows(totalSql);//获取总记录数
-		long time2=System.nanoTime()/1000;
-		System.out.println("查询功图平铺图形总数耗时:"+(time2-time1));
+		
+		int rarefy=totals/vacuateThreshold+1;
+		if(rarefy>1){
+			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+			totals = getTotalCountRows(totalSql);
+			
+		}
+		allsql+= " order by t.fesdiagramacqtime desc";
+		if(rarefy>1){
+			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+		}
+		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
+		
 		List<?> list=this.findCallSql(sql);
-		long time3=System.nanoTime()/1000;
-		System.out.println("查询功图平铺图形分页数据耗时:"+(time3-time2));
 		PageHandler handler = new PageHandler(intPage, totals, limit);
 		int totalPages = handler.getPageCount(); // 总页数
 		dynSbf.append("{\"success\":true,\"totals\":" + totals + ",\"totalPages\":\"" + totalPages + "\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"list\":[");
@@ -2969,13 +2981,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			dynSbf.deleteCharAt(dynSbf.length() - 1);
 		}
 		dynSbf.append("]}");
-		long time4=System.nanoTime()/1000;
-		System.out.println("形成功图平铺json据耗时:"+(time4-time3));
 		return dynSbf.toString().replaceAll("null", "");
 	}
 	
 	@SuppressWarnings("deprecation")
-	public String getFESDiagramOverlayData(String orgId,String deviceId,String deviceName,String deviceType,Page pager) throws SQLException, IOException {
+	public String getFESDiagramOverlayData(String orgId,String deviceId,String deviceName,String deviceType,Page pager){
 		StringBuffer dynSbf = new StringBuffer();
 		ConfigFile configFile=Config.getInstance().configFile;
 		DataDictionary ddic = null;
@@ -2984,6 +2994,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		if(configFile.getAp().getOthers().getProductionUnit().equalsIgnoreCase("ton")){
 			prodCol="liquidWeightProduction,liquidWeightProduction_L";
 		}
+		int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
 		Jedis jedis = null;
 		AlarmShowStyle alarmShowStyle=null;
 		AlarmInstanceOwnItem alarmInstanceOwnItem=null;
@@ -3041,8 +3052,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
 					+ " and t.wellid="+deviceId;
 			int total=this.getTotalCountRows(countSql);
-			int coefficient=1500;
-			int rarefy=(total%coefficient)==0?(total/coefficient):(total/coefficient+1);
+			int rarefy=total/vacuateThreshold+1;
 			String finalSql=sql;
 			if(rarefy>1){
 				finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";

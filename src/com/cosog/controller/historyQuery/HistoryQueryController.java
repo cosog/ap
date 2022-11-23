@@ -432,10 +432,7 @@ public class HistoryQueryController extends BaseController  {
 			}
 			pager.setStart_date(startDate);
 			pager.setEnd_date(endDate);
-			long time1=System.nanoTime()/1000;
 			json = this.historyQueryService.querySurfaceCard(orgId,deviceId,deviceName,deviceType,pager);
-			long time2=System.nanoTime()/1000;
-			System.out.println("请求功图平铺数据总耗时:"+(time2-time1));
 			pw.print(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

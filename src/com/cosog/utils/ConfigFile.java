@@ -260,6 +260,8 @@ public class ConfigFile {
 	    private int defaultComboxSize;
 
 	    private int defaultGraghSize;
+	    
+	    private int vacuateThreshold;
 
 	    private String productionUnit;
 
@@ -366,6 +368,12 @@ public class ConfigFile {
 		}
 		public void setExportLimit(int exportLimit) {
 			this.exportLimit = exportLimit;
+		}
+		public int getVacuateThreshold() {
+			return vacuateThreshold;
+		}
+		public void setVacuateThreshold(int vacuateThreshold) {
+			this.vacuateThreshold = vacuateThreshold;
 		}
 	}
 	

@@ -3773,6 +3773,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		StringBuffer itemsBuff = new StringBuffer();
 		StringBuffer curveColorBuff = new StringBuffer();
+		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
 		Jedis jedis=null;
 		UserInfo userInfo=null;
 		Set<byte[]>calItemSet=null;
@@ -4010,9 +4011,8 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 						+ " and t.acqtime >to_date('"+StringManagerUtils.getCurrentTime("yyyy-MM-dd")+"','yyyy-mm-dd') "
 						+ " and t2.id="+deviceId;
 				int total=this.getTotalCountRows(sql);
-				int rarefy=total/500+1;
+				int rarefy=total/vacuateThreshold+1;
 				sql+= " order by t.acqtime";
-				
 				String finalSql=sql;
 				if(rarefy>1){
 					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";

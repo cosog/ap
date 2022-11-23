@@ -17,6 +17,9 @@ public class Config {
 			if(configFile.getAp()!=null && configFile.getAp().getOthers()!=null && configFile.getAp().getOthers().getExportLimit()>65534){
 				configFile.getAp().getOthers().setExportLimit(65534);
 			}
+			if(configFile.getAp().getOthers().getVacuateThreshold()<=0){
+				configFile.getAp().getOthers().setVacuateThreshold(500);
+			}
 		}
 		return instance;
 	}

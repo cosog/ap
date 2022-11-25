@@ -396,7 +396,6 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                     },'-',{
                         xtype: 'button',
                         text: cosog.string.search,
-//                        pressed: true,
                         iconCls: 'search',
                         handler: function () {
                         	var r = /^(2[0-3]|[0-1]?\d|\*|-|\/)$/;

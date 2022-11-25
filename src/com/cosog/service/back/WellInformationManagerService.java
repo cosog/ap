@@ -40,7 +40,6 @@ import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCProductionData;
 import com.cosog.model.data.DataDictionary;
-import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.drive.WaterCutRawData;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
@@ -3173,25 +3172,24 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		Gson gson = new Gson();
 		java.lang.reflect.Type type=null;
 		if(StringManagerUtils.isNotNull(signinId) && StringManagerUtils.isNotNull(slave)){
-			String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
-			String topic="rawwatercut";
-			
-			StringBuffer requestBuff = new StringBuffer();
-//			signinId="d1e3643c140569d4";
-			requestBuff.append("{\"ID\":\""+signinId+"\",");
-			requestBuff.append("\"Topic\":\""+topic+"\"}");
-			String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
-			
-//			String path="";
-//			StringManagerUtils stringManagerUtils=new StringManagerUtils();
-//			path=stringManagerUtils.getFilePath("test7.json","example/");
-//			responseData=stringManagerUtils.readFile(path,"utf-8");
-			
-			type = new TypeToken<WaterCutRawData>() {}.getType();
-			WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
-			
-			if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
-				result=gson.toJson(waterCutRawData);
+			try{
+				String url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRpc().getReadTopicReq());
+				String topic="rawwatercut";
+				
+				StringBuffer requestBuff = new StringBuffer();
+				requestBuff.append("{\"ID\":\""+signinId+"\",");
+				requestBuff.append("\"Topic\":\""+topic+"\"}");
+				String responseData=StringManagerUtils.sendPostMethod(url, requestBuff.toString(),"utf-8",5,180);
+				
+				type = new TypeToken<WaterCutRawData>() {}.getType();
+				WaterCutRawData waterCutRawData=gson.fromJson(responseData, type);
+				
+				if(waterCutRawData!=null && waterCutRawData.getResultStatus()==1 && waterCutRawData.getMessage()!=null && waterCutRawData.getMessage().getWaterCut()!=null){
+					result=gson.toJson(waterCutRawData);
+				}
+			}catch(OutOfMemoryError|StackOverflowError e){
+				e.printStackTrace();
+				result="{\"ResultStatus\":-999,\"OutOfMemory\":true}";
 			}
 		}
 		return result;

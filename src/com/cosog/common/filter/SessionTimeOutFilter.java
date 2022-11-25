@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.cosog.model.User;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.DataModelMap;
 
 /**

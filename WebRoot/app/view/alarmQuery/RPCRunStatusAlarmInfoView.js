@@ -66,6 +66,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
+                        	Ext.getCmp("RPCRunStatusAlarmOverviewSelectRow_Id").setValue(0);
                         	Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -82,7 +83,25 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
-            },deviceCombo,'-',{
+            },{
+                id: 'RPCRunStatusAlarmOverviewSelectRow_Id',
+                xtype: 'textfield',
+                value: 0,
+                hidden: true
+            },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	var gridPanel = Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id");
+    				if (isNotVal(gridPanel)) {
+    					gridPanel.getStore().loadPage(1);
+    				}else{
+    					Ext.create('AP.store.alarmQuery.RPCRunStatusAlarmOverviewStore');
+    				}
+                }
+    		},'-',deviceCombo,'-',{
             	xtype : "combobox",
 				fieldLabel : '报警级别',
 				id : 'RPCRunStatusAlarmLevelComb_Id',
@@ -106,6 +125,7 @@ Ext.define('AP.view.alarmQuery.RPCRunStatusAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
+						Ext.getCmp("RPCRunStatusAlarmOverviewSelectRow_Id").setValue(0);
 						Ext.getCmp("RPCRunStatusAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}

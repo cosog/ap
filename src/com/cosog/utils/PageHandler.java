@@ -3,8 +3,6 @@ package com.cosog.utils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.cosog.utils.Config2;
-
 public class PageHandler {
 	private int currentPage; 
 	private int nextPage; 

@@ -377,6 +377,68 @@ public class ConfigFile {
 		}
 	}
 	
+	public static class ThreadPoolConfig
+	{
+
+	    private int corePoolSize;
+
+	    private int maximumPoolSize;
+
+	    private int keepAliveTime;
+
+	    private int wattingCount;
+
+		public int getCorePoolSize() {
+			return corePoolSize;
+		}
+
+		public void setCorePoolSize(int corePoolSize) {
+			this.corePoolSize = corePoolSize;
+		}
+
+		public int getMaximumPoolSize() {
+			return maximumPoolSize;
+		}
+
+		public void setMaximumPoolSize(int maximumPoolSize) {
+			this.maximumPoolSize = maximumPoolSize;
+		}
+
+		public int getKeepAliveTime() {
+			return keepAliveTime;
+		}
+
+		public void setKeepAliveTime(int keepAliveTime) {
+			this.keepAliveTime = keepAliveTime;
+		}
+
+		public int getWattingCount() {
+			return wattingCount;
+		}
+
+		public void setWattingCount(int wattingCount) {
+			this.wattingCount = wattingCount;
+		}
+	}
+	
+	public static class ThreadPool
+	{
+		ThreadPoolConfig initIdAndIpPort;
+		ThreadPoolConfig dataSynchronization;
+		public ThreadPoolConfig getInitIdAndIpPort() {
+			return initIdAndIpPort;
+		}
+		public void setInitIdAndIpPort(ThreadPoolConfig initIdAndIpPort) {
+			this.initIdAndIpPort = initIdAndIpPort;
+		}
+		public ThreadPoolConfig getDataSynchronization() {
+			return dataSynchronization;
+		}
+		public void setDataSynchronization(ThreadPoolConfig dataSynchronization) {
+			this.dataSynchronization = dataSynchronization;
+		}
+	}
+	
 	public static class Ap
 	{
 	    private Datasource datasource;
@@ -388,6 +450,8 @@ public class ConfigFile {
 	    private Email email;
 	    
 	    private Video video;
+	    
+	    private ThreadPool threadPool;
 
 	    private Others others;
 
@@ -426,6 +490,12 @@ public class ConfigFile {
 		}
 		public void setRedis(RedisConfig redis) {
 			this.redis = redis;
+		}
+		public ThreadPool getThreadPool() {
+			return threadPool;
+		}
+		public void setThreadPool(ThreadPool threadPool) {
+			this.threadPool = threadPool;
 		}
 	}
 	

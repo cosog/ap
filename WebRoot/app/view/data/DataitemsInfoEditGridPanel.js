@@ -68,8 +68,8 @@ Ext.define('AP.view.data.DataitemsInfoEditGridPanel', {
                     xtype: 'button',
                     id: "findtattxtInfoBtnId",
                     text: cosog.string.search,
-                    action: 'findtattxtInfoBtnAction',
                     iconCls: 'search',
+                    action: 'findtattxtInfoBtnAction',
                     handler: function () {
                         reFreshg("DataitemsInfoEditGridPanelId");
                     }

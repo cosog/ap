@@ -3061,107 +3061,124 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay");
 			String columns = ddic.getTableHeader();
 			String[] ddicColumns=ddic.getSql().split(",");
-			dynSbf.append("{\"success\":true,\"totalCount\":" + list.size() + ",\"wellName\":\""+deviceName+"\",\"start_date\":\""+pager.getStart_date()+"\",\"end_date\":\""+pager.getEnd_date()+"\",\"columns\":"+columns+",\"totalRoot\":[");
-			if (list.size() > 0) {
-				for (int i = 0; i < list.size(); i++) {
-					Object[] obj = (Object[]) list.get(i);
-					StringBuffer alarmInfo = new StringBuffer();
-					String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
-					int resultAlarmLevel=0;
-					String resultCode=obj[3]+"";
-					if(alarmInstanceOwnItem!=null){
-						for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
-							if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultCode)){
-								resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
-								break;
-							}
-						}
-					}
-					SerializableClobProxy   proxy=null;
-					CLOB realClob=null;
-					if(obj[14]!=null){
-						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[15]);
-						realClob = (CLOB) proxy.getWrappedClob(); 
-						positionCurveData=StringManagerUtils.CLOBtoString(realClob);
-					}
-					if(obj[15]!=null){
-						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
-						realClob = (CLOB) proxy.getWrappedClob(); 
-						loadCurveData=StringManagerUtils.CLOBtoString(realClob);
-					}
-					if(obj[16]!=null){
-						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
-						realClob = (CLOB) proxy.getWrappedClob(); 
-						powerCurveData=StringManagerUtils.CLOBtoString(realClob);
-					}
-					if(obj[17]!=null){
-						proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
-						realClob = (CLOB) proxy.getWrappedClob(); 
-						currentCurveData=StringManagerUtils.CLOBtoString(realClob);
-					}
-					dynSbf.append("{ \"id\":\"" + obj[0] + "\",");
-					dynSbf.append("\"wellName\":\"" + obj[1] + "\",");
-					dynSbf.append("\"acqTime\":\"" + obj[2] + "\",");
-					dynSbf.append("\"resultCode\":\""+resultCode+"\",");
-					dynSbf.append("\"resultName\":\""+obj[4]+"\",");
-					dynSbf.append("\"resultAlarmLevel\":\""+resultAlarmLevel+"\",");
-					dynSbf.append("\"stroke\":\""+obj[5]+"\",");
-					dynSbf.append("\"spm\":\""+obj[6]+"\",");
-					dynSbf.append("\"fmax\":\""+obj[7]+"\",");
-					dynSbf.append("\"fmin\":\""+obj[8]+"\",");
-					dynSbf.append("\"upperLoadLine\":\""+obj[9]+"\",");
-					dynSbf.append("\"lowerLoadLine\":\""+obj[10]+"\",");
-					dynSbf.append("\""+prodCol.split(",")[0]+"\":\""+obj[11]+"\",");
-					dynSbf.append("\""+prodCol.split(",")[1]+"\":\""+obj[12]+"\",");
-					dynSbf.append("\"iDegreeBalance\":\"" + obj[13] + "\",");
-					dynSbf.append("\"wattDegreeBalance\":\"" + obj[14] + "\",");
-					dynSbf.append("\"positionCurveData\":\"" + positionCurveData + "\",");
-					dynSbf.append("\"loadCurveData\":\"" + loadCurveData + "\",");
-					dynSbf.append("\"powerCurveData\":\"" + powerCurveData + "\",");
-					dynSbf.append("\"currentCurveData\":\"" + currentCurveData + "\",");
-					
-					//计算项报警判断
-					alarmInfo.append("[");
-					if(alarmInstanceOwnItem!=null){
-						for(int j=0;j<ddicColumns.length;j++){
-							String column=ddicColumns[j].trim();
-							String[] attr = column.split(" as ");
-							if (attr.length > 1) {
-								column=attr[attr.length-1];
-							}else{
-								if(column.indexOf(".") > 0){
-									column = column.substring(column.indexOf(".") + 1);
-								}
-							}
-							for(int k=0;k<alarmInstanceOwnItem.getItemList().size();k++){
-								if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&column.equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
-									alarmInfo.append("{\"item\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemCode()+"\","
-											+ "\"itemName\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemName()+"\","
-											+ "\"itemAddr\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemAddr()+"\","
-											+ "\"alarmType\":\""+alarmInstanceOwnItem.getItemList().get(k).getType()+"\","
-											+ "\"upperLimit\":\""+alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"\","
-											+ "\"lowerLimit\":\""+alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()+"\","
-											+ "\"hystersis\":\""+alarmInstanceOwnItem.getItemList().get(k).getHystersis()+"\","
-											+" \"alarmLevel\":"+alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel()+"},");
+			dynSbf.append("{\"success\":true,"
+					+ "\"totalCount\":" + list.size() + ","
+					+ "\"wellName\":\""+deviceName+"\","
+					+ "\"start_date\":\""+pager.getStart_date()+"\","
+					+ "\"end_date\":\""+pager.getEnd_date()+"\","
+					+ "\"columns\":"+columns+",");
+			boolean outOfMemory=false;
+			StringBuffer dataBuff = new StringBuffer();
+			try{
+				dataBuff.append("[");
+				if (list.size() > 0) {
+					for (int i = 0; i < list.size(); i++) {
+						Object[] obj = (Object[]) list.get(i);
+						StringBuffer alarmInfo = new StringBuffer();
+						String positionCurveData="",loadCurveData="",powerCurveData="",currentCurveData="";
+						int resultAlarmLevel=0;
+						String resultCode=obj[3]+"";
+						if(alarmInstanceOwnItem!=null){
+							for(int j=0;j<alarmInstanceOwnItem.getItemList().size();j++){
+								if(alarmInstanceOwnItem.getItemList().get(j).getType()==4 && alarmInstanceOwnItem.getItemList().get(j).getItemCode().equalsIgnoreCase(resultCode)){
+									resultAlarmLevel=alarmInstanceOwnItem.getItemList().get(j).getAlarmLevel();
 									break;
 								}
 							}
 						}
+						SerializableClobProxy   proxy=null;
+						CLOB realClob=null;
+						if(obj[14]!=null){
+							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[15]);
+							realClob = (CLOB) proxy.getWrappedClob(); 
+							positionCurveData=StringManagerUtils.CLOBtoString(realClob);
+						}
+						if(obj[15]!=null){
+							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[16]);
+							realClob = (CLOB) proxy.getWrappedClob(); 
+							loadCurveData=StringManagerUtils.CLOBtoString(realClob);
+						}
+						if(obj[16]!=null){
+							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[17]);
+							realClob = (CLOB) proxy.getWrappedClob(); 
+							powerCurveData=StringManagerUtils.CLOBtoString(realClob);
+						}
+						if(obj[17]!=null){
+							proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[18]);
+							realClob = (CLOB) proxy.getWrappedClob(); 
+							currentCurveData=StringManagerUtils.CLOBtoString(realClob);
+						}
+						dataBuff.append("{ \"id\":\"" + obj[0] + "\",");
+						dataBuff.append("\"wellName\":\"" + obj[1] + "\",");
+						dataBuff.append("\"acqTime\":\"" + obj[2] + "\",");
+						dataBuff.append("\"resultCode\":\""+resultCode+"\",");
+						dataBuff.append("\"resultName\":\""+obj[4]+"\",");
+						dataBuff.append("\"resultAlarmLevel\":\""+resultAlarmLevel+"\",");
+						dataBuff.append("\"stroke\":\""+obj[5]+"\",");
+						dataBuff.append("\"spm\":\""+obj[6]+"\",");
+						dataBuff.append("\"fmax\":\""+obj[7]+"\",");
+						dataBuff.append("\"fmin\":\""+obj[8]+"\",");
+						dataBuff.append("\"upperLoadLine\":\""+obj[9]+"\",");
+						dataBuff.append("\"lowerLoadLine\":\""+obj[10]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[0]+"\":\""+obj[11]+"\",");
+						dataBuff.append("\""+prodCol.split(",")[1]+"\":\""+obj[12]+"\",");
+						dataBuff.append("\"iDegreeBalance\":\"" + obj[13] + "\",");
+						dataBuff.append("\"wattDegreeBalance\":\"" + obj[14] + "\",");
+						dataBuff.append("\"positionCurveData\":\"" + positionCurveData + "\",");
+						dataBuff.append("\"loadCurveData\":\"" + loadCurveData + "\",");
+						dataBuff.append("\"powerCurveData\":\"" + powerCurveData + "\",");
+						dataBuff.append("\"currentCurveData\":\"" + currentCurveData + "\",");
+						
+						//计算项报警判断
+						alarmInfo.append("[");
+						if(alarmInstanceOwnItem!=null){
+							for(int j=0;j<ddicColumns.length;j++){
+								String column=ddicColumns[j].trim();
+								String[] attr = column.split(" as ");
+								if (attr.length > 1) {
+									column=attr[attr.length-1];
+								}else{
+									if(column.indexOf(".") > 0){
+										column = column.substring(column.indexOf(".") + 1);
+									}
+								}
+								for(int k=0;k<alarmInstanceOwnItem.getItemList().size();k++){
+									if(alarmInstanceOwnItem.getItemList().get(k).getType()==5&&column.equalsIgnoreCase(alarmInstanceOwnItem.getItemList().get(k).getItemCode())){
+										alarmInfo.append("{\"item\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemCode()+"\","
+												+ "\"itemName\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemName()+"\","
+												+ "\"itemAddr\":\""+alarmInstanceOwnItem.getItemList().get(k).getItemAddr()+"\","
+												+ "\"alarmType\":\""+alarmInstanceOwnItem.getItemList().get(k).getType()+"\","
+												+ "\"upperLimit\":\""+alarmInstanceOwnItem.getItemList().get(k).getUpperLimit()+"\","
+												+ "\"lowerLimit\":\""+alarmInstanceOwnItem.getItemList().get(k).getLowerLimit()+"\","
+												+ "\"hystersis\":\""+alarmInstanceOwnItem.getItemList().get(k).getHystersis()+"\","
+												+" \"alarmLevel\":"+alarmInstanceOwnItem.getItemList().get(k).getAlarmLevel()+"},");
+										break;
+									}
+								}
+							}
+						}
+						if(alarmInfo.toString().endsWith(",")){
+							alarmInfo.deleteCharAt(alarmInfo.length() - 1);
+						}
+						alarmInfo.append("]");
+						dataBuff.append("\"alarmInfo\":"+alarmInfo+"");
+						dataBuff.append("},");
 					}
-					if(alarmInfo.toString().endsWith(",")){
-						alarmInfo.deleteCharAt(alarmInfo.length() - 1);
+					
+					if(dataBuff.toString().endsWith(",")){
+						dataBuff.deleteCharAt(dataBuff.length() - 1);
 					}
-					alarmInfo.append("]");
-					dynSbf.append("\"alarmInfo\":"+alarmInfo+"");
-					dynSbf.append("},");
 				}
-				
-				if(dynSbf.toString().endsWith(",")){
-					dynSbf.deleteCharAt(dynSbf.length() - 1);
-				}
+				dataBuff.append("]");
+			}catch(OutOfMemoryError|StackOverflowError e){
+				e.printStackTrace();
+				outOfMemory=true;
+				dataBuff = new StringBuffer();
+				dataBuff.append("[]");
 			}
-			dynSbf.append("]");
-			dynSbf.append(",\"AlarmShowStyle\":"+(alarmShowStyle==null?"\"\"":new Gson().toJson(alarmShowStyle)));
+			dynSbf.append("\"totalRoot\":"+dataBuff+",");
+			dynSbf.append("\"outOfMemory\":"+outOfMemory+",");
+			dynSbf.append("\"AlarmShowStyle\":"+(alarmShowStyle==null?"\"\"":new Gson().toJson(alarmShowStyle)));
 			dynSbf.append("}");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -3229,7 +3246,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
-			
+			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
 			fileName += "-" + StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			String heads[]=head.split(",");
 			String columns[]=field.split(",");
@@ -3255,9 +3272,19 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " from tbl_rpcdevice well,tbl_rpcacqdata_hist t,tbl_rpc_worktype t2 "
 					+ " where well.id=t.wellid and t.resultcode=t2.resultcode "
 					+ " and t.wellid="+deviceId+" "
-					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
-					+ " order by t.fesdiagramacqtime desc";
-			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') ";
+			int total=this.getTotalCountRows(sql);
+			int rarefy=total/vacuateThreshold+1;
+			sql+= " order by t.fesdiagramacqtime desc";
+			
+			String finalSql=sql;
+			if(rarefy>1){
+				sql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+				finalSql="select a.*,rownum as rn2 from  ("+ sql +") a where rownum <= "+ maxvalue;
+			}else{
+				finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			}
+			
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;

@@ -21,8 +21,10 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore', {
         load: function (store, record, f, op, o) {
         	allCheck=false;
         	allNotCheck=false;
-            //获得列表数
             var get_rawData = store.proxy.reader.rawData;
+            if(get_rawData.outOfMemory){
+            	Ext.MessageBox.alert("信息", "数据过大，加载失败，请缩小区间重新查询！");
+            }
             Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(get_rawData.AlarmShowStyle));
             var RPCHistoryQueryFSdiagramOverlayGrid = Ext.getCmp("RPCHistoryQueryFSdiagramOverlayGrid_Id");
             if (!isNotVal(RPCHistoryQueryFSdiagramOverlayGrid)) {

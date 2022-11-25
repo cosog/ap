@@ -66,6 +66,7 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
+                        	Ext.getCmp("RPCCommunicationAlarmOverviewSelectRow_Id").setValue(0);
                         	Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -82,7 +83,61 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
-            },deviceCombo,
+            },{
+                id: 'RPCCommunicationAlarmOverviewSelectRow_Id',
+                xtype: 'textfield',
+                value: 0,
+                hidden: true
+            },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	Ext.getCmp('RPCCommunicationAlarmQueryStartDate_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryStartTime_Hour_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryStartTime_Minute_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryStartTime_Second_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryEndDate_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryEndTime_Hour_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryEndTime_Minute_Id').setValue('');
+                	Ext.getCmp('RPCCommunicationAlarmQueryEndTime_Second_Id').setValue('');
+                	var gridPanel = Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id");
+    				if (isNotVal(gridPanel)) {
+    					gridPanel.getStore().loadPage(1);
+    				}else{
+    					Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore');
+    				}
+                }
+    		},'-',deviceCombo,'-',{
+            	xtype : "combobox",
+				fieldLabel : '报警级别',
+				id : 'RPCCommunicationAlarmLevelComb_Id',
+				labelWidth: 55,
+                width: 135,
+                labelAlign: 'left',
+				triggerAction : 'all',
+				displayField: "boxval",
+                valueField: "boxkey",
+				selectOnFocus : true,
+			    forceSelection : true,
+			    value:'',
+			    allowBlank: false,
+				editable : false,
+				emptyText: cosog.string.all,
+                blankText: cosog.string.all,
+				store : new Ext.data.SimpleStore({
+							fields : ['boxkey', 'boxval'],
+							data : [['', '选择全部'],[100, '一级报警'],[200, '二级报警'],[300, '三级报警']]
+						}),
+				queryMode : 'local',
+				listeners : {
+					select:function(v,o){
+						Ext.getCmp("RPCCommunicationAlarmOverviewSelectRow_Id").setValue(0);
+						Ext.getCmp("RPCCommunicationAlarmOverviewGridPanel_Id").getStore().loadPage(1);
+					}
+				}
+            },
 //            '-',
             {
             	xtype : "combobox",
@@ -388,7 +443,7 @@ Ext.define('AP.view.alarmQuery.RPCCommunicationAlarmInfoView', {
                 	var startDate=Ext.getCmp('RPCCommunicationAlarmQueryStartDate_Id').rawValue;
                     var endDate=Ext.getCmp('RPCCommunicationAlarmQueryEndDate_Id').rawValue;
                	 	var alarmType=3;
-               	 	var alarmLevel='';
+               	 	var alarmLevel=Ext.getCmp('RPCCommunicationAlarmLevelComb_Id').getValue();
                	 	
                	 	var fileName='抽油机井'+deviceName+'通信报警数据';
                	 	var title='抽油机井'+deviceName+'通信报警数据';

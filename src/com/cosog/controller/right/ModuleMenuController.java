@@ -23,7 +23,6 @@ import com.cosog.model.User;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.utils.BackModuleRecursion;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.MainModuleRecursion;
 import com.cosog.utils.ParamUtils;

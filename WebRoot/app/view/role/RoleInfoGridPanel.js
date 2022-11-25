@@ -36,8 +36,6 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 xtype: 'button',
                 name: 'RoleNameBtn_Id',
                 text: cosog.string.search,
-//                hidden: true,
-                pressed: false,
                 iconCls: 'search',
                 handler: function () {
                     roleStore.load();

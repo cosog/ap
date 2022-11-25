@@ -33,7 +33,6 @@ import com.cosog.thread.calculate.InitIdAndIPPortThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
 import com.cosog.utils.AdInitMap;
-import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.Config;
 import com.cosog.utils.ConfigFile;
 import com.cosog.utils.JDBCUtil;
@@ -53,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;
@@ -106,13 +105,12 @@ public class EquipmentDriverServerTask {
 		initSMSDevice(null,"");
 		initRPCDriverAcquisitionInfoConfig(null,0,"");
 		initPCPDriverAcquisitionInfoConfig(null,0,"");
-		
 		ThreadPool executor = new ThreadPool("adInit",
-				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
-				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
-				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
 				TimeUnit.SECONDS, 
-				AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+				Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
 		while (!executor.isCompletedByTaskCount()) {
 			System.out.println(executor.getExecutor().getTaskCount()+","+executor.getExecutor().getCompletedTaskCount());
 			Thread.sleep(1000*1);
@@ -1176,11 +1174,11 @@ public class EquipmentDriverServerTask {
 		Jedis jedis=null;
 		try{
 			ThreadPool executor = new ThreadPool("adInit",
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
 			
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!StringManagerUtils.isNotNull(method)){
@@ -1225,11 +1223,11 @@ public class EquipmentDriverServerTask {
 	public static int initPCPDriverAcquisitionInfoConfig(List<String> wellList,int condition,String method){
 		Jedis jedis=null;
 		try{
-			ThreadPool executor = new ThreadPool("adInit",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("adInit",Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getIdAndIpPort().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getInitIdAndIpPort().getWattingCount());
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!StringManagerUtils.isNotNull(method)){
 				method="update";

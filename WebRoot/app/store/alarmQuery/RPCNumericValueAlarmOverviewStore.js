@@ -47,17 +47,23 @@ Ext.define('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore', {
                     store: store,
                     columns: newColumns,
                     listeners: {
-                    	selectionchange: function (view, selected, o) {
-            				if(selected.length>0){
-            					var gridPanel = Ext.getCmp("RPCNumericValueAlarmGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().loadPage(1);
-                				}else{
-                					Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmStore');
-                				}
+                    	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("RPCNumericValueAlarmOverviewSelectRow_Id").setValue(index);
+                    		Ext.getCmp('RPCNumericValueAlarmQueryStartDate_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryStartTime_Hour_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryStartTime_Minute_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryStartTime_Second_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryEndDate_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryEndTime_Hour_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryEndTime_Minute_Id').setValue('');
+                        	Ext.getCmp('RPCNumericValueAlarmQueryEndTime_Second_Id').setValue('');
+                    		var gridPanel = Ext.getCmp("RPCNumericValueAlarmGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().loadPage(1);
+            				}else{
+            					Ext.create('AP.store.alarmQuery.RPCNumericValueAlarmStore');
             				}
-                    	},
-                    	select: function(grid, record, index, eOpts) {}
+                    	}
                     }
                 });
                 var panel = Ext.getCmp("RPCNumericValueAlarmOverviewPanel_Id");
@@ -67,7 +73,8 @@ Ext.define('AP.store.alarmQuery.RPCNumericValueAlarmOverviewStore', {
             	if(gridPanel.getSelectionModel().getSelection().length>0){
             		gridPanel.getSelectionModel().deselectAll(true);
             	}
-            	gridPanel.getSelectionModel().select(0, true);
+            	var index=Ext.getCmp("RPCNumericValueAlarmOverviewSelectRow_Id").getValue();
+            	gridPanel.getSelectionModel().select(parseInt(index), true);
             }else{
             	var gridPanel = Ext.getCmp("RPCNumericValueAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {

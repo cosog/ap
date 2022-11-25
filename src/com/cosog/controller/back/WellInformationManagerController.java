@@ -57,7 +57,6 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.task.ResourceMonitoringTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.thread.calculate.ThreadPool;
-import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
@@ -1382,11 +1381,11 @@ public class WellInformationManagerController extends BaseController {
 				dataSynchronizationThread.setRpcDeviceInformation(rpcDeviceInformation);
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setRpcDeviceManagerService(rpcDeviceManagerService);
-				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 						TimeUnit.SECONDS, 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				executor.execute(dataSynchronizationThread);
 				result = "{success:true,msg:true,resultCode:1}";
 			}else{
@@ -1438,11 +1437,11 @@ public class WellInformationManagerController extends BaseController {
 				dataSynchronizationThread.setPcpDeviceInformation(pcpDeviceInformation);
 				dataSynchronizationThread.setUser(user);
 				dataSynchronizationThread.setPcpDeviceManagerService(pcpDeviceManagerService);
-				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 						TimeUnit.SECONDS, 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				executor.execute(dataSynchronizationThread);
 				
 				result = "{success:true,msg:true,resultCode:1}";

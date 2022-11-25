@@ -404,8 +404,8 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 }
             },"-",calculateSignComb,'-',{
                 xtype: 'button',
-                iconCls: 'note-refresh',
-                text: cosog.string.refresh,
+                text: cosog.string.search,
+                iconCls: 'search',
                 pressed: true,
                 hidden:false,
                 handler: function (v, o) {

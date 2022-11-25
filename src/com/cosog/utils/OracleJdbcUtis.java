@@ -31,33 +31,6 @@ public class OracleJdbcUtis {
         }  
     }
 	
-	public static Connection getOuterConnection(){  
-        try{  
-        	DataSourceConfig dataSourceConfig=DataSourceConfig.getInstance();
-        	String driver="oracle.jdbc.driver.OracleDriver";
-        	String sign=":";
-        	if(dataSourceConfig.getVersion().indexOf("11")==0||dataSourceConfig.getVersion().indexOf("10")==0||dataSourceConfig.getVersion().indexOf("9")==0){
-        		sign=":";
-        	}else{
-        		sign="/";
-        	}
-        	String url="jdbc:oracle:thin:@"+dataSourceConfig.getIP()+":"+dataSourceConfig.getPort()+sign+dataSourceConfig.getInstanceName();
-        	String username = dataSourceConfig.getUser();
-            String password = dataSourceConfig.getPassword();  
-//        	String driver=Config.getInstance().configFile.getDockDataSource().get(0).getDriver();
-//            String url = Config.getInstance().configFile.getDockDataSource().get(0).getDriverUrl(); 
-//            String username = Config.getInstance().configFile.getDockDataSource().get(0).getUser();
-//            String password = Config.getInstance().configFile.getDockDataSource().get(0).getPassword();  
-            Class.forName(driver).newInstance();  
-            Connection conn = DriverManager.getConnection(url, username, password);  
-            return conn;  
-        }  
-        catch (Exception e){  
-            StringManagerUtils.printLog(e.getMessage());  
-            return null;  
-        }  
-    }
-	
 	public static void closeDBConnection(Connection conn,PreparedStatement pstmt,ResultSet rs){  
         if(conn != null){  
             try{           

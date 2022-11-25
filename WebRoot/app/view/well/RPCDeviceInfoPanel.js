@@ -81,7 +81,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
             });
         
         Ext.apply(this, {
-            tbar: [rpcDeviceCombo, '-',{
+            tbar: [rpcDeviceCombo,{
                 id: 'RPCDeviceSelectRow_Id',
                 xtype: 'textfield',
                 value: 0,
@@ -91,10 +91,17 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
-            }, {
+            }, '-', {
+                xtype: 'button',
+                text: cosog.string.search,
+                iconCls: 'search',
+                hidden: false,
+                handler: function (v, o) {
+                    CreateAndLoadRPCDeviceInfoTable();
+                }
+            },'-',{
                 xtype: 'button',
                 text: cosog.string.exportExcel,
-//                pressed: true,
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
@@ -115,16 +122,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=101&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("抽油机井")) + "&title=" + URLencode(URLencode("抽油机井"));
                     openExcelWindow(url + '?flag=true' + param);
                 }
-            }, '-', {
-                xtype: 'button',
-                iconCls: 'note-refresh',
-                text: cosog.string.refresh,
-//                pressed: true,
-                hidden: false,
-                handler: function (v, o) {
-                    CreateAndLoadRPCDeviceInfoTable();
-                }
-            },'-', {
+            },'-',{
                 id: 'RPCDeviceTotalCount_Id',
                 xtype: 'component',
                 hidden: false,
@@ -309,6 +307,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
             items: [{
             	region: 'center',
         		title:'抽油机井列表',
+        		id:'RPCDeviceTablePanel_id',
             	html: '<div class="RPCDeviceContainer" style="width:100%;height:100%;"><div class="con" id="RPCDeviceTableDiv_id"></div></div>',
                 listeners: {
                     resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -418,11 +417,13 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var wellInformationName_Id = Ext.getCmp('rpcDeviceListComb_Id').getValue();
+    Ext.getCmp("RPCDeviceTablePanel_id").el.mask(cosog.string.updatewait).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',
         success: function (response) {
-            var result = Ext.JSON.decode(response.responseText);
+        	Ext.getCmp("RPCDeviceTablePanel_id").getEl().unmask();
+        	var result = Ext.JSON.decode(response.responseText);
             if (rpcDeviceInfoHandsontableHelper == null || rpcDeviceInfoHandsontableHelper.hot == null || rpcDeviceInfoHandsontableHelper.hot == undefined) {
                 rpcDeviceInfoHandsontableHelper = RPCDeviceInfoHandsontableHelper.createNew("RPCDeviceTableDiv_id");
                 rpcDeviceInfoHandsontableHelper.dataLength=result.totalCount;
@@ -520,7 +521,8 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
             });
         },
         failure: function () {
-            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+        	Ext.getCmp("RPCDeviceTablePanel_id").getEl().unmask();
+        	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
             wellInformationName: wellInformationName_Id,
@@ -992,8 +994,6 @@ var RPCDeviceInfoHandsontableHelper = {
         	}else{
         		Ext.MessageBox.alert("信息", "无记录保存！");
         	}
-        	
-        	
         }
 
         //修改井名

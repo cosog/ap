@@ -9,7 +9,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.cosog.controller.base.BaseController;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.StringManagerUtils;
 
 /**

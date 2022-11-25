@@ -32,7 +32,6 @@ import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
 import com.cosog.service.right.UserManagerService;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
 import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;

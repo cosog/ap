@@ -33,10 +33,6 @@
 	/* background-image: url(); */
 }
 
-/*.hello-treepanel {  
-  background: url(../images/chongxie1.png) left top repeat-x !important;  
-}*/
-/* 濡�虫健鐏忓繐娴橀弽鍢絪s  */
 .index {
 	background-image: url(../images/icon/index.png) !important;
 }
@@ -174,11 +170,6 @@
 	background-image: url(../images/icon/search.png) !important;
 }
 
-/**閸氬骸褰村Ο鈥虫健鐏忓繐娴橀弽锟�*/
-.loginOut {
-	background-image: url(../images/icon/tuichu.png) !important;
-}
-
 .save {
 	background-image: url(../images/icon/save.png) !important;
 }
@@ -292,14 +283,11 @@
 .acqGroup{
 	background-image: url(../images/icon/acqGroup.png) !important;
 }
- /* shared styles for the ActionColumn icons */
 .x-action-col-cell img {
 	height: 16px;
 	width: 45px;
 	cursor: pointer;
 }
-/*******************************************************************************/
-/*缂佸嫮绮愰弽鎴濇禈閺嶏拷*/
 .tree_root_icon {
 	background-image: url(../images/icon/root.png) !important;
 }
@@ -311,16 +299,6 @@
 .tree_leaf_icon {
 	background-image: url(../images/icon/leaf.png) !important;
 }
-/*******************************************************************************/
-/*************閸斻劍锟戒胶娲冨ù瀣Г鐠�锔捐閸ㄥ娴橀弽锟�*/
-.normal {
-	background-image: url(../images/icon/normal.png) !important;
-}
-.exception {
-	background-image: url(../images/icon/exception.png) !important;
-}
-/********************************************************************************/
-/*************閹躲儴顒�*/
 .realaralm {
 	background-image: url(../images/icon/real-alarm.png) !important;
 }
@@ -332,9 +310,6 @@
 }
 .alarmdoing {
 	background-image: url(../images/icon/alarm-doing.png) !important;
-}
-.warn {
-	background-image: url(../images/icon/warn.png) !important;
 }
 .wellboreTrajectory{
 	background-image: url(../images/icon/wellboreTrajectory.png) !important;

@@ -47,17 +47,23 @@ Ext.define('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore', {
                     store: store,
                     columns: newColumns,
                     listeners: {
-                    	selectionchange: function (view, selected, o) {
-            				if(selected.length>0){
-            					var gridPanel = Ext.getCmp("RPCCommunicationAlarmGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().loadPage(1);
-                				}else{
-                					Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmStore');
-                				}
+                    	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("RPCCommunicationAlarmOverviewSelectRow_Id").setValue(index);
+                    		Ext.getCmp('RPCCommunicationAlarmQueryStartDate_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryStartTime_Hour_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryStartTime_Minute_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryStartTime_Second_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryEndDate_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryEndTime_Hour_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryEndTime_Minute_Id').setValue('');
+                        	Ext.getCmp('RPCCommunicationAlarmQueryEndTime_Second_Id').setValue('');
+                    		var gridPanel = Ext.getCmp("RPCCommunicationAlarmGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().loadPage(1);
+            				}else{
+            					Ext.create('AP.store.alarmQuery.RPCCommunicationAlarmStore');
             				}
-                    	},
-                    	select: function(grid, record, index, eOpts) {}
+                    	}
                     }
                 });
                 var panel = Ext.getCmp("RPCCommunicationAlarmOverviewPanel_Id");
@@ -67,7 +73,8 @@ Ext.define('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore', {
             	if(gridPanel.getSelectionModel().getSelection().length>0){
             		gridPanel.getSelectionModel().deselectAll(true);
             	}
-            	gridPanel.getSelectionModel().select(0, true);
+            	var index=Ext.getCmp("RPCCommunicationAlarmOverviewSelectRow_Id").getValue();
+            	gridPanel.getSelectionModel().select(parseInt(index), true);
             }else{
             	var gridPanel = Ext.getCmp("RPCCommunicationAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {
@@ -81,7 +88,7 @@ Ext.define('AP.store.alarmQuery.RPCCommunicationAlarmOverviewStore', {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var deviceType=0;
         	var deviceName=Ext.getCmp('RPCCommunicationAlarmDeviceListComb_Id').getValue();
-        	var alarmLevel='';
+        	var alarmLevel=Ext.getCmp('RPCCommunicationAlarmLevelComb_Id').getValue();
         	var isSendMessage=Ext.getCmp('RPCCommunicationAlarmIsSendMessageComb_Id').getValue();
             var new_params = {
                     orgId: orgId,

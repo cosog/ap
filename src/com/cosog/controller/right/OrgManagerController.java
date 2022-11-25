@@ -31,7 +31,6 @@ import com.cosog.service.base.CommonDataService;
 import com.cosog.service.right.ModuleManagerService;
 import com.cosog.service.right.OrgManagerService;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OrgRecursion;

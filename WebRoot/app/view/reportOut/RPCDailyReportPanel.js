@@ -78,7 +78,20 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 }
             });
         Ext.apply(me, {
-            tbar: [wellListCombo, {
+            tbar: [{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	var gridPanel = Ext.getCmp("RPCDailyReportGridPanel_Id");
+        			if (isNotVal(gridPanel)) {
+        				gridPanel.getStore().load();
+        			}else{
+        				Ext.create('AP.store.reportOut.RPCDailyReportWellListStore');
+        			}
+                }
+    		},'-',wellListCombo, {
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '日期',
@@ -115,19 +128,18 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                         }
                     }
                 }
-            }, {
+            },'-',{
                 xtype: 'button',
                 text: cosog.string.search,
-                pressed: true,
-                hidden:true,
                 iconCls: 'search',
+                hidden:false,
                 handler: function (v, o) {
                 	CreateRPCDailyReportTable();
                 }
-            }, {
+    		},'-', {
                 xtype: 'button',
                 text: cosog.string.exportExcel,
-                pressed: true,
+                iconCls: 'export',
                 handler: function (v, o) {
                 	var leftOrg_Id = obtainParams('leftOrg_Id');
                 	var wellName = Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').getValue();
@@ -136,16 +148,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
                 	var url=context + '/reportDataMamagerController/exportRPCDailyReportData?wellType=0&wellName='+URLencode(URLencode(wellName))+'&startDate='+startDate+'&endDate='+endDate+'&orgId='+leftOrg_Id;
                 	document.location.href = url;
                 }
-            },'-',{
-                xtype: 'button',
-                iconCls: 'note-refresh',
-                text: cosog.string.refresh,
-                pressed: true,
-                hidden:false,
-                handler: function (v, o) {
-                	CreateRPCDailyReportTable();
-                }
-    		}, '->', {
+            }, '->', {
                 id: 'RPCDailyReportTotalCount_Id',
                 xtype: 'component',
                 tpl: cosog.string.totalCount + ': {count}',
@@ -170,6 +173,7 @@ Ext.define("AP.view.reportOut.RPCDailyReportPanel", {
             },{
             	region: 'center',
             	title:'报表数据',
+            	id:'RPCDailyReportPanel_id',
                 border: false,
                 layout: "fit",
                 html:'<div class="RPCDailyReportContainer" style="width:100%;height:100%;"><div class="con" id="RPCDailyReportDiv_id"></div></div>',
@@ -192,11 +196,12 @@ function CreateRPCDailyReportTable(){
     var wellName = Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').getValue();
     var startDate = Ext.getCmp('RPCDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('RPCDailyReportEndDate_Id').rawValue;
-    
+    Ext.getCmp("RPCDailyReportPanel_id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getDailyReportData',
 		success:function(response) {
+			Ext.getCmp("RPCDailyReportPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(Ext.getCmp("RPCDailyReportStartDate_Id").getValue()==''||Ext.getCmp("RPCDailyReportStartDate_Id").getValue()==null){
             	Ext.getCmp("RPCDailyReportStartDate_Id").setValue(result.startDate);

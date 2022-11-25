@@ -43,7 +43,6 @@ import com.cosog.model.ProtocolSMSInstance;
 import com.cosog.model.Role;
 import com.cosog.model.RoleModule;
 import com.cosog.model.User;
-import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusDriverSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmUnitSaveData;
 import com.cosog.model.drive.ModbusProtocolAlarmInstanceSaveData;
@@ -64,12 +63,9 @@ import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.thread.calculate.ThreadPool;
 import com.cosog.utils.AcquisitionItemColumnsMap;
-import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.BackModuleRecursion;
 import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
-import com.cosog.utils.DataSourceConfig;
-import com.cosog.utils.DataSourceConfigSaveData;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.Page;
 import com.cosog.utils.PagingConstants;
@@ -224,7 +220,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String result = "";
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
-		String fileName="ModbusProtocolConfig.json";
+		String fileName="modbus.json";
 		String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
 		PrintWriter out = response.getWriter();
 		try {
@@ -266,12 +262,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 						jedis.close();
 					}
 				}
-				
-				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 						TimeUnit.SECONDS, 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				
 				DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 				dataSynchronizationThread.setSign(001);
@@ -573,11 +568,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					}
 				}
 			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(021);
@@ -831,11 +826,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 					
 				}
 			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			
 			DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 			dataSynchronizationThread.setSign(042);
@@ -1504,7 +1499,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		String json = "";
 		Gson gson = new Gson();
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String fileName="ModbusProtocolConfig.json";
+		String fileName="modbus.json";
 		String data = ParamUtils.getParameter(request, "data");
 //		StringManagerUtils.printLog(data);
 		java.lang.reflect.Type type = new TypeToken<ModbusDriverSaveData>() {}.getType();
@@ -1521,11 +1516,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 				modbusProtocolConfig.setProtocol(new ArrayList<ModbusProtocolConfig.Protocol>());
 			}
 			
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			
 			//删除协议
 			for(int i=0;modbusDriverSaveData.getDelidslist()!=null&&i<modbusDriverSaveData.getDelidslist().size();i++){
@@ -1735,11 +1730,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		AcquisitionUnitHandsontableChangeData acquisitionUnitHandsontableChangeData=gson.fromJson(data, type);
 		if(acquisitionUnitHandsontableChangeData!=null){
 			if(acquisitionUnitHandsontableChangeData.getDelidslist()!=null){
-				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 						TimeUnit.SECONDS, 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				for(int i=0;i<acquisitionUnitHandsontableChangeData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(011);
@@ -1804,11 +1799,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		AcquisitionGroupHandsontableChangeData acquisitionGroupHandsontableChangeData=gson.fromJson(data, type);
 		if(acquisitionGroupHandsontableChangeData!=null){
 			if(acquisitionGroupHandsontableChangeData.getDelidslist()!=null){
-				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 						TimeUnit.SECONDS, 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				for(int i=0;i<acquisitionGroupHandsontableChangeData.getDelidslist().size();i++){
 					this.acquisitionUnitManagerService.doAcquisitionGroupBulkDelete(acquisitionGroupHandsontableChangeData.getDelidslist().get(i));
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -1877,11 +1872,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DisplayUnitHandsontableChangeData displayUnitHandsontableChangeData=gson.fromJson(data, type);
 		if(displayUnitHandsontableChangeData!=null){
 			if(displayUnitHandsontableChangeData.getDelidslist()!=null){
-				ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+				ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 						TimeUnit.SECONDS, 
-						AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+						Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 				for(int i=0;i<displayUnitHandsontableChangeData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
 					dataSynchronizationThread.setSign(041);
@@ -1949,11 +1944,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setMethod("update");
 			dataSynchronizationThread.setInitWellList(instanceList);
 			
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadAcqInstanceOwnItemByCode(protocolInstance.getCode(),"update");
 //			EquipmentDriverServerTask.initInstanceConfig(instanceList, "update");
@@ -2019,11 +2014,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolAlarmUnitSaveData modbusProtocolAlarmUnitSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolAlarmUnitSaveData!=null){
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(modbusProtocolAlarmUnitSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmUnitSaveData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();
@@ -2151,11 +2146,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolInstanceSaveData modbusProtocolInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolInstanceSaveData!=null){
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(modbusProtocolInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolInstanceSaveData.getDelidslist().size();i++){
 					List<String> deleteInstanceList=new ArrayList<String>();
@@ -2273,11 +2268,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setSign(061);
 			dataSynchronizationThread.setParam1(protocolDisplayInstance.getName());
 			dataSynchronizationThread.setMethod("update");
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadDisplayInstanceOwnItemByCode(protocolDisplayInstance.getCode(),"update");
 			result = "{success:true,msg:true}";
@@ -2304,11 +2299,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolDisplayInstanceSaveData modbusProtocolDisplayInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolDisplayInstanceSaveData!=null){
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(modbusProtocolDisplayInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolDisplayInstanceSaveData.getDelidslist().size();i++){
 					
@@ -2373,11 +2368,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 			dataSynchronizationThread.setSign(071);
 			dataSynchronizationThread.setParam1(protocolAlarmInstance.getName());
 			dataSynchronizationThread.setMethod("update");
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			executor.execute(dataSynchronizationThread);
 //			MemoryDataManagerTask.loadAlarmInstanceOwnItemByCode(protocolAlarmInstance.getCode(),"update");
 			result = "{success:true,msg:true}";
@@ -2404,11 +2399,11 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusProtocolAlarmInstanceSaveData modbusProtocolAlarmInstanceSaveData=gson.fromJson(data, type);
 		
 		if(modbusProtocolAlarmInstanceSaveData!=null){
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(modbusProtocolAlarmInstanceSaveData.getDelidslist()!=null){
 				for(int i=0;i<modbusProtocolAlarmInstanceSaveData.getDelidslist().size();i++){
 					DataSynchronizationThread dataSynchronizationThread=new DataSynchronizationThread();

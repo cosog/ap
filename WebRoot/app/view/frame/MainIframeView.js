@@ -24,10 +24,6 @@ Ext.define('AP.view.frame.MainIframeView', {
 				Ext.apply(moduleTree, {
 							store : mainIframe_store,
 							tbar : {
-								/*ui : 'background-image:url(' + context
-										+ '/images/chongxie1.png);',
-								style : 'background-image:url(' + context
-										+ '/images/chongxie1.png);',*/
 								hidden: true,
 								items : [{
 											iconCls : 'icon-collapse-all', // 收缩按钮

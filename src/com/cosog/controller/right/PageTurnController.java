@@ -44,14 +44,6 @@ import com.google.gson.Gson;
 @Scope("prototype")
 public class PageTurnController extends BaseController {
 	private static final long serialVersionUID = 1L;
-	@RequestMapping("/showIndex")
-	public String showIndex() throws Exception {
-		return "app/page/home";
-	}
-	@RequestMapping("/showBackIndex")
-	public String showBackIndex() throws Exception {
-		return "app/page/backHome";
-	}
 	@RequestMapping("/toLogin")
 	public String toLogin() throws Exception {
 		Gson gson=new Gson();

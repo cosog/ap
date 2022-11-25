@@ -47,17 +47,23 @@ Ext.define('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore', {
                     store: store,
                     columns: newColumns,
                     listeners: {
-                    	selectionchange: function (view, selected, o) {
-            				if(selected.length>0){
-            					var gridPanel = Ext.getCmp("PCPCommunicationAlarmGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().loadPage(1);
-                				}else{
-                					Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmStore');
-                				}
+                    	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").setValue(index);
+                    		Ext.getCmp('PCPCommunicationAlarmQueryStartDate_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Hour_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Minute_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryStartTime_Second_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryEndDate_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Hour_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Minute_Id').setValue('');
+                        	Ext.getCmp('PCPCommunicationAlarmQueryEndTime_Second_Id').setValue('');
+                    		var gridPanel = Ext.getCmp("PCPCommunicationAlarmGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().loadPage(1);
+            				}else{
+            					Ext.create('AP.store.alarmQuery.PCPCommunicationAlarmStore');
             				}
-                    	},
-                    	select: function(grid, record, index, eOpts) {}
+                    	}
                     }
                 });
                 var panel = Ext.getCmp("PCPCommunicationAlarmOverviewPanel_Id");
@@ -67,7 +73,8 @@ Ext.define('AP.store.alarmQuery.PCPCommunicationAlarmOverviewStore', {
             	if(gridPanel.getSelectionModel().getSelection().length>0){
             		gridPanel.getSelectionModel().deselectAll(true);
             	}
-            	gridPanel.getSelectionModel().select(0, true);
+            	var index=Ext.getCmp("PCPCommunicationAlarmOverviewSelectRow_Id").getValue();
+            	gridPanel.getSelectionModel().select(parseInt(index), true);
             }else{
             	var gridPanel = Ext.getCmp("PCPCommunicationAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {

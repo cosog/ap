@@ -54,10 +54,18 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                                 CreateAndLoadPumpingModelInfoTable();
                             }
                         }
-                    }, '-', {
+                    },'-',{
+                        xtype: 'button',
+                        text: cosog.string.search,
+                        iconCls: 'search',
+                        hidden: false,
+                        handler: function (v, o) {
+                            CreateAndLoadPumpingModelInfoTable();
+                        }
+
+                    },'-',{
                         xtype: 'button',
                         text: cosog.string.exportExcel,
-//                        pressed: true,
                         iconCls: 'export',
                         hidden: false,
                         handler: function (v, o) {
@@ -82,16 +90,6 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                             + "&title=" + URLencode(URLencode(title));
                             openExcelWindow(url + '?flag=true' + param);
                         }
-                    }, '-', {
-                        xtype: 'button',
-                        iconCls: 'note-refresh',
-                        text: cosog.string.refresh,
-//                        pressed: true,
-                        hidden: false,
-                        handler: function (v, o) {
-                            CreateAndLoadPumpingModelInfoTable();
-                        }
-
                     },'-', {
                         id: 'PumpingModelTotalCount_Id',
                         xtype: 'component',
@@ -189,6 +187,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                             return false;
             			}
             		}],
+            		id:'PumpingModelTablePanel_id',
                     html: '<div class="PumpingModelContainer" style="width:100%;height:100%;"><div class="con" id="PumpingModelTableDiv_id"></div></div>',
                     listeners: {
                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -285,11 +284,13 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
     	pumpingModelInfoHandsontableHelper=null;
     }
     var deviceType = Ext.getCmp('PumpingModelTypeComb_Id').getValue();
+    Ext.getCmp("PumpingModelTablePanel_id").el.mask(cosog.string.updatewait).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doPumpingModelShow',
         success: function (response) {
-            var result = Ext.JSON.decode(response.responseText);
+        	Ext.getCmp("PumpingModelTablePanel_id").getEl().unmask();
+        	var result = Ext.JSON.decode(response.responseText);
             if (pumpingModelInfoHandsontableHelper == null || pumpingModelInfoHandsontableHelper.hot == null || pumpingModelInfoHandsontableHelper.hot == undefined) {
                 pumpingModelInfoHandsontableHelper = PumpingModelInfoHandsontableHelper.createNew("PumpingModelTableDiv_id");
                 var colHeaders="['序号','厂家','型号','冲程(m)','旋转方向','曲柄偏置角(°)','曲柄重心半径(m)','单块曲柄重量(kN)','单块曲柄销重量(kN)','结构不平衡重(kN)','平衡块重量(kN)']";

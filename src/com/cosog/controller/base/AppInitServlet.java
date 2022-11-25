@@ -8,7 +8,6 @@ import org.dom4j.DocumentException;
 
 import com.cosog.task.EquipmentDriverServerTask.DriverProbeResponse;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.CryptUtil;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.LicenseMap;

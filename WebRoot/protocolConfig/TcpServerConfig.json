@@ -1,5 +1,0 @@
-{
-    "Port": 19100,
-    "HeartbeatPrefix":"AA01",
-    "HeartbeatSuffix":"0D"
-}

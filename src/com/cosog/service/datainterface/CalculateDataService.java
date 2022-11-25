@@ -34,7 +34,6 @@ import com.cosog.service.base.BaseService;
 import com.cosog.utils.AlarmInfoMap;
 import com.cosog.utils.CalculateUtils;
 import com.cosog.utils.Config;
-import com.cosog.utils.Config2;
 import com.cosog.utils.OracleJdbcUtis;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;

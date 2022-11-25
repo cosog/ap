@@ -100,7 +100,7 @@ public class MemoryDataManagerTask {
 		String protocolConfigData="";
 		java.lang.reflect.Type type=null;
 		//添加Modbus协议配置
-		path=stringManagerUtils.getFilePath("ModbusProtocolConfig.json","protocolConfig/");
+		path=stringManagerUtils.getFilePath("modbus.json","protocolConfig/");
 		protocolConfigData=stringManagerUtils.readFile(path,"utf-8");
 		type = new TypeToken<ModbusProtocolConfig>() {}.getType();
 		ModbusProtocolConfig modbusProtocolConfig=gson.fromJson(protocolConfigData, type);

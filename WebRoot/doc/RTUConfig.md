@@ -62,7 +62,7 @@ State									    开关			off-失效  on-使能
 
 ## Server		  	  服务器
 
-### RemoteModbus   Modbus 连接的TCP服务器
+### RemoteModbus   连接的TCP服务器
 
 State									     开关			off-失效  on-使能
 
@@ -100,9 +100,9 @@ Resource         						资源数据
 
 ##### Sub										   订阅
 
-### Modbus				  Modbus
+### Modbus				  
 
-#### ModbusServer			ModbusServer
+#### ModbusServer			
 
 State										 开关			off-失效  on-使能
 
@@ -110,7 +110,7 @@ SlaveQuantity						从地址数量，最小为1，最大为32
 
 ConnQuantity						连接数量，最小为1，rtu内部连接，大于1可用于远程连接
 
-#### TCPServer					TCPServer
+#### TCPServer					
 
 State									    开关			off-失效  on-使能
 
@@ -118,7 +118,7 @@ ProtocolType						 协议类型  modbus-tcp或modbus-rtu 		缺省：modbus-tcp
 
 Port										 端口，默认1502
 
-#### TCPClient					TCPClient
+#### TCPClient					
 
 State									    开关			off-失效  on-使能
 

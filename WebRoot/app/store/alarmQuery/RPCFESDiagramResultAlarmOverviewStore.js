@@ -47,17 +47,23 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
                     store: store,
                     columns: newColumns,
                     listeners: {
-                    	selectionchange: function (view, selected, o) {
-            				if(selected.length>0){
-            					var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmGridPanel_Id");
-                				if (isNotVal(gridPanel)) {
-                					gridPanel.getStore().loadPage(1);
-                				}else{
-                					Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmStore');
-                				}
+                    	select: function(grid, record, index, eOpts) {
+                    		Ext.getCmp("RPCFESDiagramResultAlarmOverviewSelectRow_Id").setValue(index);
+                    		Ext.getCmp('RPCFESDiagramResultAlarmQueryStartDate_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryStartTime_Hour_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryStartTime_Minute_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryStartTime_Second_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryEndDate_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryEndTime_Hour_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryEndTime_Minute_Id').setValue('');
+                        	Ext.getCmp('RPCFESDiagramResultAlarmQueryEndTime_Second_Id').setValue('');
+                    		var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmGridPanel_Id");
+            				if (isNotVal(gridPanel)) {
+            					gridPanel.getStore().loadPage(1);
+            				}else{
+            					Ext.create('AP.store.alarmQuery.RPCFESDiagramResultAlarmStore');
             				}
-                    	},
-                    	select: function(grid, record, index, eOpts) {}
+                    	}
                     }
                 });
                 var panel = Ext.getCmp("RPCFESDiagramResultAlarmOverviewPanel_Id");
@@ -67,7 +73,8 @@ Ext.define('AP.store.alarmQuery.RPCFESDiagramResultAlarmOverviewStore', {
             	if(gridPanel.getSelectionModel().getSelection().length>0){
             		gridPanel.getSelectionModel().deselectAll(true);
             	}
-            	gridPanel.getSelectionModel().select(0, true);
+            	var index=Ext.getCmp("RPCFESDiagramResultAlarmOverviewSelectRow_Id").getValue();
+            	gridPanel.getSelectionModel().select(parseInt(index), true);
             }else{
             	var gridPanel = Ext.getCmp("RPCFESDiagramResultAlarmGridPanel_Id");
                 if (isNotVal(gridPanel)) {

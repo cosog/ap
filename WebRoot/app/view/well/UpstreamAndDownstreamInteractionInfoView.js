@@ -257,12 +257,6 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                              hidden:false,
                              handler: function (v, o) {
                             	 readWaterCutRawData();
-//                            	 var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id");
-//                            	 if (isNotVal(gridPanel)) {
-//                            		 gridPanel.getStore().load();
-//                            	 }else{
-//                            		 Ext.create('AP.store.well.WaterCutRawDataStore');
-//                            	 }
                              }
                          }],
                          items: [{
@@ -846,8 +840,9 @@ function readWaterCutRawData(){
     						waterCutData.position=result.Message.Position[i]+'';
     						data.push(waterCutData);
     					}
+    				}else if(result.OutOfMemory){
+    					Ext.MessageBox.alert("信息", "数据过大，加载失败，请将配置下行中StoreAcqWaterCut的值修改位更小值！");
     				}
-    				
     			}
     			
     			var gridPanel = Ext.getCmp("UpstreamAndDownstreamInteractionWaterCutRawDataGridPanel_Id");

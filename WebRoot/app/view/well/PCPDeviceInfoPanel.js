@@ -88,10 +88,17 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
-            },pcpDeviceCombo, '-', {
+            },pcpDeviceCombo,'-',{
+                xtype: 'button',
+                text: cosog.string.search,
+                iconCls: 'search',
+                hidden: false,
+                handler: function (v, o) {
+                    CreateAndLoadPCPDeviceInfoTable();
+                }
+            },'-',{
                 xtype: 'button',
                 text: cosog.string.exportExcel,
-//                pressed: true,
                 iconCls: 'export',
                 hidden: false,
                 handler: function (v, o) {
@@ -111,15 +118,6 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
 
                     var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) + "&orgId=" + leftOrg_Id + "&deviceType=201&wellInformationName=" + URLencode(URLencode(wellInformationName)) + "&recordCount=10000" + "&fileName=" + URLencode(URLencode("螺杆泵井")) + "&title=" + URLencode(URLencode("螺杆泵井"));
                     openExcelWindow(url + '?flag=true' + param);
-                }
-            }, '-', {
-                xtype: 'button',
-                iconCls: 'note-refresh',
-                text: cosog.string.refresh,
-//                pressed: true,
-                hidden: false,
-                handler: function (v, o) {
-                    CreateAndLoadPCPDeviceInfoTable();
                 }
             },'-', {
                 id: 'PCPDeviceTotalCount_Id',
@@ -281,6 +279,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
             	items: [{
             		region: 'center',
             		title:'螺杆泵井列表',
+            		id:'PCPDeviceTablePanel_id',
                 	html: '<div class="PCPDeviceContainer" style="width:100%;height:100%;"><div class="con" id="PCPDeviceTableDiv_id"></div></div>',
                     listeners: {
                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -350,11 +349,13 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var wellInformationName_Id = Ext.getCmp('pcpDeviceListComb_Id').getValue();
+    Ext.getCmp("PCPDeviceTablePanel_id").el.mask(cosog.string.updatewait).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',
         success: function (response) {
-            var result = Ext.JSON.decode(response.responseText);
+        	Ext.getCmp("PCPDeviceTablePanel_id").getEl().unmask();
+        	var result = Ext.JSON.decode(response.responseText);
             if (pcpDeviceInfoHandsontableHelper == null || pcpDeviceInfoHandsontableHelper.hot == null || pcpDeviceInfoHandsontableHelper.hot == undefined) {
                 pcpDeviceInfoHandsontableHelper = PCPDeviceInfoHandsontableHelper.createNew("PCPDeviceTableDiv_id");
                 pcpDeviceInfoHandsontableHelper.dataLength=result.totalCount;

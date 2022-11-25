@@ -1,0 +1,12 @@
+@2、createTables.sql
+@3、createIndexs.sql
+@4、createViews.sql
+@5、createProcedures.sql
+@6、initModuleAndRole.sql
+@7、initDataDictionary.sql
+@8、initDriverConfig.sql
+@9、initOthers.sql
+@10、createSequences.sql
+@11、createTriggers.sql
+@12、createJobs.sql
+exit

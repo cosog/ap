@@ -67,6 +67,7 @@ Ext.define('AP.view.alarmQuery.PCPEnumValueAlarmInfoView', {
                             deviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
+                        	Ext.getCmp("PCPEnumValueAlarmOverviewSelectRow_Id").setValue(0);
                         	Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -83,7 +84,25 @@ Ext.define('AP.view.alarmQuery.PCPEnumValueAlarmInfoView', {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
-            },deviceCombo,'-',{
+            },{
+                id: 'PCPEnumValueAlarmOverviewSelectRow_Id',
+                xtype: 'textfield',
+                value: 0,
+                hidden: true
+            },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	var gridPanel = Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id");
+    				if (isNotVal(gridPanel)) {
+    					gridPanel.getStore().loadPage(1);
+    				}else{
+    					Ext.create('AP.store.alarmQuery.PCPEnumValueAlarmOverviewStore');
+    				}
+                }
+    		},'-',deviceCombo,'-',{
             	xtype : "combobox",
 				fieldLabel : '报警级别',
 				id : 'PCPEnumValueAlarmLevelComb_Id',
@@ -107,6 +126,7 @@ Ext.define('AP.view.alarmQuery.PCPEnumValueAlarmInfoView', {
 				queryMode : 'local',
 				listeners : {
 					select:function(v,o){
+						Ext.getCmp("PCPEnumValueAlarmOverviewSelectRow_Id").setValue(0);
 						Ext.getCmp("PCPEnumValueAlarmOverviewGridPanel_Id").getStore().loadPage(1);
 					}
 				}

@@ -77,7 +77,6 @@ import com.cosog.model.calculate.WellAcquisitionData;
 import com.cosog.model.calculate.RPCCalculateRequestData.EveryBalance;
 import com.cosog.model.drive.AcquisitionGroupResolutionData;
 import com.cosog.model.drive.AcquisitionItemInfo;
-import com.cosog.model.drive.KafkaConfig;
 import com.cosog.model.drive.ModbusProtocolConfig;
 import com.cosog.model.gridmodel.PumpingModelHandsontableChangedData;
 import com.cosog.model.gridmodel.CalculateManagerHandsontableChangedData;
@@ -95,8 +94,8 @@ import com.cosog.task.EquipmentDriverServerTask;
 import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.thread.calculate.DataSynchronizationThread;
 import com.cosog.thread.calculate.ThreadPool;
-import com.cosog.utils.AdInitThreadPoolConfig;
 import com.cosog.utils.CalculateUtils;
+import com.cosog.utils.Config;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.EquipmentDriveMap;
 import com.cosog.utils.LicenseMap;
@@ -1085,11 +1084,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
@@ -1498,11 +1497,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initRPCDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
 //				MemoryDataManagerTask.loadRPCDeviceInfo(deleteWellList,0,"delete");
@@ -1699,11 +1698,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
 //				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
@@ -2061,11 +2060,11 @@ public class BaseDao extends HibernateDaoSupport {
 				ps=conn.prepareStatement(delSql);
 				int result=ps.executeUpdate();
 			}
-			ThreadPool executor = new ThreadPool("dataSynchronization",AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getCorePoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getMaximumPoolSize(), 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getKeepAliveTime(), 
+			ThreadPool executor = new ThreadPool("dataSynchronization",Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getCorePoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getMaximumPoolSize(), 
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getKeepAliveTime(), 
 					TimeUnit.SECONDS, 
-					AdInitThreadPoolConfig.getInstance().adInitThreadPoolConfigFile.getDataSynchronization().getWattingCount());
+					Config.getInstance().configFile.getAp().getThreadPool().getDataSynchronization().getWattingCount());
 			if(deleteWellList.size()>0){
 //				EquipmentDriverServerTask.initPCPDriverAcquisitionInfoConfig(deleteWellList,0,"delete");
 //				MemoryDataManagerTask.loadPCPDeviceInfo(deleteWellList,0,"delete");
@@ -2851,7 +2850,12 @@ public class BaseDao extends HibernateDaoSupport {
 				&&calculateResponseData.getFESDiagram().getS().size()>0
 				){
 			int curvecount=calculateResponseData.getFESDiagram().getS().get(0).size();
-			int pointcount=calculateResponseData.getFESDiagram().getS().size();
+			int sPointCount=calculateResponseData.getFESDiagram().getS().size();
+			int fPointCount=calculateResponseData.getFESDiagram().getS().size();
+			int pointcount=sPointCount;
+			if(fPointCount<sPointCount){
+				pointcount=fPointCount;
+			}
 			pumpFSDiagramStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){
@@ -3211,7 +3215,12 @@ public class BaseDao extends HibernateDaoSupport {
 				&&calculateResponseData.getCalculationStatus().getResultCode()!=1232
 				&&calculateResponseData.getFESDiagram()!=null){
 			int curvecount=calculateResponseData.getFESDiagram().getS().get(0).size();
-			int pointcount=calculateResponseData.getFESDiagram().getS().size();
+			int sPointCount=calculateResponseData.getFESDiagram().getS().size();
+			int fPointCount=calculateResponseData.getFESDiagram().getS().size();
+			int pointcount=sPointCount;
+			if(fPointCount<sPointCount){
+				pointcount=fPointCount;
+			}
 			pumpFSDiagramStrBuff.append(curvecount+";"+pointcount+";");
 			for(int i=0;i<curvecount;i++){
 				for(int j=0;j<pointcount;j++){

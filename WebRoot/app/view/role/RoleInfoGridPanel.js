@@ -24,6 +24,19 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 id: 'currentUserRoleFlag_Id',
                 value: 0
             },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	var gridPanel = Ext.getCmp("RoleInfoGridPanel_Id");
+                    if (isNotVal(gridPanel)) {
+                    	gridPanel.getStore().load();
+                    }else{
+                    	Ext.create('AP.store.role.RoleInfoStore');
+                    }
+                }
+    		},{
                 id: 'RoleName_Id',
                 fieldLabel: cosog.string.roleName,
                 name: 'RoleName',

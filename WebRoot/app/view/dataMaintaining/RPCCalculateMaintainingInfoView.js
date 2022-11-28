@@ -205,7 +205,15 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
         Ext.apply(me, {
         	layout: 'border',
             border: false,
-            tbar:[wellListComb
+            tbar:[{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	refreshRPCCalculateMaintainingData();
+                }
+    		},'-',wellListComb
     			,"-",{
                 xtype: 'datefield',
                 anchor: '100%',
@@ -406,7 +414,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 xtype: 'button',
                 text: cosog.string.search,
                 iconCls: 'search',
-                pressed: true,
+                pressed: false,
                 hidden:false,
                 handler: function (v, o) {
                 	var activeId = Ext.getCmp("RPCCalculateMaintainingTabPanel").getActiveTab().id;
@@ -478,7 +486,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 xtype: 'button',
                 text: '修改数据计算',
                 id:'RPCCalculateMaintainingUpdateDataBtn',
-                pressed: true,
+                pressed: false,
                 iconCls: 'edit',
                 handler: function (v, o) {
                 	rpcFESDiagramCalculateMaintainingHandsontableHelper.saveData();
@@ -486,7 +494,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '关联数据计算',
-                pressed: true,
+                pressed: false,
                 iconCls: 'save',
                 id:'RPCCalculateMaintainingLinkedDataBtn',
                 handler: function (v, o) {
@@ -589,7 +597,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '导出请求数据',
-                pressed: true,
+                pressed: false,
                 hidden: false,
                 iconCls: 'export',
                 id:'RPCCalculateMaintainingExportDataBtn',
@@ -610,7 +618,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
                 xtype: 'button',
                 text: '重新汇总',
                 id:'RPCCalculateMaintainingReTotalBtn',
-                pressed: true,
+                pressed: false,
                 hidden:true,
                 iconCls: 'edit',
                 handler: function (v, o) {
@@ -619,7 +627,7 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '导出请求数据',
-                pressed: true,
+                pressed: false,
                 hidden: true,
                 iconCls: 'export',
                 id:'RPCTotalCalculateMaintainingExportDataBtn',
@@ -689,6 +697,13 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
     						Ext.getCmp("RPCCalculateMaintainingCalculateSignComBox_Id").show();
     						Ext.getCmp("RPCCalculateMaintainingReTotalBtn").hide();
     						Ext.getCmp("RPCTotalCalculateMaintainingExportDataBtn").hide();
+    						
+    						Ext.getCmp('RPCCalculateMaintainingStartTime_Hour_Id').show();
+    						Ext.getCmp('RPCCalculateMaintainingStartTime_Minute_Id').show();
+    						Ext.getCmp('RPCCalculateMaintainingStartTime_Second_Id').show();
+    						Ext.getCmp('RPCCalculateMaintainingEndTime_Hour_Id').show();
+    						Ext.getCmp('RPCCalculateMaintainingEndTime_Minute_Id').show();
+    						Ext.getCmp('RPCCalculateMaintainingEndTime_Second_Id').show();
     					}else if(newCard.id=="RPCTotalCalculateMaintainingPanel"){
     						Ext.getCmp("RPCCalculateMaintainingUpdateDataBtn").hide();
     						Ext.getCmp("RPCCalculateMaintainingLinkedDataBtn").hide();
@@ -696,13 +711,15 @@ Ext.define("AP.view.dataMaintaining.RPCCalculateMaintainingInfoView", {
     						Ext.getCmp("RPCCalculateMaintainingCalculateSignComBox_Id").hide();
     						Ext.getCmp("RPCCalculateMaintainingReTotalBtn").show();
     						Ext.getCmp("RPCTotalCalculateMaintainingExportDataBtn").show();
-    						var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
-    			            if (isNotVal(gridPanel)) {
-    			            	gridPanel.getStore().loadPage(1);
-    			            }else{
-    			            	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
-    			            }
+    						
+    						Ext.getCmp('RPCCalculateMaintainingStartTime_Hour_Id').hide();
+    						Ext.getCmp('RPCCalculateMaintainingStartTime_Minute_Id').hide();
+    						Ext.getCmp('RPCCalculateMaintainingStartTime_Second_Id').hide();
+    						Ext.getCmp('RPCCalculateMaintainingEndTime_Hour_Id').hide();
+    						Ext.getCmp('RPCCalculateMaintainingEndTime_Minute_Id').hide();
+    						Ext.getCmp('RPCCalculateMaintainingEndTime_Second_Id').hide();
     					}
+    					refreshRPCCalculateMaintainingData();
     				}
     			}
             }]
@@ -1023,4 +1040,53 @@ function ReTotalFESDiagramData(){
     }else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
+}
+
+function resetRPCCalculateMaintainingQueryParams(){
+	Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').setRawValue('');
+	Ext.getCmp('RPCCalculateMaintainingStartDate_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingStartDate_Id').setRawValue('');
+	Ext.getCmp('RPCCalculateMaintainingStartTime_Hour_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingStartTime_Minute_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingStartTime_Second_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingEndDate_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingEndDate_Id').setRawValue('');
+	Ext.getCmp('RPCCalculateMaintainingEndTime_Hour_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingEndTime_Minute_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingEndTime_Second_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingCalculateSignComBox_Id').setValue('');
+	Ext.getCmp('RPCCalculateMaintainingCalculateSignComBox_Id').setRawValue('');
+}
+
+function refreshRPCCalculateMaintainingData(){
+	resetRPCCalculateMaintainingQueryParams();
+	var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
+	if (isNotVal(gridPanel)) {
+		gridPanel.getStore().load();
+	}else{
+		Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
+	}
+	var secondTabPanel = Ext.getCmp("RPCCalculateMaintainingTabPanel");
+	var secondActiveId = secondTabPanel.getActiveTab().id;
+	if(secondActiveId=="RPCCalculateMaintainingPanel"){
+		var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
+		if (isNotVal(bbar)) {
+			if(bbar.getStore().isEmptyStore){
+				var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
+				bbar.setStore(RPCCalculateMaintainingDataStore);
+			}else{
+				bbar.getStore().loadPage(1);
+			}
+		}else{
+			Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
+		}
+	}else if(secondActiveId=="RPCTotalCalculateMaintainingPanel"){
+		var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
+        if (isNotVal(gridPanel)) {
+        	gridPanel.getStore().loadPage(1);
+        }else{
+        	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
+        }
+	}
 }

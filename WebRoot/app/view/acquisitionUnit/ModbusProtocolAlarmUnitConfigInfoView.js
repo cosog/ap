@@ -32,7 +32,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolAlarmUnitConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitTreeInfoStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '添加报警单元',
                     iconCls: 'add',
@@ -109,6 +122,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                     		region: 'center',
                     		title:'采集项配置',
                             layout: 'fit',
+                            id:'ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -124,7 +138,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         	collapsible: true,
                             split: true,
                         	layout: 'fit',
-                            layout: 'fit',
+                        	id:'ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoPanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -150,6 +164,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         	region: 'center',
                             title:'开关量报警项配置',
                             layout: 'fit',
+                            id:'ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -175,6 +190,7 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
                         	region: 'center',
                             title:'枚举量报警项配置',
                             layout: 'fit',
+                            id:'ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id',
                             html:'<div class="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoContainer" style="width:100%;height:100%;"><div class="con" id="ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id"></div></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -299,10 +315,13 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAlarmUnitConfigInfoView', {
 });
 
 function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,code){
+	Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolNumAlarmItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigNumItemsHandsontableHelper==null || protocolAlarmUnitConfigNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigNumItemsHandsontableHelper = ProtocolAlarmUnitConfigNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitItemsConfigTableInfoDiv_id");
@@ -336,6 +355,7 @@ function CreateProtocolAlarmUnitNumItemsConfigInfoTable(protocolName,classes,cod
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitItemsConfigTableInfoPanel_id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -417,10 +437,12 @@ var ProtocolAlarmUnitConfigNumItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(deviceType,classes,code){
+	Ext.getCmp("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoPanel_id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolCalNumAlarmItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCalNumItemsHandsontableHelper==null || protocolAlarmUnitConfigCalNumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCalNumItemsHandsontableHelper = ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoDiv_id");
@@ -454,6 +476,7 @@ function CreateProtocolAlarmUnitCalNumItemsConfigInfoTable(deviceType,classes,co
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitCalNumItemsConfigTableInfoPanel_id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -632,11 +655,12 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,unitCode,itemAddr){
+	Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolEnumAlarmItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("DriverItemsConfigTableInfoPanel_Id").setTitle(protocolName+"采控项配置");
+			Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigEnumItemsHandsontableHelper==null || protocolAlarmUnitConfigEnumItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigEnumItemsHandsontableHelper = ProtocolAlarmUnitConfigEnumItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitEnumItemsConfigTableInfoDiv_id");
@@ -666,6 +690,7 @@ function CreateProtocolAlarmUnitEnumItemsConfigInfoTable(protocolName,classes,un
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitEnumItemsConfigHandsontablePanel_id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -766,11 +791,12 @@ var ProtocolAlarmUnitConfigEnumItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,unitCode,itemAddr){
+	Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolEnumAlarmItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("DriverItemsConfigTableInfoPanel_Id").setTitle(protocolName+"采控项配置");
+			Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigSwitchItemsHandsontableHelper==null || protocolAlarmUnitConfigSwitchItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigSwitchItemsHandsontableHelper = ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitSwitchItemsConfigTableInfoDiv_id");
@@ -801,6 +827,7 @@ function CreateProtocolAlarmUnitSwitchItemsConfigInfoTable(protocolName,classes,
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitSwitchItemsConfigHandsontablePanel_id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -903,11 +930,12 @@ var ProtocolAlarmUnitConfigSwitchItemsHandsontableHelper = {
 
 
 function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,classes,code){
+	Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolCommStatusAlarmItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("DriverItemsConfigTableInfoPanel_Id").setTitle(protocolName+"采控项配置");
+			Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigCommStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigCommStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitCommStatusItemsConfigTableInfoDiv_id");
@@ -936,6 +964,7 @@ function CreateProtocolAlarmUnitCommStatusItemsConfigInfoTable(protocolName,clas
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitCommStatusConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1021,11 +1050,12 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName,classes,code){
+	Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolFESDiagramConditionsAlarmItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("DriverItemsConfigTableInfoPanel_Id").setTitle(protocolName+"采控项配置");
+			Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper==null || protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoDiv_id");
@@ -1054,6 +1084,7 @@ function CreateProtocolAlarmUnitFESDiagramConditionsConfigInfoTable(protocolName
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitFESDiagramConditionsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1139,11 +1170,12 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 };
 
 function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,classes,code){
+	Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getModbusProtocolRunStatusAlarmItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("DriverItemsConfigTableInfoPanel_Id").setTitle(protocolName+"采控项配置");
+			Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAlarmUnitConfigRunStatusItemsHandsontableHelper==null || protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.hot==undefined){
 				protocolAlarmUnitConfigRunStatusItemsHandsontableHelper = ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper.createNew("ModbusProtocolAlarmUnitRunStatusItemsConfigTableInfoDiv_id");
@@ -1172,6 +1204,7 @@ function CreateProtocolAlarmUnitRunStatusItemsConfigInfoTable(protocolName,class
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAlarmUnitRunStatusConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

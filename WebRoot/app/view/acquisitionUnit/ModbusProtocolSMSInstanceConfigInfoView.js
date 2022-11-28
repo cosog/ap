@@ -13,7 +13,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolSMSInstanceConfigInfoView', {
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var gridPanel = Ext.getCmp("ModbusProtocolSMSInstanceGridPanel_Id");
+                        if (isNotVal(gridPanel)) {
+                        	gridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolSMSInstanceStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '创建',
                     iconCls: 'add',

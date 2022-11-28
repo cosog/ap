@@ -15,7 +15,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqInstanceConfigInfoView', {
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolInstanceConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolInstanceTreeInfoStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '添加实例',
                     iconCls: 'add',
@@ -320,10 +333,12 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 };
 
 function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
+	Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolInstanceItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").getEl().unmask();
 			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").setTitle(instanceName+"/采控项");
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolInstanceConfigItemsHandsontableHelper==null || protocolInstanceConfigItemsHandsontableHelper.hot==undefined){
@@ -356,6 +371,7 @@ function CreateProtocolInstanceAcqItemsInfoTable(id,instanceName,classes){
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolInstanceItemsTableTabPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

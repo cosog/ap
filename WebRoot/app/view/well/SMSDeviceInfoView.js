@@ -86,7 +86,15 @@ Ext.define('AP.view.well.SMSDeviceInfoView', {
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
-            }, SMSDeviceCombo, '-', {
+            },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	CreateAndLoadSMSDeviceInfoTable();
+                }
+    		},'-', SMSDeviceCombo, '-', {
                 xtype: 'button',
                 text: cosog.string.search,
                 iconCls: 'search',

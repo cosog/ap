@@ -81,7 +81,15 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
             });
         
         Ext.apply(this, {
-            tbar: [rpcDeviceCombo,{
+            tbar: [{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	CreateAndLoadRPCDeviceInfoTable();
+                }
+    		},'-',rpcDeviceCombo,{
                 id: 'RPCDeviceSelectRow_Id',
                 xtype: 'textfield',
                 value: 0,

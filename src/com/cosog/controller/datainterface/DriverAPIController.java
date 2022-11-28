@@ -1057,7 +1057,7 @@ public class DriverAPIController extends BaseController{
 	
 	@RequestMapping(path={"/acq/id/group","/acq/group"})
 	public String AcqGroupData(){
-		ServletInputStream ss;
+		ServletInputStream ss=null;
 		Jedis jedis=null;
 		String json = "{success:true,flag:true}";
 		PrintWriter pw=null;

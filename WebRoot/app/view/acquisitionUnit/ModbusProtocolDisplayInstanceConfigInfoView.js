@@ -17,7 +17,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayInstanceConfigInfoView'
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolDisplayInstanceConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayInstanceTreeInfoStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '添加实例',
                     iconCls: 'add',
@@ -280,10 +293,12 @@ function SaveModbusProtocolDisplayInstanceData(saveData){
 }
 
 function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes){
+	Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceAcqItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
 				Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/采集项");
 			}else{
@@ -321,6 +336,7 @@ function CreateProtocolDisplayInstanceAcqItemsInfoTable(id,instanceName,classes)
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ProtocolDisplayInstanceAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -396,10 +412,12 @@ var ProtocolDisplayInstanceAcqItemsHandsontableHelper = {
 };
 
 function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,deviceType){
+	Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceCalItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
 				Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/计算项");
 			}else{
@@ -436,6 +454,7 @@ function CreateProtocolDisplayInstanceCalItemsInfoTable(id,instanceName,classes,
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ProtocolDisplayInstanceCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -512,10 +531,12 @@ var ProtocolDisplayInstanceCalItemsHandsontableHelper = {
 };
 
 function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes){
+	Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayInstanceCtrlItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			if(instanceName!=''){
 				Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").setTitle(instanceName+"/控制项");
 			}else{
@@ -548,6 +569,7 @@ function CreateProtocolDisplayInstanceCtrlItemsInfoTable(id,instanceName,classes
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ProtocolDisplayInstanceCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

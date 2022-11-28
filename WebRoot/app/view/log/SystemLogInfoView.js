@@ -1,6 +1,6 @@
 Ext.define('AP.view.log.SystemLogInfoView', {
     extend: 'Ext.panel.Panel',
-    alias: 'widget.deviceOperationLogInfoView',
+    alias: 'widget.systemLogInfoView',
     layout: "fit",
     id: "SystemLogView_Id",
     border: false,
@@ -13,6 +13,29 @@ Ext.define('AP.view.log.SystemLogInfoView', {
                 value: '',
                 hidden: true
             },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	Ext.getCmp('SystemLogQueryStartDate_Id').setValue('');
+                	Ext.getCmp('SystemLogQueryStartDate_Id').setRawValue('');
+                	Ext.getCmp('SystemLogQueryStartTime_Hour_Id').setValue('');
+                	Ext.getCmp('SystemLogQueryStartTime_Minute_Id').setValue('');
+                	Ext.getCmp('SystemLogQueryStartTime_Second_Id').setValue('');
+                    Ext.getCmp('SystemLogQueryEndDate_Id').setValue('');
+                    Ext.getCmp('SystemLogQueryEndDate_Id').setRawValue('');
+                    Ext.getCmp('SystemLogQueryEndTime_Hour_Id').setValue('');
+                	Ext.getCmp('SystemLogQueryEndTime_Minute_Id').setValue('');
+                	Ext.getCmp('SystemLogQueryEndTime_Second_Id').setValue('');
+                	
+                	
+                	var gridPanel = Ext.getCmp("SystemLogGridPanel_Id");
+                	if (isNotVal(gridPanel)) {
+                		gridPanel.getStore().loadPage(1);
+                	}
+                }
+    		},'-',{
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '区间',

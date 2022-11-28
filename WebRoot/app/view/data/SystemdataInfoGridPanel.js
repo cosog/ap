@@ -28,7 +28,18 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
         });
         var geSystemdataInfoStore = Ext.create("AP.store.data.SystemdataInfoStore");
         Ext.apply(this, {
-            tbar: [sysdatacomboxsimp, {
+            tbar: [{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	Ext.getCmp('sysdatacomboxfield_Id').setValue(0);
+                	Ext.getCmp('sysdatacomboxfield_Id').setRawValue(cosog.string.dataModuleName);
+                	Ext.getCmp('sysname_Id').setRawValue('');
+                	reFreshg("SystemdataInfoGridPanelId");
+                }
+    		},'-',sysdatacomboxsimp,'-', {
                 xtype: 'textfield',
                 fieldLabel: '&nbsp;' + cosog.string.name,
                 labelWidth: 35,
@@ -40,7 +51,7 @@ Ext.define('AP.view.data.SystemdataInfoGridPanel', {
                 xtype: "textfield",
                 id: "sys_txt_find_ids",
                 hidden: true
-         }, {
+         },'-', {
                 xtype: 'button',
                 id: "findSystemdataInfoId",
                 text: cosog.string.search,

@@ -16,8 +16,20 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         		split: true,
                 collapsible: true,
         		id:'OrgAndUserOrgInfoPanel_Id',
-        		tbar: [
-                '->', {
+        		tbar: [{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("OrgInfoTreeGridView_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.orgAndUser.OrgInfoStore');
+                        }
+                    }
+        		},'->', {
                     xtype: 'button',
                     itemId: 'addOrgLableClassBtnId',
                     id: 'addOrgLableClassBtn_Id',

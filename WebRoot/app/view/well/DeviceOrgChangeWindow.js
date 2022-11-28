@@ -95,7 +95,7 @@ Ext.define("AP.view.well.DeviceOrgChangeWindow", {
                 text: '迁移',
                 iconCls: 'move',
                 style: 'margin-right: 15px;margin-bottom: 5px',
-                pressed: true,
+                pressed: false,
                 handler: function () {
                 	var selectedDevice=Ext.getCmp("DeviceOrgChangeDeviceListGridPanel_Id").getSelectionModel().getSelection();
                 	var selectedOrg=Ext.getCmp("DeviceOrgChangeOrgListTreePanel_Id").getSelectionModel().getSelection();

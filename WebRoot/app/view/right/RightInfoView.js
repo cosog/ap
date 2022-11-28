@@ -50,7 +50,7 @@ Ext.define("AP.view.right.RightInfoView", {
                     id: 'addRightRoleLableClassBtn_Id',
                     action: 'addRightRoleAction',
                     text: cosog.string.sureDo,
-                    pressed: true,
+                    pressed: false,
                     iconCls: 'save',
                     handler: addRoleInfo
                 }, {
@@ -87,7 +87,7 @@ Ext.define("AP.view.right.RightInfoView", {
                     action: 'addRightModuleAction',
                     text: cosog.string.sureGive,
                     iconCls: 'save',
-                    pressed: true,
+                    pressed: false,
                     handler: addModuleInfo
    }, {
                     xtype: 'tbspacer',

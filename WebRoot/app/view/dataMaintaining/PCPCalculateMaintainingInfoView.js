@@ -202,7 +202,15 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
         Ext.apply(me, {
         	layout: 'border',
             border: false,
-            tbar:[wellListComb
+            tbar:[{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	refreshPCPCalculateMaintainingData();
+                }
+    		},'-',wellListComb
     			,"-",{
                 xtype: 'datefield',
                 anchor: '100%',
@@ -403,7 +411,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 xtype: 'button',
                 text: cosog.string.search,
                 iconCls: 'search',
-                pressed: true,
+                pressed: false,
                 hidden:false,
                 handler: function (v, o) {
                 	var activeId = Ext.getCmp("PCPCalculateMaintainingTabPanel").getActiveTab().id;
@@ -472,7 +480,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 xtype: 'button',
                 text: '修改数据计算',
                 id:'PCPCalculateMaintainingUpdateDataBtn',
-                pressed: true,
+                pressed: false,
                 iconCls: 'edit',
                 handler: function (v, o) {
                 	pcpRPMCalculateMaintainingHandsontableHelper.saveData();
@@ -480,7 +488,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '关联数据计算',
-                pressed: true,
+                pressed: false,
                 iconCls: 'save',
                 id:'PCPCalculateMaintainingLinkedDataBtn',
                 handler: function (v, o) {
@@ -583,7 +591,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '导出请求数据',
-                pressed: true,
+                pressed: false,
                 hidden: false,
                 iconCls: 'export',
                 id:'PCPCalculateMaintainingExportDataBtn',
@@ -604,7 +612,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
                 xtype: 'button',
                 text: '重新汇总',
                 id:'PCPCalculateMaintainingReTotalBtn',
-                pressed: true,
+                pressed: false,
                 hidden:true,
                 iconCls: 'edit',
                 handler: function (v, o) {
@@ -613,7 +621,7 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
             },"-",{
                 xtype: 'button',
                 text: '导出请求数据',
-                pressed: true,
+                pressed: false,
                 hidden: true,
                 iconCls: 'export',
                 id:'PCPTotalCalculateMaintainingExportDataBtn',
@@ -691,6 +699,13 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     						Ext.getCmp("PCPCalculateMaintainingCalculateSignComBox_Id").show();
     						Ext.getCmp("PCPCalculateMaintainingReTotalBtn").hide();
     						Ext.getCmp("PCPTotalCalculateMaintainingExportDataBtn").hide();
+    						
+    						Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').show();
+    						Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').show();
+    						Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').show();
+    						Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').show();
+    						Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').show();
+    						Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').show();
     					}else if(newCard.id=="PCPTotalCalculateMaintainingPanel"){
     						Ext.getCmp("PCPCalculateMaintainingUpdateDataBtn").hide();
     						Ext.getCmp("PCPCalculateMaintainingLinkedDataBtn").hide();
@@ -698,13 +713,15 @@ Ext.define("AP.view.dataMaintaining.PCPCalculateMaintainingInfoView", {
     						Ext.getCmp("PCPCalculateMaintainingCalculateSignComBox_Id").hide();
     						Ext.getCmp("PCPCalculateMaintainingReTotalBtn").show();
     						Ext.getCmp("PCPTotalCalculateMaintainingExportDataBtn").show();
-    						var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-    			            if (isNotVal(gridPanel)) {
-    			            	gridPanel.getStore().loadPage(1);
-    			            }else{
-    			            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
-    			            }
+    						
+    						Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').hide();
+    						Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').hide();
+    						Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').hide();
+    						Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').hide();
+    						Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').hide();
+    						Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').hide();
     					}
+    					refreshPCPCalculateMaintainingData();
     				}
     			}
             }]
@@ -1021,4 +1038,53 @@ function ReTotalRPMData(){
     }else {
         Ext.Msg.alert(cosog.string.deleteCommand, cosog.string.checkOne);
     }
+}
+
+function resetPCPCalculateMaintainingQueryParams(){
+	Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingWellListComBox_Id').setRawValue('');
+	Ext.getCmp('PCPCalculateMaintainingStartDate_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingStartDate_Id').setRawValue('');
+	Ext.getCmp('PCPCalculateMaintainingStartTime_Hour_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingStartTime_Minute_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingStartTime_Second_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingEndDate_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingEndDate_Id').setRawValue('');
+	Ext.getCmp('PCPCalculateMaintainingEndTime_Hour_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingEndTime_Minute_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingEndTime_Second_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').setValue('');
+	Ext.getCmp('PCPCalculateMaintainingCalculateSignComBox_Id').setRawValue('');
+}
+
+function refreshPCPCalculateMaintainingData(){
+	resetPCPCalculateMaintainingQueryParams();
+	var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
+	if (isNotVal(gridPanel)) {
+		gridPanel.getStore().load();
+	}else{
+		Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
+	}
+	var secondTabPanel = Ext.getCmp("PCPCalculateMaintainingTabPanel");
+	var secondActiveId = secondTabPanel.getActiveTab().id;
+	if(secondActiveId=="PCPCalculateMaintainingPanel"){
+		var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
+		if (isNotVal(bbar)) {
+			if(bbar.getStore().isEmptyStore){
+				var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+				bbar.setStore(PCPCalculateMaintainingDataStore);
+			}else{
+				bbar.getStore().loadPage(1);
+			}
+		}else{
+			Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
+		}
+	}else if(secondActiveId=="PCPTotalCalculateMaintainingPanel"){
+		var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
+        if (isNotVal(gridPanel)) {
+        	gridPanel.getStore().loadPage(1);
+        }else{
+        	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
+        }
+	}
 }

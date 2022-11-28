@@ -22,7 +22,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolAddrMappingConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolTreeInfoStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '添加协议',
                     iconCls: 'add',
@@ -129,10 +142,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolConfigInfoView', {
 });
 
 function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classes,code){
+	Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
 			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigPanel_Id").setTitle(protocolName);
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolConfigAddrMappingItemsHandsontableHelper==null || protocolConfigAddrMappingItemsHandsontableHelper.hot==undefined){
@@ -190,6 +205,7 @@ function CreateModbusProtocolAddrMappingItemsConfigInfoTable(protocolName,classe
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAddrMappingItemsConfigTabPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

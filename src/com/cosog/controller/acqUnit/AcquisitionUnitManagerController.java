@@ -221,7 +221,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
 		Gson gson = new Gson();
 		String fileName="modbus.json";
-		String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
+		String path=stringManagerUtils.getFilePath(fileName,"protocol/");
 		PrintWriter out = response.getWriter();
 		try {
 			String name = ParamUtils.getParameter(request, "modbusProtocol.name");
@@ -1506,7 +1506,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		ModbusDriverSaveData modbusDriverSaveData=gson.fromJson(data, type);
 		if(modbusDriverSaveData!=null){
 			modbusDriverSaveData.dataFiltering();
-			String path=stringManagerUtils.getFilePath(fileName,"protocolConfig/");
+			String path=stringManagerUtils.getFilePath(fileName,"protocol/");
 			
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
 			if(modbusProtocolConfig==null){

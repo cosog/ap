@@ -25,7 +25,7 @@ Ext.define("AP.view.orgAndUser.UserOrgChangeWindow", {
                 text: '迁移',
                 iconCls: 'move',
                 style: 'margin-right: 15px;margin-bottom: 5px',
-                pressed: true,
+                pressed: false,
                 handler: function () {
                 	var selectedUser=Ext.getCmp("UserOrgChangeUserListGridPanel_Id").getSelectionModel().getSelection();
                 	var selectedOrg=Ext.getCmp("UserOrgChangeOrgListTreePanel_Id").getSelectionModel().getSelection();

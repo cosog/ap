@@ -77,6 +77,15 @@ Ext.define('AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore', {
                 panel.add(gridPanel);
             }
             gridPanel.getSelectionModel().deselectAll(true);
+            
+            var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id');
+            if(startDate.rawValue==''||null==startDate.rawValue){
+            	startDate.setValue(get_rawData.startDate);
+            }
+            var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id');
+            if(endDate.rawValue==''||null==endDate.rawValue){
+            	endDate.setValue(get_rawData.endDate);
+            }
         },
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();

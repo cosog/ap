@@ -601,63 +601,9 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var tabPanel = Ext.getCmp("CalculateMaintainingTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="RPCCalculateMaintainingInfoPanel_Id"){
-			var gridPanel = Ext.getCmp("RPCCalculateMaintainingWellListGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
-			}else{
-				Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore');
-			}
-			var secondTabPanel = Ext.getCmp("RPCCalculateMaintainingTabPanel");
-			var secondActiveId = secondTabPanel.getActiveTab().id;
-			if(secondActiveId=="RPCCalculateMaintainingPanel"){
-				var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
-				if (isNotVal(bbar)) {
-					if(bbar.getStore().isEmptyStore){
-						var RPCCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-						bbar.setStore(RPCCalculateMaintainingDataStore);
-					}else{
-						bbar.getStore().loadPage(1);
-					}
-				}else{
-					Ext.create('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore');
-				}
-			}else if(secondActiveId=="RPCTotalCalculateMaintainingPanel"){
-				var gridPanel = Ext.getCmp("RPCTotalCalculateMaintainingDataGridPanel_Id");
-	            if (isNotVal(gridPanel)) {
-	            	gridPanel.getStore().loadPage(1);
-	            }else{
-	            	Ext.create("AP.store.dataMaintaining.RPCTotalCalculateMaintainingDataStore");
-	            }
-			}
+			refreshRPCCalculateMaintainingData();
 		}else if(activeId=="PCPCalculateMaintainingInfoPanel_Id"){
-			var gridPanel = Ext.getCmp("PCPCalculateMaintainingWellListGridPanel_Id");
-			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
-			}else{
-				Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore');
-			}
-			var secondTabPanel = Ext.getCmp("PCPCalculateMaintainingTabPanel");
-			var secondActiveId = secondTabPanel.getActiveTab().id;
-			if(secondActiveId=="PCPCalculateMaintainingPanel"){
-				var bbar=Ext.getCmp("PCPFESDiagramCalculateMaintainingBbar");
-				if (isNotVal(bbar)) {
-					if(bbar.getStore().isEmptyStore){
-						var PCPCalculateMaintainingDataStore=Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-						bbar.setStore(PCPCalculateMaintainingDataStore);
-					}else{
-						bbar.getStore().loadPage(1);
-					}
-				}else{
-					Ext.create('AP.store.dataMaintaining.PCPCalculateMaintainingDataStore');
-				}
-			}else if(secondActiveId=="PCPTotalCalculateMaintainingPanel"){
-				var gridPanel = Ext.getCmp("PCPTotalCalculateMaintainingDataGridPanel_Id");
-	            if (isNotVal(gridPanel)) {
-	            	gridPanel.getStore().loadPage(1);
-	            }else{
-	            	Ext.create("AP.store.dataMaintaining.PCPTotalCalculateMaintainingDataStore");
-	            }
-			}
+			refreshPCPCalculateMaintainingData();
 		}
 	}
 	if(module_Code != "DeviceRealTimeMonitoring"){

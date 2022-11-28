@@ -93,7 +93,15 @@ Ext.define("AP.view.well.UpstreamAndDownstreamInteractionInfoView", {
                     	xtype: 'textfield',
                         value: -1,
                         hidden: true
-                     },rpcDeviceCombo]
+                     },{
+                         xtype: 'button',
+                         text: cosog.string.refresh,
+                         iconCls: 'note-refresh',
+                         hidden:false,
+                         handler: function (v, o) {
+                        	 Ext.getCmp("UpstreamAndDownstreamInteractionDeviceListGridPanel_Id").getStore().loadPage(1);
+                         }
+             		},'-',rpcDeviceCombo]
                 }, {
                 	
                     region: 'center',

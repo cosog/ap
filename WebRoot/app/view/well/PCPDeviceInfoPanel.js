@@ -88,7 +88,15 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                 xtype: 'textfield',
                 value: 0,
                 hidden: true
-            },pcpDeviceCombo,'-',{
+            },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	CreateAndLoadPCPDeviceInfoTable();
+                }
+    		},'-',pcpDeviceCombo,'-',{
                 xtype: 'button',
                 text: cosog.string.search,
                 iconCls: 'search',

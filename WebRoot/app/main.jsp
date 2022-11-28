@@ -73,7 +73,7 @@
 	<!-- 加载效果 -->
 	<div id="loading_div_id">
 		<div class="loading-indicator">
-			<img src="<%=path%>/images/large-loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">正在加载前台UI ...</span>
+			<img src="<%=path%>/images/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;" /> <span id="loading-msg">正在加载前台UI ...</span>
 		</div>
 	</div>
 	<script type="text/javascript"> 

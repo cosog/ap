@@ -21,6 +21,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore', {
     },
     listeners: {
         load: function (store, options, eOpts) {
+        	Ext.getCmp("RPCCalculateMaintainingPanel").getEl().unmask();
         	var get_rawData = store.proxy.reader.rawData;
         	var bbar=Ext.getCmp("RPCFESDiagramCalculateMaintainingBbar");
 			if (isNotVal(bbar)) {
@@ -73,6 +74,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore', {
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
+            Ext.getCmp("RPCCalculateMaintainingPanel").el.mask(cosog.string.updatewait).show();
         },
         datachanged: function (v, o) {
             onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

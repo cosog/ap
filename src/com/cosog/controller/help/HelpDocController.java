@@ -20,7 +20,7 @@ public class HelpDocController extends BaseController{
 	@RequestMapping("/getHelpDocHtml")
 	public String getHelpDocHtml() throws Exception {
 		StringManagerUtils stringManagerUtils=new StringManagerUtils();
-		String path=stringManagerUtils.getFilePath("help.md","doc/");
+		String path=stringManagerUtils.getFilePath("help.md","readme/");
 		MarkdownEntity html = MarkDown2HtmlWrapper.ofFile(path);
 		String fileContent=html.toString();
 		response.setContentType("application/json;charset=utf-8");

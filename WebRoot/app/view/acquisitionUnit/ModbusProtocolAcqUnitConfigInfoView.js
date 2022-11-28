@@ -15,7 +15,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolAcqGroupConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolAcqUnitTreeInfoStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '添加采控单元',
                     iconCls: 'add',
@@ -91,11 +104,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolAcqUnitConfigInfoView', {
 });
 
 function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,type){
+	Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolAcqUnitItemsConfigData',
 		success:function(response) {
-//			Ext.getCmp("DriverItemsConfigTableInfoPanel_Id").setTitle(protocolName+"采控项配置");
+			Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(protocolAcqUnitConfigItemsHandsontableHelper==null || protocolAcqUnitConfigItemsHandsontableHelper.hot==undefined){
 				protocolAcqUnitConfigItemsHandsontableHelper = ProtocolAcqUnitConfigItemsHandsontableHelper.createNew("ModbusProtocolAcqGroupItemsConfigTableInfoDiv_id");
@@ -119,6 +133,7 @@ function CreateProtocolAcqUnitItemsConfigInfoTable(protocolName,classes,code,typ
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolAcqGroupItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

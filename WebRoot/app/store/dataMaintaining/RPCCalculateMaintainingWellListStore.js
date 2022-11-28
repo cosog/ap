@@ -102,19 +102,11 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingWellListStore', {
         beforeload: function (store, options) {
         	var orgId = Ext.getCmp('leftOrg_Id').getValue();
         	var wellName = Ext.getCmp('RPCCalculateMaintainingWellListComBox_Id').getValue();
-        	
-        	var startDate=Ext.getCmp('RPCCalculateMaintainingStartDate_Id').rawValue;
-            var endDate=Ext.getCmp('RPCCalculateMaintainingEndDate_Id').rawValue;
-            var calculateSign=Ext.getCmp('RPCCalculateMaintainingCalculateSignComBox_Id').getValue();
-        	
         	var deviceType=0;
             var calculateType=1;//1-抽油机井诊断计产 2-螺杆泵井诊断计产 3-抽油机井汇总计算  4-螺杆泵井汇总计算 5-电参反演地面功图计算
             var new_params = {
             		orgId: orgId,
             		wellName: wellName,
-                    startDate:startDate,
-                    endDate:endDate,
-                    calculateSign:calculateSign,
                     deviceType:deviceType,
                     calculateType:calculateType
                 };

@@ -197,7 +197,36 @@ Ext.define('AP.view.log.DeviceOperationLogInfoView', {
                 xtype: 'textfield',
                 value: '',
                 hidden: true
-            },deviceTypeCombo,'-',deviceCombo,'-',operationTypeCombo,'-',{
+            },{
+                xtype: 'button',
+                text: cosog.string.refresh,
+                iconCls: 'note-refresh',
+                hidden:false,
+                handler: function (v, o) {
+                	Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogDeviceTypeListComb_Id').setRawValue('');
+                	Ext.getCmp('DeviceOperationLogDeviceListComb_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogDeviceListComb_Id').setRawValue('');
+                	Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogOperationTypeListComb_Id').setRawValue('');
+                	
+                	Ext.getCmp('DeviceOperationLogQueryStartDate_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogQueryStartDate_Id').setRawValue('');
+                	Ext.getCmp('DeviceOperationLogQueryStartTime_Hour_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogQueryStartTime_Minute_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogQueryStartTime_Second_Id').setValue('');
+                    Ext.getCmp('DeviceOperationLogQueryEndDate_Id').setValue('');
+                    Ext.getCmp('DeviceOperationLogQueryEndDate_Id').setRawValue('');
+                    Ext.getCmp('DeviceOperationLogQueryEndTime_Hour_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogQueryEndTime_Minute_Id').setValue('');
+                	Ext.getCmp('DeviceOperationLogQueryEndTime_Second_Id').setValue('');
+                	
+                	var gridPanel = Ext.getCmp("DeviceOperationLogGridPanel_Id");
+                	if (isNotVal(gridPanel)) {
+                		gridPanel.getStore().loadPage(1);
+                	}
+                }
+    		},'-',deviceTypeCombo,'-',deviceCombo,'-',operationTypeCombo,'-',{
                 xtype: 'datefield',
                 anchor: '100%',
                 fieldLabel: '区间',

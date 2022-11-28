@@ -132,7 +132,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                             xtype: 'button',
                             text: cosog.string.exportExcel,
                             iconCls: 'export',
-//                            pressed: true,
                             hidden:false,
                             handler: function (v, o) {
                             	var orgId = Ext.getCmp('leftOrg_Id').getValue();
@@ -512,7 +511,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         xtype: 'button',
                         text: cosog.string.exportExcel,
                         iconCls: 'export',
-//                        pressed: true,
                         id:'RPCHistoryDiagramOverlayExportBtn_Id',
                         hidden:true,
                         handler: function (v, o) {
@@ -577,7 +575,6 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         xtype: 'button',
                         text: cosog.string.exportExcel,
                         iconCls: 'export',
-//                        pressed: true,
                         id:'RPCHistoryDataExportBtn_Id',
                         hidden:false,
                         handler: function (v, o) {

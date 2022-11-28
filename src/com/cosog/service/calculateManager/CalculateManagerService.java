@@ -86,13 +86,13 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getWellList(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getWellList(String orgId, String wellName, Page pager,String wellType,String calculateSign,String calculateType)
 			throws Exception {
 		String json="";
 		if("1".equals(calculateType)||"2".equals(calculateType)||"3".equals(calculateType)||"4".equals(calculateType)){
-			json=this.getDiagnoseAndProdCalculateWellListData(orgId, wellName, pager, wellType, startDate, endDate, calculateSign, calculateType);
+			json=this.getDiagnoseAndProdCalculateWellListData(orgId, wellName, pager, wellType,calculateSign, calculateType);
 		}else if("5".equals(calculateType)){//电参反演地面功图
-			json=this.getElecInverCalculateWellListData(orgId, wellName, pager, wellType, startDate, endDate, calculateSign, calculateType);
+			json=this.getElecInverCalculateWellListData(orgId, wellName, pager, wellType,calculateSign, calculateType);
 		}
 		
 		return json;
@@ -434,7 +434,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getDiagnoseAndProdCalculateWellListData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getDiagnoseAndProdCalculateWellListData(String orgId, String wellName, Page pager,String wellType,String calculateSign,String calculateType)
 			throws Exception {
 		String columns= "";
 		String sql="";
@@ -443,8 +443,6 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		String tableName="tbl_rpc_diagram_latest";
 		String deviceTableName="tbl_rpcdevice";
 		StringBuffer result_json = new StringBuffer();
-		ConfigFile configFile=Config.getInstance().configFile;
-		
 		if("1".equals(calculateType)){
 			tableName="tbl_rpcacqdata_latest";
 			deviceTableName="tbl_rpcdevice";
@@ -452,20 +450,14 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			tableName="tbl_pcpacqdata_latest";
 			deviceTableName="tbl_pcpdevice";
 		}
-		
 		columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
 				+ "{ \"header\":\"井名\",\"dataIndex\":\"wellName\",flex:3 ,children:[] },"
 				+ "{ \"header\":\"采集时间\",\"dataIndex\":\"acqTime\",flex:5,width:150,children:[] }"
 				+ "]";
-		
-		
-		
-		sql="select t.id,well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus "
+		sql="select well.id,well.wellname,to_char(t.acqtime,'yyyy-mm-dd hh24:mi:ss') as acqtime,t.resultstatus "
 				+ " from "+tableName+" t,"+deviceTableName+" well "
 				+ " where t.wellid=well.id  and well.orgid in("+orgId+") ";
-		
-		
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  well.wellName = '" + wellName.trim() + "' ";
 		}
@@ -608,7 +600,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		return json;
 	}
 	
-	public String getElecInverCalculateWellListData(String orgId, String wellName, Page pager,String wellType,String startDate,String endDate,String calculateSign,String calculateType)
+	public String getElecInverCalculateWellListData(String orgId, String wellName, Page pager,String wellType,String calculateSign,String calculateType)
 			throws Exception {
 		
 		String sql="";
@@ -625,8 +617,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 			+ "t.offsetAngleOfCrankPS,t.surfaceSystemEfficiency,t.FS_LeftPercent,t.FS_RightPercent,wattAngle,"
 			+ "t.filterTime_Watt,t.filterTime_I,filterTime_RPM,"
 			+ "t.filterTime_FSDiagram,t.filterTime_FSDiagram_L,t.filterTime_FSDiagram_R"
-			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") "
-			+ " and t.acqTime between to_date('"+startDate+"','yyyy-mm-dd') and to_date('"+endDate+"','yyyy-mm-dd')+1";
+			+ " from viw_rpc_calculatemain_elec t where t.orgid in("+orgId+") ";
 		if(StringManagerUtils.isNotNull(wellName)){
 			sql+=" and  t.wellName = '" + wellName.trim() + "' ";
 		}
@@ -1316,7 +1307,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			
@@ -1385,7 +1376,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 		int totals=this.getTotalCountRows(sql);
 		List<?> list = this.findCallSql(finalSql);
 		
-		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"columns\":"+columns+",\"totalRoot\":[");
+		result_json.append("{\"success\":true,\"totalCount\":"+totals+",\"startDate\":\""+startDate+"\",\"endDate\":\""+endDate+"\",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
 			

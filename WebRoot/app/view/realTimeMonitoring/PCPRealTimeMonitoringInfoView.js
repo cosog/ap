@@ -131,7 +131,6 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                          	xtype: 'button',
                             text:'查看历史',
                             tooltip:'点击按钮或者双击表格，查看历史数据',
-//                            pressed: true,
                             handler: function (v, o) {
                             	var selectRow= Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").getValue();
                         		var gridPanel=Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");

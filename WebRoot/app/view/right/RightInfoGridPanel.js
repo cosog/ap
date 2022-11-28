@@ -23,7 +23,7 @@ Ext.define('AP.view.right.RightInfoGridPanel', {
                 xtype: 'button',
                 name: 'rightNameBtn_Id',
                 text: '检索',
-                pressed: true,
+                pressed: false,
                 text_align: 'center',
                 width: 50,
                 iconCls: 'search',

@@ -17,7 +17,20 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
                     xtype: 'textfield',
                     value: 0,
                     hidden: true
-                },'->',{
+                },{
+                    xtype: 'button',
+                    text: cosog.string.refresh,
+                    iconCls: 'note-refresh',
+                    hidden:false,
+                    handler: function (v, o) {
+                    	var treeGridPanel = Ext.getCmp("ModbusProtocolDisplayUnitConfigTreeGridPanel_Id");
+                        if (isNotVal(treeGridPanel)) {
+                        	treeGridPanel.getStore().load();
+                        }else{
+                        	Ext.create('AP.store.acquisitionUnit.ModbusProtocolDisplayUnitTreeInfoStore');
+                        }
+                    }
+        		},'->',{
         			xtype: 'button',
                     text: '添加显示单元',
                     iconCls: 'add',
@@ -127,10 +140,12 @@ Ext.define('AP.view.acquisitionUnit.ModbusProtocolDisplayUnitConfigInfoView', {
 });
 
 function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
+	Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitAcqItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
 				Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").setTitle(unitName+'/采集项配置');
@@ -164,6 +179,7 @@ function CreateProtocolDisplayUnitAcqItemsConfigInfoTable(protocolName,classes,c
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolDisplayUnitAcqItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -279,10 +295,12 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,unitId,unitName){
+	Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCalItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
 				Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").setTitle(unitName+'/计算项配置');
@@ -313,6 +331,7 @@ function CreateProtocolDisplayUnitCalItemsConfigInfoTable(deviceType,classes,uni
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolDisplayUnitCalItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -426,10 +445,12 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 };
 
 function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,code,unitId,acqUnitId,unitName){
+	Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/acquisitionUnitManagerController/getProtocolDisplayUnitCtrlItemsConfigData',
 		success:function(response) {
+			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(classes==2){
 				Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").setTitle(unitName+'/控制项配置');
@@ -459,6 +480,7 @@ function CreateProtocolDisplayUnitCtrlItemsConfigInfoTable(protocolName,classes,
 			}
 		},
 		failure:function(){
+			Ext.getCmp("ModbusProtocolDisplayUnitCtrlItemsConfigTableInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

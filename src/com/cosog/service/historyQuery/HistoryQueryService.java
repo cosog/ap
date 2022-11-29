@@ -2542,14 +2542,18 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					if(!jedis.exists(deviceInfoKey.getBytes())){
 						MemoryDataManagerTask.loadRPCDeviceInfo(null,0,"update");
 					}
-					RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-					displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode()+"";
+					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
+						RPCDeviceInfo rpcDeviceInfo=(RPCDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+						displayInstanceCode=rpcDeviceInfo.getDisplayInstanceCode()+"";
+					}
 				}else{
 					if(!jedis.exists(deviceInfoKey.getBytes())){
 						MemoryDataManagerTask.loadPCPDeviceInfo(null,0,"update");
 					}
-					PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
-					displayInstanceCode=pcpDeviceInfo.getDisplayInstanceCode()+"";
+					if(jedis.hexists(deviceInfoKey.getBytes(), deviceId.getBytes())){
+						PCPDeviceInfo pcpDeviceInfo=(PCPDeviceInfo)SerializeObjectUnils.unserizlize(jedis.hget(deviceInfoKey.getBytes(), deviceId.getBytes()));
+						displayInstanceCode=pcpDeviceInfo.getDisplayInstanceCode()+"";
+					}
 				}
 				
 				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), displayInstanceCode.getBytes())){

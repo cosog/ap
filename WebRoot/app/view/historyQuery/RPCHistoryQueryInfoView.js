@@ -128,7 +128,38 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                             xtype: 'textfield',
                             value: '',
                             hidden: true
-                        },rpcDeviceCombo,'-', {
+                        },{
+                            xtype: 'button',
+                            text: cosog.string.refresh,
+                            iconCls: 'note-refresh',
+                            hidden:false,
+                            handler: function (v, o) {
+                            	var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
+                            	var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
+                    			if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryFESdiagramResultStat(true);
+                    			}else if(statTabActiveId=="RPCHistoryQueryStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryCommStatusStat(true);
+                    			}else if(statTabActiveId=="RPCHistoryQueryRunStatusStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryRunStatusStat(true);
+                    			}else if(statTabActiveId=="RPCHistoryQueryDeviceTypeStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryDeviceTypeStat(true);
+                    			}
+                    			
+                    			if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
+                    				Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
+                    			}else{
+                    				Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').setValue('');
+                    				Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').setRawValue('');
+                    			}
+                    			var gridPanel = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id");
+                    			if (isNotVal(gridPanel)) {
+                    				gridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.historyQuery.RPCHistoryQueryWellListStore');
+                    			}
+                    		}
+                		},'-',rpcDeviceCombo,'-', {
                             xtype: 'button',
                             text: cosog.string.exportExcel,
                             iconCls: 'export',

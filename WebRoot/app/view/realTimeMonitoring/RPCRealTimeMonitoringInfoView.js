@@ -115,7 +115,33 @@ Ext.define("AP.view.realTimeMonitoring.RPCRealTimeMonitoringInfoView", {
                              xtype: 'textfield',
                              value: '',
                              hidden: true
-                         },rpcDeviceCombo,'-', {
+                         },{
+                             xtype: 'button',
+                             text: cosog.string.refresh,
+                             iconCls: 'note-refresh',
+                             hidden:false,
+                             handler: function (v, o) {
+                     			var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
+                    			if(statTabActiveId=="RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
+                    				loadAndInitFESdiagramResultStat(true);
+                    			}else if(statTabActiveId=="RPCRealTimeMonitoringStatGraphPanel_Id"){
+                    				loadAndInitCommStatusStat(true);
+                    			}else if(statTabActiveId=="RPCRealTimeMonitoringRunStatusStatGraphPanel_Id"){
+                    				loadAndInitRunStatusStat(true);
+                    			}else if(statTabActiveId=="RPCRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+                    				loadAndInitDeviceTypeStat(true);
+                    			}
+                    			Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setValue('');
+                    			Ext.getCmp('RealTimeMonitoringRPCDeviceListComb_Id').setRawValue('');
+                    			var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
+                    			if (isNotVal(gridPanel)) {
+                    				gridPanel.getSelectionModel().deselectAll(true);
+                    				gridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
+                    			}
+                    		}
+                 		},'-',rpcDeviceCombo,'-', {
                              xtype: 'button',
                              text: cosog.string.exportExcel,
                              iconCls: 'export',

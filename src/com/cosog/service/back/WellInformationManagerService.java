@@ -189,6 +189,63 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		return result_json.toString();
 	}
 	
+	public String loadPumpingManufacturerComboxList(String manufacturer) {
+		StringBuffer result_json = new StringBuffer();
+		String sql = " select distinct(t.manufacturer) from tbl_pumpingmodel t where 1=1";
+		
+		if (StringManagerUtils.isNotNull(manufacturer)) {
+			sql += " and t.manufacturer like '%"+manufacturer+"%'";
+		}
+		sql += " order by t.manufacturer";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+		String get_key = "";
+		String get_val = "";
+		if (null != list && list.size() > 0) {
+			for (Object o : list) {
+				get_key = o.toString();
+				get_val = get_key;
+				result_json.append("{boxkey:\"" + get_key + "\",");
+				result_json.append("boxval:\"" + get_val + "\"},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public String loadPumpingModelComboxList(String manufacturer,String model) {
+		StringBuffer result_json = new StringBuffer();
+		String sql = "select t.model from tbl_pumpingmodel t where 1=1";
+		
+		if (StringManagerUtils.isNotNull(manufacturer)) {
+			sql += " and t.manufacturer like '%"+manufacturer+"%'";
+		}
+		if (StringManagerUtils.isNotNull(model)) {
+			sql += " and t.model like '%"+model+"%'";
+		}
+		sql += " order by t.manufacturer,t.model";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"totals\":"+list.size()+",\"list\":[{boxkey:\"\",boxval:\"选择全部\"},");
+		String get_key = "";
+		String get_val = "";
+		if (null != list && list.size() > 0) {
+			for (Object o : list) {
+				get_key = o.toString();
+				get_val = get_key;
+				result_json.append("{boxkey:\"" + get_key + "\",");
+				result_json.append("boxval:\"" + get_val + "\"},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
 	public String getDeviceOrgChangeDeviceList(Page pager,String orgId,String wellName,String deviceTypeStr) throws Exception {
 		//String orgIds = this.getUserOrgIds(orgId);
 		StringBuffer result_json = new StringBuffer();
@@ -2028,33 +2085,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String doPumpingModelShow(Map map,Page pager,String deviceType,int recordCount) throws SQLException, IOException {
+	public String doPumpingModelShow(String manufacturer,String model) throws SQLException, IOException {
 		StringBuffer result_json = new StringBuffer();
 		String ddicName="pumpingDevice_PumpingModelManager";
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
 				+ " t.structuralunbalance,t.balanceweight"
-//				+ " t.prtf "
-				+ " from tbl_pumpingmodel t"
-				+ " order by t.id,t.manufacturer,t.model";
-		
-		String json = "";
-		
+				+ " from tbl_pumpingmodel t where 1=1";
+		if (StringManagerUtils.isNotNull(manufacturer)) {
+			sql += " and t.manufacturer = '"+manufacturer+"'";
+		}
+		if (StringManagerUtils.isNotNull(model)) {
+			sql += " and t.model = '"+model+"'";
+		}
+		sql+= " order by t.id,t.manufacturer,t.model";
 		List<?> list = this.findCallSql(sql);
-		
 		result_json.append("{\"success\":true,\"totalCount\":"+list.size()+",\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
-//			String prtf="[]";
-//			if(obj[11]!=null){
-//				SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[11]);
-//				CLOB realClob = (CLOB) proxy.getWrappedClob(); 
-//				prtf=StringManagerUtils.CLOBtoString(realClob);
-//			}
-//			if(!StringManagerUtils.isNotNull(prtf)){
-//				prtf="[]";
-//			}
 			result_json.append("{\"id\":\""+obj[0]+"\",");
 			result_json.append("\"manufacturer\":\""+obj[1]+"\",");
 			result_json.append("\"model\":\""+obj[2]+"\",");
@@ -2071,8 +2120,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]}");
-		json=result_json.toString().replaceAll("null", "");
-		return json;
+		return result_json.toString().replaceAll("null", "");
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -2100,11 +2148,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,t.balanceweight "
 				+ " from tbl_pumpingmodel t"
 				+ " order by t.id,t.manufacturer,t.model";
-		
-		String json = "";
-		
 		List<?> list = this.findCallSql(sql);
-		
 		result_json.append("[");
 		for(int i=0;i<list.size();i++){
 			Object[] obj = (Object[]) list.get(i);
@@ -2124,11 +2168,10 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.deleteCharAt(result_json.length() - 1);
 		}
 		result_json.append("]");
-		json=result_json.toString().replaceAll("null", "");
-		return json;
+		return result_json.toString().replaceAll("null", "");
 	}
 	
-	public boolean exportPumpingModelData(HttpServletResponse response,String fileName,String title,String head,String field,Map map,Page pager,String deviceType,int recordCount) {
+	public boolean exportPumpingModelData(HttpServletResponse response,String fileName,String title,String head,String field,String manufacturer,String model) {
 		try{
 			StringBuffer result_json = new StringBuffer();
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
@@ -2144,8 +2187,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		    sheetDataList.add(headRow);
 			String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
 					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,t.structuralunbalance,t.balanceweight "
-					+ " from tbl_pumpingmodel t"
-					+ " order by t.id,t.manufacturer,t.model";
+					+ " from tbl_pumpingmodel t where 1=1";
+			if (StringManagerUtils.isNotNull(manufacturer)) {
+				sql += " and t.manufacturer = '"+manufacturer+"'";
+			}
+			if (StringManagerUtils.isNotNull(model)) {
+				sql += " and t.model = '"+model+"'";
+			}
+			sql+= " order by t.id,t.manufacturer,t.model";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;

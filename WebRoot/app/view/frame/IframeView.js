@@ -12,17 +12,17 @@ Ext.define('AP.view.frame.IframeView', {
     autoScroll: true,
     animate: true,
     initComponent: function () {
-        var moduleTree = this;
+        var orgTree = this;
         var iframe_store;
         if (userSyncOrAsync == "1") {
             iframe_store = Ext.create("AP.store.frame.IframeStore");
         } else {
             iframe_store = Ext.create("AP.store.frame.IframeStore");
         }
-        Ext.apply(moduleTree, {
+        Ext.apply(orgTree, {
             store: iframe_store,
             tbar: {
-                hidden: true,
+                hidden: false,
                 items: [{
                     iconCls: 'icon-collapse-all', // 收缩按钮
                     text: '收缩',
@@ -30,7 +30,7 @@ Ext.define('AP.view.frame.IframeView', {
                         text: '收缩全部'
                     },
                     handler: function () {
-                        moduleTree.collapseAll();
+                        orgTree.collapseAll();
                     }
                 }, '-', {
                     iconCls: 'icon-expand-all', // 展开按钮
@@ -39,8 +39,17 @@ Ext.define('AP.view.frame.IframeView', {
                     },
                     text: '展开',
                     handler: function () {
-                        moduleTree.expandAll();
+                        orgTree.expandAll();
                     }
+                }, '-', {
+	                iconCls: 'note-refresh',
+//	                text: cosog.string.refresh,
+	                tooltip: {
+	                    text: cosog.string.refresh
+	                },
+	                handler: function () {
+	                	orgTree.getStore().load();
+	                }
                 }, {
                     id: 'leftOrg_Id',
                     xtype: 'textfield',

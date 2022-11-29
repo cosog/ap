@@ -15,16 +15,11 @@ Ext.define('AP.view.frame.MainIframeView', {
 			initComponent : function() {
 				var moduleTree = this;
 				var mainIframe_store;
-//				if(userSyncOrAsync=="1"){
-//					mainIframe_store = Ext.create("AP.store.frame.MainIframeStore2");
-//				}else{
-//					mainIframe_store = Ext.create("AP.store.frame.MainIframeStore");
-//				}
 				mainIframe_store = Ext.create("AP.store.frame.MainIframeStore");
 				Ext.apply(moduleTree, {
 							store : mainIframe_store,
 							tbar : {
-								hidden: true,
+								hidden: false,
 								items : [{
 											iconCls : 'icon-collapse-all', // 收缩按钮
 											text : '收缩',
@@ -43,7 +38,16 @@ Ext.define('AP.view.frame.MainIframeView', {
 											handler : function() {
 												moduleTree.expandAll();
 											}
-										}]
+										}, '-', {
+							                iconCls: 'note-refresh',
+//							                text: cosog.string.refresh,
+							                tooltip: {
+							                    text: cosog.string.refresh
+							                },
+							                handler: function () {
+							                	moduleTree.getStore().load();
+							                }
+							         }]
 							}
 
 						});

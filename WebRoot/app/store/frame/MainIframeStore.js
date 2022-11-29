@@ -33,7 +33,7 @@ Ext.define('AP.store.frame.MainIframeStore', {
                             }
                         })).show();
                 	}
-                	tabPanel.setActiveTab(rec.data.id);
+//                	tabPanel.setActiveTab(rec.data.id);
                 	break;
         		}
         	}

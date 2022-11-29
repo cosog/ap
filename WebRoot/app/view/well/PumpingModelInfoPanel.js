@@ -7,7 +7,133 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
     layout: 'fit',
     border: false,
     initComponent: function () {
-        Ext.apply(this, {
+    	var manufacturerCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadPumpingManufacturerComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var manufacturer = Ext.getCmp('pumpingManufacturerListComb_Id').getValue();
+                    var new_params = {
+                        manufacturer: manufacturer
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+
+        var pumpingManufacturerCombo = Ext.create(
+            'Ext.form.field.ComboBox', {
+                fieldLabel: '厂家',
+                id: "pumpingManufacturerListComb_Id",
+                labelWidth: 35,
+                width: 185,
+                labelAlign: 'left',
+                queryMode: 'remote',
+                typeAhead: true,
+                store: manufacturerCombStore,
+                autoSelect: false,
+                editable: true,
+                triggerAction: 'all',
+                displayField: "boxval",
+                valueField: "boxkey",
+                pageSize: comboxPagingStatus,
+                minChars: 0,
+                emptyText: cosog.string.all,
+                blankText: cosog.string.all,
+                listeners: {
+                    expand: function (sm, selections) {
+                    	pumpingManufacturerCombo.getStore().loadPage(1);
+                    },
+                    select: function (combo, record, index) {
+                    	Ext.getCmp('pumpingModelListComb_Id').setValue('');
+                    	Ext.getCmp('pumpingModelListComb_Id').setRawValue('选择全部');
+                    }
+                }
+            });
+        
+        var modelCombStore = new Ext.data.JsonStore({
+            pageSize: defaultWellComboxSize,
+            fields: [{
+                name: "boxkey",
+                type: "string"
+            }, {
+                name: "boxval",
+                type: "string"
+            }],
+            proxy: {
+                url: context + '/wellInformationManagerController/loadPumpingModelComboxList',
+                type: "ajax",
+                actionMethods: {
+                    read: 'POST'
+                },
+                reader: {
+                    type: 'json',
+                    rootProperty: 'list',
+                    totalProperty: 'totals'
+                }
+            },
+            autoLoad: true,
+            listeners: {
+                beforeload: function (store, options) {
+                    var manufacturer = Ext.getCmp('pumpingManufacturerListComb_Id').getValue();
+                    var model = Ext.getCmp('pumpingModelListComb_Id').getValue();
+                    var new_params = {
+                        manufacturer: manufacturer,
+                        model: model
+                    };
+                    Ext.apply(store.proxy.extraParams, new_params);
+                }
+            }
+        });
+
+        var pumpingModelCombo = Ext.create(
+            'Ext.form.field.ComboBox', {
+                fieldLabel: '型号',
+                id: "pumpingModelListComb_Id",
+                labelWidth: 35,
+                width: 185,
+                labelAlign: 'left',
+                queryMode: 'remote',
+                typeAhead: true,
+                store: modelCombStore,
+                autoSelect: false,
+                editable: true,
+                triggerAction: 'all',
+                displayField: "boxval",
+                valueField: "boxkey",
+                pageSize: comboxPagingStatus,
+                minChars: 0,
+                emptyText: cosog.string.all,
+                blankText: cosog.string.all,
+                listeners: {
+                    expand: function (sm, selections) {
+                    	pumpingModelCombo.getStore().loadPage(1);
+                    },
+                    select: function (combo, record, index) {
+                        
+                    }
+                }
+            });
+    	Ext.apply(this, {
         	items: [{
                 layout: "border",
                 border: false,
@@ -27,34 +153,18 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         value: 0,
                         hidden: true
                     },{
-                        xtype: "combobox",
-                        fieldLabel: '辅件类型',
-                        id: 'PumpingModelTypeComb_Id',
-                        hidden:true,
-                        labelWidth: 60,
-                        width: 170,
-                        labelAlign: 'left',
-                        triggerAction: 'all',
-                        displayField: "boxval",
-                        valueField: "boxkey",
-                        selectOnFocus: true,
-                        forceSelection: true,
-                        value: '',
-                        allowBlank: false,
-                        editable: false,
-                        emptyText: cosog.string.all,
-                        blankText: cosog.string.all,
-                        store: new Ext.data.SimpleStore({
-                            fields: ['boxkey', 'boxval'],
-                            data: [['', '选择全部'], [0, '泵辅件'], [1, '管辅件']]
-                        }),
-                        queryMode: 'local',
-                        listeners: {
-                            select: function (v, o) {
-                                CreateAndLoadPumpingModelInfoTable();
-                            }
+                        xtype: 'button',
+                        text: cosog.string.refresh,
+                        iconCls: 'note-refresh',
+                        hidden:false,
+                        handler: function (v, o) {
+                        	Ext.getCmp('pumpingManufacturerListComb_Id').setValue('');
+                        	Ext.getCmp('pumpingManufacturerListComb_Id').setRawValue('选择全部');
+                        	Ext.getCmp('pumpingModelListComb_Id').setValue('');
+                        	Ext.getCmp('pumpingModelListComb_Id').setRawValue('选择全部');
+                        	CreateAndLoadPumpingModelInfoTable();
                         }
-                    },'-',{
+            		},'-',pumpingManufacturerCombo,'-',pumpingModelCombo,'-',{
                         xtype: 'button',
                         text: cosog.string.search,
                         iconCls: 'search',
@@ -71,7 +181,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                         handler: function (v, o) {
                             var fields = "";
                             var heads = "";
-                            var deviceType = Ext.getCmp('PumpingModelTypeComb_Id').getValue();
+                            var manufacturer = Ext.getCmp('pumpingManufacturerListComb_Id').getValue();
+                            var model = Ext.getCmp('pumpingModelListComb_Id').getValue();
                             var url = context + '/wellInformationManagerController/exportPumpingModelData';
                             for (var i = 0; i < pumpingModelInfoHandsontableHelper.colHeaders.length; i++) {
                                 fields += pumpingModelInfoHandsontableHelper.columns[i].data + ",";
@@ -85,7 +196,8 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                             var fileName='抽油机设备';
                             var title='抽油机设备';
                             var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
-                            + "&orgId=" + leftOrg_Id + "&deviceType=" + deviceType + "&recordCount=10000" 
+                            + "&manufacturer=" + URLencode(URLencode(manufacturer)) 
+                            + "&model=" + URLencode(URLencode(model)) 
                             + "&fileName=" + URLencode(URLencode(fileName)) 
                             + "&title=" + URLencode(URLencode(title));
                             openExcelWindow(url + '?flag=true' + param);
@@ -283,7 +395,10 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
     	}
     	pumpingModelInfoHandsontableHelper=null;
     }
-    var deviceType = Ext.getCmp('PumpingModelTypeComb_Id').getValue();
+    
+    var pumpingManufacturer = Ext.getCmp('pumpingManufacturerListComb_Id').getValue();
+    var pumpingModel = Ext.getCmp('pumpingModelListComb_Id').getValue();
+    
     Ext.getCmp("PumpingModelTablePanel_id").el.mask(cosog.string.updatewait).show();
     Ext.Ajax.request({
         method: 'POST',
@@ -330,8 +445,9 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
             Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
-            deviceType: deviceType,
-            recordCount: 50,
+        	manufacturer: pumpingManufacturer,
+        	model: pumpingModel,
+        	recordCount: 50,
             page: 1,
             limit: 10000
         }

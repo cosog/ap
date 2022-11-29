@@ -118,7 +118,35 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                             xtype: 'textfield',
                             value: '',
                             hidden: true
-                        },pcpDeviceCombo,'-', {
+                        },{
+                            xtype: 'button',
+                            text: cosog.string.refresh,
+                            iconCls: 'note-refresh',
+                            hidden:false,
+                            handler: function (v, o) {
+                            	var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
+                            	var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
+                    			if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryCommStatusStat(true);
+                    			}else if(statTabActiveId=="PCPHistoryQueryRunStatusStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryRunStatusStat(true);
+                    			}else if(statTabActiveId=="PCPHistoryQueryDeviceTypeStatGraphPanel_Id"){
+                    				loadAndInitHistoryQueryDeviceTypeStat(true);
+                    			}
+                    			if(isNotVal(realtimeTurnToHisyorySign)){//如果是实时跳转
+                    				Ext.getCmp("realtimeTurnToHisyorySign_Id").setValue('');
+                    			}else{
+                    				Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setValue('');
+                    				Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').setRawValue('');
+                    			}
+                    			var gridPanel = Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id");
+                    			if (isNotVal(gridPanel)) {
+                    				gridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.historyQuery.PCPHistoryQueryWellListStore');
+                    			}
+                    		}
+                		},'-',pcpDeviceCombo,'-', {
                             xtype: 'button',
                             text: cosog.string.exportExcel,
                             iconCls: 'export',

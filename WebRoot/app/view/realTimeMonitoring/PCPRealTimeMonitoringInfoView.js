@@ -110,7 +110,31 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                              xtype: 'textfield',
                              value: '',
                              hidden: true
-                         },pcpDeviceCombo,'-', {
+                         },{
+                             xtype: 'button',
+                             text: cosog.string.refresh,
+                             iconCls: 'note-refresh',
+                             hidden:false,
+                             handler: function (v, o) {
+                     			var statTabActiveId = Ext.getCmp("PCPRealTimeMonitoringStatTabPanel").getActiveTab().id;
+                    			if(statTabActiveId=="PCPRealTimeMonitoringStatGraphPanel_Id"){
+                    				loadAndInitCommStatusStat(true);
+                    			}else if(statTabActiveId=="PCPRealTimeMonitoringRunStatusStatGraphPanel_Id"){
+                    				loadAndInitRunStatusStat(true);
+                    			}else if(statTabActiveId=="PCPRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
+                    				loadAndInitDeviceTypeStat(true);
+                    			}
+                    			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setValue('');
+                    			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setRawValue('');
+                    			var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
+                    			if (isNotVal(gridPanel)) {
+                    				gridPanel.getSelectionModel().deselectAll(true);
+                    				gridPanel.getStore().load();
+                    			}else{
+                    				Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore');
+                    			}
+                    		}
+                 		},'-',pcpDeviceCombo,'-', {
                              xtype: 'button',
                              text: cosog.string.exportExcel,
                              iconCls: 'export',

@@ -188,6 +188,35 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/loadPumpingManufacturerComboxList")
+	public String loadPumpingManufacturerComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
+		String json = this.wellInformationManagerService.loadPumpingManufacturerComboxList(manufacturer);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadPumpingModelComboxList")
+	public String loadPumpingModelComboxList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
+		String model = ParamUtils.getParameter(request, "model");
+		String json = this.wellInformationManagerService.loadPumpingModelComboxList(manufacturer,model);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/getDeviceOrgChangeDeviceList")
 	public String getDeviceOrgChangeDeviceList() throws Exception {
 		this.pager=new Page("pageForm",request);
@@ -421,13 +450,15 @@ public class WellInformationManagerController extends BaseController {
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
 		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String manufacturer= ParamUtils.getParameter(request, "manufacturer");
+		String model= ParamUtils.getParameter(request, "model");
 		map.put(PagingConstants.PAGE_NO, intPage);
 		map.put(PagingConstants.PAGE_SIZE, pageSize);
 		map.put(PagingConstants.OFFSET, offset);
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		String json = this.wellInformationManagerService.doPumpingModelShow(map, pager,deviceType,recordCount);
+		String json = this.wellInformationManagerService.doPumpingModelShow(manufacturer,model);
 		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
@@ -475,7 +506,8 @@ public class WellInformationManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String manufacturer = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "manufacturer"),"utf-8");
+		String model = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "model"),"utf-8");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
 		String fields = ParamUtils.getParameter(request, "fields");
 		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
@@ -486,7 +518,7 @@ public class WellInformationManagerController extends BaseController {
 		map.put("deviceType", deviceType);
 		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
 		this.pager = new Page("pagerForm", request);
-		boolean bool = this.wellInformationManagerService.exportPumpingModelData(response,fileName,title, heads, fields,map, pager,deviceType,recordCount);
+		boolean bool = this.wellInformationManagerService.exportPumpingModelData(response,fileName,title, heads, fields,manufacturer,model);
 		return null;
 	}
 	

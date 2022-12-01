@@ -29,6 +29,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
             if (!isNotVal(gridPanel)) {
                 var newColumns = Ext.JSON.decode(column);
                 var bbar = new Ext.PagingToolbar({
+                	id:'PCPRealTimeMonitoringListGridPagingToolbar',
                 	store: store,
                 	displayInfo: true,
                 	displayMsg: '共 {2}条'
@@ -55,6 +56,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                     		var deviceName=record.data.wellName;
                     		var deviceId=record.data.id;
                     		var deviceType=1;
+                    		Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(deviceId);
                     		var tabPanel = Ext.getCmp("PCPRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
                     		if(activeId=="PCPRealTimeMonitoringCurveTabPanel_Id"){
@@ -89,7 +91,17 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
                 PCPRealTimeMonitoringInfoDeviceListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
-            	gridPanel.getSelectionModel().select(0, true);
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
+    			gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	if(pcpDeviceRealTimeMonitoringDataHandsontableHelper!=null){
 					if(pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
@@ -98,6 +110,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore', {
 					pcpDeviceRealTimeMonitoringDataHandsontableHelper=null;
 				}
             	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+            	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
             	
             	$("#pcpRealTimeMonitoringCurveContainer").html('');
             	$("#PCPRealTimeMonitoringInfoDataTableInfoContainer").html('');

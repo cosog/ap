@@ -179,6 +179,43 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/getDeviceRealTimeOverviewDataPage")
+	public String getDeviceRealTimeOverviewDataPage() throws Exception {
+		String json = "";
+		int dataPage=1;
+		orgId = ParamUtils.getParameter(request, "orgId");
+		String deviceId = ParamUtils.getParameter(request, "deviceId");
+		deviceName = ParamUtils.getParameter(request, "deviceName");
+		deviceType = ParamUtils.getParameter(request, "deviceType");
+		FESdiagramResultStatValue = ParamUtils.getParameter(request, "FESdiagramResultStatValue");
+		commStatusStatValue = ParamUtils.getParameter(request, "commStatusStatValue");
+		runStatusStatValue = ParamUtils.getParameter(request, "runStatusStatValue");
+		deviceTypeStatValue = ParamUtils.getParameter(request, "deviceTypeStatValue");
+		limit = ParamUtils.getParameter(request, "limit");
+		this.pager = new Page("pagerForm", request);
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		if(StringManagerUtils.stringToInteger(deviceType)==0){
+			dataPage = realTimeMonitoringService.getDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,FESdiagramResultStatValue,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit);
+		}else{
+			dataPage = realTimeMonitoringService.getPCPDeviceRealTimeOverviewDataPage(orgId,deviceId,deviceName,deviceType,commStatusStatValue,runStatusStatValue,deviceTypeStatValue,limit);
+		}
+		json="{\"success\":true,\"dataPage\":"+dataPage+"}";
+		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	//
 	@RequestMapping("/getDeviceRealTimeOverview")
 	public String getDeviceRealTimeOverview() throws Exception {

@@ -14,6 +14,10 @@ Ext.define('AP.store.frame.IframeStore', {
     },
     listeners: {
         load: function (store, options, eOpts) {
+        	if(Ext.getCmp("frame_west")!=undefined){
+        		Ext.getCmp("frame_west").getEl().unmask();
+        	}
+        	
         	var selectresult = [];
         	var selectReeTextRsult = [];
         	for(var i=0;i<store.data.items.length;i++){
@@ -47,6 +51,10 @@ Ext.define('AP.store.frame.IframeStore', {
     		}
         },
         beforeload: function (store, options) {
+        	if(Ext.getCmp("frame_west")!=undefined){
+        		Ext.getCmp("frame_west").el.mask("读取中...").show();
+        	}
+        	
         	orgIframeSelectedRecord=null;
         	var treePanel=Ext.getCmp("IframeView_Id");
         	if(isNotVal(treePanel)){

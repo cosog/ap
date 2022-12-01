@@ -29,6 +29,7 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
             if (!isNotVal(gridPanel)) {
                 var newColumns = Ext.JSON.decode(column);
                 var bbar = new Ext.PagingToolbar({
+                	id:'PCPHistoryQueryDeviceListGridPagingToolbar',
                 	store: store,
                 	displayInfo: true,
                 	displayMsg: '共 {2}条'
@@ -51,11 +52,13 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
                     	itemdblclick: function (view,record,item,index,e,eOpts) {
                     	},
                     	select: function(grid, record, index, eOpts) {
+                    		var deviceId=record.data.id;
                     		Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(index);
                     		Ext.getCmp('PCPHistoryQueryStartDate_Id').setValue('');
                     		Ext.getCmp('PCPHistoryQueryStartDate_Id').setRawValue('');
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setValue('');
                     		Ext.getCmp('PCPHistoryQueryEndDate_Id').setRawValue('');
+                    		Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(deviceId);
                     		var gridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
                             if (isNotVal(gridPanel)) {
                             	gridPanel.getStore().loadPage(1);
@@ -69,10 +72,21 @@ Ext.define('AP.store.historyQuery.PCPHistoryQueryWellListStore', {
                 panel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
-            	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
+    			gridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+            	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
             	var gridPanel = Ext.getCmp("PCPHistoryQueryDataGridPanel_Id");
                 if (isNotVal(gridPanel)) {
                 	gridPanel.getStore().loadPage(1);

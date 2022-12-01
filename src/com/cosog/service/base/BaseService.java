@@ -218,6 +218,26 @@ public class BaseService<T> {
 	public List<?> findCallSql(final String callSql, final Object... values) {
 		return baseDao.findCallSql(callSql, values);
 	}
+	
+	public int getDataPage(int recordId,String sql,int limit){
+		int dataPage=1;
+		int row=0;
+		List<?> list = this.findCallSql(sql);
+		for(int i=0;i<list.size();i++){
+			if(recordId==StringManagerUtils.stringToInteger(list.get(i)+"")){
+				row=i+1;
+				break;
+			}
+		}
+		if(row>0){
+			if(row%limit==0){
+				dataPage=row/limit;
+			}else{
+				dataPage=row/limit+1;
+			}
+		}
+		return dataPage;
+	}
 
 	public String findPageBySqlEntity(String sql, Page pager, Object... values) {
 		List<?> pageList = baseDao.getAllPageBySql(sql.toString(), pager, values);

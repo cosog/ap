@@ -317,6 +317,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var tabPanel = Ext.getCmp("RealTimeMonitoringTabPanel");
 		var activeId = tabPanel.getActiveTab().id;
 		if(activeId=="RPCRealTimeMonitoringInfoPanel_Id"){
+			Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+        	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
 			var statTabActiveId = Ext.getCmp("RPCRealTimeMonitoringStatTabPanel").getActiveTab().id;
 			if(statTabActiveId=="RPCRealTimeMonitoringFESdiagramResultStatGraphPanel_Id"){
 				loadAndInitFESdiagramResultStat(true);
@@ -332,7 +334,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			var gridPanel = Ext.getCmp("RPCRealTimeMonitoringListGridPanel_Id");
 			if (isNotVal(gridPanel)) {
 				gridPanel.getSelectionModel().deselectAll(true);
-				gridPanel.getStore().load();
+				gridPanel.getStore().loadPage(1);
 			}else{
 				Ext.create('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore');
 			}
@@ -350,7 +352,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
 			if (isNotVal(gridPanel)) {
 				gridPanel.getSelectionModel().deselectAll(true);
-				gridPanel.getStore().load();
+				gridPanel.getStore().loadPage(1);
 			}else{
 				Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore');
 			}
@@ -359,6 +361,8 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 		var realtimeTurnToHisyorySign=Ext.getCmp("realtimeTurnToHisyorySign_Id").getValue();
 		var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 		if(activeId=="RPCHistoryQueryInfoPanel_Id"){
+			Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+        	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
 			var statTabActiveId = Ext.getCmp("RPCHistoryQueryStatTabPanel").getActiveTab().id;
 			if(statTabActiveId=="RPCHistoryQueryFESdiagramResultStatGraphPanel_Id"){
 				loadAndInitHistoryQueryFESdiagramResultStat(true);
@@ -378,11 +382,13 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			}
 			var gridPanel = Ext.getCmp("RPCHistoryQueryDeviceListGridPanel_Id");
 			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
+				gridPanel.getStore().loadPage(1);
 			}else{
 				Ext.create('AP.store.historyQuery.RPCHistoryQueryWellListStore');
 			}
 		}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
+			Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+        	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
 			var statTabActiveId = Ext.getCmp("PCPHistoryQueryStatTabPanel").getActiveTab().id;
 			if(statTabActiveId=="PCPHistoryQueryStatGraphPanel_Id"){
 				loadAndInitHistoryQueryCommStatusStat(true);
@@ -399,7 +405,7 @@ refreshPanel=function(leftOrg_Id,secondTab_Code,rec){
 			}
 			var gridPanel = Ext.getCmp("PCPHistoryQueryDeviceListGridPanel_Id");
 			if (isNotVal(gridPanel)) {
-				gridPanel.getStore().load();
+				gridPanel.getStore().loadPage(1);
 			}else{
 				Ext.create('AP.store.historyQuery.PCPHistoryQueryWellListStore');
 			}

@@ -252,6 +252,46 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		return result_json.toString().replaceAll("\"null\"", "\"\"");
 	}
 	
+	public int getHistoryQueryDeviceListDataPage(String orgId,String deviceId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,String limit){
+		int dataPage=1;
+		try{
+			String deviceTableName="tbl_rpcdevice";
+			String tableName="tbl_rpcacqdata_latest";
+			if(StringManagerUtils.stringToInteger(deviceType)==1){
+				tableName="tbl_pcpacqdata_latest";
+				deviceTableName="tbl_pcpdevice";
+			}
+			String sql="select t.id from "+deviceTableName+" t "
+					+ " left outer join "+tableName+" t2 on t2.wellid=t.id"
+					+ " left outer join tbl_code c1 on c1.itemcode='DEVICETYPE' and t.devicetype=c1.itemvalue ";
+			if(StringManagerUtils.stringToInteger(deviceType)==0){
+				sql+=" left outer join tbl_rpc_worktype t3 on t2.resultcode=t3.resultcode";
+			}
+			
+			sql+= " where  t.orgid in ("+orgId+") ";
+			if(StringManagerUtils.isNotNull(deviceName)){
+				sql+=" and t.wellName='"+deviceName+"'";
+			}
+			if(StringManagerUtils.stringToInteger(deviceType)==0&&StringManagerUtils.isNotNull(FESdiagramResultStatValue)){
+				sql+=" and decode(t2.resultcode,null,'无数据',t3.resultName)='"+FESdiagramResultStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(commStatusStatValue)){
+				sql+=" and decode(t2.commstatus,1,'在线',2,'上线','离线')='"+commStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(runStatusStatValue)){
+				sql+=" and decode(t2.commstatus,0,'离线',decode(t2.runstatus,1,'运行','停抽'))='"+runStatusStatValue+"'";
+			}
+			if(StringManagerUtils.isNotNull(deviceTypeStatValue)){
+				sql+=" and c1.itemname='"+deviceTypeStatValue+"'";
+			}
+			sql+=" order by t.sortnum,t.wellname";
+			dataPage=this.getDataPage(StringManagerUtils.stringToInteger(deviceId), sql, StringManagerUtils.stringToInteger(limit));
+		}catch(Exception e){
+			dataPage=1;
+		}
+		return dataPage;
+	}
+	
 	public String getHistoryQueryDeviceList(String orgId,String deviceName,String deviceType,String FESdiagramResultStatValue,String commStatusStatValue,String runStatusStatValue,String deviceTypeStatValue,Page pager) throws IOException, SQLException{
 		StringBuffer result_json = new StringBuffer();
 		Jedis jedis = null;

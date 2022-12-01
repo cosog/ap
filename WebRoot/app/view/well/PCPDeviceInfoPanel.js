@@ -979,10 +979,12 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 		}
 		pcpProductionHandsontableHelper=null;
 	}
+	Ext.getCmp("PCPProductionDataInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
 		success:function(response) {
+			Ext.getCmp("PCPProductionDataInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(!isNotVal(deviceName)){
 				deviceName='';
@@ -1009,6 +1011,7 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
+			Ext.getCmp("PCPProductionDataInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1088,10 +1091,12 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 		}
 		pcpVideoInfoHandsontableHelper=null;
 	}
+	Ext.getCmp("PCPVideoInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
 		success:function(response) {
+			Ext.getCmp("PCPVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(!isNotVal(deviceName)){
 				deviceName='';
@@ -1117,6 +1122,7 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
+			Ext.getCmp("PCPVideoInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

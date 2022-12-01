@@ -37,6 +37,7 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
                 value: '0',
                 hidden: true
             }],
+            id:'HistoryQueryDataDetailsPanel_Id',
         	html: '<div id="HistoryQueryDataDetailsDiv_Id" style="width:100%;height:100%;"></div>',
             listeners: {
                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -74,12 +75,13 @@ Ext.define("AP.view.historyQuery.HistoryQueryDataDetailsWindow", {
 
 
 function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceType){
+	Ext.getCmp("HistoryQueryDataDetailsPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/historyQueryController/getDeviceHistoryDetailsData',
 		success:function(response) {
+			Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			
 			if(deviceHistoryQueryDataHandsontableHelper==null || deviceHistoryQueryDataHandsontableHelper.hot==undefined){
 				deviceHistoryQueryDataHandsontableHelper = DeviceHistoryQueryDataHandsontableHelper.createNew("HistoryQueryDataDetailsDiv_Id");
 				var colHeaders="['名称','变量','名称','变量','名称','变量']";
@@ -113,6 +115,7 @@ function CreateDeviceHistoryQueryDataTable(recordId,deviceId,deviceName,deviceTy
 			}
 		},
 		failure:function(){
+			Ext.getCmp("HistoryQueryDataDetailsPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

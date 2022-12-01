@@ -718,11 +718,17 @@ function ShowHistoryQueryStatPieOrColChat(title,divid, name, data,colors) {
 						var store="AP.store.realTimeMonitoring.RPCHistoryQueryWellListStore";
 						var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 						if(activeId=="RPCHistoryQueryInfoPanel_Id"){
+							Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+                        	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+                        	
 							statSelectCommStatusId="RPCHistoryQueryStatSelectCommStatus_Id";
 							deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 							gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
 						}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
+							Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+			            	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+			            	
 							statSelectCommStatusId="PCPHistoryQueryStatSelectCommStatus_Id";
 							deviceListComb_Id="HistoryQueryPCPDeviceListComb_Id";
 							gridPanel_Id="PCPHistoryQueryDeviceListGridPanel_Id";
@@ -882,12 +888,18 @@ function ShowHistoryQueryRunStatusStatPieOrColChat(title,divid, name, data,color
 						var store="AP.store.realTimeMonitoring.RPCHistoryQueryWellListStore";
 						var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 						if(activeId=="RPCHistoryQueryInfoPanel_Id"){
+							Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+                        	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+                        	
 							statSelectRunStatusId="RPCHistoryQueryStatSelectRunStatus_Id";
 							deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 							gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
 						}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
-							statSelectRunStatusId="PCPHistoryQueryStatSelectRunStatus_Id";
+							Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+			            	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+			            	
+			            	statSelectRunStatusId="PCPHistoryQueryStatSelectRunStatus_Id";
 							deviceListComb_Id="HistoryQueryPCPDeviceListComb_Id";
 							gridPanel_Id="PCPHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.PCPHistoryQueryWellListStore";
@@ -1016,11 +1028,13 @@ function ShowHistoryQueryFESDiagramResultStatPieOrColChat(title,divid, name, dat
 				},
 				events: {
 					click: function(e) {
+						Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+                    	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+                    	
 						var statSelectFESdiagramResultId="RPCHistoryQueryStatSelectFESdiagramResult_Id";
 						var deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 						var gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 						var store="AP.store.realTimeMonitoring.RPCHistoryQueryWellListStore";
-						
 						
 						if(!e.point.selected){//如果没被选中,则本次是选中
 							Ext.getCmp(statSelectFESdiagramResultId).setValue(e.point.name);
@@ -1163,12 +1177,18 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divid, name, data,colors) {
 						var store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
 						var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
 						if(activeId=="RPCHistoryQueryInfoPanel_Id"){
-							statSelectDeviceType_Id="RPCHistoryQueryStatSelectDeviceType_Id";
+							Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+                        	Ext.getCmp("RPCHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+                        	
+                        	statSelectDeviceType_Id="RPCHistoryQueryStatSelectDeviceType_Id";
 							deviceListComb_Id="HistoryQueryRPCDeviceListComb_Id";
 							gridPanel_Id="RPCHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.RPCHistoryQueryWellListStore";
 						}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
-							statSelectDeviceType_Id="PCPHistoryQueryStatSelectDeviceType_Id";
+							Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectRow_Id").setValue(-1);
+			            	Ext.getCmp("PCPHistoryQueryInfoDeviceListSelectedDevice_Id").setValue(0);
+			            	
+			            	statSelectDeviceType_Id="PCPHistoryQueryStatSelectDeviceType_Id";
 							deviceListComb_Id="HistoryQueryPCPDeviceListComb_Id";
 							gridPanel_Id="PCPHistoryQueryDeviceListGridPanel_Id";
 							store="AP.store.historyQuery.PCPHistoryQueryWellListStore";
@@ -1206,3 +1226,48 @@ function ShowHistoryQueryDeviceTypeStatPieChat(title,divid, name, data,colors) {
 				}]
 		});
 };
+
+function getHistoryQueryDeviceListDataPage(deviceId,deviceType,limit){
+	var dataPage=1;
+	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+	var deviceName='';
+	var FESdiagramResultStatValue='';
+	var commStatusStatValue='';
+	var runStatusStatValue='';
+	var deviceTypeStatValue='';
+	if(deviceType==0){
+		deviceName=Ext.getCmp('HistoryQueryRPCDeviceListComb_Id').getValue();
+		FESdiagramResultStatValue=Ext.getCmp("RPCHistoryQueryStatSelectFESdiagramResult_Id").getValue();
+    	commStatusStatValue=Ext.getCmp("RPCHistoryQueryStatSelectCommStatus_Id").getValue();
+    	runStatusStatValue=Ext.getCmp("RPCHistoryQueryStatSelectRunStatus_Id").getValue();
+		deviceTypeStatValue=Ext.getCmp("RPCHistoryQueryStatSelectDeviceType_Id").getValue();
+	}else{
+		deviceName=Ext.getCmp('HistoryQueryPCPDeviceListComb_Id').getValue();
+    	commStatusStatValue=Ext.getCmp("PCPHistoryQueryStatSelectCommStatus_Id").getValue();
+    	runStatusStatValue=Ext.getCmp("PCPHistoryQueryStatSelectRunStatus_Id").getValue();
+		deviceTypeStatValue=Ext.getCmp("PCPHistoryQueryStatSelectDeviceType_Id").getValue();
+	}
+	
+	Ext.Ajax.request({
+		method:'POST',
+		async :  false,
+		url:context + '/historyQueryController/getHistoryQueryDeviceListDataPage',
+		success:function(response) {
+			dataPage = Ext.JSON.decode(response.responseText).dataPage;
+		},
+		failure:function(){
+		},
+		params: {
+			orgId: orgId,
+            deviceType:deviceType,
+            deviceId:deviceId,
+            deviceName:deviceName,
+            FESdiagramResultStatValue:FESdiagramResultStatValue,
+            commStatusStatValue:commStatusStatValue,
+            runStatusStatValue:runStatusStatValue,
+            deviceTypeStatValue:deviceTypeStatValue,
+            limit:limit
+        }
+	});
+	return dataPage;
+}

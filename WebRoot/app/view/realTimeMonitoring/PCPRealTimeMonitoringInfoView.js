@@ -66,6 +66,8 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                             pcpDeviceCombo.getStore().loadPage(1); // 加载井下拉框的store
                         },
                         select: function (combo, record, index) {
+                        	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+                        	Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
                         	Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id").getStore().loadPage(1);
                         }
                     }
@@ -89,6 +91,11 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                         	id: 'PCPRealTimeMonitoringInfoDeviceListSelectRow_Id',
                         	xtype: 'textfield',
                             value: -1,
+                            hidden: true
+                         },{
+                        	id: 'PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id',
+                        	xtype: 'textfield',
+                            value: 0,
                             hidden: true
                          },{
                         	id: 'PCPRealTimeMonitoringStatSelectCommStatus_Id',
@@ -124,12 +131,21 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
                     			}else if(statTabActiveId=="PCPRealTimeMonitoringDeviceTypeStatGraphPanel_Id"){
                     				loadAndInitDeviceTypeStat(true);
                     			}
-                    			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setValue('');
-                    			Ext.getCmp('RealTimeMonitoringPCPDeviceListComb_Id').setRawValue('');
+                    			
+                    			var pagingToolbar=Ext.getCmp('PCPRealTimeMonitoringListGridPagingToolbar');
+                            	var currentPage=pagingToolbar.getStore().currentPage;
+                            	var pageSize=pagingToolbar.getStore().pageSize;
+                    			var loadPage=1;
+                    			var selectedDeviceId=parseInt(Ext.getCmp("PCPRealTimeMonitoringInfoDeviceListSelectedDevice_Id").getValue());
+                    			
+                    			if(selectedDeviceId>0){
+                    				loadPage=getDeviceRealTimeOverviewDataPage(selectedDeviceId,1,pageSize);
+                    			}
+                            	 
                     			var gridPanel = Ext.getCmp("PCPRealTimeMonitoringListGridPanel_Id");
                     			if (isNotVal(gridPanel)) {
                     				gridPanel.getSelectionModel().deselectAll(true);
-                    				gridPanel.getStore().load();
+                    				gridPanel.getStore().loadPage(loadPage);
                     			}else{
                     				Ext.create('AP.store.realTimeMonitoring.PCPRealTimeMonitoringWellListStore');
                     			}
@@ -515,10 +531,12 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
 });
 
 function CreatePCPDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType){
+	Ext.getCmp("PCPRealTimeMonitoringInfoDataPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',
 		success:function(response) {
+			Ext.getCmp("PCPRealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(pcpDeviceRealTimeMonitoringDataHandsontableHelper==null || pcpDeviceRealTimeMonitoringDataHandsontableHelper.hot==undefined){
 				pcpDeviceRealTimeMonitoringDataHandsontableHelper = PCPDeviceRealTimeMonitoringDataHandsontableHelper.createNew("PCPRealTimeMonitoringInfoDataTableInfoDiv_id");
@@ -554,6 +572,7 @@ function CreatePCPDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceTy
 			
 		},
 		failure:function(){
+			Ext.getCmp("PCPRealTimeMonitoringInfoDataPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

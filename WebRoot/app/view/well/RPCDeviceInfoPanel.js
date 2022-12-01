@@ -1105,10 +1105,13 @@ function CreateAndLoadRPCPumoingModelInfoTable(deviceId,deviceName,isNew){
 		}
 		rpcPumpingModelHandsontableHelper=null;
 	}
+	Ext.getCmp("RPCPumpingModelListPanel_Id").el.mask(cosog.string.updatewait).show();
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getRPCPumpingModelList',
 		success:function(response) {
+			Ext.getCmp("RPCPumpingModelListPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(!isNotVal(deviceName)){
 				deviceName='';
@@ -1136,6 +1139,7 @@ function CreateAndLoadRPCPumoingModelInfoTable(deviceId,deviceName,isNew){
 			CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew);
 		},
 		failure:function(){
+			Ext.getCmp("RPCPumpingModelListPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1240,10 +1244,13 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 		}
 		rpcProductionHandsontableHelper=null;
 	}
+	Ext.getCmp("RPCProductionDataInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
 		success:function(response) {
+			Ext.getCmp("RPCProductionDataInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(!isNotVal(deviceName)){
 				deviceName='';
@@ -1272,6 +1279,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
+			Ext.getCmp("RPCProductionDataInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1393,10 +1401,12 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 		}
 		rpcPumpingInfoHandsontableHelper=null;
 	}
+	Ext.getCmp("RPCPumpingInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDevicePumpingInfo',
 		success:function(response) {
+			Ext.getCmp("RPCPumpingInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(!isNotVal(deviceName)){
 				deviceName='';
@@ -1577,10 +1587,12 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 		}
 		rpcVideoInfoHandsontableHelper=null;
 	}
+	Ext.getCmp("RPCVideoInfoPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',
 		success:function(response) {
+			Ext.getCmp("RPCVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			if(!isNotVal(deviceName)){
 				deviceName='';
@@ -1606,6 +1618,7 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 			}
 		},
 		failure:function(){
+			Ext.getCmp("RPCVideoInfoPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

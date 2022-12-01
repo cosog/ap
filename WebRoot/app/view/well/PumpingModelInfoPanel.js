@@ -756,13 +756,13 @@ function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
 	}else{
 		Ext.getCmp("PumpingUnitPTFPanel_Id").setTitle("抽油机位置扭矩因数");
 	}
+	Ext.getCmp("PumpingUnitPTFPanel_Id").el.mask(cosog.string.updatewait).show();
 	Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/getPumpingPRTFData',
         success: function (response) {
-            var result = Ext.JSON.decode(response.responseText);
-            
-            
+        	Ext.getCmp("PumpingUnitPTFPanel_Id").getEl().unmask();
+        	var result = Ext.JSON.decode(response.responseText);
         	Ext.getCmp("PumpingModelPRTFStrokeComb_Id").getStore().loadData(result.strokeList);
 			if(result.strokeList.length>0){
 				var pumpingModelPRTFStrokeCombValeu=Ext.getCmp("PumpingModelPRTFStrokeComb_Id").getValue();
@@ -796,7 +796,8 @@ function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
             }
         },
         failure: function () {
-            Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
+        	Ext.getCmp("PumpingUnitPTFPanel_Id").getEl().unmask();
+        	Ext.MessageBox.alert("错误", "与后台联系的时候出了问题");
         },
         params: {
         	recordId: recordId,

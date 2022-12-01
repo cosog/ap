@@ -29,6 +29,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
             if (!isNotVal(gridPanel)) {
                 var newColumns = Ext.JSON.decode(column);
                 var bbar = new Ext.PagingToolbar({
+                	id:'RPCRealTimeMonitoringListGridPagingToolbar',
                 	store: store,
                 	displayInfo: true,
                 	displayMsg: '共 {2}条'
@@ -55,6 +56,8 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                     		var deviceName=record.data.wellName;
                     		var deviceId=record.data.id;
                     		var deviceType=0;
+                    		Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(deviceId);
+                    		
                     		var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
                     		var activeId = tabPanel.getActiveTab().id;
                     		if(activeId=="RPCRealTimeMonitoringCurveTabPanel_Id"){
@@ -90,7 +93,17 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                 RPCRealTimeMonitoringInfoDeviceListPanel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
-            	gridPanel.getSelectionModel().select(0, true);
+            	var selectRow=0;
+            	var selectedDeviceId=parseInt(Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").getValue());
+    			if(selectedDeviceId>0){
+    				for(var i=0;i<store.data.items.length;i++){
+            			if(selectedDeviceId==store.data.items[i].data.id){
+            				selectRow=i;
+            				break;
+            			}
+            		}
+    			}
+            	gridPanel.getSelectionModel().select(selectRow, true);
             }else{
             	if(rpcDeviceRealTimeMonitoringDataHandsontableHelper!=null){
 					if(rpcDeviceRealTimeMonitoringDataHandsontableHelper.hot!=undefined){
@@ -99,6 +112,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
 					rpcDeviceRealTimeMonitoringDataHandsontableHelper=null;
 				}
             	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectRow_Id").setValue(-1);
+            	Ext.getCmp("RPCRealTimeMonitoringInfoDeviceListSelectedDevice_Id").setValue(0);
             	
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv1_id").html('');
             	$("#FSDiagramAnalysisSingleWellboreDetailsDiv2_id").html('');

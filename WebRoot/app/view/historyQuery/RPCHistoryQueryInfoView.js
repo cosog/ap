@@ -707,6 +707,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                         	border: true,
                         	split: true,
                             collapsible: true,
+                            id:'rpcHistoryQueryCurvePanel_Id',
                             html: '<div id="rpcHistoryQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
                             listeners: {
                                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -809,7 +810,7 @@ Ext.define("AP.view.historyQuery.RPCHistoryQueryInfoView", {
                                     height: 300,
                                     align:'stretch',
                                     layout: 'fit',
-                                    id: 'RPCHistoryQueryOverlayPanel_Id',
+                                    id: 'RPCHistoryQueryFESDiagramOverlayPanel_Id',
                                     html: '<div id="RPCHistoryQueryOverlayDiv_Id" style="width:100%;height:100%;"></div>',
                                     listeners: {
                                         resize: function (abstractcomponent, adjWidth, adjHeight, options) {

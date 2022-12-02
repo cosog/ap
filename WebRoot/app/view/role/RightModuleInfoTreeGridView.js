@@ -18,17 +18,14 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
         emptyText: "<div class='con_div_' id='div_lcla_bjgid'><" + cosog.string.nodata + "></div>",
         forceFit: true
     },
-
     initComponent: function () {
         var moduleTree = this;
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
-        // LoadingWin("正在加载数据");
         Ext.apply(moduleTree, {
             store: moduleStore,
             columns: [
                 {
                     xtype: 'treecolumn',
-//                    text: cosog.string.funcList,
                     text: '模块列表',
                     flex: 8,
                     align: 'left',
@@ -40,7 +37,6 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
                     dataIndex: 'mdId'
                 }]
         });
-
         this.callParent(arguments);
     },
     listeners: {

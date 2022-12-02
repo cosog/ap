@@ -204,7 +204,10 @@ Ext.define('AP.store.role.RoleInfoStore', {
                 var panel = Ext.getCmp("RoleInfoGridPanelView_id");
                 panel.add(gridPanel);
             }
-            
+            if(get_rawData.totalCount>0){
+            	gridPanel.getSelectionModel().deselectAll(true);
+            	gridPanel.getSelectionModel().select(0, true);
+            }
         },
         beforeload: function (store, options) {
             var RoleName_Id = Ext.getCmp('RoleName_Id');

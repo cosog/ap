@@ -53,7 +53,6 @@ function selectEachCombox(node, root) {
                 Ext.Array.each(root, function (name, index,
                     countriesItSelf) {
                     var menuselectid = root[index].rmModuleid;
-
                     // 处理已选择的节点
                     if (x_node_seId == menuselectid) {
                         childArrNode.set('checked', true);

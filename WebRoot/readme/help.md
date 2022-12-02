@@ -184,7 +184,7 @@ jdk8、tomcat9、oracle、redis
 
 ## <h2><a name="1.3系统配置"></a>1.3 系统配置</h2>
 
-同步修改tomcat安装目录\\webapps\\ap\\WEB-INF\\config\\config.yml和tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件，配置项如下：
+修改tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件，配置如下：
 
 1、数据库连接配置
 
@@ -224,7 +224,7 @@ jdk8、tomcat9、oracle、redis
 
 见3.2、3.3、3.4章节。
 
-## <h2><a name="1.5操作流程"></a>1.4 操作流程</h2>
+## <h2><a name="1.4操作流程"></a>1.4 操作流程</h2>
 
 系统部署完成后需要根据使用者实际情况进行数据配置，流程如下：
 
@@ -290,7 +290,7 @@ jdk8、tomcat9、oracle、redis
 
 通过点击界面中缝位置的图标![G:\\work\\github\\apmd\\Image\\PNG\\025.png](../images/md/PNG/31c6015dc83f2a40f02cd33a2419f5a9.png)或![G:\\work\\github\\apmd\\Image\\PNG\\026.png](../images/md/PNG/74e5710c75eecf890973c56e5ba93a49.png)可实现界面伸缩。
 
-![](../images/md/PNG/7836f94f21f0603061b9a8e7c900731c.png)
+![](../images/md/PNG/7e2e63f4d3ba3763fbe2eb59b3a38366.png)
 
 图2-1 界面概览
 
@@ -298,7 +298,7 @@ jdk8、tomcat9、oracle、redis
 
 根据设备数据进行实时监控，**有新数据时，界面自动刷新。**
 
-![](../images/md/PNG/cd356b1ae3ca0260286ab81ffed23deb.png)
+![](../images/md/PNG/b2913c9e5bde003dc943295120495e1c.png)
 
 图2-2 实时监控
 
@@ -328,7 +328,7 @@ jdk8、tomcat9、oracle、redis
 
 切换历史数据：选中设备所在行，点击“查看历史”按钮（或者双击设备所在行），跳转到历史查询模块并显示该设备历史数据。
 
-![](../images/md/PNG/cb8b4bc5739a09e3ee929e364197d891.png)
+![](../images/md/PNG/c220b30ba76eeff6d7c2c0f885c3c02b.png)
 
 图2-6 实时监控-设备概览
 
@@ -476,7 +476,7 @@ jdk8、tomcat9、oracle、redis
 
 查询设备历史数据
 
-![](../images/md/PNG/0fc553b9a1902dcd56e874ffb63d0994.png)
+![](../images/md/PNG/5dae17432d9ec8a2a5afe211e02e4ef5.png)
 
 图2-20 历史查询
 
@@ -504,7 +504,7 @@ jdk8、tomcat9、oracle、redis
 
 显示设备列表以及当前通信状态和最新数据的采集时间。
 
-![](../images/md/PNG/714f3c6bcb715a0d2566e7836b2382b0.png)
+![](../images/md/PNG/3505cccb5f1fbc2c79f304efa6d5a481.png)
 
 图2-24 历史查询-设备列表
 
@@ -560,7 +560,7 @@ jdk8、tomcat9、oracle、redis
 
 查看设备日报表
 
-![](../images/md/PNG/caa011d124e09880110890ce82b58037.png)
+![](../images/md/PNG/92e8fcd8c7d623d9869973bbce8612d2.png)
 
 图2-32 生产报表
 
@@ -572,7 +572,7 @@ jdk8、tomcat9、oracle、redis
 
 查询设备工况报警数据。
 
-![](../images/md/PNG/eea064a528a7fd20ab3ac9c00d09b41f.png)
+![](../images/md/PNG/355b71da20aae50e0560d72f11960c6d.png)
 
 图2-33 故障查询-工况诊断报警
 
@@ -580,7 +580,7 @@ jdk8、tomcat9、oracle、redis
 
 查询设备运行状态报警数据。
 
-![](../images/md/PNG/ffdf54b69283afaa2ce5ea7cda01daaf.png)
+![](../images/md/PNG/e146e9593cdaba13a2eed7c775e32647.png)
 
 图2-34 故障查询-运行状态报警
 
@@ -588,7 +588,7 @@ jdk8、tomcat9、oracle、redis
 
 查询设备上线、离线报警数据。
 
-![](../images/md/PNG/34f53f7a3f9bc06919c21369842248ea.png)
+![](../images/md/PNG/728cd14d62bad64cbe2a387bad1d3028.png)
 
 图2-35 故障查询-通信状态报警
 
@@ -624,7 +624,7 @@ jdk8、tomcat9、oracle、redis
 
 查询设备操作日志，如设备的添加、修改、删除和控制。
 
-![](../images/md/PNG/b8c0525eaf72bc70e2494b5d14c862ed.png)
+![](../images/md/PNG/a91132bfffd1876bb36ca54d55e0397b.png)
 
 图2-39 日志查询-设备日志
 
@@ -632,7 +632,7 @@ jdk8、tomcat9、oracle、redis
 
 查询用户登录时间、登录IP等。
 
-![](../images/md/PNG/6604ecd87a715334ed4c4a96d9013716.png)
+![](../images/md/PNG/4fee7716a99d172be9bd3bf4f34ed81f.png)
 
 图2-40 日志查询-系统日志
 
@@ -660,12 +660,11 @@ jdk8、tomcat9、oracle、redis
 
 选择目标井，找到需要修改的某条记录或某个时间段的多条记录，修改完生产数据后，点击“修改数据计算”按钮进行重新计算。
 
-例如：修改rpc01井井，采集时间为2022-09-30
-09:31:40的的记录原油密度数据并重新计算。
+例如：修改rpc01井井，采集时间为2022-12-02 15:34:29的记录原油密度数据并重新计算。
 
 操作：修改表中参数，点击“修改数据计算”按钮。
 
-![](../images/md/PNG/39090a4a43bc224397045a875fcc303e.png)
+![](../images/md/PNG/a130119ced36003010c1f97a0d1a3422.png)
 
 图2-41 修改数据计算
 
@@ -675,15 +674,15 @@ jdk8、tomcat9、oracle、redis
 
 （1）单井关联数据计算
 
-例如：在“井名信息”模块中，修改了rpc01井的生产数据，并将2022-09-15
-00:00:00至2022-09-30 09:37:39区间内的历史数据应用改后的生产数据，重新计算。
+例如：在“井名信息”模块中，修改了rpc01井的生产数据，并将2022-12-02
+00:00:00至2022-12-02 15:40:24区间内的历史数据应用改后的生产数据，重新计算。
 
-操作：设备列表中选择rpc01（如果未选中某口井，将会重新计算所选组织下所有井在某时间段内的数据），时间范围2022-09-15
-00:00:00至2022-09-30
-09:37:39，点击“关联数据计算”。弹出操作确认对话框，确认无误后点击“是”。这时，rpc01井2022-09-15
-00:00:00至2022-09-30 09:37:39的所有历史数据将按最新的生产数据进行重新计算。
+操作：设备列表中选择rpc01（如果未选中某口井，将会重新计算所选组织下所有井在某时间段内的数据），时间范围2022-12-02
+00:00:00至2022-12-02
+15:40:24，点击“关联数据计算”。弹出操作确认对话框，确认无误后点击“是”。这时，rpc01井2022-12-02
+00:00:00至2022-12-02 15:40:24的所有历史数据将按最新的生产数据进行重新计算。
 
-![](../images/md/PNG/52859084382b8564a5de1ef10b4ad28d.png)
+![](../images/md/PNG/6d3aacd5b0b6fe71d8b6bc820a55e222.png)
 
 图2-42 单井关联数据计算
 
@@ -691,7 +690,7 @@ jdk8、tomcat9、oracle、redis
 
 重新计算选中的汇总记录。
 
-![](../images/md/PNG/a8737d5cb4e0d99b32a29f9200638b5f.png)
+![](../images/md/PNG/b2734f6152b034473757cbffb948387b.png)
 
 图2-43 计算维护-汇总记录
 
@@ -701,7 +700,7 @@ jdk8、tomcat9、oracle、redis
 
 ### <h3><a name="2.8.1协议配置"></a>2.8.1 协议配置</h3>
 
-![](../images/md/PNG/3df9d1b796fd752b7500ab168c6c2107.png)
+![](../images/md/PNG/88c001b0c698169a80842076cab5ea0e.png)
 
 图2-44 协议配置
 
@@ -803,7 +802,7 @@ jdk8、tomcat9、oracle、redis
 
 在协议下面创建采控单元，每个采控单元下面可以创建一个采集组和一个控制组，并勾选采集组和控制组包含的项。
 
-![](../images/md/PNG/83d5f7a909479b71d6697b03477fe03e.png)
+![](../images/md/PNG/9734d50a1e81890e7595ea9b426b3c20.png)
 
 图2-54采控单元
 
@@ -929,7 +928,7 @@ jdk8、tomcat9、oracle、redis
 
 在协议下面创建显示单元，并设置单元下包含的项及曲线。
 
-![](../images/md/PNG/64a61a552957a38ca30d80bb3b5cbb8a.png)
+![](../images/md/PNG/b09404ead2662aad897faf6617388de4.png)
 
 图2-65显示单元
 
@@ -991,7 +990,7 @@ jdk8、tomcat9、oracle、redis
 
 在协议下面创建报警单元，并设置单元下包含的报警项及报警配置。
 
-![](../images/md/PNG/409f50ed9d6d33bdf472531f5060401c.png)
+![](../images/md/PNG/dd1f39dea927555ce0981c9badd1fedf.png)
 
 图2-70报警单元
 
@@ -1169,7 +1168,7 @@ jdk8、tomcat9、oracle、redis
 
 在采控单元中配置完采控单元后（确定采控项和地址配置），还需配置采控实例（读写以及解析时具体的协议），实例和设备直接关联。
 
-![](../images/md/PNG/aa19f144038d212b2d1d4e74b8517d7c.png)
+![](../images/md/PNG/0642686c6acc996afabb8effa2d162dd.png)
 
 图2-79采控实例配置
 
@@ -1242,7 +1241,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 在显示单元中配置完显示单元后，还需配置显示实例。
 
-![](../images/md/PNG/8c6f0ed0d2bb7bc96f0608fd1c610ebf.png)
+![](../images/md/PNG/a71b59220b8ca47877358ce0ecff20b3.png)
 
 图2-84显示实例配置
 
@@ -1296,7 +1295,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 在报警单元中配置完报警单元后，还需配置报警实例。
 
-![](../images/md/PNG/7e06e922b4daedf7df50d38309aff6ce.png)
+![](../images/md/PNG/2c71617b60746f9e2c3ec12e5b000756.png)
 
 图2-89报警实例配置
 
@@ -1356,7 +1355,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 控制协议类性：控制协议类性
 
-![](../images/md/PNG/259362bdea72f93fb5a0d87b05e0d412.png)
+![](../images/md/PNG/af29ea86680eb59cef8ffc10e2efa472.png)
 
 图2-94短信实例
 
@@ -1368,7 +1367,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 单位组织以及用户维护，用户列表中带\*的用户为当前登录用户。只能查看当前登录用户自己以及角色等级小于自己的其他用户。
 
-![](../images/md/PNG/0c9bf8872bbf9e0db28f06fbca8b14b7.png)
+![](../images/md/PNG/06ce6a1b1c57a1475dbd12a1cffec8d3.png)
 
 图2-95组织用户
 
@@ -1470,7 +1469,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 只能查看和修改等级小于当前登录用户角色等级的角色，带\*的角色为登录用户所属角色。
 
-![](../images/md/PNG/93499839e8ef40f12dda6981cd840b19.png)
+![](../images/md/PNG/bf16938554cdb0396bc85597dbcdd319.png)
 
 图2-103角色管理
 
@@ -1522,7 +1521,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 抽油机井和螺杆泵井维护。相比于螺杆泵井，抽油机井多了抽油机机型的选择和平衡块信息的配置，其他操作基本相同。
 
-![](../images/md/PNG/d2c746fde1ba0426149495e464777f0e.png)
+![](../images/md/PNG/cafe1f266db17bebb29a53ff31d16d7d.png)
 
 图2-108井名信息
 
@@ -1643,7 +1642,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 抽油机型号维护。
 
-![](../images/md/PNG/dc802cd14f76dcaabf25fd5d97ccb0f6.png)
+![](../images/md/PNG/fb5bc7630753ee05a8aef965020e0832.png)
 
 图2-117抽油机信息管理
 
@@ -1653,7 +1652,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 注意：不同冲程对应的位置扭矩因数需分别录入。
 
-![](../images/md/PNG/b572f57fbe8a1591115fd6250b2b901e.png)
+![](../images/md/PNG/49e24bee6af91819c05633ea63bd1f94.png)
 
 图2-118抽油机型号修改
 
@@ -1669,7 +1668,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 在设备列表中选中删除的设备，点击“删除设备”按钮，进行删除操作。
 
-![](../images/md/PNG/2b4b29d6e5127e9a82ed0420fd2fb5a3.png)
+![](../images/md/PNG/7d382d03e9fb19ba07d732987c887d44.png)
 
 图2-120删除抽油机型号
 
@@ -1695,7 +1694,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 在表中修改设备信息后，点击“保存按钮”。
 
-![](../images/md/PNG/a2b3ac41164b99f91b60fbd6db3c2457.png)
+![](../images/md/PNG/0ac18cf209b8be41c2fa065052a3b064.png)
 
 图2-123短信设备管理
 
@@ -1711,7 +1710,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 在设备列表中选中删除的设备，点击“删除设备”按钮，进行删除操作。
 
-![](../images/md/PNG/1e54f2edaac4ff6be49bfe4e98cf605c.png)
+![](../images/md/PNG/89ec0692afd77902532c1d897608e4bd.png)
 
 图2-125删除螺杆泵设备
 
@@ -1822,11 +1821,11 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 1、软件名称及简介
 
-同步修改tomcat安装目录\\webapps\\ap\\WEB-INF\\config\\config.yml和tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件中oem部分中的title和profile。
+修改tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件中oem部分中的title和profile。
 
 2、背景图片
 
-替换tomcat安装目录\\webapps\\ap\\images路径下“login.jpg”图片，图片分辨率1920\*1000。修改后如未生效，需要清理浏览器缓存。
+替换tomcat安装目录\\webapps\\ap\\images\\login路径下“login.jpg”图片，图片分辨率1920\*1000。修改后如未生效，需要清理浏览器缓存。
 
 ### <h3><a name="3.2.2主界面"></a>3.2.2 主界面</h3>
 
@@ -1902,13 +1901,17 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 ## <h2><a name="3.3视频账号配置"></a>3.3 视频账号配置</h2>
 
-目前支持萤石云视频接入，需配置萤石云相关账号的appKey及secret（登录萤石云查看）。
+先停止tomcat（如果正在运行），配置完成后再启动，目前支持萤石云视频接入。
+
+打开tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件，配置萤石云相关账号的appKey及secret（登录萤石云查看）
 
 ![](../images/md/PNG/9a275e5da613c17118b37192dd2171e9.png)
 
 ## <h2><a name="3.4邮件发送账号配置"></a>3.4 邮件发送账号配置</h2>
 
-如需发送邮件（如报警邮件），则需要配置邮件发送账号。
+如需发送邮件（如报警邮件），则需要配置邮件发送账号。先停止tomcat（如果正在运行），配置完成后再启动。
+
+配置tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件中一下信息，
 
 ![](../images/md/PNG/4e5bcf573fbf5d849e6021c6bcf6c571.png)
 
@@ -1926,9 +1929,7 @@ smtpPort：邮箱SMTP端口，以实际为准。
 
 软件的一些其他配置，先停止tomcat（如果正在运行），配置完成后再启动。
 
-3其他配置
-
-软件的一些其他配置，见下图
+打开tomcat安装目录\\webapps\\ap\\WEB-INF\\classes\\config\\config.yml文件，配置项见下图：
 
 ![](../images/md/PNG/80995b33fff75832b25be58f1b89eff3.png)
 

@@ -399,7 +399,7 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
     var pumpingManufacturer = Ext.getCmp('pumpingManufacturerListComb_Id').getValue();
     var pumpingModel = Ext.getCmp('pumpingModelListComb_Id').getValue();
     
-    Ext.getCmp("PumpingModelTablePanel_id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("PumpingModelTablePanel_id").el.mask(cosog.string.loading).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doPumpingModelShow',
@@ -756,7 +756,7 @@ function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
 	}else{
 		Ext.getCmp("PumpingUnitPTFPanel_Id").setTitle("抽油机位置扭矩因数");
 	}
-	Ext.getCmp("PumpingUnitPTFPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("PumpingUnitPTFPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/getPumpingPRTFData',

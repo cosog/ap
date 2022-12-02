@@ -90,7 +90,6 @@ Ext.define('AP.store.historyQuery.RPCHistoryDataStore', {
             	Ext.getCmp('RPCHistoryQueryEndTime_Minute_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[1]);
             	Ext.getCmp('RPCHistoryQueryEndTime_Second_Id').setValue(get_rawData.end_date.split(' ')[1].split(':')[2]);
             }
-            
             deviceHistoryQueryCurve(0);
         },
         beforeload: function (store, options) {

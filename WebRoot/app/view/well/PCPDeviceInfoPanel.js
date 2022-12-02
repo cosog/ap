@@ -319,7 +319,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                         }
                 	},{
                     	region: 'south',
-                    	height:'25%',
+                    	height:'20%',
                     	title:'视频配置',
                     	id:'PCPVideoInfoPanel_Id',
                     	split: true,
@@ -357,7 +357,7 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var wellInformationName_Id = Ext.getCmp('pcpDeviceListComb_Id').getValue();
-    Ext.getCmp("PCPDeviceTablePanel_id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("PCPDeviceTablePanel_id").el.mask(cosog.string.loading).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',
@@ -979,7 +979,7 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 		}
 		pcpProductionHandsontableHelper=null;
 	}
-	Ext.getCmp("PCPProductionDataInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("PCPProductionDataInfoPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceProductionDataInfo',
@@ -1091,7 +1091,7 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 		}
 		pcpVideoInfoHandsontableHelper=null;
 	}
-	Ext.getCmp("PCPVideoInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("PCPVideoInfoPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',

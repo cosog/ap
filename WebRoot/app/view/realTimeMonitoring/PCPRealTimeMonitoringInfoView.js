@@ -531,7 +531,7 @@ Ext.define("AP.view.realTimeMonitoring.PCPRealTimeMonitoringInfoView", {
 });
 
 function CreatePCPDeviceRealTimeMonitoringDataTable(deviceId,deviceName,deviceType){
-	Ext.getCmp("PCPRealTimeMonitoringInfoDataPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("PCPRealTimeMonitoringInfoDataPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getDeviceRealTimeMonitoringData',

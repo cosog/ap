@@ -196,7 +196,7 @@ function CreateRPCDailyReportTable(){
     var wellName = Ext.getCmp('RPCDailyReportPanelWellListCombo_Id').getValue();
     var startDate = Ext.getCmp('RPCDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('RPCDailyReportEndDate_Id').rawValue;
-    Ext.getCmp("RPCDailyReportPanel_id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("RPCDailyReportPanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getDailyReportData',

@@ -266,7 +266,7 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
     }
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var deviceName = Ext.getCmp('SMSDeviceListComb_Id').getValue();
-    Ext.getCmp("SMSDeviceTablePanel_id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("SMSDeviceTablePanel_id").el.mask(cosog.string.loading).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',

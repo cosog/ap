@@ -196,7 +196,7 @@ function CreatePCPDailyReportTable(){
     var wellName = Ext.getCmp('PCPDailyReportPanelWellListCombo_Id').getValue();
     var startDate = Ext.getCmp('PCPDailyReportStartDate_Id').rawValue;
     var endDate = Ext.getCmp('PCPDailyReportEndDate_Id').rawValue;
-    Ext.getCmp("PCPDailyReportPanel_id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("PCPDailyReportPanel_id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/reportDataMamagerController/getDailyReportData',

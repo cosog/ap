@@ -19,6 +19,7 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore', {
     },
     listeners: {
         load: function (store, record, f, op, o) {
+        	Ext.getCmp("RPCHistoryDiagramOverlayTabPanel").getEl().unmask();
         	allCheck=false;
         	allNotCheck=false;
             var get_rawData = store.proxy.reader.rawData;
@@ -158,6 +159,8 @@ Ext.define('AP.store.historyQuery.RPCHistoryQueryDiagramOverlayStore', {
             var endTime_Hour=Ext.getCmp('RPCHistoryQueryEndTime_Hour_Id').getValue();
         	var endTime_Minute=Ext.getCmp('RPCHistoryQueryEndTime_Minute_Id').getValue();
         	var endTime_Second=Ext.getCmp('RPCHistoryQueryEndTime_Second_Id').getValue();
+        	
+        	Ext.getCmp("RPCHistoryDiagramOverlayTabPanel").el.mask(cosog.string.loading).show();
         	var new_params = {
         			orgId: orgId,
             		deviceType:0,

@@ -391,7 +391,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                 	}]
                 },{
                 	region: 'south',
-                	height:'25%',
+                	height:'20%',
                 	title:'视频配置',
                 	id:'RPCVideoInfoPanel_Id',
                 	split: true,
@@ -425,7 +425,7 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
 	}
     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
     var wellInformationName_Id = Ext.getCmp('rpcDeviceListComb_Id').getValue();
-    Ext.getCmp("RPCDeviceTablePanel_id").el.mask(cosog.string.updatewait).show();
+    Ext.getCmp("RPCDeviceTablePanel_id").el.mask(cosog.string.loading).show();
     Ext.Ajax.request({
         method: 'POST',
         url: context + '/wellInformationManagerController/doWellInformationShow',
@@ -1105,7 +1105,7 @@ function CreateAndLoadRPCPumoingModelInfoTable(deviceId,deviceName,isNew){
 		}
 		rpcPumpingModelHandsontableHelper=null;
 	}
-	Ext.getCmp("RPCPumpingModelListPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("RPCPumpingModelListPanel_Id").el.mask(cosog.string.loading).show();
 	
 	Ext.Ajax.request({
 		method:'POST',
@@ -1244,7 +1244,7 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 		}
 		rpcProductionHandsontableHelper=null;
 	}
-	Ext.getCmp("RPCProductionDataInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("RPCProductionDataInfoPanel_Id").el.mask(cosog.string.loading).show();
 	
 	Ext.Ajax.request({
 		method:'POST',
@@ -1401,7 +1401,7 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 		}
 		rpcPumpingInfoHandsontableHelper=null;
 	}
-	Ext.getCmp("RPCPumpingInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("RPCPumpingInfoPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDevicePumpingInfo',
@@ -1587,7 +1587,7 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 		}
 		rpcVideoInfoHandsontableHelper=null;
 	}
-	Ext.getCmp("RPCVideoInfoPanel_Id").el.mask(cosog.string.updatewait).show();
+	Ext.getCmp("RPCVideoInfoPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/wellInformationManagerController/getDeviceVideoInfo',

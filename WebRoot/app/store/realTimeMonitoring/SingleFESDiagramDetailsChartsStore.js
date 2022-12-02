@@ -23,6 +23,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
         	
         	var tabPanel = Ext.getCmp("RPCRealTimeMonitoringCurveAndTableTabPanel");
             var activeId = tabPanel.getActiveTab().id;
+            Ext.getCmp(activeId).getEl().unmask();
             if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisTabPanel_Id"){
             	showFSDiagramFromPumpcard(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv1_id"); // 调用画泵功图的函数
             	showRodPress(get_rawData, "FSDiagramAnalysisSingleWellboreDetailsDiv2_id");    // 调用画杆柱应力的函数
@@ -63,6 +64,7 @@ Ext.define('AP.store.realTimeMonitoring.SingleFESDiagramDetailsChartsStore', {
             }else if(activeId=="RPCRealTimeMonitoringFSDiagramAnalysisSurfaceTabPanel_Id"){//地面分析
             	type=2;
             }
+            Ext.getCmp(activeId).el.mask(cosog.string.loading).show();
             var new_params = { // 将图形数据id作为参数传给后台
                 id: id,
                 wellName:wellName,

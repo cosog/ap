@@ -556,6 +556,7 @@ Ext.define("AP.view.historyQuery.PCPHistoryQueryInfoView", {
                     	border: true,
                     	split: true,
                         collapsible: true,
+                        id:'pcpHistoryQueryCurvePanel_Id',
                         html: '<div id="pcpHistoryQueryCurveDiv_Id" style="width:100%;height:100%;"></div>',
                         listeners: {
                             resize: function (abstractcomponent, adjWidth, adjHeight, options) {

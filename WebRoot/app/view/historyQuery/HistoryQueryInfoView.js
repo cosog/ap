@@ -334,6 +334,7 @@ function deviceHistoryQueryCurve(deviceType){
 	var endSecondId="RPCHistoryQueryEndTime_Second_Id";
 	
 	var divId="rpcHistoryQueryCurveDiv_Id";
+	var panelId='rpcHistoryQueryCurvePanel_Id';
 	
 	if(deviceType==1){
 		selectRowId="PCPHistoryQueryInfoDeviceListSelectRow_Id";
@@ -347,6 +348,7 @@ function deviceHistoryQueryCurve(deviceType){
 		endMinuteId="PCPHistoryQueryEndTime_Minute_Id";
 		endSecondId="PCPHistoryQueryEndTime_Second_Id";
 		divId="pcpHistoryQueryCurveDiv_Id";
+		panelId='pcpHistoryQueryCurvePanel_Id';
 	}
 	
 	
@@ -366,10 +368,12 @@ function deviceHistoryQueryCurve(deviceType){
     var endTime_Hour=Ext.getCmp(endHourId).getValue();
 	var endTime_Minute=Ext.getCmp(endMinuteId).getValue();
 	var endTime_Second=Ext.getCmp(endSecondId).getValue();
+	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/historyQueryController/getHistoryQueryCurveData',
 		success:function(response) {
+			Ext.getCmp(panelId).getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 		    var data = result.list;
 		    var graphicSet=result.graphicSet;
@@ -469,6 +473,7 @@ function deviceHistoryQueryCurve(deviceType){
 		    initDeviceHistoryCurveChartFn(ser, tickInterval, divId, title, '', '', yAxis, color,true,timeFormat);
 		},
 		failure:function(){
+			Ext.getCmp(panelId).getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -602,8 +607,10 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 	var deviceType=0;
 	var deviceTypeStatValue='';
 	var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
+	var panelId="";
 	if(activeId=="RPCHistoryQueryInfoPanel_Id"){
 		deviceType=0;
+		panelId="RPCHistoryQueryStatGraphPanel_Id";
 		if(all){
 			Ext.getCmp("RPCHistoryQueryStatSelectFESdiagramResult_Id").setValue('');
 			Ext.getCmp("RPCHistoryQueryStatSelectCommStatus_Id").setValue('');
@@ -615,6 +622,7 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 		}
 	}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
 		deviceType=1;
+		panelId="PCPHistoryQueryStatGraphPanel_Id";
 		if(all){
 			Ext.getCmp("PCPHistoryQueryStatSelectCommStatus_Id").setValue('');
 			Ext.getCmp("PCPHistoryQueryStatSelectRunStatus_Id").setValue('');
@@ -624,16 +632,18 @@ function loadAndInitHistoryQueryCommStatusStat(all){
 			deviceTypeStatValue=Ext.getCmp("PCPHistoryQueryStatSelectDeviceType_Id").getValue();
 		}
 	}
-	
+	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringCommStatusStatData',
 		success:function(response) {
+			Ext.getCmp(panelId).getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryStatPieOrColChat(result);
 		},
 		failure:function(){
+			Ext.getCmp(panelId).getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -773,8 +783,10 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 	var deviceType=0;
 	var deviceTypeStatValue='';
 	var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
+	var panelId='';
 	if(activeId=="RPCHistoryQueryInfoPanel_Id"){
 		deviceType=0;
+		panelId='RPCHistoryQueryRunStatusStatGraphPanel_Id';
 		if(all){
 			Ext.getCmp("RPCHistoryQueryStatSelectFESdiagramResult_Id").setValue('');
 			Ext.getCmp("RPCHistoryQueryStatSelectCommStatus_Id").setValue('');
@@ -786,6 +798,7 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 		}
 	}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
 		deviceType=1;
+		panelId='PCPHistoryQueryRunStatusStatGraphPanel_Id';
 		if(all){
 			Ext.getCmp("PCPHistoryQueryStatSelectCommStatus_Id").setValue('');
 			Ext.getCmp("PCPHistoryQueryStatSelectRunStatus_Id").setValue('');
@@ -795,16 +808,18 @@ function loadAndInitHistoryQueryRunStatusStat(all){
 			deviceTypeStatValue=Ext.getCmp("PCPHistoryQueryStatSelectDeviceType_Id").getValue();
 		}
 	}
-	
+	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringRunStatusStatData',
 		success:function(response) {
+			Ext.getCmp(panelId).getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryRunStatusStatPieOrColChat(result);
 		},
 		failure:function(){
+			Ext.getCmp(panelId).getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -955,16 +970,18 @@ function loadAndInitHistoryQueryFESdiagramResultStat(all){
 		deviceTypeStatValue=Ext.getCmp("RPCHistoryQueryStatSelectDeviceType_Id").getValue();
 		commStatusStatValue=Ext.getCmp("RPCHistoryQueryStatSelectCommStatus_Id").getValue();
 	}
-	
+	Ext.getCmp("RPCHistoryQueryFESdiagramResultStatGraphPanel_Id").el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringFESDiagramResultStatData',
 		success:function(response) {
+			Ext.getCmp("RPCHistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryFESDiagramResultStatPieOrColChat(result);
 		},
 		failure:function(){
+			Ext.getCmp("RPCHistoryQueryFESdiagramResultStatGraphPanel_Id").getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {
@@ -1074,8 +1091,10 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 	var deviceType=0;
 	var commStatusStatValue='';
 	var activeId = Ext.getCmp("HistoryQueryTabPanel").getActiveTab().id;
+	var panelId='';
 	if(activeId=="RPCHistoryQueryInfoPanel_Id"){
 		deviceType=0;
+		panelId='RPCHistoryQueryDeviceTypeStatGraphPanel_Id';
 		if(all){
 			Ext.getCmp("RPCHistoryQueryStatSelectCommStatus_Id").setValue('');
 			Ext.getCmp("RPCHistoryQueryStatSelectDeviceType_Id").setValue('');
@@ -1086,6 +1105,7 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 		
 	}else if(activeId=="PCPHistoryQueryInfoPanel_Id"){
 		deviceType=1;
+		panelId='PCPHistoryQueryDeviceTypeStatGraphPanel_Id';
 		if(all){
 			Ext.getCmp("PCPHistoryQueryStatSelectCommStatus_Id").setValue('');
 			Ext.getCmp("PCPHistoryQueryStatSelectDeviceType_Id").setValue('');
@@ -1094,15 +1114,18 @@ function loadAndInitHistoryQueryDeviceTypeStat(all){
 			commStatusStatValue=Ext.getCmp("PCPHistoryQueryStatSelectCommStatus_Id").getValue();
 		}
 	}
+	Ext.getCmp(panelId).el.mask(cosog.string.loading).show();
 	Ext.Ajax.request({
 		method:'POST',
 		url:context + '/realTimeMonitoringController/getRealTimeMonitoringDeviceTypeStatData',
 		success:function(response) {
+			Ext.getCmp(panelId).getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
 			Ext.getCmp("AlarmShowStyle_Id").setValue(JSON.stringify(result.AlarmShowStyle));
 			initHistoryQueryDeviceTypeStatPieOrColChat(result);
 		},
 		failure:function(){
+			Ext.getCmp(panelId).getEl().unmask();
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
 		},
 		params: {

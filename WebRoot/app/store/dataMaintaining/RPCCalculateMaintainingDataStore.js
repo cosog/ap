@@ -74,7 +74,7 @@ Ext.define('AP.store.dataMaintaining.RPCCalculateMaintainingDataStore', {
                     calculateType:calculateType
             };
             Ext.apply(store.proxy.extraParams, new_params);
-            Ext.getCmp("RPCCalculateMaintainingPanel").el.mask(cosog.string.updatewait).show();
+            Ext.getCmp("RPCCalculateMaintainingPanel").el.mask(cosog.string.loading).show();
         },
         datachanged: function (v, o) {
             onStoreSizeChange(v, o, "ProductionOutTotalCount_Id");

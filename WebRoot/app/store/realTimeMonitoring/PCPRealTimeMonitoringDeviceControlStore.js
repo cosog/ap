@@ -90,7 +90,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceControlStore'
     		                            		Ext.Ajax.request({
     		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
     		                                        method: "POST",
-    		                                        waitMsg: cosog.string.updatewait,
+    		                                        waitMsg: cosog.string.loading,
     		                                        waitTitle: 'Please Wait...',
     		                                        params: {
     		                                        	deviceId:deviceId,
@@ -153,7 +153,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceControlStore'
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitMsg: cosog.string.loading,
         		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
@@ -204,7 +204,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceControlStore'
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitMsg: cosog.string.loading,
         		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,
@@ -266,7 +266,7 @@ Ext.define('AP.store.realTimeMonitoring.PCPRealTimeMonitoringDeviceControlStore'
         		                            		Ext.Ajax.request({
         		                            			url: context + '/realTimeMonitoringController/deviceControlOperationWhitoutPass',
         		                                        method: "POST",
-        		                                        waitMsg: cosog.string.updatewait,
+        		                                        waitMsg: cosog.string.loading,
         		                                        waitTitle: 'Please Wait...',
         		                                        params: {
         		                                        	deviceId:deviceId,

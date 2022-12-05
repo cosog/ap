@@ -38,7 +38,7 @@ Ext.define('AP.store.realTimeMonitoring.RPCRealTimeMonitoringWellListStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "RPCRealTimeMonitoringListGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,

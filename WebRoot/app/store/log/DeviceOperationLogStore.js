@@ -36,7 +36,7 @@ Ext.define('AP.store.log.DeviceOperationLogStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "DeviceOperationLogGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,

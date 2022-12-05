@@ -26,7 +26,7 @@ Ext.define('AP.store.well.DeviceOrgChangeDeviceListStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "DeviceOrgChangeDeviceListGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: false,
                     selType: 'checkboxmodel',

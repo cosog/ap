@@ -29,7 +29,7 @@ Ext.define('AP.store.dataMaintaining.PCPCalculateMaintainingWellListStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "PCPCalculateMaintainingWellListGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: false,
 //                    selType: 'checkboxmodel',

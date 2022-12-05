@@ -29,7 +29,7 @@ Ext.define('AP.store.reportOut.PCPDailyReportWellListStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "PCPDailyReportGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: true,
                     selModel:{

@@ -26,7 +26,7 @@ Ext.define('AP.store.acquisitionUnit.DatabaseColumnMappingStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "DatabaseColumnMappingGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: false,
                     viewConfig: {

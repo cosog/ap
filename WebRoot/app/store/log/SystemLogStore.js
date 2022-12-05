@@ -35,7 +35,7 @@ Ext.define('AP.store.log.SystemLogStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "SystemLogGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,

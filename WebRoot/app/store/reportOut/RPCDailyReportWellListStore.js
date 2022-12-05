@@ -29,7 +29,7 @@ Ext.define('AP.store.reportOut.RPCDailyReportWellListStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "RPCDailyReportGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: true,
 //                    selType: 'checkboxmodel',

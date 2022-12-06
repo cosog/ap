@@ -36,7 +36,7 @@ Ext.define('AP.store.alarmQuery.RPCEnumValueAlarmStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "RPCEnumValueAlarmGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,

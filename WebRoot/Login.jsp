@@ -67,7 +67,7 @@
     <link rel="stylesheet" href="<%=path%>/scripts/bootstrap/css/site.css?timestamp=202206228050" type="text/css" />
     <link rel="stylesheet" href="<%=path%>/styles/login.css?timestamp=202206228050" type="text/css"/>
 
-    <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.5.1.min.js?timestamp=202210241800"></script>
+    <script type="text/javascript" src="<%=path%>/scripts/jquery/jquery-3.6.1.min.js?timestamp=202212051400"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap.min.js?timestamp=202206228050"></script>
     <script type="text/javascript" src="<%=path%>/scripts/bootstrap/js/bootstrap-select.min.js?timestamp=202206228050"></script>
     

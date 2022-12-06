@@ -29,7 +29,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolAlarmUnitEnumItemsStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "ModbusProtocolAlarmUnitEnumItemsGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: true,
                     viewConfig: {

@@ -35,7 +35,7 @@ Ext.define('AP.store.acquisitionUnit.ModbusProtocolSMSInstanceStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "ModbusProtocolSMSInstanceGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
 //                    bbar: bbar,
                     columnLines: true,
                     forceFit: true,

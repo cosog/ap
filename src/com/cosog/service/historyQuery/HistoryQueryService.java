@@ -2068,7 +2068,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			AlarmShowStyle alarmShowStyle=null;
 			DisplayInstanceOwnItem displayInstanceOwnItem=null;
 			AlarmInstanceOwnItem alarmInstanceOwnItem=null;
-			Set<byte[]>calItemSet=null;
+			Set<byte[]> calItemSet=null;
 			UserInfo userInfo=null;
 			String tableName="tbl_rpcacqdata_hist";
 			String deviceTableName="tbl_rpcdevice";
@@ -2545,7 +2545,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		int vacuateThreshold=Config.getInstance().configFile.getAp().getOthers().getVacuateThreshold();
 		Jedis jedis=null;
 		UserInfo userInfo=null;
-		Set<byte[]>calItemSet=null;
+		Set<byte[]> calItemSet=null;
 		DisplayInstanceOwnItem displayInstanceOwnItem=null;
 		int dataSaveMode=1;
 		String displayInstanceCode="";

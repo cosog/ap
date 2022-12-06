@@ -50,7 +50,7 @@ Ext.define('AP.store.historyQuery.PCPHistoryDataStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "PCPHistoryQueryDataGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,

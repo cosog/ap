@@ -1296,7 +1296,7 @@ public class DriverAPIController extends BaseController{
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){
-				Set<byte[]>rpcCalItemSet=null;
+				Set<byte[]> rpcCalItemSet=null;
 				if(jedis!=null){
 					rpcCalItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
 				}
@@ -2449,7 +2449,7 @@ public class DriverAPIController extends BaseController{
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){
-				Set<byte[]>pcpCalItemSet=null;
+				Set<byte[]> pcpCalItemSet=null;
 				if(jedis!=null){
 					pcpCalItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
 				}

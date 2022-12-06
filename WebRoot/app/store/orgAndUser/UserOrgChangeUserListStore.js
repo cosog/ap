@@ -26,7 +26,7 @@ Ext.define('AP.store.orgAndUser.UserOrgChangeUserListStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "UserOrgChangeUserListGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     columnLines: true,
                     forceFit: false,
                     selType: 'checkboxmodel',

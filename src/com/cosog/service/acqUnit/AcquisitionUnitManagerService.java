@@ -551,7 +551,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		
 		Jedis jedis=null;
-		Set<byte[]>calItemSet=null;
+		Set<byte[]> calItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(StringManagerUtils.stringToInteger(deviceType)==0){
@@ -1395,7 +1395,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			key="pcpCalItemList";
 		}
 		Jedis jedis=null;
-		Set<byte[]>rpcCalItemSet=null;
+		Set<byte[]> rpcCalItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
@@ -1853,7 +1853,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 			key="pcpCalItemList";
 		}
 		Jedis jedis=null;
-		Set<byte[]>rpcCalItemSet=null;
+		Set<byte[]> rpcCalItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(!jedis.exists(key.getBytes())){
@@ -2028,7 +2028,7 @@ public class AcquisitionUnitManagerService<T> extends BaseService<T> {
 		StringBuffer result_json = new StringBuffer();
 		Gson gson = new Gson();
 		Jedis jedis=null;
-		Set<byte[]>calItemSet=null;
+		Set<byte[]> calItemSet=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
 			if(StringManagerUtils.stringToInteger(deviceType)==0){

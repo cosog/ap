@@ -36,7 +36,7 @@ Ext.define('AP.store.alarmQuery.PCPEnumValueAlarmStore', {
                 gridPanel = Ext.create('Ext.grid.Panel', {
                     id: "PCPEnumValueAlarmGridPanel_Id",
                     border: false,
-                    autoLoad: true,
+                    autoLoad: false,
                     bbar: bbar,
                     columnLines: true,
                     forceFit: false,

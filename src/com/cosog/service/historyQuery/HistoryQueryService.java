@@ -2856,36 +2856,6 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		String dataType="";
 		GraphicSetData graphicSetData=null;
 		int resolutionMode=0;
-//		List<String> itemNameList=new ArrayList<String>();
-//		List<String> itemColumnList=new ArrayList<String>();
-//		List<String> curveColorList=new ArrayList<String>();
-//		if(protocolList.size()>0){
-//			protocolName=protocolList.get(0)+"";
-//			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
-//			if(modbusProtocolConfig!=null&&modbusProtocolConfig.getProtocol()!=null){
-//				for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-//					if(protocolName.equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getName())){
-//						for(int j=0;j<curveItemList.size();j++){
-//							Object[] itemObj=(Object[]) curveItemList.get(j);
-//							for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
-//								if(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle().equalsIgnoreCase(itemObj[0]+"")){
-//									String col=dataSaveMode==0?("addr"+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getAddr()):(loadedAcquisitionItemColumnsMap.get(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()));
-////									itemColumnList.add(col);
-//									if(StringManagerUtils.isNotNull(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit())){
-//										itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle()+"("+modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getUnit()+")");
-//									}else{
-//										itemNameList.add(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle());
-//									}
-////									curveColorList.add((itemObj[2]+"").replaceAll("null", ""));
-//									break;
-//								}
-//							}
-//						}
-//						break;
-//					}
-//				}
-//			}
-//		}
 		
 		if(graphicSetList.size()>0){
 			String graphicSet=graphicSetList.get(0).toString().replaceAll(" ", "").replaceAll("\r\n", "").replaceAll("\n", "");
@@ -3026,6 +2996,92 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		}
 		dynSbf.append("]}");
 		return dynSbf.toString().replaceAll("null", "");
+	}
+	
+	public boolean exportHistoryQueryFESDiagramDataExcel(HttpServletResponse response,String fileName,String title,String head,String field,
+			String orgId,String deviceId,String deviceName,Page pager){
+		try{
+			StringBuffer result_json = new StringBuffer();
+			ConfigFile configFile=Config.getInstance().configFile;
+			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
+			String[] heads={"井号","日期时间","冲程(m)","冲次(次/分钟)","最小载荷(kN)","最大载荷(kN)","曲线点数","位移","载荷"};
+			String[] columns={"wellName","acqTime","stroke","spm","fmin","fmax","pointCount","positionCurveData","loadCurveData"};
+			
+			List<Object> headRow = new ArrayList<>();
+			for(int i=0;i<heads.length;i++){
+				headRow.add(heads[i]);
+			}
+		    List<List<Object>> sheetDataList = new ArrayList<>();
+		    sheetDataList.add(headRow);
+			
+			String sql="select t.id,well.wellname,to_char(t.fesdiagramacqtime,'yyyy/mm/dd hh24:mi:ss') as acqTime,"
+					+ " t.stroke,t.spm,"
+					+ " t.fmax,t.fmin,"
+					+ " t.position_curve,t.load_curve"
+					+ " from tbl_rpcacqdata_hist t"
+					+ " left outer join tbl_rpcdevice well on well.id=t.wellid"
+					+ " where  1=1 "
+					+ " and t.fesdiagramacqtime between to_date('"+pager.getStart_date()+"','yyyy-mm-dd hh24:mi:ss') and to_date('"+pager.getEnd_date()+"','yyyy-mm-dd hh24:mi:ss') "
+					+ " and t.wellid="+deviceId+" "
+					+ " order by t.fesdiagramacqtime";
+			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
+			
+			List<?> list=this.findCallSql(finalSql);
+			List<Object> record=null;
+			JSONObject jsonObject=null;
+			Object[] obj=null;
+			for(int i=0;i<list.size();i++){
+				obj=(Object[]) list.get(i);
+				result_json = new StringBuffer();
+				record = new ArrayList<>();
+				
+				CLOB realClob=null;
+				SerializableClobProxy   proxy=null;
+				String DiagramXData="";
+		        String DiagramYData="";
+		        String pointCount="";
+		        if(obj[7]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[7]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					DiagramXData=StringManagerUtils.CLOBtoString(realClob);
+				}
+		        if(StringManagerUtils.isNotNull(DiagramXData)){
+					pointCount=DiagramXData.split(",").length+"";
+				}
+		        if(obj[8]!=null){
+					proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[8]);
+					realClob = (CLOB) proxy.getWrappedClob(); 
+					DiagramYData=StringManagerUtils.CLOBtoString(realClob);
+				}
+				
+		        result_json.append("{ \"id\":\"" + obj[0] + "\",");
+		        result_json.append("\"wellName\":\"" + obj[1] + "\",");
+		        result_json.append("\"acqTime\":\"" + obj[2] + "\",");
+		        result_json.append("\"stroke\":\""+obj[3]+"\",");
+		        result_json.append("\"spm\":\""+obj[4]+"\",");
+		        result_json.append("\"fmax\":\""+obj[5]+"\",");
+		        result_json.append("\"fmin\":\""+obj[6]+"\",");
+		        result_json.append("\"pointCount\":\""+pointCount+"\","); 
+		        result_json.append("\"positionCurveData\":\""+DiagramXData+"\",");
+		        result_json.append("\"loadCurveData\":\""+DiagramYData+"\"}");
+				
+				jsonObject = JSONObject.fromObject(result_json.toString().replaceAll("null", ""));
+				for (int j = 0; j < columns.length; j++) {
+					if(jsonObject.has(columns[j])){
+						record.add(jsonObject.getString(columns[j]));
+					}else{
+						record.add("");
+					}
+				}
+				sheetDataList.add(record);
+			}
+			ExcelUtils.export(response,fileName,title, sheetDataList);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	@SuppressWarnings("deprecation")

@@ -64,7 +64,7 @@ Ext.define("AP.view.realTimeMonitoring.RealTimeMonitoringInfoView", {
                         }
                 	},{
                 		xtype: 'button',
-                        id:"jedisRunStatusProbeLabel_id",
+                        id:"redisRunStatusProbeLabel_id",
                         text: 'redis',
 //                        width: 100,
                         handler: function (v, o) {

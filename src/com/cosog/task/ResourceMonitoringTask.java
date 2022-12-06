@@ -41,6 +41,7 @@ import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 
 @Component("ResourceMonitoringTask")  
@@ -70,7 +71,8 @@ public class ResourceMonitoringTask {
     private static String memUsedPercentValue="";
     private static int memUsedPercentAlarmLevel=0;
     
-    private static int jedisStatus=1; 
+    private static int redisStatus=1; 
+    private static String redisVersion="";
     
     private static String tableSpaceName="";
     
@@ -103,12 +105,26 @@ public class ResourceMonitoringTask {
 		Jedis jedis=null;
 		try{
 			jedis = RedisUtil.jedisPool.getResource();
-			if(jedisStatus==0){
+			if(redisStatus==0){
 				MemoryDataManagerTask.loadMemoryData();
 			}
-			jedisStatus=1;
+			redisStatus=1;
+			Client client = jedis.getClient();
+			client.info();
+			String info = client.getBulkReply();
+			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
+			for(int i=0;i<infoArr.length;i++){
+				if(infoArr[i].startsWith("redis_version:")){
+					String[] versionArr=infoArr[i].split(":");
+					if(versionArr.length==2){
+						redisVersion=versionArr[1];
+					}
+					break;
+				}
+			}
 		}catch(Exception e){
-			jedisStatus=0;
+			redisStatus=0;
+			redisVersion="";
 		}finally{
 			if(jedis!=null){
 				jedis.close();
@@ -221,7 +237,7 @@ public class ResourceMonitoringTask {
 				cs.setString(6, cpuUsedPercentValue);
 				cs.setString(7, memUsedPercentValue);
 				cs.setFloat(8, tableSpaceInfo.getUsedPercent());
-				cs.setInt(9, jedisStatus);
+				cs.setInt(9, redisStatus);
 				cs.executeUpdate();
 				if(cs!=null){
 					cs.close();
@@ -265,7 +281,8 @@ public class ResourceMonitoringTask {
 				+ "\"licenseSign\":"+licenseSign+","
 				+ "\"deviceAmount\":"+deviceAmount+","
 				+ "\"license\":"+acLicense+","
-				+ "\"jedisStatus\":\""+jedisStatus+"\""
+				+ "\"redisVersion\":\""+redisVersion+"\","
+				+ "\"redisStatus\":\""+redisStatus+"\""
 				+ "}";
 		try {
 			infoHandler().sendMessageToBy("ApWebSocketClient", sendData);
@@ -569,15 +586,23 @@ public class ResourceMonitoringTask {
 		ResourceMonitoringTask.memUsedPercentAlarmLevel = memUsedPercentAlarmLevel;
 	}
 
-	public static int getJedisStatus() {
-		return jedisStatus;
-	}
-
-	public static void setJedisStatus(int jedisStatus) {
-		ResourceMonitoringTask.jedisStatus = jedisStatus;
-	}
-
 	public static void setDeviceAmount(int deviceAmount) {
 		ResourceMonitoringTask.deviceAmount = deviceAmount;
+	}
+
+	public static int getRedisStatus() {
+		return redisStatus;
+	}
+
+	public static void setRedisStatus(int redisStatus) {
+		ResourceMonitoringTask.redisStatus = redisStatus;
+	}
+
+	public static String getRedisVersion() {
+		return redisVersion;
+	}
+
+	public static void setRedisVersion(String redisVersion) {
+		ResourceMonitoringTask.redisVersion = redisVersion;
 	}
 }

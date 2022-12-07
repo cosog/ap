@@ -976,7 +976,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
@@ -1024,7 +1024,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
@@ -1275,7 +1275,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
@@ -1427,7 +1427,7 @@ public class BaseDao extends HibernateDaoSupport {
 								cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 								cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 								cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-								cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+								cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 								cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 								cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
 								cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));
@@ -1586,7 +1586,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setString(11, wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay().replaceAll(" ", ""));
@@ -1634,7 +1634,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setString(11, wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay().replaceAll(" ", ""));
@@ -1870,7 +1870,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getUpdatelist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getUpdatelist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getUpdatelist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getUpdatelist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getUpdatelist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getUpdatelist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getUpdatelist().get(i).getPeakDelay()));
@@ -1999,7 +1999,7 @@ public class BaseDao extends HibernateDaoSupport {
 							cs.setString(5, wellHandsontableChangedData.getInsertlist().get(i).getInstanceName().replaceAll(" ", ""));
 							cs.setString(6, wellHandsontableChangedData.getInsertlist().get(i).getDisplayInstanceName().replaceAll(" ", ""));
 							cs.setString(7, wellHandsontableChangedData.getInsertlist().get(i).getAlarmInstanceName().replaceAll(" ", ""));
-							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType());
+							cs.setString(8, wellHandsontableChangedData.getInsertlist().get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client"));
 							cs.setString(9, wellHandsontableChangedData.getInsertlist().get(i).getSignInId().replaceAll(" ", "").replaceAll("：", ":"));
 							cs.setString(10, wellHandsontableChangedData.getInsertlist().get(i).getSlave().replaceAll(" ", ""));
 							cs.setInt(11, StringManagerUtils.stringToInteger(wellHandsontableChangedData.getInsertlist().get(i).getPeakDelay()));

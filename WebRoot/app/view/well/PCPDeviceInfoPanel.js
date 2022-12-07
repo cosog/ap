@@ -114,7 +114,7 @@ Ext.define('AP.view.well.PCPDeviceInfoPanel', {
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
                     var wellInformationName = Ext.getCmp('pcpDeviceListComb_Id').getValue();
-                    var url = context + '/wellInformationManagerController/exportWellInformationData';
+                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
                     for (var i = 0; i < pcpDeviceInfoHandsontableHelper.colHeaders.length; i++) {
                         fields += pcpDeviceInfoHandsontableHelper.columns[i].data + ",";
                         heads += pcpDeviceInfoHandsontableHelper.colHeaders[i] + ","

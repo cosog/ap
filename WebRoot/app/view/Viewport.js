@@ -606,12 +606,13 @@ function websocketOnMessage(evt) {
 				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
 			}
 			
-			if(data.jedisStatus==1){
-				Ext.getCmp("jedisRunStatusProbeLabel_id").setIconCls("dtgreen");
+			if(data.redisStatus==1){
+				Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtgreen");
+				Ext.getCmp("redisRunStatusProbeLabel_id").setText("redis v"+data.redisVersion);
 			}else{
-				Ext.getCmp("jedisRunStatusProbeLabel_id").setIconCls("dtyellow");
+				Ext.getCmp("redisRunStatusProbeLabel_id").setIconCls("dtyellow");
+				Ext.getCmp("redisRunStatusProbeLabel_id").setText("redis");
 			}
-			Ext.getCmp("jedisRunStatusProbeLabel_id").setText("redis");
 			
 			if(data.adRunStatus==1){
 				Ext.getCmp("adRunStatusProbeLabel_id").setIconCls("dtgreen");

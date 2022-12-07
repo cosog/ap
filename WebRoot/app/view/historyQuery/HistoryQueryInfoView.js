@@ -319,6 +319,22 @@ function exportHistoryQueryDiagramOverlayDataExcel(orgId,deviceType,deviceId,dev
     openExcelWindow(url + '?flag=true' + param);
 };
 
+function exportHistoryQueryFESDiagramDataExcel(orgId,deviceType,deviceId,deviceName,startDate,endDate,fileName,title) {
+    var url = context + '/historyQueryController/exportHistoryQueryFESDiagramDataExcel';
+    var fields = "";
+    var heads = "";
+    var param = "&fields=" + fields + "&heads=" + URLencode(URLencode(heads)) 
+    + "&orgId=" + orgId 
+    + "&deviceType=" + deviceType 
+    + "&deviceId=" + deviceId 
+    + "&deviceName=" + URLencode(URLencode(deviceName))
+    + "&startDate=" + startDate
+    + "&endDate=" + endDate
+    + "&fileName=" + URLencode(URLencode(fileName)) 
+    + "&title=" + URLencode(URLencode(title));
+    openExcelWindow(url + '?flag=true' + param);
+};
+
 
 function deviceHistoryQueryCurve(deviceType){
 	var selectRowId="RPCHistoryQueryInfoDeviceListSelectRow_Id";

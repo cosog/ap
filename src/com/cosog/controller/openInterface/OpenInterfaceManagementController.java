@@ -1,4 +1,4 @@
-package com.cosog.controller.mobile;
+package com.cosog.controller.openInterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,15 +36,15 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;;
 
 /**
- * <P> 描述：移动端接口</p>
+ * <P> 描述：开放接口</p>
  * 
  * @author zhao 2018-12-28
  * 
  */
 @Controller
-@RequestMapping("/mobileController")
+@RequestMapping("/open")
 @Scope("prototype")
-public class MobileController extends BaseController{
+public class OpenInterfaceManagementController extends BaseController{
 
 	private static final long serialVersionUID = 1L;
 	@Autowired
@@ -54,7 +54,7 @@ public class MobileController extends BaseController{
 	@Autowired
 	private UserManagerService<User> userManagerService;
 	
-	@RequestMapping("/userLogin")
+	@RequestMapping("/access/userLogin")
 	public String userLogin() throws Exception {
 		String account = "";
 		String password = "";
@@ -110,7 +110,7 @@ public class MobileController extends BaseController{
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/getOrganizationData")
+	@RequestMapping("/access/getOrganizationData")
 	public String getOrganizationData() throws Exception {
 		String json = "";
 		String UserAccount = "";;
@@ -153,7 +153,7 @@ public class MobileController extends BaseController{
 	/******
 	 * 统计饼图及柱状图需要的data信息
 	 * ***/
-	@RequestMapping("/oilWell/realtime/statisticsData")
+	@RequestMapping("/access/oilWell/realtime/statisticsData")
 	public String getPumpingRealtimeStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -172,7 +172,7 @@ public class MobileController extends BaseController{
 	/******
 	 * 查询处于某种统计值下的实时井列表及数据
 	 * ***/
-	@RequestMapping("/oilWell/realtime/wellListData")
+	@RequestMapping("/access/oilWell/realtime/wellListData")
 	public String getOilWellRealtimeWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -198,7 +198,7 @@ public class MobileController extends BaseController{
 	/******
 	 * 查询处于某种统计值下的井历史数据
 	 * ***/
-	@RequestMapping("/oilWell/realtime/wellHistoryData")
+	@RequestMapping("/access/oilWell/realtime/wellHistoryData")
 	public String getOilWellHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -221,7 +221,7 @@ public class MobileController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/oilWell/realtime/wellAnalysisData")
+	@RequestMapping("/access/oilWell/realtime/wellAnalysisData")
 	public String getOilWellAnalysisData()throws Exception{
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -237,7 +237,7 @@ public class MobileController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/oilWell/realtime/singleFESDiagramData")
+	@RequestMapping("/access/oilWell/realtime/singleFESDiagramData")
 	public String singleFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -252,7 +252,7 @@ public class MobileController extends BaseController{
 		return null;
 	}
 	
-	@RequestMapping("/oilWell/realtime/historyFESDiagramData")
+	@RequestMapping("/access/oilWell/realtime/historyFESDiagramData")
 	public String historyFESDiagramData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -270,7 +270,7 @@ public class MobileController extends BaseController{
 	/******
 	 * 全天统计饼图及柱状图需要的data信息
 	 * ***/
-	@RequestMapping("/oilWell/total/statisticsData")
+	@RequestMapping("/access/oilWell/total/statisticsData")
 	public String getOilWellTotalStatisticsData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -289,7 +289,7 @@ public class MobileController extends BaseController{
 	/******
 	 * 查询某天处于某种统计值下的全天井列表及数据
 	 * ***/
-	@RequestMapping("/oilWell/total/wellListData")
+	@RequestMapping("/access/oilWell/total/wellListData")
 	public String getOilWellTotalWellListData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
@@ -315,7 +315,7 @@ public class MobileController extends BaseController{
 	/******
 	 * 查询处于某种统计值下的井全天历史数据
 	 * ***/
-	@RequestMapping("/oilWell/total/wellHistoryData")
+	@RequestMapping("/access/oilWell/total/wellHistoryData")
 	public String getOilWellTotalHistoryData() throws Exception {
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");

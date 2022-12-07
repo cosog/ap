@@ -117,7 +117,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                     var heads = "";
                     var leftOrg_Id = Ext.getCmp('leftOrg_Id').getValue();
                     var wellInformationName = Ext.getCmp('rpcDeviceListComb_Id').getValue();
-                    var url = context + '/wellInformationManagerController/exportWellInformationData';
+                    var url = context + '/wellInformationManagerController/exportWellInformationDetailsData';
                     for (var i = 0; i < rpcDeviceInfoHandsontableHelper.colHeaders.length; i++) {
                         fields += rpcDeviceInfoHandsontableHelper.columns[i].data + ",";
                         heads += rpcDeviceInfoHandsontableHelper.colHeaders[i] + ","

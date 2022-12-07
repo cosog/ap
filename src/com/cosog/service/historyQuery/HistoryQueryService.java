@@ -3004,6 +3004,8 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			StringBuffer result_json = new StringBuffer();
 			ConfigFile configFile=Config.getInstance().configFile;
 			int maxvalue=Config.getInstance().configFile.getAp().getOthers().getExportLimit();
+			int vacuateThreshold=configFile.getAp().getOthers().getVacuateThreshold();
+			boolean vacuate=true;
 			fileName += "-" + pager.getStart_date()+"~"+pager.getEnd_date();
 			String[] heads={"井号","日期时间","冲程(m)","冲次(次/分钟)","最小载荷(kN)","最大载荷(kN)","曲线点数","位移","载荷"};
 			String[] columns={"wellName","acqTime","stroke","spm","fmin","fmax","pointCount","positionCurveData","loadCurveData"};
@@ -3026,7 +3028,14 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 					+ " and t.wellid="+deviceId+" "
 					+ " order by t.fesdiagramacqtime";
 			String finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;
-			
+			int totals = getTotalCountRows(sql);//获取总记录数
+			int rarefy=0;
+			if(vacuate && vacuateThreshold>0){
+				rarefy=totals/vacuateThreshold+1;
+				if(rarefy>1){
+					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+				}
+			}
 			List<?> list=this.findCallSql(finalSql);
 			List<Object> record=null;
 			JSONObject jsonObject=null;

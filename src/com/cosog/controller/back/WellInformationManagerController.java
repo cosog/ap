@@ -607,8 +607,6 @@ public class WellInformationManagerController extends BaseController {
 		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
 		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
 		int offset = (intPage - 1) * pageSize + 1;
-		//wellInformationName = new String(wellInformationName.getBytes("iso-8859-1"), "utf-8");
-//		String orgId=this.findCurrentUserOrgIdInfo("");
 		wellInformationName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellInformationName"),"utf-8");
 		deviceType= ParamUtils.getParameter(request, "deviceType");
 		String heads = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "heads"),"utf-8");
@@ -640,9 +638,53 @@ public class WellInformationManagerController extends BaseController {
 		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
 			bool = this.wellInformationManagerService.exportRPCDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
-			bool = this.wellInformationManagerService.exportPipeDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
+			bool = this.wellInformationManagerService.exportPCPDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
 			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
+		}
+		return null;
+	}
+	
+	@RequestMapping("/exportWellInformationDetailsData")
+	public String exportWellInformationDetailsData() throws Exception {
+		boolean bool=false;
+		Map<String, Object> map = new HashMap<String, Object>();
+		int recordCount =StringManagerUtils.stringToInteger(ParamUtils.getParameter(request, "recordCount"));
+		int intPage = Integer.parseInt((page == null || page == "0") ? "1" : page);
+		int pageSize = Integer.parseInt((limit == null || limit == "0") ? "20" : limit);
+		int offset = (intPage - 1) * pageSize + 1;
+		wellInformationName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "wellInformationName"),"utf-8");
+		deviceType= ParamUtils.getParameter(request, "deviceType");
+		String fileName = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "fileName"),"utf-8");
+		String title = java.net.URLDecoder.decode(ParamUtils.getParameter(request, "title"),"utf-8");
+		orgId=ParamUtils.getParameter(request, "orgId");
+		User user=null;
+		if (!StringManagerUtils.isNotNull(orgId)) {
+			HttpSession session=request.getSession();
+			user = (User) session.getAttribute("userLogin");
+			if (user != null) {
+				orgId = "" + user.getUserorgids();
+			}
+		}
+		
+		orgCode = ParamUtils.getParameter(request, "orgCode");
+		resCode = ParamUtils.getParameter(request, "resCode");
+		map.put(PagingConstants.PAGE_NO, intPage);
+		map.put(PagingConstants.PAGE_SIZE, pageSize);
+		map.put(PagingConstants.OFFSET, offset);
+		map.put("wellInformationName", wellInformationName);
+		map.put("deviceType", deviceType);
+		map.put("orgCode", orgCode);
+		map.put("resCode", resCode);
+		map.put("orgId", orgId);
+		log.debug("intPage==" + intPage + " pageSize===" + pageSize);
+		this.pager = new Page("pagerForm", request);// 新疆分页Page 工具类
+		if(StringManagerUtils.stringToInteger(deviceType)>=100&&StringManagerUtils.stringToInteger(deviceType)<200){
+			bool = this.wellInformationManagerService.exportRPCDeviceInfoDetailsData(response,fileName,title, orgId,wellInformationName);
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=200&&StringManagerUtils.stringToInteger(deviceType)<300){
+			bool = this.wellInformationManagerService.exportPCPDeviceInfoDetailsData(response,fileName,title, orgId,wellInformationName);
+		}else if(StringManagerUtils.stringToInteger(deviceType)>=300){
+//			bool = this.wellInformationManagerService.exportSMSDeviceInfoData(response,fileName,title, heads, fields,map, pager,recordCount);
 		}
 		return null;
 	}

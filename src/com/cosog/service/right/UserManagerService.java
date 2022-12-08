@@ -53,7 +53,31 @@ public class UserManagerService<T> extends BaseService<T> {
 		} else {
 			return null;
 		}
-
+	}
+	
+	public int userCheck(String userName,String password){
+		int result=0;
+		if (!StringManagerUtils.isNotNull(userName)) {
+			result=-1; //用户名不能为空
+		} else if (!StringManagerUtils.isNotNull(password)) {
+			result=-2; //用户密码不能为空
+		} else {
+			User user;
+			try {
+				user = (User) this.doLogin(userName, StringManagerUtils.stringToMD5(password));
+				if (user != null&&user.getUserEnable()==1) {
+					result=1;// 验证成功
+				}else if(user != null && user.getUserEnable()!=1){
+					result=-4;//用户被禁用
+				} else {
+					result=-3;//账号或密码错误
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				result=-5;//其他
+			}
+		}
+		return result;
 	}
 
 	public List<T> queryUsers(String uname, Class<T> clazz) {
@@ -497,5 +521,22 @@ public class UserManagerService<T> extends BaseService<T> {
 			email=list.get(0).toString();
 		}
 		return email;
+	}
+	
+	//递归查询用户所在组织及其子节点
+	public String findChildIds(String user){
+		String childIds="0";
+		StringBuffer orgIdString = new StringBuffer();
+		List<?> list;
+		String queryString="select org_id from tbl_org t start with org_id=(select u.user_orgid from tbl_user u where u.user_id='"+user+"' ) connect by prior  org_id=org_parent";
+		list=getBaseDao().findCallSql(queryString);
+		if(list.size()>0){
+			for(int i=0;i<list.size();i++){
+				orgIdString.append(list.get(i)+",");
+			}
+			orgIdString.deleteCharAt(orgIdString.length() - 1);
+			childIds=orgIdString.toString();
+		}
+		return childIds;
 	}
 }

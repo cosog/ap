@@ -3663,7 +3663,7 @@ public class DriverAPIController extends BaseController{
 	
 	@RequestMapping("/userLogin")
 	public String userLogin() throws Exception {
-		String account = "";
+		String user = "";
 		String password = "";
 		
 		ServletInputStream ss = request.getInputStream();
@@ -3672,7 +3672,7 @@ public class DriverAPIController extends BaseController{
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
 			try{
-				account=jsonObject.getString("Account");
+				user=jsonObject.getString("User");
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -3684,23 +3684,22 @@ public class DriverAPIController extends BaseController{
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		HttpSession session=request.getSession();
+
 		String result="";
-		if (!StringManagerUtils.isNotNull(account)) {
-			result="{\"Success\":false,\"Msg\":\"用户名不能为空\"}";
-		} else if (!StringManagerUtils.isNotNull(password)) {
-			result="{\"Success\":false,\"Msg\":\"用户密码不能为空\"}";
-		} else {
-			User user = this.userManagerService.doLogin(account, StringManagerUtils.stringToMD5(password));
-			if (user != null&&user.getUserEnable()==1) {
-				result="{\"Success\":true,\"Msg\":\"登录成功\"}";
-			}else if(user != null && user.getUserEnable()!=1){
-				result="{\"Success\":false,\"Msg\":\"用户" + account + "已被禁用 !\"}";
-			} else {
-				result="{\"Success\":false,\"Msg\":\"账号或密码错误\"}";
-			}
+		String msg="";
+		int userCheckSign=this.userManagerService.userCheck(user, password);
+		if(userCheckSign==-1) {
+			msg="用户名不能为空";
+		}else if (userCheckSign==-2) {
+			msg="用户密码不能为空";
+		}else if (userCheckSign==-3) {
+			msg="账号或密码错误";
+		}else if (userCheckSign==-4) {
+			msg="用户" + user + "已被禁用 !";
+		}else if (userCheckSign==1) {
+			msg="登录成功";
 		}
+		result="{\"ResultStatus\":"+userCheckSign+",\"Msg\":\""+msg+"\"}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;
@@ -3719,41 +3718,82 @@ public class DriverAPIController extends BaseController{
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/read/getOrganizationData")
 	public String getOrganizationData() throws Exception {
-		String json = "";
-		String UserAccount = "";;
+		StringBuffer result_json = new StringBuffer();
+		String orgListStr = "";
+		String user = "";
+		String password = "";
+		
 		ServletInputStream ss = request.getInputStream();
 		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
-//		data="{\"UserAccount\": \"admin\"}";
+//		data="{\"Account\": \"admin\",\"Password\": \"123456\"}";
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
-			UserAccount=jsonObject.getString("UserAccount");
+			try{
+				user=jsonObject.getString("User");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				password=jsonObject.getString("Password");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, UserAccount);
-		StringBuffer strBuf = new StringBuffer();
-		Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
-		for (Org org : list) {
-			if (!r.hasParent(list, org)) {
-				json = r.recursionMobileOrgTree(list, org);
+		int userCheckSign=this.userManagerService.userCheck(user, password);
+		if(userCheckSign==1){
+			List<Org> list = (List<Org>) mobileService.getOrganizationData(Org.class, user);
+			StringBuffer strBuf = new StringBuffer();
+			Recursion r = new Recursion();// 递归类，将org集合构建成一棵树形菜单的json
+			for (Org org : list) {
+				if (!r.hasParent(list, org)) {
+					orgListStr = r.recursionMobileOrgTree(list, org);
+				}
 			}
+			orgListStr = orgListStr.replaceAll(",]", "]");
+			strBuf.append(orgListStr);
+			if(strBuf.toString().endsWith(",")){
+				strBuf.deleteCharAt(strBuf.length() - 1);
+			}
+			orgListStr = strBuf.toString();
+		}else{
+			orgListStr="{}";
 		}
-		json = json.replaceAll(",]", "]");
-//		if(json.lastIndexOf(",")==json.length()-1){
-//			json=json.substring(0, json.length()-1);
-//		}
-		strBuf.append(json);
-		if(strBuf.toString().endsWith(",")){
-			strBuf.deleteCharAt(strBuf.length() - 1);
-		}
-		json = strBuf.toString();
+		result_json.append("{\"ResultStatus\":"+userCheckSign+",\"Org\":"+orgListStr+"}");
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(result_json.toString());
 		pw.flush();
 		pw.close();
 
+		return null;
+	}
+	
+	/******
+	 * 获取井名信息
+	 * ***/
+	@RequestMapping("/read/oilWell/wellInformation")
+	public String getOilWellInformation() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+//		data="{}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"rpc01\"]}";
+		this.pager = new Page("pagerForm", request);
+		String json = mobileService.getOilWellInformation(data,pager);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	

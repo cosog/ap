@@ -3430,7 +3430,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					if(balance!=null && balance.getEveryBalance().size()>0){
 						for(int j=0;j<balance.getEveryBalance().size();j++){
 							balanceWeight+=balance.getEveryBalance().get(j).getWeight()+"";
-							balancePosition+=balance.getEveryBalance().get(j).getWeight()+"";
+							balancePosition+=balance.getEveryBalance().get(j).getPosition()+"";
 							if(j<balance.getEveryBalance().size()-1){
 								balanceWeight+=",";
 								balancePosition+=",";

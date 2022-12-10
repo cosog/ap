@@ -1308,15 +1308,17 @@ public class DriverAPIController extends BaseController{
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){
-				Set<byte[]> rpcCalItemSet=null;
+				List<byte[]> rpcCalItemSet=null;
 				if(jedis!=null){
 					rpcCalItemSet= jedis.zrange("rpcCalItemList".getBytes(), 0, -1);
 				}
 				String protocolName="";
+				String acqProtocolType="";
 				AcqInstanceOwnItem acqInstanceOwnItem=null;
 				if(jedis!=null&&jedis.hexists("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes())){
 					acqInstanceOwnItem=(AcqInstanceOwnItem) SerializeObjectUnils.unserizlize(jedis.hget("AcqInstanceOwnItem".getBytes(), rpcDeviceInfo.getInstanceCode().getBytes()));
 					protocolName=acqInstanceOwnItem.getProtocol();
+					acqProtocolType=acqInstanceOwnItem.getAcqProtocolType();
 				}
 				DisplayInstanceOwnItem displayInstanceOwnItem=null;
 				if(jedis!=null&&jedis.hexists("DisplayInstanceOwnItem".getBytes(), rpcDeviceInfo.getDisplayInstanceCode().getBytes())){
@@ -1352,6 +1354,11 @@ public class DriverAPIController extends BaseController{
 					RPCCalculateRequestData rpcCalculateRequestData=new RPCCalculateRequestData();
 					rpcCalculateRequestData.init();
 					
+					if("private-mqtt".equalsIgnoreCase(acqProtocolType)){
+						rpcCalculateRequestData.getFESDiagram().setSrc(1);
+					}else{
+						rpcCalculateRequestData.getFESDiagram().setSrc(0);
+					}
 					
 					rpcCalculateRequestData.setWellName(rpcDeviceInfo.getWellName());
 					rpcCalculateRequestData.setFluidPVT(rpcDeviceInfo.getFluidPVT());
@@ -1701,6 +1708,7 @@ public class DriverAPIController extends BaseController{
 								rpcCalculateRequestData.getProduction().setWeightWaterCut(weightWaterCut);
 							}
 						}
+//						System.out.println("功图计算请求数据："+gson.toJson(rpcCalculateRequestData));
 						rpcCalculateResponseData=CalculateUtils.fesDiagramCalculate(gson.toJson(rpcCalculateRequestData));
 						if(rpcCalculateResponseData!=null&&rpcCalculateResponseData.getCalculationStatus().getResultStatus()==1){
 							if(jedis.hexists("RPCWorkType".getBytes(), (rpcCalculateResponseData.getCalculationStatus().getResultCode()+"").getBytes())){
@@ -2461,7 +2469,7 @@ public class DriverAPIController extends BaseController{
 			}
 			Map<String,String> loadedAcquisitionItemColumnsMap=acquisitionItemColumnsMap.get(columnsKey);
 			if(acqGroup!=null){
-				Set<byte[]> pcpCalItemSet=null;
+				List<byte[]> pcpCalItemSet=null;
 				if(jedis!=null){
 					pcpCalItemSet= jedis.zrange("pcpCalItemList".getBytes(), 0, -1);
 				}
@@ -3782,6 +3790,32 @@ public class DriverAPIController extends BaseController{
 //		data="{\"User\": \"admin\",\"Password\": \"123456\",\"LiftingType\":1,\"WellList\":[\"rpc01\"]}";
 		this.pager = new Page("pagerForm", request);
 		String json = mobileService.getOilWellInformation(data,pager);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/******
+	 * 获取井名信息
+	 * ***/
+	@RequestMapping("/read/oilWell/pumpingModelInformation")
+	public String getPumpingModelInformation() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+//		data="{}";
+//		data="{\"User\": \"admin\",\"Password\": \"123456\",\"Manufacturer\":\"大庆\",\"Model\":\"CYJY8-3-37HB\"}";
+		this.pager = new Page("pagerForm", request);
+		String json = mobileService.getPumpingModelInformation(data,pager);
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw;

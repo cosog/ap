@@ -41,7 +41,6 @@ import com.cosog.websocket.config.WebSocketByJavax;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 
 @Component("ResourceMonitoringTask")  
@@ -109,9 +108,7 @@ public class ResourceMonitoringTask {
 				MemoryDataManagerTask.loadMemoryData();
 			}
 			redisStatus=1;
-			Client client = jedis.getClient();
-			client.info();
-			String info = client.getBulkReply();
+			String info = jedis.info();
 			String[] infoArr=info.replaceAll("\r\n", "\n").split("\n");
 			for(int i=0;i<infoArr.length;i++){
 				if(infoArr[i].startsWith("redis_version:")){
@@ -125,6 +122,7 @@ public class ResourceMonitoringTask {
 		}catch(Exception e){
 			redisStatus=0;
 			redisVersion="";
+			e.printStackTrace();
 		}finally{
 			if(jedis!=null){
 				jedis.close();

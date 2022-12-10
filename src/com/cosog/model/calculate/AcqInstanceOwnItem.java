@@ -7,6 +7,8 @@ public class AcqInstanceOwnItem  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public String instanceCode;
 	public int deviceType;
+	public String acqProtocolType;
+	public String ctrlProtocolType;
 	public String protocol;
 	public int unitId;
 	private int groupTimingInterval;
@@ -93,5 +95,17 @@ public class AcqInstanceOwnItem  implements Serializable {
 	}
 	public void setGroupSavingInterval(int groupSavingInterval) {
 		this.groupSavingInterval = groupSavingInterval;
+	}
+	public String getAcqProtocolType() {
+		return acqProtocolType;
+	}
+	public void setAcqProtocolType(String acqProtocolType) {
+		this.acqProtocolType = acqProtocolType;
+	}
+	public String getCtrlProtocolType() {
+		return ctrlProtocolType;
+	}
+	public void setCtrlProtocolType(String ctrlProtocolType) {
+		this.ctrlProtocolType = ctrlProtocolType;
 	}
 }

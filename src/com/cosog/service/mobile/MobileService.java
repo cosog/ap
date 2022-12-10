@@ -24,6 +24,7 @@ import com.cosog.model.calculate.DisplayInstanceOwnItem;
 import com.cosog.model.calculate.PCPCalculateRequestData;
 import com.cosog.model.calculate.PCPDeviceInfo;
 import com.cosog.model.calculate.PCPProductionData;
+import com.cosog.model.calculate.PumpingPRTFData;
 import com.cosog.model.calculate.RPCCalculateRequestData;
 import com.cosog.model.calculate.RPCDeviceInfo;
 import com.cosog.model.calculate.RPCProductionData;
@@ -2803,6 +2804,99 @@ public class MobileService<T> extends BaseService<T> {
 				
 				result_json.append("\"NetGrossRatio\":\""+netGrossRatio+"\",");
 				result_json.append("\"NetGrossValue\":\""+netGrossValue+"\"},");
+			}
+		}
+		if(result_json.toString().endsWith(",")){
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		return result_json.toString().replaceAll("\"null\"", "\"\"");
+	}
+	
+	public String getPumpingModelInformation(String data,Page pager)throws Exception {
+		StringBuffer result_json = new StringBuffer();
+		String user="";
+		String password="";
+		String manufacturer="";
+		String model="";
+		if(StringManagerUtils.isNotNull(data)){
+			try{
+				JSONObject jsonObject = JSONObject.fromObject(data);//解析数据
+				try{
+					user=jsonObject.getString("User");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					password=jsonObject.getString("Password");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					manufacturer=jsonObject.getString("Manufacturer");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				try{
+					model=jsonObject.getString("Model");
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		int userCheckSign=this.userManagerService.userCheck(user, password);
+		result_json.append("{ \"ResultStatus\":"+userCheckSign+",");
+		result_json.append("\"DataList\":[");
+		if(userCheckSign==1){
+			String sql = "select t.id,t.manufacturer,t.model,t.stroke,decode(t.crankrotationdirection,'Anticlockwise','逆时针','Clockwise','顺时针','') as crankrotationdirection,"
+					+ " t.offsetangleofcrank,t.crankgravityradius,t.singlecrankweight,t.singlecrankpinweight,"
+					+ " t.structuralunbalance,t.balanceweight,"
+					+ " t.prtf"
+					+ " from tbl_pumpingmodel t where 1=1";
+			if (StringManagerUtils.isNotNull(manufacturer)) {
+				sql += " and t.manufacturer = '"+manufacturer+"'";
+			}
+			if (StringManagerUtils.isNotNull(model)) {
+				sql += " and t.model = '"+model+"'";
+			}
+			sql+= " order by t.id,t.manufacturer,t.model";
+			List<?> list = this.findCallSql(sql);
+			for(int i=0;i<list.size();i++){
+				Object[] obj = (Object[]) list.get(i);
+				
+				String prtfStr="";
+				if(obj[11]!=null){
+					try {
+						SerializableClobProxy   proxy = (SerializableClobProxy)Proxy.getInvocationHandler(obj[11]);
+						CLOB realClob = (CLOB) proxy.getWrappedClob(); 
+						prtfStr=StringManagerUtils.CLOBtoString(realClob);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if(!StringManagerUtils.isNotNull(prtfStr)){
+					prtfStr="{}";
+				}
+				
+				result_json.append("{\"Id\":\""+obj[0]+"\",");
+				result_json.append("\"Manufacturer\":\""+obj[1]+"\",");
+				result_json.append("\"Model\":\""+obj[2]+"\",");
+				result_json.append("\"Stroke\":\""+obj[3]+"\",");
+				result_json.append("\"CrankRotationDirection\":\""+obj[4]+"\",");
+				result_json.append("\"OffsetAngleOfCrank\":\""+obj[5]+"\",");
+				result_json.append("\"CrankGravityRadius\":\""+obj[6]+"\",");
+				result_json.append("\"SingleCrankWeight\":\""+obj[7]+"\",");
+				result_json.append("\"SingleCrankPinWeight\":\""+obj[8]+"\",");
+				result_json.append("\"StructuralUnbalance\":\""+obj[9]+"\",");
+				result_json.append("\"BalanceWeight\":\""+obj[10]+"\",");
+				result_json.append("\"PumpingPRTF\":"+prtfStr+"},");
 			}
 		}
 		if(result_json.toString().endsWith(",")){

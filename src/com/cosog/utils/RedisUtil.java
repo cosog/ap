@@ -7,9 +7,6 @@ import java.util.List;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.ShardedJedisPool;
 
 public class RedisUtil implements Serializable{
     
@@ -43,10 +40,6 @@ public class RedisUtil implements Serializable{
     
     public static JedisPool jedisPool;//非切片连接池
     
-    public static ShardedJedis shardedJedis;//切片额客户端连接
-    
-    public static ShardedJedisPool shardedJedisPool;//切片连接池
-    
     static{
     	try {
 			afterPropertiesSet();
@@ -71,35 +64,10 @@ public class RedisUtil implements Serializable{
         }
         
     }
-    private static  void initialShardedPool() 
-    { 
-        // 池基本配置 
-        JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxTotal(maxActive); 
-        config.setMaxIdle(maxIdle); 
-        config.setMaxWaitMillis(maxWait); 
-        config.setTestOnBorrow(testOnBorrow);
-        // slave链接 
-        List<JedisShardInfo> shards = new ArrayList<JedisShardInfo>(); 
-        JedisShardInfo jedisShardInfo=new JedisShardInfo(addr, port,timeOut);
-        if(StringManagerUtils.isNotNull(auth)){
-        	jedisShardInfo.setPassword(auth);
-        }
-        shards.add(jedisShardInfo); 
-
-        // 构造池 
-        shardedJedisPool = new ShardedJedisPool(config, shards); 
-    }
 
     public  static void afterPropertiesSet() throws Exception {
         // TODO Auto-generated method stub
         initialPool(); 
-        initialShardedPool();
-        try {
-        	shardedJedis = shardedJedisPool.getResource(); 
-        } catch (Exception e) {
-            System.out.println("连接shardedJedisPool失败!");
-        }
         try {
              jedis = jedisPool.getResource();
         } catch (Exception e) {

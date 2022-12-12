@@ -52,7 +52,7 @@ public class EquipmentDriverServerTask {
 	
 	private static EquipmentDriverServerTask instance=new EquipmentDriverServerTask();
 	
-	private static boolean initEnable=false;
+	private static boolean initEnable=true;
 	
 	public static EquipmentDriverServerTask getInstance(){
 		return instance;

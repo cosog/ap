@@ -1091,7 +1091,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 	public String getFSDiagramCalculateRequestData(String recordId,String wellName,String acqTime) throws SQLException, IOException, ParseException{
 		String requestData="{}";
 		String sql=""
-				+ " select t2.wellname,to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss'),"
+				+ " select t2.wellname,"
+				+ " to_char(t.fesdiagramacqTime,'yyyy-mm-dd hh24:mi:ss') as fesdiagramacqTime,t.fesdiagramSrc,"
 				+ " t.stroke,t.spm,"
 				+ " t.position_curve,t.load_curve,t.power_curve,t.current_curve,"
 				+ " t.levelcorrectvalue,"

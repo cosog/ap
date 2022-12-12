@@ -888,7 +888,7 @@ end prd_update_pumpingmodel;
 CREATE OR REPLACE PROCEDURE prd_save_rpc_diagram (
        v_wellId in NUMBER,v_AcqTime in varchar2,
        v_productionData in varchar2,v_balanceInfo in varchar2,v_pumpingModelId in NUMBER,
-       v_fesdiagramAcqTime in varchar2, v_STROKE in NUMBER,v_SPM in NUMBER,
+       v_fesdiagramAcqTime in varchar2,v_fesdiagramSrc in NUMBER,v_STROKE in NUMBER,v_SPM in NUMBER,
        v_POSITION_CURVE in tbl_rpcacqdata_hist.POSITION_CURVE%TYPE,
        v_LOAD_CURVE in tbl_rpcacqdata_hist.LOAD_CURVE%TYPE,
        v_POWER_CURVE in tbl_rpcacqdata_hist.POWER_CURVE%TYPE,
@@ -942,6 +942,7 @@ begin
   end if;
   update tbl_rpcacqdata_latest t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
+          t.fesdiagramsrc=v_fesdiagramSrc,
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
           t.stroke=v_STROKE,t.spm=v_SPM,
           t.position_curve=v_POSITION_CURVE,t.load_curve=v_LOAD_CURVE,
@@ -981,6 +982,7 @@ begin
   commit;
   update tbl_rpcacqdata_hist t
       set t.fesdiagramacqtime=to_date(v_fesdiagramAcqTime,'yyyy-mm-dd hh24:mi:ss'),
+          t.fesdiagramsrc=v_fesdiagramSrc,
           t.productiondata=v_productionData,t.balanceinfo=v_balanceInfo,t.pumpingmodelid=v_pumpingModelId,
           t.stroke=v_STROKE,t.spm=v_SPM,
           t.position_curve=v_POSITION_CURVE,t.load_curve=v_LOAD_CURVE,

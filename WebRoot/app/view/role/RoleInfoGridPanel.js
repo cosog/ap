@@ -24,6 +24,10 @@ Ext.define('AP.view.role.RoleInfoGridPanel', {
                 id: 'currentUserRoleFlag_Id',
                 value: 0
             },{
+                xtype: "hidden",
+                id: 'addRoleFlag_Id',
+                value: 0
+            },{
                 xtype: 'button',
                 text: cosog.string.refresh,
                 iconCls: 'note-refresh',

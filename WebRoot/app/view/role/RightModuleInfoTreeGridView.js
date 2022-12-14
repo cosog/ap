@@ -23,19 +23,17 @@ Ext.define('AP.view.role.RightModuleInfoTreeGridView', {
         var moduleStore = Ext.create("AP.store.role.RightModuleTreeInfoStore");
         Ext.apply(moduleTree, {
             store: moduleStore,
-            columns: [
-                {
-                    xtype: 'treecolumn',
-                    text: '模块列表',
-                    flex: 8,
-                    align: 'left',
-                    dataIndex: 'text'
-                },
-                {
-                    header: 'mdIdaa',
-                    hidden: true,
-                    dataIndex: 'mdId'
-                }]
+            columns: [{
+            	xtype: 'treecolumn',
+            	text: '模块列表',
+            	flex: 8,
+            	align: 'left',
+            	dataIndex: 'text'
+            },{
+            	header: 'mdIdaa',
+            	hidden: true,
+            	dataIndex: 'mdId'
+            }]
         });
         this.callParent(arguments);
     },

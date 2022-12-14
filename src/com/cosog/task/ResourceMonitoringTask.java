@@ -94,7 +94,7 @@ public class ResourceMonitoringTask {
 			e.printStackTrace();
 		}
 		
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0,0);
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("",0, 0, 0, 0, 0,0);
 		try{
 			tableSpaceInfo= getTableSpaceInfo();
 		}catch(Exception e){
@@ -273,6 +273,7 @@ public class ResourceMonitoringTask {
 				+ "\"memUsedPercentAlarmLevel\":"+memUsedPercentAlarmLevel+","
 				+ "\"adRunStatus\":\""+adRunStatus+"\","
 				+ "\"adVersion\":\""+adVersion+"\","
+				+ "\"dbConnStatus\":"+tableSpaceInfo.getConnStatus()+","
 				+ "\"tableSpaceSize\":\""+(tableSpaceInfo.getUsed()+"Mb")+"\","
 				+ "\"tableSpaceUsedPercent\":\""+(tableSpaceInfo.getUsedPercent()+"%")+"\","
 				+ "\"tableSpaceUsedPercentAlarmLevel\":"+tableSpaceInfo.getAlarmLevel()+","
@@ -313,12 +314,13 @@ public class ResourceMonitoringTask {
     }
 	
 	public static  TableSpaceInfo getTableSpaceInfo(){
-		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0,0);
+		TableSpaceInfo tableSpaceInfo=new TableSpaceInfo("", 0, 0, 0, 0, 0,0);
         try{
         	conn=OracleJdbcUtis.getConnection();
             if(conn==null){
             	return tableSpaceInfo;
             }
+            tableSpaceInfo.setConnStatus(1);
     		if(!StringManagerUtils.isNotNull(tableSpaceName)){
     			String userName=Config.getInstance().configFile.getAp().getDatasource().getUser();
     			String tableSpaceSql="select default_tablespace from dba_users where username=upper('"+userName+"')";
@@ -430,12 +432,14 @@ public class ResourceMonitoringTask {
 		public float used=0;
 		public float usedPercent=0;
 		public int alarmLevel=0;
+		public int connStatus=0;
 		public TableSpaceInfo() {
 			super();
 		}
-		public TableSpaceInfo(String tableSpaceName, float total, float free, float used, float usedPercent,int alarmLevel) {
+		public TableSpaceInfo(String tableSpaceName,int connStatus, float total, float free, float used, float usedPercent,int alarmLevel) {
 			super();
 			this.tableSpaceName = tableSpaceName;
+			this.connStatus = connStatus;
 			this.total = total;
 			this.free = free;
 			this.used = used;
@@ -477,6 +481,12 @@ public class ResourceMonitoringTask {
 		}
 		public void setAlarmLevel(int alarmLevel) {
 			this.alarmLevel = alarmLevel;
+		}
+		public int getConnStatus() {
+			return connStatus;
+		}
+		public void setConnStatus(int connStatus) {
+			this.connStatus = connStatus;
 		}
 	}
 

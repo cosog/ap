@@ -62,7 +62,29 @@ Ext.define("AP.view.role.RoleInfoWindow", {
                 allowBlank: false,
                 anchor: '100%',
                 id: 'role_Name_Id',
-                name: "role.roleName"
+                name: "role.roleName",
+                listeners: {
+                    blur: function (t, e) {
+                        Ext.Ajax.request({
+                            method: 'POST',
+                            params: {
+                            	roleName: t.value
+                            },
+                            url: context + '/roleManagerController/judgeRoleExistsOrNot',
+                            success: function (response, opts) {
+                                var obj = Ext.decode(response.responseText);
+                                var msg_ = obj.msg;
+                                if (msg_ == "1") {
+                                    Ext.Msg.alert(cosog.string.ts, "<font color='red'>【角色:" + t.value + "】</font>" + cosog.string.exist + "！");
+                                    t.setValue("");
+                                }
+                            },
+                            failure: function (response, opts) {
+                                Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                            }
+                        });
+                    }
+                }
             },{
             	xtype: 'numberfield',
             	id: "roleLevel_Id",

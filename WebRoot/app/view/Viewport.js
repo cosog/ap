@@ -598,12 +598,18 @@ function websocketOnMessage(evt) {
 				Ext.getCmp("memUsedPercentLabel_id").setText("内存:"+data.memUsedPercent);
 			}
 			
-			if(data.tableSpaceUsedPercentAlarmLevel==1){
-				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >表空间:"+data.tableSpaceUsedPercent+"</font>");
-			}else if(data.tableSpaceUsedPercentAlarmLevel==2){
-				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >表空间:"+data.tableSpaceUsedPercent+"</font>");
+			if(data.dbConnStatus==1){
+				Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtgreen");
+				if(data.tableSpaceUsedPercentAlarmLevel==1){
+					Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#F09614 >oracle表空间:"+data.tableSpaceUsedPercent+"</font>");
+				}else if(data.tableSpaceUsedPercentAlarmLevel==2){
+					Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("<font color=#DC2828 >oracle表空间:"+data.tableSpaceUsedPercent+"</font>");
+				}else{
+					Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("oracle表空间:"+data.tableSpaceUsedPercent);
+				}
 			}else{
-				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("表空间:"+data.tableSpaceUsedPercent);
+				Ext.getCmp("tableSpaceSizeProbeLabel_id").setIconCls("dtyellow");
+				Ext.getCmp("tableSpaceSizeProbeLabel_id").setText("oracle");
 			}
 			
 			if(data.redisStatus==1){

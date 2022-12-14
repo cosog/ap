@@ -4019,4 +4019,52 @@ public class DriverAPIController extends BaseController{
 		}
 		return null;
 	}
+	
+	/******
+	 * 生产数据写入
+	 * ***/
+	@RequestMapping("/write/production")
+	public String writeOilWellProductionData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		this.pager = new Page("pagerForm", request);
+		String json = "{\"Msg\":\"此接口位预留\"}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/******
+	 * 功图数据写入
+	 * ***/
+	@RequestMapping("/write/FESDiagram")
+	public String writeOilWellFESDiagramData() throws Exception {
+		ServletInputStream ss = request.getInputStream();
+		String data=StringManagerUtils.convertStreamToString(ss,"utf-8").replaceAll(" ", "");
+		this.pager = new Page("pagerForm", request);
+		String json = "{\"Msg\":\"此接口位预留\"}";
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw;
+		try {
+			pw = response.getWriter();
+			pw.print(json);
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

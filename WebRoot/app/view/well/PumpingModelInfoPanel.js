@@ -310,7 +310,7 @@ Ext.define('AP.view.well.PumpingModelInfoPanel', {
                     }
                 }, {
                     region: 'east',
-                    width: '33%',
+                    width: '30%',
                     title: '抽油机位置扭矩因数',
                     id: 'PumpingUnitPTFPanel_Id',
                     collapsible: true, // 是否折叠
@@ -752,7 +752,7 @@ var PumpingModelInfoHandsontableHelper = {
 
 function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
 	if(isNotVal(manufacturer)){
-		Ext.getCmp("PumpingUnitPTFPanel_Id").setTitle("<font color=red>"+manufacturer+"/"+model+"</font>位置扭矩因数");
+		Ext.getCmp("PumpingUnitPTFPanel_Id").setTitle("抽油机设备【<font color=red>"+manufacturer+"/"+model+"</font>】位置扭矩因数");
 	}else{
 		Ext.getCmp("PumpingUnitPTFPanel_Id").setTitle("抽油机位置扭矩因数");
 	}

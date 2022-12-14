@@ -986,10 +986,11 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("PCPProductionDataInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
+			var panelTitle='生产数据';
+			if(isNotVal(deviceName)){
+				panelTitle="螺杆泵井【<font color='red'>"+deviceName+"</font>】生产数据";
 			}
-			Ext.getCmp("PCPProductionDataInfoPanel_Id").setTitle(deviceName+"生产数据");
+			Ext.getCmp("PCPProductionDataInfoPanel_Id").setTitle(panelTitle);
 			if(pcpProductionHandsontableHelper==null || pcpProductionHandsontableHelper.hot==undefined){
 				pcpProductionHandsontableHelper = PCPProductionHandsontableHelper.createNew("PCPAdditionalInfoTableDiv_id");
 				var colHeaders="['序号','名称','变量']";
@@ -1098,10 +1099,11 @@ function CreateAndLoadPCPVideoInfoTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("PCPVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
+			var panelTitle='视频配置';
+			if(isNotVal(deviceName)){
+				panelTitle="螺杆泵井【<font color='red'>"+deviceName+"</font>】视频配置";
 			}
-			Ext.getCmp("PCPVideoInfoPanel_Id").setTitle(deviceName+"视频配置");
+			Ext.getCmp("PCPVideoInfoPanel_Id").setTitle(panelTitle);
 			if(pcpVideoInfoHandsontableHelper==null || pcpVideoInfoHandsontableHelper.hot==undefined){
 				pcpVideoInfoHandsontableHelper = PCPVideoInfoHandsontableHelper.createNew("PCPVideoInfoTableDiv_id");
 				var colHeaders="['序号','名称','变量']";

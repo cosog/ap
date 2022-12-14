@@ -52,8 +52,14 @@ Ext.define('AP.store.role.RoleInfoStore', {
                     layout: "fit",
                     stripeRows: true,
                     forceFit: false,
-                    selType: 'checkboxmodel',
-                    multiSelect: true,
+//                    selType: 'checkboxmodel',
+//                    multiSelect: true,
+                    selModel:{
+                    	selType: 'checkboxmodel',
+                    	mode:'SINGLE',//"SINGLE" / "SIMPLE" / "MULTI" 
+                    	checkOnly:false,
+                    	allowDeselect:false
+                    },
                     viewConfig: {
                         emptyText: "<div class='con_div_' id='div_dataactiveid'><" + cosog.string.nodata + "></div>"
                     },
@@ -175,12 +181,25 @@ Ext.define('AP.store.role.RoleInfoStore', {
                         selectionchange: function (sm, selected) {
                         	var roleId='';
                         	var roleCode='';
+                        	var roleName='';
                         	if(selected.length>0){
                         		roleId = selected[0].data.roleId;
                         		roleCode = selected[0].data.roleCode;
+                        		roleName = selected[0].data.roleName;
+                        		Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
+                        		
+                        		Ext.getCmp("RightModuleTreeInfoLabel_Id").setHtml("角色【<font color='red'>"+roleName+"</font>】模块授权");
+                        		clkLoadAjaxFn();
+                        		
+                        		var currentRoleId=Ext.getCmp("currentUserRoleId_Id").getValue();
+                        		if(parseInt(currentRoleId)==parseInt(roleId)){//不能修改自己权限
+                                    Ext.getCmp("RightModuleTreeInfoGridPanel_Id").disable();
+                                    Ext.getCmp("addRightModuleLableClassBtn_Id").disable();
+                                }else{
+                                	Ext.getCmp("RightModuleTreeInfoGridPanel_Id").enable();
+                                	Ext.getCmp("addRightModuleLableClassBtn_Id").enable();
+                                }
                         	}
-                            Ext.getCmp("RightBottomRoleCodes_Id").setValue(roleId);
-                            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
                         },
                         celldblclick: function ( grid, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                         	var currentId=Ext.getCmp("currentUserRoleId_Id").getValue();
@@ -205,8 +224,14 @@ Ext.define('AP.store.role.RoleInfoStore', {
                 panel.add(gridPanel);
             }
             if(get_rawData.totalCount>0){
+            	var addRoleFlag=Ext.getCmp("addRoleFlag_Id").getValue();
             	gridPanel.getSelectionModel().deselectAll(true);
-            	gridPanel.getSelectionModel().select(0, true);
+            	if(parseInt(addRoleFlag)>0){
+            		gridPanel.getSelectionModel().select(store.getCount()-1, true);
+            		Ext.getCmp("addRoleFlag_Id").setValue(0);
+            	}else{
+            		gridPanel.getSelectionModel().select(0, true);
+            	}
             }
         },
         beforeload: function (store, options) {

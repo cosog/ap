@@ -35,14 +35,16 @@ var SaveroleDataInfoSubmitBtnForm = function () {
             waitTitle: 'Please Wait...',
             success: function (response, action) {
                 Ext.getCmp('role_addwin_Id').close();
-                Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
+                
                 if (action.result.msg == true) {
                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.success + "</font>】，" + cosog.string.dataInfo + "");
+                    Ext.getCmp("addRoleFlag_Id").setValue(1);
                 }
                 if (action.result.msg == false) {
                     Ext.Msg.alert(cosog.string.ts, "<font color=red>SORRY！</font>" + cosog.string.failInfo + "。");
-
+                    Ext.getCmp("addRoleFlag_Id").setValue(0);
                 }
+                Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
             },
             failure: function () {
                 Ext.Msg.alert(cosog.string.ts, "【<font color=red>" + cosog.string.execption + "</font> 】：" + cosog.string.contactadmin + "！");
@@ -240,24 +242,12 @@ var grantRolePermission = function () {//授予角色模块权限
         Ext.Msg.alert(cosog.string.ts, cosog.string.pleaseChooseRole);
         return false
     }
-//    if (_record.length > 0) {} else {
-//        Ext.Msg.alert(cosog.string.ts, '<font color=blue>' + cosog.string.chooseGrantModule + '！</font>');
-//    }
     
 
     Ext.Array.each(_record, function (name, index, countriesItSelf) {
         var md_ids = _record[index].get('mdId')
         addjson.push(md_ids);
         var matrix_value = "";
-        /*for (var i = 0; i < 3; i++) {
-					var matrix_ = Ext.getDom(md_ids + "&" + i);
-					if (matrix_.checked) {
-						matrix_value += "1,";
-					} else {
-						matrix_value += "0,";
-					}
-
-				}*/
         matrix_value = '0,0,0,';
         if (matrix_value != "" || matrix_value != null) {
             matrix_value = matrix_value.substring(0, matrix_value.length - 1);
@@ -290,7 +280,7 @@ var grantRolePermission = function () {//授予角色模块权限
                 Ext.Msg.alert('info', "<font color=red>SORRY！" + cosog.string.grandFail + "。</font>");
             }
             // 刷新Grid
-            Ext.getCmp("RightModuleTreeInfoGridPanel_Id").getStore().load();
+            Ext.getCmp("RoleInfoGridPanel_Id").getStore().load();
         },
         failure: function () {
             Ext.Msg.alert("warn", "【<font color=red>" + cosog.string.execption + " </font>】：" + cosog.string.contactadmin + "！");

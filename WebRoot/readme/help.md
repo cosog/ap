@@ -112,7 +112,7 @@
 
 >   >   [2.10.1 井名信息](#2.10.1井名信息)
 
->   >   [2.10.2 抽油机信息](#2.10.2抽油机信息)
+>   >   [2.10.2 抽油机设备](#2.10.2抽油机设备)
 
 >   >   [2.10.3 短信设备](#2.10.3短信设备)
 
@@ -290,7 +290,7 @@ jdk8、tomcat9、oracle、redis
 
 通过点击界面中缝位置的图标![G:\\work\\github\\apmd\\Image\\PNG\\025.png](../images/md/PNG/31c6015dc83f2a40f02cd33a2419f5a9.png)或![G:\\work\\github\\apmd\\Image\\PNG\\026.png](../images/md/PNG/74e5710c75eecf890973c56e5ba93a49.png)可实现界面伸缩。
 
-![](../images/md/PNG/7e2e63f4d3ba3763fbe2eb59b3a38366.png)
+![](../images/md/PNG/8bd3e279bd2a91c592ec730dfa6bc718.png)
 
 图2-1 界面概览
 
@@ -298,7 +298,7 @@ jdk8、tomcat9、oracle、redis
 
 根据设备数据进行实时监控，**有新数据时，界面自动刷新。**
 
-![](../images/md/PNG/b2913c9e5bde003dc943295120495e1c.png)
+![](../images/md/PNG/70202d7727715daf6e097fa90da7bade.png)
 
 图2-2 实时监控
 
@@ -1469,7 +1469,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 只能查看和修改等级小于当前登录用户角色等级的角色，带\*的角色为登录用户所属角色。
 
-![](../images/md/PNG/bf16938554cdb0396bc85597dbcdd319.png)
+![](../images/md/PNG/1bc38ce981f04a4cd377b69c968cf02f.png)
 
 图2-103角色管理
 
@@ -1493,9 +1493,9 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 #### <h4><a name="2.9.2.2角色修改"></a>2.9.2.2 角色修改</h4>
 
-选中要修改的角色，点击“修改”按钮（或者双击角色）打开修改窗口，编辑相应内容后，点击“修改”按钮，完成操作。不能修改当前登录用户所属角色。
+在角色列表中，双击单元格进入编辑状态，修改角色信息，点击相应行的“保存”按钮，完成修改。不能修改当前登录用户所属角色。
 
-![](../images/md/PNG/4075dc29154a901df08b20f4c5ed3467.png)
+![](../images/md/PNG/f786dc67b772c505b99b3669a1246e5c.png)
 
 图2-105角色管理-角色修改
 
@@ -1511,7 +1511,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 选中要授权的角色，在右侧模块表中勾选要授予给角色的模块，点击“保存”。不能修改当前登录用户所属角色的权限。
 
-![](../images/md/PNG/17333a79a398be26e61d014995277d2d.png)
+![](../images/md/PNG/70ad4baafdbd6e22ab6d85aa51cc6f77.png)
 
 图2-107角色管理-角色授权
 
@@ -1521,7 +1521,7 @@ private-kd93（科台斯）、private-lq1000（灵旗）五种协议；
 
 抽油机井和螺杆泵井维护。相比于螺杆泵井，抽油机井多了抽油机机型的选择和平衡块信息的配置，其他操作基本相同。
 
-![](../images/md/PNG/cafe1f266db17bebb29a53ff31d16d7d.png)
+![](../images/md/PNG/53247e03652b0e5413c05200c5cb8743.png)
 
 图2-108井名信息
 
@@ -1559,25 +1559,25 @@ Server模式则配置IP端口，格式为“IP:端口”；
 净毛比与净毛值用于标定产量，标定方式为：y=ax+b，a-净毛比 b-净毛值 x-标定前产量
 y-标定后产量，净毛比默认为1，净毛值默认为0，则不进行标定。
 
-![](../images/md/PNG/99258d69b128079d3a408423d3b36b61.png)
+![](../images/md/PNG/085285b7068ff58398982677f4d3279f.png)
 
 图2-109井名信息-生产数据配置
 
 3、抽油机型号配置：抽油机设备机型配置，螺杆泵设备无。
 
-![](../images/md/PNG/0e2511f0e101282c156cbffc3b157e6b.png)
+![](../images/md/PNG/e9baa3f1df61f0fca45fd87c669d682d.png)
 
 图2-110抽油机型号配置
 
 4、抽油机平衡块信息配置：抽油机设备机型配置，螺杆泵设备无。
 
-![](../images/md/PNG/5ad482a395fd87615ed1aca466eafabc.png)
+![](../images/md/PNG/567a73a05377e28110df53ff22fffaac.png)
 
 图2-111抽油机平衡块信息配置
 
 5、视频配置：配置视频监控路径，每口井可配置两个视频。
 
-![](../images/md/PNG/9ddc8b540b65ce2e002b6edc7472f670.png)
+![](../images/md/PNG/453501b630e0c0718f9c9c7ac3115c93.png)
 
 图2-112视频配置
 
@@ -1616,7 +1616,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 在设备列表中选中删除的设备，点击“删除设备”按钮，进行删除操作。
 
-![](../images/md/PNG/b27204bfd2dd561a97bf55bde6c4e8f6.png)
+![](../images/md/PNG/896edabb08f63ce09ba2706122a76593.png)
 
 图2-114删除抽油机设备
 
@@ -1638,13 +1638,13 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 图2-116批量添加抽油机设备-异常数据处理
 
-### <h3><a name="2.10.2抽油机信息"></a>2.10.2 抽油机信息</h3>
+### <h3><a name="2.10.2抽油机设备"></a>2.10.2 抽油机设备</h3>
 
 抽油机型号维护。
 
-![](../images/md/PNG/fb5bc7630753ee05a8aef965020e0832.png)
+![](../images/md/PNG/69803892e4f915705149b4b24d61a11a.png)
 
-图2-117抽油机信息管理
+图2-117抽油机设备管理
 
 #### <h4><a name="2.10.2.1修改设备"></a>2.10.2.1 修改设备</h4>
 
@@ -1652,7 +1652,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 注意：不同冲程对应的位置扭矩因数需分别录入。
 
-![](../images/md/PNG/49e24bee6af91819c05633ea63bd1f94.png)
+![](../images/md/PNG/3f4c1794aa422344b1ee4937c2202946.png)
 
 图2-118抽油机型号修改
 
@@ -1957,9 +1957,7 @@ smtpPort：邮箱SMTP端口，以实际为准。
 
 1）运行sqlplus，以管理员身份登录sys用户
 
-![](../images/md/PNG/327a48ea35ab12cb571fe433b837a624.png)
-
-![](../images/md/PNG/d69528806745c137c137185e4b9c3541.png)
+![](../images/md/PNG/327a48ea35ab12cb571fe433b837a624.png)![](../images/md/PNG/99cc4ce7cd29bddb720b3e9b0b42b9c9.png)
 
 2）执行“truncate table aud\$;”截断数据
 
@@ -1974,3 +1972,23 @@ scope=spfile;”修改spfile文件，关闭审计功能。
 immediate;”关闭oracle例程后，执行“startup”启动数据库。
 
 ![](../images/md/PNG/8c876091da0da46ad25a67612aea9868.png)
+
+3、oracle12以上版本插拔数据库自启动
+
+每次重启数据库后，创建的插拔数据库默认不自动打开。可创建触发器，在服务启动后自动打开插拔数据库。
+
+1）在 SQL Plus 中使用 sys 登录/ as sysdba；
+
+2）复制并执行以下触发器语句，注意：最后面的/不可忽略
+
+CREATE OR REPLACE TRIGGER open_pdbs
+
+AFTER STARTUP ON DATABASE
+
+BEGIN
+
+EXECUTE IMMEDIATE 'ALTER PLUGGABLE DATABASE ALL OPEN';
+
+END open_pdbs;
+
+/

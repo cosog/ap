@@ -358,7 +358,7 @@ Ext.define('AP.view.well.RPCDeviceInfoPanel', {
                         header:false,
                         items: [{
                         	region: 'center',
-                        	title:'抽油机型号列表',
+                        	title:'抽油机型号选择',
                             id:'RPCPumpingModelListPanel_Id',
                             split: true,
                             collapsible: true,
@@ -1113,9 +1113,11 @@ function CreateAndLoadRPCPumoingModelInfoTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("RPCPumpingModelListPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
+			var panelTitle='抽油机型号选择';
+			if(isNotVal(deviceName)){
+				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】抽油机型号选择";
 			}
+			Ext.getCmp("RPCPumpingModelListPanel_Id").setTitle(panelTitle);
 			if(rpcPumpingModelHandsontableHelper==null || rpcPumpingModelHandsontableHelper.hot==undefined){
 				rpcPumpingModelHandsontableHelper = RPCPumpingModelHandsontableHelper.createNew("RPCPumpingModelListTableDiv_id");
 				var colHeaders="['','序号','厂家','型号','','','']";
@@ -1252,10 +1254,11 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("RPCProductionDataInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
+			var panelTitle='生产数据';
+			if(isNotVal(deviceName)){
+				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】生产数据";
 			}
-			Ext.getCmp("RPCProductionDataInfoPanel_Id").setTitle(deviceName+"生产数据");
+			Ext.getCmp("RPCProductionDataInfoPanel_Id").setTitle(panelTitle);
 			if(rpcProductionHandsontableHelper==null || rpcProductionHandsontableHelper.hot==undefined){
 				rpcProductionHandsontableHelper = RPCProductionHandsontableHelper.createNew("RPCAdditionalInfoTableDiv_id");
 				rpcProductionHandsontableHelper.resultList = result.resultNameList;
@@ -1408,10 +1411,11 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("RPCPumpingInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
+			var panelTitle='抽油机详情';
+			if(isNotVal(deviceName)){
+				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】抽油机详情";
 			}
-			Ext.getCmp("RPCPumpingInfoPanel_Id").setTitle(deviceName+"抽油机详情");
+			Ext.getCmp("RPCPumpingInfoPanel_Id").setTitle(panelTitle);
 			if(rpcPumpingInfoHandsontableHelper==null || rpcPumpingInfoHandsontableHelper.hot==undefined){
 				rpcPumpingInfoHandsontableHelper = RPCPumpingInfoHandsontableHelper.createNew("RPCPumpingInfoTableDiv_id");
 				
@@ -1594,10 +1598,11 @@ function CreateAndLoadRPCVideoInfoTable(deviceId,deviceName,isNew){
 		success:function(response) {
 			Ext.getCmp("RPCVideoInfoPanel_Id").getEl().unmask();
 			var result =  Ext.JSON.decode(response.responseText);
-			if(!isNotVal(deviceName)){
-				deviceName='';
+			var panelTitle='视频配置';
+			if(isNotVal(deviceName)){
+				panelTitle="抽油机井【<font color='red'>"+deviceName+"</font>】视频配置";
 			}
-			Ext.getCmp("RPCVideoInfoPanel_Id").setTitle(deviceName+"视频配置");
+			Ext.getCmp("RPCVideoInfoPanel_Id").setTitle(panelTitle);
 			if(rpcVideoInfoHandsontableHelper==null || rpcVideoInfoHandsontableHelper.hot==undefined){
 				rpcVideoInfoHandsontableHelper = RPCVideoInfoHandsontableHelper.createNew("RPCVideoInfoTableDiv_id");
 				var colHeaders="['序号','名称','变量']";

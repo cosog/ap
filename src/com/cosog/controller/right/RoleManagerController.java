@@ -297,6 +297,25 @@ public class RoleManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/judgeRoleExistsOrNot")
+	public String judgeRoleExistsOrNot() throws IOException {
+		roleName = ParamUtils.getParameter(request, "roleName").replaceAll(" ", "");
+		boolean flag = this.roleService.judgeRoleExistsOrNot(roleName,"");
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	
 	/**<p>描述：获取角色类型的下拉菜单数据信息</p>
 	 * @return

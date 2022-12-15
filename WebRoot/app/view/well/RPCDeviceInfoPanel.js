@@ -506,10 +506,23 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
                 columns += "]";
                 rpcDeviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 rpcDeviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
-                rpcDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+                
+                if(result.totalRoot.length==0){
+                	rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
+                	rpcDeviceInfoHandsontableHelper.createTable([{}]);
+                }else{
+                	rpcDeviceInfoHandsontableHelper.hiddenRows = [];
+                	rpcDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+                }
             } else {
             	rpcDeviceInfoHandsontableHelper.dataLength=result.totalCount;
-            	rpcDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+            	if(result.totalRoot.length==0){
+            		rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
+            		rpcDeviceInfoHandsontableHelper.hot.loadData([{}]);
+            	}else{
+            		rpcDeviceInfoHandsontableHelper.hiddenRows = [];
+            		rpcDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+            	}
             }
             if(result.totalRoot.length==0){
             	Ext.getCmp("RPCDeviceSelectRow_Id").setValue('');
@@ -552,6 +565,7 @@ var RPCDeviceInfoHandsontableHelper = {
         rpcDeviceInfoHandsontableHelper.colHeaders = [];
         rpcDeviceInfoHandsontableHelper.columns = [];
         rpcDeviceInfoHandsontableHelper.dataLength = 0;
+        rpcDeviceInfoHandsontableHelper.hiddenRows = [];
 
         rpcDeviceInfoHandsontableHelper.AllData = {};
         rpcDeviceInfoHandsontableHelper.updatelist = [];
@@ -574,6 +588,10 @@ var RPCDeviceInfoHandsontableHelper = {
                     columns: [0],
                     indicators: false
                 },
+                hiddenRows: {
+                    rows: rpcDeviceInfoHandsontableHelper.hiddenRows,
+                    indicators: false
+                },
                 columns: rpcDeviceInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -591,9 +609,9 @@ var RPCDeviceInfoHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
-//                    if(visualRowIndex < rpcDeviceInfoHandsontableHelper.dataLength){
-//                    	cellProperties.readOnly = true;
-//                    }
+                    if(rpcDeviceInfoHandsontableHelper.dataLength==0){
+                    	cellProperties.readOnly = true;
+                    }
                     return cellProperties;
                 },
                 afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -941,11 +959,11 @@ var RPCDeviceInfoHandsontableHelper = {
                 	var rpcPumpingInfoHandsontableData=rpcPumpingInfoHandsontableHelper.hot.getData();
                 	stroke=rpcPumpingInfoHandsontableData[0][2];
                 	balanceInfo.EveryBalance=[];
-                	for(var i=1;i<rpcPumpingInfoHandsontableData.length;i++){
-                		if(isNotVal(rpcPumpingInfoHandsontableData[i][2]) || isNotVal(rpcPumpingInfoHandsontableData[i][3])){
+                	for(var i=3;i<rpcPumpingInfoHandsontableData.length;i++){
+                		if(isNotVal(rpcPumpingInfoHandsontableData[i][1]) || isNotVal(rpcPumpingInfoHandsontableData[i][2])){
                     		var EveryBalance={};
-                    		EveryBalance.Position=rpcPumpingInfoHandsontableData[i][2];
-                    		EveryBalance.Weight=rpcPumpingInfoHandsontableData[i][3];
+                    		EveryBalance.Position=rpcPumpingInfoHandsontableData[i][1];
+                    		EveryBalance.Weight=rpcPumpingInfoHandsontableData[i][2];
                     		balanceInfo.EveryBalance.push(EveryBalance);
                     	}
                 	}
@@ -1432,7 +1450,7 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 	    		}
 				
 				var colHeaders="['序号','名称','变量','']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'},{data:'itemValue2'}]";
+				var columns="[{data:'id'},{data:'itemValue1'},{data:'itemValue2'}]";
 				rpcPumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcPumpingInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -1458,9 +1476,6 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 					rpcPumpingInfoHandsontableHelper.hot.loadData(result.totalRoot);
 				}
 			}
-			
-			
-			
 		},
 		failure:function(){
 			Ext.MessageBox.alert("错误","与后台联系的时候出了问题");
@@ -1534,8 +1549,8 @@ var RPCPumpingInfoHandsontableHelper = {
 	                	colspan:2
 	                }]],
 	                mergeCells: [{
-	                	"row": 0,
-                        "col": 2,
+	                	"row": 1,
+                        "col": 1,
                         "rowspan": 1,
                         "colspan": 2
 	                }],
@@ -1543,7 +1558,7 @@ var RPCPumpingInfoHandsontableHelper = {
 	                    var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);
 	                    var visualColIndex = this.instance.toVisualColumn(col);
-	                    if (visualColIndex <2) {
+	                    if ( (visualRowIndex==0&&visualColIndex==1) || (visualRowIndex>=1&&visualRowIndex<=2)    ) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcPumpingInfoHandsontableHelper.addBoldBg;
 		                }
@@ -1555,7 +1570,7 @@ var RPCPumpingInfoHandsontableHelper = {
 //	                    	cellProperties.renderer = rpcPumpingInfoHandsontableHelper.processingStrokeData;
 	                    }
 //	                    
-	                    if (visualColIndex === 3 && visualRowIndex>0) {
+	                    if (visualColIndex === 2 && visualRowIndex>=3) {
 	                    	this.type = 'dropdown';
 	                    	this.source = rpcPumpingInfoHandsontableHelper.balanceWeightList;
 	                    	this.strict = true;

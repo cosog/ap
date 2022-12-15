@@ -304,9 +304,21 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
                 columns += "]";
                 smsDeviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 smsDeviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
-                smsDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+                if(result.totalRoot.length==0){
+                	smsDeviceInfoHandsontableHelper.hiddenRows = [0];
+                	smsDeviceInfoHandsontableHelper.createTable([{}]);
+                }else{
+                	smsDeviceInfoHandsontableHelper.hiddenRows = [];
+                	smsDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+                }
             } else {
-                smsDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+            	if(result.totalRoot.length==0){
+            		smsDeviceInfoHandsontableHelper.hiddenRows = [0];
+            		smsDeviceInfoHandsontableHelper.hot.loadData([{}]);
+            	}else{
+            		smsDeviceInfoHandsontableHelper.hiddenRows = [];
+            		smsDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+            	}
             }
             if (result.totalRoot.length == 0) {
                 Ext.getCmp("SMSDeviceSelectRow_Id").setValue('');
@@ -342,6 +354,7 @@ var SMSDeviceInfoHandsontableHelper = {
         smsDeviceInfoHandsontableHelper.validresult = true; //数据校验
         smsDeviceInfoHandsontableHelper.colHeaders = [];
         smsDeviceInfoHandsontableHelper.columns = [];
+        smsDeviceInfoHandsontableHelper.hiddenRows = [];
 
         smsDeviceInfoHandsontableHelper.AllData = {};
         smsDeviceInfoHandsontableHelper.updatelist = [];
@@ -362,6 +375,10 @@ var SMSDeviceInfoHandsontableHelper = {
                 data: data,
                 hiddenColumns: {
                     columns: [0],
+                    indicators: false
+                },
+                hiddenRows: {
+                    rows: smsDeviceInfoHandsontableHelper.hiddenRows,
                     indicators: false
                 },
                 columns: smsDeviceInfoHandsontableHelper.columns,

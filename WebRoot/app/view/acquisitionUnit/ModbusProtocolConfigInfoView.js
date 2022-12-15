@@ -309,7 +309,7 @@ var ProtocolConfigAddrMappingItemsHandsontableHelper = {
 		                			IFDataType=protocolConfigAddrMappingItemsHandsontableHelper.Data[row].IFDataType;
 		                		}
 		                	}
-		                	if(IFDataType.toUpperCase().indexOf('FLOAT')<0){
+		                	if(IFDataType==null || IFDataType.toUpperCase().indexOf('FLOAT')<0){
 		                		cellProperties.readOnly = true;
 		                	}else{
 		                		cellProperties.readOnly = false;

@@ -438,10 +438,23 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
                 columns += "]";
                 pcpDeviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 pcpDeviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
-                pcpDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+                
+                if(result.totalRoot.length==0){
+                	rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
+                	pcpDeviceInfoHandsontableHelper.createTable([{}]);
+                }else{
+                	rpcDeviceInfoHandsontableHelper.hiddenRows = [];
+                	pcpDeviceInfoHandsontableHelper.createTable(result.totalRoot);
+                }
             } else {
             	pcpDeviceInfoHandsontableHelper.dataLength=result.totalCount;
-            	pcpDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+            	if(result.totalRoot.length==0){
+            		rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
+            		pcpDeviceInfoHandsontableHelper.hot.loadData([{}]);
+            	}else{
+            		rpcDeviceInfoHandsontableHelper.hiddenRows = [];
+            		pcpDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
+            	}
             }
             if(result.totalRoot.length==0){
             	Ext.getCmp("PCPDeviceSelectRow_Id").setValue('');
@@ -481,6 +494,7 @@ var PCPDeviceInfoHandsontableHelper = {
         pcpDeviceInfoHandsontableHelper.colHeaders = [];
         pcpDeviceInfoHandsontableHelper.columns = [];
         pcpDeviceInfoHandsontableHelper.dataLength = 0;
+        pcpDeviceInfoHandsontableHelper.hiddenRows = [];
 
         pcpDeviceInfoHandsontableHelper.AllData = {};
         pcpDeviceInfoHandsontableHelper.updatelist = [];
@@ -503,6 +517,10 @@ var PCPDeviceInfoHandsontableHelper = {
                     columns: [0],
                     indicators: false
                 },
+                hiddenRows: {
+                    rows: pcpDeviceInfoHandsontableHelper.hiddenRows,
+                    indicators: false
+                },
                 columns: pcpDeviceInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
                 autoWrapRow: true,
@@ -520,6 +538,9 @@ var PCPDeviceInfoHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
+                    if(pcpDeviceInfoHandsontableHelper.dataLength==0){
+                    	cellProperties.readOnly = true;
+                    }
                     return cellProperties;
                 },
                 afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

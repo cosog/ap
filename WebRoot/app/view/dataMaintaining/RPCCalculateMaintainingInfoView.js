@@ -740,8 +740,10 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
 		rpcFESDiagramCalculateMaintainingHandsontableHelper = RPCFESDiagramCalculateMaintainingHandsontableHelper.createNew(divid);
 		var colHeaders="[";
         var columns="[";
+        
         for(var i=0;i<result.columns.length;i++){
         	colHeaders+="'"+result.columns[i].header+"'";
+        	
         	columns+="{data:'"+result.columns[i].dataIndex+"'";
         	if(result.columns[i].dataIndex.toUpperCase()=="id".toUpperCase()){
         		columns+=",type: 'checkbox'";
@@ -780,9 +782,22 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
     	columns+="]";
     	rpcFESDiagramCalculateMaintainingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
     	rpcFESDiagramCalculateMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
-		rpcFESDiagramCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
+    	
+    	if(result.totalRoot.length==0){
+    		rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows = [0];
+        	rpcFESDiagramCalculateMaintainingHandsontableHelper.createTable([{}]);
+        }else{
+        	rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows = [];
+        	rpcFESDiagramCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
+        }
 	}else{
-		rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
+		if(result.totalRoot.length==0){
+			rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows = [0];
+			rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
+    	}else{
+    		rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows = [];
+    		rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
+    	}
 	}
 };
 
@@ -795,6 +810,7 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	        rpcFESDiagramCalculateMaintainingHandsontableHelper.validresult=true;//数据校验
 	        rpcFESDiagramCalculateMaintainingHandsontableHelper.colHeaders=[];
 	        rpcFESDiagramCalculateMaintainingHandsontableHelper.columns=[];
+	        rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows = [];
 	        
 	        rpcFESDiagramCalculateMaintainingHandsontableHelper.AllData={};
 	        rpcFESDiagramCalculateMaintainingHandsontableHelper.updatelist=[];
@@ -816,6 +832,10 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
 	                    columns: [0],
+	                    indicators: false
+	                },
+	                hiddenRows: {
+	                    rows: rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows,
 	                    indicators: false
 	                },
 	                columns:rpcFESDiagramCalculateMaintainingHandsontableHelper.columns,

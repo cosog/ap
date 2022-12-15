@@ -2275,9 +2275,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		java.lang.reflect.Type type=null;
 		String columns = "["
 				+ "{ \"header\":\"序号\",\"dataIndex\":\"id\",width:50 ,children:[] },"
-				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemName\",width:120 ,children:[] },"
-				+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue\",width:80 ,children:[] },"
-				+ "{ \"header\":\"\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
+				+ "{ \"header\":\"名称\",\"dataIndex\":\"itemValue1\",width:120 ,children:[] },"
+				+ "{ \"header\":\"变量\",\"dataIndex\":\"itemValue2\",width:80 ,children:[] }"
 				+ "]";
 		String sql = "select t.stroke,t.balanceinfo from tbl_rpcdevice t where t.id="+deviceId;
 		String json = "";
@@ -2326,15 +2325,20 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				position8=balance.getEveryBalance().get(7).getPosition()+"";
 			}
 		}
-		result_json.append("{\"id\":1,\"itemName\":\"冲程(m)\",\"itemValue\":\""+stroke+"\",\"itemValue2\":\"\"},");
-		result_json.append("{\"id\":2,\"itemName\":\"平衡块1位置/重量\",\"itemValue\":\""+position1+"\",\"itemValue2\":\""+weight1+"\"},");
-		result_json.append("{\"id\":3,\"itemName\":\"平衡块2位置/重量\",\"itemValue\":\""+position2+"\",\"itemValue2\":\""+weight2+"\"},");
-		result_json.append("{\"id\":4,\"itemName\":\"平衡块3位置/重量\",\"itemValue\":\""+position3+"\",\"itemValue2\":\""+weight3+"\"},");
-		result_json.append("{\"id\":5,\"itemName\":\"平衡块4位置/重量\",\"itemValue\":\""+position4+"\",\"itemValue2\":\""+weight4+"\"},");
-		result_json.append("{\"id\":6,\"itemName\":\"平衡块5位置/重量\",\"itemValue\":\""+position5+"\",\"itemValue2\":\""+weight5+"\"},");
-		result_json.append("{\"id\":7,\"itemName\":\"平衡块6位置/重量\",\"itemValue\":\""+position6+"\",\"itemValue2\":\""+weight6+"\"},");
-		result_json.append("{\"id\":8,\"itemName\":\"平衡块7位置/重量\",\"itemValue\":\""+position7+"\",\"itemValue2\":\""+weight7+"\"},");
-		result_json.append("{\"id\":9,\"itemName\":\"平衡块8位置/重量\",\"itemValue\":\""+position8+"\",\"itemValue2\":\""+weight8+"\"}");
+		result_json.append("{\"id\":1,\"itemValue1\":\"冲程(m)\",\"itemValue2\":\""+stroke+"\"},");
+		result_json.append("{\"id\":2,\"itemValue1\":\"平衡块信息\",\"itemValue2\":\"\"},");
+		result_json.append("{\"id\":3,\"itemValue1\":\"位置(m)\",\"itemValue2\":\"重量(kN)\"},");
+		
+		
+		result_json.append("{\"id\":4,\"itemValue1\":\""+position1+"\",\"itemValue2\":\""+weight1+"\"},");
+		result_json.append("{\"id\":5,\"itemValue1\":\""+position2+"\",\"itemValue2\":\""+weight2+"\"},");
+		result_json.append("{\"id\":6,\"itemValue1\":\""+position3+"\",\"itemValue2\":\""+weight3+"\"},");
+		result_json.append("{\"id\":7,\"itemValue1\":\""+position4+"\",\"itemValue2\":\""+weight4+"\"},");
+		result_json.append("{\"id\":8,\"itemValue1\":\""+position5+"\",\"itemValue2\":\""+weight5+"\"},");
+		result_json.append("{\"id\":9,\"itemValue1\":\""+position6+"\",\"itemValue2\":\""+weight6+"\"},");
+		result_json.append("{\"id\":10,\"itemValue1\":\""+position7+"\",\"itemValue2\":\""+weight7+"\"},");
+		result_json.append("{\"id\":11,\"itemValue1\":\""+position8+"\",\"itemValue2\":\""+weight8+"\"}");
+		
 		result_json.append("]}");
 		json=result_json.toString().replaceAll("null", "");
 		return json;

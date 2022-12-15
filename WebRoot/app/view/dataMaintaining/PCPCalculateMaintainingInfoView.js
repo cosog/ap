@@ -778,9 +778,22 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
     	columns+="]";
     	pcpRPMCalculateMaintainingHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
     	pcpRPMCalculateMaintainingHandsontableHelper.columns=Ext.JSON.decode(columns);
-		pcpRPMCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
+    	
+    	if(result.totalRoot.length==0){
+    		pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [0];
+    		pcpRPMCalculateMaintainingHandsontableHelper.createTable([{}]);
+        }else{
+        	pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
+        	pcpRPMCalculateMaintainingHandsontableHelper.createTable(result.totalRoot);
+        }
 	}else{
-		pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
+		if(result.totalRoot.length==0){
+			pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [0];
+			pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData([{}]);
+    	}else{
+    		pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
+    		pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
+    	}
 	}
 };
 
@@ -793,6 +806,7 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        pcpRPMCalculateMaintainingHandsontableHelper.validresult=true;//数据校验
 	        pcpRPMCalculateMaintainingHandsontableHelper.colHeaders=[];
 	        pcpRPMCalculateMaintainingHandsontableHelper.columns=[];
+	        pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows = [];
 	        
 	        pcpRPMCalculateMaintainingHandsontableHelper.AllData={};
 	        pcpRPMCalculateMaintainingHandsontableHelper.updatelist=[];
@@ -814,6 +828,10 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
 	                    columns: [0],
+	                    indicators: false
+	                },
+	                hiddenRows: {
+	                    rows: pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows,
 	                    indicators: false
 	                },
 	                columns:pcpRPMCalculateMaintainingHandsontableHelper.columns,

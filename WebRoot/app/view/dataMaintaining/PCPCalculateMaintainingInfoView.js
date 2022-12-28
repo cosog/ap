@@ -795,6 +795,11 @@ function CreateAndLoadPCPCalculateMaintainingTable(isNew,result,divid){
     		pcpRPMCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
+	if(pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows.length>0){
+    	const plugin = pcpRPMCalculateMaintainingHandsontableHelper.hot.getPlugin('hiddenRows');
+    	plugin.hideRows(pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows);
+    	pcpRPMCalculateMaintainingHandsontableHelper.hot.render();
+    }
 };
 
 
@@ -828,11 +833,13 @@ var PCPRPMCalculateMaintainingHandsontableHelper = {
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                hiddenRows: {
-	                    rows: pcpRPMCalculateMaintainingHandsontableHelper.hiddenRows,
-	                    indicators: false
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                columns:pcpRPMCalculateMaintainingHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

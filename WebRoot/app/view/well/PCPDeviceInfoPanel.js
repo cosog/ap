@@ -440,21 +440,26 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
                 pcpDeviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
                 
                 if(result.totalRoot.length==0){
-                	rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
+                	pcpDeviceInfoHandsontableHelper.hiddenRows = [0];
                 	pcpDeviceInfoHandsontableHelper.createTable([{}]);
                 }else{
-                	rpcDeviceInfoHandsontableHelper.hiddenRows = [];
+                	pcpDeviceInfoHandsontableHelper.hiddenRows = [];
                 	pcpDeviceInfoHandsontableHelper.createTable(result.totalRoot);
                 }
             } else {
             	pcpDeviceInfoHandsontableHelper.dataLength=result.totalCount;
             	if(result.totalRoot.length==0){
-            		rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
+            		pcpDeviceInfoHandsontableHelper.hiddenRows = [0];
             		pcpDeviceInfoHandsontableHelper.hot.loadData([{}]);
             	}else{
-            		rpcDeviceInfoHandsontableHelper.hiddenRows = [];
+            		pcpDeviceInfoHandsontableHelper.hiddenRows = [];
             		pcpDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
             	}
+            }
+            if(pcpDeviceInfoHandsontableHelper.hiddenRows.length>0){
+            	const plugin = pcpDeviceInfoHandsontableHelper.hot.getPlugin('hiddenRows');
+            	plugin.hideRows(pcpDeviceInfoHandsontableHelper.hiddenRows);
+            	pcpDeviceInfoHandsontableHelper.hot.render();
             }
             if(result.totalRoot.length==0){
             	Ext.getCmp("PCPDeviceSelectRow_Id").setValue('');
@@ -515,11 +520,13 @@ var PCPDeviceInfoHandsontableHelper = {
             	data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 hiddenRows: {
-                    rows: pcpDeviceInfoHandsontableHelper.hiddenRows,
-                    indicators: false
+                    rows: [],
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: pcpDeviceInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -1068,7 +1075,8 @@ var PCPProductionHandsontableHelper = {
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                columns: pcpProductionHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -1180,7 +1188,8 @@ var PCPVideoInfoHandsontableHelper = {
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                colWidths: [1,1,5],
 	                columns: pcpVideoInfoHandsontableHelper.columns,

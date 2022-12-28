@@ -529,18 +529,7 @@ Ext.define("AP.view.well.RPCDeviceInfoWindow", {
                             waitTitle: 'Please Wait...',
                             success: function (response, action) {
                                 Ext.getCmp('RPCDeviceInfoWindow_Id').close();
-                        		var activeId = Ext.getCmp("RPCDeviceManagerTabPanel").getActiveTab().id;
-                        		if(activeId=="RPCDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadRPCDeviceInfoTable();
-                        		}else if(activeId=="ScrewRPCDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadScrewRPCDeviceInfoTable();
-                        		}else if(activeId=="LinearMotorRPCDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadLinearMotorRPCDeviceInfoTable();
-                        		}else if(activeId=="ElectricSubmersibleRPCDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadElectricSubmersibleRPCDeviceInfoTable();
-                        		}else if(activeId=="JetRPCDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadJetRPCDeviceInfoTable();
-                        		}
+                                CreateAndLoadRPCDeviceInfoTable();
                                 
                                 if (action.result.msg == true) {
                                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -207,6 +208,88 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				get_val = get_key;
 				result_json.append("{boxkey:\"" + get_key + "\",");
 				result_json.append("boxval:\"" + get_val + "\"},");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public String loadPumpingManufacturerDropdownList() {
+		StringBuffer result_json = new StringBuffer();
+		String sql = " select distinct(t.manufacturer) from tbl_pumpingmodel t order by t.manufacturer";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"items\":[\"\",");
+		if (null != list && list.size() > 0) {
+			for (Object o : list) {
+				result_json.append("\""+o.toString()+"\",");
+			}
+			if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+		}
+		result_json.append("]}");
+		return result_json.toString();
+	}
+	
+	public String getPumpingModelInfo(){
+		StringBuffer result_json = new StringBuffer();
+		StringBuffer modelBuf = new StringBuffer();
+		Map<String,List<String>> manufacturerMap=new HashMap<>();
+		String sql = "select t.manufacturer,t.model,t.stroke,t.balanceweight from tbl_pumpingmodel t order by t.manufacturer,t.id";
+		List<?> list = this.findCallSql(sql);
+		for (Object o : list) {
+			modelBuf = new StringBuffer();
+			Object[] obj = (Object[]) o;
+			String manufacturer=obj[0]+"";
+			String model=obj[1]+"";
+			String stroke=obj[2]+"";
+			String balanceweight=obj[3]+"";
+			modelBuf.append("{\"model\":\""+model+"\",\"stroke\":["+stroke+"],\"balanceWeight\":["+balanceweight+"]}");
+			List<String> modelList=manufacturerMap.get(manufacturer);
+			if(modelList==null){
+				modelList=new ArrayList<>();
+			}
+			modelList.add(modelBuf.toString());
+			manufacturerMap.put(manufacturer, modelList);
+		}
+		
+		result_json.append("{\"manufacturerList\":[");
+		for (Map.Entry<String,List<String>> entry : manufacturerMap.entrySet()) {
+	        String manufacturer = entry.getKey();
+	        List<String> modelList = entry.getValue();
+	        result_json.append("{\"manufacturer\":\""+manufacturer+"\",\"modelList\":[");
+	        for(int i=0;i<modelList.size();i++){
+	        	result_json.append(modelList.get(i)+",");
+	        }
+	        if (result_json.toString().endsWith(",")) {
+				result_json.deleteCharAt(result_json.length() - 1);
+			}
+	        result_json.append("]");
+	        result_json.append("},");
+	    }
+		if (result_json.toString().endsWith(",")) {
+			result_json.deleteCharAt(result_json.length() - 1);
+		}
+		result_json.append("]}");
+		
+		return result_json.toString();
+	}
+	
+	public String loadPumpingModelDropdownList(String manufacturer) {
+		StringBuffer result_json = new StringBuffer();
+		String sql = " select t.model from tbl_pumpingmodel t where 1=1";
+		if (StringManagerUtils.isNotNull(manufacturer)) {
+			sql += " and t.manufacturer = '"+manufacturer+"'";
+		}
+		sql += "order by t.manufacturer,t.model";
+		List<?> list = this.findCallSql(sql);
+		result_json.append("{\"items\":[\"\",");
+		if (null != list && list.size() > 0) {
+			for (Object o : list) {
+				result_json.append("\""+o.toString()+"\",");
 			}
 			if (result_json.toString().endsWith(",")) {
 				result_json.deleteCharAt(result_json.length() - 1);
@@ -2935,8 +3018,13 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "\"instanceDropdownData\":"+instanceDropdownData.toString()+","
 				+ "\"displayInstanceDropdownData\":"+displayInstanceDropdownData.toString()+","
 				+ "\"alarmInstanceDropdownData\":"+alarmInstanceDropdownData.toString()+","
-				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+","
-				+ "\"columns\":"+columns+",\"totalRoot\":[");
+				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+",");
+		if(protocolType==0){
+			String pumpingModelInfo=this.getPumpingModelInfo();
+			result_json.append("\"pumpingModelInfo\":"+pumpingModelInfo+",");
+		}
+		
+		result_json.append("\"columns\":"+columns+",\"totalRoot\":[");
 		for(int i=1;i<=recordCount;i++){
 			result_json.append("{},");
 		}

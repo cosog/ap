@@ -145,9 +145,7 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                         }
                         source += "]";
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase()) {
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
+                    }else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
@@ -162,7 +160,25 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['A', 'B', 'C', 'D', 'K', 'KD', 'HL', 'HY']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "crankRotationDirection".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['顺时针', '逆时针']}";
-                    } else {
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "manufacturer".toUpperCase()) {
+                    	var source = "[";
+                        for (var j = 0; j < result.pumpingModelInfo.manufacturerList.length; j++) {
+                            source += "\'" + result.pumpingModelInfo.manufacturerList[j].manufacturer + "\'";
+                            if (j < result.pumpingModelInfo.manufacturerList.length - 1) {
+                                source += ",";
+                            }
+                        }
+                        source += "]";
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "model".toUpperCase()) {
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "stroke".toUpperCase()) {
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase()) {
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
+                    } 
+                    
+                    else {
                         columns += "{data:'" + result.columns[i].dataIndex + "'}";
                     }
                     if (i < result.columns.length - 1) {
@@ -174,6 +190,11 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                 columns += "]";
                 batchAddDeviceHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 batchAddDeviceHandsontableHelper.columns = Ext.JSON.decode(columns);
+                
+                if(parseInt(deviceType)<200){
+                	batchAddDeviceHandsontableHelper.pumpingModelInfo=result.pumpingModelInfo;
+                }
+                
                 batchAddDeviceHandsontableHelper.createTable(result.totalRoot);
             } else {
             	batchAddDeviceHandsontableHelper.hot.loadData(result.totalRoot);
@@ -205,6 +226,8 @@ var BatchAddDeviceHandsontableHelper = {
         batchAddDeviceHandsontableHelper.updatelist = [];
         batchAddDeviceHandsontableHelper.delidslist = [];
         batchAddDeviceHandsontableHelper.insertlist = [];
+        
+        batchAddDeviceHandsontableHelper.pumpingModelInfo = {};
 
         batchAddDeviceHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
@@ -219,7 +242,8 @@ var BatchAddDeviceHandsontableHelper = {
             	data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: batchAddDeviceHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -275,6 +299,59 @@ var BatchAddDeviceHandsontableHelper = {
                     var cellProperties = {};
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
+                    
+                    if(batchAddDeviceHandsontableHelper.hot!=undefined && batchAddDeviceHandsontableHelper.hot.getDataAtCell!=undefined){
+                    	var columns=batchAddDeviceHandsontableHelper.columns;
+                        var pumpingManufacturerColIndex=-1;
+                        var pumpingModelColIndex=-1;
+                        var pumpingStrokeColIndex=-1;
+                        for(var i=0;i<columns.length;i++){
+                        	if(columns[i].data.toUpperCase() === "model".toUpperCase()){
+                        		pumpingModelColIndex=i;
+                        	}else if(columns[i].data.toUpperCase() === "manufacturer".toUpperCase()){
+                        		pumpingManufacturerColIndex=i;
+                        	}else if(columns[i].data.toUpperCase() === "stroke".toUpperCase()){
+                        		pumpingStrokeColIndex=i;
+                        	}
+                        }
+                        if(pumpingManufacturerColIndex>=0){
+                        	var pumpingModelInfo=batchAddDeviceHandsontableHelper.pumpingModelInfo;
+                        	if(visualColIndex==pumpingModelColIndex){
+                            	var pumpingManufacturer=batchAddDeviceHandsontableHelper.hot.getDataAtCell(row,pumpingManufacturerColIndex);
+                            	for(var i=0;i<pumpingModelInfo.manufacturerList.length;i++){
+                            		if(pumpingManufacturer==pumpingModelInfo.manufacturerList[i].manufacturer){
+                            			var modelList=[];
+                            			for(var j=0;j<pumpingModelInfo.manufacturerList[i].modelList.length;j++){
+                            				modelList.push(pumpingModelInfo.manufacturerList[i].modelList[j].model);
+                            			}
+                            			this.source = modelList;
+                            			break;
+                            		}
+                            	}
+                            }else if(visualColIndex==pumpingStrokeColIndex){
+                            	var pumpingManufacturer=batchAddDeviceHandsontableHelper.hot.getDataAtCell(row,pumpingManufacturerColIndex);
+                            	var pumpingModel=batchAddDeviceHandsontableHelper.hot.getDataAtCell(row,pumpingModelColIndex);
+                            	for(var i=0;i<pumpingModelInfo.manufacturerList.length;i++){
+                            		if(pumpingManufacturer==pumpingModelInfo.manufacturerList[i].manufacturer){
+                            			for(var j=0;j<pumpingModelInfo.manufacturerList[i].modelList.length;j++){
+                            				if(pumpingModel==pumpingModelInfo.manufacturerList[i].modelList[j].model){
+                            					this.source = pumpingModelInfo.manufacturerList[i].modelList[j].stroke;
+                            					break;
+                            				}
+                            			}
+                            			
+                            			break;
+                            		}
+                            	}
+                            	
+                            	
+                        	}
+                        }
+                        
+                    }
+                    
+                    
+//                    setCellMeta(selectedRow, selectedCol, "source", dropdownOptions);
                     return cellProperties;
                 },
                 afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {
@@ -283,7 +360,9 @@ var BatchAddDeviceHandsontableHelper = {
                 afterDestroy: function () {
                 },
                 beforeRemoveRow: function (index, amount) {},
-                afterChange: function (changes, source) {}
+                afterChange: function (changes, source) {
+                	
+                }
             });
         }
         //保存数据

@@ -799,6 +799,11 @@ function CreateAndLoadRPCCalculateMaintainingTable(isNew,result,divid){
     		rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.loadData(result.totalRoot);
     	}
 	}
+	if(rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows.length>0){
+    	const plugin = rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getPlugin('hiddenRows');
+    	plugin.hideRows(rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows);
+    	rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.render();
+    }
 };
 
 
@@ -832,11 +837,13 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	        		fixedColumnsLeft:4, //固定左侧多少列不能水平滚动
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                hiddenRows: {
-	                    rows: rpcFESDiagramCalculateMaintainingHandsontableHelper.hiddenRows,
-	                    indicators: false
+	                    rows: [],
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                columns:rpcFESDiagramCalculateMaintainingHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

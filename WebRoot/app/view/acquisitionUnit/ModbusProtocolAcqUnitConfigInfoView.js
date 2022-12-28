@@ -175,7 +175,8 @@ var ProtocolAcqUnitConfigItemsHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [7],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	        		colWidths: [25,50,140,60,80,80,80],
 	                columns:protocolAcqUnitConfigItemsHandsontableHelper.columns,

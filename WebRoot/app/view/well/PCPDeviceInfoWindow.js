@@ -531,18 +531,7 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                             waitTitle: 'Please Wait...',
                             success: function (response, action) {
                                 Ext.getCmp('PCPDeviceInfoWindow_Id').close();
-                        		var activeId = Ext.getCmp("PCPDeviceManagerTabPanel").getActiveTab().id;
-                        		if(activeId=="DiaphragmPCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadDiaphragmPCPDeviceInfoTable();
-                        		}else if(activeId=="ScrewPCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadScrewPCPDeviceInfoTable();
-                        		}else if(activeId=="LinearMotorPCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadLinearMotorPCPDeviceInfoTable();
-                        		}else if(activeId=="ElectricSubmersiblePCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadElectricSubmersiblePCPDeviceInfoTable();
-                        		}else if(activeId=="JetPCPDeviceInfoTabPanel_Id"){
-                        			CreateAndLoadJetPCPDeviceInfoTable();
-                        		}
+                                CreateAndLoadPCPDeviceInfoTable();
                                 
                                 if (action.result.msg == true) {
                                     Ext.Msg.alert(cosog.string.ts, "【<font color=blue>" + cosog.string.sucupate + "</font>】，" + cosog.string.dataInfo + "。");

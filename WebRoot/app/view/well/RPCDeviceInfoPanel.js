@@ -506,7 +506,6 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
                 columns += "]";
                 rpcDeviceInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 rpcDeviceInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
-                
                 if(result.totalRoot.length==0){
                 	rpcDeviceInfoHandsontableHelper.hiddenRows = [0];
                 	rpcDeviceInfoHandsontableHelper.createTable([{}]);
@@ -523,6 +522,11 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
             		rpcDeviceInfoHandsontableHelper.hiddenRows = [];
             		rpcDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
             	}
+            }
+            if(rpcDeviceInfoHandsontableHelper.hiddenRows.length>0){
+            	const plugin = rpcDeviceInfoHandsontableHelper.hot.getPlugin('hiddenRows');
+            	plugin.hideRows(rpcDeviceInfoHandsontableHelper.hiddenRows);
+            	rpcDeviceInfoHandsontableHelper.hot.render();
             }
             if(result.totalRoot.length==0){
             	Ext.getCmp("RPCDeviceSelectRow_Id").setValue('');
@@ -586,11 +590,13 @@ var RPCDeviceInfoHandsontableHelper = {
             	data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 hiddenRows: {
-                    rows: rpcDeviceInfoHandsontableHelper.hiddenRows,
-                    indicators: false
+                    rows: [],
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: rpcDeviceInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -1201,7 +1207,8 @@ var RPCPumpingModelHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [4,5,6],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	        		colWidths: [25,30,30,80],
 	                columns:rpcPumpingModelHandsontableHelper.columns,
@@ -1337,7 +1344,8 @@ var RPCProductionHandsontableHelper = {
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                columns: rpcProductionHandsontableHelper.columns,
 	                stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -1525,7 +1533,8 @@ var RPCPumpingInfoHandsontableHelper = {
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 //	                colWidths: [25,30,30,80],
 	                columns: rpcPumpingInfoHandsontableHelper.columns,
@@ -1673,7 +1682,8 @@ var RPCVideoInfoHandsontableHelper = {
 	            	data: data,
 	                hiddenColumns: {
 	                    columns: [0],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                colWidths: [1,1,5],
 	                columns: rpcVideoInfoHandsontableHelper.columns,

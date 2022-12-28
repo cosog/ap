@@ -320,6 +320,11 @@ function CreateAndLoadSMSDeviceInfoTable(isNew) {
             		smsDeviceInfoHandsontableHelper.hot.loadData(result.totalRoot);
             	}
             }
+            if(smsDeviceInfoHandsontableHelper.hiddenRows.length>0){
+            	const plugin = smsDeviceInfoHandsontableHelper.hot.getPlugin('hiddenRows');
+            	plugin.hideRows(smsDeviceInfoHandsontableHelper.hiddenRows);
+            	smsDeviceInfoHandsontableHelper.hot.render();
+            }
             if (result.totalRoot.length == 0) {
                 Ext.getCmp("SMSDeviceSelectRow_Id").setValue('');
                 Ext.getCmp("SMSDeviceSelectEndRow_Id").setValue('');
@@ -375,11 +380,13 @@ var SMSDeviceInfoHandsontableHelper = {
                 data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 hiddenRows: {
-                    rows: smsDeviceInfoHandsontableHelper.hiddenRows,
-                    indicators: false
+                    rows: [],
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: smsDeviceInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

@@ -515,7 +515,8 @@ var ProtocolAlarmUnitConfigCalNumItemsHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [12],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	        		colWidths: [25,50,120,80,80,80,80,80,80,80,80,80],
 	                columns:protocolAlarmUnitConfigCalNumItemsHandsontableHelper.columns,
@@ -1003,7 +1004,8 @@ var ProtocolAlarmUnitConfigCommStatusItemsHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [8,9],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	        		colWidths: [25,50,80,80,80,80,80,80],
 	                columns:protocolAlarmUnitConfigCommStatusItemsHandsontableHelper.columns,
@@ -1123,7 +1125,8 @@ var ProtocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [8],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	        		colWidths: [25,50,80,80,80,80,80,80],
 	                columns:protocolAlarmUnitConfigFESDiagramConditionsItemsHandsontableHelper.columns,
@@ -1243,7 +1246,8 @@ var ProtocolAlarmUnitConfigRunStatusItemsHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [8,9],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	        		colWidths: [25,50,80,80,80,80,80,80],
 	                columns:protocolAlarmUnitConfigRunStatusItemsHandsontableHelper.columns,

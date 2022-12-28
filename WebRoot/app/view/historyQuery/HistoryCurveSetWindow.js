@@ -211,7 +211,8 @@ var DeviceHistoryCurveSetHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [3,4],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                columns:deviceHistoryCurveSetHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

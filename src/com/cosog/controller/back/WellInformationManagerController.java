@@ -202,6 +202,46 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/loadPumpingManufacturerDropdownList")
+	public String loadPumpingManufacturerDropdownList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String json = this.wellInformationManagerService.loadPumpingManufacturerDropdownList();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/loadPumpingModelDropdownList")
+	public String loadPumpingModelDropdownList() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String manufacturer = ParamUtils.getParameter(request, "manufacturer");
+		String json = this.wellInformationManagerService.loadPumpingModelDropdownList(manufacturer);
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/getPumpingModelInfo")
+	public String getPumpingModelInfo() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String json = this.wellInformationManagerService.getPumpingModelInfo();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/loadPumpingModelComboxList")
 	public String loadPumpingModelComboxList() throws Exception {
 		this.pager=new Page("pageForm",request);

@@ -345,7 +345,8 @@ var BatchAddDeviceCollisionDataHandsontableHelper = {
             	data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: batchAddDeviceCollisionDataHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -556,7 +557,8 @@ var BatchAddDeviceOverlayDataHandsontableHelper = {
             	data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: batchAddDeviceOverlayDataHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

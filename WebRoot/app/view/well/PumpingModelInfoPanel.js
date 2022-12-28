@@ -482,7 +482,8 @@ var PumpingModelInfoHandsontableHelper = {
             	data: data,
                 hiddenColumns: {
                     columns: [0],
-                    indicators: false
+                    indicators: false,
+                    copyPasteEnabled: false
                 },
                 columns: pumpingModelInfoHandsontableHelper.columns,
                 stretchH: 'all', //延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
@@ -824,7 +825,8 @@ var PumpingUnitPTFHandsontableHelper = {
 	        		licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
 //	                hiddenColumns: {
 //	                    columns: [0],
-//	                    indicators: false
+//	                    indicators: false,
+//                    	copyPasteEnabled: false
 //	                },
 	                columns:pumpingUnitPTFHandsontableHelper.columns,
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸

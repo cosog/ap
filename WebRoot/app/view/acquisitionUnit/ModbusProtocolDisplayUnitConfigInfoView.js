@@ -222,7 +222,8 @@ var ProtocolDisplayUnitAcqItemsConfigHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [10,11,12],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                colWidths: [25,50,140,80,60,60,85,85,85,85],
 	                columns:protocolDisplayUnitAcqItemsConfigHandsontableHelper.columns,
@@ -372,7 +373,8 @@ var ProtocolDisplayUnitCalItemsConfigHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [10],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                colWidths: [25,50,140,80,60,60,85,85,85,85],
 	                columns:protocolDisplayUnitCalItemsConfigHandsontableHelper.columns,
@@ -516,7 +518,8 @@ var ProtocolDisplayUnitCtrlItemsConfigHandsontableHelper = {
 	        		data: data,
 	        		hiddenColumns: {
 	                    columns: [6,7,8],
-	                    indicators: false
+	                    indicators: false,
+	                    copyPasteEnabled: false
 	                },
 	                colWidths: [25,50,140,80,60,60],
 	                columns:protocolDisplayUnitCtrlItemsConfigHandsontableHelper.columns,

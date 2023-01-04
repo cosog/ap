@@ -39,6 +39,13 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
                 value: ''
             },'->',{
                 xtype: 'button',
+                text: '数据校验',
+//                iconCls: 'save',
+                handler: function (v, o) {
+//                	batchAddDeviceHandsontableHelper.saveData();
+                }
+            },'-',{
+                xtype: 'button',
                 text: cosog.string.save,
                 iconCls: 'save',
                 handler: function (v, o) {
@@ -174,7 +181,10 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "stroke".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase()) {
+                    } else if (result.columns[i].dataIndex.toUpperCase() != "wellName".toUpperCase() 
+                    		&& result.columns[i].dataIndex.toUpperCase() != "signInId".toUpperCase()
+                    		&& result.columns[i].dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
+                    		&& result.columns[i].dataIndex.toUpperCase() != "videoUrl2".toUpperCase() ) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
                     } 
                     
@@ -228,11 +238,24 @@ var BatchAddDeviceHandsontableHelper = {
         batchAddDeviceHandsontableHelper.insertlist = [];
         
         batchAddDeviceHandsontableHelper.pumpingModelInfo = {};
+        
+//        batchAddDeviceHandsontableHelper.datavalidator=[[0,52]];
 
         batchAddDeviceHandsontableHelper.addColBg = function (instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.TextRenderer.apply(this, arguments);
             td.style.backgroundColor = 'rgb(242, 242, 242)';
         }
+        
+//        batchAddDeviceHandsontableHelper.addDataValidatorCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+//        	if(batchAddDeviceHandsontableHelper.hot!=undefined){
+//        		for(var i=0;i<batchAddDeviceHandsontableHelper.datavalidator.length;i++){
+//        			if(row==batchAddDeviceHandsontableHelper.datavalidator[i][0] && col==batchAddDeviceHandsontableHelper.datavalidator[i][1]){
+//        				td.style.backgroundColor = '#f09614';
+//        				break;
+//        			}
+//        		}
+//        	}
+//        }
 
         batchAddDeviceHandsontableHelper.createTable = function (data) {
             $('#' + batchAddDeviceHandsontableHelper.divid).empty();
@@ -300,11 +323,17 @@ var BatchAddDeviceHandsontableHelper = {
                     var visualRowIndex = this.instance.toVisualRow(row);
                     var visualColIndex = this.instance.toVisualColumn(col);
                     
+//                    cellProperties.renderer = batchAddDeviceHandsontableHelper.addDataValidatorCellStyle;
+                    
                     if(batchAddDeviceHandsontableHelper.hot!=undefined && batchAddDeviceHandsontableHelper.hot.getDataAtCell!=undefined){
                     	var columns=batchAddDeviceHandsontableHelper.columns;
                         var pumpingManufacturerColIndex=-1;
                         var pumpingModelColIndex=-1;
                         var pumpingStrokeColIndex=-1;
+                        
+                        var barrelTypeColIndex=-1;
+                        var pumpGradeColIndex=-1;
+                        
                         for(var i=0;i<columns.length;i++){
                         	if(columns[i].data.toUpperCase() === "model".toUpperCase()){
                         		pumpingModelColIndex=i;
@@ -312,9 +341,23 @@ var BatchAddDeviceHandsontableHelper = {
                         		pumpingManufacturerColIndex=i;
                         	}else if(columns[i].data.toUpperCase() === "stroke".toUpperCase()){
                         		pumpingStrokeColIndex=i;
+                        	}else if(columns[i].data.toUpperCase() === "barrelType".toUpperCase()){
+                        		barrelTypeColIndex=i;
+                        	}else if(columns[i].data.toUpperCase() === "pumpGrade".toUpperCase()){
+                        		pumpGradeColIndex=i;
                         	}
                         }
-                        if(pumpingManufacturerColIndex>=0){
+                        if(visualColIndex==pumpGradeColIndex && barrelTypeColIndex>0){
+                        	var barrelType=batchAddDeviceHandsontableHelper.hot.getDataAtCell(row,barrelTypeColIndex);
+                        	if(barrelType=='整筒泵'){
+                        		this.source = ['1','2','3','4','5'];
+                        	}else if(barrelType=='组合泵'){
+                        		this.source = ['1','2','3'];
+                        	}else if(barrelType==''){
+                        		this.source = ['1','2','3','4','5'];
+                        	}
+                        }
+                        if((visualColIndex==pumpingModelColIndex || visualColIndex==pumpingStrokeColIndex) && pumpingManufacturerColIndex>=0){
                         	var pumpingModelInfo=batchAddDeviceHandsontableHelper.pumpingModelInfo;
                         	if(visualColIndex==pumpingModelColIndex){
                             	var pumpingManufacturer=batchAddDeviceHandsontableHelper.hot.getDataAtCell(row,pumpingManufacturerColIndex);

@@ -865,6 +865,27 @@ var RPCFESDiagramCalculateMaintainingHandsontableHelper = {
 	                    if (visualColIndex >= 1 && visualColIndex <= 6) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcFESDiagramCalculateMaintainingHandsontableHelper.addBoldBg;
+		                }else if(rpcFESDiagramCalculateMaintainingHandsontableHelper.columns[visualColIndex].data.toUpperCase()=='pumpGrade'.toUpperCase()
+		                		&& rpcFESDiagramCalculateMaintainingHandsontableHelper.hot!=undefined 
+		                		&& rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell!=undefined){
+		                	var columns=rpcFESDiagramCalculateMaintainingHandsontableHelper.columns;
+		                	var barrelTypeColIndex=-1;
+		                	for(var i=0;i<columns.length;i++){
+	                        	if(columns[i].data.toUpperCase() === "barrelTypeName".toUpperCase()){
+	                        		barrelTypeColIndex=i;
+	                        		break;
+	                        	}
+	                        }
+		                	if(barrelTypeColIndex>0){
+	                        	var barrelType=rpcFESDiagramCalculateMaintainingHandsontableHelper.hot.getDataAtCell(row,barrelTypeColIndex);
+	                        	if(barrelType=='整筒泵'){
+	                        		this.source = ['1','2','3','4','5'];
+	                        	}else if(barrelType=='组合泵'){
+	                        		this.source = ['1','2','3'];
+	                        	}else if(barrelType==''){
+	                        		this.source = ['1','2','3','4','5'];
+	                        	}
+	                        }
 		                }
 	                    return cellProperties;
 	                },

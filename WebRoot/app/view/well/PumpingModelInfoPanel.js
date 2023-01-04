@@ -409,10 +409,15 @@ function CreateAndLoadPumpingModelInfoTable(isNew) {
             if (pumpingModelInfoHandsontableHelper == null || pumpingModelInfoHandsontableHelper.hot == null || pumpingModelInfoHandsontableHelper.hot == undefined) {
                 pumpingModelInfoHandsontableHelper = PumpingModelInfoHandsontableHelper.createNew("PumpingModelTableDiv_id");
                 var colHeaders="['序号','厂家','型号','冲程(m)','旋转方向','曲柄偏置角(°)','曲柄重心半径(m)','单块曲柄重量(kN)','单块曲柄销重量(kN)','结构不平衡重(kN)','平衡块重量(kN)']";
-                var columns="[{data:'id'},{data:'manufacturer'},{data:'model'},{data:'stroke'}," 
+                var columns="[{data:'id'},{data:'manufacturer'},{data:'model'}," 
+                	+"{data:'stroke'}," 
                 	+"{data:'crankRotationDirection',type:'dropdown',strict:true,allowInvalid:false,source:['顺时针', '逆时针']}," 
-                	+"{data:'offsetAngleOfCrank'},{data:'crankGravityRadius'},{data:'singleCrankWeight'},{data:'singleCrankPinWeight'}," 
-                	+"{data:'structuralUnbalance'},{data:'balanceWeight'}]";
+                	+"{data:'offsetAngleOfCrank',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingModelInfoHandsontableHelper);}}," 
+                	+"{data:'crankGravityRadius',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingModelInfoHandsontableHelper);}}," 
+                	+"{data:'singleCrankWeight',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingModelInfoHandsontableHelper);}}," 
+                	+"{data:'singleCrankPinWeight',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingModelInfoHandsontableHelper);}}," 
+                	+"{data:'structuralUnbalance',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingModelInfoHandsontableHelper);}}," 
+                	+"{data:'balanceWeight'}]";
                 pumpingModelInfoHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
                 pumpingModelInfoHandsontableHelper.columns = Ext.JSON.decode(columns);
                 pumpingModelInfoHandsontableHelper.createTable(result.totalRoot);
@@ -779,7 +784,11 @@ function CreateAndLoadPumpingUnitPTFTable(recordId,manufacturer,model,stroke){
             if (pumpingUnitPTFHandsontableHelper == null || pumpingUnitPTFHandsontableHelper.hot == null || pumpingUnitPTFHandsontableHelper.hot == undefined) {
             	pumpingUnitPTFHandsontableHelper = PumpingUnitPTFHandsontableHelper.createNew("PumpingUnitPTFDiv_Id");
             	var colHeaders="['曲柄转角(°)','光杆位置因数(%)','扭矩因数(m)']";
-        		var columns="[{data:'CrankAngle'},{data:'PR'},{data:'TF'}]";
+        		var columns="[" 
+        			+"{data:'CrankAngle',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}," 
+        			+"{data:'PR',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}," 
+        			+"{data:'TF',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pumpingUnitPTFHandsontableHelper);}}" 
+        			+"]";
         		pumpingUnitPTFHandsontableHelper.colHeaders = Ext.JSON.decode(colHeaders);
         		pumpingUnitPTFHandsontableHelper.columns = Ext.JSON.decode(columns);
         		if(result.totalRoot==0){

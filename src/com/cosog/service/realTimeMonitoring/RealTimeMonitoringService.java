@@ -4078,7 +4078,7 @@ public class RealTimeMonitoringService<T> extends BaseService<T> {
 				sql+= " order by t.acqtime";
 				String finalSql=sql;
 				if(rarefy>1){
-					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 				}
 				List<?> list = this.findCallSql(finalSql);
 				for(int i=0;i<list.size();i++){

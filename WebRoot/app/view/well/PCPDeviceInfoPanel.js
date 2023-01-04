@@ -420,13 +420,15 @@ function CreateAndLoadPCPDeviceInfoTable(isNew) {
                         }
                         source += "]";
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:" + source + "}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase()) {
-                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pcpDeviceInfoHandsontableHelper);}}";
-                    } else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
+                    }else if (result.columns[i].dataIndex.toUpperCase() === "statusName".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['使能', '失效']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "tcpType".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['TCP Server', 'TCP Client']}";
-                    } else {
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "sortNum".toUpperCase() 
+                    		||result.columns[i].dataIndex.toUpperCase() === "slave".toUpperCase()
+                    		||result.columns[i].dataIndex.toUpperCase() === "peakDelay".toUpperCase()) {
+                        columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pcpDeviceInfoHandsontableHelper);}}";
+                    }  else {
                         columns += "{data:'" + result.columns[i].dataIndex + "'}";
                     }
                     if (i < result.columns.length - 1) {

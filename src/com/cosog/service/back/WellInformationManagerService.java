@@ -831,6 +831,8 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		}
 		collisionBuff.append("]");
 		overlayBuff.append("]");
+		
+		String pumpingModelInfo=this.getPumpingModelInfo();
 		result_json.append("{\"success\":true,"
 				+ "\"collisionCount\":"+collisionCount+","
 				+ "\"overlayCount\":"+overlayCount+","
@@ -839,6 +841,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				+ "\"displayInstanceDropdownData\":"+displayInstanceDropdownData.toString()+","
 				+ "\"alarmInstanceDropdownData\":"+alarmInstanceDropdownData.toString()+","
 				+ "\"applicationScenariosDropdownData\":"+applicationScenariosDropdownData.toString()+","
+				+ "\"pumpingModelInfo\":"+pumpingModelInfo+","
 				+ "\"columns\":"+columns+","
 				+ "\"collisionList\":"+collisionBuff+","
 				+ "\"overlayList\":"+overlayBuff+"}");

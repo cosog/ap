@@ -2791,9 +2791,11 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 				
 				String finalSql=sql;
 				if(rarefy>1){
-					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+//					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+					finalSql="select acqtime"+columns+" from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 				}
 				List<?> list = this.findCallSql(finalSql);
+//				System.out.println("抽稀前曲线点数:"+total+",抽稀后曲线点数:"+list.size()+",系数:"+vacuateThreshold);
 				for(int i=0;i<list.size();i++){
 					Object[] obj=(Object[]) list.get(i);
 					result_json.append("{\"acqTime\":\"" + obj[0] + "\",\"data\":[");
@@ -2936,13 +2938,13 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 		
 		int rarefy=totals/vacuateThreshold+1;
 		if(rarefy>1){
-			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+			totalSql="select count(1) from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 			totals = getTotalCountRows(totalSql);
 			
 		}
 		allsql+= " order by t.fesdiagramacqtime desc";
 		if(rarefy>1){
-			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+			allsql="select v2.* from  (select v.*, rownum as rn from ("+allsql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 		}
 		sql="select b.* from (select a.*,rownum as rn2 from  ("+ allsql +") a where rownum <= "+ maxvalue +") b where rn2 > "+ start +"";
 		
@@ -3033,7 +3035,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			if(vacuate && vacuateThreshold>0){
 				rarefy=totals/vacuateThreshold+1;
 				if(rarefy>1){
-					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+					finalSql="select v2.* from  (select v.*, rownum as rn from ("+finalSql+") v ) v2 where mod(rn*"+vacuateThreshold+","+totals+")<"+vacuateThreshold+"";
 				}
 			}
 			List<?> list=this.findCallSql(finalSql);
@@ -3164,7 +3166,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			int rarefy=total/vacuateThreshold+1;
 			String finalSql=sql;
 			if(rarefy>1){
-				finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+				finalSql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 			}
 			List<?> list=this.findCallSql(finalSql);
 			ddic  = dataitemsInfoService.findTableSqlWhereByListFaceId("historyQuery_FESDiagramOverlay");
@@ -3388,7 +3390,7 @@ public class HistoryQueryService<T> extends BaseService<T>  {
 			
 			String finalSql=sql;
 			if(rarefy>1){
-				sql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn-1,"+rarefy+")=0";
+				sql="select v2.* from  (select v.*, rownum as rn from ("+sql+") v ) v2 where mod(rn*"+vacuateThreshold+","+total+")<"+vacuateThreshold+"";
 				finalSql="select a.*,rownum as rn2 from  ("+ sql +") a where rownum <= "+ maxvalue;
 			}else{
 				finalSql="select a.* from ("+sql+" ) a where  rownum <="+maxvalue;

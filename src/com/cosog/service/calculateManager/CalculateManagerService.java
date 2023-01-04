@@ -390,8 +390,8 @@ public class CalculateManagerService<T> extends BaseService<T> {
 					
 					result_json.append("\"barrelLength\":\""+calculateRequestData.getPump().getBarrelLength()+"\",");
 					result_json.append("\"barrelSeries\":\""+calculateRequestData.getPump().getBarrelSeries()+"\",");
-					result_json.append("\"rotorDiameter\":\""+calculateRequestData.getPump().getRotorDiameter()+"\",");
-					result_json.append("\"qpr\":\""+calculateRequestData.getPump().getQPR()+"\",");
+					result_json.append("\"rotorDiameter\":\""+calculateRequestData.getPump().getRotorDiameter()*1000+"\",");
+					result_json.append("\"qpr\":\""+calculateRequestData.getPump().getQPR()*1000*1000+"\",");
 				}
 				if(calculateRequestData.getTubingString()!=null&&calculateRequestData.getTubingString().getEveryTubing()!=null&&calculateRequestData.getTubingString().getEveryTubing().size()>0){
 					result_json.append("\"tubingStringInsideDiameter\":\""+calculateRequestData.getTubingString().getEveryTubing().get(0).getInsideDiameter()*1000+"\",");
@@ -911,7 +911,7 @@ public class CalculateManagerService<T> extends BaseService<T> {
 				pump.setBarrelLength(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelLength()));
 				pump.setBarrelSeries(StringManagerUtils.stringToInteger(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getBarrelSeries()));
 				pump.setRotorDiameter((float) (StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRotorDiameter())*0.001));
-				pump.setQPR(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getQPR()));
+				pump.setQPR((float)(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getQPR())*0.001*0.001));
 				
 				if(StringManagerUtils.stringToFloat(calculateManagerHandsontableChangedData.getUpdatelist().get(i).getRodLength1())>0){
 					PCPCalculateRequestData.EveryRod everyRod=new PCPCalculateRequestData.EveryRod();

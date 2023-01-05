@@ -1024,7 +1024,10 @@ function CreateAndLoadPCPProductionDataTable(deviceId,deviceName,isNew){
 			if(pcpProductionHandsontableHelper==null || pcpProductionHandsontableHelper.hot==undefined){
 				pcpProductionHandsontableHelper = PCPProductionHandsontableHelper.createNew("PCPAdditionalInfoTableDiv_id");
 				var colHeaders="['序号','名称','变量']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
+				var columns="[{data:'id'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,pcpProductionHandsontableHelper);}}" 
+					+"]";
 				
 				pcpProductionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				pcpProductionHandsontableHelper.columns=Ext.JSON.decode(columns);

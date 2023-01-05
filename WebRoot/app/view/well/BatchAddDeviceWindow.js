@@ -39,13 +39,6 @@ Ext.define("AP.view.well.BatchAddDeviceWindow", {
                 value: ''
             },'->',{
                 xtype: 'button',
-                text: '数据校验',
-//                iconCls: 'save',
-                handler: function (v, o) {
-//                	batchAddDeviceHandsontableHelper.saveData();
-                }
-            },'-',{
-                xtype: 'button',
                 text: cosog.string.save,
                 iconCls: 'save',
                 handler: function (v, o) {

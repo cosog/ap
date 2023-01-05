@@ -1290,7 +1290,10 @@ function CreateAndLoadRPCProductionDataTable(deviceId,deviceName,isNew){
 				rpcProductionHandsontableHelper = RPCProductionHandsontableHelper.createNew("RPCAdditionalInfoTableDiv_id");
 				rpcProductionHandsontableHelper.resultList = result.resultNameList;
 				var colHeaders="['序号','名称','变量']";
-				var columns="[{data:'id'},{data:'itemName'},{data:'itemValue'}]";
+				var columns="[{data:'id'}," 
+					+"{data:'itemName'}," 
+					+"{data:'itemValue',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcProductionHandsontableHelper);}}" 
+					+"]";
 				rpcProductionHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcProductionHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){
@@ -1368,7 +1371,7 @@ var RPCProductionHandsontableHelper = {
 	                    if (visualColIndex !=2) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = rpcProductionHandsontableHelper.addBoldBg;
-		                }else if(visualRowIndex==38 && visualColIndex==2){
+		                }else if(visualRowIndex==39 && visualColIndex==2){
 	                    	cellProperties.readOnly = true;
 	                    }
 	                    
@@ -1460,7 +1463,10 @@ function CreateAndLoadRPCPumpingInfoTable(deviceId,deviceName,isNew){
 	    		}
 				
 				var colHeaders="['序号','名称','变量','']";
-				var columns="[{data:'id'},{data:'itemValue1'},{data:'itemValue2'}]";
+				var columns="[{data:'id'}," 
+					+"{data:'itemValue1',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcPumpingInfoHandsontableHelper);}}," 
+					+"{data:'itemValue2',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcPumpingInfoHandsontableHelper);}}" 
+					+"]";
 				rpcPumpingInfoHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 				rpcPumpingInfoHandsontableHelper.columns=Ext.JSON.decode(columns);
 				if(result.totalRoot.length==0){

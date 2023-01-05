@@ -290,7 +290,7 @@ jdk8、tomcat9、oracle、redis
 
 通过点击界面中缝位置的图标![G:\\work\\github\\apmd\\Image\\PNG\\025.png](../images/md/PNG/31c6015dc83f2a40f02cd33a2419f5a9.png)或![G:\\work\\github\\apmd\\Image\\PNG\\026.png](../images/md/PNG/74e5710c75eecf890973c56e5ba93a49.png)可实现界面伸缩。
 
-![](../images/md/PNG/8bd3e279bd2a91c592ec730dfa6bc718.png)
+![](../images/md/PNG/77b8cc846b970c2f9ff874d6714436a6.png)
 
 图2-1 界面概览
 
@@ -1817,7 +1817,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 ### <h3><a name="3.2.1登录界面"></a>3.2.1 登录界面</h3>
 
-![](../images/md/PNG/3d45ee656bbc36f677e48690cfbba942.png)
+![](../images/md/PNG/6769f1d713723cf8dc21f2c38575b254.png)
 
 1、软件名称及简介
 
@@ -1829,7 +1829,7 @@ Server模式则配置IP端口，格式为“IP:端口”；
 
 ### <h3><a name="3.2.2主界面"></a>3.2.2 主界面</h3>
 
-![](../images/md/PNG/bd354aedc4af3152a859e47115181cbc.png)
+![](../images/md/PNG/24e248a0157ef2130589a342283b6a7a.png)
 
 1、banner背景色
 

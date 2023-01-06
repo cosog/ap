@@ -2539,6 +2539,7 @@ public class AcquisitionUnitManagerController extends BaseController {
 		DatabaseMappingProHandsontableChangedData databaseMappingProHandsontableChangedData=gson.fromJson(data, type);
 		if(databaseMappingProHandsontableChangedData!=null){
 			this.acquisitionUnitManagerService.saveDatabaseColumnMappingTable(databaseMappingProHandsontableChangedData,protocolType);
+			MemoryDataManagerTask.loadProtocolMappingColumn();
 		}
 		String json ="{success:true}";
 		response.setContentType("application/json;charset="+ Constants.ENCODING_UTF8);

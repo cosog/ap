@@ -1567,7 +1567,7 @@ color16ToRgba = function(sColor,Opacity){
 		 	var color='#000000';
 		 	var opacity=1;
 		 	if(isNotVal(alarmShowStyle) && alarmShowStyle!={}){
-		 		if (runStatus == 0) {
+		 		if (runStatus != 1) {
 			 		backgroundColor='#'+alarmShowStyle.Run.stop.BackgroundColor;
 			 		color='#'+alarmShowStyle.Run.stop.Color;
 			 		opacity=alarmShowStyle.Run.stop.Opacity;

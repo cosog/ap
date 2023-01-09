@@ -145,8 +145,8 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item6={};
 				item6.id=6;
-				item6.title='前后缀十六进制';
-				if(parseInt(data.prefixSuffixHex)==1){
+				item6.title='注册包前后缀十六进制';
+				if(parseInt(data.signInPrefixSuffixHex)==1){
 					item6.value=true;
 				}else{
 					item6.value=false;
@@ -167,27 +167,64 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				
 				var item9={};
 				item9.id=9;
-				item9.title='心跳包前缀(HEX/ASC)';
-				item9.value=data.heartbeatPrefix;
+				item9.title='注册包ID十六进制';
+				if(parseInt(data.signInIDHex)==1){
+					item9.value=true;
+				}else{
+					item9.value=false;
+				}
 				root.push(item9);
 				
 				var item10={};
 				item10.id=10;
-				item10.title='心跳包后缀(HEX/ASC)';
-				item10.value=data.heartbeatSuffix;
+				item10.title='心跳包前后缀十六进制';
+				if(parseInt(data.heartbeatPrefixSuffixHex)==1){
+					item10.value=true;
+				}else{
+					item10.value=false;
+				}
 				root.push(item10);
 				
 				var item11={};
 				item11.id=11;
-				item11.title='单包发送间隔(ms)';
-				item11.value=data.packetSendInterval;
+				item11.title='心跳包前缀(HEX/ASC)';
+				item11.value=data.heartbeatPrefix;
 				root.push(item11);
 				
 				var item12={};
 				item12.id=12;
-				item12.title='排序序号';
-				item12.value=data.sort;
+				item12.title='心跳包后缀(HEX/ASC)';
+				item12.value=data.heartbeatSuffix;
 				root.push(item12);
+				
+				var item13={};
+				item13.id=13;
+				item13.title='心跳包数据体十六进制';
+				if(parseInt(data.heartbeatBodyHex)==1){
+					item13.value=true;
+				}else{
+					item13.value=false;
+				}
+				root.push(item13);
+				
+				var item14={};
+				item14.id=14;
+				item14.title='心跳包数据体';
+				item14.value=data.heartbeatBody;
+				root.push(item14);
+				
+				
+				var item15={};
+				item15.id=15;
+				item15.title='单包发送间隔(ms)';
+				item15.value=data.packetSendInterval;
+				root.push(item15);
+				
+				var item16={};
+				item16.id=16;
+				item16.title='排序序号';
+				item16.value=data.sort;
+				root.push(item16);
 			}
 			
 			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
@@ -310,12 +347,8 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 	                    	
-	                    	if (visualColIndex === 2 && visualRowIndex===5) {
+	                    	if (visualColIndex === 2 && (visualRowIndex===5 ||visualRowIndex===8 || visualRowIndex===9 || visualRowIndex===12) ) {
 		                    	this.type = 'checkbox';
-//		                    	this.label={
-//			                            position: 'before',
-//			                            value: '16进制? '
-//			                          };
 		                    }
 	                    }
 	                    return cellProperties;
@@ -454,20 +487,36 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			saveData.ctrlProtocolType=propertiesData[4][2];
 			
 			if(propertiesData[5][2]==true){
-				saveData.prefixSuffixHex=1;
+				saveData.signInPrefixSuffixHex=1;
 			}else{
-				saveData.prefixSuffixHex=0;
+				saveData.signInPrefixSuffixHex=0;
 			}
-			
 			saveData.signInPrefix=propertiesData[6][2];
 			saveData.signInSuffix=propertiesData[7][2];
+			if(propertiesData[8][2]==true){
+				saveData.signInIDHex=1;
+			}else{
+				saveData.signInIDHex=0;
+			}
 			
-			saveData.heartbeatPrefix=propertiesData[8][2];
-			saveData.heartbeatSuffix=propertiesData[9][2];
 			
-			saveData.packetSendInterval=propertiesData[10][2];
+			if(propertiesData[9][2]==true){
+				saveData.heartbeatPrefixSuffixHex=1;
+			}else{
+				saveData.heartbeatPrefixSuffixHex=0;
+			}
+			saveData.heartbeatPrefix=propertiesData[10][2];
+			saveData.heartbeatSuffix=propertiesData[11][2];
+			if(propertiesData[12][2]==true){
+				saveData.heartbeatBodyHex=1;
+			}else{
+				saveData.heartbeatBodyHex=0;
+			}
+			saveData.heartbeatBody=propertiesData[13][2];
 			
-			saveData.sort=propertiesData[11][2];
+			saveData.packetSendInterval=propertiesData[14][2];
+			
+			saveData.sort=propertiesData[15][2];
 			
 			SaveModbusProtocolAcqInstanceData(saveData);
 		}

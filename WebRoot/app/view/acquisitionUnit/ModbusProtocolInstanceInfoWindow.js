@@ -48,7 +48,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
         	id:'modbusInstanceProtocolAndAcqUnit_Id',
         	anchor: '100%',
         	fieldLabel: '采控单元<font color=red>*</font>',
-        	labelWidth: 105,
+        	labelWidth: 135,
             emptyText: '请选择采控单元...',
             blankText: '请选择采控单元...',
             displayField: 'text',
@@ -90,7 +90,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 			},{
             	xtype : "combobox",
 				fieldLabel : '设备类型<font color=red>*</font>',
-				labelWidth: 105,
+				labelWidth: 135,
 				id : 'modbusProtocolInstanceDeviceTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -117,7 +117,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 id: 'formModbusProtocolInstanceName_Id',
                 name: "protocolInstance.name",
                 fieldLabel: '实例名称<font color=red>*</font>',
-                labelWidth: 105,
+                labelWidth: 135,
                 allowBlank: false,
                 anchor: '100%',
                 value: '',
@@ -164,7 +164,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 			},{
             	xtype : "combobox",
 				fieldLabel : '采集协议类型<font color=red>*</font>',
-				labelWidth: 105,
+				labelWidth: 135,
 				id : 'modbusInstanceAcqProtocolTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -195,7 +195,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 			},{
             	xtype : "combobox",
 				fieldLabel : '控制协议类型<font color=red>*</font>',
-				labelWidth: 105,
+				labelWidth: 135,
 				id : 'modbusInstanceCtrlProtocolTypeComb_Id',
 				anchor : '100%',
 				triggerAction : 'all',
@@ -220,8 +220,8 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
 				}
             },{
             	xtype: 'fieldcontainer',
-                fieldLabel : '前后缀十六进制<font color=red>*</font>',
-                labelWidth: 105,
+                fieldLabel : '注册包前后缀十六进制<font color=red>*</font>',
+                labelWidth: 135,
                 defaultType: 'radiofield',
                 anchor: '100%',
                 defaults: {
@@ -231,50 +231,129 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 items: [
                     {
                         boxLabel:'HEX',
-                        name:'protocolInstance.prefixSuffixHex',
+                        name:'protocolInstance.signInPrefixSuffixHex',
                         checked:true,
                         inputValue: '1',
-                        id: 'protocolInstancePrefixSuffixHexRadio1_Id'
+                        id: 'protocolInstanceSignInPrefixSuffixHexRadio1_Id'
                     }, {
                         boxLabel: 'ASC',
-                        name:'protocolInstance.prefixSuffixHex',
+                        name:'protocolInstance.signInPrefixSuffixHex',
                         inputValue:'0',
-                        id:'protocolInstancePrefixSuffixHexRadio0_Id'
+                        id:'protocolInstanceSignInPrefixSuffixHexRadio0_Id'
                     }
                 ]
             }, {
                 id: 'formModbusProtocolInstanceSignInPrefix_Id',
                 name: "protocolInstance.signInPrefix",
                 fieldLabel: '注册包前缀',
-                labelWidth: 105,
+                labelWidth: 135,
                 anchor: '100%',
                 value: ''
             }, {
             	id: 'modbusProtocolInstanceSignInSuffix_Id',
             	name: "protocolInstance.signInSuffix",
                 fieldLabel: '注册包后缀',
-                labelWidth: 105,
+                labelWidth: 135,
                 anchor: '100%',
                 value: ''
+            },{
+            	xtype: 'fieldcontainer',
+                fieldLabel : '注册包ID十六进制<font color=red>*</font>',
+                labelWidth: 135,
+                defaultType: 'radiofield',
+                anchor: '100%',
+                defaults: {
+                    flex: 1
+                },
+                layout: 'hbox',
+                items: [
+                    {
+                        boxLabel:'HEX',
+                        name:'protocolInstance.signInIDHex',
+                        checked:true,
+                        inputValue: '1',
+                        id: 'protocolInstanceSignInIDHexRadio1_Id'
+                    }, {
+                        boxLabel: 'ASC',
+                        name:'protocolInstance.signInIDHex',
+                        inputValue:'0',
+                        id:'protocolInstanceSignInIDHexRadio0_Id'
+                    }
+                ]
+            },{
+            	xtype: 'fieldcontainer',
+                fieldLabel : '心跳包前后缀十六进制<font color=red>*</font>',
+                labelWidth: 135,
+                defaultType: 'radiofield',
+                anchor: '100%',
+                defaults: {
+                    flex: 1
+                },
+                layout: 'hbox',
+                items: [
+                    {
+                        boxLabel:'HEX',
+                        name:'protocolInstance.heartbeatPrefixSuffixHex',
+                        checked:true,
+                        inputValue: '1',
+                        id: 'protocolInstanceHeartbeatPrefixSuffixHexRadio1_Id'
+                    }, {
+                        boxLabel: 'ASC',
+                        name:'protocolInstance.heartbeatPrefixSuffixHex',
+                        inputValue:'0',
+                        id:'protocolInstanceHeartbeatPrefixSuffixHexRadio0_Id'
+                    }
+                ]
             }, {
             	id: 'modbusProtocolInstanceHeartbeatPrefix_Id',
             	name: "protocolInstance.heartbeatPrefix",
                 fieldLabel: '心跳包前缀',
-                labelWidth: 105,
+                labelWidth: 135,
                 anchor: '100%',
                 value: ''
             }, {
             	id: 'modbusProtocolInstanceHeartbeatSuffix_Id',
             	name: "protocolInstance.heartbeatSuffix",
                 fieldLabel: '心跳包后缀',
-                labelWidth: 105,
+                labelWidth: 135,
+                anchor: '100%',
+                value: ''
+            },{
+            	xtype: 'fieldcontainer',
+                fieldLabel : '心跳包数据体十六进制<font color=red>*</font>',
+                labelWidth: 135,
+                defaultType: 'radiofield',
+                anchor: '100%',
+                defaults: {
+                    flex: 1
+                },
+                layout: 'hbox',
+                items: [
+                    {
+                        boxLabel:'HEX',
+                        name:'protocolInstance.heartbeatBodyHex',
+                        checked:true,
+                        inputValue: '1',
+                        id: 'protocolInstanceHeartbeatBodyHexRadio1_Id'
+                    }, {
+                        boxLabel: 'ASC',
+                        name:'protocolInstance.heartbeatBodyHex',
+                        inputValue:'0',
+                        id: 'protocolInstanceHeartbeatBodyHexRadio0_Id'
+                    }
+                ]
+            }, {
+            	id: 'modbusProtocolInstanceHeartbeatBody_Id',
+            	name: "protocolInstance.heartbeatBody",
+                fieldLabel: '心跳包数据体',
+                labelWidth: 135,
                 anchor: '100%',
                 value: ''
             }, {
                 id: 'modbusProtocolInstancePacketSendInterval_Id',
                 name: "protocolInstance.packetSendInterval",
                 fieldLabel: '单包发送间隔(ms)',
-                labelWidth: 105,
+                labelWidth: 135,
                 anchor: '100%',
                 value: ''
             }, {
@@ -282,7 +361,7 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
             	id: "modbusProtocolInstanceSort_Id",
                 name: 'protocolInstance.sort',
                 fieldLabel: '排序',
-                labelWidth: 105,
+                labelWidth: 135,
                 allowBlank: true,
                 minValue: 1,
                 anchor: '100%',

@@ -2187,12 +2187,17 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolInstance.setUnitId(StringManagerUtils.stringToInteger(unitId));
 				protocolInstance.setAcqProtocolType(modbusProtocolInstanceSaveData.getAcqProtocolType());
 				protocolInstance.setCtrlProtocolType(modbusProtocolInstanceSaveData.getCtrlProtocolType());
+				
+				protocolInstance.setSignInPrefixSuffixHex(modbusProtocolInstanceSaveData.getSignInPrefixSuffixHex());
 				protocolInstance.setSignInPrefix(modbusProtocolInstanceSaveData.getSignInPrefix());
 				protocolInstance.setSignInSuffix(modbusProtocolInstanceSaveData.getSignInSuffix());
+				protocolInstance.setSignInIDHex(modbusProtocolInstanceSaveData.getSignInIDHex());
+				
+				protocolInstance.setHeartbeatPrefixSuffixHex(modbusProtocolInstanceSaveData.getHeartbeatPrefixSuffixHex());
 				protocolInstance.setHeartbeatPrefix(modbusProtocolInstanceSaveData.getHeartbeatPrefix());
 				protocolInstance.setHeartbeatSuffix(modbusProtocolInstanceSaveData.getHeartbeatSuffix());
-				
-				protocolInstance.setPrefixSuffixHex(modbusProtocolInstanceSaveData.getPrefixSuffixHex());
+				protocolInstance.setHeartbeatBodyHex(modbusProtocolInstanceSaveData.getHeartbeatBodyHex());
+				protocolInstance.setHeartbeatBody(modbusProtocolInstanceSaveData.getHeartbeatBody());
 				
 				if(StringManagerUtils.isNum(modbusProtocolInstanceSaveData.getPacketSendInterval())){
 					protocolInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(modbusProtocolInstanceSaveData.getPacketSendInterval()));

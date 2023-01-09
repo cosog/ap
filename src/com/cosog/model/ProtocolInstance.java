@@ -26,11 +26,15 @@ public class ProtocolInstance implements java.io.Serializable {
 	private Integer unitId;
 	private String acqProtocolType;
 	private String ctrlProtocolType;
-	private Integer prefixSuffixHex;
+	private Integer signInPrefixSuffixHex;
 	private String signInPrefix;
 	private String signInSuffix;
+	private Integer signInIDHex;
+	private Integer heartbeatPrefixSuffixHex;
 	private String heartbeatPrefix;
 	private String heartbeatSuffix;
+	private Integer heartbeatBodyHex;
+	private String heartbeatBody;
 	private Integer packetSendInterval;
 	private Integer sort;
 
@@ -42,8 +46,10 @@ public class ProtocolInstance implements java.io.Serializable {
 
 	/** full constructor */
 	public ProtocolInstance(Integer id, String name, String code, Integer deviceType, Integer unitId,
-			String acqProtocolType, String ctrlProtocolType, String signInPrefix, String signInSuffix,
-			String heartbeatPrefix, String heartbeatSuffix, Integer sort) {
+			String acqProtocolType, String ctrlProtocolType, Integer signInPrefixSuffixHex, String signInPrefix,
+			String signInSuffix, Integer signInIDHex, Integer heartbeatPrefixSuffixHex, String heartbeatPrefix,
+			String heartbeatSuffix, Integer heartbeatBodyHex, String heartbeatBody, Integer packetSendInterval,
+			Integer sort) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -52,10 +58,16 @@ public class ProtocolInstance implements java.io.Serializable {
 		this.unitId = unitId;
 		this.acqProtocolType = acqProtocolType;
 		this.ctrlProtocolType = ctrlProtocolType;
+		this.signInPrefixSuffixHex = signInPrefixSuffixHex;
 		this.signInPrefix = signInPrefix;
 		this.signInSuffix = signInSuffix;
+		this.signInIDHex = signInIDHex;
+		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
 		this.heartbeatPrefix = heartbeatPrefix;
 		this.heartbeatSuffix = heartbeatSuffix;
+		this.heartbeatBodyHex = heartbeatBodyHex;
+		this.heartbeatBody = heartbeatBody;
+		this.packetSendInterval = packetSendInterval;
 		this.sort = sort;
 	}
 
@@ -178,13 +190,49 @@ public class ProtocolInstance implements java.io.Serializable {
 		this.packetSendInterval = packetSendInterval;
 	}
 
-	@Column(name = "prefixSuffixHex", precision = 22, scale = 0)
-	public Integer getPrefixSuffixHex() {
-		return prefixSuffixHex;
+	@Column(name = "signInPrefixSuffixHex", precision = 22, scale = 0)
+	public Integer getSignInPrefixSuffixHex() {
+		return signInPrefixSuffixHex;
 	}
 
-	public void setPrefixSuffixHex(Integer prefixSuffixHex) {
-		this.prefixSuffixHex = prefixSuffixHex;
+	public void setSignInPrefixSuffixHex(Integer signInPrefixSuffixHex) {
+		this.signInPrefixSuffixHex = signInPrefixSuffixHex;
+	}
+
+	@Column(name = "signInIDHex", precision = 22, scale = 0)
+	public Integer getSignInIDHex() {
+		return signInIDHex;
+	}
+
+	public void setSignInIDHex(Integer signInIDHex) {
+		this.signInIDHex = signInIDHex;
+	}
+
+	@Column(name = "heartbeatPrefixSuffixHex", precision = 22, scale = 0)
+	public Integer getHeartbeatPrefixSuffixHex() {
+		return heartbeatPrefixSuffixHex;
+	}
+
+	public void setHeartbeatPrefixSuffixHex(Integer heartbeatPrefixSuffixHex) {
+		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
+	}
+
+	@Column(name = "heartbeatBodyHex", precision = 22, scale = 0)
+	public Integer getHeartbeatBodyHex() {
+		return heartbeatBodyHex;
+	}
+
+	public void setHeartbeatBodyHex(Integer heartbeatBodyHex) {
+		this.heartbeatBodyHex = heartbeatBodyHex;
+	}
+
+	@Column(name = "heartbeatBody", nullable = true, length = 50)
+	public String getHeartbeatBody() {
+		return heartbeatBody;
+	}
+
+	public void setHeartbeatBody(String heartbeatBody) {
+		this.heartbeatBody = heartbeatBody;
 	}
 	
 	

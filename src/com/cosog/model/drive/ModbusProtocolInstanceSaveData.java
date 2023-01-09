@@ -4,28 +4,31 @@ import java.util.List;
 
 public class ModbusProtocolInstanceSaveData {
 
-	int id;
-	String code;
-	String oldName;
-	String name;
-	int deviceType=0;
-	int unitId;
-	String unitName;
+	public int id;
+	public String code;
+	public String oldName;
+	public String name;
+	public int deviceType=0;
+	public int unitId;
+	public String unitName;
 	
-	int prefixSuffixHex;
+	public String acqProtocolType;
+	public String ctrlProtocolType;
 	
-	String acqProtocolType;
-	String ctrlProtocolType;
+	public int signInPrefixSuffixHex;
+	public String signInPrefix;
+	public String signInSuffix;
+	public int signInIDHex;
 	
-	String signInPrefix;
-	String signInSuffix;
+	public int heartbeatPrefixSuffixHex;
+	public String heartbeatPrefix;
+	public String heartbeatSuffix;
+	public int heartbeatBodyHex;
+	public String heartbeatBody;
 	
-	String heartbeatPrefix;
-	String heartbeatSuffix;
+	public String packetSendInterval;
 	
-	String packetSendInterval;
-	
-	String sort;
+	public String sort;
 	
 	private List<String> delidslist;
 
@@ -157,11 +160,43 @@ public class ModbusProtocolInstanceSaveData {
 		this.packetSendInterval = packetSendInterval;
 	}
 
-	public int getPrefixSuffixHex() {
-		return prefixSuffixHex;
+	public int getSignInPrefixSuffixHex() {
+		return signInPrefixSuffixHex;
 	}
 
-	public void setPrefixSuffixHex(int prefixSuffixHex) {
-		this.prefixSuffixHex = prefixSuffixHex;
+	public void setSignInPrefixSuffixHex(int signInPrefixSuffixHex) {
+		this.signInPrefixSuffixHex = signInPrefixSuffixHex;
+	}
+
+	public int getSignInIDHex() {
+		return signInIDHex;
+	}
+
+	public void setSignInIDHex(int signInIDHex) {
+		this.signInIDHex = signInIDHex;
+	}
+
+	public int getHeartbeatPrefixSuffixHex() {
+		return heartbeatPrefixSuffixHex;
+	}
+
+	public void setHeartbeatPrefixSuffixHex(int heartbeatPrefixSuffixHex) {
+		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
+	}
+
+	public int getHeartbeatBodyHex() {
+		return heartbeatBodyHex;
+	}
+
+	public void setHeartbeatBodyHex(int heartbeatBodyHex) {
+		this.heartbeatBodyHex = heartbeatBodyHex;
+	}
+
+	public String getHeartbeatBody() {
+		return heartbeatBody;
+	}
+
+	public void setHeartbeatBody(String heartbeatBody) {
+		this.heartbeatBody = heartbeatBody;
 	}
 }

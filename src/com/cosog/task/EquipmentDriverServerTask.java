@@ -1002,10 +1002,11 @@ public class EquipmentDriverServerTask {
 			}
 		}else{
 			String sql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"//1~3
-					+ "t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,"//4~7
-					+ "t.packetsendinterval,t.prefixsuffixhex,"//8~9
-					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//10~14
-					+ "listagg(t5.itemname, ',') within group(order by t5.id ) key "//15
+					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//4~7
+					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,t.HeartbeatBodyHex,t.HeartbeatBody,"//8~12
+					+ " t.packetsendinterval,"//13
+					+ " t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//14~18
+					+ " listagg(t5.itemname, ',') within group(order by t5.id ) key "//19
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
 					+ " left outer join tbl_acq_group2unit_conf t3 on t2.id=t3.unitid "
@@ -1015,7 +1016,10 @@ public class EquipmentDriverServerTask {
 			if(StringManagerUtils.isNotNull(instances)){
 				sql+=" and t.name in("+instances+")";
 			}
-			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,t.signinprefix,t.signinsuffix,t.heartbeatprefix,t.heartbeatsuffix,t.packetsendinterval,t.prefixsuffixhex,"
+			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
+					+ "t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
+					+ "t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,t.HeartbeatBodyHex,t.HeartbeatBody,"
+					+ "t.packetsendinterval,"
 					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type";
 			Map<String,InitInstance> InstanceListMap=new HashMap<String,InitInstance>();
 			ModbusProtocolConfig modbusProtocolConfig=MemoryDataManagerTask.getModbusProtocolConfig();
@@ -1035,34 +1039,35 @@ public class EquipmentDriverServerTask {
 						initInstance=new InitInstance();
 						initInstance.setMethod(method);
 						initInstance.setInstanceName(rs.getString(1));
-						initInstance.setProtocolName(rs.getString(10));
+						initInstance.setProtocolName(rs.getString(14));
 						initInstance.setAcqProtocolType(rs.getString(2));
 						initInstance.setCtrlProtocolType(rs.getString(3));
 						
+						initInstance.setSignInPrefixSuffixHex(rs.getInt(4)==1);
+						initInstance.setSignInPrefix(rs.getString(5)==null?"":rs.getString(5));
+						initInstance.setSignInSuffix(rs.getString(6)==null?"":rs.getString(6));
+						initInstance.setSignInIDHex(rs.getInt(7)==1);
 						
-						boolean prefixSuffixHex=rs.getInt(9)==1;
-						initInstance.setPrefixSuffixHex(prefixSuffixHex);
+						initInstance.setHeartbeatPrefixSuffixHex(rs.getInt(8)==1);
+						initInstance.setHeartbeatPrefix(rs.getString(9)==null?"":rs.getString(9));
+						initInstance.setHeartbeatSuffix(rs.getString(10)==null?"":rs.getString(10));
+						initInstance.setHeartbeatBodyHex(rs.getInt(11)==1);
+						initInstance.setHeartbeatBody(rs.getString(12)==null?"":rs.getString(12));
 						
-						initInstance.setSignInPrefix(rs.getString(4)==null?"":rs.getString(4));
-						initInstance.setSignInSuffix(rs.getString(5)==null?"":rs.getString(5));
-						
-						initInstance.setHeartbeatPrefix(rs.getString(6)==null?"":rs.getString(6));
-						initInstance.setHeartbeatSuffix(rs.getString(7)==null?"":rs.getString(7));
-						
-						initInstance.setPacketSendInterval(rs.getInt(8));
+						initInstance.setPacketSendInterval(rs.getInt(13));
 						
 						initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
 						initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
 					}
-					if(StringManagerUtils.isNotNull(rs.getString(12))){
+					if(StringManagerUtils.isNotNull(rs.getString(16))){
 						InitInstance.Group group=new InitInstance.Group();
-						group.setGroupTimingInterval(rs.getInt(13));
+						group.setGroupTimingInterval(rs.getInt(17));
 						group.setAddr(new ArrayList<Integer>());
-						int groupType=rs.getInt(14);
-						if(StringManagerUtils.isNotNull(rs.getString(15))){
-							String[] itemsArr=rs.getString(15).split(",");
+						int groupType=rs.getInt(18);
+						if(StringManagerUtils.isNotNull(rs.getString(19))){
+							String[] itemsArr=rs.getString(19).split(",");
 							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(10))){
+								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(14))){
 									for(int j=0;j<itemsArr.length;j++){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){

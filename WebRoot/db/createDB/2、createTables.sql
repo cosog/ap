@@ -453,20 +453,24 @@ alter table TBL_DISPLAY_ITEMS2UNIT_CONF add constraint PK_DISPLAY_ITEMS2UNIT_CON
 /*==============================================================*/
 create table TBL_PROTOCOLINSTANCE
 (
-  id               NUMBER(10) not null,
-  name             VARCHAR2(50),
-  code             VARCHAR2(50),
-  acqprotocoltype  VARCHAR2(50),
-  ctrlprotocoltype VARCHAR2(50),
-  prefixsuffixhex    NUMBER(1) default 1,
-  signinprefix     VARCHAR2(50),
-  signinsuffix     VARCHAR2(50),
-  heartbeatprefix  VARCHAR2(50),
-  heartbeatsuffix  VARCHAR2(50),
-  packetsendinterval NUMBER(10) default 100,
-  unitid           NUMBER(10),
-  devicetype       NUMBER(1) default 0,
-  sort             NUMBER(10)
+  id                       NUMBER(10) not null,
+  name                     VARCHAR2(50),
+  code                     VARCHAR2(50),
+  acqprotocoltype          VARCHAR2(50),
+  ctrlprotocoltype         VARCHAR2(50),
+  signinprefixsuffixhex    NUMBER(1) default 1,
+  signinprefix             VARCHAR2(50),
+  signinsuffix             VARCHAR2(50),
+  signinidhex              NUMBER(1) default 1,
+  heartbeatprefixsuffixhex NUMBER(1) default 1,
+  heartbeatprefix          VARCHAR2(50),
+  heartbeatsuffix          VARCHAR2(50),
+  heartbeatbodyhex         NUMBER(1) default 1,
+  heartbeatbody            VARCHAR2(50) default '$ID'
+  packetsendinterval       NUMBER(10) default 100,
+  unitid                   NUMBER(10),
+  devicetype               NUMBER(1) default 0,
+  sort                     NUMBER(10)
 )
 tablespace AP_DATA
   storage

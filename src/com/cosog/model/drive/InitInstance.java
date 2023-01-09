@@ -15,15 +15,23 @@ public class InitInstance {
     
     private String CtrlProtocolType;
     
-    private boolean PrefixSuffixHex;
+    private boolean SignInPrefixSuffixHex;
     
     private String SignInPrefix;
     
     private String SignInSuffix;
     
+    private boolean SignInIDHex;
+    
+    private boolean HeartbeatPrefixSuffixHex;
+    
     private String HeartbeatPrefix;
     
     private String HeartbeatSuffix;
+    
+    private boolean HeartbeatBodyHex;
+    
+    private String HeartbeatBody;
     
     private int PacketSendInterval;
     
@@ -143,20 +151,52 @@ public class InitInstance {
 		CtrlGroup = ctrlGroup;
 	}
 
-	public boolean getPrefixSuffixHex() {
-		return PrefixSuffixHex;
-	}
-
-	public void setPrefixSuffixHex(boolean prefixSuffixHex) {
-		PrefixSuffixHex = prefixSuffixHex;
-	}
-
 	public int getPacketSendInterval() {
 		return PacketSendInterval;
 	}
 
 	public void setPacketSendInterval(int packetSendInterval) {
 		PacketSendInterval = packetSendInterval;
+	}
+
+	public boolean isSignInPrefixSuffixHex() {
+		return SignInPrefixSuffixHex;
+	}
+
+	public void setSignInPrefixSuffixHex(boolean signInPrefixSuffixHex) {
+		SignInPrefixSuffixHex = signInPrefixSuffixHex;
+	}
+
+	public boolean isSignInIDHex() {
+		return SignInIDHex;
+	}
+
+	public void setSignInIDHex(boolean signInIDHex) {
+		SignInIDHex = signInIDHex;
+	}
+
+	public boolean isHeartbeatPrefixSuffixHex() {
+		return HeartbeatPrefixSuffixHex;
+	}
+
+	public void setHeartbeatPrefixSuffixHex(boolean heartbeatPrefixSuffixHex) {
+		HeartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
+	}
+
+	public boolean isHeartbeatBodyHex() {
+		return HeartbeatBodyHex;
+	}
+
+	public void setHeartbeatBodyHex(boolean heartbeatBodyHex) {
+		HeartbeatBodyHex = heartbeatBodyHex;
+	}
+
+	public String getHeartbeatBody() {
+		return HeartbeatBody;
+	}
+
+	public void setHeartbeatBody(String heartbeatBody) {
+		HeartbeatBody = heartbeatBody;
 	}
 	
 }

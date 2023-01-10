@@ -496,6 +496,8 @@ function CreateAndLoadRPCDeviceInfoTable(isNew) {
                     		||result.columns[i].dataIndex.toUpperCase() === "slave".toUpperCase()
                     		||result.columns[i].dataIndex.toUpperCase() === "peakDelay".toUpperCase()) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,rpcDeviceInfoHandsontableHelper);}}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,rpcDeviceInfoHandsontableHelper);}}";
                     } else {
                         columns += "{data:'" + result.columns[i].dataIndex + "'}";
                     }

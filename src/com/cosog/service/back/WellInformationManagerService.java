@@ -1427,7 +1427,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-				+ " tcptype,signInId,slave,t.peakdelay,"
+				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
 				+ " videoUrl,"
 				+ " sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
@@ -1512,13 +1512,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
 			result_json.append("\"tcpType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
-			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"peakDelay\":\""+obj[10]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
-			result_json.append("\"status\":\""+obj[13]+"\",");
-			result_json.append("\"statusName\":\""+obj[14]+"\",");
-			result_json.append("\"allPath\":\""+obj[15]+"\",");
-			result_json.append("\"sortNum\":\""+obj[12]+"\"},");
+			result_json.append("\"ipPort\":\""+obj[9]+"\",");
+			result_json.append("\"slave\":\""+obj[10]+"\",");
+			result_json.append("\"peakDelay\":\""+obj[11]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[12]+"\",");
+			result_json.append("\"status\":\""+obj[14]+"\",");
+			result_json.append("\"statusName\":\""+obj[15]+"\",");
+			result_json.append("\"allPath\":\""+obj[16]+"\",");
+			result_json.append("\"sortNum\":\""+obj[13]+"\"},");
 		}
 		if(result_json.toString().endsWith(",")){
 			result_json.deleteCharAt(result_json.length() - 1);
@@ -1681,7 +1682,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 		
 		String columns=service.showTableHeadersColumns(ddicName);
 		String sql = "select id,orgName,wellName,applicationScenariosName,instanceName,displayInstanceName,alarmInstanceName,"
-				+ " tcptype,signInId,slave,t.peakdelay,"
+				+ " tcptype,signInId,ipport,slave,t.peakdelay,"
 				+ " videoUrl,"
 				+ " sortNum,status,statusName,allpath"
 				+ " from "+tableName+" t where 1=1"
@@ -1767,13 +1768,14 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 			result_json.append("\"alarmInstanceName\":\""+obj[6]+"\",");
 			result_json.append("\"tcpType\":\""+(obj[7]+"").replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 			result_json.append("\"signInId\":\""+obj[8]+"\",");
-			result_json.append("\"slave\":\""+obj[9]+"\",");
-			result_json.append("\"peakDelay\":\""+obj[10]+"\",");
-			result_json.append("\"videoUrl\":\""+obj[11]+"\",");
-			result_json.append("\"status\":\""+obj[13]+"\",");
-			result_json.append("\"statusName\":\""+obj[14]+"\",");
-			result_json.append("\"allPath\":\""+obj[15]+"\",");
-			result_json.append("\"sortNum\":\""+obj[12]+"\"},");
+			result_json.append("\"ipPort\":\""+obj[9]+"\",");
+			result_json.append("\"slave\":\""+obj[10]+"\",");
+			result_json.append("\"peakDelay\":\""+obj[11]+"\",");
+			result_json.append("\"videoUrl\":\""+obj[12]+"\",");
+			result_json.append("\"status\":\""+obj[14]+"\",");
+			result_json.append("\"statusName\":\""+obj[15]+"\",");
+			result_json.append("\"allPath\":\""+obj[16]+"\",");
+			result_json.append("\"sortNum\":\""+obj[13]+"\"},");
 		}
 //		for(int i=1;i<=recordCount-list.size();i++){
 //			result_json.append("{\"jlbh\":\"-99999\",\"id\":\"-99999\"},");
@@ -3060,14 +3062,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 	
 	public boolean judgeDeviceExistOrNotBySigninIdAndSlave(String deviceTypeStr,String signinId,String slaveStr) {
 		boolean flag = false;
-		int deviceType=StringManagerUtils.stringToInteger(deviceTypeStr);
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
-		String tableName="tbl_rpcdevice";
-		if(deviceType>=200&&deviceType<300){
-			tableName="tbl_pcpdevice";
-		}else if(deviceType>=300){
-			tableName="tbl_smsdevice";
-		}
 		if (StringManagerUtils.isNotNull(signinId)&&StringManagerUtils.isNotNull(slaveStr)) {
 			String rpcSql = "select t.id from tbl_rpcdevice t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
 			List<?> rpcList = this.findCallSql(rpcSql);
@@ -3075,6 +3070,25 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 				flag = true;
 			}else{
 				String pcpSql = "select t.id from tbl_pcpdevice t where t.signinid='"+signinId+"' and to_number(t.slave)="+slave;
+				List<?> pcpList = this.findCallSql(pcpSql);
+				if (pcpList.size() > 0) {
+					flag = true;
+				}
+			}
+		}
+		return flag;
+	}
+	
+	public boolean judgeDeviceExistOrNotByIpPortAndSlave(String deviceTypeStr,String ipPort,String slaveStr) {
+		boolean flag = false;
+		int slave=StringManagerUtils.stringToInteger(slaveStr);
+		if (StringManagerUtils.isNotNull(ipPort)&&StringManagerUtils.isNotNull(slaveStr)) {
+			String rpcSql = "select t.id from tbl_rpcdevice t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
+			List<?> rpcList = this.findCallSql(rpcSql);
+			if (rpcList.size() > 0) {
+				flag = true;
+			}else{
+				String pcpSql = "select t.id from tbl_pcpdevice t where t.ipPort='"+ipPort+"' and to_number(t.slave)="+slave;
 				List<?> pcpList = this.findCallSql(pcpSql);
 				if (pcpList.size() > 0) {
 					flag = true;

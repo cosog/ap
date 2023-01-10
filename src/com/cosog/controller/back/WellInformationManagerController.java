@@ -1684,6 +1684,27 @@ public class WellInformationManagerController extends BaseController {
 		return null;
 	}
 	
+	@RequestMapping("/judgeDeviceExistOrNotByIpPortAndSlave")
+	public String judgeDeviceExistOrNotByIpPortAndSlave() throws IOException {
+		String deviceType = ParamUtils.getParameter(request, "deviceType");
+		String ipPort = ParamUtils.getParameter(request, "ipPort");
+		String slave = ParamUtils.getParameter(request, "slave");
+		boolean flag = this.wellInformationManagerService.judgeDeviceExistOrNotByIpPortAndSlave(deviceType,ipPort,slave);
+		response.setContentType("application/json;charset=" + Constants.ENCODING_UTF8);
+		response.setHeader("Cache-Control", "no-cache");
+		String json = "";
+		if (flag) {
+			json = "{success:true,msg:'1'}";
+		} else {
+			json = "{success:true,msg:'0'}";
+		}
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
 	@RequestMapping("/judgePumpingModelExistOrNot")
 	public String judgePumpingModelExistOrNot() throws IOException {
 		orgId=ParamUtils.getParameter(request, "orgId");

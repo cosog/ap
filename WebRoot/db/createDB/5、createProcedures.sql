@@ -651,6 +651,7 @@ CREATE OR REPLACE PROCEDURE prd_update_rpcdevice ( v_recordId in NUMBER,
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
+                                                    v_ipPort    in varchar2,
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_status in NUMBER,
@@ -670,10 +671,14 @@ begin
   and t.orgid=( select t2.orgid from tbl_rpcdevice t2 where t2.id=v_recordId);
     if wellcount=0 then
         select count(1) into otherrpccount from tbl_rpcdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
         and t.id<>v_recordId;
         select count(1) into otherpcpcount from tbl_pcpdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if v_recordId >0 and othercount=0 then
           Update tbl_rpcdevice t
@@ -683,7 +688,7 @@ begin
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-               t.tcptype=v_tcpType,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
+               t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
                t.sortnum=v_sortNum
            Where t.id=v_recordId;
@@ -699,8 +704,10 @@ begin
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
              and t.id=(select t2.id from tbl_rpcdevice t2
-             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
-                   and t2.id<>v_recordId);
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
+                 and t2.id<>v_recordId);
           elsif otherpcpcount>0 then
              select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
              from tbl_org org
@@ -708,11 +715,13 @@ begin
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
              and t.id=(select t2.id from tbl_pcpdevice t2
-             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           end if;
           v_result:=-22;
-          v_resultstr :='设备'||v_wellName||'注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
-          p_msg := '设备'||v_wellName||'注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
+          v_resultstr :='设备'||v_wellName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
+          p_msg := '设备'||v_wellName||'注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';
         end if;
     else
       v_result:=-33;
@@ -736,6 +745,7 @@ CREATE OR REPLACE PROCEDURE prd_update_pcpdevice ( v_recordId in NUMBER,
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
+                                                    v_ipPort    in varchar2,
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_status in NUMBER,
@@ -755,10 +765,14 @@ begin
   and t.orgid=( select t2.orgid from tbl_pcpdevice t2 where t2.id=v_recordId);
     if wellcount=0 then
         select count(1) into otherpcpcount from tbl_pcpdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
         and t.id<>v_recordId;
         select count(1) into otherrpccount from tbl_rpcdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if v_recordId >0 and othercount=0 then
           Update tbl_pcpdevice t
@@ -768,7 +782,7 @@ begin
                t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
-               t.tcptype=v_tcpType,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
+               t.tcptype=v_tcpType,t.ipport=v_ipPort,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
                t.status=v_status,
                t.sortnum=v_sortNum
            Where t.id=v_recordId;
@@ -784,8 +798,10 @@ begin
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
              and t.id=(select t2.id from tbl_pcpdevice t2
-             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
-                   and t2.id<>v_recordId);
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
+                 and t2.id<>v_recordId);
           elsif otherrpccount>0 then
              select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
              from tbl_org org
@@ -793,7 +809,9 @@ begin
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
              and t.id=(select t2.id from tbl_rpcdevice t2
-             where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           end if;
           v_result:=-22;
           v_resultstr :='设备'||v_wellName||'注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突，保存无效';

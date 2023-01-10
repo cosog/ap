@@ -48,6 +48,8 @@ public class WellHandsontableChangedData {
 	    private String tcpType="";
 
 	    private String signInId="";
+	    
+	    private String ipPort="";
 
 	    private String slave="";
 	    
@@ -729,6 +731,14 @@ public class WellHandsontableChangedData {
 
 		public void setVideoUrl2(String videoUrl2) {
 			this.videoUrl2 = videoUrl2;
+		}
+
+		public String getIpPort() {
+			return ipPort;
+		}
+
+		public void setIpPort(String ipPort) {
+			this.ipPort = ipPort;
 		}
 	    
 	}

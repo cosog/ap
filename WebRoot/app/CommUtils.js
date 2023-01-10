@@ -2272,6 +2272,19 @@ function handsontableDataCheck_RodGrade(val, callback,row,col,handsontableHelper
 	}
 };
 
+function handsontableDataCheck_IpPort_Nullable(val, callback,row,col,handsontableHelper){
+	var ipPattern=/^(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])$/;
+	var portPattern=/^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+	var ipPortPattern=/^(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+	if(val==='' || val==null || ipPortPattern.test(val)){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
 function getBaseUrl(){
 	var curWwwPath=window.document.location.href;
 	//获取主机地址之后的目录，如： uimcardprj/share/meun.jsp

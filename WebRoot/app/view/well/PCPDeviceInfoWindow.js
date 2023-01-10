@@ -332,6 +332,13 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
 				listeners : {
 					select:function(v,o){
 						Ext.getCmp("pcpDeviceTcpType_Id").setValue(this.value);
+						if(this.value=='TCP Server'){
+							Ext.getCmp('pcpDeviceSignInId_Id').disable();
+							Ext.getCmp('pcpDeviceIpPort_Id').enable();
+						}else{
+							Ext.getCmp('pcpDeviceSignInId_Id').enable();
+							Ext.getCmp('pcpDeviceIpPort_Id').disable();
+						}
 					}
 				}
             },{
@@ -342,7 +349,7 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                 name: "pcpDeviceInformation.tcpType"
             },{
                 xtype: "textfield",
-                fieldLabel: '注册包ID/IP端口',
+                fieldLabel: '注册包ID',
                 allowBlank: true,
                 id: 'pcpDeviceSignInId_Id',
                 anchor: '95%',
@@ -367,6 +374,46 @@ Ext.define("AP.view.well.PCPDeviceInfoWindow", {
                                     var msg_ = obj.msg;
                                     if (msg_ == "1") {
                                     	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【注册包ID/IP端口和设备从地址与其他设备冲突】</font>,请确认！", function(btn, text){
+                                    	    if (btn == 'ok'){
+                                    	    	t.focus(true, 100);
+                                    	    }
+                                    	});
+                                    }
+                                },
+                                failure: function (response, opts) {
+                                    Ext.Msg.alert(cosog.string.tips, cosog.string.fail);
+                                }
+                            });
+                        }
+                    }
+                }
+            },{
+                xtype: "textfield",
+                fieldLabel: '下位机IP端口',
+                allowBlank: true,
+                id: 'pcpDeviceIpPort_Id',
+                anchor: '95%',
+                name: "pcpDeviceInformation.ipPort",
+                value: '',
+                listeners: {
+                	blur: function (t, e) {
+                        var slave=Ext.getCmp("pcpDeviceSlave_Id").getValue();
+                        var deviceType=Ext.getCmp("pcpDeviceType_Id").getValue();
+                		if(t.value!=''&&slave!=''){
+                        	var orgId=Ext.getCmp("pcpDeviceOrg_Id").getValue();
+                    		Ext.Ajax.request({
+                                method: 'POST',
+                                params: {
+                                	ipPort: t.value,
+                                	slave:slave,
+                                    deviceType:deviceType
+                                },
+                                url: context + '/wellInformationManagerController/judgeDeviceExistOrNotByIpPortAndSlave',
+                                success: function (response, opts) {
+                                    var obj = Ext.decode(response.responseText);
+                                    var msg_ = obj.msg;
+                                    if (msg_ == "1") {
+                                    	Ext.Msg.alert(cosog.string.ts, "<font color='red'>【下位机IP端口和设备从地址与其他设备冲突】</font>,请确认！", function(btn, text){
                                     	    if (btn == 'ok'){
                                     	    	t.focus(true, 100);
                                     	    }

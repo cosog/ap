@@ -692,6 +692,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
 					collisionBuff.append("\"tcpType\":\""+list.get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 					collisionBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
+					collisionBuff.append("\"ipPort\":\""+list.get(i).getIpPort()+"\",");
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					collisionBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					collisionBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
@@ -760,6 +761,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
 					overlayBuff.append("\"tcpType\":\""+list.get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 					overlayBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
+					overlayBuff.append("\"ipPort\":\""+list.get(i).getIpPort()+"\",");
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					overlayBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					overlayBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
@@ -955,6 +957,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					collisionBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
 					collisionBuff.append("\"tcpType\":\""+list.get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 					collisionBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
+					collisionBuff.append("\"ipPort\":\""+list.get(i).getIpPort()+"\",");
 					collisionBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					collisionBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					collisionBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");
@@ -1013,6 +1016,7 @@ public class WellInformationManagerService<T> extends BaseService<T> {
 					overlayBuff.append("\"alarmInstanceName\":\""+list.get(i).getAlarmInstanceName()+"\",");
 					overlayBuff.append("\"tcpType\":\""+list.get(i).getTcpType().replaceAll(" ", "").toLowerCase().replaceAll("tcpserver", "TCP Server").replaceAll("tcpclient", "TCP Client")+"\",");
 					overlayBuff.append("\"signInId\":\""+list.get(i).getSignInId()+"\",");
+					overlayBuff.append("\"ipPort\":\""+list.get(i).getIpPort()+"\",");
 					overlayBuff.append("\"slave\":\""+list.get(i).getSlave()+"\",");
 					overlayBuff.append("\"peakDelay\":\""+list.get(i).getPeakDelay()+"\",");
 					overlayBuff.append("\"videoUrl1\":\""+list.get(i).getVideoUrl1()+"\",");

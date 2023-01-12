@@ -1003,10 +1003,10 @@ public class EquipmentDriverServerTask {
 		}else{
 			String sql="select t.name,t.acqprotocoltype,t.ctrlprotocoltype,"//1~3
 					+ " t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"//4~7
-					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,t.HeartbeatBodyHex,t.HeartbeatBody,"//8~12
-					+ " t.packetsendinterval,"//13
-					+ " t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//14~18
-					+ " listagg(t5.itemname, ',') within group(order by t5.id ) key "//19
+					+ " t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"//8~10
+					+ " t.packetsendinterval,"//11
+					+ " t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type,"//12~16
+					+ " listagg(t5.itemname, ',') within group(order by t5.id ) key "//17
 					+ " from tbl_protocolinstance t "
 					+ " left outer join tbl_acq_unit_conf t2 on t.unitid=t2.id "
 					+ " left outer join tbl_acq_group2unit_conf t3 on t2.id=t3.unitid "
@@ -1018,7 +1018,7 @@ public class EquipmentDriverServerTask {
 			}
 			sql+= "group by t.name,t.acqprotocoltype,t.ctrlprotocoltype,"
 					+ "t.SignInPrefixSuffixHex,t.signinprefix,t.signinsuffix,t.SignInIDHex,"
-					+ "t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,t.HeartbeatBodyHex,t.HeartbeatBody,"
+					+ "t.HeartbeatPrefixSuffixHex,t.heartbeatprefix,t.heartbeatsuffix,"
 					+ "t.packetsendinterval,"
 					+ "t2.protocol,t2.unit_code,t4.group_code,t4.grouptiminginterval,t4.type";
 			Map<String,InitInstance> InstanceListMap=new HashMap<String,InitInstance>();
@@ -1039,7 +1039,7 @@ public class EquipmentDriverServerTask {
 						initInstance=new InitInstance();
 						initInstance.setMethod(method);
 						initInstance.setInstanceName(rs.getString(1));
-						initInstance.setProtocolName(rs.getString(14));
+						initInstance.setProtocolName(rs.getString(12));
 						initInstance.setAcqProtocolType(rs.getString(2));
 						initInstance.setCtrlProtocolType(rs.getString(3));
 						
@@ -1051,23 +1051,21 @@ public class EquipmentDriverServerTask {
 						initInstance.setHeartbeatPrefixSuffixHex(rs.getInt(8)==1);
 						initInstance.setHeartbeatPrefix(rs.getString(9)==null?"":rs.getString(9));
 						initInstance.setHeartbeatSuffix(rs.getString(10)==null?"":rs.getString(10));
-						initInstance.setHeartbeatBodyHex(rs.getInt(11)==1);
-						initInstance.setHeartbeatBody(rs.getString(12)==null?"":rs.getString(12));
 						
-						initInstance.setPacketSendInterval(rs.getInt(13));
+						initInstance.setPacketSendInterval(rs.getInt(11));
 						
 						initInstance.setAcqGroup(new ArrayList<InitInstance.Group>());
 						initInstance.setCtrlGroup(new ArrayList<InitInstance.Group>());
 					}
-					if(StringManagerUtils.isNotNull(rs.getString(16))){
+					if(StringManagerUtils.isNotNull(rs.getString(14))){
 						InitInstance.Group group=new InitInstance.Group();
-						group.setGroupTimingInterval(rs.getInt(17));
+						group.setGroupTimingInterval(rs.getInt(15));
 						group.setAddr(new ArrayList<Integer>());
-						int groupType=rs.getInt(18);
-						if(StringManagerUtils.isNotNull(rs.getString(19))){
-							String[] itemsArr=rs.getString(19).split(",");
+						int groupType=rs.getInt(16);
+						if(StringManagerUtils.isNotNull(rs.getString(17))){
+							String[] itemsArr=rs.getString(17).split(",");
 							for(int i=0;i<modbusProtocolConfig.getProtocol().size();i++){
-								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(14))){
+								if(modbusProtocolConfig.getProtocol().get(i).getName().equalsIgnoreCase(rs.getString(12))){
 									for(int j=0;j<itemsArr.length;j++){
 										for(int k=0;k<modbusProtocolConfig.getProtocol().get(i).getItems().size();k++){
 											if(itemsArr[j].equalsIgnoreCase(modbusProtocolConfig.getProtocol().get(i).getItems().get(k).getTitle())){
@@ -1106,7 +1104,7 @@ public class EquipmentDriverServerTask {
 					}
 				}
 			} catch (SQLException e) {
-				StringManagerUtils.printLog("ID初始化sql："+sql);
+				StringManagerUtils.printLog("实例初始化sql："+sql);
 				e.printStackTrace();
 			} finally{
 				OracleJdbcUtis.closeDBConnection(conn, pstmt, rs);

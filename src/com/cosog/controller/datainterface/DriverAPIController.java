@@ -697,7 +697,7 @@ public class DriverAPIController extends BaseController{
 			AcqOnline acqOnline=gson.fromJson(data, type);
 			String acqTime=StringManagerUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 			if(acqOnline!=null){
-				acqOnline.setID(acqOnline.getIPPort());
+//				acqOnline.setID(acqOnline.getIPPort());
 				jedis = RedisUtil.jedisPool.getResource();
 				List<RPCDeviceInfo> rpcDeviceInfoList=new ArrayList<RPCDeviceInfo>();
 				List<PCPDeviceInfo> pcpDeviceInfoList=new ArrayList<PCPDeviceInfo>();
@@ -717,7 +717,7 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo memRPCDeviceInfo=(RPCDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memRPCDeviceInfo.getSlave()) && memRPCDeviceInfo.getStatus()==1){
+						if(acqOnline.getIPPort().equalsIgnoreCase(memRPCDeviceInfo.getIpPort()) && StringManagerUtils.isNotNull(memRPCDeviceInfo.getSlave()) && memRPCDeviceInfo.getStatus()==1){
 							if(acqOnline.getSlave()>0){
 								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memRPCDeviceInfo.getSlave())){
 									rpcDeviceInfoList.add(memRPCDeviceInfo);
@@ -734,7 +734,7 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(pcpDeviceInfoByteList.get(i));
 					if (obj instanceof PCPDeviceInfo) {
 						PCPDeviceInfo memPCPDeviceInfo=(PCPDeviceInfo)obj;
-						if(acqOnline.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId()) && StringManagerUtils.isNotNull(memPCPDeviceInfo.getSlave())  && memPCPDeviceInfo.getStatus()==1){
+						if(acqOnline.getIPPort().equalsIgnoreCase(memPCPDeviceInfo.getIpPort()) && StringManagerUtils.isNotNull(memPCPDeviceInfo.getSlave())  && memPCPDeviceInfo.getStatus()==1){
 							if(acqOnline.getSlave()>0){
 								if(acqOnline.getSlave()==StringManagerUtils.stringToInteger(memPCPDeviceInfo.getSlave())){
 									pcpDeviceInfoList.add(memPCPDeviceInfo);
@@ -1160,7 +1160,7 @@ public class DriverAPIController extends BaseController{
 			java.lang.reflect.Type type = new TypeToken<AcqGroup>() {}.getType();
 			AcqGroup acqGroup=gson.fromJson(data, type);
 			if(acqGroup!=null){
-				acqGroup.setID(acqGroup.getIPPort());
+//				acqGroup.setID(acqGroup.getIPPort());
 				jedis = RedisUtil.jedisPool.getResource();
 				RPCDeviceInfo rpcDeviceInfo=null;
 				PCPDeviceInfo pcpDeviceInfo=null;
@@ -1173,7 +1173,7 @@ public class DriverAPIController extends BaseController{
 					Object obj = SerializeObjectUnils.unserizlize(rpcDeviceInfoByteList.get(i));
 					if (obj instanceof RPCDeviceInfo) {
 						RPCDeviceInfo memRPCDeviceInfo=(RPCDeviceInfo)obj;
-						if(acqGroup.getID().equalsIgnoreCase(memRPCDeviceInfo.getSignInId()) && acqGroup.getSlave()==StringManagerUtils.stringToInteger(memRPCDeviceInfo.getSlave())){
+						if(acqGroup.getIPPort().equalsIgnoreCase(memRPCDeviceInfo.getIpPort()) && acqGroup.getSlave()==StringManagerUtils.stringToInteger(memRPCDeviceInfo.getSlave())){
 							rpcDeviceInfo=memRPCDeviceInfo;
 							break;
 						}
@@ -1190,7 +1190,7 @@ public class DriverAPIController extends BaseController{
 						Object obj = SerializeObjectUnils.unserizlize(pcpDeviceInfoByteList.get(i));
 						if (obj instanceof PCPDeviceInfo) {
 							PCPDeviceInfo memPCPDeviceInfo=(PCPDeviceInfo)obj;
-							if(acqGroup.getID().equalsIgnoreCase(memPCPDeviceInfo.getSignInId()) && acqGroup.getSlave()==StringManagerUtils.stringToInteger(memPCPDeviceInfo.getSlave())){
+							if(acqGroup.getIPPort().equalsIgnoreCase(memPCPDeviceInfo.getIpPort()) && acqGroup.getSlave()==StringManagerUtils.stringToInteger(memPCPDeviceInfo.getSlave())){
 								pcpDeviceInfo=memPCPDeviceInfo;
 								break;
 							}

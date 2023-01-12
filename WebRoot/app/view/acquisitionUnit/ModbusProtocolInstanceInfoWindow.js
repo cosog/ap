@@ -318,37 +318,6 @@ Ext.define("AP.view.acquisitionUnit.ModbusProtocolInstanceInfoWindow", {
                 labelWidth: 135,
                 anchor: '100%',
                 value: ''
-            },{
-            	xtype: 'fieldcontainer',
-                fieldLabel : '心跳包数据体十六进制<font color=red>*</font>',
-                labelWidth: 135,
-                defaultType: 'radiofield',
-                anchor: '100%',
-                defaults: {
-                    flex: 1
-                },
-                layout: 'hbox',
-                items: [
-                    {
-                        boxLabel:'HEX',
-                        name:'protocolInstance.heartbeatBodyHex',
-                        checked:true,
-                        inputValue: '1',
-                        id: 'protocolInstanceHeartbeatBodyHexRadio1_Id'
-                    }, {
-                        boxLabel: 'ASC',
-                        name:'protocolInstance.heartbeatBodyHex',
-                        inputValue:'0',
-                        id: 'protocolInstanceHeartbeatBodyHexRadio0_Id'
-                    }
-                ]
-            }, {
-            	id: 'modbusProtocolInstanceHeartbeatBody_Id',
-            	name: "protocolInstance.heartbeatBody",
-                fieldLabel: '心跳包数据体',
-                labelWidth: 135,
-                anchor: '100%',
-                value: ''
             }, {
                 id: 'modbusProtocolInstancePacketSendInterval_Id',
                 name: "protocolInstance.packetSendInterval",

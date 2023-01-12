@@ -33,8 +33,6 @@ public class ProtocolInstance implements java.io.Serializable {
 	private Integer heartbeatPrefixSuffixHex;
 	private String heartbeatPrefix;
 	private String heartbeatSuffix;
-	private Integer heartbeatBodyHex;
-	private String heartbeatBody;
 	private Integer packetSendInterval;
 	private Integer sort;
 
@@ -48,7 +46,7 @@ public class ProtocolInstance implements java.io.Serializable {
 	public ProtocolInstance(Integer id, String name, String code, Integer deviceType, Integer unitId,
 			String acqProtocolType, String ctrlProtocolType, Integer signInPrefixSuffixHex, String signInPrefix,
 			String signInSuffix, Integer signInIDHex, Integer heartbeatPrefixSuffixHex, String heartbeatPrefix,
-			String heartbeatSuffix, Integer heartbeatBodyHex, String heartbeatBody, Integer packetSendInterval,
+			String heartbeatSuffix, Integer packetSendInterval,
 			Integer sort) {
 		super();
 		this.id = id;
@@ -65,8 +63,6 @@ public class ProtocolInstance implements java.io.Serializable {
 		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
 		this.heartbeatPrefix = heartbeatPrefix;
 		this.heartbeatSuffix = heartbeatSuffix;
-		this.heartbeatBodyHex = heartbeatBodyHex;
-		this.heartbeatBody = heartbeatBody;
 		this.packetSendInterval = packetSendInterval;
 		this.sort = sort;
 	}
@@ -216,25 +212,4 @@ public class ProtocolInstance implements java.io.Serializable {
 	public void setHeartbeatPrefixSuffixHex(Integer heartbeatPrefixSuffixHex) {
 		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
 	}
-
-	@Column(name = "heartbeatBodyHex", precision = 22, scale = 0)
-	public Integer getHeartbeatBodyHex() {
-		return heartbeatBodyHex;
-	}
-
-	public void setHeartbeatBodyHex(Integer heartbeatBodyHex) {
-		this.heartbeatBodyHex = heartbeatBodyHex;
-	}
-
-	@Column(name = "heartbeatBody", nullable = true, length = 50)
-	public String getHeartbeatBody() {
-		return heartbeatBody;
-	}
-
-	public void setHeartbeatBody(String heartbeatBody) {
-		this.heartbeatBody = heartbeatBody;
-	}
-	
-	
-
 }

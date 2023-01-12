@@ -36,8 +36,12 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
             listeners: {
             	beforeload: function (store, options) {
                 	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+                	var selectedOrg = Ext.getCmp("OrgInfoTreeGridView_Id").getSelectionModel().getSelection();
+                    var currentOrgId = selectedOrg[0].data.orgId;
+                    
                     var new_params = {
-                    	orgId:orgId
+                    	orgId:orgId,
+                    	currentOrgId:currentOrgId
                     };
                     Ext.apply(store.proxy.extraParams, new_params);
                 }

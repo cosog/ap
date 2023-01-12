@@ -26,6 +26,7 @@ public class RPCDeviceInfo implements Serializable {
 	private String alarmInstanceName;
 	private String tcpType;
 	private String signInId;
+	private String ipPort;
 	private String slave;
 	private Integer PeakDelay;
 	private String videoUrl;
@@ -519,6 +520,14 @@ public class RPCDeviceInfo implements Serializable {
 
 	public void setPeakDelay(Integer peakDelay) {
 		PeakDelay = peakDelay;
+	}
+
+	public String getIpPort() {
+		return ipPort;
+	}
+
+	public void setIpPort(String ipPort) {
+		this.ipPort = ipPort;
 	}
 
 }

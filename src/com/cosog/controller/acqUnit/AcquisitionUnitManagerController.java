@@ -2196,8 +2196,6 @@ public class AcquisitionUnitManagerController extends BaseController {
 				protocolInstance.setHeartbeatPrefixSuffixHex(modbusProtocolInstanceSaveData.getHeartbeatPrefixSuffixHex());
 				protocolInstance.setHeartbeatPrefix(modbusProtocolInstanceSaveData.getHeartbeatPrefix());
 				protocolInstance.setHeartbeatSuffix(modbusProtocolInstanceSaveData.getHeartbeatSuffix());
-				protocolInstance.setHeartbeatBodyHex(modbusProtocolInstanceSaveData.getHeartbeatBodyHex());
-				protocolInstance.setHeartbeatBody(modbusProtocolInstanceSaveData.getHeartbeatBody());
 				
 				if(StringManagerUtils.isNum(modbusProtocolInstanceSaveData.getPacketSendInterval())){
 					protocolInstance.setPacketSendInterval(StringManagerUtils.stringToInteger(modbusProtocolInstanceSaveData.getPacketSendInterval()));

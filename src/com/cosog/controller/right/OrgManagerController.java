@@ -72,7 +72,7 @@ public class OrgManagerController extends BaseController {
 	public String constructOrgRightTree() throws IOException {
 		String orgName = ParamUtils.getParameter(request, "orgName");
 		String orgId = ParamUtils.getParameter(request, "orgId");
-		list = this.orgService.loadOrgs(Org.class,orgName,orgId);
+		list = this.orgService.loadOrgs(Org.class,orgName,orgId,"");
 		String json = "";
 		Recursion r = new Recursion();
 		for (Org org : list) {
@@ -94,6 +94,7 @@ public class OrgManagerController extends BaseController {
 	@RequestMapping("/loadOrgComboxTreeData")
 	public String loadOrgComboxTreeData() throws IOException {
 		String orgId = ParamUtils.getParameter(request, "orgId");
+		String currentOrgId = ParamUtils.getParameter(request, "currentOrgId");
 		if (!StringManagerUtils.isNotNull(orgId)) {
 			User user = null;
 			HttpSession session=request.getSession();
@@ -102,7 +103,7 @@ public class OrgManagerController extends BaseController {
 				orgId = "" + user.getUserorgids();
 			}
 		}
-		list = this.orgService.loadOrgs(Org.class,"",orgId);
+		list = this.orgService.loadOrgs(Org.class,"",orgId,currentOrgId);
 		String json = "";
 		Recursion r = new Recursion();
 		for (Org org : list) {

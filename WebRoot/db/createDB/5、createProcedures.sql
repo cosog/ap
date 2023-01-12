@@ -141,6 +141,7 @@ CREATE OR REPLACE PROCEDURE prd_save_rpcdevice (
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
+                                                    v_ipPort    in varchar2,
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_videoUrl   in varchar2,
@@ -175,12 +176,14 @@ begin
       select t.id into wellId from tbl_rpcdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
       --判断signinid和slave是否已存在
       select count(1) into otherrpccount from tbl_rpcdevice t
-      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave)
-      and t.signinid is not null and t.slave is not null
-      and t.id<>wellId;
+      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
+        and t.id<>wellId;
       select count(1) into otherpcpcount from tbl_pcpdevice t
-      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave)
-      and t.signinid is not null and t.slave is not null;
+      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
       othercount:=otherrpccount+otherpcpcount;
       if othercount=0 then
         Update tbl_rpcdevice t
@@ -189,7 +192,7 @@ begin
           t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=0 and rownum=1),
                t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=0 and rownum=1),
                t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=0 and rownum=1),
-          t.tcptype=v_tcpType,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
+          t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
           t.videourl=v_videourl,
           t.status=v_status, t.sortnum=v_sortNum,
           t.productiondata=v_productionData,
@@ -208,7 +211,9 @@ begin
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
           and t.id=(select t2.id from tbl_rpcdevice t2
-            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+            and to_number(t2.slave)=to_number(v_slave) 
+            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
             and t2.id<>wellId);
         elsif otherpcpcount>0 then
           select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
@@ -217,26 +222,30 @@ begin
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
           and t.id=(select t2.id from tbl_pcpdevice t2
-            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+            and to_number(t2.slave)=to_number(v_slave) 
+            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
           );
         end if;
         v_result:=-22;
-        v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-        p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+        v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+        p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
       end if;
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
         select count(1) into otherrpccount from tbl_rpcdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave)
-        and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         select count(1) into otherpcpcount from tbl_pcpdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave)
-        and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
+            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
             commit;
             update tbl_rpcdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -261,18 +270,24 @@ begin
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_rpcdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           elsif otherpcpcount>0 then
              select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
              from tbl_org org
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_pcpdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
            end if;
           v_result:=-22;
-          v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-          p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+          v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+          p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
         end if;
     end if;
   else
@@ -284,16 +299,18 @@ begin
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
         select count(1) into otherrpccount from tbl_rpcdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave)
-        and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         select count(1) into otherpcpcount from tbl_pcpdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave)
-        and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
+            insert into tbl_rpcdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl,status,Sortnum,productiondata,stroke,balanceinfo)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData,v_stroke,v_balanceinfo);
             commit;
             update tbl_rpcdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -318,18 +335,24 @@ begin
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_rpcdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           elsif otherpcpcount>0 then
              select substr(v.path||'/'||t.wellname||'螺杆泵',2) into otherDeviceAllPath  from tbl_pcpdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
              from tbl_org org
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_pcpdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
            end if;
           v_result:=-22;
-          v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
-          p_msg := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+          v_resultstr := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
+          p_msg := '注册包ID/下位机IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
         end if;
     end if;
   end if;
@@ -351,6 +374,7 @@ CREATE OR REPLACE PROCEDURE prd_save_pcpdevice (
                                                     v_alarmInstance    in varchar2,
                                                     v_tcpType    in varchar2,
                                                     v_signInId    in varchar2,
+                                                    v_ipPort    in varchar2,
                                                     v_slave   in varchar2,
                                                     v_peakDelay in NUMBER,
                                                     v_videoUrl   in varchar2,
@@ -381,10 +405,14 @@ begin
       select t.id into wellId from tbl_pcpdevice t where t.wellname=v_wellName and t.orgid=v_orgId;
       --判断signinid和slave是否已存在
       select count(1) into otherpcpcount from tbl_pcpdevice t
-      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null
-      and t.id<>wellId;
+      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null
+        and t.id<>wellId;
       select count(1) into otherrpccount from tbl_rpcdevice t
-      where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+      where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
       othercount:=otherrpccount+otherpcpcount;
       if othercount=0 then
         Update tbl_pcpdevice t
@@ -393,7 +421,7 @@ begin
           t.instancecode=(select t2.code from tbl_protocolinstance t2 where t2.name=v_instance and t2.devicetype=1 and rownum=1),
           t.displayinstancecode=(select t2.code from tbl_protocoldisplayinstance t2 where t2.name=v_displayInstance and t2.devicetype=1 and rownum=1),
           t.alarminstancecode=(select t2.code from tbl_protocolalarminstance t2 where t2.name=v_alarmInstance and t2.devicetype=1 and rownum=1),
-          t.tcptype=v_tcpType,t.signinid=v_signInId,t.slave=v_slave,t.peakdelay=v_peakDelay,
+          t.tcptype=v_tcpType,t.signinid=v_signInId,t.ipport=v_ipPort,t.slave=v_slave,t.peakdelay=v_peakDelay,
           t.videourl=v_videourl,
           t.status=v_status,t.sortnum=v_sortNum,
           t.productiondata=v_productionData
@@ -410,7 +438,9 @@ begin
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
           and t.id=(select t2.id from tbl_pcpdevice t2
-            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+            and to_number(t2.slave)=to_number(v_slave) 
+            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
             and t2.id<>wellId);
         elsif otherrpccount>0 then
           select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
@@ -419,7 +449,9 @@ begin
           connect by   org.org_parent= prior org.org_id) v
           where t.orgid=v.org_id
           and t.id=(select t2.id from tbl_rpcdevice t2
-            where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null
+            where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+            and to_number(t2.slave)=to_number(v_slave) 
+            and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null
           );
         end if;
         v_result:=-22;
@@ -429,14 +461,18 @@ begin
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
         select count(1) into otherpcpcount from tbl_pcpdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         select count(1) into otherrpccount from tbl_rpcdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
+            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl,status,Sortnum,productiondata)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
             commit;
             update tbl_pcpdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -460,14 +496,20 @@ begin
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_pcpdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           elsif otherrpccount>0 then
              select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
              from tbl_org org
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_rpcdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           end if;
           v_result:=-22;
           v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';
@@ -483,14 +525,18 @@ begin
     elsif wellcount=0 then
       --判断signinid和slave是否已存在
         select count(1) into otherpcpcount from tbl_pcpdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         select count(1) into otherrpccount from tbl_rpcdevice t
-        where t.signinid=v_signInId and to_number(t.slave)=to_number(v_slave) and t.signinid is not null and t.slave is not null;
+        where decode(v_tcpType,'TCP Server',t.ipport,t.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+        and to_number(t.slave)=to_number(v_slave) 
+        and decode(v_tcpType,'TCP Server',t.ipport,t.signinid) is not null and t.slave is not null;
         othercount:=otherrpccount+otherpcpcount;
         if othercount=0 then
           if totalCount<v_license then
-            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,slave,peakdelay,videourl,status,Sortnum,productiondata)
-            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
+            insert into tbl_pcpdevice(orgId,wellName,devicetype,tcptype,signinid,ipport,slave,peakdelay,videourl,status,Sortnum,productiondata)
+            values(v_orgId,v_wellName,v_devicetype,v_tcpType,v_signInId,v_ipPort,v_slave,v_peakDelay,v_videourl,v_status,v_sortNum,v_productionData);
             commit;
             update tbl_pcpdevice t
             set t.applicationscenarios=(select c.itemvalue from tbl_code c where c.itemcode='APPLICATIONSCENARIOS' and c.itemname=v_applicationScenariosName),
@@ -514,14 +560,20 @@ begin
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_pcpdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_pcpdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           elsif otherrpccount>0 then
              select substr(v.path||'/'||t.wellname||'抽油机',2) into otherDeviceAllPath  from tbl_rpcdevice t, (select org.org_id, sys_connect_by_path(org.org_name,'/') as path
              from tbl_org org
              start with org.org_parent=0
              connect by   org.org_parent= prior org.org_id) v
              where t.orgid=v.org_id
-             and t.id=(select t2.id from tbl_rpcdevice t2 where t2.signinid=v_signInId and to_number(t2.slave)=to_number(v_slave) and t2.signinid is not null and t2.slave is not null);
+             and t.id=(select t2.id from tbl_rpcdevice t2 
+                 where decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid)=decode(v_tcpType,'TCP Server',v_ipPort,v_signInId)
+                 and to_number(t2.slave)=to_number(v_slave) 
+                 and decode(v_tcpType,'TCP Server',t2.ipport,t2.signinid) is not null and t2.slave is not null);
           end if;
           v_result:=-22;
           v_resultstr := '注册包ID/IP端口和设备从地址与'||otherDeviceAllPath||'设备冲突';

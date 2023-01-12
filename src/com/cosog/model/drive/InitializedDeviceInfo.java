@@ -15,6 +15,8 @@ public class InitializedDeviceInfo {
 	private String tcpServer;
 	
 	private String signinid;
+	
+	private String ipPort;
 
     private byte slave;
     
@@ -22,7 +24,7 @@ public class InitializedDeviceInfo {
 
     private String instanceName;
 
-	public InitializedDeviceInfo(int orgId,int deviceId, String deviceName, int deviceType, String tcpServer, String signinid, byte slave,int peakDelay,
+	public InitializedDeviceInfo(int orgId,int deviceId, String deviceName, int deviceType, String tcpServer, String signinid, String ipPort, byte slave,int peakDelay,
 			String instanceName) {
 		super();
 		this.orgId = orgId;
@@ -31,6 +33,7 @@ public class InitializedDeviceInfo {
 		this.deviceType = deviceType;
 		this.tcpServer = tcpServer;
 		this.signinid = signinid;
+		this.ipPort = ipPort;
 		this.slave = slave;
 		this.peakDelay = peakDelay;
 		this.instanceName = instanceName;
@@ -110,6 +113,14 @@ public class InitializedDeviceInfo {
 
 	public void setPeakDelay(int peakDelay) {
 		this.peakDelay = peakDelay;
+	}
+
+	public String getIpPort() {
+		return ipPort;
+	}
+
+	public void setIpPort(String ipPort) {
+		this.ipPort = ipPort;
 	}
     
 }

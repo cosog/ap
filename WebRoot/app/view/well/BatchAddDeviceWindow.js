@@ -174,14 +174,14 @@ function CreateAndLoadBatchAddDeviceTable(isNew) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
                     } else if (result.columns[i].dataIndex.toUpperCase() === "stroke".toUpperCase()) {
                     	columns += "{data:'" + result.columns[i].dataIndex + "',type:'dropdown',strict:true,allowInvalid:false,source:['']}";
+                    } else if (result.columns[i].dataIndex.toUpperCase() === "ipPort".toUpperCase()) {
+                    	columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_IpPort_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
                     } else if (result.columns[i].dataIndex.toUpperCase() != "wellName".toUpperCase() 
                     		&& result.columns[i].dataIndex.toUpperCase() != "signInId".toUpperCase()
                     		&& result.columns[i].dataIndex.toUpperCase() != "videoUrl1".toUpperCase()
                     		&& result.columns[i].dataIndex.toUpperCase() != "videoUrl2".toUpperCase() ) {
                         columns += "{data:'" + result.columns[i].dataIndex + "',type:'text',allowInvalid: true, validator: function(val, callback){return handsontableDataCheck_Num_Nullable(val, callback,this.row, this.col,batchAddDeviceHandsontableHelper);}}";
-                    } 
-                    
-                    else {
+                    }else {
                         columns += "{data:'" + result.columns[i].dataIndex + "'}";
                     }
                     if (i < result.columns.length - 1) {

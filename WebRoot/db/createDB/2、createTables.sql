@@ -465,8 +465,6 @@ create table TBL_PROTOCOLINSTANCE
   heartbeatprefixsuffixhex NUMBER(1) default 1,
   heartbeatprefix          VARCHAR2(50),
   heartbeatsuffix          VARCHAR2(50),
-  heartbeatbodyhex         NUMBER(1) default 1,
-  heartbeatbody            VARCHAR2(50) default '$ID'
   packetsendinterval       NUMBER(10) default 100,
   unitid                   NUMBER(10),
   devicetype               NUMBER(1) default 0,

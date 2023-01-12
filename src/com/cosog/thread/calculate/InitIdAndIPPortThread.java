@@ -35,28 +35,34 @@ public class InitIdAndIPPortThread implements Runnable{
 
 	@Override
 	public void run(){
+		String tcpType="";
 		String id="";
+		String ipPort="";
 		String slave="";
 		String wellType="";
 		long time1 =System.nanoTime()/1000;
 		if(deviceType==0){
 			if(rpcDeviceInfo!=null){
 				initRPCDevice(rpcDeviceInfo,initEnable,method);
+				tcpType=rpcDeviceInfo.getTcpType();
 				id=rpcDeviceInfo.getSignInId();
+				ipPort=rpcDeviceInfo.getIpPort();
 				slave=rpcDeviceInfo.getSlave();
 				wellType="抽油机井";
 			}
 		}else{
 			if(pcpDeviceInfo!=null){
 				initPCPDevice(pcpDeviceInfo,initEnable,method);
+				tcpType=pcpDeviceInfo.getTcpType();
 				id=pcpDeviceInfo.getSignInId();
+				ipPort=pcpDeviceInfo.getIpPort();
 				slave=pcpDeviceInfo.getSlave();
 				wellType="螺杆泵井";
 			}
 			
 		}
 		long time2 =System.nanoTime()/1000;
-		StringManagerUtils.printLog(wellType+"ID/IPPort初始化耗时："+(time2-time1)+"μs"+",ID/IPPort:"+id+",Slave:"+slave+",ThreadId:"+Thread.currentThread().getId());
+//		StringManagerUtils.printLog(wellType+"ID/IPPort初始化耗时："+(time2-time1)+"μs"+",TCPType:"+tcpType+",ID:"+id+",IPPort:"+ipPort+",Slave:"+slave+",ThreadId:"+Thread.currentThread().getId());
 	}
 
 	public static void initRPCDevice(RPCDeviceInfo rpcDeviceInfo,boolean initEnable,String method){
@@ -72,6 +78,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		String wellName=rpcDeviceInfo.getWellName();
 		String tcpType=rpcDeviceInfo.getTcpType()==null?"":rpcDeviceInfo.getTcpType();
 		String signinId=rpcDeviceInfo.getSignInId()==null?"":rpcDeviceInfo.getSignInId();
+		String ipPort=rpcDeviceInfo.getIpPort()==null?"":rpcDeviceInfo.getIpPort();
 		String slaveStr=rpcDeviceInfo.getSlave()==null?"":rpcDeviceInfo.getSlave();
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		int peakDelay=rpcDeviceInfo.getPeakDelay();
@@ -114,7 +121,7 @@ public class InitIdAndIPPortThread implements Runnable{
 			if(otherInitialized!=null){
 				InitId initId=new InitId();
 				initId.setMethod("delete");
-				initId.setIPPort(otherInitialized.getSigninid());;
+				initId.setIPPort(otherInitialized.getIpPort());
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
@@ -132,7 +139,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		if("update".equalsIgnoreCase(method)&&status==1){
 			if(initialized==null
 					&& StringManagerUtils.isNotNull(tcpType)
-					&& StringManagerUtils.isNotNull(signinId)
+					&&( ( "TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && StringManagerUtils.isNotNull(ipPort)  ) || ( "TCPClient".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && StringManagerUtils.isNotNull(signinId)  )) 
 //					&& slave>0 
 					&& StringManagerUtils.isNotNull(slaveStr)
 					&& StringManagerUtils.isNotNull(instanceName)
@@ -142,7 +149,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				if(initType==0){
 					initId.setID(signinId);
 				}else{
-					initId.setIPPort(signinId);
+					initId.setIPPort(ipPort);
 				}
 				initId.setSlave((byte) slave);
 				initId.setInstanceName(instanceName);
@@ -153,7 +160,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 				}
 //				if(StringManagerUtils.isNotNull(response)){
-					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
+					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,ipPort,(byte) slave,peakDelay,instanceName);
 					if(initType==0){
 						initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 					}else{
@@ -163,7 +170,8 @@ public class InitIdAndIPPortThread implements Runnable{
 			}else if(initialized!=null){
 				//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
 				if( (!StringManagerUtils.isNotNull(tcpType)) 
-						||(!StringManagerUtils.isNotNull(signinId)) 
+						||( "TCPClient".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && (!StringManagerUtils.isNotNull(signinId))) 
+						||( "TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && (!StringManagerUtils.isNotNull(ipPort))) 
 //						|| slave==0 
 						|| (!StringManagerUtils.isNotNull(slaveStr)) 
 						|| (!StringManagerUtils.isNotNull(instanceName)) 
@@ -173,7 +181,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					if(initType==0){
 						initId.setID(initialized.getSigninid());
 					}else{
-						initId.setIPPort(initialized.getSigninid());
+						initId.setIPPort(initialized.getIpPort());
 					}
 					initId.setSlave(initialized.getSlave());
 					initId.setInstanceName(initialized.getInstanceName());
@@ -192,16 +200,27 @@ public class InitIdAndIPPortThread implements Runnable{
 //					}
 				}
 				//如果已经初始化但信息有变化
-				else if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName)  && initialized.getPeakDelay()==peakDelay)  ){
+				else if(! (
+						initialized.getSigninid().equalsIgnoreCase(signinId) 
+						&& initialized.getIpPort().equalsIgnoreCase(ipPort) 
+						&& initialized.getSlave()==(byte) slave 
+						&& initialized.getInstanceName().equalsIgnoreCase(instanceName)  
+						&& initialized.getPeakDelay()==peakDelay
+						)  ){
 					InitId initId=new InitId();
 					//如果注册包ID、设备从地址、实例变化，删除设备
-					if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName)) ){
+					if(! (
+							initialized.getSigninid().equalsIgnoreCase(signinId) 
+							&& initialized.getIpPort().equalsIgnoreCase(ipPort) 
+							&& initialized.getSlave()==(byte) slave 
+							&& initialized.getInstanceName().equalsIgnoreCase(instanceName)
+							) ){
 						//删掉原有初始化
 						initId.setMethod("delete");
 						if(initType==0){
 							initId.setID(initialized.getSigninid());
 						}else{
-							initId.setIPPort(initialized.getSigninid());
+							initId.setIPPort(initialized.getIpPort());
 						}
 						initId.setSlave(initialized.getSlave());
 						initId.setInstanceName(initialized.getInstanceName());
@@ -217,7 +236,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					if(initType==0){
 						initId.setID(signinId);
 					}else{
-						initId.setIPPort(signinId);
+						initId.setIPPort(ipPort);
 					}
 					initId.setSlave((byte) slave);
 					initId.setInstanceName(instanceName);
@@ -228,7 +247,7 @@ public class InitIdAndIPPortThread implements Runnable{
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 					}
 //					if(StringManagerUtils.isNotNull(response)){
-						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
+						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,ipPort,(byte) slave,peakDelay,instanceName);
 						if(initType==0){
 							initializedDeviceList.put(0+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 						}else{
@@ -245,7 +264,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				if(initType==0){
 					initId.setID(initialized.getSigninid());
 				}else{
-					initId.setIPPort(initialized.getSigninid());
+					initId.setIPPort(initialized.getIpPort());
 				}
 				initId.setSlave(initialized.getSlave());
 				initId.setInstanceName(initialized.getInstanceName());
@@ -283,6 +302,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		String wellName=pcpDeviceInfo.getWellName();
 		String tcpType=pcpDeviceInfo.getTcpType()==null?"":pcpDeviceInfo.getTcpType();
 		String signinId=pcpDeviceInfo.getSignInId()==null?"":pcpDeviceInfo.getSignInId();
+		String ipPort=pcpDeviceInfo.getIpPort()==null?"":pcpDeviceInfo.getIpPort();
 		String slaveStr=pcpDeviceInfo.getSlave()==null?"":pcpDeviceInfo.getSlave();
 		int slave=StringManagerUtils.stringToInteger(slaveStr);
 		int peakDelay=pcpDeviceInfo.getPeakDelay();
@@ -325,7 +345,7 @@ public class InitIdAndIPPortThread implements Runnable{
 			if(otherInitialized!=null){
 				InitId initId=new InitId();
 				initId.setMethod("delete");
-				initId.setIPPort(otherInitialized.getSigninid());;
+				initId.setIPPort(otherInitialized.getIpPort());;
 				initId.setSlave(otherInitialized.getSlave());
 				initId.setInstanceName(otherInitialized.getInstanceName());
 				initId.setPeakDelay(peakDelay);
@@ -343,7 +363,7 @@ public class InitIdAndIPPortThread implements Runnable{
 		if("update".equalsIgnoreCase(method)&&status==1){
 			if(initialized==null
 					&& StringManagerUtils.isNotNull(tcpType)
-					&& StringManagerUtils.isNotNull(signinId)
+					&& ( ( "TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && StringManagerUtils.isNotNull(ipPort)  ) || ( "TCPClient".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && StringManagerUtils.isNotNull(signinId)  ) )
 //					&& slave>0 
 					&& StringManagerUtils.isNotNull(slaveStr)
 					&& StringManagerUtils.isNotNull(instanceName)
@@ -353,7 +373,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				if(initType==0){
 					initId.setID(signinId);
 				}else{
-					initId.setIPPort(signinId);
+					initId.setIPPort(ipPort);
 				}
 				initId.setSlave((byte) slave);
 				initId.setInstanceName(instanceName);
@@ -365,7 +385,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					
 				}
 //				if(StringManagerUtils.isNotNull(response)){
-					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
+					InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,ipPort,(byte) slave,peakDelay,instanceName);
 					if(initType==0){
 						initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 					}else{
@@ -375,7 +395,8 @@ public class InitIdAndIPPortThread implements Runnable{
 			}else if(initialized!=null){
 				//如果已经初始化但下位机TCP类型、注册包ID、设备从地址、实例有一项为空，删除设备
 				if( (!StringManagerUtils.isNotNull(tcpType)) 
-						||(!StringManagerUtils.isNotNull(signinId)) 
+						||( "TCPClient".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && (!StringManagerUtils.isNotNull(signinId))) 
+						||( "TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", "")) && (!StringManagerUtils.isNotNull(ipPort))) 
 //						|| slave==0 
 						|| (!StringManagerUtils.isNotNull(slaveStr)) 
 						|| (!StringManagerUtils.isNotNull(instanceName)) 
@@ -385,7 +406,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					if(initType==0){
 						initId.setID(initialized.getSigninid());
 					}else{
-						initId.setIPPort(initialized.getSigninid());
+						initId.setIPPort(initialized.getIpPort());
 					}
 					initId.setSlave(initialized.getSlave());
 					initId.setInstanceName(initialized.getInstanceName());
@@ -404,16 +425,27 @@ public class InitIdAndIPPortThread implements Runnable{
 //					}
 				}
 				//如果已经初始化但信息有变化
-				else if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName) && initialized.getPeakDelay()==peakDelay)  ){
+				else if(! (
+						initialized.getSigninid().equalsIgnoreCase(signinId) 
+						&& initialized.getIpPort().equalsIgnoreCase(ipPort) 
+						&& initialized.getSlave()==(byte) slave 
+						&& initialized.getInstanceName().equalsIgnoreCase(instanceName)  
+						&& initialized.getPeakDelay()==peakDelay
+						)  ){
 					InitId initId=new InitId();
 					//如果注册包ID、设备从地址、实例变化，删除设备
-					if(! (initialized.getSigninid().equalsIgnoreCase(signinId) && initialized.getSlave()==(byte) slave && initialized.getInstanceName().equalsIgnoreCase(instanceName)) ){
+					if(! (
+							initialized.getSigninid().equalsIgnoreCase(signinId) 
+							&& initialized.getIpPort().equalsIgnoreCase(ipPort) 
+							&& initialized.getSlave()==(byte) slave 
+							&& initialized.getInstanceName().equalsIgnoreCase(instanceName)
+							) ){
 						//删掉原有初始化
 						initId.setMethod("delete");
 						if(initType==0){
 							initId.setID(initialized.getSigninid());
 						}else{
-							initId.setIPPort(initialized.getSigninid());
+							initId.setIPPort(initialized.getIpPort());
 						}
 						initId.setSlave(initialized.getSlave());
 						initId.setInstanceName(initialized.getInstanceName());
@@ -429,7 +461,7 @@ public class InitIdAndIPPortThread implements Runnable{
 					if(initType==0){
 						initId.setID(signinId);
 					}else{
-						initId.setIPPort(signinId);
+						initId.setIPPort(ipPort);
 					}
 					initId.setSlave((byte) slave);
 					initId.setInstanceName(instanceName);
@@ -440,7 +472,7 @@ public class InitIdAndIPPortThread implements Runnable{
 						response=StringManagerUtils.sendPostMethod(url, gson.toJson(initId),"utf-8",0,0);
 					}
 //					if(StringManagerUtils.isNotNull(response)){
-						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,(byte) slave,peakDelay,instanceName);
+						InitializedDeviceInfo initializedDeviceInfo=new InitializedDeviceInfo(orgId,deviceId,wellName,deviceType,tcpType,signinId,ipPort,(byte) slave,peakDelay,instanceName);
 						if(initType==0){
 							initializedDeviceList.put(1+"_"+initializedDeviceInfo.getDeviceId(), initializedDeviceInfo);
 						}else{
@@ -457,7 +489,7 @@ public class InitIdAndIPPortThread implements Runnable{
 				if(initType==0){
 					initId.setID(initialized.getSigninid());
 				}else{
-					initId.setIPPort(initialized.getSigninid());
+					initId.setIPPort(initialized.getIpPort());
 				}
 				initId.setSlave(initialized.getSlave());
 				initId.setInstanceName(initialized.getInstanceName());

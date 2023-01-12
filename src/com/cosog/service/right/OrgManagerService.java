@@ -92,14 +92,32 @@ public class OrgManagerService<T> extends BaseService<T> {
 		return this.getBaseDao().find(queryString);
 	}
 
-	public List<T> loadOrgs(Class<T> clazz,String orgName,String orgId) {
+	@SuppressWarnings("unchecked")
+	public List<T> loadOrgs(Class<T> clazz,String orgName,String orgId,String currentOrgId) {
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("SELECT u FROM Org u where 1=1");
 		if(StringManagerUtils.isNotNull(orgId)){
 			sqlBuffer.append(" and u.orgId in ("+orgId+")");
 		}
+		if(StringManagerUtils.isNotNull(currentOrgId)){
+			String queryString="select org_id from tbl_org t start with org_id="+currentOrgId+" connect by prior  org_id=org_parent";
+			List<?> list=getBaseDao().findCallSql(queryString);
+			if(list.size()>0){
+				StringBuffer orgIdString = new StringBuffer();
+				for(int i=0;i<list.size();i++){
+					orgIdString.append(list.get(i)+",");
+				}
+				if (orgIdString.toString().endsWith(",")) {
+					orgIdString.deleteCharAt(orgIdString.length() - 1);
+				}
+				sqlBuffer.append(" and u.orgId not in ("+orgIdString.toString()+")");
+			}
+		}
 		sqlBuffer.append(" order by u.orgSeq,u.orgId ");
 		return getBaseDao().find(sqlBuffer.toString());
+		
+		
+		
 		
 	}
 

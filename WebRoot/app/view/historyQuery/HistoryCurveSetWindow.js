@@ -8,6 +8,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
     border: false,
     hidden: false,
     collapsible: true,
+    autoScroll: true,
     constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
 //    constrain: true,
     closable: 'sides',
@@ -92,6 +93,7 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 	});
                 }
             }],
+            autoScroll: true,
         	html: '<div id="HistoryCurveSetTableDiv_Id" style="width:100%;height:100%;"></div>',
             listeners: {
                 resize: function (abstractcomponent, adjWidth, adjHeight, options) {
@@ -148,7 +150,7 @@ function CreateDeviceHistoryCurveSetTable(){
 			var result =  Ext.JSON.decode(response.responseText);
 			if(deviceHistoryCurveSetHandsontableHelper==null || deviceHistoryCurveSetHandsontableHelper.hot==undefined){
 				deviceHistoryCurveSetHandsontableHelper = DeviceHistoryCurveSetHandsontableHelper.createNew("HistoryCurveSetTableDiv_Id");
-				var colHeaders="['曲线','Y轴最大值','Y轴最小值','','']";
+				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','','']";
 				var columns="[" 
 						+"{data:'curveName'}," 
 						+"{data:'yAxisMaxValue'}," 

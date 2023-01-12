@@ -29,10 +29,6 @@ public class InitInstance {
     
     private String HeartbeatSuffix;
     
-    private boolean HeartbeatBodyHex;
-    
-    private String HeartbeatBody;
-    
     private int PacketSendInterval;
     
     private List<Group> AcqGroup;
@@ -182,21 +178,4 @@ public class InitInstance {
 	public void setHeartbeatPrefixSuffixHex(boolean heartbeatPrefixSuffixHex) {
 		HeartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
 	}
-
-	public boolean isHeartbeatBodyHex() {
-		return HeartbeatBodyHex;
-	}
-
-	public void setHeartbeatBodyHex(boolean heartbeatBodyHex) {
-		HeartbeatBodyHex = heartbeatBodyHex;
-	}
-
-	public String getHeartbeatBody() {
-		return HeartbeatBody;
-	}
-
-	public void setHeartbeatBody(String heartbeatBody) {
-		HeartbeatBody = heartbeatBody;
-	}
-	
 }

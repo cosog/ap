@@ -452,7 +452,7 @@ public class RealTimeMonitoringController extends BaseController {
 		return null;
 	}
 	
-	public int DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String tcpType,String ID,String Slave,String itemCode,String controlValue){
+	public int DeviceControlOperation_Mdubus(String protocolName,String deviceId,String wellName,String deviceType,String tcpType,String ID,String ipPort,String Slave,String itemCode,String controlValue){
 		int result=-1;
 		try {
 			Gson gson = new Gson();
@@ -498,21 +498,23 @@ public class RealTimeMonitoringController extends BaseController {
 					break;
 				}
 			}
-			String IDOrIPPort="ID";
+			String IDOrIPPortKey="ID";
+			String IDOrIPPort=ID;
 			if("TCPServer".equalsIgnoreCase(tcpType.replaceAll(" ", ""))){
-				IDOrIPPort="IPPort";
+				IDOrIPPortKey="IPPort";
+				IDOrIPPort=ipPort;
 				url=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getWriteAddr_ipPort());
 				readUrl=StringManagerUtils.getRequesrUrl(Config.getInstance().configFile.getAd().getIp(), Config.getInstance().configFile.getAd().getPort(), Config.getInstance().configFile.getAd().getRw().getReadAddr_ipPort());
 			}
 			if(StringManagerUtils.isNotNull(title) && addr!=-99){
 				String ctrlJson="{"
-						+ "\""+IDOrIPPort+"\":\""+ID+"\","
+						+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+","
 						+ "\"Value\":["+StringManagerUtils.objectToString(controlValue, dataType)+"]"
 						+ "}";
 				String readJson="{"
-						+ "\""+IDOrIPPort+"\":\""+ID+"\","
+						+ "\""+IDOrIPPortKey+"\":\""+IDOrIPPort+"\","
 						+ "\"Slave\":"+Slave+","
 						+ "\"Addr\":"+addr+""
 						+ "}";
@@ -559,7 +561,7 @@ public class RealTimeMonitoringController extends BaseController {
 //			String getOld = UnixPwdCrypt.crypt("dogVSgod", password);
 			String getOld = StringManagerUtils.stringToMD5(password);
 			if (getOld.equals(getUpwd)&&StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.wellname='"+wellName+"' ";
 				List list = this.service.findCallSql(sql);
@@ -568,11 +570,12 @@ public class RealTimeMonitoringController extends BaseController {
 					String protocol=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
-					String slave=obj[3]+"";
-					String realDeviceType=obj[4]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String realDeviceType=obj[5]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令执行成功。</font>'}";
 							}else if(reslut==0){
@@ -626,7 +629,7 @@ public class RealTimeMonitoringController extends BaseController {
 		// 用户不存在
 		if (null != userInfo) {
 			if (StringManagerUtils.isNumber(controlValue)) {
-				String sql="select t3.protocol,t.tcpType, t.signinid,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
+				String sql="select t3.protocol,t.tcpType, t.signinid,t.ipport,to_number(t.slave),t.deviceType from "+deviceTableName+" t,tbl_protocolinstance t2,tbl_acq_unit_conf t3 "
 						+ " where t.instancecode=t2.code and t2.unitid=t3.id"
 						+ " and t.id="+deviceId;
 				List list = this.service.findCallSql(sql);
@@ -635,11 +638,12 @@ public class RealTimeMonitoringController extends BaseController {
 					String protocol=obj[0]+"";
 					String tcpType=obj[1]+"";
 					String signinid=obj[2]+"";
-					String slave=obj[3]+"";
-					String realDeviceType=obj[4]+"";
+					String ipPort=obj[3]+"";
+					String slave=obj[4]+"";
+					String realDeviceType=obj[5]+"";
 					if(StringManagerUtils.isNotNull(protocol) && StringManagerUtils.isNotNull(tcpType) && StringManagerUtils.isNotNull(signinid)){
 						if(StringManagerUtils.isNotNull(slave)){
-							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,slave,controlType,controlValue);
+							int reslut=DeviceControlOperation_Mdubus(protocol,deviceId,wellName,realDeviceType,tcpType,signinid,ipPort,slave,controlType,controlValue);
 							if(reslut==1){
 								jsonLogin = "{success:true,flag:true,error:true,msg:'<font color=blue>命令执行成功。</font>'}";
 							}else if(reslut==0){

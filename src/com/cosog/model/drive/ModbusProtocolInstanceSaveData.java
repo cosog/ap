@@ -23,8 +23,6 @@ public class ModbusProtocolInstanceSaveData {
 	public int heartbeatPrefixSuffixHex;
 	public String heartbeatPrefix;
 	public String heartbeatSuffix;
-	public int heartbeatBodyHex;
-	public String heartbeatBody;
 	
 	public String packetSendInterval;
 	
@@ -182,21 +180,5 @@ public class ModbusProtocolInstanceSaveData {
 
 	public void setHeartbeatPrefixSuffixHex(int heartbeatPrefixSuffixHex) {
 		this.heartbeatPrefixSuffixHex = heartbeatPrefixSuffixHex;
-	}
-
-	public int getHeartbeatBodyHex() {
-		return heartbeatBodyHex;
-	}
-
-	public void setHeartbeatBodyHex(int heartbeatBodyHex) {
-		this.heartbeatBodyHex = heartbeatBodyHex;
-	}
-
-	public String getHeartbeatBody() {
-		return heartbeatBody;
-	}
-
-	public void setHeartbeatBody(String heartbeatBody) {
-		this.heartbeatBody = heartbeatBody;
 	}
 }

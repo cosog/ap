@@ -197,34 +197,18 @@ function CreateProtocolInstanceConfigPropertiesInfoTable(data){
 				item12.value=data.heartbeatSuffix;
 				root.push(item12);
 				
+				
 				var item13={};
 				item13.id=13;
-				item13.title='心跳包数据体十六进制';
-				if(parseInt(data.heartbeatBodyHex)==1){
-					item13.value=true;
-				}else{
-					item13.value=false;
-				}
+				item13.title='单包发送间隔(ms)';
+				item13.value=data.packetSendInterval;
 				root.push(item13);
 				
 				var item14={};
 				item14.id=14;
-				item14.title='心跳包数据体';
-				item14.value=data.heartbeatBody;
+				item14.title='排序序号';
+				item14.value=data.sort;
 				root.push(item14);
-				
-				
-				var item15={};
-				item15.id=15;
-				item15.title='单包发送间隔(ms)';
-				item15.value=data.packetSendInterval;
-				root.push(item15);
-				
-				var item16={};
-				item16.id=16;
-				item16.title='排序序号';
-				item16.value=data.sort;
-				root.push(item16);
 			}
 			
 			if(protocolConfigInstancePropertiesHandsontableHelper==null || protocolConfigInstancePropertiesHandsontableHelper.hot==undefined){
@@ -347,7 +331,7 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	this.allowInvalid = false;
 		                    }
 	                    	
-	                    	if (visualColIndex === 2 && (visualRowIndex===5 ||visualRowIndex===8 || visualRowIndex===9 || visualRowIndex===12) ) {
+	                    	if (visualColIndex === 2 && (visualRowIndex===5 ||visualRowIndex===8 || visualRowIndex===9) ) {
 		                    	this.type = 'checkbox';
 		                    }
 	                    }
@@ -499,7 +483,6 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 				saveData.signInIDHex=0;
 			}
 			
-			
 			if(propertiesData[9][2]==true){
 				saveData.heartbeatPrefixSuffixHex=1;
 			}else{
@@ -507,16 +490,10 @@ function SaveModbusProtocolInstanceConfigTreeData(){
 			}
 			saveData.heartbeatPrefix=propertiesData[10][2];
 			saveData.heartbeatSuffix=propertiesData[11][2];
-			if(propertiesData[12][2]==true){
-				saveData.heartbeatBodyHex=1;
-			}else{
-				saveData.heartbeatBodyHex=0;
-			}
-			saveData.heartbeatBody=propertiesData[13][2];
 			
-			saveData.packetSendInterval=propertiesData[14][2];
+			saveData.packetSendInterval=propertiesData[12][2];
 			
-			saveData.sort=propertiesData[15][2];
+			saveData.sort=propertiesData[13][2];
 			
 			SaveModbusProtocolAcqInstanceData(saveData);
 		}

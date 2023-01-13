@@ -651,21 +651,10 @@ var ProtocolDisplayUnitPropertiesHandsontableHelper = {
 	                    if (visualColIndex ==0 || visualColIndex ==1) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolDisplayUnitPropertiesHandsontableHelper.addBoldBg;
-		                }
-	                    if(protocolDisplayUnitPropertiesHandsontableHelper.classes===1){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['抽油机井','螺杆泵井'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
-	                    }else if(protocolDisplayUnitPropertiesHandsontableHelper.classes===3){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
-		                    	this.type = 'dropdown';
-		                    	this.source = ['采集组','控制组'];
-		                    	this.strict = true;
-		                    	this.allowInvalid = false;
-		                    }
+		                }else if(visualColIndex === 2 && visualRowIndex===0){
+	                    	this.validator=function (val, callback) {
+	                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolDisplayUnitPropertiesHandsontableHelper);
+	                    	}
 	                    }
 	                    return cellProperties;
 	                },

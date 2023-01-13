@@ -115,10 +115,6 @@ public class OrgManagerService<T> extends BaseService<T> {
 		}
 		sqlBuffer.append(" order by u.orgSeq,u.orgId ");
 		return getBaseDao().find(sqlBuffer.toString());
-		
-		
-		
-		
 	}
 
 	public List<T> loadWellInfoOrgs(Class<T> clazz) {

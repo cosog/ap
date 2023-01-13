@@ -23,7 +23,11 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-        	tbar:['->',{
+        	tbar:[{
+                xtype: 'label',
+                margin: '0 0 0 0',
+                html: '<font color=red>Y轴坐标在设置的最大最小值基础上再次自适应</font>'
+            },'->',{
                 xtype: 'button',
                 text: cosog.string.save,
                 iconCls: 'save',

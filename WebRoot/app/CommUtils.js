@@ -2288,6 +2288,76 @@ function handsontableDataCheck_IpPort_Nullable(val, callback,row,col,handsontabl
 	}
 };
 
+function handsontableDataCheck_HexStr_Nullable(val, callback,row,col,handsontableHelper){
+	var pattern=/^(0x|0X)?[a-fA-F0-9]+$/;
+	
+	if(val==='' || val==null || pattern.test(val) ){
+		return callback(true);
+	}else{
+		var cell = handsontableHelper.hot.getCell(row, col);  
+        cell.style.background = "#f09614";
+		return callback(false);
+	}
+};
+
+function handsontableDataCheck_Cancel(val, callback,row,col,handsontableHelper){
+	var pattern=/^(0x|0X)?[a-fA-F0-9]+$/;
+	return callback(true);
+};
+
+/^(0x|0X)?[a-fA-F0-9]+$/
+
+function handsontableDataCheck_IdAndIpPort(val, callback,row,col,handsontableHelper){
+	if(val==''|| val==null){
+		return callback(true);
+	}else{
+		var columns=handsontableHelper.columns;
+		var tcpTypeColIndex=-1;
+		for(var i=0;i<columns.length;i++){
+			if(columns[i].data.toUpperCase() === "tcpType".toUpperCase()){
+				tcpTypeColIndex=i;
+				break;
+	    	}
+		}
+		if(tcpTypeColIndex>=0){
+			var tcpType=handsontableHelper.hot.getDataAtCell(row,tcpTypeColIndex);
+			var cell = handsontableHelper.hot.getCell(row, col);  
+			var prop=columns[col].data;
+			if(tcpType==''|| tcpType==null){
+				return callback(true);
+			}else{
+				if(prop.toUpperCase() === "signInId".toUpperCase()){
+					if(tcpType.toUpperCase() === "TCP Client".toUpperCase() || tcpType.toUpperCase() === "TCPClient".toUpperCase()){
+						return callback(true);
+					}else{
+						cell.style.background = "#f5f5f5";
+						return callback(false);
+					}
+				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
+					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
+						var ipPortPattern=/^(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+						var ipv6PortPattern=/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
+						
+						if(ipPortPattern.test(val) || ipv6PortPattern.test(val)){
+							return callback(true);
+						}else{
+					        cell.style.background = "#f09614";
+							return callback(false);
+						}
+					}else{
+						cell.style.background = "#f5f5f5";
+						return callback(false);
+					}
+				}else if(prop.toUpperCase() === "tcpType".toUpperCase()){
+					return callback(true);
+				}
+			}
+		}else{
+			return callback(true);
+		}
+	}
+};
+
 function getBaseUrl(){
 	var curWwwPath=window.document.location.href;
 	//获取主机地址之后的目录，如： uimcardprj/share/meun.jsp

@@ -633,7 +633,7 @@ var RPCDeviceInfoHandsontableHelper = {
                     		}
                     		if(tcpTypeColIndex>=0){
                     			var tcpType=rpcDeviceInfoHandsontableHelper.hot.getDataAtCell(row,tcpTypeColIndex);
-                    			var cell = rpcDeviceInfoHandsontableHelper.hot.getCell(row, col);  
+//                    			var cell = rpcDeviceInfoHandsontableHelper.hot.getCell(row, col);  
                     			if(tcpType=='' || tcpType==null){
                     				cellProperties.readOnly = false;
                     			}else{
@@ -642,14 +642,14 @@ var RPCDeviceInfoHandsontableHelper = {
                     						cellProperties.readOnly = false;
                     					}else{
                     						cellProperties.readOnly = true;
-                    						cell.style.background = "#f5f5f5";
+//                    						cell.style.background = "#f5f5f5";
                     					}
                     				}else if(prop.toUpperCase() === "ipPort".toUpperCase()){
                     					if(tcpType.toUpperCase() === "TCP Server".toUpperCase() || tcpType.toUpperCase() === "TCPServer".toUpperCase()){
                     						cellProperties.readOnly = false;
                     					}else{
                     						cellProperties.readOnly = true;
-                    						cell.style.background = "#f5f5f5";
+//                    						cell.style.background = "#f5f5f5";
                     					}
                     				}
                     			}

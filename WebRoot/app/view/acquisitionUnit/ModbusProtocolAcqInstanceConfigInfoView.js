@@ -296,13 +296,16 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 							cellProperties.renderer = protocolConfigInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
 	                    if(protocolConfigInstancePropertiesHandsontableHelper.classes===1){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
+	                    	if(visualColIndex === 2 && visualRowIndex===0){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+		                    	}
+		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['抽油机井','螺杆泵井'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
-		                    }
-	                    	if (visualColIndex === 2 && visualRowIndex===2) {
+		                    }else if (visualColIndex === 2 && visualRowIndex===2) {
 		                    	var deviceType='';
 		                    	if(isNotVal(protocolConfigInstancePropertiesHandsontableHelper.hot)){
 		                    		deviceType=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(1,2);
@@ -317,22 +320,33 @@ var ProtocolConfigInstancePropertiesHandsontableHelper = {
 		                    	
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
-		                    }
-	                    	if (visualColIndex === 2 && visualRowIndex===3) {
+		                    }else if (visualColIndex === 2 && visualRowIndex===3) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt','private-kd93','private-lq1000'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
-		                    }
-	                    	if (visualColIndex === 2 && visualRowIndex===4) {
+		                    }else if (visualColIndex === 2 && visualRowIndex===4) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['modbus-tcp','modbus-rtu','private-rpc','private-mqtt'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
-		                    }
-	                    	
-	                    	if (visualColIndex === 2 && (visualRowIndex===5 ||visualRowIndex===8 || visualRowIndex===9) ) {
+		                    }else if (visualColIndex === 2 && (visualRowIndex===5 ||visualRowIndex===8 || visualRowIndex===9) ) {
 		                    	this.type = 'checkbox';
+		                    }else if(visualColIndex === 2 && (visualRowIndex===12) || visualRowIndex===13){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+		                    	}
+		                    }else if (visualColIndex === 2 && (visualRowIndex===6) || visualRowIndex===7) {
+		                    	if(protocolConfigInstancePropertiesHandsontableHelper.hot!=undefined && protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell!=undefined){
+		                    		var signInPrefixSuffixHex=protocolConfigInstancePropertiesHandsontableHelper.hot.getDataAtCell(5,2);
+		                    		if(signInPrefixSuffixHex){
+		                    			this.validator=function (val, callback) {
+				                    	    return handsontableDataCheck_HexStr_Nullable(val, callback, row, col, protocolConfigInstancePropertiesHandsontableHelper);
+				                    	}
+		                    		}else{
+		                    			this.validator=null;
+		                    		}
+		                    	}
 		                    }
 	                    }
 	                    return cellProperties;

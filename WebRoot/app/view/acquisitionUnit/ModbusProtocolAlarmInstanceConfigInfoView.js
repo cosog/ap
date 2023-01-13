@@ -355,11 +355,19 @@ var ProtocolAlarmInstancePropertiesHandsontableHelper = {
 							cellProperties.renderer = protocolAlarmInstancePropertiesHandsontableHelper.addBoldBg;
 		                }
 	                    if(protocolAlarmInstancePropertiesHandsontableHelper.classes===1){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
+	                    	if(visualColIndex === 2 && visualRowIndex===0){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
+		                    	}
+		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['抽油机井','螺杆泵井'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
+		                    }else if(visualColIndex === 2 && visualRowIndex===3){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolAlarmInstancePropertiesHandsontableHelper);
+		                    	}
 		                    }
 	                    }
 	                    return cellProperties;

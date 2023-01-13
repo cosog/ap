@@ -640,7 +640,11 @@ var ProtocolConfigAlarmUnitPropertiesHandsontableHelper = {
 	                    if (visualColIndex ==0 || visualColIndex ==1) {
 							cellProperties.readOnly = true;
 							cellProperties.renderer = protocolConfigAlarmUnitPropertiesHandsontableHelper.addBoldBg;
-		                }
+		                }else if(visualColIndex === 2 && visualRowIndex===0){
+	                    	this.validator=function (val, callback) {
+	                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAlarmUnitPropertiesHandsontableHelper);
+	                    	}
+	                    }
 	                    return cellProperties;
 	                },
 	                afterSelectionEnd : function (row,column,row2,column2, preventScrolling,selectionLayerLevel) {

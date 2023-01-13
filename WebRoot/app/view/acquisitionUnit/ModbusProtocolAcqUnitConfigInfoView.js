@@ -310,9 +310,11 @@ function CreateProtocolAcqUnitConfigPropertiesInfoTable(data){
 		protocolConfigAcqUnitPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolConfigAcqUnitPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
 		protocolConfigAcqUnitPropertiesHandsontableHelper.classes=data.classes;
+		protocolConfigAcqUnitPropertiesHandsontableHelper.type=data.type;
 		protocolConfigAcqUnitPropertiesHandsontableHelper.createTable(root);
 	}else{
 		protocolConfigAcqUnitPropertiesHandsontableHelper.classes=data.classes;
+		protocolConfigAcqUnitPropertiesHandsontableHelper.type=data.type;
 		protocolConfigAcqUnitPropertiesHandsontableHelper.hot.loadData(root);
 	}
 };
@@ -322,6 +324,7 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 	        var protocolConfigAcqUnitPropertiesHandsontableHelper = {};
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.hot = '';
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.classes =null;
+	        protocolConfigAcqUnitPropertiesHandsontableHelper.type =null;
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.divid = divid;
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.validresult=true;//数据校验
 	        protocolConfigAcqUnitPropertiesHandsontableHelper.colHeaders=[];
@@ -372,13 +375,28 @@ var ProtocolConfigAcqUnitPropertiesHandsontableHelper = {
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
 		                    }
+	                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===2){
+	                    	if (visualColIndex === 2 && visualRowIndex===0) {
+	                    		this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+		                    	}
+		                    }
 	                    }else if(protocolConfigAcqUnitPropertiesHandsontableHelper.classes===3){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
+	                    	if (visualColIndex === 2 && visualRowIndex===0) {
+	                    		this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+		                    	}
+		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['采集组','控制组'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
+		                    }else if(visualColIndex === 2 && (visualRowIndex===2||visualRowIndex===3) && protocolConfigAcqUnitPropertiesHandsontableHelper.type==0){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAcqUnitPropertiesHandsontableHelper);
+		                    	}
 		                    }
+	                    	
 	                    }
 	                    return cellProperties;
 	                },

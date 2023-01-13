@@ -386,7 +386,9 @@ function CreateProtocolConfigAddrMappingPropertiesInfoTable(data){
 	if(protocolConfigAddrMaooingPropertiesHandsontableHelper==null || protocolConfigAddrMaooingPropertiesHandsontableHelper.hot==undefined){
 		protocolConfigAddrMaooingPropertiesHandsontableHelper = ProtocolConfigAddrMaooingPropertiesHandsontableHelper.createNew("ModbusProtocolAddrMappingPropertiesTableInfoDiv_id");
 		var colHeaders="['序号','名称','变量']";
-		var columns="[{data:'id'},{data:'title'},{data:'value'}]";
+		var columns="[{data:'id'}," 
+			+"{data:'title'}," 
+			+"{data:'value'}]";
 		protocolConfigAddrMaooingPropertiesHandsontableHelper.colHeaders=Ext.JSON.decode(colHeaders);
 		protocolConfigAddrMaooingPropertiesHandsontableHelper.columns=Ext.JSON.decode(columns);
 		protocolConfigAddrMaooingPropertiesHandsontableHelper.classes=data.classes;
@@ -446,11 +448,19 @@ var ProtocolConfigAddrMaooingPropertiesHandsontableHelper = {
 							cellProperties.renderer = protocolConfigAddrMaooingPropertiesHandsontableHelper.addBoldBg;
 		                }
 	                    if(protocolConfigAddrMaooingPropertiesHandsontableHelper.classes===1){
-	                    	if (visualColIndex === 2 && visualRowIndex===1) {
+	                    	if(visualColIndex === 2 && visualRowIndex===0){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_NotNull(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+		                    	}
+		                    }else if (visualColIndex === 2 && visualRowIndex===1) {
 		                    	this.type = 'dropdown';
 		                    	this.source = ['抽油机井','螺杆泵井'];
 		                    	this.strict = true;
 		                    	this.allowInvalid = false;
+		                    }else if(visualColIndex === 2 && visualRowIndex===2){
+		                    	this.validator=function (val, callback) {
+		                    	    return handsontableDataCheck_Num_Nullable(val, callback, row, col, protocolConfigAddrMaooingPropertiesHandsontableHelper);
+		                    	}
 		                    }
 //	                    	if (visualColIndex === 2 && visualRowIndex===2) {
 //		                    	this.type = 'dropdown';

@@ -34,6 +34,7 @@ import com.cosog.utils.Config;
 import com.cosog.utils.Constants;
 import com.cosog.utils.DataModelMap;
 import com.cosog.utils.OrgRecursion;
+import com.cosog.utils.Page;
 import com.cosog.utils.ParamUtils;
 import com.cosog.utils.Recursion;
 import com.cosog.utils.StringManagerUtils;
@@ -755,6 +756,22 @@ public class OrgManagerController extends BaseController {
 			this.orgService.modifyOrg(org);
 		}
 		//HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache");
+		PrintWriter pw = response.getWriter();
+		pw.print(json);
+		pw.flush();
+		pw.close();
+		return null;
+	}
+	
+	@RequestMapping("/changeOrgParent")
+	public String changeOrgParent() throws Exception {
+		this.pager=new Page("pageForm",request);
+		String selectedCurrentOrgId = ParamUtils.getParameter(request, "selectedCurrentOrgId");
+		String selectedDestinationOrgId=ParamUtils.getParameter(request, "selectedDestinationOrgId");
+		int result=this.orgService.changeOrgParent(selectedCurrentOrgId,selectedDestinationOrgId);
+		String json = "{\"success\":true,\"resultStatus\":"+result+"}";
 		response.setContentType("application/json;charset=utf-8");
 		response.setHeader("Cache-Control", "no-cache");
 		PrintWriter pw = response.getWriter();

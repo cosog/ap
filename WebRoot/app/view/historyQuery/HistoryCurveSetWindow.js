@@ -8,22 +8,23 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
     border: false,
     hidden: false,
     collapsible: true,
-    autoScroll: true,
     constrainHeader:true,//True表示为将window header约束在视图中显示， false表示为允许header在视图之外的地方显示（默认为false）
 //    constrain: true,
     closable: 'sides',
     closeAction: 'destroy',
     maximizable: true,
     minimizable: true,
-    width: 600,
+    width: 700,
     minWidth: 600,
     height: 400,
     draggable: true, // 是否可拖曳
     modal: true, // 是否为模态窗口
+    padding:0,
     initComponent: function () {
         var me = this;
         Ext.apply(me, {
-        	tbar:[{
+            loyout:'border',
+            tbar:[{
                 xtype: 'label',
                 margin: '0 0 0 0',
                 html: '<font color=red>Y轴坐标在设置的最大最小值基础上再次自适应</font>'
@@ -97,16 +98,23 @@ Ext.define("AP.view.historyQuery.HistoryCurveSetWindow", {
                 	});
                 }
             }],
-            autoScroll: true,
-        	html: '<div id="HistoryCurveSetTableDiv_Id" style="width:100%;height:100%;"></div>',
+        	items:[{
+        		region: 'center',
+        		layout: 'fit',
+        		padding:0,
+//                autoScroll: true,
+        		html: '<div id="HistoryCurveSetTableDiv_Id" style="width:100%;height:100%;margin:0 0 0 0;"></div>',
+        		listeners: {
+        			resize: function (abstractcomponent, adjWidth, adjHeight, options) {
+                    	if(deviceHistoryCurveSetHandsontableHelper!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=undefined){
+                    		deviceHistoryCurveSetHandsontableHelper.hot.refreshDimensions();
+                    	}else{
+                  			CreateDeviceHistoryCurveSetTable();
+                    	}
+                    }
+        		}
+        	}],
             listeners: {
-                resize: function (abstractcomponent, adjWidth, adjHeight, options) {
-                	if(deviceHistoryCurveSetHandsontableHelper!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=null&&deviceHistoryCurveSetHandsontableHelper.hot!=undefined){
-                		deviceHistoryCurveSetHandsontableHelper.hot.refreshDimensions();
-                	}else{
-              			CreateDeviceHistoryCurveSetTable();
-                	}
-                },
                 beforeclose: function ( panel, eOpts) {
                 	if(deviceHistoryCurveSetHandsontableHelper!=null){
     					if(deviceHistoryCurveSetHandsontableHelper.hot!=undefined){
@@ -152,9 +160,56 @@ function CreateDeviceHistoryCurveSetTable(){
 		url:context + '/historyQueryController/getHistoryQueryCurveSetData',
 		success:function(response) {
 			var result =  Ext.JSON.decode(response.responseText);
+			result={
+				    "success": true,
+				    "totalCount": 7,
+				    "totalRoot": [{
+				        "curveName": "井下压力计-压力",
+				        "itemCode": "c_jxyljyl",
+				        "itemType": "0",
+				        "yAxisMaxValue": "20",
+				        "yAxisMinValue": "0"
+				    }, {
+				        "curveName": "井口套压",
+				        "itemCode": "c_jkty",
+				        "itemType": "0",
+				        "yAxisMaxValue": "6",
+				        "yAxisMinValue": "0"
+				    }, {
+				        "curveName": "产气量瞬时",
+				        "itemCode": "c_cqlss",
+				        "itemType": "0",
+				        "yAxisMaxValue": "",
+				        "yAxisMinValue": ""
+				    }, {
+				        "curveName": "产水量瞬时",
+				        "itemCode": "c_cslss",
+				        "itemType": "0",
+				        "yAxisMaxValue": "",
+				        "yAxisMinValue": ""
+				    }, {
+				        "curveName": "变频器输出",
+				        "itemCode": "c_bpqscdl",
+				        "itemType": "0",
+				        "yAxisMaxValue": "200",
+				        "yAxisMinValue": "0"
+				    }, {
+				        "curveName": "修正后井底流压",
+				        "itemCode": "c_xzhjdly",
+				        "itemType": "0",
+				        "yAxisMaxValue": "20",
+				        "yAxisMinValue": "0"
+				    }, {
+				        "curveName": "冲次",
+				        "itemCode": "c_cc",
+				        "itemType": "0",
+				        "yAxisMaxValue": "5",
+				        "yAxisMinValue": "0"
+				    }]
+				};
 			if(deviceHistoryCurveSetHandsontableHelper==null || deviceHistoryCurveSetHandsontableHelper.hot==undefined){
 				deviceHistoryCurveSetHandsontableHelper = DeviceHistoryCurveSetHandsontableHelper.createNew("HistoryCurveSetTableDiv_Id");
-				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','','']";
+				var colHeaders="['曲线','Y轴预设最大值','Y轴预设最小值','项编码','项类型']";
 				var columns="[" 
 						+"{data:'curveName'}," 
 						+"{data:'yAxisMaxValue'}," 
@@ -224,6 +279,7 @@ var DeviceHistoryCurveSetHandsontableHelper = {
 	                stretchH: 'all',//延伸列的宽度, last:延伸最后一列,all:延伸所有列,none默认不延伸
 	                rowHeaders: true,//显示行头
 	                colHeaders: deviceHistoryCurveSetHandsontableHelper.colHeaders,
+	                colWidths: [2,1,1,1,1],
 	                cells: function (row, col, prop) {
 	                	var cellProperties = {};
 	                    var visualRowIndex = this.instance.toVisualRow(row);

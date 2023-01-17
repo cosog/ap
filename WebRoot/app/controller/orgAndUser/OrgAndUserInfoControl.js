@@ -105,10 +105,11 @@ SelectOrgDataAttrInfoGridPanel = function () {
     }
    
     Ext.getCmp('orgOrg_Id').setValue(orgId);
-    var orgName_Parent_Id = Ext.getCmp('orgName_Parent_Id1');
-    orgName_Parent_Id.setValue(orgParent);
-    orgName_Parent_Id.setRawValue(orgParentName);
+//    var orgName_Parent_Id = Ext.getCmp('orgName_Parent_Id1');
+//    orgName_Parent_Id.setValue(orgParent);
+//    orgName_Parent_Id.setRawValue(orgParentName);
     Ext.getCmp('orgName_Parent_Id').setValue(orgParent);
+    Ext.getCmp('orgName_ParentName_Id').setValue(orgParentName);
     Ext.getCmp('orgName_Id').setValue(orgName);
     Ext.getCmp('orgMemo_Id').setValue(orgMemo);
     Ext.getCmp('orgSeq_Id').setValue(orgSeq);
@@ -141,8 +142,9 @@ function addOrgInfo() {
 	Ext.getCmp("updateFormOrg_Id").hide();
 	
 	Ext.getCmp("orgName_Parent_Id").setValue(selectedOrgId);
-	Ext.getCmp("orgName_Parent_Id1").setValue(selectedOrgId);
-	Ext.getCmp("orgName_Parent_Id1").setRawValue(selectedOrgName);
+	Ext.getCmp('orgName_ParentName_Id').setValue(selectedOrgName);
+//	Ext.getCmp("orgName_Parent_Id1").setValue(selectedOrgId);
+//	Ext.getCmp("orgName_Parent_Id1").setRawValue(selectedOrgName);
 	return false;
 }
     // del to action

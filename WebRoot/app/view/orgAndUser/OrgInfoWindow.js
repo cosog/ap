@@ -20,51 +20,51 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
     border: false,
     initComponent: function () {
         var me = this;
-        /**下拉机构树*/
-        var OrgTreeStore=Ext.create('Ext.data.TreeStore', {
-            fields: ['orgId', 'text', 'leaf'],
-            autoLoad: false,
-            proxy: {
-                type: 'ajax',
-                url: context + '/orgManagerController/loadOrgComboxTreeData',
-                reader: 'json'
-            },
-            root: {
-                expanded: true,
-                text: 'orgName'
-            },
-            listeners: {
-            	beforeload: function (store, options) {
-                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
-                	var selectedOrg = Ext.getCmp("OrgInfoTreeGridView_Id").getSelectionModel().getSelection();
-                    var currentOrgId = selectedOrg[0].data.orgId;
-                    
-                    var new_params = {
-                    	orgId:orgId,
-                    	currentOrgId:currentOrgId
-                    };
-                    Ext.apply(store.proxy.extraParams, new_params);
-                }
-            }
-        });
-        var orgTreeComb=Ext.create('AP.view.well.TreePicker',{
-        	id:'orgName_Parent_Id1',
-        	anchor: '95%',
-        	fieldLabel: cosog.string.superOrg+'<font color=red>*</font>',
-            emptyText: cosog.string.chooseOrg,
-            blankText: cosog.string.chooseOrg,
-            displayField: 'text',
-            autoScroll:true,
-            allowBlank: false,
-            forceSelection : true,// 只能选择下拉框里面的内容
-            rootVisible: false,
-            store:OrgTreeStore,
-            listeners: {
-                select: function (picker,record,eOpts) {
-                	Ext.getCmp("org_addwin_Id").down('form').getChildByElement("orgName_Parent_Id").setValue(record.data.id);
-                }
-            }
-        });
+//        /**下拉机构树*/
+//        var OrgTreeStore=Ext.create('Ext.data.TreeStore', {
+//            fields: ['orgId', 'text', 'leaf'],
+//            autoLoad: false,
+//            proxy: {
+//                type: 'ajax',
+//                url: context + '/orgManagerController/loadOrgComboxTreeData',
+//                reader: 'json'
+//            },
+//            root: {
+//                expanded: true,
+//                text: 'orgName'
+//            },
+//            listeners: {
+//            	beforeload: function (store, options) {
+//                	var orgId = Ext.getCmp('leftOrg_Id').getValue();
+//                	var selectedOrg = Ext.getCmp("OrgInfoTreeGridView_Id").getSelectionModel().getSelection();
+//                    var currentOrgId = selectedOrg[0].data.orgId;
+//                    
+//                    var new_params = {
+//                    	orgId:orgId,
+//                    	currentOrgId:currentOrgId
+//                    };
+//                    Ext.apply(store.proxy.extraParams, new_params);
+//                }
+//            }
+//        });
+//        var orgTreeComb=Ext.create('AP.view.well.TreePicker',{
+//        	id:'orgName_Parent_Id1',
+//        	anchor: '95%',
+//        	fieldLabel: cosog.string.superOrg+'<font color=red>*</font>',
+//            emptyText: cosog.string.chooseOrg,
+//            blankText: cosog.string.chooseOrg,
+//            displayField: 'text',
+//            autoScroll:true,
+//            allowBlank: false,
+//            forceSelection : true,// 只能选择下拉框里面的内容
+//            rootVisible: false,
+//            store:OrgTreeStore,
+//            listeners: {
+//                select: function (picker,record,eOpts) {
+//                	Ext.getCmp("org_addwin_Id").down('form').getChildByElement("orgName_Parent_Id").setValue(record.data.id);
+//                }
+//            }
+//        });
 
         var postOrgEditForm = Ext.create('Ext.form.Panel', {
             baseCls: 'x-plain',
@@ -83,7 +83,15 @@ Ext.define("AP.view.orgAndUser.OrgInfoWindow", {
                 name: 'org.orgParent',
                 id: 'orgName_Parent_Id'
 
-            }, orgTreeComb,{
+            },{
+                fieldLabel: cosog.string.superOrg,
+                id: 'orgName_ParentName_Id',
+                anchor: '95%',
+                editable: false,
+                disabled: true
+            }
+//            , orgTreeComb
+            ,{
                 fieldLabel: cosog.string.orgName+'<font color=red>*</font>',
                 id: 'orgName_Id',
                 allowBlank: false,

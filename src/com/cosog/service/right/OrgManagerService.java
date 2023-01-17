@@ -1,5 +1,6 @@
 package com.cosog.service.right;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.cosog.model.Org;
 import com.cosog.service.base.BaseService;
+import com.cosog.task.MemoryDataManagerTask;
 import com.cosog.utils.PagingConstants;
+import com.cosog.utils.RedisUtil;
 import com.cosog.utils.StringManagerUtils;
 import com.google.gson.Gson;
+
+import redis.clients.jedis.Jedis;
 
 /**
  * <p>
@@ -403,5 +408,46 @@ public class OrgManagerService<T> extends BaseService<T> {
 	public T getOrg(Class<T> clazz, int id) {
 		return getBaseDao().getObject(clazz, id);
 	}
-
+	
+	public int changeOrgParent(String selectedCurrentOrgId,String selectedDestinationOrgId) throws Exception {
+		int result=-99;
+		if(StringManagerUtils.stringToInteger(selectedCurrentOrgId)>0 && StringManagerUtils.isNotNull(selectedDestinationOrgId)){
+			String queryString="select org_id from tbl_org t start with org_id="+selectedCurrentOrgId+" connect by prior  org_id=org_parent";
+			List<?> list=getBaseDao().findCallSql(queryString);
+			StringBuffer orgChildNodesString = new StringBuffer();
+			if(list.size()>0){
+				for(int i=0;i<list.size();i++){
+					orgChildNodesString.append(list.get(i)+",");
+				}
+				if (orgChildNodesString.toString().endsWith(",")) {
+					orgChildNodesString.deleteCharAt(orgChildNodesString.length() - 1);
+				}
+			}
+			if(orgChildNodesString.length()>0){
+				String[] orgChildNodesArr=orgChildNodesString.toString().split(",");
+				for(String id:orgChildNodesArr){
+					if(StringManagerUtils.stringToInteger(selectedDestinationOrgId)==StringManagerUtils.stringToInteger(id)){
+						result=-1;
+						break;
+					}
+				}
+			}
+			if(result!=-1){
+				String sql = "update tbl_org t set t.org_parent="+selectedDestinationOrgId+" where t.org_id="+selectedCurrentOrgId;
+				result=this.getBaseDao().updateOrDeleteBySql(sql);
+				Jedis jedis=null;
+				try{
+					jedis = RedisUtil.jedisPool.getResource();
+					MemoryDataManagerTask.loadUserInfoByOrgId(selectedDestinationOrgId,"update");
+				}catch(Exception e){
+					e.printStackTrace();
+				}finally{
+					if(jedis!=null){
+						jedis.close();
+					}
+				}
+			}
+		}
+		return result;
+	}
 }

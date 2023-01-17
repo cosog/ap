@@ -9,7 +9,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
         Ext.apply(me, {
         	items: [{
         		region:'west',
-        		width:'20%',
+        		width:'25%',
         		layout: "fit",
         		title:'组织列表',
         		header:false,
@@ -59,7 +59,17 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     handler: function () {
                     	delOrgInfo();
                     }
-                }]
+                },"-", {
+        			xtype: 'button',
+        			text:'组织隶属迁移',
+        			iconCls: 'move',
+        			handler: function (v, o) {
+        				var window = Ext.create("AP.view.orgAndUser.OrgParentChangeWindow");
+                        window.show();
+                        Ext.create("AP.store.orgAndUser.OrgParentChangeCurrentOrgListStore");
+                        Ext.create("AP.store.orgAndUser.OrgParentChangeDestinationOrgListStore");
+        			}
+        		}]
         	},{
         		
         		region:'center',
@@ -102,18 +112,7 @@ Ext.define("AP.view.orgAndUser.OrgAndUserInfoView", {
                     handler: function () {
                     	modifyUserInfo();
                     }
-        		}
-//        		, "-", {
-//                    xtype: 'button',
-//                    id: 'delUserLableClassBtn_Id',
-//                    disabled: false,
-//                    text: cosog.string.del,
-//                    iconCls: 'delete',
-//                    handler: function () {
-//                    	delUserInfo();
-//                    }
-//        		}
-        		,"-", {
+        		},"-", {
         			xtype: 'button',
         			text:'用户隶属迁移',
         			iconCls: 'move',

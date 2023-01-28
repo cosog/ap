@@ -32,6 +32,7 @@
  var oem = ${configFile}.ap.oem;
  var productionUnit = ${configFile}.ap.others.productionUnit;
  var pcpHidden = ${configFile}.ap.others.pcpHidden;
+ var onlyMonitor = ${configFile}.ap.others.onlyMonitor;
  var showLogo = ${configFile}.ap.others.showLogo;
  
  var defaultComboxSize=${configFile}.ap.others.defaultComboxSize;

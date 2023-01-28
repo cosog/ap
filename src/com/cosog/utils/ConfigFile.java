@@ -266,6 +266,8 @@ public class ConfigFile {
 	    private String productionUnit;
 
 	    private boolean pcpHidden;
+	    
+	    private boolean onlyMonitor;
 
 	    private boolean showLogo;
 
@@ -374,6 +376,12 @@ public class ConfigFile {
 		}
 		public void setVacuateThreshold(int vacuateThreshold) {
 			this.vacuateThreshold = vacuateThreshold;
+		}
+		public boolean isOnlyMonitor() {
+			return onlyMonitor;
+		}
+		public void setOnlyMonitor(boolean onlyMonitor) {
+			this.onlyMonitor = onlyMonitor;
 		}
 	}
 	
